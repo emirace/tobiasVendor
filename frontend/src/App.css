@@ -1,15 +1,5 @@
-header {
-  background-color: black;
-}
-
-header a {
-  color: #ffffff;
-  font-weight: bold;
-  text-decoration: none;
-}
-
 main {
-  padding: 1rem;
+  flex: 1;
 }
 
 .products {
@@ -25,9 +15,13 @@ main {
 
 .product img {
   width: 100%;
-  max-width: 400px;
+  max-width: 200px;
 }
 
 .product-info {
   padding: 1rem;
+}
+
+.site-container {
+  min-height: 100vh;
 }
