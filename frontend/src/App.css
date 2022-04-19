@@ -2,10 +2,20 @@ main {
   flex: 1;
 }
 
+.btn-primary {
+  background-color: #f0c040;
+  color: black;
+  border: 1px #404040 solid;
+}
+
 .products {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.rating span {
+  color: #ffc000;
 }
 
 .product {
@@ -24,4 +34,8 @@ main {
 
 .site-container {
   min-height: 100vh;
+}
+
+.img-large {
+  max-width: 100%;
 }
