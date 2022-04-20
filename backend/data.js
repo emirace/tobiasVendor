@@ -1,6 +1,7 @@
 const data = {
   products: [
     {
+      _id: '1',
       name: 'Nike slim shirt',
       slug: 'nike-slim-shirt',
       category: 'Shirts',
@@ -13,6 +14,7 @@ const data = {
       description: 'high quality shirt',
     },
     {
+      _id: '2',
       name: 'Adidas slim shirt',
       slug: 'adidas-slim-shirt',
       category: 'Shirts',
@@ -25,6 +27,7 @@ const data = {
       description: 'high quality shirt',
     },
     {
+      _id: '3',
       name: 'Nike slim pant',
       slug: 'nike-slim-pant',
       category: 'Pants',
@@ -37,6 +40,7 @@ const data = {
       description: 'high quality product',
     },
     {
+      _id: '4',
       name: 'Adidas fit pant',
       slug: 'adidas-fit-pant',
       category: 'Pants',
@@ -49,10 +53,11 @@ const data = {
       description: 'high quality product',
     },
     {
+      _id: '5',
       name: 'Guchi fit pant',
       slug: 'guchi-fit-pant',
       category: 'Pants',
-      image: '/images/p4.jpg',
+      image: '/images/p5.avif',
       price: 400,
       countInStock: 0,
       brand: 'Guchi',
