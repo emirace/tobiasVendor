@@ -5,12 +5,13 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MessageBox from '../component/MessageBox';
 import axios from 'axios';
 import { Store } from '../Store';
 
 export default function CartScreen() {
+  const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },
@@ -33,12 +34,16 @@ export default function CartScreen() {
     ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
 
+  const checkoutHandler = () => {
+    navigate('../signin?redirect=/shipping');
+  };
+
   return (
     <div>
       <Helmet>
         <title>Shopping Cart</title>
       </Helmet>
-      <h1>Shopping Cart {localStorage.getItem('cartItem')}</h1>
+      <h1>Shopping Cart</h1>
       <Row>
         <Col md={8}>
           {cartItems.length === 0 ? (
@@ -108,6 +113,7 @@ export default function CartScreen() {
                   <div className="d-grid">
                     <Button
                       type="button"
+                      onClick={checkoutHandler}
                       variant="primary"
                       disabled={cartItems.lenth === 0}
                     >
