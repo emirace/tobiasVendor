@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import path from 'path';
 import dotenv from 'dotenv';
 import seedRouter from './routes/seedRoutes.js';
 import productRouter from './routes/productRoutes.js';
@@ -31,25 +32,11 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 
-// app.get('/api/products', (req, res) => {
-//   res.send(data.products);
-// });
-// app.get('/api/product/slug/:slug', (req, res) => {
-//   const product = data.products.find((x) => x.slug === req.params.slug);
-//   if (product) {
-//     res.send(product);
-//   } else {
-//     res.status(404).send({ message: 'Product Not Found' });
-//   }
-// });
-// app.get('/api/product/:id', (req, res) => {
-//   const product = data.products.find((x) => x._id === req.params.id);
-//   if (product) {
-//     res.send(product);
-//   } else {
-//     res.status(404).send({ message: 'Product Not Found' });
-//   }
-// });
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, '/frontend/build')));
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+);
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
