@@ -29,7 +29,7 @@ export default function SigninScreen() {
         password,
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userinfo', JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(redirect || '/');
     } catch (err) {
       toast.error(getError(err));
