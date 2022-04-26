@@ -83,3 +83,11 @@ main {
 .active-nav {
   left: 0;
 }
+
+.search-box-size {
+  width: 50%;
+}
+
+.text-bold {
+  font-weight: bold;
+}

@@ -12,7 +12,7 @@ export default function SearchBox() {
     navigate(query ? `/search/?query=${query}` : '/search');
   };
   return (
-    <Form className="d-flex me-auto" onSubmit={submitHandler}>
+    <Form className="d-flex me-auto search-box-size" onSubmit={submitHandler}>
       <InputGroup>
         <Form.Control
           type="text"
