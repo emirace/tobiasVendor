@@ -210,7 +210,7 @@ export default function SearchSceen() {
           ) : (
             <>
               <Row className="justify-content-between mb-3">
-                <Col md={6}>
+                <Col lg={3} md={4} sm={6}>
                   <div>
                     {countProducts === 0 ? 'No' : countProducts} Results
                     {query !== 'all' && ' : ' + query}

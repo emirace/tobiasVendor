@@ -13,7 +13,16 @@ export default function SearchBox() {
   };
   return (
     <Form className="d-flex me-auto search-box-size" onSubmit={submitHandler}>
-      <InputGroup>
+      <div className="input-group ml-4 border-0 shadow-sm rounded-pill p-1">
+        <div className="input-group-prepend border-0">
+          <Button
+            className="btn btn-link bg-transparent search-btn border-0 rounded-pill text-info"
+            type="submit"
+            id="button-search"
+          >
+            <i className="fas fa-search"></i>
+          </Button>
+        </div>
         <Form.Control
           type="text"
           name="q"
@@ -22,11 +31,9 @@ export default function SearchBox() {
           placeholder="search products..."
           aria-label="Search Products..."
           aria-describedby="button-search"
+          className=" bg-transparent border-0 rounded-pill"
         ></Form.Control>
-        <Button variant="outline-primary" type="submit" id="button-search">
-          <i className="fas fa-search"></i>
-        </Button>
-      </InputGroup>
+      </div>
     </Form>
   );
 }

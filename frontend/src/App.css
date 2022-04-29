@@ -4,9 +4,18 @@ main {
 
 .btn-primary,
 .btn-outline-primary {
-  background-color: #f0c040;
+  background-color: #f79a23;
   color: black;
   border: 1px #404040 solid;
+  outline: none;
+}
+.btn,
+.btn:focus,
+.form-control:focus {
+  box-shadow: none;
+}
+.fas {
+  color: #f79a23;
 }
 
 .products {
@@ -61,6 +70,11 @@ main {
 
 .navbar-brand {
   font-weight: bold;
+  color: #100901 !important;
+}
+.nav-link {
+  color: black !important;
+  font-weight: 600;
 }
 
 .side-navbar {
@@ -68,7 +82,8 @@ main {
   height: 100%;
   position: absolute;
   left: -300px;
-  background-color: #100901;
+  top: 100px;
+  background-color: white;
   transition: 0.5s;
 }
 
@@ -90,4 +105,31 @@ main {
 
 .text-bold {
   font-weight: bold;
+}
+.small-user,
+#basic-nav-dropdown {
+  padding-left: 0.5em;
+
+  padding-top: 0;
+  padding-bottom: 0;
+}
+#basic-nav-dropdown {
+  font-size: large;
+}
+.nav-user-img {
+  width: 50ox;
+  height: 50px;
+}
+.user-nav-item {
+  line-height: 1em !important;
+  padding-top: 0.5em;
+}
+
+.nav-cart-basket {
+  margin-right: 2em;
+}
+
+.small-button-size {
+  width: 60px;
+  height: 30px;
 }

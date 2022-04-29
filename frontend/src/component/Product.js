@@ -29,24 +29,46 @@ export default function Product(props) {
     });
   };
   return (
-    <Card>
-      <Link to={`/product/${product.slug}`}>
-        <img src={product.image} className="card-img-top" alt={product.name} />
-      </Link>
-      <Card.Body>
+    <div className="product_item">
+      <div className="product_item_pic bg-primary">
         <Link to={`/product/${product.slug}`}>
-          <Card.Title>{product.name}</Card.Title>
+          <img src={product.image} alt="" />
         </Link>
-        <Rating rating={product.rating} numReviews={product.numReviews} />
-        <Card.Text>${product.price}</Card.Text>
         {product.countInStock === 0 ? (
-          <Button variant="light" disabled>
-            Out of stock
-          </Button>
+          <div className="label stockout">Out of Stock</div>
         ) : (
-          <Button onClick={() => addToCartHandler(product)}>Add to cart</Button>
+          <div className="label new">New</div>
         )}
-      </Card.Body>
-    </Card>
+        <ul className="product_hover">
+          <li>
+            <a href="/#">
+              <i className="fa fa-arrows-alt"></i>
+            </a>
+          </li>
+          <li>
+            <a href="/#">
+              <i className="fa fa-heart"></i>
+            </a>
+          </li>
+          <li>
+            <a onClick={() => addToCartHandler(product)} href="/#">
+              <i className="fa fa-shopping-bag"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div className="product_item_text">
+        <h6>
+          <Link to={`/product/${product.slug}`}>
+            <a href="/#">{product.name}</a>
+            {product.countInStock}
+          </Link>
+        </h6>
+        <div className="rating">
+          <Rating rating={product.rating} numReviews={product.numReviews} />
+        </div>
+        <div className="product_price">$ {product.price}</div>
+      </div>
+    </div>
   );
 }
