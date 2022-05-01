@@ -1,5 +1,13 @@
 /* CSS */
 
+.padtop {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.paddown {
+  padding-bottom: 0.75rem;
+}
 .center-item {
   position: relative;
   overflow: hidden;
@@ -25,6 +33,7 @@
 .center-item .main-item-text {
   position: absolute;
   left: 50px;
+  max-width: 150px;
 }
 .center-item .main-item-1 .main-item-text {
   position: absolute;
@@ -83,7 +92,7 @@
 .new-product .section-title h4 {
   columns: #000;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: capitalize;
   position: relative;
   display: inline;
 }
@@ -113,9 +122,20 @@ a {
   padding-top: 80px;
   padding-bottom: 80px;
 }
+.property_gallery {
+  padding: 0 10vw;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+}
 
 .product_item {
+  flex: 0 0 auto;
+  width: 214px;
+  height: 450px;
   margin-bottom: 35px;
+  margin-right: 20px;
 }
 
 .product_item_pic {
@@ -257,13 +277,20 @@ a {
 
 .banner {
   position: relative;
-  height: 500px;
+  height: calc(100vh-120px);
 }
 
 .bg-img {
   background-image: url(http://localhost:3000/images/t2.jpeg);
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.banner_text {
+  position: absolute;
+  left: 50px;
+  top: 30px;
+  max-width: 300px;
 }
 
 .banner_text span {
@@ -274,13 +301,13 @@ a {
 
 .banner_text h1 {
   font-size: 65px;
-  color: #000;
+  color: #fff;
   margin-bottom: 15px;
 }
 
 .banner_text a {
   font-size: 14px;
-  color: #000;
+  color: #fff;
   text-transform: uppercase;
   font-weight: 700;
   position: relative;
@@ -300,7 +327,6 @@ a {
 
 .banner_slider {
   text-align: center;
-  padding: 150px 0 0;
 }
 
 .owl-theme .owl-dots .owl-dot.active span,
@@ -314,19 +340,38 @@ a {
   background: #ff7200 !important;
 }
 
+.banner_item {
+  position: relative;
+  overflow: hidden;
+}
+
+.banner_item .banner_image {
+  position: relative;
+  height: 500px;
+  display: flex;
+  align-items: center;
+}
+
+.banner_item .banner_image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .small-button {
-  margin: 0px 12px;
+  margin: 5px 0px;
   background-color: #f79a23;
   border-radius: 100px;
   color: white;
   display: inline-block;
   font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
-  padding: 2px 12px;
+  padding: 5px 15px;
   text-align: center;
   text-decoration: none;
   transition: all 250ms;
   border: 0;
-  font-size: 12px;
+  font-size: 15px;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -335,7 +380,6 @@ a {
 .hot-deals-title {
   font-weight: bold;
   font-size: 18px;
-  margin-left: 15px;
 }
 
 .hot-deal-price {
@@ -344,14 +388,11 @@ a {
 .small-button:hover {
   transform: scale(1.05) rotate(-1deg);
 }
-
-.hot-deals-row {
-  width: 300px;
-}
-.hot-deals {
+ls {
   height: 90px;
   width: 120px;
 }
+
 .hot-deals-img {
   border-radius: 10px;
   height: 100%;
@@ -385,4 +426,226 @@ a {
 
 .main-item-img {
   border-radius: 10px;
+}
+
+/* ****************product slide styles**************** */
+
+.product1 {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 0;
+}
+.product-category1 {
+  padding: 0 10vw;
+  font-size: 30px;
+  font-weight: 500;
+  margin-bottom: 40px;
+  text-transform: capitalize;
+  position: relative;
+}
+
+.product-category1::after {
+  position: absolute;
+  content: '';
+  left: 10vw;
+  bottom: -4px;
+  height: 2px;
+  width: 70px;
+  background-color: #ca1515;
+}
+
+.product-container1 {
+  padding: 0 10vw;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+}
+
+.product-container1::-webkit-scrollbar {
+  display: none;
+}
+
+.product-card1 {
+  flex: 0 0 auto;
+  width: 214px;
+  height: 450px;
+  margin-right: 20px;
+}
+
+.product-image1 {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+}
+
+.product-thumb1 {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+}
+
+.discount-tag1 {
+  position: absolute;
+  background: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  color: #ff7d7d;
+  right: 10px;
+  top: 10px;
+  text-transform: capitalize;
+}
+
+.card-btn1 {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  width: 90%;
+  text-transform: capitalize;
+  border: none;
+  outline: none;
+  background: #fff;
+  border-radius: 5px;
+  transition: 0.5s;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.product-card1:hover .card-btn1 {
+  opacity: 1;
+}
+
+.card-btn1:hover {
+  background: #efefef;
+}
+
+.product-info1 {
+  width: 100%;
+  height: 100%;
+  padding-top: 10px;
+}
+
+.product-brand1 {
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+.product-short-desc1 {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+  opacity: 0.5;
+  text-transform: capitalize;
+  margin-bottom: 5px;
+}
+
+.price1 {
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.actual-price1 {
+  margin-left: 20px;
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.pre-btn1,
+.next-btn1 {
+  border: none;
+  width: 10vw;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
+  cursor: pointer;
+  z-index: 8;
+}
+
+.pre-btn1 {
+  left: 0;
+}
+.next-btn1 {
+  right: 0;
+}
+
+.pre-btn1 i,
+.next-btn1 i {
+  opacity: 0.2;
+}
+
+.pre-btn1:hover i,
+.next-btn1:hover i {
+  opacity: 1;
+}
+
+.carl {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+}
+
+.left-side1 {
+  width: 15vw;
+  height: 100%;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.logo1 {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 2vw;
+  position: absolute;
+  top: 4vw;
+  left: -1.5vw;
+  transform: rotate(-90deg);
+  user-select: none;
+}
+
+sm-product1 {
+  width: 100%;
+  height: auto;
+}
+
+.product-index1 {
+  font-size: 2vw;
+  text-align: center;
+}
+
+.sm-product-img-container1 {
+  position: absolute;
+  margin: 0.5vw 0;
+  height: 15vw;
+}
+
+.sm-product-img1 {
+  width: 100%;
+  height: 15vw;
+  object-fit: cover;
+}
+
+.sm-product-desc1 {
+  text-align: right;
+  padding: 0 0.4vw;
+  line-height: 1.5vw;
+  font-size: 1vw;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.social-link1 {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translate(-50%);
 }

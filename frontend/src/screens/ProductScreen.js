@@ -13,6 +13,7 @@ import LoadingBox from '../component/LoadingBox';
 import MessageBox from '../component/MessageBox';
 import { getError } from '../utils';
 import { Store } from '../Store';
+import '../style/product.css';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -75,7 +76,83 @@ export default function ProductScreen() {
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
     <div>
-      <Row>
+      <section className="product-details1">
+        <div className="image-slider1">
+          <div className="product-images1">
+            <img src="/images/p1.jpg" alt="" className="active1" />
+            <img src="/images/p2.jpg" alt="" />
+            <img src="/images/p3.jpg" alt="" />
+            <img src="/images/p4.jpg" alt="" />
+          </div>
+        </div>
+        <div className="details1">
+          <h2 className="product-brand1">calvin klein</h2>
+          <p className="product-short-desc1">
+            need the element to resemble a link, use a button and change.
+          </p>
+          <span className="product-price1">$99</span>
+          <span className="product-actual-price1">$200</span>
+          <span className="product-discount1">( 50% off )</span>
+          <p className="product-sub-heading1">select size</p>
+          <input
+            type="radio"
+            name="size"
+            value="s"
+            checked
+            hidden
+            id="s-size"
+          />
+          <label for="size" className="size-radio-btn1 checked">
+            s
+          </label>
+          <input type="radio" name="size" value="m" hidden id="m-size" />
+          <label for="size" className="size-radio-btn1">
+            m
+          </label>
+          <input type="radio" name="size" value="l" hidden id="l-size" />
+          <label for="size" className="size-radio-btn1">
+            l
+          </label>
+          <input type="radio" name="size" value="xl" hidden id="xl-size" />
+          <label for="size" className="size-radio-btn1">
+            xl
+          </label>
+          <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
+          <label for="size" className="size-radio-btn1">
+            xxl
+          </label>
+          <button className="btn1 cart-btn1">add to cart</button>
+          <button className="btn1 ">wishlist</button>
+        </div>
+      </section>
+      <section className="detail-desc1">
+        <h2 className="heading">description</h2>
+        <p className="desc1">
+          The href attribute requires a valid value to be accessible. Provide a
+          valid, navigable address as the href value. If you cannot provide a
+          valid href, but still need the element to resemble a link, use a
+          button and change it with appropriate styles.The href attribute
+          requires a valid value to be accessible. Provide a valid, navigable
+          address as the href value. If you cannot provide a valid href, but
+          still need the element to resemble a link, use a button and change it
+          with appropriate styles.The href attribute requires a valid value to
+          be accessible. Provide a valid, navigable address as the href value.
+          If you cannot provide a valid href, but still need the element to
+          resemble a link, use a button and change it with appropriate
+          styles.The href attribute requires a valid value to be accessible.
+          Provide a valid, navigable address as the href value. If you cannot
+          provide a valid href, but still need the element to resemble a link,
+          use a button and change it with appropriate styles.The href attribute
+          requires a valid value to be accessible. Provide a valid, navigable
+          address as the href value. If you cannot provide a valid href, but
+          still need the element to resemble a link, use a button and change it
+          with appropriate styles.The href attribute requires a valid value to
+          be accessible. Provide a valid, navigable address as the href value.
+          If you cannot provide a valid href, but still need the element to
+          resemble a link, use a button and change it with appropriate styles.
+        </p>
+      </section>
+      {/* <Row>
         <Col md={6}>
           <img className="img-large" src={product.image} alt={product.name} />
         </Col>
@@ -130,7 +207,7 @@ export default function ProductScreen() {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 }

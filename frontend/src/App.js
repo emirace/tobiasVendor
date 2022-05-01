@@ -65,7 +65,55 @@ function App() {
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
       <header>
-        <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
+        <nav className="navbar1">
+          <div className="nav1">
+            <div className="brand-logo1">TOBIAS</div>
+
+            <div className="nav-items1">
+              <div className="search1 d-none d-lg-block d-xl-block">
+                <input
+                  type="text"
+                  class="search-box1"
+                  placeholder="search products"
+                />
+                <button className="search-btn1">search</button>
+              </div>
+              <a href="/#" className="d-block d-md-block d-lg-none">
+                <i class="fa fa-search"></i>
+              </a>
+
+              <a href="/#">
+                <i class="fa fa-user-circle"></i>
+              </a>
+              <a href="/#" alt="">
+                <i class="fa fa-envelope"></i>
+              </a>
+              <a href="/#" alt="">
+                <i class="fa fa-shopping-cart"></i>
+              </a>
+            </div>
+          </div>
+          <ul className="links-container1">
+            <li className="link-item1">
+              <a href="/#" className="link1">
+                Men
+              </a>
+              <a href="/#" className="link1">
+                Women
+              </a>
+              <a href="/#" className="link1">
+                Kids
+              </a>
+              <a href="/#" className="link1">
+                Male
+              </a>
+              <a href="/#" className="link1">
+                Female
+              </a>
+            </li>
+          </ul>
+        </nav>
+        {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>TOBIAS</Navbar.Brand>
@@ -76,14 +124,10 @@ function App() {
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto w-100 justify-content-end">
                 <Link to="/cart" className="nav-link nav-cart-basket">
-                  <i
-                    className="fa fa-shopping-basket fa-2x"
-                    aria-hidden="true"
-                  ></i>
+                  <i className="fa fa-shopping-cart "></i>
                   {cart.cartItems.length > 0 && (
                     <Badge pill bg="danger">
                       {cart.cartItems.length}
-                      {/* {cart.cartItems.reduce((a, c) => a + c.quantity, 0)} */}
                     </Badge>
                   )}
                 </Link>
@@ -135,10 +179,10 @@ function App() {
                     </LinkContainer>
                   </NavDropdown>
                 )} */}
-              </Nav>
+        {/*</Nav>
             </Navbar.Collapse>
           </Container>
-        </Navbar>
+        </Navbar> */}
       </header>
       <div
         className={
@@ -178,7 +222,7 @@ function App() {
             <i className="fas fa-bars"></i>
             {!sidebarIsOpen ? <strong> Category</strong> : ''}
           </Button> */}
-          <div className="mt-4 mx-4 container-fluid">
+          <div className="p-0 container-fluid">
             <Routes>
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/cart" element={<CartScreen />} />
@@ -249,7 +293,161 @@ function App() {
           </div>
         </main>
         <footer>
-          <div className="text-center">All rights reserve</div>
+          <div className="footer-content1">
+            <div className="brand-logo1">TOBIAS</div>
+            <div className="footer-ul-container1">
+              <ul className="category1">
+                <li className="category-title1">Men</li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    t-shirt
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    sweatshirts
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    shirts
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    jeans
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    trouser
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    shoed
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    casuals
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    formals
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    sports
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    watches
+                  </a>
+                </li>
+              </ul>
+              <ul className="category1">
+                <li className="category-title1">Women</li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    t-shirt
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    sweatshirts
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    shirts
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    jeans
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    trouser
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    shoed
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    casuals
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    formals
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    sports
+                  </a>
+                </li>
+                <li>
+                  <a href="/#" className="footer-link1">
+                    watches
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p className="footer-title1">about company</p>
+          <p className="info1">
+            The href attribute requires a valid value to be accessible. Provide
+            a valid, navigable address as the href value. If you cannot provide
+            a valid href, but still need the element to resemble a link, use a
+            button and change it with appropriate styles. Learn more The href
+            attribute requires a valid value to be accessible. Provide a valid,
+            navigable address as the href value. If you cannot provide a valid
+            href, but still need the element to resemble a link, use a button
+            and change it with appropriate styles. Learn more The href attribute
+            requires a valid value to be accessible. Provide a valid, navigable
+            address as the href value. If you cannot provide a valid href, but
+            still need the element to resemble a link, use a button and change
+            it with appropriat
+          </p>
+          <p className="info1">
+            support emails - help@compayname.com,
+            customersupport@companyname.com
+          </p>
+          <p className="info1">telephone - 123 456 789, 987 654 321</p>
+          <div className="footer-social-container1">
+            <div className="">
+              <a href="/#" className="social-link1">
+                terms & servises
+              </a>
+              <a href="/#" className="social-link1">
+                Privacy page
+              </a>
+            </div>
+            <div className="">
+              <a href="/#" className="social-link1">
+                facebook
+              </a>
+              <a href="/#" className="social-link1">
+                instagram
+              </a>
+              <a href="/#" className="social-link1">
+                tweeter
+              </a>
+            </div>
+          </div>
+          <p classname="footer-credit1">
+            Conpany, Best apeal fashion market place
+          </p>
         </footer>
       </div>
     </BrowserRouter>

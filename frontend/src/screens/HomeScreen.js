@@ -48,34 +48,127 @@ export default function ProductsScreen() {
     };
     fetchData();
   }, []);
+  const product1 = [1, 2, 3, 4, 5, 6, 7];
+  const nextBtnScroll = () => {};
+  const preBtnScroll = () => {};
   return (
     <div>
       <Helmet>
-        <title>Products</title>
+        <title>Tobias</title>
       </Helmet>
       <Row>
-        <Col md={2} className="  p-2">
-          <div className="categories">
-            <div className="categories-title border-0 mb-4 shadow-sm rounded-pill p-1 ">
-              <div className="hot-deals-title">
-                <i className="fas fa-bars"></i> Categories
+        {/* <Col lg={2}>
+          <div className="categories d-md-none d-lg-block">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12">
+                  <div className="categories-title border-0 mb-4 shadow-sm rounded-pill p-1 ">
+                    <div className="hot-deals-title">
+                      <i className="fas fa-bars"></i> Categories
+                    </div>
+                  </div>
+                  <ul>
+                    <li>shirt</li>
+                    <li>shirt</li>
+                    <li>shirt</li>
+                    <li>shirt</li>
+                  </ul>
+                </div>
               </div>
             </div>
-            <ul>
-              <li>shirt</li>
-              <li>shirt</li>
-              <li>shirt</li>
-              <li>shirt</li>
-            </ul>
           </div>
-        </Col>
-        <Col md={7} className="px-4  p-2 ">
+        </Col> */}
+        <Col>
+          <section className="banner ">
+            <div className="container-fluid p-0">
+              <div className="row">
+                <div className="col m-auto">
+                  <OwlCarousel
+                    items={1}
+                    loop
+                    autoHeight={false}
+                    dots={true}
+                    smartSpeed={4000}
+                    dot
+                    autoplay={true}
+                    margin={0}
+                    className="banner_slider owl-theme"
+                  >
+                    <div className="banner_item">
+                      <div className="banner_image">
+                        <img src="/images/t6.jpg" alt="" />
+                      </div>
+                      <div className="banner_text">
+                        <span>The Big Collection</span>
+                        <h1>The New Product</h1>
+                        <a href="/#">shop Now</a>
+                      </div>
+                    </div>
+                    <div className="banner_item">
+                      <div className="banner_image">
+                        <img src="/images/t5.jpg" alt="" />
+                      </div>
+                      <div className="banner_text">
+                        <span>The Big Collection</span>
+                        <h1>The New Product</h1>
+                        <a href="/#">shop Now</a>
+                      </div>
+                    </div>
+                    <div className="banner_item">
+                      <div className="banner_image">
+                        <img src="/images/t7.jpg" alt="" />
+                      </div>
+                      <div className="banner_text">
+                        <span>The Big Collection</span>
+                        <h1>The New Product</h1>
+                        <a href="/#">shop Now</a>
+                      </div>
+                    </div>
+                  </OwlCarousel>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section className="product1">
+            <div className="product-title">
+              <h2 className="product-category1">New deals</h2>
+            </div>
+            <button onClick={preBtnScroll} className="pre-btn1">
+              <i class="fa fa-angle-left"></i>
+            </button>
+            <button onClick={nextBtnScroll} className="next-btn1">
+              <i class="fa fa-angle-right"></i>
+            </button>
+            <div className="product-container1">
+              {product1.map((p) => (
+                <div className="product-card1">
+                  <div className="product-image1">
+                    <span className="discount-tag1">50% off</span>
+                    <img
+                      src="/images/p5.avif"
+                      className="product-thumb1"
+                      alt="product"
+                    ></img>
+                    <button className="card-btn1">add to whislist</button>
+                  </div>
+                  <div className="product-info1">
+                    <h2 className="product-brand1">brand</h2>
+                    <p className="product-short-desc1">
+                      short line above the cloth...
+                    </p>
+                    <span className="price1">$120</span>
+                    <span className="actual-price1">$150</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
           <section className="center-item">
-            <Row>
-              <Col lg={5} md={5} className="p-0">
-                <Row>
-                  <Col md={12}>
-                    <div className="main-item">
+            <div className="container-fluid">
+              <Row>
+                <Col lg={5} md={12}>
+                  <Col className="">
+                    <div className="main-item paddown padtop">
                       <img
                         src="/images/t2.jpeg"
                         alt=""
@@ -87,10 +180,8 @@ export default function ProductsScreen() {
                       </div>
                     </div>
                   </Col>
-                </Row>
-                <Row>
-                  <Col md={12}>
-                    <div className="main-item">
+                  <Col className="">
+                    <div className="main-item padtop">
                       <img
                         src="/images/t4.jpg"
                         alt=""
@@ -102,30 +193,36 @@ export default function ProductsScreen() {
                       </div>
                     </div>
                   </Col>
-                </Row>
-              </Col>
-              <Col lg={7} md={7} className="p-0">
-                <div className="main-item main-item-1">
-                  <img src="/images/t3.jpg" alt="" className="img-fluid"></img>
-                  <div className="main-item-text">
-                    <h1>Kichen Tools and Gadgets</h1>
-                    <button class="small-button">Shop Now</button>
+                </Col>
+                <Col lg={7} md={12}>
+                  <div className="main-item main-item-1 padtop">
+                    <img
+                      src="/images/t3.jpg"
+                      alt=""
+                      className="img-fluid"
+                    ></img>
+                    <div className="main-item-text">
+                      <h1>Kichen Tools and Gadgets</h1>
+                      <button class="small-button">Shop Now</button>
+                    </div>
                   </div>
-                </div>
-              </Col>
-            </Row>
+                </Col>
+              </Row>
+            </div>
           </section>
+
           <section className="new-product spad">
             <div className="container">
               <div className="row">
-                <div className="col-lg-12 text-center">
+                <div className="col-lg-12 ">
                   <div className="section-title">
                     <h4>New Product</h4>
                   </div>
                 </div>
               </div>
+
               <div className="row property_gallery">
-                <div className="col-lg-3 col-md-4 col-sm-6">
+                {product1.map(() => (
                   <div className="product_item">
                     <div className="product_item_pic">
                       <img src="/images/p5.avif" alt="" />
@@ -162,256 +259,65 @@ export default function ProductsScreen() {
                       <div className="product_price">$ 59.0</div>
                     </div>
                   </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-6">
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p5.avif" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">
-                        $ 59.0<span>$ 75.0</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-6">
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p5.avif" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">$ 59.0</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-6">
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p5.avif" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">$ 59.0</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-6">
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p1.jpg" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">$ 59.0</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-6">
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p5.avif" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">$ 59.0</div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </section>
-          <section className="banner bg-img">
+          <section className="discount spad">
             <div className="container">
               <div className="row">
-                <div className="col-lg-8 m-auto">
-                  <OwlCarousel
-                    items={1}
-                    loop
-                    autoHeight={false}
-                    dots={true}
-                    smartSpeed={2000}
-                    dot
-                    autoplay={true}
-                    margin={0}
-                    className="banner_slider owl-theme"
-                  >
-                    <div className="banner_item">
-                      <div className="banner_text">
-                        <span>The Big Collection</span>
-                        <h1>The New Product</h1>
-                        <a href="/#">Buy Now</a>
-                      </div>
-                    </div>
-                    <div className="banner_item">
-                      <div className="banner_text">
-                        <span>The Big Collection</span>
-                        <h1>The New Product</h1>
-                        <a href="/#">Buy Now</a>
-                      </div>
-                    </div>
-                    <div className="banner_item">
-                      <div className="banner_text">
-                        <span>The Big Collection</span>
-                        <h1>The New Product</h1>
-                        <a href="/#">Buy Now</a>
-                      </div>
-                    </div>
-                  </OwlCarousel>
+                <div className="col-lg-6">
+                  <div className="discount_pic">
+                    <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div className="discount_pic">
+                    <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
+          <section className="carl">
+            <div className="left-side1">
+              <span className="logo1">fashion</span>
+              <div className="sm-product1">
+                <h1 className="product-index1">01</h1>
+                <div className="sm-product-imag-container1">
+                  <img src="" alt="" className="sm-product-img1"></img>
+                </div>
+                <p className="sm-product-desc1">
+                  The href attribute requires a valid value to requires a valid
+                  value to
+                </p>
+              </div>
+              <div className="social-link1">
+                <i className="fa fa-instagram social-link-img1"></i>
+                <i class="fa fa-facebook-square"></i>
+                <i class="fa fa-twitter"></i>
+              </div>
+            </div>
+          </section>
         </Col>
-        <Col md={3} className="mr-3 p-2">
-          <h3 className="hot-deals-title">Hot Deals</h3>
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-          <HotDeals />
-        </Col>
+        {/* <Col md={3} className="mr-3 p-2">
+          <div className="container">
+            <div className="row">
+              <div className="col">
+                <h3 className="hot-deals-title">Hot Deals</h3>
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+                <HotDeals />
+              </div>
+            </div>
+          </div>
+        </Col> */}
       </Row>
 
       {/* <h1>Featured Products</h1> 
