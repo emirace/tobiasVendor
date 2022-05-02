@@ -393,24 +393,67 @@ export default function ProductsScreen() {
                         <span>Sale</span> 60% OFF
                       </h5>
                     </div>
-                    {/* <div className="discount_countdown">
+                    <div className="discount_countdown">
                       <div class="countdown_item">
                         <span>22</span>
                         <p>Days</p>
                       </div>
                       <div class="countdown_item">
-                        <span>22</span>
+                        <span>18</span>
                         <p>Hours</p>
                       </div>
                       <div class="countdown_item">
-                        <span>22</span>
+                        <span>46</span>
                         <p>Min</p>
                       </div>
                       <div class="countdown_item">
-                        <span>22</span>
+                        <span>05</span>
                         <p>Sec</p>
                       </div>
-                    </div> */}
+                    </div>
+                    <a href="#" className="c">
+                      Buy Now
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="shop-method-area">
+            <div className="container">
+              <div className="row d-flex justify-content-between">
+                <div className="col-lg-3 col-md-6 col-sm-12">
+                  <div className="single-method mb-40">
+                    <i className="fa fa-shopping-bag"></i>
+                    <h6 className="">Free Shipping Method</h6>
+                    <p>
+                      Lorem Ipsum is simply dummy text of the printing and
+                      typesetting industry. Lorem Ipsum has been the industry's
+                      standard dummy text ever since the 1500s,
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-6 col-sm-12">
+                  <div className="single-method">
+                    <i className="fa fa-lock"></i>
+                    <h6 className="">Free Shipping Method</h6>
+                    <p>
+                      Lorem Ipsum is simply dummy text of the printing and
+                      typesetting industry. Lorem Ipsum has been the industry's
+                      standard dummy text ever since the 1500s,
+                    </p>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-6 col-sm-12">
+                  <div className="single-method">
+                    <i className="fa fa-shopping-bag"></i>
+                    <h6 className="">Easy Payment Method</h6>
+                    <p>
+                      Lorem Ipsum is simply dummy text of the printing and
+                      typesetting industry. Lorem Ipsum has been the industry's
+                      standard dummy text ever since the 1500s,
+                    </p>
                   </div>
                 </div>
               </div>

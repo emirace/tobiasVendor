@@ -316,7 +316,8 @@ a {
   display: inline-block;
 }
 
-.banner_text a:after {
+.banner_text a:after,
+.c:after {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -720,4 +721,65 @@ sm-product1 {
 .discount_text .discount_text_title h2 {
   color: #ff7200;
   font-weight: 700;
+}
+
+.discount_text .discount_text_title h2 span {
+  font-size: 14px;
+  color: #000;
+  margin-right: 5px;
+}
+
+.discount_countdown {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.discount_countdown .countdown_item {
+  margin-bottom: 15px;
+  float: left;
+  width: 25%;
+}
+
+.discount_countdown .countdown_item:last-child {
+  margin-right: 0;
+}
+
+.discount_countdown .countdown_item span {
+  font-size: 30px;
+  font-weight: 600;
+  color: #000;
+  display: inline-block;
+}
+
+.discount_countdown .countdown_item p {
+  color: #000;
+  margin-bottom: 0;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.c {
+  margin-left: 45%;
+}
+
+.shop-method-area .single-method i {
+  font-size: 45px;
+  color: #ff7200;
+  margin-bottom: 25px;
+}
+
+.shop-method-area .single-method h6 {
+  color: #282828;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2px;
+  margin-bottom: 12px;
+}
+
+.shop-method-area .single-method p {
+  font-size: 16px;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
 }
