@@ -121,43 +121,39 @@ function App() {
               )}
             </div>
           </div>
-          <div className="links-container1">
-            <ul>
-              <div className="nav-signin ">
-                <label for="check" className="checkbtn1">
-                  <i class="fas fa-times"></i>
-                </label>
-                <Link className=" link1 h80" to="/signin">
-                  Sign In / Register
-                </Link>
-              </div>
-              <li className="link-item1">
-                <a href="/#" className="link1">
-                  Womenswear
-                </a>
-              </li>
-              <li>
-                <a href="/#" className="link1">
-                  Menswear
-                </a>
-              </li>
-              <li>
-                <a href="/#" className="link1">
-                  Curve +plus
-                </a>
-              </li>
-              <li>
-                <a href="/#" className="link1">
-                  Kids
-                </a>
-              </li>
-              <li>
-                <a href="/#" className="link1">
-                  Brands
-                </a>
-              </li>
-            </ul>
-          </div>
+          <ul className="links-container1">
+            <div className="nav-signin ">
+              <label for="check" className="checkbtn1">
+                <i class="fas fa-times"></i>
+              </label>
+              <Link className=" link1 h80" to="/signin">
+                Sign In / Register
+              </Link>
+            </div>
+            <li className="link1">
+              <a href="/#" className="">
+                Womenswear
+              </a>
+              <ul className="sub-cat1">
+                <li className="">sub cat</li>
+                <li className="">sub cat</li>
+                <li className="">sub cat</li>
+                <li className="">sub cat</li>
+              </ul>
+            </li>
+            <li className="link1">
+              <a href="/#">Menswear</a>
+            </li>
+            <li className="link1">
+              <a href="/#">Curve +plus</a>
+            </li>
+            <li className="link1">
+              <a href="/#">Kids</a>
+            </li>
+            <li className="link1">
+              <a href="/#">Brands</a>
+            </li>
+          </ul>
         </nav>
         {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
           <Container>
@@ -323,7 +319,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/" element={<ProductsScreen />} />
+              <Route path="/" element={<HomeScreen />} />
               <Route path="/home" element={<HomeScreen />} />
 
               {/* Admin Routes */}

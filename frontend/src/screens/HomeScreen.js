@@ -48,7 +48,7 @@ export default function ProductsScreen() {
     };
     fetchData();
   }, []);
-  const product1 = [1, 2, 3, 4, 5, 6, 7];
+  const product1 = [1, 2, 3];
   const nextBtnScroll = () => {};
   const preBtnScroll = () => {};
   return (
@@ -96,7 +96,8 @@ export default function ProductsScreen() {
                   >
                     <div className="banner_item">
                       <div className="banner_image">
-                        <img src="/images/t6.jpg" alt="" />
+                        <img src="/images/p11.jpg" alt="" />
+                        <div id="overlay"></div>
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -106,7 +107,7 @@ export default function ProductsScreen() {
                     </div>
                     <div className="banner_item">
                       <div className="banner_image">
-                        <img src="/images/t5.jpg" alt="" />
+                        <img src="/images/p10.webp" alt="" />
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -140,27 +141,139 @@ export default function ProductsScreen() {
               <i class="fa fa-angle-right"></i>
             </button>
             <div className="product-container1">
-              {product1.map((p) => (
-                <div className="product-card1">
-                  <div className="product-image1">
-                    <span className="discount-tag1">50% off</span>
-                    <img
-                      src="/images/p5.avif"
-                      className="product-thumb1"
-                      alt="product"
-                    ></img>
-                    <button className="card-btn1">add to whislist</button>
-                  </div>
-                  <div className="product-info1">
-                    <h2 className="product-brand1">brand</h2>
-                    <p className="product-short-desc1">
-                      short line above the cloth...
-                    </p>
-                    <span className="price1">$120</span>
-                    <span className="actual-price1">$150</span>
-                  </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card4.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
                 </div>
-              ))}
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card1.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card2.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card4.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card6.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card7.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card8.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
             </div>
           </section>
           <section className="center-item">
@@ -170,12 +283,12 @@ export default function ProductsScreen() {
                   <Col className="">
                     <div className="main-item paddown padtop">
                       <img
-                        src="/images/t2.jpeg"
+                        src="/images/men.png"
                         alt=""
                         className="img-fluid"
                       ></img>
                       <div className="main-item-text">
-                        <h4>Kichen Tools and Gadgets</h4>
+                        <h4>Classic Men Wears</h4>
                         <a href="#">Shop Now</a>
                       </div>
                     </div>
@@ -188,7 +301,7 @@ export default function ProductsScreen() {
                         className="img-fluid"
                       ></img>
                       <div className="main-item-text">
-                        <h4>Kichen Tools and Gadgets</h4>
+                        <h4>Smart Kid's Wears</h4>
                         <a href="#">Shop Now</a>
                       </div>
                     </div>
@@ -202,7 +315,7 @@ export default function ProductsScreen() {
                       className="img-fluid"
                     ></img>
                     <div className="main-item-text">
-                      <h1>Kichen Tools and Gadgets</h1>
+                      <h1>High Taste Women Wears</h1>
                       <button class="small-button">Shop Now</button>
                     </div>
                   </div>
@@ -266,20 +379,44 @@ export default function ProductsScreen() {
           <section className="discount spad">
             <div className="container">
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-6 p-0">
                   <div className="discount_pic">
                     <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
                   </div>
                 </div>
-                <div className="col-lg-6">
-                  <div className="discount_pic">
-                    <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
+                <div className="col-lg-6 p-0">
+                  <div className="discount_text">
+                    <div className="discount_text_title">
+                      <span>Discount</span>
+                      <h2>Season Sales </h2>
+                      <h5>
+                        <span>Sale</span> 60% OFF
+                      </h5>
+                    </div>
+                    {/* <div className="discount_countdown">
+                      <div class="countdown_item">
+                        <span>22</span>
+                        <p>Days</p>
+                      </div>
+                      <div class="countdown_item">
+                        <span>22</span>
+                        <p>Hours</p>
+                      </div>
+                      <div class="countdown_item">
+                        <span>22</span>
+                        <p>Min</p>
+                      </div>
+                      <div class="countdown_item">
+                        <span>22</span>
+                        <p>Sec</p>
+                      </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
             </div>
           </section>
-          <section className="carl">
+          {/* <section className="carl">
             <div className="left-side1">
               <span className="logo1">fashion</span>
               <div className="sm-product1">
@@ -298,7 +435,7 @@ export default function ProductsScreen() {
                 <i class="fa fa-twitter"></i>
               </div>
             </div>
-          </section>
+          </section> */}
         </Col>
         {/* <Col md={3} className="mr-3 p-2">
           <div className="container">

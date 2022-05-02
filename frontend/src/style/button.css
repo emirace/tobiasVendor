@@ -15,7 +15,7 @@
 
 .center-item .main-item {
   position: relative;
-  height: 250px;
+  height: 325px;
   display: flex;
   align-items: center;
 }
@@ -27,7 +27,7 @@
   object-fit: cover;
 }
 .center-item .main-item-1 {
-  height: 500px;
+  height: 650px;
 }
 
 .center-item .main-item-text {
@@ -35,6 +35,7 @@
   left: 50px;
   max-width: 150px;
 }
+
 .center-item .main-item-1 .main-item-text {
   position: absolute;
   left: 50px;
@@ -55,14 +56,14 @@
 }
 
 .center-item .main-item-text h4 {
-  color: #000;
+  color: white;
   font-weight: 700;
 }
 
 .center-item .main-item-text a {
   text-decoration: none;
   font-size: 14px;
-  color: #000;
+  color: white;
   text-transform: uppercase;
   font-weight: 600;
   position: relative;
@@ -290,6 +291,7 @@ a {
   left: 50px;
   top: 30px;
   max-width: 300px;
+  z-index: 9;
 }
 
 .banner_text span {
@@ -518,7 +520,7 @@ ls {
 }
 
 .card-btn1:hover {
-  background: #efefef;
+  background: #ff7200;
 }
 
 .product-info1 {
@@ -647,4 +649,75 @@ sm-product1 {
   bottom: 90px;
   left: 50%;
   transform: translate(-50%);
+}
+
+#overlay {
+  position: absolute; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.discount_pic img {
+  min-width: 100%;
+  height: 100%;
+}
+
+.discount_text {
+  background-color: #f4f4f4;
+  height: 390px;
+  padding: 75px 90px 50px;
+}
+
+.discount_text a {
+  font-size: 14px;
+  color: 000;
+  text-transform: uppercase;
+  font-weight: 700;
+  position: relative;
+  padding: 0 0 3px;
+  display: inline-block;
+}
+
+.discount_text .discount_text_title {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 60px;
+}
+
+.discount_text .discount_text_title:after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -38px;
+  height: 183px;
+  width: 183px;
+  background-color: #fff;
+  z-index: -1;
+  margin-left: -90px;
+}
+
+.discount_text .discount_text_title span {
+  font-size: 20px;
+  color: #000;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.discount_text .discount_text_title h2 {
+  font-size: 55px;
+  color: #ff7200;
+  margin-bottom: 10px;
+}
+
+.discount_text .discount_text_title h2 {
+  color: #ff7200;
+  font-weight: 700;
 }
