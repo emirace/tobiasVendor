@@ -66,8 +66,14 @@ function App() {
       <ToastContainer position="top-center" limit={1} />
       <header>
         <nav className="navbar1">
+          <input type="checkbox" id="check" />
           <div className="nav1">
-            <div className="brand-logo1">TOBIAS</div>
+            <label for="check" className="checkbtn1">
+              <i class="fas fa-bars"></i>
+            </label>
+            <LinkContainer to="/">
+              <div className="brand-logo1">TOBIAS</div>
+            </LinkContainer>
 
             <div className="nav-items1">
               <div className="search1 d-none d-lg-block d-xl-block">
@@ -88,30 +94,43 @@ function App() {
               <a href="/#" alt="">
                 <i class="fa fa-envelope"></i>
               </a>
-              <a href="/#" alt="">
+              <Link to="/cart" className="nav-cart-btn1">
                 <i class="fa fa-shopping-cart"></i>
-              </a>
+                {cart.cartItems.length > 0 && (
+                  <span>{cart.cartItems.length}</span>
+                )}
+              </Link>
             </div>
           </div>
-          <ul className="links-container1">
-            <li className="link-item1">
-              <a href="/#" className="link1">
-                Men
-              </a>
-              <a href="/#" className="link1">
-                Women
-              </a>
-              <a href="/#" className="link1">
-                Kids
-              </a>
-              <a href="/#" className="link1">
-                Male
-              </a>
-              <a href="/#" className="link1">
-                Female
-              </a>
-            </li>
-          </ul>
+          <div className="links-container1">
+            <ul>
+              <div className="nav-signin ">
+                <label for="check" className="checkbtn1">
+                  <i class="fas fa-times"></i>
+                </label>
+                <a href="/#" className="link1 h80 ">
+                  Sign In / Register
+                </a>
+              </div>
+              <li className="link-item1">
+                <a href="/#" className="link1">
+                  Womenswear
+                </a>
+                <a href="/#" className="link1">
+                  Menswear
+                </a>
+                <a href="/#" className="link1">
+                  Curve +plus
+                </a>
+                <a href="/#" className="link1">
+                  Kids
+                </a>
+                <a href="/#" className="link1">
+                  Brands
+                </a>
+              </li>
+            </ul>
+          </div>
         </nav>
         {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
           <Container>
