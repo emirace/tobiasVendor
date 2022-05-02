@@ -87,19 +87,38 @@ function App() {
               <a href="/#" className="d-block d-md-block d-lg-none">
                 <i class="fa fa-search"></i>
               </a>
-
-              <a href="/#">
-                <i class="fa fa-user-circle"></i>
-              </a>
-              <a href="/#" alt="">
-                <i class="fa fa-envelope"></i>
-              </a>
-              <Link to="/cart" className="nav-cart-btn1">
-                <i class="fa fa-shopping-cart"></i>
-                {cart.cartItems.length > 0 && (
-                  <span>{cart.cartItems.length}</span>
-                )}
-              </Link>
+              {userInfo ? (
+                <div>
+                  <a href="/#">
+                    <i class="fa fa-user-circle"></i>
+                  </a>
+                  <a href="/#" alt="">
+                    <i class="fa fa-envelope"></i>
+                  </a>
+                </div>
+              ) : (
+                <div>
+                  <Link to="/cart" className="nav-cart-btn1">
+                    <i class="fa fa-shopping-cart"></i>
+                    {cart.cartItems.length > 0 && (
+                      <span>{cart.cartItems.length}</span>
+                    )}
+                  </Link>
+                  <Link className=" link1 d-none d-lg-flex" to="/signin">
+                    Sign In / Register
+                  </Link>
+                </div>
+              )}
+              {userInfo ? (
+                <Link to="/cart" className="nav-cart-btn1">
+                  <i class="fa fa-shopping-cart"></i>
+                  {cart.cartItems.length > 0 && (
+                    <span>{cart.cartItems.length}</span>
+                  )}
+                </Link>
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="links-container1">
@@ -108,23 +127,31 @@ function App() {
                 <label for="check" className="checkbtn1">
                   <i class="fas fa-times"></i>
                 </label>
-                <a href="/#" className="link1 h80 ">
+                <Link className=" link1 h80" to="/signin">
                   Sign In / Register
-                </a>
+                </Link>
               </div>
               <li className="link-item1">
                 <a href="/#" className="link1">
                   Womenswear
                 </a>
+              </li>
+              <li>
                 <a href="/#" className="link1">
                   Menswear
                 </a>
+              </li>
+              <li>
                 <a href="/#" className="link1">
                   Curve +plus
                 </a>
+              </li>
+              <li>
                 <a href="/#" className="link1">
                   Kids
                 </a>
+              </li>
+              <li>
                 <a href="/#" className="link1">
                   Brands
                 </a>
