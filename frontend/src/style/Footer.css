@@ -1,0 +1,38 @@
+.footer_container {
+  display: flex;
+}
+.footer_left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.footer_center {
+  flex: 1;
+  padding: 20px;
+}
+
+.footer_right {
+  flex: 1;
+  padding: 20px;
+}
+
+.footer_desc {
+  margin: 20px 0;
+}
+
+.footer_social {
+  display: flex;
+}
+
+.footer_social_icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+}

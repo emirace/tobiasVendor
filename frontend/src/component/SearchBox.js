@@ -12,7 +12,10 @@ export default function SearchBox() {
     navigate(query ? `/search/?query=${query}` : '/search');
   };
   return (
-    <Form className="d-flex me-auto search-box-size" onSubmit={submitHandler}>
+    <Form
+      className="d-flex me-auto search-box-size d-none d-md-block"
+      onSubmit={submitHandler}
+    >
       <div className="input-group ml-4 border-0 shadow-sm rounded-pill p-1">
         <div className="input-group-prepend border-0">
           <Button
@@ -28,7 +31,7 @@ export default function SearchBox() {
           name="q"
           id="q"
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="search products..."
+          placeholder="Search anything..."
           aria-label="Search Products..."
           aria-describedby="button-search"
           className=" bg-transparent border-0 rounded-pill"

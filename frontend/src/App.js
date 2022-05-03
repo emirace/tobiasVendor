@@ -32,6 +32,7 @@ import HomeScreen from './screens/HomeScreen';
 import AdminRoute from './component/AdminRoute';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Footer from './component/Footer';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -74,51 +75,59 @@ function App() {
             <LinkContainer to="/">
               <div className="brand-logo1">TOBIAS</div>
             </LinkContainer>
-
+            <SearchBox />
             <div className="nav-items1">
-              <div className="search1 d-none d-lg-block d-xl-block">
-                <input
-                  type="text"
-                  class="search-box1"
-                  placeholder="search products"
-                />
-                <button className="search-btn1">search</button>
-              </div>
               <a href="/#" className="d-block d-md-block d-lg-none">
                 <i class="fa fa-search"></i>
               </a>
               {userInfo ? (
-                <div>
-                  <a href="/#">
-                    <i class="fa fa-user-circle"></i>
-                  </a>
-                  <a href="/#" alt="">
+                <>
+                  <NavDropdown
+                    className="d-none d-lg-block p-0"
+                    title={
+                      <>
+                        <i class="fa fa-user-circle"></i>
+                        {userInfo.name}
+                      </>
+                    }
+                    id="basic-nav-dropdown"
+                  >
+                    <LinkContainer to="/profile">
+                      <NavDropdown.Item>User Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/orderhistory">
+                      <NavDropdown.Item>Order History</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Divider />
+                    <Link
+                      className="dropdown-item"
+                      to="#signout"
+                      onClick={signoutHandler}
+                    >
+                      Sign Out
+                    </Link>
+                  </NavDropdown>
+                  <a href="/#" alt="" className="d-none d-lg-block">
                     <i class="fa fa-envelope"></i>
                   </a>
-                </div>
+                </>
               ) : (
-                <div>
-                  <Link to="/cart" className="nav-cart-btn1">
-                    <i class="fa fa-shopping-cart"></i>
-                    {cart.cartItems.length > 0 && (
-                      <span>{cart.cartItems.length}</span>
-                    )}
-                  </Link>
-                  <Link className=" link1 d-none d-lg-flex" to="/signin">
-                    Sign In / Register
-                  </Link>
-                </div>
+                ''
               )}
-              {userInfo ? (
-                <Link to="/cart" className="nav-cart-btn1">
-                  <i class="fa fa-shopping-cart"></i>
-                  {cart.cartItems.length > 0 && (
-                    <span>{cart.cartItems.length}</span>
-                  )}
+              <Link to="/cart" className="nav-cart-btn1">
+                <i class="fa fa-shopping-cart"></i>
+                {cart.cartItems.length > 0 && (
+                  <span>{cart.cartItems.length}</span>
+                )}
+              </Link>
+              {!userInfo ? (
+                <Link className=" link1 d-none d-lg-block" to="/signin">
+                  Sign In / Register
                 </Link>
               ) : (
                 ''
               )}
+              <button className="search-btn1">Sell</button>
             </div>
           </div>
           <ul className="links-container1">
@@ -126,9 +135,33 @@ function App() {
               <label for="check" className="checkbtn1">
                 <i class="fas fa-times"></i>
               </label>
-              <Link className=" link1 h80" to="/signin">
-                Sign In / Register
-              </Link>
+              {userInfo ? (
+                <>
+                  <NavDropdown className="link1" title={userInfo.name}>
+                    <LinkContainer to="/profile">
+                      <NavDropdown.Item>User Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/orderhistory">
+                      <NavDropdown.Item>Order History</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Divider />
+                    <Link
+                      className="dropdown-item"
+                      to="#signout"
+                      onClick={signoutHandler}
+                    >
+                      Sign Out
+                    </Link>
+                  </NavDropdown>
+                  <a href="/#" alt="" className="link1">
+                    <i class="fa fa-envelope"></i>
+                  </a>
+                </>
+              ) : (
+                <Link className=" link1 h80" to="/signin">
+                  Sign In / Register
+                </Link>
+              )}
             </div>
             <li className="link1">
               <a href="/#" className="">
@@ -320,7 +353,7 @@ function App() {
                 }
               />
               <Route path="/" element={<HomeScreen />} />
-              <Route path="/home" element={<HomeScreen />} />
+              <Route path="/home" element={<ProductsScreen />} />
 
               {/* Admin Routes */}
               <Route
@@ -334,7 +367,8 @@ function App() {
             </Routes>
           </div>
         </main>
-        <footer>
+        <Footer />
+        {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">TOBIAS</div>
             <div className="footer-ul-container1">
@@ -490,7 +524,7 @@ function App() {
           <p classname="footer-credit1">
             Conpany, Best apeal fashion market place
           </p>
-        </footer>
+        </footer> */}
       </div>
     </BrowserRouter>
   );

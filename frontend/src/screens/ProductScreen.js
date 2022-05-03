@@ -1,5 +1,6 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
+import ReactImageMagnify from 'react-image-magnify';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Card from 'react-bootstrap/Card';
@@ -54,6 +55,8 @@ export default function ProductScreen() {
   }, [slug]);
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart } = state;
+  const [selectedImage, setSelectedImage] = useState('');
+  const [sliderIndex, setSliderIndex] = useState(0);
 
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
@@ -70,87 +73,298 @@ export default function ProductScreen() {
     });
   };
 
+  const sliderHandler = (direction) => {
+    if (direction === 'left') {
+      setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : 3);
+    } else {
+      setSliderIndex(sliderIndex < 3 ? sliderIndex + 1 : 0);
+    }
+  };
+
+  const sliderstyle = `translateX(${sliderIndex * -80}vw)`;
+
   return loading ? (
     <LoadingBox />
   ) : error ? (
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
     <div>
-      <section className="product-details1">
-        <div className="image-slider1">
-          <div className="product-images1">
-            <img src="/images/p1.jpg" alt="" className="active1" />
-            <img src="/images/p2.jpg" alt="" />
-            <img src="/images/p3.jpg" alt="" />
-            <img src="/images/p4.jpg" alt="" />
+      <section className="product-details1 row">
+        <div className=" col-sm-12 col-md-6 d-none d-md-block">
+          <div className=" row justify-content-center">
+            <ReactImageMagnify
+              imageClassName="small-img"
+              {...{
+                smallImage: {
+                  alt: `${product.name}`,
+                  isFluidWidth: true,
+                  src: selectedImage || `${product.image}`,
+                },
+                largeImage: {
+                  src: selectedImage || `${product.image}`,
+                  width: 679,
+                  height: 829,
+                },
+              }}
+            />
+          </div>
+          <div className="product-images1 row ">
+            <div
+              className="col-3"
+              onClick={() => setSelectedImage(product.image)}
+            >
+              <img src={product.image} alt="" className="active1" />
+            </div>
+            <div
+              className="col-3"
+              onClick={() => setSelectedImage('/images/p2.jpg')}
+            >
+              <img src="/images/p2.jpg" alt="" />
+            </div>
+            <div
+              className="col-3"
+              onClick={() => setSelectedImage('/images/p3.jpg')}
+            >
+              <img src="/images/p3.jpg" alt="" />
+            </div>
+            <div
+              className="col-3"
+              onClick={() => setSelectedImage('/images/p9.png')}
+            >
+              <img src="/images/p9.png" alt="" />
+            </div>
           </div>
         </div>
-        <div className="details1">
-          <h2 className="product-brand1">calvin klein</h2>
-          <p className="product-short-desc1">
-            need the element to resemble a link, use a button and change.
-          </p>
-          <span className="product-price1">$99</span>
-          <span className="product-actual-price1">$200</span>
+        <div className=" col-sm-12 col-md-6 d-block d-md-none">
+          <div className=" row justify-content-center">
+            <div className="moblie-slider">
+              <div
+                onClick={() => sliderHandler('left')}
+                className="mobile-image-arrow-left"
+              >
+                <i class="fa fa-angle-left"></i>
+              </div>
+              <div
+                onClick={() => sliderHandler('right')}
+                className="mobile-image-arrow-right"
+              >
+                <i class="fa fa-angle-right"></i>
+              </div>
+              <div className="mobile-image">
+                <img
+                  style={{ transform: sliderstyle }}
+                  src={product.image}
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="detailsm1 col-sm-12 col-md-6">
+          <div className="select-size">
+            <h2 className="product-brand1">{product.name} </h2>
+            <i className="fa fa-heart ml-2px"></i> 147
+          </div>
+          <p className="product-short-desc2">Gucci</p>
+          <span className="product-price1">${product.price}</span>
+          <span className="product-actual-price1">${product.price * 2}</span>
           <span className="product-discount1">( 50% off )</span>
-          <p className="product-sub-heading1">select size</p>
-          <input
-            type="radio"
-            name="size"
-            value="s"
-            checked
-            hidden
-            id="s-size"
-          />
-          <label for="size" className="size-radio-btn1 checked">
-            s
-          </label>
-          <input type="radio" name="size" value="m" hidden id="m-size" />
-          <label for="size" className="size-radio-btn1">
-            m
-          </label>
-          <input type="radio" name="size" value="l" hidden id="l-size" />
-          <label for="size" className="size-radio-btn1">
-            l
-          </label>
-          <input type="radio" name="size" value="xl" hidden id="xl-size" />
-          <label for="size" className="size-radio-btn1">
-            xl
-          </label>
-          <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
-          <label for="size" className="size-radio-btn1">
-            xxl
-          </label>
-          <button className="btn1 cart-btn1">add to cart</button>
-          <button className="btn1 ">wishlist</button>
+
+          <div className="select-size">
+            <p className="product-sub-heading1">select size: </p>
+            <input type="radio" name="size" value="s" hidden id="s-size" />
+            <label for="size" className="size-radio-btn1 checked">
+              s
+            </label>
+            <input type="radio" name="size" value="m" hidden id="m-size" />
+            <label for="size" className="size-radio-btn1">
+              m
+            </label>
+            <input type="radio" name="size" value="l" hidden id="l-size" />
+            <label for="size" className="size-radio-btn1">
+              l
+            </label>
+            <input type="radio" name="size" value="xl" hidden id="xl-size" />
+            <label for="size" className="size-radio-btn1">
+              xl
+            </label>
+            <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
+            <label for="size" className="size-radio-btn1">
+              xxl
+            </label>
+          </div>
+          <div className="row">
+            <button className="btn1 col-md-6 col-12 cart-btn1 ml-1">
+              add to cart
+            </button>
+            <button className="btn1 col-md-6 col-12 ">wishlist</button>
+          </div>
+          <section className="detail-desc1">
+            <h2 className="heading1">description</h2>
+            <p className="desc1">{product.description}</p>
+          </section>
         </div>
       </section>
-      <section className="detail-desc1">
-        <h2 className="heading">description</h2>
-        <p className="desc1">
-          The href attribute requires a valid value to be accessible. Provide a
-          valid, navigable address as the href value. If you cannot provide a
-          valid href, but still need the element to resemble a link, use a
-          button and change it with appropriate styles.The href attribute
-          requires a valid value to be accessible. Provide a valid, navigable
-          address as the href value. If you cannot provide a valid href, but
-          still need the element to resemble a link, use a button and change it
-          with appropriate styles.The href attribute requires a valid value to
-          be accessible. Provide a valid, navigable address as the href value.
-          If you cannot provide a valid href, but still need the element to
-          resemble a link, use a button and change it with appropriate
-          styles.The href attribute requires a valid value to be accessible.
-          Provide a valid, navigable address as the href value. If you cannot
-          provide a valid href, but still need the element to resemble a link,
-          use a button and change it with appropriate styles.The href attribute
-          requires a valid value to be accessible. Provide a valid, navigable
-          address as the href value. If you cannot provide a valid href, but
-          still need the element to resemble a link, use a button and change it
-          with appropriate styles.The href attribute requires a valid value to
-          be accessible. Provide a valid, navigable address as the href value.
-          If you cannot provide a valid href, but still need the element to
-          resemble a link, use a button and change it with appropriate styles.
-        </p>
+      <section className="product1">
+        <div className="product-title">
+          <h2 className="product-category1">Related Products</h2>
+        </div>
+        <button className="pre-btn1">
+          <i class="fa fa-angle-left"></i>
+        </button>
+        <button className="next-btn1">
+          <i class="fa fa-angle-right"></i>
+        </button>
+        <div className="product-container1">
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card4.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card1.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card2.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card4.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card6.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card7.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+          <div className="product-card1">
+            <div className="product-image1">
+              <span className="discount-tag1">50% off</span>
+              <img
+                src="/images/card8.png"
+                className="product-thumb1"
+                alt="product"
+              ></img>
+              <button className="card-btn1">add to whislist</button>
+            </div>
+            <div className="product-info1">
+              <h2 className="product-brand1">brand</h2>
+              <p className="product-short-desc1">
+                short line above the cloth...
+              </p>
+              <span className="price1">$120</span>
+              <span className="actual-price1">$150</span>
+            </div>
+          </div>
+        </div>
       </section>
       {/* <Row>
         <Col md={6}>

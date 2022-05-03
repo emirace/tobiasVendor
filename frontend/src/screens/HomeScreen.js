@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 import axios from 'axios';
 import Row from 'react-bootstrap/Row';
@@ -33,6 +33,7 @@ export default function ProductsScreen() {
     loading: true,
     error: '',
   });
+  const [sliderIndex, setSliderIndex] = useState(0);
   //const [products, setProducts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -49,8 +50,15 @@ export default function ProductsScreen() {
     fetchData();
   }, []);
   const product1 = [1, 2, 3];
-  const nextBtnScroll = () => {};
-  const preBtnScroll = () => {};
+  const sliderHandler = (direction) => {
+    if (direction === 'left') {
+      setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : 3);
+    } else {
+      setSliderIndex(sliderIndex < 3 ? sliderIndex + 1 : 0);
+    }
+  };
+  const sliderstyle = `translateX(${sliderIndex * -214}px)`;
+
   return (
     <div>
       <Helmet>
@@ -134,14 +142,17 @@ export default function ProductsScreen() {
             <div className="product-title">
               <h2 className="product-category1">New deals</h2>
             </div>
-            <button onClick={preBtnScroll} className="pre-btn1">
+            <button onClick={() => sliderHandler('left')} className="pre-btn1">
               <i class="fa fa-angle-left"></i>
             </button>
-            <button onClick={nextBtnScroll} className="next-btn1">
+            <button
+              onClick={() => sliderHandler('right')}
+              className="next-btn1"
+            >
               <i class="fa fa-angle-right"></i>
             </button>
             <div className="product-container1">
-              <div className="product-card1">
+              <div className="product-card1" style={{ transform: sliderstyle }}>
                 <div className="product-image1">
                   <span className="discount-tag1">50% off</span>
                   <img
@@ -321,59 +332,6 @@ export default function ProductsScreen() {
                   </div>
                 </Col>
               </Row>
-            </div>
-          </section>
-
-          <section className="new-product spad">
-            <div className="container">
-              <div className="row">
-                <div className="col-lg-12 ">
-                  <div className="section-title">
-                    <h4>New Product</h4>
-                  </div>
-                </div>
-              </div>
-
-              <div className="row property_gallery">
-                {product1.map(() => (
-                  <div className="product_item">
-                    <div className="product_item_pic">
-                      <img src="/images/p5.avif" alt="" />
-                      <div className="label new">New</div>
-                      <ul className="product_hover">
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-arrows-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-heart"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">
-                            <i className="fa fa-shopping-bag"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="product_item_text">
-                      <h6>
-                        <a href="#">Blazer Twed Buttons</a>
-                      </h6>
-                      <div className="rating">
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                        <i className="fa fa-star"></i>
-                      </div>
-                      <div className="product_price">$ 59.0</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </section>
           <section className="discount spad">

@@ -29,46 +29,65 @@ export default function Product(props) {
     });
   };
   return (
-    <div className="product_item">
-      <div className="product_item_pic bg-primary">
+    <div className="product-card1">
+      <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
-          <img src={product.image} alt="" />
+          <span className="discount-tag1">50% off</span>
+          <img
+            src={product.image}
+            className="product-thumb1"
+            alt={product.name}
+          ></img>
         </Link>
-        {product.countInStock === 0 ? (
-          <div className="label stockout">Out of Stock</div>
-        ) : (
-          <div className="label new">New</div>
-        )}
-        <ul className="product_hover">
-          <li>
-            <a href="/#">
-              <i className="fa fa-arrows-alt"></i>
-            </a>
-          </li>
-          <li>
-            <a href="/#">
-              <i className="fa fa-heart"></i>
-            </a>
-          </li>
-          <li>
-            <a onClick={() => addToCartHandler(product)} href="/#">
-              <i className="fa fa-shopping-bag"></i>
-            </a>
-          </li>
-        </ul>
+        <button className="card-btn1">add to wishlist</button>
       </div>
-      <div className="product_item_text">
-        <h6>
-          <Link to={`/product/${product.slug}`}>
-            <a href="/#">{product.name}</a>
-            {product.countInStock}
-          </Link>
-        </h6>
-        <div className="rating">
-          <Rating rating={product.rating} numReviews={product.numReviews} />
-        </div>
-        <div className="product_price">$ {product.price}</div>
+      <div className="product-info1">
+        <h2 className="product-brand1">{product.name}</h2>
+        <p className="product-short-desc1">{product.description}</p>
+        <span className="price1">${product.price}</span>
+        <span className="actual-price1">$150</span>
       </div>
     </div>
+    // <div className="product_item">
+    //   <div className="product_item_pic bg-primary">
+    //     <Link to={`/product/${product.slug}`}>
+    //       <img src={product.image} alt="" />
+    //     </Link>
+    //     {product.countInStock === 0 ? (
+    //       <div className="label stockout">Out of Stock</div>
+    //     ) : (
+    //       <div className="label new">New</div>
+    //     )}
+    //     <ul className="product_hover">
+    //       <li>
+    //         <a href="/#">
+    //           <i className="fa fa-arrows-alt"></i>
+    //         </a>
+    //       </li>
+    //       <li>
+    //         <a href="/#">
+    //           <i className="fa fa-heart"></i>
+    //         </a>
+    //       </li>
+    //       <li>
+    //         <a onClick={() => addToCartHandler(product)} href="/#">
+    //           <i className="fa fa-shopping-bag"></i>
+    //         </a>
+    //       </li>
+    //     </ul>
+    //   </div>
+    //   <div className="product_item_text">
+    //     <h6>
+    //       <Link to={`/product/${product.slug}`}>
+    //         <a href="/#">{product.name}</a>
+    //         {product.countInStock}
+    //       </Link>
+    //     </h6>
+    //     <div className="rating">
+    //       <Rating rating={product.rating} numReviews={product.numReviews} />
+    //     </div>
+    //     <div className="product_price">$ {product.price}</div>
+    //   </div>
+    // </div>
   );
 }
