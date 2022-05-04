@@ -34,30 +34,33 @@
   position: absolute;
   left: 50px;
   max-width: 150px;
+  background: none;
 }
 
 .center-item .main-item-1 .main-item-text {
   position: absolute;
   left: 50px;
-  max-width: 300px;
-}
-
-.center-item .main-item-1 .main-item-text {
+  max-width: 50%;
+  background: none;
   margin-bottom: 15px;
 }
 
 .center-item .main-item-text h1 {
   color: #000;
   margin-bottom: 5px;
+  background: none;
+  font-weight: 800;
 }
 
 .center-item .main-item-text p {
   margin-bottom: 10px;
+  background: none;
 }
 
 .center-item .main-item-text h4 {
   color: white;
   font-weight: 700;
+  background: none;
 }
 
 .center-item .main-item-text a {
@@ -69,6 +72,7 @@
   position: relative;
   padding: 0 0 3px;
   display: inline-block;
+  background: none;
 }
 
 .center-item .main-item-text a:after {
@@ -77,8 +81,13 @@
   bottom: 0;
   height: 2px;
   width: 100%;
-  background-color: #ff7200;
+  background-color: var(--orange-color);
   content: '';
+}
+
+.main-item-text .search-btn1 {
+  padding: 10px 30px;
+  border-radius: 25px;
 }
 
 .new-product {
@@ -105,7 +114,7 @@
   bottom: -4px;
   height: 2px;
   width: 70px;
-  background-color: #ca1515;
+  background-color: var(--orange-color);
 }
 
 ul {
@@ -163,7 +172,7 @@ a {
 }
 
 .product_item_pic .label.new {
-  background-color: #ff7200;
+  background-color: var(--orange-color);
 }
 
 .product_item_text {
@@ -182,7 +191,7 @@ a {
 }
 .product_item_text .rating i {
   font-size: 10px;
-  color: #e3c01c;
+  color: var(--orange-color);
   margin-right: -4px;
 }
 .rating span {
@@ -217,7 +226,7 @@ a {
 }
 
 .product_hover li:hover a {
-  background-color: #ff7200;
+  background-color: var(--orange-color);
 }
 .product_hover li:hover a i {
   color: #fff;
@@ -266,7 +275,7 @@ a {
   background-color: #111111;
 }
 .product_item_pic .label.sale {
-  background-color: #ff7200;
+  background-color: var(--orange-color);
 }
 
 .product_item_text .product_price span {
@@ -290,18 +299,23 @@ a {
   position: absolute;
   left: 50px;
   top: 30px;
-  max-width: 300px;
+  max-width: 50%;
+  background: none;
   z-index: 9;
 }
 
 .banner_text span {
-  font-size: 18;
-  color: #ff7200;
+  font-size: 16 !important;
+  font-weight: 700;
+  color: var(--orange-color);
   text-transform: uppercase;
+  background: none;
 }
 
 .banner_text h1 {
-  font-size: 65px;
+  font-size: 100px;
+  font-weight: 800;
+  background: none;
   color: #fff;
   margin-bottom: 15px;
 }
@@ -314,6 +328,7 @@ a {
   position: relative;
   padding: 0 0 3px;
   display: inline-block;
+  background: none;
 }
 
 .banner_text a:after,
@@ -323,7 +338,7 @@ a {
   bottom: 0;
   height: 2px;
   width: 100%;
-  background: #ff7200;
+  background: var(--orange-color);
   content: '';
 }
 
@@ -339,7 +354,7 @@ a {
 .owl-theme .owl-dots .owl-dot span {
   width: 20px;
   height: 20px;
-  background: #ff7200 !important;
+  background: var(--orange-color) !important;
 }
 
 .banner_item {
@@ -363,7 +378,7 @@ a {
 
 .small-button {
   margin: 5px 0px;
-  background-color: #f79a23;
+  background-color: var(--orange-color);
   border-radius: 100px;
   color: white;
   display: inline-block;
@@ -439,8 +454,8 @@ ls {
 }
 .product-category1 {
   padding: 0 10vw;
-  font-size: 30px;
-  font-weight: 500;
+  font-size: 50px;
+  font-weight: 800;
   margin-bottom: 40px;
   text-transform: capitalize;
   position: relative;
@@ -453,7 +468,7 @@ ls {
   bottom: -4px;
   height: 2px;
   width: 70px;
-  background-color: #ca1515;
+  background-color: var(--orange-color);
 }
 
 .product-container1 {
@@ -493,7 +508,7 @@ ls {
   background: #fff;
   padding: 5px;
   border-radius: 5px;
-  color: #ff7d7d;
+  color: var(--orange-color);
   right: 10px;
   top: 10px;
   text-transform: capitalize;
@@ -510,6 +525,7 @@ ls {
   border: none;
   outline: none;
   background: #fff;
+  color: var(--orange-color);
   border-radius: 5px;
   transition: 0.5s;
   cursor: pointer;
@@ -521,7 +537,8 @@ ls {
 }
 
 .card-btn1:hover {
-  background: #ff7200;
+  background: var(--orange-color);
+  color: inherit;
 }
 
 .product-info1 {
@@ -533,7 +550,9 @@ ls {
 .product-brand1 {
   text-transform: uppercase;
   margin-bottom: 0;
-  font-size: 25px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--orange-color);
 }
 
 .product-short-desc1 {
@@ -566,10 +585,11 @@ ls {
   top: 0;
   display: flex;
   justify-content: center;
+  opacity: 0.5;
   align-items: center;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #fff 100%);
   cursor: pointer;
   z-index: 8;
+  background: none;
 }
 
 .pre-btn1 {
@@ -582,6 +602,7 @@ ls {
 .pre-btn1 i,
 .next-btn1 i {
   opacity: 0.2;
+  font-size: 40px;
 }
 
 .pre-btn1:hover i,
@@ -692,6 +713,7 @@ sm-product1 {
   position: relative;
   z-index: 1;
   margin-bottom: 60px;
+  background: none;
 }
 
 .discount_text .discount_text_title:after {
@@ -706,39 +728,50 @@ sm-product1 {
   margin-left: -90px;
 }
 
+.discount_text .discount_text_title h5 {
+  background: none;
+  color: #000;
+}
+
 .discount_text .discount_text_title span {
   font-size: 20px;
   color: #000;
   font-weight: 500;
   text-transform: uppercase;
+  background: none;
 }
 
 .discount_text .discount_text_title h2 {
   font-size: 55px;
-  color: #ff7200;
+  color: var(--orange-color);
   margin-bottom: 10px;
+  background: none;
 }
 
 .discount_text .discount_text_title h2 {
-  color: #ff7200;
+  color: var(--orange-color);
   font-weight: 700;
+  background: none;
 }
 
 .discount_text .discount_text_title h2 span {
   font-size: 14px;
   color: #000;
   margin-right: 5px;
+  background: none;
 }
 
 .discount_countdown {
   text-align: center;
   margin-bottom: 10px;
+  background: none;
 }
 
 .discount_countdown .countdown_item {
   margin-bottom: 15px;
   float: left;
   width: 25%;
+  background: none;
 }
 
 .discount_countdown .countdown_item:last-child {
@@ -750,6 +783,7 @@ sm-product1 {
   font-weight: 600;
   color: #000;
   display: inline-block;
+  background: none;
 }
 
 .discount_countdown .countdown_item p {
@@ -757,20 +791,23 @@ sm-product1 {
   margin-bottom: 0;
   display: inline-block;
   font-weight: 500;
+  background: none;
 }
 
 .c {
   margin-left: 45%;
+  background: none;
+  color: #000;
 }
 
 .shop-method-area .single-method i {
   font-size: 45px;
-  color: #ff7200;
+  color: var(--orange-color);
   margin-bottom: 25px;
 }
 
 .shop-method-area .single-method h6 {
-  color: #282828;
+  color: inherit;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.2px;
@@ -783,4 +820,18 @@ sm-product1 {
 
 .mb-40 {
   margin-bottom: 40px;
+}
+
+form .mb-3 button.search-btn1 {
+  padding: 10px 30px;
+}
+
+form .mb-3 a {
+  color: var(--orange-color);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+form .mb-3 a:hover {
+  color: var(--malon-color);
 }

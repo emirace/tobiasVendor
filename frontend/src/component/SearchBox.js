@@ -13,7 +13,7 @@ export default function SearchBox() {
   };
   return (
     <Form
-      className="d-flex me-auto search-box-size d-none d-md-block"
+      className="d-flex me-auto  search-box-size d-none d-lg-block"
       onSubmit={submitHandler}
     >
       <div className="input-group ml-4 border-0 shadow-sm rounded-pill p-1">
@@ -34,7 +34,7 @@ export default function SearchBox() {
           placeholder="Search anything..."
           aria-label="Search Products..."
           aria-describedby="button-search"
-          className=" bg-transparent border-0 rounded-pill"
+          className=" bg-transparent searchbtn border-0 rounded-pill"
         ></Form.Control>
       </div>
     </Form>

@@ -2,7 +2,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'poppins', sans-serif;
+  font-family: 'roboto', sans-serif;
+  background: var(--black-color);
+  color: var(--white-color);
 }
 :root {
   --btn-gradient: linear-gradient(
@@ -10,6 +12,22 @@
     rgba(86, 0, 0, 1) 0%,
     rgba(247, 154, 35, 1) 100%
   );
+  --malon-color: #560000;
+  --orange-color: #f79a23;
+  --black-color: black;
+  --white-color: white;
+}
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* ****************************new logo********************* */
@@ -18,7 +36,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: #f5f5f5;
+  background: none;
   z-index: 9;
 }
 .nav1 {
@@ -55,26 +73,26 @@
   background: none;
   color: #a9a9a9;
   outline: none;
+  margin-left: 20px;
 }
 
 .search-btn1 {
-  width: 120px;
-  height: 40px;
-  padding: 10px 20px;
+  padding: 5px 25px;
   border: none;
-  outline: none;
   cursor: pointer;
+  font-weight: 500;
   background: var(--btn-gradient);
   color: #fff;
   text-transform: capitalize;
-  font-size: 15px;
-  border-radius: 20px;
+  font-size: 13px;
+  border-radius: 5px;
 }
-.search-btn1::placeholder {
+.searchbtn::placeholder {
   color: #a9a9a9;
+  font-size: 12px !important;
 }
-.search-btn {
-  color: #ff7200 !important;
+.search-btn i {
+  color: var(--orange-color) !important;
 }
 .nav-items1 a {
   margin-left: 20px;
@@ -85,7 +103,7 @@
 
 .nav-items1 a i:hover {
   text-decoration: none;
-  color: #ff7200;
+  color: var(--orange-color);
 }
 
 .nav-cart-btn1 {
@@ -96,7 +114,7 @@
   position: absolute;
   top: 0;
   right: 3px;
-  background: #ff7200;
+  background: var(--orange-color);
   color: white;
   border-radius: 50%;
   padding: 2px 4px;
@@ -108,41 +126,39 @@
   display: flex;
   padding: 10px 10vw;
   justify-content: center;
-  list-style: none;
-  border-top: 1px solid #d1d1d1;
+  border-top: 1px solid;
 }
 .link1 {
   position: relative;
   text-transform: capitalize;
+  font-size: 15px;
+  font-weight: 600;
   padding: 0 10px;
   margin: 0 5px;
-  text-decoration: none;
-  color: #383838;
-  color: #aeaeae;
   transition: 0.5s;
 }
-.link1 a:hover {
-  opacity: 1;
-
-  color: #f79a23;
+.link1 a:hover,
+.link1:hover {
+  color: var(--orange-color);
 }
 
 .link1:hover .sub-cat1,
 .link1:focus .sub-cat1 {
   opacity: 1;
   visibility: visible;
+  z-index: 9;
 }
 
 .sub-cat1 {
   position: absolute;
+  cursor: pointer;
   top: 1.5rem;
   display: flex;
   flex-direction: column;
+  background: inherit;
   gap: 0.5rem;
   left: -0.5rem;
-  box-shadow: 0 0 10px #d1d1d1;
-  background-color: white;
-  border-radius: 5px;
+  border-radius: 10px;
   width: 12rem;
   padding: 1rem;
   opacity: 0;
@@ -156,7 +172,7 @@
 .sub-cat1 li:hover {
   opacity: 1;
 
-  color: #f79a23;
+  color: var(--orange-color);
 }
 
 .checkbtn1 {
@@ -190,9 +206,8 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: 40%;
+    width: 50%;
     height: 100vh;
-    background: #f5f5f5;
     top: 0;
     padding: 20px;
     left: -100%;
@@ -228,8 +243,8 @@ main {
 
 .btn-primary,
 .btn-outline-primary {
-  background-color: #f79a23;
-  color: black;
+  background-color: var(--btn-gradient);
+  color: white;
   border: 1px #404040 solid;
   outline: none;
 }
@@ -246,7 +261,7 @@ main {
 }
 
 .rating span {
-  color: #ffc000;
+  color: var(--orange-color);
 }
 
 .product {
@@ -277,6 +292,11 @@ main {
 
 .small-container {
   max-width: 600px;
+  border-radius: 10px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  box-shadow: 0px 0px 35px 0px var(--orange-color);
+  padding: 50px 50px 50px 50px;
 }
 
 .checkout-steps {
@@ -285,8 +305,8 @@ main {
 }
 
 .checkout-steps > div.active {
-  border-bottom: 0.2rem solid #f08000;
-  color: #f08000;
+  border-bottom: 0.2rem solid var(--orange-color);
+  color: var(--orange-color);
 }
 
 .navbar-brand {
@@ -294,8 +314,9 @@ main {
   color: #100901 !important;
 }
 .nav-link {
-  color: black !important;
+  color: inherit !important;
   font-weight: 600;
+  margin: 0 !important;
 }
 
 .side-navbar {
@@ -323,6 +344,8 @@ main {
 .search-box-size {
   margin-left: 100px;
   width: 50%;
+  border: 1px solid;
+  border-radius: 25px;
 }
 
 .text-bold {
@@ -447,4 +470,13 @@ footer {
   text-align: center;
   color: #fff;
   background: rgba(0, 0, 0, 0.2);
+}
+a.font13 {
+  font-size: 15px;
+  margin: 0;
+  color: inherit;
+}
+.show {
+  background: inherit;
+  color: inherit;
 }

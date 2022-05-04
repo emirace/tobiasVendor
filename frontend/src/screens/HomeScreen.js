@@ -12,6 +12,7 @@ import HotDeals from '../component/HotDeals';
 import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
+import Newletter from '../component/Newletter';
 //import data from '../data';
 
 const reducer = (state, action) => {
@@ -115,7 +116,8 @@ export default function ProductsScreen() {
                     </div>
                     <div className="banner_item">
                       <div className="banner_image">
-                        <img src="/images/p10.webp" alt="" />
+                        <img src="/images/t4.jpg" alt="" />
+                        <div id="overlay"></div>
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -126,6 +128,7 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/t7.jpg" alt="" />
+                        <div id="overlay"></div>
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -327,11 +330,161 @@ export default function ProductsScreen() {
                     ></img>
                     <div className="main-item-text">
                       <h1>High Taste Women Wears</h1>
-                      <button class="small-button">Shop Now</button>
+                      <button class="search-btn1">Shop Now</button>
                     </div>
                   </div>
                 </Col>
               </Row>
+            </div>
+          </section>
+
+          <section className="product1">
+            <div className="product-title">
+              <h2 className="product-category1">New In</h2>
+            </div>
+            <button onClick={() => sliderHandler('left')} className="pre-btn1">
+              <i class="fa fa-angle-left"></i>
+            </button>
+            <button
+              onClick={() => sliderHandler('right')}
+              className="next-btn1"
+            >
+              <i class="fa fa-angle-right"></i>
+            </button>
+            <div className="product-container1">
+              <div className="product-card1" style={{ transform: sliderstyle }}>
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card4.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card1.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card2.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card4.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card6.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card7.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
+              <div className="product-card1">
+                <div className="product-image1">
+                  <span className="discount-tag1">50% off</span>
+                  <img
+                    src="/images/card8.png"
+                    className="product-thumb1"
+                    alt="product"
+                  ></img>
+                  <button className="card-btn1">add to whislist</button>
+                </div>
+                <div className="product-info1">
+                  <h2 className="product-brand1">brand</h2>
+                  <p className="product-short-desc1">
+                    short line above the cloth...
+                  </p>
+                  <span className="price1">$120</span>
+                  <span className="actual-price1">$150</span>
+                </div>
+              </div>
             </div>
           </section>
           <section className="discount spad">
@@ -377,7 +530,6 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
-
           <section className="shop-method-area">
             <div className="container">
               <div className="row d-flex justify-content-between">
@@ -417,6 +569,7 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
+          <Newletter />
           {/* <section className="carl">
             <div className="left-side1">
               <span className="logo1">fashion</span>

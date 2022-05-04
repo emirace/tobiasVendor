@@ -1,5 +1,6 @@
 .footer_container {
   display: flex;
+  border-top: 1px solid var(--orange-color);
 }
 .footer_left {
   flex: 1;
@@ -16,6 +17,10 @@
 .footer_right {
   flex: 1;
   padding: 20px;
+}
+
+.footer_logo {
+  font-weight: 800;
 }
 
 .footer_desc {
@@ -35,4 +40,37 @@
   align-items: center;
   justify-content: center;
   margin-right: 20px;
+}
+
+.footer_center_menu {
+  margin-bottom: 30px;
+}
+
+.footer_center_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.footer_center_listitem {
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+.footer_center_listitem:hover {
+  color: var(--orange-color);
+  transition: all 0.5s ease-in-out;
+}
+
+.footer_contacts {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.footer_contacts i {
+  margin-right: 10px;
+}
+
+.footor_contact_payments {
+  width: 50%;
 }

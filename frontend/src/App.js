@@ -66,7 +66,7 @@ function App() {
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
       <header>
-        <nav className="navbar1">
+        <nav className="navbar1 mt-3">
           <input type="checkbox" id="check" />
           <div className="nav1">
             <label for="check" className="checkbtn1">
@@ -93,14 +93,18 @@ function App() {
                     id="basic-nav-dropdown"
                   >
                     <LinkContainer to="/profile">
-                      <NavDropdown.Item>User Profile</NavDropdown.Item>
+                      <NavDropdown.Item className="font13">
+                        User Profile
+                      </NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to="/orderhistory">
-                      <NavDropdown.Item>Order History</NavDropdown.Item>
+                      <NavDropdown.Item className="font13">
+                        Order History
+                      </NavDropdown.Item>
                     </LinkContainer>
                     <NavDropdown.Divider />
                     <Link
-                      className="dropdown-item"
+                      className="dropdown-item font13"
                       to="#signout"
                       onClick={signoutHandler}
                     >
@@ -259,14 +263,14 @@ function App() {
           </Container>
         </Navbar> */}
       </header>
-      <div
+      {/* <div
         className={
           sidebarIsOpen
             ? 'd-flex flex-column site-container active-cont'
             : 'd-flex flex-column site-container'
         }
-      >
-        <div
+      > */}
+      {/* <div
           className={
             sidebarIsOpen
               ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
@@ -288,87 +292,87 @@ function App() {
               </Nav.Item>
             ))}
           </Nav>
-        </div>
-        <main>
-          {/* <Button
+        </div> */}
+      <main>
+        {/* <Button
             variant="light"
             onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
           >
             <i className="fas fa-bars"></i>
             {!sidebarIsOpen ? <strong> Category</strong> : ''}
           </Button> */}
-          <div className="p-0 container-fluid">
-            <Routes>
-              <Route path="/product/:slug" element={<ProductScreen />} />
-              <Route path="/cart" element={<CartScreen />} />
-              <Route path="/search" element={<SearchSceen />} />
-              <Route path="/signin" element={<SigninScreen />} />
-              <Route path="/signup" element={<SignupScreen />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfileScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/shipping"
-                element={
-                  <ProtectedRoute>
-                    <ShippingAddressScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/payment"
-                element={
-                  <ProtectedRoute>
-                    <PaymentMethodScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/placeorder"
-                element={
-                  <ProtectedRoute>
-                    <PlaceOrderScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/order/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orderhistory"
-                element={
-                  <ProtectedRoute>
-                    <OrderHistoryScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/" element={<HomeScreen />} />
-              <Route path="/home" element={<ProductsScreen />} />
+        <div className="p-0 container-fluid">
+          <Routes>
+            <Route path="/product/:slug" element={<ProductScreen />} />
+            <Route path="/cart" element={<CartScreen />} />
+            <Route path="/search" element={<SearchSceen />} />
+            <Route path="/signin" element={<SigninScreen />} />
+            <Route path="/signup" element={<SignupScreen />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfileScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/shipping"
+              element={
+                <ProtectedRoute>
+                  <ShippingAddressScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/payment"
+              element={
+                <ProtectedRoute>
+                  <PaymentMethodScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/placeorder"
+              element={
+                <ProtectedRoute>
+                  <PlaceOrderScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order/:id"
+              element={
+                <ProtectedRoute>
+                  <OrderScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orderhistory"
+              element={
+                <ProtectedRoute>
+                  <OrderHistoryScreen />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/home" element={<ProductsScreen />} />
 
-              {/* Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <AdminRoute>
-                    <DashboardScreen />
-                  </AdminRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </main>
-        <Footer />
-        {/* <footer>
+            {/* Admin Routes */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminRoute>
+                  <DashboardScreen />
+                </AdminRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </main>
+      <Footer />
+      {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">TOBIAS</div>
             <div className="footer-ul-container1">
@@ -525,7 +529,7 @@ function App() {
             Conpany, Best apeal fashion market place
           </p>
         </footer> */}
-      </div>
+      {/* </div> */}
     </BrowserRouter>
   );
 }
