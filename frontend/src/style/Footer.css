@@ -1,5 +1,6 @@
 .footer_container {
   display: flex;
+  padding-top: 20px;
   border-top: 1px solid var(--orange-color);
 }
 .footer_left {
@@ -73,4 +74,10 @@
 
 .footor_contact_payments {
   width: 50%;
+}
+
+@media (max-width: 992px) {
+  .footer_container {
+    flex-direction: column;
+  }
 }

@@ -1,5 +1,5 @@
 .newsletter_container {
-  height: 60vh;
+  height: 250px;
   background: linear-gradient(
     0deg,
     rgba(86, 0, 0, 1) 0%,
@@ -12,13 +12,13 @@
 }
 
 .newsletter_title {
-  font-size: 70px;
+  font-size: 50px;
   margin-bottom: 20px;
   background: none;
 }
 
 .newsletter_desc {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 300;
   margin-bottom: 20px;
   background: none;
@@ -44,4 +44,20 @@
   background: var(--btn-gradient);
   color: white;
   border: none;
+}
+
+@media (max-width: 992px) {
+  .newsletter_container {
+    height: 200px;
+  }
+  .newsletter_title {
+    margin-bottom: 15px;
+  }
+  .newsletter_desc {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .newsletter_input {
+    width: 80%;
+  }
 }

@@ -118,12 +118,16 @@ function App() {
               ) : (
                 ''
               )}
+              <Link to="/wishlists" className="nav-cart-btn1">
+                <i class="fa fa-heart"></i>
+              </Link>
               <Link to="/cart" className="nav-cart-btn1">
                 <i class="fa fa-shopping-cart"></i>
                 {cart.cartItems.length > 0 && (
                   <span>{cart.cartItems.length}</span>
                 )}
               </Link>
+
               {!userInfo ? (
                 <Link className=" link1 d-none d-lg-block" to="/signin">
                   Sign In / Register
@@ -189,6 +193,12 @@ function App() {
             </li>
             <li className="link1">
               <a href="/#">Brands</a>
+            </li>
+            <li className="link1">
+              <a href="/#">Shop by Outfit</a>
+            </li>
+            <li className="link1">
+              <a href="/#">Shop By Brand</a>
             </li>
           </ul>
         </nav>

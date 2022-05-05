@@ -314,10 +314,10 @@ a {
 
 .banner_text h1 {
   font-size: 100px;
-  font-weight: 800;
   background: none;
   color: #fff;
   margin-bottom: 15px;
+  line-height: 90px;
 }
 
 .banner_text a {
@@ -455,7 +455,6 @@ ls {
 .product-category1 {
   padding: 0 10vw;
   font-size: 50px;
-  font-weight: 800;
   margin-bottom: 40px;
   text-transform: capitalize;
   position: relative;
@@ -543,7 +542,7 @@ ls {
 
 .product-info1 {
   width: 100%;
-  height: 100%;
+  max-height: 100px;
   padding-top: 10px;
 }
 
@@ -557,7 +556,7 @@ ls {
 
 .product-short-desc1 {
   width: 100%;
-  height: 20px;
+  height: 16px;
   line-height: 20px;
   overflow: hidden;
   opacity: 0.5;
@@ -590,6 +589,13 @@ ls {
   cursor: pointer;
   z-index: 8;
   background: none;
+}
+
+.btn-cont {
+  align-items: center;
+}
+.pleft {
+  margin-left: 1rem;
 }
 
 .pre-btn1 {
@@ -808,10 +814,10 @@ sm-product1 {
 
 .shop-method-area .single-method h6 {
   color: inherit;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
   line-height: 1.2px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .shop-method-area .single-method p {

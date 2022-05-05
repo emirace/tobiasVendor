@@ -40,7 +40,7 @@ ul {
   z-index: 9;
 }
 .nav1 {
-  padding: 10px 10vw;
+  padding: 10px 5vw;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -200,6 +200,10 @@ ul {
 
   .nav-signin a {
     display: block;
+  }
+
+  .banner_text h1 {
+    font-size: 50px !important;
   }
 
   .links-container1 {

@@ -106,7 +106,7 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/p11.jpg" alt="" />
-                        <div id="overlay"></div>
+                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -117,7 +117,7 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/t4.jpg" alt="" />
-                        <div id="overlay"></div>
+                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -128,7 +128,7 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/t7.jpg" alt="" />
-                        <div id="overlay"></div>
+                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
