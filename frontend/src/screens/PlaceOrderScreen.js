@@ -130,7 +130,9 @@ export default function PlaceOrderScreen() {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-              <Link to="/cart">Edit</Link>
+              <Link className="simple_link" to="/cart">
+                Edit
+              </Link>
             </Card.Body>
           </Card>
         </Col>
@@ -165,13 +167,14 @@ export default function PlaceOrderScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <div className="d-grid">
-                    <Button
+                    <button
+                      className="search-btn1"
                       type="button"
                       onClick={placeOrderHandler}
                       disabled={cart.cartItems.length === 0}
                     >
                       Place Order
-                    </Button>
+                    </button>
                     {loading && <LoadingBox></LoadingBox>}
                   </div>
                 </ListGroup.Item>

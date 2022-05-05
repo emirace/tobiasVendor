@@ -2,6 +2,8 @@ import './App.css';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ProductsScreen from './screens/ProductsScreen';
 import ProductScreen from './screens/ProductScreen';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -66,8 +68,42 @@ function App() {
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
       <header>
-        <nav className="navbar1 mt-3">
+        <nav className="navbar1 ">
           <input type="checkbox" id="check" />
+          <div className="d-none d-lg-block">
+            <div className="nav0 ">
+              <div className="right_top">
+                <select className="language">
+                  <option>EN</option>
+                  <option>FR</option>
+                </select>
+                <select className="language">
+                  <option>$USD</option>
+                  <option>NGN</option>
+                  <option>RAN</option>
+                </select>
+                <select className="language">
+                  <option>DARK</option>
+                  <option>LIGHT</option>
+                </select>
+              </div>
+              <div className="top_center">
+                50% discount on Newly Registered User... You Will Love{' '}
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className="red_love"
+                ></FontAwesomeIcon>{' '}
+                Shopping with Us
+              </div>
+              {!userInfo ? (
+                <Link className="  d-none d-lg-block" to="/signin">
+                  Sign In / Register
+                </Link>
+              ) : (
+                'Welcome!'
+              )}
+            </div>
+          </div>
           <div className="nav1">
             <label for="check" className="checkbtn1">
               <i class="fas fa-bars"></i>
@@ -75,7 +111,9 @@ function App() {
             <LinkContainer to="/">
               <div className="brand-logo1">TOBIAS</div>
             </LinkContainer>
-            <SearchBox />
+            <div className="navsearch">
+              <SearchBox />
+            </div>
             <div className="nav-items1">
               <a href="/#" className="d-block d-md-block d-lg-none">
                 <i class="fa fa-search"></i>
@@ -128,21 +166,31 @@ function App() {
                 )}
               </Link>
 
-              {!userInfo ? (
-                <Link className=" link1 d-none d-lg-block" to="/signin">
-                  Sign In / Register
-                </Link>
-              ) : (
-                ''
-              )}
               <button className="search-btn1">Sell</button>
             </div>
           </div>
           <ul className="links-container1">
             <div className="nav-signin ">
-              <label for="check" className="checkbtn1">
-                <i class="fas fa-times"></i>
-              </label>
+              <div className="sidenav-top">
+                <label for="check" className="checkbtn1">
+                  <i class="fas fa-times"></i>
+                </label>
+                <div className=" sidebar_mode d-block d-lg-none">
+                  <select className="language">
+                    <option>EN</option>
+                    <option>FR</option>
+                  </select>
+                  <select className="language">
+                    <option>$USD</option>
+                    <option>NGN</option>
+                    <option>RAN</option>
+                  </select>
+                  <select className="language">
+                    <option>DARK</option>
+                    <option>LIGHT</option>
+                  </select>
+                </div>
+              </div>
               {userInfo ? (
                 <>
                   <NavDropdown className="link1" title={userInfo.name}>

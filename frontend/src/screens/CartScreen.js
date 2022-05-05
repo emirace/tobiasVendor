@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import MessageBox from '../component/MessageBox';
 import axios from 'axios';
+import '../style/Cart.css';
 import { Store } from '../Store';
 
 export default function CartScreen() {
@@ -39,7 +40,7 @@ export default function CartScreen() {
   };
 
   return (
-    <div>
+    <div className="m-4 ">
       <Helmet>
         <title>Shopping Cart</title>
       </Helmet>
@@ -111,14 +112,15 @@ export default function CartScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <div className="d-grid">
-                    <Button
+                    <button
                       type="button"
+                      className="search-btn1"
                       onClick={checkoutHandler}
                       variant="primary"
                       disabled={cartItems.lenth === 0}
                     >
                       Proceed to Checkout
-                    </Button>
+                    </button>
                   </div>
                 </ListGroup.Item>
               </ListGroup>

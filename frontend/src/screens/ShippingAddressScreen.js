@@ -101,7 +101,9 @@ export default function ShippingAddressScreen() {
           </Form.Group>
 
           <div className="mb-3">
-            <Button type="submit">Continue</Button>
+            <button className="search-btn1" type="submit">
+              Continue
+            </button>
           </div>
         </Form>
       </div>

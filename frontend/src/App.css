@@ -30,6 +30,16 @@ ul {
   padding: 0;
 }
 
+.top_center .red_love {
+  background: none;
+  color: red;
+}
+
+.sidebar_mode select option,
+.sidebar_mode select {
+  font-size: 12px;
+}
+
 /* ****************************new logo********************* */
 .navbar1 {
   position: sticky;
@@ -38,6 +48,42 @@ ul {
   width: 100%;
   background: none;
   z-index: 9;
+}
+
+.nav0 {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5vw;
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+  background: var(--btn-gradient);
+}
+
+.nav0 .top_center {
+  font-size: 12px;
+  background: none;
+}
+
+.nav0 .right_top {
+  background: none;
+}
+
+.nav0 .right_top select {
+  font-size: 12px;
+  border: none;
+  margin-right: 10px;
+  background: none;
+}
+.nav0 a {
+  font-size: 12px;
+  background: none;
+}
+.right_top {
+  display: flex;
+}
+.right_top div {
+  margin-right: 10px;
+  font-size: 13px;
 }
 .nav1 {
   padding: 10px 5vw;
@@ -177,8 +223,22 @@ ul {
 
 .checkbtn1 {
   cursor: pointer;
+  margin-right: 30px;
   display: none;
   align-items: center;
+}
+.sidenav-top {
+  display: flex;
+  justify-content: space-between;
+}
+.sidenav-top select {
+  border: none;
+}
+.sidenav-top select:nth-child(2) {
+  border-right: 1px solid;
+  border-left: 1px solid;
+  margin: 0 5px;
+  padding: 0 5px;
 }
 
 #check {
@@ -194,6 +254,9 @@ ul {
 }
 
 @media (max-width: 992px) {
+  .nav-items1 a {
+    margin-left: 10px;
+  }
   .checkbtn1 {
     display: block;
   }
@@ -204,13 +267,14 @@ ul {
 
   .banner_text h1 {
     font-size: 50px !important;
+    line-height: 40px !important;
   }
 
   .links-container1 {
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: 50%;
+    width: 80%;
     height: 100vh;
     top: 0;
     padding: 20px;
@@ -346,10 +410,13 @@ main {
 }
 
 .search-box-size {
-  margin-left: 100px;
-  width: 50%;
+  width: 100%;
   border: 1px solid;
   border-radius: 25px;
+}
+
+.navsearch {
+  width: 60%;
 }
 
 .text-bold {

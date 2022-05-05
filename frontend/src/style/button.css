@@ -212,8 +212,10 @@ a {
   width: 100%;
   bottom: 30px;
   text-align: center;
+  background: none;
 }
 .product_hover li {
+  background: none;
   list-style: none;
   display: inline-block;
   margin-right: 10px;
@@ -251,9 +253,11 @@ a {
   display: inline-block;
   transform: rotate(0);
   transition: all 0.3s;
+  background: none;
+  color: var(--orange-color);
 }
 
-.product_item:hover .product_hover li {
+.product-image1:hover .product_hover li {
   opacity: 1;
   top: 0;
 }
@@ -832,12 +836,16 @@ form .mb-3 button.search-btn1 {
   padding: 10px 30px;
 }
 
-form .mb-3 a {
+form .mb-3 a,
+.fade a,
+.simple_link {
   color: var(--orange-color);
   font-size: 20px;
   font-weight: 600;
 }
 
-form .mb-3 a:hover {
+form .mb-3 a:hover,
+.simple_link:hover,
+.fade a:hover {
   color: var(--malon-color);
 }

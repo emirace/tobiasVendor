@@ -27,7 +27,7 @@ export default function PaymentMethodScreen() {
     navigate('/placeorder');
   };
   return (
-    <div>
+    <div className="container">
       <CheckoutSteps step1 step2 step3></CheckoutSteps>
       <Helmet>
         <title>Payment Method</title>
@@ -55,7 +55,9 @@ export default function PaymentMethodScreen() {
           />
         </div>
         <div className="mb-3">
-          <Button type="submit">Continue</Button>
+          <button className="search-btn1" type="submit">
+            Continue
+          </button>
         </div>
       </Form>
     </div>

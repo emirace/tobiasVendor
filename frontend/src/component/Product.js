@@ -39,10 +39,29 @@ export default function Product(props) {
             alt={product.name}
           ></img>
         </Link>
-        <button className="card-btn1">add to wishlist</button>
+        <ul className="product_hover">
+          <li>
+            <a href="/#">
+              <i className="fa fa-arrows-alt"></i>
+            </a>
+          </li>
+          <li>
+            <a href="/#">
+              <i className="fa fa-heart"></i>
+            </a>
+          </li>
+          <li>
+            <a onClick={() => addToCartHandler(product)}>
+              <i className="fa fa-shopping-bag"></i>
+            </a>
+          </li>
+        </ul>
+        {/* <button className="card-btn1">add to wishlist</button> */}
       </div>
       <div className="product-info1">
-        <h2 className="product-brand1">{product.name}</h2>
+        <h2 className="product-brand1">
+          <Link to={`/product/${product.slug}`}>{product.name}</Link>
+        </h2>
         <p className="product-short-desc1">{product.description}</p>
         <span className="price1">${product.price}</span>
         <span className="actual-price1">$150</span>
