@@ -1,7 +1,18 @@
 .list-group-item {
   background: none;
+  color: inherit !important;
+
+  border: 1px solid #dfdfdf;
 }
 
 .d-grid .search-btn1 {
   padding: 10px 30px;
+}
+
+.card {
+  background: none;
+  border: 1px solid #dfdfdf;
+}
+.btn {
+  color: inherit;
 }

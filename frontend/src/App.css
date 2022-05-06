@@ -52,7 +52,7 @@ ul {
   top: 0;
   left: 0;
   width: 100%;
-  background: none;
+  background: inherit;
   z-index: 9;
 }
 
@@ -85,6 +85,19 @@ ul {
 
 .nav0 .right_top select option {
   background: inherit;
+  color: var(--black-color);
+}
+.sidebar_mode select option {
+  background: inherit;
+  color: var(--black-color);
+}
+
+.sidebar_mode select {
+  font-size: 12px;
+  border: none;
+  margin-right: 10px;
+  background: none;
+  color: inherit;
 }
 .nav0 a {
   font-size: 12px;
@@ -184,7 +197,8 @@ ul {
   display: flex;
   padding: 10px 10vw;
   justify-content: center;
-  border-top: 1px solid;
+  border-top: 1px solid #dfdfdf;
+  background: inherit;
 }
 .link1 {
   position: relative;
@@ -422,7 +436,7 @@ main {
 
 .search-box-size {
   width: 100%;
-  border: 1px solid;
+  border: 1px solid #dfdfdf;
   border-radius: 25px;
 }
 

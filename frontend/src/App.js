@@ -35,6 +35,7 @@ import AdminRoute from './component/AdminRoute';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Footer from './component/Footer';
+import ProductListScreen from './screens/ProductListScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -69,7 +70,7 @@ function App() {
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
       <div className={mode || ''}>
-        <header>
+        <header style={{ background: 'inherit' }}>
           <nav className="navbar1 ">
             <input type="checkbox" id="check" />
             <div className="d-none d-lg-block">
@@ -107,36 +108,52 @@ function App() {
                     Sign In / Register
                   </Link>
                 ) : (
-                  <NavDropdown
-                    className="d-none d-lg-block p-0 mybg-none language"
-                    title={
-                      <>
-                        <i class="fa fa-user-circle mybg-none"></i>
-                        {'  '}
-                        {userInfo.name}
-                      </>
-                    }
-                    id="basic-nav-dropdown"
-                  >
-                    <LinkContainer to="/profile">
-                      <NavDropdown.Item className="font13 bg-black">
-                        User Profile
-                      </NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/orderhistory">
-                      <NavDropdown.Item className="font13">
-                        Order History
-                      </NavDropdown.Item>
-                    </LinkContainer>
-                    <NavDropdown.Divider />
-                    <Link
-                      className="dropdown-item font13"
-                      to="#signout"
-                      onClick={signoutHandler}
+                  <div>
+                    <NavDropdown title="Admin" id="admin-nav-dropdown">
+                      <LinkContainer to="/admin/dashboard">
+                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/productlist">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/orderlist">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/admin/userlist">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                      </LinkContainer>
+                    </NavDropdown>
+                    <NavDropdown
+                      className="d-none d-lg-block p-0 mybg-none language"
+                      title={
+                        <>
+                          <i class="fa fa-user-circle mybg-none"></i>
+                          {'  '}
+                          {userInfo.name}
+                        </>
+                      }
+                      id="basic-nav-dropdown"
                     >
-                      Sign Out
-                    </Link>
-                  </NavDropdown>
+                      <LinkContainer to="/profile">
+                        <NavDropdown.Item className="font13 bg-black">
+                          User Profile
+                        </NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/orderhistory">
+                        <NavDropdown.Item className="font13">
+                          Order History
+                        </NavDropdown.Item>
+                      </LinkContainer>
+                      <NavDropdown.Divider />
+                      <Link
+                        className="dropdown-item font13"
+                        to="#signout"
+                        onClick={signoutHandler}
+                      >
+                        Sign Out
+                      </Link>
+                    </NavDropdown>
+                  </div>
                 )}
               </div>
             </div>
@@ -192,9 +209,14 @@ function App() {
                       <option>NGN</option>
                       <option>RAN</option>
                     </select>
-                    <select className="language">
-                      <option>DARK</option>
-                      <option>LIGHT</option>
+                    <select
+                      onChange={(e) => {
+                        setMode(e.target.value);
+                      }}
+                      className="language"
+                    >
+                      <option value="pagebodydark">DARK</option>
+                      <option value="pagebodylight">LIGHT</option>
                     </select>
                   </div>
                 </div>
@@ -430,6 +452,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <DashboardScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/product"
+                element={
+                  <AdminRoute>
+                    <ProductListScreen />
                   </AdminRoute>
                 }
               />
