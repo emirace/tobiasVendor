@@ -51,6 +51,7 @@ function App() {
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [mode, setMode] = useState('pagebodydark');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -67,71 +68,58 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
-      <header>
-        <nav className="navbar1 ">
-          <input type="checkbox" id="check" />
-          <div className="d-none d-lg-block">
-            <div className="nav0 ">
-              <div className="right_top">
-                <select className="language">
-                  <option>EN</option>
-                  <option>FR</option>
-                </select>
-                <select className="language">
-                  <option>$USD</option>
-                  <option>NGN</option>
-                  <option>RAN</option>
-                </select>
-                <select className="language">
-                  <option>DARK</option>
-                  <option>LIGHT</option>
-                </select>
-              </div>
-              <div className="top_center">
-                50% discount on Newly Registered User... You Will Love{' '}
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  className="red_love"
-                ></FontAwesomeIcon>{' '}
-                Shopping with Us
-              </div>
-              {!userInfo ? (
-                <Link className="  d-none d-lg-block" to="/signin">
-                  Sign In / Register
-                </Link>
-              ) : (
-                'Welcome!'
-              )}
-            </div>
-          </div>
-          <div className="nav1">
-            <label for="check" className="checkbtn1">
-              <i class="fas fa-bars"></i>
-            </label>
-            <LinkContainer to="/">
-              <div className="brand-logo1">TOBIAS</div>
-            </LinkContainer>
-            <div className="navsearch">
-              <SearchBox />
-            </div>
-            <div className="nav-items1">
-              <a href="/#" className="d-block d-md-block d-lg-none">
-                <i class="fa fa-search"></i>
-              </a>
-              {userInfo ? (
-                <>
+      <div className={mode || ''}>
+        <header>
+          <nav className="navbar1 ">
+            <input type="checkbox" id="check" />
+            <div className="d-none d-lg-block">
+              <div className="nav0 ">
+                <div className="right_top">
+                  <select className="language">
+                    <option>EN</option>
+                    <option>FR</option>
+                  </select>
+                  <select className="language">
+                    <option>$USD</option>
+                    <option>NGN</option>
+                    <option>RAN</option>
+                  </select>
+                  <select
+                    onChange={(e) => {
+                      setMode(e.target.value);
+                    }}
+                    className="language"
+                  >
+                    <option value="pagebodydark">DARK</option>
+                    <option value="pagebodylight">LIGHT</option>
+                  </select>
+                </div>
+                <div className="top_center language">
+                  50% discount on Newly Registered User... You Will Love{' '}
+                  <FontAwesomeIcon
+                    icon={faHeart}
+                    className="red_love"
+                  ></FontAwesomeIcon>{' '}
+                  Shopping with Us
+                </div>
+                {!userInfo ? (
+                  <Link className="  d-none d-lg-block" to="/signin">
+                    Sign In / Register
+                  </Link>
+                ) : (
                   <NavDropdown
-                    className="d-none d-lg-block p-0"
+                    className="d-none d-lg-block p-0 mybg-none language"
                     title={
                       <>
-                        <i class="fa fa-user-circle"></i>
+                        <i class="fa fa-user-circle mybg-none"></i>
+                        {'  '}
                         {userInfo.name}
                       </>
                     }
                     id="basic-nav-dropdown"
                   >
                     <LinkContainer to="/profile">
-                      <NavDropdown.Item className="font13">
+                      <NavDropdown.Item className="font13 bg-black">
                         User Profile
                       </NavDropdown.Item>
                     </LinkContainer>
@@ -149,108 +137,127 @@ function App() {
                       Sign Out
                     </Link>
                   </NavDropdown>
-                  <a href="/#" alt="" className="d-none d-lg-block">
-                    <i class="fa fa-envelope"></i>
-                  </a>
-                </>
-              ) : (
-                ''
-              )}
-              <Link to="/wishlists" className="nav-cart-btn1">
-                <i class="fa fa-heart"></i>
-              </Link>
-              <Link to="/cart" className="nav-cart-btn1">
-                <i class="fa fa-shopping-cart"></i>
-                {cart.cartItems.length > 0 && (
-                  <span>{cart.cartItems.length}</span>
                 )}
-              </Link>
-
-              <button className="search-btn1">Sell</button>
-            </div>
-          </div>
-          <ul className="links-container1">
-            <div className="nav-signin ">
-              <div className="sidenav-top">
-                <label for="check" className="checkbtn1">
-                  <i class="fas fa-times"></i>
-                </label>
-                <div className=" sidebar_mode d-block d-lg-none">
-                  <select className="language">
-                    <option>EN</option>
-                    <option>FR</option>
-                  </select>
-                  <select className="language">
-                    <option>$USD</option>
-                    <option>NGN</option>
-                    <option>RAN</option>
-                  </select>
-                  <select className="language">
-                    <option>DARK</option>
-                    <option>LIGHT</option>
-                  </select>
-                </div>
               </div>
-              {userInfo ? (
-                <>
-                  <NavDropdown className="link1" title={userInfo.name}>
-                    <LinkContainer to="/profile">
-                      <NavDropdown.Item>User Profile</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/orderhistory">
-                      <NavDropdown.Item>Order History</NavDropdown.Item>
-                    </LinkContainer>
-                    <NavDropdown.Divider />
-                    <Link
-                      className="dropdown-item"
-                      to="#signout"
-                      onClick={signoutHandler}
-                    >
-                      Sign Out
-                    </Link>
-                  </NavDropdown>
-                  <a href="/#" alt="" className="link1">
-                    <i class="fa fa-envelope"></i>
-                  </a>
-                </>
-              ) : (
-                <Link className=" link1 h80" to="/signin">
-                  Sign In / Register
-                </Link>
-              )}
             </div>
-            <li className="link1">
-              <a href="/#" className="">
-                Womenswear
-              </a>
-              <ul className="sub-cat1">
-                <li className="">sub cat</li>
-                <li className="">sub cat</li>
-                <li className="">sub cat</li>
-                <li className="">sub cat</li>
-              </ul>
-            </li>
-            <li className="link1">
-              <a href="/#">Menswear</a>
-            </li>
-            <li className="link1">
-              <a href="/#">Curve +plus</a>
-            </li>
-            <li className="link1">
-              <a href="/#">Kids</a>
-            </li>
-            <li className="link1">
-              <a href="/#">Brands</a>
-            </li>
-            <li className="link1">
-              <a href="/#">Shop by Outfit</a>
-            </li>
-            <li className="link1">
-              <a href="/#">Shop By Brand</a>
-            </li>
-          </ul>
-        </nav>
-        {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
+            <div className="nav1">
+              <label for="check" className="checkbtn1">
+                <i class="fas fa-bars"></i>
+              </label>
+              <LinkContainer to="/">
+                <div className="brand-logo1">TOBIAS</div>
+              </LinkContainer>
+              <div className="navsearch">
+                <SearchBox />
+              </div>
+              <div className="nav-items1">
+                <a href="/#" className="d-block d-md-block d-lg-none">
+                  <i class="fa fa-search"></i>
+                </a>
+                {userInfo ? (
+                  <>
+                    <a href="/#" alt="" className="d-none d-lg-block">
+                      <i class="fa fa-envelope"></i>
+                    </a>
+                  </>
+                ) : (
+                  ''
+                )}
+                <Link to="/wishlists" className="nav-cart-btn1">
+                  <i class="fa fa-heart"></i>
+                </Link>
+                <Link to="/cart" className="nav-cart-btn1">
+                  <i class="fa fa-shopping-cart"></i>
+                  {cart.cartItems.length > 0 && (
+                    <span>{cart.cartItems.length}</span>
+                  )}
+                </Link>
+
+                <button className="search-btn1">Sell</button>
+              </div>
+            </div>
+            <ul className="links-container1">
+              <div className="nav-signin ">
+                <div className="sidenav-top">
+                  <label for="check" className="checkbtn1">
+                    <i class="fas fa-times"></i>
+                  </label>
+                  <div className=" sidebar_mode d-block d-lg-none">
+                    <select className="language">
+                      <option>EN</option>
+                      <option>FR</option>
+                    </select>
+                    <select className="language">
+                      <option>$USD</option>
+                      <option>NGN</option>
+                      <option>RAN</option>
+                    </select>
+                    <select className="language">
+                      <option>DARK</option>
+                      <option>LIGHT</option>
+                    </select>
+                  </div>
+                </div>
+                {userInfo ? (
+                  <>
+                    <NavDropdown className="link1" title={userInfo.name}>
+                      <LinkContainer to="/profile">
+                        <NavDropdown.Item>User Profile</NavDropdown.Item>
+                      </LinkContainer>
+                      <LinkContainer to="/orderhistory">
+                        <NavDropdown.Item>Order History</NavDropdown.Item>
+                      </LinkContainer>
+                      <NavDropdown.Divider />
+                      <Link
+                        className="dropdown-item"
+                        to="#signout"
+                        onClick={signoutHandler}
+                      >
+                        Sign Out
+                      </Link>
+                    </NavDropdown>
+                    <a href="/#" alt="" className="link1">
+                      <i class="fa fa-envelope"></i>
+                    </a>
+                  </>
+                ) : (
+                  <Link className=" link1 h80" to="/signin">
+                    Sign In / Register
+                  </Link>
+                )}
+              </div>
+              <li className="link1">
+                <a href="/#" className="">
+                  Womenswear
+                </a>
+                <ul className="sub-cat1">
+                  <li className="">sub cat</li>
+                  <li className="">sub cat</li>
+                  <li className="">sub cat</li>
+                  <li className="">sub cat</li>
+                </ul>
+              </li>
+              <li className="link1">
+                <a href="/#">Menswear</a>
+              </li>
+              <li className="link1">
+                <a href="/#">Curve +plus</a>
+              </li>
+              <li className="link1">
+                <a href="/#">Kids</a>
+              </li>
+              <li className="link1">
+                <a href="/#">Brands</a>
+              </li>
+              <li className="link1">
+                <a href="/#">Shop by Outfit</a>
+              </li>
+              <li className="link1">
+                <a href="/#">Shop By Brand</a>
+              </li>
+            </ul>
+          </nav>
+          {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>TOBIAS</Navbar.Brand>
@@ -316,19 +323,19 @@ function App() {
                     </LinkContainer>
                   </NavDropdown>
                 )} */}
-        {/*</Nav>
+          {/*</Nav>
             </Navbar.Collapse>
           </Container>
         </Navbar> */}
-      </header>
-      {/* <div
+        </header>
+        {/* <div
         className={
           sidebarIsOpen
             ? 'd-flex flex-column site-container active-cont'
             : 'd-flex flex-column site-container'
         }
       > */}
-      {/* <div
+        {/* <div
           className={
             sidebarIsOpen
               ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
@@ -351,86 +358,86 @@ function App() {
             ))}
           </Nav>
         </div> */}
-      <main>
-        {/* <Button
+        <main>
+          {/* <Button
             variant="light"
             onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
           >
             <i className="fas fa-bars"></i>
             {!sidebarIsOpen ? <strong> Category</strong> : ''}
           </Button> */}
-        <div className="p-0 container-fluid">
-          <Routes>
-            <Route path="/product/:slug" element={<ProductScreen />} />
-            <Route path="/cart" element={<CartScreen />} />
-            <Route path="/search" element={<SearchSceen />} />
-            <Route path="/signin" element={<SigninScreen />} />
-            <Route path="/signup" element={<SignupScreen />} />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfileScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/shipping"
-              element={
-                <ProtectedRoute>
-                  <ShippingAddressScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/payment"
-              element={
-                <ProtectedRoute>
-                  <PaymentMethodScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/placeorder"
-              element={
-                <ProtectedRoute>
-                  <PlaceOrderScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/order/:id"
-              element={
-                <ProtectedRoute>
-                  <OrderScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orderhistory"
-              element={
-                <ProtectedRoute>
-                  <OrderHistoryScreen />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/home" element={<ProductsScreen />} />
+          <div className="p-0 container-fluid">
+            <Routes>
+              <Route path="/product/:slug" element={<ProductScreen />} />
+              <Route path="/cart" element={<CartScreen />} />
+              <Route path="/search" element={<SearchSceen />} />
+              <Route path="/signin" element={<SigninScreen />} />
+              <Route path="/signup" element={<SignupScreen />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfileScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/shipping"
+                element={
+                  <ProtectedRoute>
+                    <ShippingAddressScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/payment"
+                element={
+                  <ProtectedRoute>
+                    <PaymentMethodScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/placeorder"
+                element={
+                  <ProtectedRoute>
+                    <PlaceOrderScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orderhistory"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistoryScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/" element={<HomeScreen />} />
+              <Route path="/home" element={<ProductsScreen />} />
 
-            {/* Admin Routes */}
-            <Route
-              path="/admin/dashboard"
-              element={
-                <AdminRoute>
-                  <DashboardScreen />
-                </AdminRoute>
-              }
-            />
-          </Routes>
-        </div>
-      </main>
-      <Footer />
-      {/* <footer>
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <AdminRoute>
+                    <DashboardScreen />
+                  </AdminRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </main>
+        <Footer />
+        {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">TOBIAS</div>
             <div className="footer-ul-container1">
@@ -587,7 +594,8 @@ function App() {
             Conpany, Best apeal fashion market place
           </p>
         </footer> */}
-      {/* </div> */}
+        {/* </div> */}
+      </div>
     </BrowserRouter>
   );
 }

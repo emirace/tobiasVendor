@@ -222,7 +222,7 @@ export default function SearchSceen() {
                     rating !== 'all' ||
                     price !== 'all' ? (
                       <Button
-                        variant="light"
+                        variant="none"
                         onClick={() => navigate('/search')}
                       >
                         <i className="fas fa-times-circle"></i>
@@ -264,7 +264,7 @@ export default function SearchSceen() {
                   >
                     <Button
                       className={Number(page) === x + 1 ? 'text-bold' : ''}
-                      variant="light"
+                      variant="none"
                     >
                       {x + 1}
                     </Button>

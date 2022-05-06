@@ -3,8 +3,6 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'roboto', sans-serif;
-  background: var(--black-color);
-  color: var(--white-color);
 }
 :root {
   --btn-gradient: linear-gradient(
@@ -16,6 +14,14 @@
   --orange-color: #f79a23;
   --black-color: black;
   --white-color: white;
+}
+.pagebodydark {
+  background: var(--black-color);
+  color: var(--white-color);
+}
+.pagebodylight {
+  background: var(--white-color);
+  color: var(--black-color);
 }
 a,
 a:hover,
@@ -62,6 +68,8 @@ ul {
 .nav0 .top_center {
   font-size: 12px;
   background: none;
+  display: flex;
+  align-items: center;
 }
 
 .nav0 .right_top {
@@ -73,6 +81,10 @@ ul {
   border: none;
   margin-right: 10px;
   background: none;
+}
+
+.nav0 .right_top select option {
+  background: inherit;
 }
 .nav0 a {
   font-size: 12px;
@@ -368,12 +380,11 @@ main {
 }
 
 .checkout-steps {
-  border-bottom: 0.2rem solid #a0a0a0;
-  color: #a0a0a0;
+  border-bottom: 0.1rem solid;
 }
 
 .checkout-steps > div.active {
-  border-bottom: 0.2rem solid var(--orange-color);
+  border-bottom: 0.1rem solid var(--orange-color);
   color: var(--orange-color);
 }
 
@@ -550,4 +561,12 @@ a.font13 {
 .show {
   background: inherit;
   color: inherit;
+}
+
+.mybg-none {
+  background: none;
+}
+
+.language {
+  color: white;
 }

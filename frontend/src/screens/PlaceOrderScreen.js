@@ -76,7 +76,7 @@ export default function PlaceOrderScreen() {
   }, [cart, navigate]);
 
   return (
-    <div>
+    <div className="container">
       <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
       <Helmet>
         <title>Preview Order</title>
@@ -94,7 +94,9 @@ export default function PlaceOrderScreen() {
                 {cart.shippingAddress.address},{cart.shippingAddress.city},{' '}
                 {cart.shippingAddress.pstalCode}, {cart.shippingAddress.country}
               </Card.Text>
-              <Link to="/shipping">Edit</Link>
+              <Link className="simple_link" to="/shipping">
+                Edit
+              </Link>
             </Card.Body>
           </Card>
           <Card className="mb-3">
@@ -104,7 +106,9 @@ export default function PlaceOrderScreen() {
                 <strong>Method: </strong>
                 {cart.paymentMethod}
               </Card.Text>
-              <Link to="/payment">Edit</Link>
+              <Link className="simple_link" to="/payment">
+                Edit
+              </Link>
             </Card.Body>
           </Card>
           <Card className="mb-3">

@@ -66,7 +66,7 @@ export default function CartScreen() {
                     </Col>
                     <Col md={3}>
                       <Button
-                        variant="light"
+                        variant="none"
                         onClick={() =>
                           updateCartHandler(item, item.quantity - 1)
                         }
@@ -76,7 +76,7 @@ export default function CartScreen() {
                       </Button>{' '}
                       <span>{item.quantity}</span>{' '}
                       <Button
-                        variant="light"
+                        variant="none"
                         onClick={() =>
                           updateCartHandler(item, item.quantity + 1)
                         }
@@ -88,7 +88,7 @@ export default function CartScreen() {
                     <Col md={2}>
                       <Button
                         onClick={() => removeItemHandler(item)}
-                        variant="light"
+                        variant="none"
                       >
                         <i className="fas fa-trash"></i>
                       </Button>
