@@ -1,4 +1,5 @@
 import express from 'express';
+import { isAuth, isAdmin } from '../utils.js';
 import Product from '../models/productModel.js';
 import {
   isAuth,
@@ -148,8 +149,7 @@ const PAGE_SIZE = 3;
 
 productRouter.get(
   '/admin',
-  isAuth,
-  isAdmin,
+  isAuth,isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
