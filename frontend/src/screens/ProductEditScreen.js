@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, { useContext, useEffect, useReducer, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import LoadingBox from '../component/LoadingBox';
 import MessageBox from '../component/MessageBox';
 import { Store } from '../Store';
@@ -16,6 +17,18 @@ const reducer = (state, action) => {
       return { ...state, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
+    case 'UPDATE_REQUEST':
+      return { ...state, loadingUpdate: true };
+    case 'UPDATE_SUCCESS':
+      return { ...state, loadingUpdate: false };
+    case 'UPDATE_FAIL':
+      return { ...state, loadingUpdate: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
       return state;
@@ -26,13 +39,16 @@ export default function ProductEditScreen() {
   const params = useParams();
   const { id: productId } = params;
 
+  const navigate = useNavigate();
+
   const { state } = useContext(Store);
   const { userInfo } = state;
 
-  const [{ loading, error }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
@@ -66,6 +82,59 @@ export default function ProductEditScreen() {
     };
     fetchData();
   }, [productId]);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch({ type: 'UPDATE_REQUEST' });
+      await axios.put(
+        `/api/products/${productId}`,
+        {
+          _id: productId,
+          name,
+          slug,
+          price,
+          image,
+          category,
+          brand,
+          countInStock,
+          description,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      dispatch({ type: 'UPDATE_SUCCESS' });
+
+      toast.success('Product updatd successfully');
+      navigate('/admin/product');
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPDATE_FAIL' });
+    }
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setImage(data.secure_url);
+    } catch (err) {
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      toast.error(getError(err));
+    }
+  };
+
   return (
     <div className="container small-container">
       <Helmet>
@@ -77,7 +146,7 @@ export default function ProductEditScreen() {
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <Form>
+        <Form onSubmit={submitHandler}>
           <Form.Group className="mb-3" controllId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control
@@ -90,7 +159,7 @@ export default function ProductEditScreen() {
             <Form.Label>Slug</Form.Label>
             <Form.Control
               value={slug}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setSlug(e.target.value)}
               required
             />
           </Form.Group>
@@ -110,6 +179,12 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
+          <Form.Group className="mb-3" controllId="imageFile">
+            <Form.Label>Upload</Form.Label>
+            <Form.Control type="file" onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox></LoadingBox>}
+          </Form.Group>
+
           <Form.Group className="mb-3" controllId="category">
             <Form.Label>Category</Form.Label>
             <Form.Control
@@ -143,9 +218,14 @@ export default function ProductEditScreen() {
             />
           </Form.Group>
           <div className="mb-3">
-            <button type="submit" className="search-btn1">
+            <button
+              disabled={loadingUpdate}
+              type="submit"
+              className="search-btn1"
+            >
               Update
             </button>
+            {loadingUpdate && <LoadingBox></LoadingBox>}
           </div>
         </Form>
       )}

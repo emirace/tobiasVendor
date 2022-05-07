@@ -37,6 +37,7 @@ import Row from 'react-bootstrap/Row';
 import Footer from './component/Footer';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
+import OrderListScreen from './screens/OrderListScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -469,6 +470,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <ProductEditScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/order"
+                element={
+                  <AdminRoute>
+                    <OrderListScreen />
                   </AdminRoute>
                 }
               />
