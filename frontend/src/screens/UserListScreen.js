@@ -7,8 +7,9 @@ import MessageBox from '../component/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faTruckFieldUn } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -18,6 +19,12 @@ const reducer = (state, action) => {
       return { ...state, loading: false, users: action.payload, error: '' };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
+    case 'DELETE_REQUEST':
+      return { ...state, loadingDelete: faTruckFieldUn };
+    case 'DELETE_SUCCESS':
+      return { ...state, loadingDelete: false };
+    case 'DELETE_FAIL':
+      return { ...state, loadingDelete: false };
 
     default:
       return state;
@@ -32,6 +39,7 @@ export default function UserListScreen() {
 
   const { state } = useContext(Store);
   const { userInfo } = state;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +55,22 @@ export default function UserListScreen() {
     };
     fetchData();
   }, [userInfo]);
+
+  const deleteHandler = async (user) => {
+    if (window.confirm('Are you sure to delete')) {
+      try {
+        dispatch({ type: 'DELTE_REQUEST' });
+        await axios.delete(`/api/users/${user._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'DELETE_SUCCESS' });
+        toast.success('user deleted successfully');
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({ type: 'DELETE_FAIL' });
+      }
+    }
+  };
 
   return (
     <div>
@@ -77,11 +101,14 @@ export default function UserListScreen() {
                 <td>{user.email}</td>
                 <td>{user.isAdmin ? 'YES' : 'NO'}</td>
                 <td>
-                  <button type="button">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/admin/user/${user._id}`)}
+                  >
                     <FontAwesomeIcon icon={faEdit}></FontAwesomeIcon>
                   </button>
                   &nbsp;
-                  <button type="button">
+                  <button type="button" onClick={() => deleteHandler(user)}>
                     <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>
                   </button>
                 </td>
