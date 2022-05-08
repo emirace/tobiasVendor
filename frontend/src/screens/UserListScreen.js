@@ -7,7 +7,7 @@ import MessageBox from '../component/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faTruckFieldUn } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faTruckFieldUn, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,11 +20,13 @@ const reducer = (state, action) => {
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     case 'DELETE_REQUEST':
-      return { ...state, loadingDelete: faTruckFieldUn };
+      return { ...state, loadingDelete: true,successDelete:false};
     case 'DELETE_SUCCESS':
-      return { ...state, loadingDelete: false };
+      return { ...state, loadingDelete: false ,successDelete:true};
     case 'DELETE_FAIL':
       return { ...state, loadingDelete: false };
+      case 'DELETE_RESET':
+        return {...state,loadingDelete:false,successDelete:false}
 
     default:
       return state;
@@ -32,7 +34,7 @@ const reducer = (state, action) => {
 };
 
 export default function UserListScreen() {
-  const [{ loading, error, users }, dispatch] = useReducer(reducer, {
+  const [{ loading, error, users, loadingDelete,successDelete }, dispatch] = useReducer(reducer, {
     loading: true,
     error: '',
   });
@@ -53,13 +55,18 @@ export default function UserListScreen() {
         dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
-    fetchData();
+    if (successDelete) {
+      dispatch({type:'DELETE_RESET'})
+    } else {
+      fetchData()
+    }
   }, [userInfo]);
 
   const deleteHandler = async (user) => {
     if (window.confirm('Are you sure to delete')) {
       try {
         dispatch({ type: 'DELTE_REQUEST' });
+        console.log(user)
         await axios.delete(`/api/users/${user._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
@@ -78,6 +85,7 @@ export default function UserListScreen() {
         <title>Users</title>
       </Helmet>
       <h1>Users</h1>
+      {loadingDelete && <LoadingBox></LoadingBox>}
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
