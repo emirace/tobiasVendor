@@ -41,7 +41,6 @@ export default function ProfileScreen() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      console.log('i am at the front 222');
       const { data } = await axios.put(
         '/api/users/profile',
         {
@@ -57,7 +56,6 @@ export default function ProfileScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      console.log('i am at the front');
 
       dispatch({
         type: 'UPDATE_SUCCESS',
