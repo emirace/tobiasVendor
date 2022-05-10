@@ -53,6 +53,7 @@ export default function ProductScreen() {
   const [comment, setComment] = useState('');
 
   const params = useParams();
+  console.log(params);
   const { slug } = params;
 
   const [{ loading, error, product, loadingCreateReview }, dispatch] =
