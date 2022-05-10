@@ -40,6 +40,7 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import SellerRoute from './component/SellerRoute';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -113,7 +114,21 @@ function App() {
                   </Link>
                 ) : (
                   <div className="d-flex">
-                    {userInfo.isAdmin ? (
+                    {userInfo.isSeller && (
+                      <NavDropdown
+                        title="Seller"
+                        className="d-none d-lg-block p-0 mybg-none language"
+                        id="admin-nav-dropdown"
+                      >
+                        <LinkContainer to="/seller/product">
+                          <NavDropdown.Item>Products</NavDropdown.Item>
+                        </LinkContainer>
+                        <LinkContainer to="/seller/order">
+                          <NavDropdown.Item>Orders</NavDropdown.Item>
+                        </LinkContainer>
+                      </NavDropdown>
+                    )}
+                    {userInfo.isAdmin && (
                       <NavDropdown
                         title="Admin"
                         className="d-none d-lg-block p-0 mybg-none language"
@@ -132,8 +147,6 @@ function App() {
                           <NavDropdown.Item>Users</NavDropdown.Item>
                         </LinkContainer>
                       </NavDropdown>
-                    ) : (
-                      ''
                     )}
 
                     <NavDropdown
@@ -506,6 +519,22 @@ function App() {
                   <AdminRoute>
                     <UserEditScreen />
                   </AdminRoute>
+                }
+              />
+              <Route
+                path="/seller/product"
+                element={
+                  <SellerRoute>
+                    <ProductListScreen />
+                  </SellerRoute>
+                }
+              />
+              <Route
+                path="/seller/order"
+                element={
+                  <SellerRoute>
+                    <OrderListScreen />
+                  </SellerRoute>
                 }
               />
             </Routes>

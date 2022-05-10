@@ -23,13 +23,21 @@ const reducer = (state, action) => {
 export default function ProfileScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
+
   const [name, setName] = useState(userInfo.name);
   const [email, setEmail] = useState(userInfo.email);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [sellerName, setSellerName] = useState(userInfo.seller.name || '');
+  const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo || '');
+  const [sellerDescription, setsellerDescription] = useState(
+    userInfo.seller.description || ''
+  );
+
   const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
     loadingUpdate: false,
   });
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -39,6 +47,9 @@ export default function ProfileScreen() {
           name,
           email,
           password,
+          sellerName,
+          sellerLogo,
+          sellerDescription,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -87,13 +98,48 @@ export default function ProfileScreen() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
+        <Form.Group className="mb-3" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            type="password"
+            type="confirmPassword"
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
+        {userInfo.isSeller && (
+          <>
+            <h2>Seller</h2>
+            <div>
+              <label htnlFor="sellerName">Seller Name</label>
+              <input
+                id="sellerName"
+                type="text"
+                placeholder="Enter Seller Name"
+                value={sellerName}
+                onChange={(e) => setSellerName(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htnlFor="sellerLogo">Seller Logo</label>
+              <input
+                id="sellerLogo"
+                type="text"
+                placeholder="Enter Seller Logo"
+                value={sellerLogo}
+                onChange={(e) => setSellerLogo(e.target.value)}
+              />
+            </div>
+            <div>
+              <label htnlFor="sellerDescription">Seller Description</label>
+              <input
+                id="sellerDescription"
+                type="text"
+                placeholder="Enter Seller Description"
+                value={sellerDescription}
+                onChange={(e) => setsellerDescription(e.target.value)}
+              />
+            </div>
+          </>
+        )}
         <div className="mb-3">
           <Button type="submit">Update</Button>
         </div>

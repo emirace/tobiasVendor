@@ -447,7 +447,7 @@ main {
 .text-bold {
   font-weight: bold;
 }
-.small-user,
+/* .small-user,
 #basic-nav-dropdown {
   padding-left: 0.5em;
 
@@ -456,7 +456,7 @@ main {
 }
 #basic-nav-dropdown {
   font-size: large;
-}
+} */
 .nav-user-img {
   width: 50ox;
   height: 50px;

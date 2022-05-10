@@ -27,6 +27,14 @@ import { toast } from 'react-toastify';
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case 'REFRESH_PRODUCT':
+      return { ...state, product: action.payload };
+    case 'CREATE_REQUEST':
+      return { ...state, loadingCreateReview: true };
+    case 'CREATE_SUCCESS':
+      return { ...state, loadingCreateReview: false };
+    case 'CREATE_FAIL':
+      return { ...state, loadingCreateReview: false };
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
@@ -112,7 +120,14 @@ export default function ProductScreen() {
       );
       dispatch({ type: 'CREATE_SUCCESS' });
       toast.success('REview submitted successfully');
-      product.reviews.unshift(data.rebiew);
+      product.reviews.unshift(data.review);
+      product.numReviews = data.numReviews;
+      product.rating = data.rating;
+      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+      window.scrollTo({
+        behavior: 'smooth',
+        top: reviewRef.current.offsetTop,
+      });
     } catch (err) {
       toast.error(getError(error));
       dispatch({ type: 'CREATE_FAIL' });
@@ -147,31 +162,16 @@ export default function ProductScreen() {
               }}
             />
           </div>
-          <div className="product-images1 row ">
-            <div
-              className="col-3"
-              onClick={() => setSelectedImage(product.image)}
-            >
-              <img src={product.image} alt="" className="active1" />
-            </div>
-            <div
-              className="col-3"
-              onClick={() => setSelectedImage('/images/p2.jpg')}
-            >
-              <img src="/images/p2.jpg" alt="" />
-            </div>
-            <div
-              className="col-3"
-              onClick={() => setSelectedImage('/images/p3.jpg')}
-            >
-              <img src="/images/p3.jpg" alt="" />
-            </div>
-            <div
-              className="col-3"
-              onClick={() => setSelectedImage('/images/p9.png')}
-            >
-              <img src="/images/p9.png" alt="" />
-            </div>
+          <div className="product-images1 row mt-3">
+            {[product.image, ...product.images].map((x) => (
+              <div className="col-3" onClick={() => setSelectedImage(x)}>
+                <img
+                  src={x}
+                  alt=""
+                  className={selectedImage === x ? 'active1' : ''}
+                />
+              </div>
+            ))}
           </div>
         </div>
         <div className=" col-sm-12 col-md-6 d-block d-md-none">
@@ -414,14 +414,14 @@ export default function ProductScreen() {
           )}
         </div>
         <ListGroup>
-          {product.reviews.map((review) => {
+          {product.reviews.map((review) => (
             <ListGroup.Item key={review._id}>
               <strong>{review.name}</strong>
-              <Rating rating={review.rating} caption=""></Rating>
+              <Rating rating={review.rating} caption=" "></Rating>
               <p>{review.createdAt.substring(0, 10)}</p>
               <p>{review.comment}</p>
-            </ListGroup.Item>;
-          })}
+            </ListGroup.Item>
+          ))}
         </ListGroup>
         <div className="my-3">
           {userInfo ? (
@@ -467,7 +467,11 @@ export default function ProductScreen() {
             </form>
           ) : (
             <MessageBox>
-              Please <Link to="/insign">Sign In</Link> to write a review
+              Please{' '}
+              <Link to={`/signin?redirect=/product/${product.slug}`}>
+                Sign In
+              </Link>{' '}
+              to write a review
             </MessageBox>
           )}
         </div>

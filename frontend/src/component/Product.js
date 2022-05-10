@@ -32,7 +32,7 @@ export default function Product(props) {
     <div className="product-card1">
       <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
-          <span className="discount-tag1">50% off</span>
+          <span className="discount-tag1 ">50% off</span>
           <img
             src={product.image}
             className="product-thumb1"

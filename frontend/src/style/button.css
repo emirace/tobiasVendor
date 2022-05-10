@@ -482,6 +482,10 @@ ls {
   scroll-behavior: smooth;
 }
 
+.smooth1 {
+  transition: all 0.5s ease-in-out;
+}
+
 .product-container1::-webkit-scrollbar {
   display: none;
 }

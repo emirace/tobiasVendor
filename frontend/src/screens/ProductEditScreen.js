@@ -4,10 +4,13 @@ import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ListGroup from 'react-bootstrap/ListGroup';
 import LoadingBox from '../component/LoadingBox';
 import MessageBox from '../component/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -54,6 +57,7 @@ export default function ProductEditScreen() {
   const [slug, setSlug] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
+  const [images, setImages] = useState([]);
   const [category, setCategory] = useState('');
   const [countInStock, setCountInStock] = useState('');
   const [brand, setBrand] = useState('');
@@ -68,6 +72,7 @@ export default function ProductEditScreen() {
         setSlug(data.slug);
         setPrice(data.price);
         setImage(data.image);
+        setImages(data.images);
         setCategory(data.category);
         setCountInStock(data.countInStock);
         setBrand(data.brand);
@@ -95,6 +100,7 @@ export default function ProductEditScreen() {
           slug,
           price,
           image,
+          images,
           category,
           brand,
           countInStock,
@@ -114,7 +120,7 @@ export default function ProductEditScreen() {
     }
   };
 
-  const uploadFileHandler = async (e) => {
+  const uploadFileHandler = async (e, forImages) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);
@@ -127,12 +133,21 @@ export default function ProductEditScreen() {
         },
       });
       dispatch({ type: 'UPLOAD_SUCCESS' });
-      toast.success('Image uploaded successfully');
-      setImage(data.secure_url);
+      if (forImages) {
+        setImages([...images, data.secure_url]);
+      } else {
+        setImage(data.secure_url);
+      }
+      toast.success('Image uploaded successfully, click Update to apply It');
     } catch (err) {
       dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       toast.error(getError(err));
     }
+  };
+
+  const deleteFileHandler = async (fileName) => {
+    setImages(images.filter((x) => x !== fileName));
+    toast.success('Image removed successfully, click upload go apply it');
   };
 
   return (
@@ -147,7 +162,7 @@ export default function ProductEditScreen() {
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controllId="name">
+          <Form.Group className="mb-3" controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control
               value={name}
@@ -163,7 +178,7 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="price">
+          <Form.Group className="mb-3" controlId="price">
             <Form.Label>Price</Form.Label>
             <Form.Control
               value={price}
@@ -171,7 +186,7 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="image">
+          <Form.Group className="mb-3" controlId="image">
             <Form.Label>Imsge</Form.Label>
             <Form.Control
               value={image}
@@ -179,13 +194,36 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="imageFile">
-            <Form.Label>Upload</Form.Label>
+          <Form.Group className="mb-3" controlId="imageFile">
+            <Form.Label>Upload Image</Form.Label>
             <Form.Control type="file" onChange={uploadFileHandler} />
             {loadingUpload && <LoadingBox></LoadingBox>}
           </Form.Group>
 
-          <Form.Group className="mb-3" controllId="category">
+          <Form.Group className="mb-3" controlId="additionalImage">
+            <Form.Label>Additional Images</Form.Label>
+            {images.length === 0 && <MessageBox>No image</MessageBox>}
+            <ListGroup variant="flush">
+              {images.map((x) => (
+                <ListGroup.Item key={x}>
+                  {x}
+                  <button onClick={() => deleteFileHandler(x)}>
+                    <FontAwesomeIcon icon={faTrashCan}></FontAwesomeIcon>
+                  </button>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="additionalImageFile">
+            <Form.Label>Upload Additional Image</Form.Label>
+            <Form.Control
+              type="file"
+              onChange={(e) => uploadFileHandler(e, true)}
+            />
+            {loadingUpload && <LoadingBox></LoadingBox>}
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="category">
             <Form.Label>Category</Form.Label>
             <Form.Control
               value={category}
@@ -193,7 +231,7 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="brand">
+          <Form.Group className="mb-3" controlId="brand">
             <Form.Label>Brand</Form.Label>
             <Form.Control
               value={brand}
@@ -201,7 +239,7 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="countInStock">
+          <Form.Group className="mb-3" controlId="countInStock">
             <Form.Label>countInStock</Form.Label>
             <Form.Control
               value={countInStock}
@@ -209,7 +247,7 @@ export default function ProductEditScreen() {
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3" controllId="description">
+          <Form.Group className="mb-3" controlId="description">
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={description}
