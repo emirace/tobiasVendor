@@ -38,6 +38,8 @@ const reducer = (state, action) => {
 };
 
 export default function OrderListScreen() {
+  const sellerMode = window.location.href.indexOf('/seller') >= 0;
+
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
@@ -53,9 +55,12 @@ export default function OrderListScreen() {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
 
-        const { data } = await axios.get(`/api/orders`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/orders?seller=${sellerMode ? userInfo._id : ''}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', paylood: getError(err) });
