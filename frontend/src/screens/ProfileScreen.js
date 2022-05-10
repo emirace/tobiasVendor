@@ -41,9 +41,11 @@ export default function ProfileScreen() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      console.log('i am at the front 222');
       const { data } = await axios.put(
         '/api/users/profile',
         {
+          _id: userInfo._id,
           name,
           email,
           password,
@@ -55,6 +57,8 @@ export default function ProfileScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
+      console.log('i am at the front');
+
       dispatch({
         type: 'UPDATE_SUCCESS',
       });
@@ -108,40 +112,36 @@ export default function ProfileScreen() {
         {userInfo.isSeller && (
           <>
             <h2>Seller</h2>
-            <div>
-              <label htnlFor="sellerName">Seller Name</label>
-              <input
-                id="sellerName"
+            <Form.Group className="mb-3" controlId="sellerName">
+              <Form.Label>Seller Name</Form.Label>
+              <Form.Control
                 type="text"
-                placeholder="Enter Seller Name"
                 value={sellerName}
                 onChange={(e) => setSellerName(e.target.value)}
               />
-            </div>
-            <div>
-              <label htnlFor="sellerLogo">Seller Logo</label>
-              <input
-                id="sellerLogo"
-                type="text"
-                placeholder="Enter Seller Logo"
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="sellerLogo">
+              <Form.Label>Seller Logo</Form.Label>
+              <Form.Control
                 value={sellerLogo}
+                type="text"
                 onChange={(e) => setSellerLogo(e.target.value)}
               />
-            </div>
-            <div>
-              <label htnlFor="sellerDescription">Seller Description</label>
-              <input
-                id="sellerDescription"
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="sellerDescription">
+              <Form.Label>Seller Description</Form.Label>
+              <Form.Control
                 type="text"
-                placeholder="Enter Seller Description"
                 value={sellerDescription}
                 onChange={(e) => setsellerDescription(e.target.value)}
               />
-            </div>
+            </Form.Group>
           </>
         )}
         <div className="mb-3">
-          <Button type="submit">Update</Button>
+          <button type="submit" className=" search-btn1">
+            Update
+          </button>
         </div>
       </Form>
     </div>

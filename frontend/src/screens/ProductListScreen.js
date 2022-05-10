@@ -70,9 +70,17 @@ export default function ProductListScreen() {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
 
-        const { data } = await axios.get(`/api/products/admin?page=${page}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        // const { data } = await axios.get(`/api/products/admin?page=${page}`, {
+        //   headers: { Authorization: `Bearer ${userInfo.token}` },
+        // });
+
+        const { data } = await axios.get(
+          `/api/products/seller/${userInfo._id}?page=${page}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({

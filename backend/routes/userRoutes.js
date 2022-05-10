@@ -40,6 +40,7 @@ userRouter.put(
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       user.isAdmin = Boolean(req.body.isAdmin);
+      user.isSeller = Boolean(req.body.isSeller);
       const updatedUser = await user.save();
       res.send({ message: 'User Updated', user: updatedUser });
     } else {
@@ -102,6 +103,7 @@ userRouter.post(
       _id: user._id,
       name: user.name,
       email: user.email,
+      isSeller: user.isSeller,
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });
@@ -112,30 +114,34 @@ userRouter.put(
   '/profile',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (user) {
-      user.name = req.body.name || user.name;
-      user.email = req.body.email || user.email;
-      if (user.isSeller) {
-        user.seller.name = req.body.sellerName || user.seller.name;
-        user.seller.logo = req.body.sellerLogo || user.seller.logo;
-        user.seller.description =
-          req.body.sellerDescription || user.seller.description;
-      }
-      if (req.body.password) {
-        user.password = bcrypt.hashSync(req.body.password, 8);
-      }
-      const updatedUser = await user.save();
-      res.send({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        isAdmin: updatedUser.isAdmin,
-        token: generateToken(updatedUser),
-      });
-    } else {
-      res.status(404).send({ message: 'User not Found' });
-    }
+    console.log('i am here');
+    // const user = await User.findById(req.user._id);
+    // if (user) {
+    //   console.log(user);
+    //   user.name = req.body.name || user.name;
+    //   user.email = req.body.email || user.email;
+    //   if (user.isSeller) {
+    //     user.seller.name = req.body.sellerName || user.seller.name;
+    //     user.seller.logo = req.body.sellerLogo || user.seller.logo;
+    //     user.seller.description =
+    //       req.body.sellerDescription || user.seller.description;
+    //   }
+    //   if (req.body.password) {
+    //     user.password = bcrypt.hashSync(req.body.password, 8);
+    //   }
+    //   console.log(user);
+    //   const updatedUser = await user.save();
+    //   res.send({
+    //     _id: updatedUser._id,
+    //     name: updatedUser.name,
+    //     isSeller: updatedUser.isSeller,
+    //     email: updatedUser.email,
+    //     isAdmin: updatedUser.isAdmin,
+    //     token: generateToken(updatedUser),
+    //   });
+    // } else {
+    //   res.status(404).send({ message: 'User not Found' });
+    // }
   })
 );
 

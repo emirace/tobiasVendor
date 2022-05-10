@@ -1,6 +1,6 @@
 import express from 'express';
 import Product from '../models/productModel.js';
-import { isAuth, isAdmin } from '../utils.js';
+import { isAuth, isAdmin, isSellerOrAdmin, isSeller } from '../utils.js';
 import expressAsyncHandler from 'express-async-handler';
 
 const productRouter = express.Router();
@@ -13,10 +13,11 @@ productRouter.get('/', async (req, res) => {
 productRouter.post(
   '/',
   isAuth,
-  isAdmin,
+  isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const newProduct = new Product({
       name: 'sample name' + Date.now(),
+      seller: req.user._id,
       slug: 'sample-name-' + Date.now(),
       image: '/images/p1.jpg',
       price: 0,
@@ -35,7 +36,7 @@ productRouter.post(
 productRouter.put(
   '/:id',
   isAuth,
-  isAdmin,
+  isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
@@ -121,6 +122,31 @@ productRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
 
     const products = await Product.find()
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countProducts = await Product.countDocuments();
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  })
+);
+
+productRouter.get(
+  '/seller/:id',
+  isAuth,
+  isSeller,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+
+    const seller = req.params.id;
+
+    const products = await Product.find({ seller })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
