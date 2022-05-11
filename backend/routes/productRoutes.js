@@ -137,8 +137,6 @@ productRouter.get(
 
 productRouter.get(
   '/seller/:id',
-  isAuth,
-  isSeller,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;

@@ -1,0 +1,10 @@
+.seller_main_container {
+  display: flex;
+}
+.seller_left {
+  flex: 1;
+}
+
+.seller_rigth {
+  flex: 3;
+}

@@ -56,7 +56,9 @@ export default function OrderListScreen() {
         dispatch({ type: 'FETCH_REQUEST' });
 
         const { data } = await axios.get(
-          `/api/orders?seller=${sellerMode ? userInfo._id : ''}`,
+          `/api/orders${sellerMode ? '/seller/' : ''}${
+            sellerMode ? userInfo._id : ''
+          }`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }

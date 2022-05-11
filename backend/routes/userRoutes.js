@@ -50,6 +50,20 @@ userRouter.put(
 );
 
 userRouter.get(
+  '/seller/:id',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.send({
+        name: user.name,
+      });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
+userRouter.get(
   '/:id',
   isAuth,
   isAdmin,
