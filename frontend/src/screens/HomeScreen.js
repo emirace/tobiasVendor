@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Product from '../component/Product';
@@ -13,6 +14,10 @@ import OwlCarousel from 'react-owl-carousel';
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import Newletter from '../component/Newletter';
+import 'react-multi-carousel/lib/styles.css';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import '../style/HomeScreen.css';
 //import data from '../data';
 
 const reducer = (state, action) => {
@@ -22,18 +27,31 @@ const reducer = (state, action) => {
     case 'FETCH_SUCCESS':
       return { ...state, products: action.payload, loading: false };
     case 'FETCH_FAIL':
-      return { ...state, loading: false, error: action.payload };
+      return {
+        ...state,
+        loading: false,
+        loadingUser: false,
+        error: action.payload,
+      };
+
+    case 'FETCH_USERS_REQUEST':
+      return { ...state, loadingUser: true };
+    case 'FETCH_USERS_SUCCESS':
+      return { ...state, sellers: action.payload, loadingUser: false };
+
     default:
       return state;
   }
 };
 
 export default function ProductsScreen() {
-  const [{ loading, error, products }, dispatch] = useReducer(reducer, {
-    products: [],
-    loading: true,
-    error: '',
-  });
+  const [{ loading, loadingUser, error, sellers, products }, dispatch] =
+    useReducer(reducer, {
+      products: [],
+      loading: true,
+      sellers: [],
+      error: '',
+    });
   const [sliderIndex, setSliderIndex] = useState(0);
   //const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -42,6 +60,11 @@ export default function ProductsScreen() {
       try {
         const result = await axios.get('/api/products');
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
+
+        dispatch({ type: 'FETCH_USERS_REQUEST' });
+        const { data: topSellers } = await axios.get('/api/users/top-sellers');
+
+        dispatch({ type: 'FETCH_USERS_SUCCESS', payload: topSellers });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
       }
@@ -59,6 +82,24 @@ export default function ProductsScreen() {
     }
   };
   const sliderstyle = `translateX(${sliderIndex * -220}px)`;
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 5,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+      slidesToSlide: 2, // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 2,
+      slidesToSlide: 1, // optional, default to 1.
+    },
+  };
 
   return (
     <div>
@@ -280,6 +321,53 @@ export default function ProductsScreen() {
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+          <section className="top_seller_carousel">
+            <div className="product-title">
+              <h2 className="product-category1">Top Sellers</h2>
+            </div>
+            <div>
+              {loadingUser ? (
+                <LoadingBox></LoadingBox>
+              ) : error ? (
+                <MessageBox>{error}</MessageBox>
+              ) : (
+                <>
+                  {sellers.length === 0 && (
+                    <MessageBox>No Seller Found</MessageBox>
+                  )}
+                  <Carousel
+                    swipeable={false}
+                    draggable={false}
+                    showDots={true}
+                    responsive={responsive}
+                    ssr={true} // means to render carousel on server-side.
+                    infinite={true}
+                    autoPlaySpeed={3000}
+                    keyBoardControl={true}
+                    customTransition="all .5"
+                    transitionDuration={2000}
+                    containerClass="carousel-container"
+                    removeArrowOnDeviceType={['tablet', 'mobile']}
+                    dotListClass="custom-dot-list-style"
+                    itemClass="carousel-item-padding-40-px"
+                  >
+                    {sellers.map((seller) => (
+                      <Link to={`/seller/${seller._id}`}>
+                        <div className="carousel_item">
+                          <img
+                            src={seller.seller.logo}
+                            alt={seller.seller.name}
+                            className="carousel_profile_image"
+                          ></img>
+                          <p className="">{seller.seller.name}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </Carousel>
+                </>
+              )}
             </div>
           </section>
           <section className="shop-method-area">

@@ -98,7 +98,7 @@ export default function ProductListScreen() {
     } else {
       fetchData();
     }
-  }, [page, userInfo, successDelete]);
+  }, [page, userInfo, successDelete, sellerMode]);
 
   const createHandler = async () => {
     if (window.confirm('Are you sure to create?')) {
@@ -113,7 +113,6 @@ export default function ProductListScreen() {
         );
         toast.success('product created successfully');
         dispatch({ type: 'CREATE_SUCCESS' });
-        console.log(data);
         navigate(`/admin/product/${data.product._id}`);
       } catch (error) {
         toast.error(getError(error));

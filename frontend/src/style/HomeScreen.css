@@ -1,0 +1,17 @@
+.carousel-container {
+  margin: 50px 0 100px 0;
+}
+
+.carousel_item {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.carousel_profile_image {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  object-position: top;
+}

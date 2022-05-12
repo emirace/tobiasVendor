@@ -24,6 +24,14 @@ import { Store } from '../Store';
 import '../style/product.css';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBookmark,
+  faHeart,
+  faMessage,
+  faTag,
+} from '@fortawesome/free-solid-svg-icons';
+import '../style/ProductScreen.css';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -143,7 +151,143 @@ export default function ProductScreen() {
       <Helmet>
         <title>{product.name}</title>
       </Helmet>
-      <section className="product-details1 row">
+      <div className="single_product_container">
+        <div className="single_product_left">
+          {[product.image, ...product.images].map((x) => (
+            <div
+              className="single_product_multi_image"
+              onClick={() => setSelectedImage(x)}
+            >
+              <img
+                src={x}
+                alt=""
+                className={selectedImage === x ? 'active1' : ''}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="single_product_center">
+          <ReactImageMagnify
+            imageClassName="single_main_image"
+            {...{
+              smallImage: {
+                alt: `${product.name}`,
+                isFluidWidth: true,
+                src: selectedImage || `${product.image}`,
+              },
+              largeImage: {
+                src: selectedImage || `${product.image}`,
+                width: 679,
+                height: 829,
+              },
+            }}
+          />
+        </div>
+        <div className="single_product_right">
+          <div className="single_product_seller">
+            <img
+              src={product.seller.seller.logo}
+              alt={product.seller.seller.name}
+            />
+            <div className="single_product_seller_detail">
+              <div className="single_product_seller_name">
+                {product.seller.seller.name}
+              </div>
+              <div>Benin City, Nigeria</div>
+              <Rating
+                rating={product.seller.seller.rating}
+                numReviews={product.seller.seller.numReviews}
+              />
+            </div>
+          </div>
+          <div className="single_product_sold_status">
+            <div className="single_produc_sold">
+              <FontAwesomeIcon icon={faTag} />
+              51 sold
+            </div>
+            <div className="single_produc_status">online</div>
+          </div>
+          <div className="single_product_actions">
+            <FontAwesomeIcon icon={faHeart} />
+            <FontAwesomeIcon icon={faBookmark} />
+            <FontAwesomeIcon icon={faMessage} />
+          </div>
+          <div className="sp_name">{product.name}</div>
+          <div className="sp_price_detail">
+            <div className="sp_actual_price">${product.price}</div>
+            <div className="sp_discount_price">${product.price * 2}</div>
+            <div className="sp_discount">( 50% off )</div>
+          </div>
+          <div className="single_product_select_size">
+            <div className="select_size_header">select size: </div>
+            <input type="radio" name="size" value="s" hidden id="s-size" />
+            <label for="size" className="sp_select_size_btn sp_btn_checked ">
+              s
+            </label>
+            <input type="radio" name="size" value="m" hidden id="m-size" />
+            <label for="size" className="sp_select_size_btn">
+              m
+            </label>
+            <input type="radio" name="size" value="l" hidden id="l-size" />
+            <label for="size" className="sp_select_size_btn">
+              l
+            </label>
+            <input type="radio" name="size" value="xl" hidden id="xl-size" />
+            <label for="size" className="sp_select_size_btn">
+              xl
+            </label>
+            <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
+            <label for="size" className="sp_select_size_btn">
+              xxl
+            </label>
+          </div>
+          <div className="sp_btn">
+            <button className="sp_cart_btn">add to cart</button>
+
+            <button className="sp_wishlist_btn ">wishlist</button>
+          </div>
+          <div className="sp_more_detail">
+            <div className="sp_detail_section sp_detail_section_f">
+              <div className="sp_detail_title">Item Detail</div>
+              <div className="sp_detail_contail">{product.description}</div>
+            </div>
+            <div className="sp_detail_section">
+              <div className="sp_detail_title">Condition</div>
+              <div className="sp_detail_contail">Item is in good conditon</div>
+            </div>
+          </div>
+          <div className="sp_more_detail">
+            <div className="sp_detail_section sp_detail_section_f">
+              <div className="sp_detail_title sp_condition_cont">
+                Item Detail
+              </div>
+              <div className="sp_detail_contail">{product.description}</div>
+            </div>
+            <div className="sp_detail_section">
+              <div className="sp_condition_cont">
+                <div className="sp_detail_title">Condition</div>
+                <div className="sp_condition">new</div>
+              </div>
+
+              <div className="sp_detail_contail">Item is in good conditon</div>
+            </div>
+          </div>
+          <div className="sp_more_detail">
+            <div className="sp_detail_section sp_detail_section_f">
+              <div className="sp_detail_title sp_condition_cont">
+                Shipping & Return Policy
+              </div>
+              <div className="sp_detail_contail">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <section className="product-details1 row">
         <div className=" col-sm-12 col-md-6 d-none d-md-block">
           <div className=" row justify-content-center">
             <ReactImageMagnify
@@ -215,6 +359,43 @@ export default function ProductScreen() {
           </div>
         </div>
         <div className="detailsm1 col-sm-12 col-md-6">
+          <div className="seller_section">
+            <ul className="card card-body">
+              <li>
+                <div className="profile_row">
+                  <div>
+                    <img
+                      src={product.seller.seller.logo}
+                      className="profile_image"
+                      alt={product.seller.seller.name}
+                    ></img>
+                  </div>
+                  <div className="profile_name">
+                    <h3>{product.seller.seller.name}</h3>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <Rating
+                  rating={product.seller.seller.rating}
+                  caption={''}
+                  numReviews={product.seller.seller.numReviews}
+                ></Rating>
+              </li>
+              <li className="profile_icon_group">
+                <a
+                  className="profile_icon"
+                  href={`mailto:${product.seller.email}`}
+                >
+                  <FontAwesomeIcon icon={faMessage} />
+                </a>
+                <div className="profile_icon">
+                  <FontAwesomeIcon icon={faHeart} />
+                </div>
+              </li>
+              <li>{product.seller.seller.description}</li>
+            </ul>
+          </div>
           <div className="select-size">
             <h2 className="product-brand1">{product.name} </h2>
             <i className="fa fa-heart ml-2px"></i> 147
@@ -259,7 +440,7 @@ export default function ProductScreen() {
             <p className="desc1">{product.description}</p>
           </section>
         </div>
-      </section>
+      </section> */}
       <section className="product1">
         <div className="product-title">
           <h2 className="product-category1">Related Products</h2>
@@ -406,7 +587,7 @@ export default function ProductScreen() {
           </div>
         </div>
       </section>
-      <div className="my-3">
+      <div className="my-3 mx-4">
         <h2 ref={reviewRef}>Reviews</h2>
         <div className="my-3">
           {product.reviews.length === 0 && (

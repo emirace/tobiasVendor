@@ -81,3 +81,35 @@
     flex-direction: column;
   }
 }
+
+.footer_copyright {
+  background: white;
+  display: flex;
+  justify-content: center;
+  color: black;
+  height: 50px;
+  align-items: center;
+}
+
+.footer_copyright svg {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.footer_malon_top {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: var(--malon-color);
+}
+
+.footer_malon_top::after {
+  position: absolute;
+}
+
+.footer_orange_top {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: var(--orange-color);
+}

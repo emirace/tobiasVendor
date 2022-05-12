@@ -7,6 +7,16 @@ import expressAsyncHandler from 'express-async-handler';
 const userRouter = express.Router();
 
 userRouter.get(
+  '/top-sellers',
+  expressAsyncHandler(async (req, res) => {
+    const topSellers = await User.find({ isSeller: true })
+      .sort({ 'seller.rating': -1 })
+      .limit(10);
+    res.send(topSellers);
+  })
+);
+
+userRouter.get(
   '/',
   isAuth,
   isAdmin,
@@ -56,6 +66,8 @@ userRouter.get(
     if (user) {
       res.send({
         name: user.name,
+        seller: user.seller,
+        email: user.email,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });

@@ -41,6 +41,7 @@ import OrderListScreen from './screens/OrderListScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './component/SellerRoute';
+import SellerScreen from './screens/SellerScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -57,7 +58,11 @@ function App() {
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [mode, setMode] = useState('pagebodydark');
+  const [mode, setMode] = useState(
+    localStorage.getItem('mode')
+      ? localStorage.getItem('mode')
+      : 'pagebodylight'
+  );
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -70,6 +75,11 @@ function App() {
     };
     fetchCategories();
   }, []);
+
+  const darkMode = (mode) => {
+    localStorage.setItem('mode', mode);
+    setMode(mode);
+  };
 
   return (
     <BrowserRouter>
@@ -91,9 +101,7 @@ function App() {
                     <option>RAN</option>
                   </select>
                   <select
-                    onChange={(e) => {
-                      setMode(e.target.value);
-                    }}
+                    onChange={(e) => darkMode(e.target.value)}
                     className="language"
                   >
                     <option value="pagebodydark">DARK</option>
@@ -236,9 +244,7 @@ function App() {
                       <option>RAN</option>
                     </select>
                     <select
-                      onChange={(e) => {
-                        setMode(e.target.value);
-                      }}
+                      onChange={(e) => darkMode(e.target.value)}
                       className="language"
                     >
                       <option value="pagebodydark">DARK</option>
@@ -417,6 +423,7 @@ function App() {
           <div className="p-0 container-fluid">
             <Routes>
               <Route path="/product/:slug" element={<ProductScreen />} />
+              <Route path="/seller/:id" element={<SellerScreen />} />
               <Route path="/cart" element={<CartScreen />} />
               <Route path="/search" element={<SearchSceen />} />
               <Route path="/signin" element={<SigninScreen />} />

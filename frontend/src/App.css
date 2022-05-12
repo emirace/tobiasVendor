@@ -66,7 +66,6 @@ ul {
 }
 
 .nav0 .top_center {
-  font-size: 12px;
   background: none;
   display: flex;
   align-items: center;
@@ -77,7 +76,6 @@ ul {
 }
 
 .nav0 .right_top select {
-  font-size: 12px;
   border: none;
   margin-right: 10px;
   background: none;
@@ -93,14 +91,12 @@ ul {
 }
 
 .sidebar_mode select {
-  font-size: 12px;
   border: none;
   margin-right: 10px;
   background: none;
   color: inherit;
 }
 .nav0 a {
-  font-size: 12px;
   background: none;
 }
 .right_top {
@@ -108,7 +104,6 @@ ul {
 }
 .right_top div {
   margin-right: 10px;
-  font-size: 13px;
 }
 .nav1 {
   padding: 10px 5vw;
@@ -118,7 +113,7 @@ ul {
 }
 
 .brand-logo1 {
-  font-size: 20px;
+  font-size: 30px;
   height: 60px;
   font-weight: bold;
   display: flex;
@@ -152,19 +147,23 @@ ul {
   border: none;
   cursor: pointer;
   font-weight: 500;
-  background: var(--btn-gradient);
+  background: var(--orange-color);
   color: #fff;
   text-transform: capitalize;
   font-size: 13px;
   border-radius: 5px;
 }
-.searchbtn::placeholder {
-  color: #a9a9a9;
-  font-size: 12px !important;
+.search-btn1:hover {
+  background: var(--malon-color);
 }
 .search-btn i {
   color: var(--orange-color) !important;
 }
+
+.search-btn i:hover {
+  color: var(--malon-color) !important;
+}
+
 .nav-items1 a {
   margin-left: 20px;
 }
@@ -354,7 +353,7 @@ main {
   justify-content: center;
 }
 
-.rating span {
+.rating span i {
   color: var(--orange-color);
 }
 

@@ -1,10 +1,160 @@
 .seller_main_container {
   display: flex;
+  margin: 0 1vw;
 }
 .seller_left {
   flex: 1;
 }
 
-.seller_rigth {
+.seller_right {
   flex: 3;
+  margin: 30px;
+}
+
+.seller_right_products {
+  display: flex;
+}
+
+.profile_row {
+  display: flex;
+  align-items: center;
+}
+.profile_image {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: top;
+}
+.profile_name {
+  margin-left: 1rem;
+}
+
+.profile_icon_group {
+  display: flex;
+}
+.profile_icon {
+  margin-right: 1rem;
+}
+
+/* ////////////////////////////////////////// */
+
+.seller_profile_block {
+  border: 0.1rem solid;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 35px;
+}
+
+.seller_profile_image {
+  position: relative;
+  margin-top: 60px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+}
+.seller_profile_icon {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+.seller_profile_status {
+  border: 0.1rem solid var(--orange-color);
+  border-radius: 15px;
+  padding: 0 10px;
+  color: var(--orange-color);
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  text-transform: capitalize;
+}
+
+.seller_image_group {
+  position: relative;
+}
+
+.seller_profile_badge {
+  border-radius: 50%;
+  position: absolute;
+  bottom: 7.5px;
+  right: 7.5px;
+  background: var(--malon-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: white;
+}
+
+.seller_profile_name {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.seller_profile_follow {
+  width: 100%;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.seller_profile_follower {
+  display: flex;
+}
+.seller_profile_follow_num {
+  margin-right: 5px;
+  font-weight: bold;
+}
+
+.seller_follow_btn {
+  background: var(--orange-color);
+  border: none;
+  padding: 0 5px;
+  border-radius: 5px;
+  color: white;
+}
+
+.profile_contact_btn {
+  width: 100%;
+  background: var(--orange-color);
+  color: white;
+  border-radius: 5px;
+  margin: 20px 0;
+  padding: 4px 0;
+  border: 0;
+}
+
+.seller_profile_detail {
+  border-top: 0.1rem solid;
+  width: 100%;
+  padding: 15px 0;
+  margin-top: 5px;
+}
+
+.seller_single_detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.seller_single_detail div svg {
+  margin-right: 10px;
+}
+
+.seller_single_right {
+  font-weight: bold;
+}
+
+.seller_detail_first {
+  border: 0;
+}
+
+.seller_detail_title {
+  font-weight: bold;
+  margin-bottom: 15px;
 }

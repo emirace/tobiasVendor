@@ -143,8 +143,8 @@ productRouter.get(
     const pageSize = query.pageSize || PAGE_SIZE;
 
     const seller = req.params.id;
-
     const products = await Product.find({ seller })
+      .populate('seller', 'seller.name seller.logo')
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
@@ -245,7 +245,10 @@ productRouter.get(
 );
 
 productRouter.get('/slug/:slug', async (req, res) => {
-  const product = await Product.findOne({ slug: req.params.slug });
+  const product = await Product.findOne({ slug: req.params.slug }).populate(
+    'seller',
+    'seller.name seller.logo seller.rating seller.numReviews'
+  );
   if (product) {
     res.send(product);
   } else {
