@@ -155,6 +155,7 @@ export default function ProductScreen() {
         <div className="single_product_left">
           {[product.image, ...product.images].map((x) => (
             <div
+              key={x}
               className="single_product_multi_image"
               onClick={() => setSelectedImage(x)}
             >
