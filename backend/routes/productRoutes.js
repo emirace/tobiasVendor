@@ -20,13 +20,20 @@ productRouter.post(
       seller: req.user._id,
       slug: 'sample-name-' + Date.now(),
       image: '/images/p1.jpg',
+      images: '/images/p1.jpg',
       price: 0,
+      actualPrice: 0,
       category: 'sample category',
+      shippingLocation: 'everywhere',
       brand: 'sample brand',
+      condition: 'new',
+      size: 'sm',
       countInStock: 0,
+      keyFeatures: '',
       rating: 0,
       numReviews: 0,
       description: 'sample description',
+      overview: '',
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });
