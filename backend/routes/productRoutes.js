@@ -1,6 +1,12 @@
 import express from 'express';
 import Product from '../models/productModel.js';
-import { isAuth, isAdmin, isSellerOrAdmin, isSeller } from '../utils.js';
+import {
+  isAuth,
+  isAdmin,
+  isSellerOrAdmin,
+  isSeller,
+  slugify,
+} from '../utils.js';
 import expressAsyncHandler from 'express-async-handler';
 
 const productRouter = express.Router();
@@ -15,25 +21,44 @@ productRouter.post(
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
+    const {
+      name,
+      image,
+      images,
+      category,
+      description,
+      brand,
+      actualPrice,
+      price,
+      shippingLocation,
+      specification,
+      size,
+      condition,
+      keyFeatures,
+      overview,
+      countInStock,
+    } = req.body;
+    const slugName = slugify(name);
+
     const newProduct = new Product({
-      name: 'sample name' + Date.now(),
+      name,
       seller: req.user._id,
-      slug: 'sample-name-' + Date.now(),
-      image: '/images/p1.jpg',
-      images: '/images/p1.jpg',
-      price: 0,
-      actualPrice: 0,
-      category: 'sample category',
-      shippingLocation: 'everywhere',
-      brand: 'sample brand',
-      condition: 'new',
-      size: 'sm',
-      countInStock: 0,
-      keyFeatures: '',
+      slug: slugName,
+      image,
+      images: images ? images : [],
+      price,
+      actualPrice: actualPrice ? actualPrice : '',
+      category,
+      shippingLocation,
+      brand: brand ? brand : 'other',
+      condition,
+      size,
+      countInStock,
+      keyFeatures: keyFeatures ? keyFeatures : '',
       rating: 0,
       numReviews: 0,
-      description: 'sample description',
-      overview: '',
+      description,
+      overview: overview ? overview : '',
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });

@@ -56,3 +56,9 @@ export const isSellerOrAdmin = (req, res, next) => {
     res.status(401).send({ message: 'Invalid Seller/Admin Token' });
   }
 };
+
+export const slugify = (Text) => {
+  return Text.toLowerCase()
+    .replace(/ /g, '-')
+    .replace(/[^\w-]+/g, '');
+};

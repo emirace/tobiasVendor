@@ -100,27 +100,6 @@ export default function ProductListScreen() {
     }
   }, [page, userInfo, successDelete, sellerMode]);
 
-  const createHandler = async () => {
-    if (window.confirm('Are you sure to create?')) {
-      try {
-        dispatch({ type: 'CREATE_REQUEST' });
-        const { data } = await axios.post(
-          '/api/products',
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        toast.success('product created successfully');
-        dispatch({ type: 'CREATE_SUCCESS' });
-        navigate(`/admin/product/${data.product._id}`);
-      } catch (error) {
-        toast.error(getError(error));
-        dispatch({ type: 'CREATE_FAIL' });
-      }
-    }
-  };
-
   const deleteHandler = async (product) => {
     if (window.confirm('Are you sure to delete?')) {
       try {
@@ -144,9 +123,9 @@ export default function ProductListScreen() {
           <h1>Products</h1>
         </div>
         <div className="col text-end">
-          <button className="search-btn1" onClick={createHandler}>
-            Create Product
-          </button>
+          <Link to="/createproduct">
+            <button className="search-btn1">Create Product</button>
+          </Link>
         </div>
       </div>
       {loadingCreate && <LoadingBox></LoadingBox>}

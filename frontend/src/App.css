@@ -70,11 +70,35 @@ ul {
   display: flex;
   align-items: center;
 }
-
 .nav0 .right_top {
   background: none;
 }
 
+.anouncement {
+  position: relative;
+  background: var(--btn-gradient);
+}
+.anouncement_item {
+  width: 100%;
+  color: white;
+  overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  transform: translateX(100%);
+  animation: moving 25s linear infinite;
+}
+
+@keyframes moving {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+.anouncement_item svg {
+  color: red;
+}
 .nav0 .right_top select {
   border: none;
   margin-right: 10px;

@@ -42,6 +42,7 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './component/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
+import ProductCreateScreen from './screens/ProductCreateScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -88,6 +89,7 @@ function App() {
         <header style={{ background: 'inherit' }}>
           <nav className="navbar1 ">
             <input type="checkbox" id="check" />
+
             <div className="d-none d-lg-block">
               <div className="nav0 ">
                 <div className="right_top">
@@ -189,6 +191,14 @@ function App() {
                     </NavDropdown>
                   </div>
                 )}
+              </div>
+            </div>
+            <div className="d-block d-md-none anouncement">
+              <div className="anouncement_item">
+                <div>
+                  50% discount on Newly Registered User... You Will LoShopping
+                  with Us pping with Us
+                </div>
               </div>
             </div>
             <div className="nav1">
@@ -549,6 +559,14 @@ function App() {
                 element={
                   <SellerRoute>
                     <OrderListScreen />
+                  </SellerRoute>
+                }
+              />
+              <Route
+                path="/createproduct"
+                element={
+                  <SellerRoute>
+                    <ProductCreateScreen />
                   </SellerRoute>
                 }
               />
