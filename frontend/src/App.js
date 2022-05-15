@@ -119,7 +119,7 @@ function App() {
                   Shopping with Us
                 </div>
                 {!userInfo ? (
-                  <Link className="  d-none d-lg-block" to="/signin">
+                  <Link className="language  d-none d-lg-block" to="/signin">
                     Sign In / Register
                   </Link>
                 ) : (

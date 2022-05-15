@@ -307,6 +307,10 @@ ul {
 @media (max-width: 992px) {
   .nav-items1 a {
     margin-left: 10px;
+    width: 20px;
+  }
+  .nav-items1 button.search-btn1 {
+    margin-left: 10px;
   }
   .nav1 {
     padding: 0 3vw;

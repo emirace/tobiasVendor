@@ -18,6 +18,7 @@ import 'react-multi-carousel/lib/styles.css';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import '../style/HomeScreen.css';
+import CategoryListing from '../component/CategoryListing';
 //import data from '../data';
 
 const reducer = (state, action) => {
@@ -182,29 +183,21 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
-          <section className="product1">
-            <div className="product-title">
-              <h2 className="product-category1">New deals</h2>
+
+          <section className="CategoryListing_section slanted ">
+            <div className="product-title-Listing">
+              <h2 className="product-categorylisting">New Collection</h2>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum dummy text of the printing and typesetting
+                industry. Lorem Ipsum
+              </p>
             </div>
-            <button onClick={() => sliderHandler('left')} className="pre-btn1">
-              <i class="fa fa-angle-left"></i>
-            </button>
-            <button
-              onClick={() => sliderHandler('right')}
-              className="next-btn1"
-            >
-              <i class="fa fa-angle-right"></i>
-            </button>
-            <div className="product-container1">
-              {products.map((product) => (
-                <div
-                  key={product.slug}
-                  className="smooth1"
-                  style={{ transform: sliderstyle }}
-                >
-                  <Product product={product} />
-                </div>
-              ))}
+            <div className="CategoryListing_item">
+              <CategoryListing image="/images/card6.png" title="Smart Shirt" />
+              <CategoryListing image="/images/card11.png" title="Sport" />
+              <CategoryListing image="/images/men.png" title="Colorful" />
+              <CategoryListing image="/images/men.png" title="Colorful" />
             </div>
           </section>
           <section className="center-item">
@@ -281,7 +274,30 @@ export default function ProductsScreen() {
             </div>
           </section>
           <section>
-            <div className="slanted"></div>
+            <div className="slanted">
+              <div className="downloadapp_section">
+                <div className="downloadapp_left">
+                  <div className="downloadapp_section_text">
+                    <div className="downloadapp_title">try it on mobile</div>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum dummy text of the printing
+                    and typesetting industry. Lorem Ipsum
+                  </div>
+                  <div className="downloadapp_img">
+                    <img src="/images/as.png" alt="playstore" />
+                    <img src="/images/gp.png" alt="playstore" />
+                  </div>
+                </div>
+                <div className="downloadapp_right">
+                  <img src="/images/phonescreen.png" alt="app" />
+                  <img
+                    className="downloadapp_small_img"
+                    src="/images/phonescreen.png"
+                    alt="app"
+                  />
+                </div>
+              </div>
+            </div>
           </section>
 
           <section className="discount spad">
