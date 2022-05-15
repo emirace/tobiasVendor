@@ -280,6 +280,10 @@ export default function ProductsScreen() {
               ))}
             </div>
           </section>
+          <section>
+            <div className="slanted"></div>
+          </section>
+
           <section className="discount spad">
             <div className="container">
               <div className="row">
@@ -323,7 +327,7 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
-          <section className="top_seller_carousel">
+          <section className="top_seller_carousel slanted2">
             <div className="product-title">
               <h2 className="product-category1">Top Sellers</h2>
             </div>
@@ -409,7 +413,6 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
-          <Newletter />
           {/* <section className="carl">
             <div className="left-side1">
               <span className="logo1">fashion</span>

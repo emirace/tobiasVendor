@@ -4,7 +4,6 @@ import '../style/Newsletter.css';
 export default function Newletter() {
   return (
     <div className="newsletter_container">
-      <h1 className="newsletter_title">Newsletter</h1>
       <div className="newsletter_desc">
         Get timely Update from your favorites product
       </div>

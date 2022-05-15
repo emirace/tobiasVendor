@@ -193,12 +193,19 @@ function App() {
                 )}
               </div>
             </div>
-            <div className="d-block d-md-none anouncement">
+            <div className="d-block d-lg-none anouncement">
               <div className="anouncement_item">
-                <div>
-                  50% discount on Newly Registered User... You Will LoShopping
-                  with Us pping with Us
-                </div>
+                <ul>
+                  <li>
+                    50% discount on Newly Registered User... You Will Love{' '}
+                    <FontAwesomeIcon
+                      icon={faHeart}
+                      className="red_love"
+                    ></FontAwesomeIcon>{' '}
+                    Shopping with Us
+                  </li>
+                  <li></li>
+                </ul>
               </div>
             </div>
             <div className="nav1">

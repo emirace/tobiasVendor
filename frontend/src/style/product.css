@@ -118,13 +118,16 @@
 
 .moblie-slider {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .mobile-image {
   width: 100%;
   display: flex;
   overflow: auto;
+}
+.mobile-image::-webkit-scrollbar {
+  display: none;
 }
 
 .mobile-image img {

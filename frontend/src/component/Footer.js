@@ -2,12 +2,15 @@ import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import '../style/Footer.css';
+import Newletter from './Newletter';
 
 export default function Footer() {
   return (
     <>
       <div className="footer_malon_top"></div>
-      <div className="footer_orange_top"></div>
+      <div className="footer_orange_top">
+        <Newletter />
+      </div>
       <div className="footer_container">
         <div className="footer_left">
           <h1 className="footer_logo">TOBIAS</h1>

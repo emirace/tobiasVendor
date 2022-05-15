@@ -167,6 +167,46 @@ export default function ProductScreen() {
             </div>
           ))}
         </div>
+        <div className=" col-sm-12 col-md-6 d-block d-md-none">
+          <div className=" row justify-content-center">
+            <div className="moblie-slider">
+              <div
+                onClick={() => sliderHandler('left')}
+                className="mobile-image-arrow-left"
+              >
+                <i class="fa fa-angle-left"></i>
+              </div>
+              <div
+                onClick={() => sliderHandler('right')}
+                className="mobile-image-arrow-right"
+              >
+                <i class="fa fa-angle-right"></i>
+              </div>
+              <div className="mobile-image">
+                <img
+                  style={{ transform: sliderstyle }}
+                  src={product.image}
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+                <img
+                  style={{ transform: sliderstyle }}
+                  src="/images/p1.jpg"
+                  alt="product"
+                ></img>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="single_product_center">
           <ReactImageMagnify
             imageClassName="single_main_image"
@@ -192,7 +232,9 @@ export default function ProductScreen() {
             />
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
-                {product.seller.seller.name}
+                <Link to={`/seller/${product.seller._id}`}>
+                  {product.seller.seller.name}
+                </Link>
               </div>
               <div>Benin City, Nigeria</div>
               <Rating
@@ -246,16 +288,6 @@ export default function ProductScreen() {
             <button className="sp_cart_btn">add to cart</button>
 
             <button className="sp_wishlist_btn ">wishlist</button>
-          </div>
-          <div className="sp_more_detail">
-            <div className="sp_detail_section sp_detail_section_f">
-              <div className="sp_detail_title">Item Detail</div>
-              <div className="sp_detail_contail">{product.description}</div>
-            </div>
-            <div className="sp_detail_section">
-              <div className="sp_detail_title">Condition</div>
-              <div className="sp_detail_contail">Item is in good conditon</div>
-            </div>
           </div>
           <div className="sp_more_detail">
             <div className="sp_detail_section sp_detail_section_f">
