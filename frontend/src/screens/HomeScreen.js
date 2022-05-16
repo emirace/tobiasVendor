@@ -203,7 +203,7 @@ export default function ProductsScreen() {
           <section className="center-item">
             <div className="container-fluid">
               <Row>
-                <Col lg={5} md={12}>
+                <Col md={5}>
                   <Col className="">
                     <div className="main-item paddown padtop">
                       <img
@@ -231,7 +231,7 @@ export default function ProductsScreen() {
                     </div>
                   </Col>
                 </Col>
-                <Col lg={7} md={12}>
+                <Col md={7}>
                   <div className="main-item main-item-1 padtop">
                     <img
                       src="/images/t3.jpg"
@@ -245,6 +245,22 @@ export default function ProductsScreen() {
                   </div>
                 </Col>
               </Row>
+            </div>
+          </section>
+          <section className="CategoryListing_section  slanted2 ">
+            <div className="product-title-Listing">
+              <h2 className="product-categorylisting">Brand</h2>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum dummy text of the printing and typesetting
+                industry. Lorem Ipsum
+              </p>
+            </div>
+            <div className="CategoryListing_item">
+              <CategoryListing image="/images/card6.png" title="Gucci" />
+              <CategoryListing image="/images/card11.png" title="fendi" />
+              <CategoryListing image="/images/men.png" title="bottega veneta" />
+              <CategoryListing image="/images/men.png" title="valentino" />
             </div>
           </section>
 
@@ -303,12 +319,12 @@ export default function ProductsScreen() {
           <section className="discount spad">
             <div className="container">
               <div className="row">
-                <div className="col-lg-6 p-0">
+                <div className=" col-md-6 p-0">
                   <div className="discount_pic">
                     <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
                   </div>
                 </div>
-                <div className="col-lg-6 p-0">
+                <div className=" col-md-6 p-0">
                   <div className="discount_text">
                     <div className="discount_text_title">
                       <span>Discount</span>
