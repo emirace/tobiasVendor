@@ -1,5 +1,6 @@
 .CategoryListing_section {
   display: flex;
+  margin-top: 30px;
 }
 
 .categorylisting_img {
@@ -89,4 +90,10 @@
   height: 2px;
   width: 70px;
   background-color: var(--malon-color);
+}
+
+@media (max-width: 992px) {
+  .CategoryListing_section {
+    flex-direction: column;
+  }
 }

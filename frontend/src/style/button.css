@@ -11,6 +11,7 @@
 .center-item {
   position: relative;
   overflow: hidden;
+  margin-bottom: 100px;
 }
 
 .center-item .main-item {

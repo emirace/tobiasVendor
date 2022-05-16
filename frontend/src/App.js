@@ -3,7 +3,15 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ProductsScreen from './screens/ProductsScreen';
 import ProductScreen from './screens/ProductScreen';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBagShopping,
+  faCircleHalfStroke,
+  faEnvelope,
+  faGear,
+  faHeart,
+  faRightFromBracket,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -78,8 +86,18 @@ function App() {
   }, []);
 
   const darkMode = (mode) => {
-    localStorage.setItem('mode', mode);
-    setMode(mode);
+    if (mode) {
+      setMode('pagebodydark');
+      localStorage.setItem('mode', 'pagebodydark');
+    } else {
+      setMode('pagebodylight');
+      localStorage.setItem('mode', 'pagebodylight');
+    }
+  };
+
+  const [menu, setMymenu] = useState(false);
+  const menuToggle = () => {
+    setMymenu(!menu);
   };
 
   return (
@@ -93,22 +111,22 @@ function App() {
             <div className="d-none d-lg-block">
               <div className="nav0 ">
                 <div className="right_top">
-                  <select className="language">
-                    <option>EN</option>
-                    <option>FR</option>
-                  </select>
-                  <select className="language">
-                    <option>$USD</option>
-                    <option>NGN</option>
-                    <option>RAN</option>
-                  </select>
-                  <select
-                    onChange={(e) => darkMode(e.target.value)}
-                    className="language"
-                  >
-                    <option value="pagebodydark">DARK</option>
-                    <option value="pagebodylight">LIGHT</option>
-                  </select>
+                  <div class="form-check form-switch language">
+                    <label
+                      class="form-check-label"
+                      for="flexSwitchCheckDefault"
+                    >
+                      {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
+                    </label>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="flexSwitchCheckDefault"
+                      checked={mode === 'pagebodydark'}
+                      onChange={(e) => darkMode(e.target.checked)}
+                    />
+                  </div>
                 </div>
                 <div className="top_center language">
                   50% discount on Newly Registered User... You Will Love{' '}
@@ -118,13 +136,13 @@ function App() {
                   ></FontAwesomeIcon>{' '}
                   Shopping with Us
                 </div>
-                {!userInfo ? (
+
+                {/* {!userInfo ? (
                   <Link className="language  d-none d-lg-block" to="/signin">
                     Sign In / Register
                   </Link>
                 ) : (
-                  <div className="d-flex">
-                    {userInfo.isSeller && (
+                  <div className="d-flex">{userInfo.isSeller && (
                       <NavDropdown
                         title="Seller"
                         className="d-none d-lg-block p-0 mybg-none language"
@@ -137,29 +155,9 @@ function App() {
                           <NavDropdown.Item>Orders</NavDropdown.Item>
                         </LinkContainer>
                       </NavDropdown>
-                    )}
-                    {userInfo.isAdmin && (
-                      <NavDropdown
-                        title="Admin"
-                        className="d-none d-lg-block p-0 mybg-none language"
-                        id="admin-nav-dropdown"
-                      >
-                        <LinkContainer to="/admin/dashboard">
-                          <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                        </LinkContainer>
-                        <LinkContainer to="/admin/product">
-                          <NavDropdown.Item>Products</NavDropdown.Item>
-                        </LinkContainer>
-                        <LinkContainer to="/admin/order">
-                          <NavDropdown.Item>Orders</NavDropdown.Item>
-                        </LinkContainer>
-                        <LinkContainer to="/admin/user">
-                          <NavDropdown.Item>Users</NavDropdown.Item>
-                        </LinkContainer>
-                      </NavDropdown>
-                    )}
+                    )} */}
 
-                    <NavDropdown
+                {/* <NavDropdown
                       className="d-none d-lg-block p-0 mybg-none language"
                       title={
                         <>
@@ -171,7 +169,7 @@ function App() {
                       id="basic-nav-dropdown"
                     >
                       <LinkContainer to="/profile">
-                        <NavDropdown.Item className="font13 bg-black">
+                        <NavDropdown.Item className="font13 ">
                           User Profile
                         </NavDropdown.Item>
                       </LinkContainer>
@@ -188,9 +186,10 @@ function App() {
                       >
                         Sign Out
                       </Link>
-                    </NavDropdown>
-                  </div>
-                )}
+                    </NavDropdown> </div>
+                )} */}
+
+                <div className="nav_sell_btn">Sell</div>
               </div>
             </div>
             <div className="d-block d-lg-none anouncement">
@@ -204,7 +203,6 @@ function App() {
                     ></FontAwesomeIcon>{' '}
                     Shopping with Us
                   </li>
-                  <li></li>
                 </ul>
               </div>
             </div>
@@ -240,8 +238,85 @@ function App() {
                     <span>{cart.cartItems.length}</span>
                   )}
                 </Link>
+                <button className="search-btn1 d-block d-lg-none">Sell</button>
+                {userInfo ? (
+                  <div className="mydropdown d-none d-lg-block">
+                    <div className="myprofile mx-3" onClick={menuToggle}>
+                      <img src="/images/pimage.png" alt="" />
+                    </div>
+                    <div
+                      className={menu ? 'mymenu active' : 'mymenu'}
+                      onClick={() => setMymenu(false)}
+                    >
+                      <h3>
+                        Welcome <span> {userInfo.name}</span>
+                      </h3>
 
-                <button className="search-btn1">Sell</button>
+                      <ul>
+                        <li>
+                          <FontAwesomeIcon icon={faUser} />
+                          <Link to="/profile">My Profile</Link>
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faEnvelope} />
+                          <Link to="">Inbox</Link>
+                        </li>
+
+                        <li>
+                          <FontAwesomeIcon icon={faBagShopping} />
+                          <Link to="/orderhistory">Orders History</Link>
+                        </li>
+                        {userInfo.isSeller && (
+                          <>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/seller/order">Orders</Link>
+                            </li>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/seller/product">Products</Link>
+                            </li>
+                          </>
+                        )}
+                        {userInfo.isAdmin && (
+                          <>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/admin/dashboard">Dashboard</Link>
+                            </li>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/admin/productlist">All Products</Link>
+                            </li>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/admin/orderlist">All Orders</Link>
+                            </li>
+                            <li>
+                              <FontAwesomeIcon icon={faBagShopping} />
+                              <Link to="/admin/userlist">All Users</Link>
+                            </li>
+                          </>
+                        )}
+
+                        <li>
+                          <FontAwesomeIcon icon={faGear} />
+                          <Link to="">Settings</Link>
+                        </li>
+                        <li>
+                          <FontAwesomeIcon icon={faRightFromBracket} />
+                          <Link to="#signout" onClick={signoutHandler}>
+                            Logout
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <Link className="  d-none d-lg-block link1" to="/signin">
+                    Sign In / Register
+                  </Link>
+                )}
               </div>
             </div>
             <ul className="links-container1">
@@ -251,42 +326,100 @@ function App() {
                     <i class="fas fa-times"></i>
                   </label>
                   <div className=" sidebar_mode d-block d-lg-none">
-                    <select className="language">
-                      <option>EN</option>
-                      <option>FR</option>
-                    </select>
-                    <select className="language">
-                      <option>$USD</option>
-                      <option>NGN</option>
-                      <option>RAN</option>
-                    </select>
-                    <select
-                      onChange={(e) => darkMode(e.target.value)}
-                      className="language"
-                    >
-                      <option value="pagebodydark">DARK</option>
-                      <option value="pagebodylight">LIGHT</option>
-                    </select>
+                    <div class="form-check form-switch ">
+                      <label
+                        class="form-check-label"
+                        for="flexSwitchCheckDefault"
+                      >
+                        {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
+                      </label>
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        role="switch"
+                        id="flexSwitchCheckDefault"
+                        checked={mode === 'pagebodydark'}
+                        onChange={(e) => darkMode(e.target.checked)}
+                      />
+                    </div>
                   </div>
                 </div>
                 {userInfo ? (
                   <>
-                    <NavDropdown className="link1" title={userInfo.name}>
-                      <LinkContainer to="/profile">
-                        <NavDropdown.Item>User Profile</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/orderhistory">
-                        <NavDropdown.Item>Order History</NavDropdown.Item>
-                      </LinkContainer>
-                      <NavDropdown.Divider />
-                      <Link
-                        className="dropdown-item"
-                        to="#signout"
-                        onClick={signoutHandler}
+                    <div className="mydropdown d-block d-lg-none">
+                      <div className="myprofile mx-3" onClick={menuToggle}>
+                        <img src="/images/pimage.png" alt="" />
+                      </div>
+                      <div
+                        className={menu ? 'mymenuside active' : 'mymenuside'}
+                        onClick={() => setMymenu(false)}
                       >
-                        Sign Out
-                      </Link>
-                    </NavDropdown>
+                        <h3>
+                          Welcome <span> {userInfo.name}</span>
+                        </h3>
+
+                        <ul>
+                          <li>
+                            <FontAwesomeIcon icon={faUser} />
+                            <Link to="/profile">My Profile</Link>
+                          </li>
+                          <li>
+                            <FontAwesomeIcon icon={faEnvelope} />
+                            <Link to="">Inbox</Link>
+                          </li>
+
+                          <li>
+                            <FontAwesomeIcon icon={faBagShopping} />
+                            <Link to="/orderhistory">Orders History</Link>
+                          </li>
+                          {userInfo.isSeller && (
+                            <>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/seller/order">Orders</Link>
+                              </li>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/seller/product">Products</Link>
+                              </li>
+                            </>
+                          )}
+                          {userInfo.isAdmin && (
+                            <>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/admin/dashboard">Dashboard</Link>
+                              </li>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/admin/productlist">
+                                  All Products
+                                </Link>
+                              </li>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/admin/orderlist">All Orders</Link>
+                              </li>
+                              <li>
+                                <FontAwesomeIcon icon={faBagShopping} />
+                                <Link to="/admin/userlist">All Users</Link>
+                              </li>
+                            </>
+                          )}
+
+                          <li>
+                            <FontAwesomeIcon icon={faGear} />
+                            <Link to="">Settings</Link>
+                          </li>
+                          <li>
+                            <FontAwesomeIcon icon={faRightFromBracket} />
+                            <Link to="#signout" onClick={signoutHandler}>
+                              Logout
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                     <a href="/#" alt="" className="link1">
                       <i class="fa fa-envelope"></i>
                     </a>
@@ -297,17 +430,19 @@ function App() {
                   </Link>
                 )}
               </div>
-              <li className="link1">
-                <a href="/#" className="">
-                  Womenswear
-                </a>
-                <ul className="sub-cat1">
+              <div className="linkgroup">
+                <li className="link1">
+                  <a href="/#" className="">
+                    Womenswear
+                  </a>
+                </li>
+                <ul className={`sub-cat1 ${mode || ''}`}>
                   <li className="">sub cat</li>
                   <li className="">sub cat</li>
                   <li className="">sub cat</li>
                   <li className="">sub cat</li>
                 </ul>
-              </li>
+              </div>
               <li className="link1">
                 <a href="/#">Menswear</a>
               </li>
