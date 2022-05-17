@@ -178,14 +178,15 @@ export default function ProductCreateScreen() {
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
         </Form.Group>
-        <Form.Group as={Col} className="mb-3" controlId="video">
+        {/* <Form.Group as={Col} className="mb-3" controlId="video">
           <Form.Label>Upload Video !optional</Form.Label>
           <Form.Control
             type="file"
+            disabled
             onChange={(e) => uploadFileHandler(e, 'video')}
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
-        </Form.Group>
+        </Form.Group> */}
         <Form.Group as={Col} className="mb-3" controlId="category">
           <Form.Label>Select Category</Form.Label>
           <Form.Select

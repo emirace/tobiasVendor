@@ -209,9 +209,9 @@ function App() {
               </div>
             </div>
             <div className="nav1">
-              {/* <label for="check" className="checkbtn1">
+              <label for="check" className="checkbtn1">
                 <i class="fas fa-bars"></i>
-              </label> */}
+              </label>
               <LinkContainer to="/">
                 <div className="brand-logo1">TOBIAS</div>
               </LinkContainer>

@@ -218,8 +218,8 @@ export default function ProductScreen() {
               },
               largeImage: {
                 src: selectedImage || `${product.image}`,
-                width: 679,
-                height: 829,
+                width: 1018,
+                height: 1244,
               },
             }}
           />
@@ -285,7 +285,9 @@ export default function ProductScreen() {
             </label>
           </div>
           <div className="sp_btn">
-            <button className="sp_cart_btn">add to cart</button>
+            <button onClick={addToCartHandler} className="sp_cart_btn">
+              add to cart
+            </button>
 
             <button className="sp_wishlist_btn ">wishlist</button>
           </div>
