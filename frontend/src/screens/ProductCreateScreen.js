@@ -34,6 +34,7 @@ export default function ProductCreateScreen() {
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
   const [images, setImages] = useState([]);
+  const [video, setVideo] = useState('');
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [brand, setBrand] = useState('');
@@ -70,7 +71,6 @@ export default function ProductCreateScreen() {
       e.preventDefault();
       e.stopPropagation();
       setValidated(true);
-      toast.error('form is not ok');
     } else {
       try {
         dispatch({ type: 'CREATE_REQUEST' });
@@ -80,6 +80,7 @@ export default function ProductCreateScreen() {
             name,
             image,
             images,
+            video,
             category,
             description,
             brand,
@@ -107,7 +108,7 @@ export default function ProductCreateScreen() {
     }
   };
 
-  const uploadFileHandler = async (e, forImages) => {
+  const uploadFileHandler = async (e, fileType) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);
@@ -120,10 +121,12 @@ export default function ProductCreateScreen() {
         },
       });
       dispatch({ type: 'UPLOAD_SUCCESS' });
-      if (forImages) {
+      if (fileType === 'images') {
         setImages([...images, data.secure_url]);
-      } else {
+      } else if (fileType === 'image') {
         setImage(data.secure_url);
+      } else {
+        setVideo(data.secure_url);
       }
       toast.success('Image uploaded successfully, click Update to apply It');
     } catch (err) {
@@ -159,7 +162,7 @@ export default function ProductCreateScreen() {
           <Form.Control
             required
             type="file"
-            onChange={(e) => uploadFileHandler(e, false)}
+            onChange={(e) => uploadFileHandler(e, image)}
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -171,7 +174,15 @@ export default function ProductCreateScreen() {
           <Form.Label>Upload Additional Images</Form.Label>
           <Form.Control
             type="file"
-            onChange={(e) => uploadFileHandler(e, true)}
+            onChange={(e) => uploadFileHandler(e, images)}
+          />
+          {loadingUpload ? <LoadingBox></LoadingBox> : ''}
+        </Form.Group>
+        <Form.Group as={Col} className="mb-3" controlId="video">
+          <Form.Label>Upload Video !optional</Form.Label>
+          <Form.Control
+            type="file"
+            onChange={(e) => uploadFileHandler(e, 'video')}
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
         </Form.Group>

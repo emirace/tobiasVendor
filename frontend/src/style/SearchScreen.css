@@ -73,3 +73,12 @@
 .filter_sidebar.active {
   display: block !important;
 }
+
+.search_sortBy {
+  background: inherit;
+  color: inherit;
+}
+
+.search_result {
+  align-items: center;
+}

@@ -1,0 +1,38 @@
+.stickynav_contain {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 55px;
+  z-index: 9;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  overflow-x: auto;
+}
+
+.sticky_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--malon-color);
+  flex-grow: 1;
+  min-width: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sticky_item:hover {
+  background-color: #eeeeee;
+}
+.sticky_item.active {
+  color: var(--orange-color);
+}
+.sticky_item svg {
+  font-size: 24px;
+}
+
+.stickynav_text {
+  font-size: 13px;
+}

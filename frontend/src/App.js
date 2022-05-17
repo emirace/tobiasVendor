@@ -51,6 +51,7 @@ import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './component/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import ProductCreateScreen from './screens/ProductCreateScreen';
+import StickyNav from './component/StickyNav';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -104,6 +105,7 @@ function App() {
     <BrowserRouter>
       <ToastContainer position="top-center" limit={1} />
       <div className={mode || ''}>
+        <StickyNav />
         <header style={{ background: 'inherit' }}>
           <nav className="navbar1 ">
             <input type="checkbox" id="check" />
@@ -207,9 +209,9 @@ function App() {
               </div>
             </div>
             <div className="nav1">
-              <label for="check" className="checkbtn1">
+              {/* <label for="check" className="checkbtn1">
                 <i class="fas fa-bars"></i>
-              </label>
+              </label> */}
               <LinkContainer to="/">
                 <div className="brand-logo1">TOBIAS</div>
               </LinkContainer>
@@ -217,9 +219,9 @@ function App() {
                 <SearchBox />
               </div>
               <div className="nav-items1">
-                <a href="/#" className="d-block d-md-block d-lg-none">
+                {/* <a href="/#" className="d-block d-md-block d-lg-none">
                   <i class="fa fa-search"></i>
-                </a>
+                </a> */}
                 {userInfo ? (
                   <>
                     <a href="/#" alt="" className="d-none d-lg-block">
@@ -229,9 +231,9 @@ function App() {
                 ) : (
                   ''
                 )}
-                <Link to="/wishlists" className="nav-cart-btn1">
+                {/* <Link to="/wishlists" className="nav-cart-btn1">
                   <i class="fa fa-heart"></i>
-                </Link>
+                </Link> */}
                 <Link to="/cart" className="nav-cart-btn1">
                   <i class="fa fa-shopping-cart"></i>
                   {cart.cartItems.length > 0 && (

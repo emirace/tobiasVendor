@@ -79,10 +79,15 @@ ul {
   top: 0;
   right: 0;
   background: var(--btn-gradient);
+
+  overflow-x: auto;
+}
+.anouncement::-webkit-scrollbar {
+  display: none;
 }
 .anouncement ul {
-  display: flex;
   animation: moving 25s infinite linear;
+  animation-delay: 5s;
 }
 .anouncement ul li {
   white-space: nowrap;
@@ -91,7 +96,7 @@ ul {
 
 @keyframes moving {
   0% {
-    transform: translateX(100%);
+    transform: translateX(50%);
   }
   100% {
     transform: translateX(-100%);
@@ -316,6 +321,12 @@ ul {
   .nav-items1 a {
     margin-left: 10px;
     width: 20px;
+  }
+
+  .brand-logo1 {
+    justify-content: center;
+    width: 100vw;
+    font-size: 50px;
   }
   .nav-items1 button.search-btn1 {
     margin-left: 10px;
