@@ -288,15 +288,15 @@ function App() {
                             </li>
                             <li>
                               <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/productlist">All Products</Link>
+                              <Link to="/admin/product">All Products</Link>
                             </li>
                             <li>
                               <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/orderlist">All Orders</Link>
+                              <Link to="/admin/order">All Orders</Link>
                             </li>
                             <li>
                               <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/userlist">All Users</Link>
+                              <Link to="/admin/user">All Users</Link>
                             </li>
                           </>
                         )}
