@@ -334,7 +334,7 @@ export default function ProductsScreen() {
               </div>
             </div>
           </section>
-          <section className="top_seller_carousel slanted2">
+          <section className="top_seller_carousel">
             <div className="product-title">
               <h2 className="product-category1">Top Sellers</h2>
             </div>
