@@ -1,5 +1,4 @@
 import express from 'express';
-import { isAuth, isAdmin } from '../utils.js';
 import Product from '../models/productModel.js';
 import {
   isAuth,
