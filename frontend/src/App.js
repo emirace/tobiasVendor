@@ -12,7 +12,7 @@ import {
   faRightFromBracket,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import Navbar from 'react-bootstrap/Navbar';
+import Navbar from './component/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Badge from 'react-bootstrap/Badge';
@@ -52,9 +52,64 @@ import SellerRoute from './component/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import ProductCreateScreen from './screens/ProductCreateScreen';
 import StickyNav from './component/StickyNav';
+import styled from 'styled-components';
+
+const NavCont = styled.div`
+  position: relation;
+`;
+const Switch = styled.input.attrs({
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
+})`
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #fff;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+    display: none;
+  }
+
+  &:checked {
+    background: #000;
+    &:before {
+      left: 25px;
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--malon-color);
+    transition: 0.5s;
+  }
+`;
+
+const Label = styled.label.attrs({
+  for: 'darkmodeSwitch',
+})`
+  color: #fff;
+  margin-left: 5px;
+  position: absolute;
+  top: 5px;
+  left: 60px;
+  @media (max-width: 992px) {
+    display: none;
+  }
+`;
 
 function App() {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state, f: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
   const signoutHandler = () => {
@@ -84,7 +139,7 @@ function App() {
       }
     };
     fetchCategories();
-  }, []);
+  }, [mode]);
 
   const darkMode = (mode) => {
     if (mode) {
@@ -107,473 +162,17 @@ function App() {
       <div className={mode || ''}>
         <StickyNav />
         <header style={{ background: 'inherit' }}>
-          <nav className="navbar1 ">
-            <input type="checkbox" id="check" />
-
-            <div className="d-none d-lg-block">
-              <div className="nav0 ">
-                <div className="right_top">
-                  <div class="form-check form-switch language">
-                    <label
-                      class="form-check-label"
-                      for="flexSwitchCheckDefault"
-                    >
-                      {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
-                    </label>
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      role="switch"
-                      id="flexSwitchCheckDefault"
-                      checked={mode === 'pagebodydark'}
-                      onChange={(e) => darkMode(e.target.checked)}
-                    />
-                  </div>
-                </div>
-                <div className="top_center language">
-                  50% discount on Newly Registered User... You Will Love{' '}
-                  <FontAwesomeIcon
-                    icon={faHeart}
-                    className="red_love"
-                  ></FontAwesomeIcon>{' '}
-                  Shopping with Us
-                </div>
-
-                {/* {!userInfo ? (
-                  <Link className="language  d-none d-lg-block" to="/signin">
-                    Sign In / Register
-                  </Link>
-                ) : (
-                  <div className="d-flex">{userInfo.isSeller && (
-                      <NavDropdown
-                        title="Seller"
-                        className="d-none d-lg-block p-0 mybg-none language"
-                        id="admin-nav-dropdown"
-                      >
-                        <LinkContainer to="/seller/product">
-                          <NavDropdown.Item>Products</NavDropdown.Item>
-                        </LinkContainer>
-                        <LinkContainer to="/seller/order">
-                          <NavDropdown.Item>Orders</NavDropdown.Item>
-                        </LinkContainer>
-                      </NavDropdown>
-                    )} */}
-
-                {/* <NavDropdown
-                      className="d-none d-lg-block p-0 mybg-none language"
-                      title={
-                        <>
-                          <i class="fa fa-user-circle mybg-none"></i>
-                          {'  '}
-                          {userInfo.name}
-                        </>
-                      }
-                      id="basic-nav-dropdown"
-                    >
-                      <LinkContainer to="/profile">
-                        <NavDropdown.Item className="font13 ">
-                          User Profile
-                        </NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/orderhistory">
-                        <NavDropdown.Item className="font13">
-                          Order History
-                        </NavDropdown.Item>
-                      </LinkContainer>
-                      <NavDropdown.Divider />
-                      <Link
-                        className="dropdown-item font13"
-                        to="#signout"
-                        onClick={signoutHandler}
-                      >
-                        Sign Out
-                      </Link>
-                    </NavDropdown> </div>
-                )} */}
-
-                <div className="nav_sell_btn">Sell</div>
-              </div>
-            </div>
-            <div className="d-block d-lg-none anouncement">
-              <div className="anouncement_item">
-                <ul>
-                  <li>
-                    50% discount on Newly Registered User... You Will Love{' '}
-                    <FontAwesomeIcon
-                      icon={faHeart}
-                      className="red_love"
-                    ></FontAwesomeIcon>{' '}
-                    Shopping with Us
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="nav1">
-              <label for="check" className="checkbtn1">
-                <i class="fas fa-bars"></i>
-              </label>
-              <LinkContainer to="/">
-                <div className="brand-logo1">TOBIAS</div>
-              </LinkContainer>
-              <div className="navsearch">
-                <SearchBox />
-              </div>
-              <div className="nav-items1">
-                {/* <a href="/#" className="d-block d-md-block d-lg-none">
-                  <i class="fa fa-search"></i>
-                </a> */}
-                {userInfo ? (
-                  <>
-                    <a href="/#" alt="" className="d-none d-lg-block">
-                      <i class="fa fa-envelope"></i>
-                    </a>
-                  </>
-                ) : (
-                  ''
-                )}
-                {/* <Link to="/wishlists" className="nav-cart-btn1">
-                  <i class="fa fa-heart"></i>
-                </Link> */}
-                <Link to="/cart" className="nav-cart-btn1">
-                  <i class="fa fa-shopping-cart"></i>
-                  {cart.cartItems.length > 0 && (
-                    <span>{cart.cartItems.length}</span>
-                  )}
-                </Link>
-                <button className="search-btn1 d-block d-lg-none">Sell</button>
-                {userInfo ? (
-                  <div className="mydropdown d-none d-lg-block">
-                    <div className="myprofile mx-3" onClick={menuToggle}>
-                      <img src="/images/pimage.png" alt="" />
-                    </div>
-                    <div
-                      className={menu ? 'mymenu active' : 'mymenu'}
-                      onClick={() => setMymenu(false)}
-                    >
-                      <h3>
-                        Welcome <span> {userInfo.name}</span>
-                      </h3>
-
-                      <ul>
-                        <li>
-                          <FontAwesomeIcon icon={faUser} />
-                          <Link to="/profile">My Profile</Link>
-                        </li>
-                        <li>
-                          <FontAwesomeIcon icon={faEnvelope} />
-                          <Link to="">Inbox</Link>
-                        </li>
-
-                        <li>
-                          <FontAwesomeIcon icon={faBagShopping} />
-                          <Link to="/orderhistory">Orders History</Link>
-                        </li>
-                        {userInfo.isSeller && (
-                          <>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/seller/order">Orders</Link>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/seller/product">Products</Link>
-                            </li>
-                          </>
-                        )}
-                        {userInfo.isAdmin && (
-                          <>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/dashboard">Dashboard</Link>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/product">All Products</Link>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/order">All Orders</Link>
-                            </li>
-                            <li>
-                              <FontAwesomeIcon icon={faBagShopping} />
-                              <Link to="/admin/user">All Users</Link>
-                            </li>
-                          </>
-                        )}
-
-                        <li>
-                          <FontAwesomeIcon icon={faGear} />
-                          <Link to="">Settings</Link>
-                        </li>
-                        <li>
-                          <FontAwesomeIcon icon={faRightFromBracket} />
-                          <Link to="#signout" onClick={signoutHandler}>
-                            Logout
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                ) : (
-                  <Link className="  d-none d-lg-block link1" to="/signin">
-                    Sign In / Register
-                  </Link>
-                )}
-              </div>
-            </div>
-            <ul className="links-container1">
-              <div className="nav-signin ">
-                <div className="sidenav-top">
-                  <label for="check" className="checkbtn1">
-                    <i class="fas fa-times"></i>
-                  </label>
-                  <div className=" sidebar_mode d-block d-lg-none">
-                    <div class="form-check form-switch ">
-                      <label
-                        class="form-check-label"
-                        for="flexSwitchCheckDefault"
-                      >
-                        {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
-                      </label>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="flexSwitchCheckDefault"
-                        checked={mode === 'pagebodydark'}
-                        onChange={(e) => darkMode(e.target.checked)}
-                      />
-                    </div>
-                  </div>
-                </div>
-                {userInfo ? (
-                  <>
-                    <div className="mydropdown d-block d-lg-none">
-                      <div className="myprofile mx-3" onClick={menuToggle}>
-                        <img src="/images/pimage.png" alt="" />
-                      </div>
-                      <div
-                        className={menu ? 'mymenuside active' : 'mymenuside'}
-                        onClick={() => setMymenu(false)}
-                      >
-                        <h3>
-                          Welcome <span> {userInfo.name}</span>
-                        </h3>
-
-                        <ul>
-                          <li>
-                            <FontAwesomeIcon icon={faUser} />
-                            <Link to="/profile">My Profile</Link>
-                          </li>
-                          <li>
-                            <FontAwesomeIcon icon={faEnvelope} />
-                            <Link to="">Inbox</Link>
-                          </li>
-
-                          <li>
-                            <FontAwesomeIcon icon={faBagShopping} />
-                            <Link to="/orderhistory">Orders History</Link>
-                          </li>
-                          {userInfo.isSeller && (
-                            <>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/seller/order">Orders</Link>
-                              </li>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/seller/product">Products</Link>
-                              </li>
-                            </>
-                          )}
-                          {userInfo.isAdmin && (
-                            <>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/admin/dashboard">Dashboard</Link>
-                              </li>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/admin/productlist">
-                                  All Products
-                                </Link>
-                              </li>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/admin/orderlist">All Orders</Link>
-                              </li>
-                              <li>
-                                <FontAwesomeIcon icon={faBagShopping} />
-                                <Link to="/admin/userlist">All Users</Link>
-                              </li>
-                            </>
-                          )}
-
-                          <li>
-                            <FontAwesomeIcon icon={faGear} />
-                            <Link to="">Settings</Link>
-                          </li>
-                          <li>
-                            <FontAwesomeIcon icon={faRightFromBracket} />
-                            <Link to="#signout" onClick={signoutHandler}>
-                              Logout
-                            </Link>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <a href="/#" alt="" className="link1">
-                      <i class="fa fa-envelope"></i>
-                    </a>
-                  </>
-                ) : (
-                  <Link className=" link1 h80" to="/signin">
-                    Sign In / Register
-                  </Link>
-                )}
-              </div>
-              <div className="linkgroup">
-                <li className="link1">
-                  <a href="/#" className="">
-                    Womenswear
-                  </a>
-                </li>
-                <ul className={`sub-cat1 ${mode || ''}`}>
-                  <li className="">sub cat</li>
-                  <li className="">sub cat</li>
-                  <li className="">sub cat</li>
-                  <li className="">sub cat</li>
-                </ul>
-              </div>
-              <li className="link1">
-                <a href="/#">Menswear</a>
-              </li>
-              <li className="link1">
-                <a href="/#">Curve +plus</a>
-              </li>
-              <li className="link1">
-                <a href="/#">Kids</a>
-              </li>
-              <li className="link1">
-                <a href="/#">Brands</a>
-              </li>
-              <li className="link1">
-                <a href="/#">Shop by Outfit</a>
-              </li>
-              <li className="link1">
-                <a href="/#">Shop By Brand</a>
-              </li>
-            </ul>
-          </nav>
-          {/* <Navbar bg="white" variant="dark" expand="lg" className="mt-2">
-          <Container>
-            <LinkContainer to="/">
-              <Navbar.Brand>TOBIAS</Navbar.Brand>
-            </LinkContainer>
-
-            <SearchBox></SearchBox>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto w-100 justify-content-end">
-                <Link to="/cart" className="nav-link nav-cart-basket">
-                  <i className="fa fa-shopping-cart "></i>
-                  {cart.cartItems.length > 0 && (
-                    <Badge pill bg="danger">
-                      {cart.cartItems.length}
-                    </Badge>
-                  )}
-                </Link>
-                <div>
-                  <img
-                    alt="pics"
-                    src="/images/profile.jpg"
-                    className="rounded-circle z-depth-2 nav-user-img"
-                  ></img>
-                </div>
-                {userInfo ? (
-                  <div className="user-nav-item">
-                    <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
-                      <LinkContainer to="/profile">
-                        <NavDropdown.Item>User Profile</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to="/orderhistory">
-                        <NavDropdown.Item>Order History</NavDropdown.Item>
-                      </LinkContainer>
-                      <NavDropdown.Divider />
-                      <Link
-                        className="dropdown-item"
-                        to="#signout"
-                        onClick={signoutHandler}
-                      >
-                        Sign Out
-                      </Link>
-                    </NavDropdown>
-                    <small className="small-user">Admin</small>
-                  </div>
-                ) : (
-                  <Link className="nav-link" to="/signin">
-                    Sign In
-                  </Link>
-                )}
-                {/* {userInfo && userInfo.isAdmin && (
-                  <NavDropdown title="Admin" id="admin-nav-dropdown">
-                    <LinkContainer to="/admin/dashboard">
-                      <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/admin/productlist">
-                      <NavDropdown.Item>Products</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/admin/orderlist">
-                      <NavDropdown.Item>Orders</NavDropdown.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/admin/userlist">
-                      <NavDropdown.Item>Users</NavDropdown.Item>
-                    </LinkContainer>
-                  </NavDropdown>
-                )} */}
-          {/*</Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar> */}
+          <NavCont>
+            <Navbar />
+            <Switch
+              checked={mode === 'pagebodydark'}
+              onChange={(e) => darkMode(e.target.checked)}
+            ></Switch>
+            <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+          </NavCont>
         </header>
-        {/* <div
-        className={
-          sidebarIsOpen
-            ? 'd-flex flex-column site-container active-cont'
-            : 'd-flex flex-column site-container'
-        }
-      > */}
-        {/* <div
-          className={
-            sidebarIsOpen
-              ? 'active-nav side-navbar d-flex justify-content-between flex-wrap flex-column'
-              : 'side-navbar d-flex justify-content-between flex-wrap flex-column'
-          }
-        >
-          <Nav className="flex-column text-black w-100 p-2">
-            <Nav.Item>
-              <strong>Categories</strong>
-            </Nav.Item>
-            {categories.map((category) => (
-              <Nav.Item key={category}>
-                <LinkContainer
-                  to={`/search?category=${category}`}
-                  onClick={() => setSidebarIsOpen(false)}
-                >
-                  <Nav.Link>{category}</Nav.Link>
-                </LinkContainer>
-              </Nav.Item>
-            ))}
-          </Nav>
-        </div> */}
+
         <main>
-          {/* <Button
-            variant="light"
-            onClick={() => setSidebarIsOpen(!sidebarIsOpen)}
-          >
-            <i className="fas fa-bars"></i>
-            {!sidebarIsOpen ? <strong> Category</strong> : ''}
-          </Button> */}
           <div className="p-0 container-fluid">
             <Routes>
               <Route path="/product/:slug" element={<ProductScreen />} />

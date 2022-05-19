@@ -300,12 +300,8 @@ a {
 }
 
 .banner_text {
-  position: absolute;
-  left: 50px;
-  top: 30px;
-  max-width: 50%;
+  margin-top: 30px;
   background: none;
-  z-index: 9;
 }
 
 .banner_text span {
@@ -319,14 +315,12 @@ a {
 .banner_text h1 {
   font-size: 100px;
   background: none;
-  color: #fff;
   margin-bottom: 15px;
   line-height: 90px;
 }
 
 .banner_text a {
   font-size: 14px;
-  color: #fff;
   text-transform: uppercase;
   font-weight: 700;
   position: relative;
@@ -352,7 +346,7 @@ a {
 
 .owl-theme .owl-dots .owl-dot.active span,
 .owl-theme .owl-dots .owl-dot:hover span {
-  background: #000 !important;
+  background: #b1b0b0 !important;
 }
 
 .owl-theme .owl-dots .owl-dot span {
@@ -559,7 +553,6 @@ ls {
   margin-bottom: 0;
   font-size: 20px;
   font-weight: 700;
-  color: var(--orange-color);
 }
 
 .product-short-desc1 {
@@ -579,7 +572,7 @@ ls {
 
 .actual-price1 {
   margin-left: 20px;
-  opacity: 0.5;
+  color: var(--orange-color);
   text-decoration: line-through;
 }
 
@@ -906,6 +899,17 @@ form .mb-3 a:hover,
 }
 
 @media (max-width: 992px) {
+  .product-card1 {
+    width: 144px;
+    height: 245px;
+  }
+  .product-image1 {
+    height: 216px;
+  }
+
+  .center-item .main-item {
+    height: 325px;
+  }
   .discount_text {
     padding: 30px !important;
   }

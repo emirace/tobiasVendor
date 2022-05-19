@@ -62,7 +62,7 @@ export default function Product(props) {
         <h2 className="product-brand1">
           <Link to={`/product/${product.slug}`}>{product.name}</Link>
         </h2>
-        <p className="product-short-desc1">{product.description}</p>
+        <p className="product-short-desc1">{product.brand}</p>
         <span className="price1">${product.price}</span>
         <span className="actual-price1">$150</span>
       </div>

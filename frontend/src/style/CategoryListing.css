@@ -1,11 +1,12 @@
 .CategoryListing_section {
   display: flex;
-  margin-top: 30px;
+  margin: 50px 0;
 }
 
 .categorylisting_img {
-  width: 300px;
-  height: 300px;
+  position: relative;
+  width: 250px;
+  height: 250px;
   background: white;
   border-radius: 5px;
 }
@@ -33,10 +34,11 @@
   justify-content: center;
   font-size: 20px;
   background: white;
-  width: 200px;
+  width: 170px;
   border: 1px solid var(--malon-color);
   border-radius: 5px;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 .categorylisting_title:hover {
@@ -70,11 +72,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: whiteS;
 }
 
 .product-title-Listing p {
   padding: 0 5vw;
+  max-width: 400px;
 }
 
 .product-categorylisting {
@@ -98,5 +100,11 @@
 @media (max-width: 992px) {
   .CategoryListing_section {
     flex-direction: column;
+  }
+  .product-title-Listing p {
+    max-width: 400px;
+  }
+  .CategoryListing_item {
+    margin-left: 20px;
   }
 }

@@ -19,6 +19,7 @@ import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import '../style/HomeScreen.css';
 import CategoryListing from '../component/CategoryListing';
+import Navbar from '../component/Navbar';
 //import data from '../data';
 
 const reducer = (state, action) => {
@@ -108,27 +109,6 @@ export default function ProductsScreen() {
         <title>Tobias</title>
       </Helmet>
       <Row>
-        {/* <Col lg={2}>
-          <div className="categories d-md-none d-lg-block">
-            <div className="container">
-              <div className="row">
-                <div className="col-md-12">
-                  <div className="categories-title border-0 mb-4 shadow-sm rounded-pill p-1 ">
-                    <div className="hot-deals-title">
-                      <i className="fas fa-bars"></i> Categories
-                    </div>
-                  </div>
-                  <ul>
-                    <li>shirt</li>
-                    <li>shirt</li>
-                    <li>shirt</li>
-                    <li>shirt</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Col> */}
         <Col>
           <section className="banner ">
             <div className="container-fluid p-0">
@@ -148,7 +128,6 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/p11.jpg" alt="" />
-                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -159,7 +138,6 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/t4.jpg" alt="" />
-                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -170,7 +148,6 @@ export default function ProductsScreen() {
                     <div className="banner_item">
                       <div className="banner_image">
                         <img src="/images/t7.jpg" alt="" />
-                        {/* <div id="overlay"></div> */}
                       </div>
                       <div className="banner_text">
                         <span>The Big Collection</span>
@@ -184,7 +161,7 @@ export default function ProductsScreen() {
             </div>
           </section>
 
-          <section className="CategoryListing_section slanted ">
+          <section className="CategoryListing_section ">
             <div className="product-title-Listing">
               <h2 className="product-categorylisting">New Collection</h2>
               <p>
@@ -247,7 +224,7 @@ export default function ProductsScreen() {
               </Row>
             </div>
           </section>
-          <section className="CategoryListing_section  slanted2 ">
+          <section className="CategoryListing_section   ">
             <div className="product-title-Listing">
               <h2 className="product-categorylisting">Brand</h2>
               <p>
@@ -290,28 +267,26 @@ export default function ProductsScreen() {
             </div>
           </section>
           <section>
-            <div className="slanted">
-              <div className="downloadapp_section">
-                <div className="downloadapp_left">
-                  <div className="downloadapp_section_text">
-                    <div className="downloadapp_title">try it on mobile</div>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum dummy text of the printing
-                    and typesetting industry. Lorem Ipsum
-                  </div>
-                  <div className="downloadapp_img">
-                    <img src="/images/as.png" alt="playstore" />
-                    <img src="/images/gp.png" alt="playstore" />
-                  </div>
+            <div className="downloadapp_section">
+              <div className="downloadapp_left">
+                <div className="downloadapp_section_text">
+                  <h2 className="downloadapp_title">try it on mobile</h2>
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum dummy text of the printing
+                  and typesetting industry. Lorem Ipsum
                 </div>
-                <div className="downloadapp_right">
-                  <img src="/images/phonescreen.png" alt="app" />
-                  <img
-                    className="downloadapp_small_img"
-                    src="/images/phonescreen.png"
-                    alt="app"
-                  />
+                <div className="downloadapp_img">
+                  <img src="/images/as.png" alt="playstore" />
+                  <img src="/images/gp.png" alt="playstore" />
                 </div>
+              </div>
+              <div className="downloadapp_right">
+                <img src="/images/phonescreen.png" alt="app" />
+                <img
+                  className="downloadapp_small_img"
+                  src="/images/phonescreen.png"
+                  alt="app"
+                />
               </div>
             </div>
           </section>

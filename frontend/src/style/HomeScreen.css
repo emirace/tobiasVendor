@@ -20,11 +20,13 @@
   text-transform: uppercase;
   font-size: 50px;
   padding-bottom: 20px;
-  color: white;
 }
 
 .downloadapp_section {
   display: flex;
+  border-top: 1px solid var(--orange-color);
+  border-bottom: 1px solid var(--orange-color);
+  margin: 30px 80px;
 }
 
 .downloadapp_left {
@@ -37,7 +39,6 @@
 
 .downloadapp_section_text {
   padding-bottom: 30px;
-  color: white;
 }
 
 .downloadapp_img {
@@ -67,6 +68,7 @@
 @media (max-width: 992px) {
   .downloadapp_section {
     flex-direction: column;
+    margin: 0;
   }
 
   .downloadapp_img {
