@@ -806,8 +806,12 @@ sm-product1 {
   background: none;
   color: #000;
 }
+.shop-method-area {
+  display: flex;
+  flex-direction: column;
+}
 
-.shop-method-area .single-method i {
+.shop-method-area .single-method svg {
   font-size: 45px;
   color: var(--orange-color);
   margin-bottom: 25px;
@@ -899,14 +903,6 @@ form .mb-3 a:hover,
 }
 
 @media (max-width: 992px) {
-  .product-card1 {
-    width: 144px;
-    height: 245px;
-  }
-  .product-image1 {
-    height: 216px;
-  }
-
   .center-item .main-item {
     height: 325px;
   }

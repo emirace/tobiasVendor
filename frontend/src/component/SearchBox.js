@@ -18,13 +18,13 @@ export default function SearchBox() {
     >
       <div className="btn-cont input-group ml-4 border-0 shadow-sm rounded-pill ">
         <div className="input-group-prepend pleft border-0">
-          <Button
+          <button
             className="btn btn-link bg-transparent search-btn border-0 rounded-pill text-info"
             type="submit"
             id="button-search"
           >
             <i className="fas fa-search"></i>
-          </Button>
+          </button>
         </div>
         <Form.Control
           type="text"

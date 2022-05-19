@@ -20,6 +20,8 @@ import 'react-multi-carousel/lib/styles.css';
 import '../style/HomeScreen.css';
 import CategoryListing from '../component/CategoryListing';
 import Navbar from '../component/Navbar';
+import { faCreditCard, faTruckFast } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import data from '../data';
 
 const reducer = (state, action) => {
@@ -382,39 +384,42 @@ export default function ProductsScreen() {
             </div>
           </section>
           <section className="shop-method-area">
-            <div className="container">
-              <div className="row d-flex justify-content-between">
-                <div className="col-lg-3 col-md-6 col-sm-12">
-                  <div className="single-method mb-40">
-                    <i className="fa fa-shopping-bag"></i>
-                    <h6 className="">Free Shipping Method</h6>
-                    <p>
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has been the industry's
-                      standard dummy text ever since the 1500s,
-                    </p>
+            <img className="wave_img " src="images/wave2.png" alt=""></img>
+            <div className="bg_malon">
+              <div className="container ">
+                <div className="row d-flex justify-content-between">
+                  <div className="col-lg-3 col-md-6 col-sm-12">
+                    <div className="single-method mb-40">
+                      <FontAwesomeIcon icon={faTruckFast} />
+                      <h6 className="">Free Shipping Method</h6>
+                      <p>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-12">
-                  <div className="single-method">
-                    <i className="fa fa-lock"></i>
-                    <h6 className="">Free Shipping Method</h6>
-                    <p>
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has been the industry's
-                      standard dummy text ever since the 1500s,
-                    </p>
+                  <div className="col-lg-3 col-md-6 col-sm-12">
+                    <div className="single-method">
+                      <FontAwesomeIcon icon={faTruckFast} />
+                      <h6 className="">Free Shipping Method</h6>
+                      <p>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <div className="col-lg-3 col-md-6 col-sm-12">
-                  <div className="single-method">
-                    <i className="fa fa-shopping-bag"></i>
-                    <h6 className="">Easy Payment Method</h6>
-                    <p>
-                      Lorem Ipsum is simply dummy text of the printing and
-                      typesetting industry. Lorem Ipsum has been the industry's
-                      standard dummy text ever since the 1500s,
-                    </p>
+                  <div className="col-lg-3 col-md-6 col-sm-12">
+                    <div className="single-method">
+                      <FontAwesomeIcon icon={faCreditCard} />
+                      <h6 className="">Easy Payment Method</h6>
+                      <p>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

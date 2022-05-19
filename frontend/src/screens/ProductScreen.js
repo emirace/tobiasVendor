@@ -59,6 +59,10 @@ export default function ProductScreen() {
 
   const [rating, setRAting] = useState(0);
   const [comment, setComment] = useState('');
+  const [itemDetail, setItemDetail] = useState(false);
+  const [specification, setSpecification] = useState(false);
+  const [condition, setCondition] = useState(false);
+  const [shipping, setShipping] = useState(false);
 
   const params = useParams();
   const { slug } = params;
@@ -139,6 +143,22 @@ export default function ProductScreen() {
     } catch (err) {
       toast.error(getError(error));
       dispatch({ type: 'CREATE_FAIL' });
+    }
+  };
+
+  const toggleCollapse = (type) => {
+    switch (type) {
+      case 'itemDetail':
+        setItemDetail(!itemDetail);
+        break;
+      case 'condition':
+        setCondition(!condition);
+        break;
+      case 'shipping':
+        setShipping(!shipping);
+        break;
+      default:
+        break;
     }
   };
 
@@ -292,24 +312,44 @@ export default function ProductScreen() {
             <button className="sp_wishlist_btn ">wishlist</button>
           </div>
           <div className="sp_more_detail">
-            <div className="sp_detail_section sp_detail_section_f">
-              <div className="sp_detail_title sp_condition_cont">
+            <div
+              className={`sp_detail_section ${
+                itemDetail ? 'active' : ''
+              } sp_detail_section_f`}
+            >
+              <div
+                className="sp_detail_title  sp_condition_cont"
+                onClick={() => toggleCollapse('itemDetail')}
+              >
                 Item Detail
               </div>
               <div className="sp_detail_contail">{product.description}</div>
             </div>
-            <div className="sp_detail_section">
-              <div className="sp_condition_cont">
-                <div className="sp_detail_title">Condition</div>
-                <div className="sp_condition">new</div>
+            <div className={`sp_detail_section ${condition ? 'active' : ''} `}>
+              <div className="">
+                <div
+                  className="sp_detail_title sp_condition_cont"
+                  onClick={() => toggleCollapse('condition')}
+                >
+                  Condition
+                </div>
               </div>
 
-              <div className="sp_detail_contail">Item is in good conditon</div>
+              <div className="sp_detail_contail">
+                <div className="sp_condition">new</div>Item is in good conditon
+              </div>
             </div>
           </div>
           <div className="sp_more_detail">
-            <div className="sp_detail_section sp_detail_section_f">
-              <div className="sp_detail_title sp_condition_cont">
+            <div
+              className={`sp_detail_section ${
+                shipping ? 'active' : ''
+              } sp_detail_section_f`}
+            >
+              <div
+                className="sp_detail_title "
+                onClick={() => toggleCollapse('shipping')}
+              >
                 Shipping & Return Policy
               </div>
               <div className="sp_detail_contail">

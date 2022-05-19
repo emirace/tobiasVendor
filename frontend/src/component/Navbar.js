@@ -215,7 +215,9 @@ export default function Navbar() {
         </Right>
       </Wrapper>
       <Wrapper2>
-        <Logo>Tobias</Logo>
+        <Link to="/">
+          <Logo>Tobias</Logo>
+        </Link>
         <Search>
           <SearchBox />
         </Search>
