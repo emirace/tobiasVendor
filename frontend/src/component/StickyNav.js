@@ -1,38 +1,39 @@
 import {
-  faDashboard,
+  faList,
   faEnvelope,
   faHome,
   faSearch,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import {Link} from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useContext } from 'react';
+import { Store } from '../Store';
 import '../style/StickyNav.css';
 
 export default function StickyNav() {
+	const {state}=useContext(Store);
+	const { userInfo } = state;
   return (
     <div className="d-block d-lg-none">
       <div className="stickynav_contain ">
-        <div className="sticky_item active">
+        
+	  <Link to='/' className="sticky_item active">
           <FontAwesomeIcon icon={faHome} />
           <div className="stickynav_text ">Home</div>
-        </div>
-        <div className="sticky_item">
-          <FontAwesomeIcon icon={faSearch} />
-          <div className="stickynav_text">Search</div>
-        </div>
-        <div className="sticky_item">
-          <FontAwesomeIcon icon={faDashboard} />
+	  </Link>
+	  <Link to='/categories' className="sticky_item">
+          <FontAwesomeIcon icon={faList} />
           <div className="stickynav_text">Categories</div>
-        </div>
-        <div className="sticky_item">
+	  </Link>
+	  <Link to='/messages' className="sticky_item">
           <FontAwesomeIcon icon={faEnvelope} />
           <div className="stickynav_text">Message</div>
-        </div>
-        <div className="sticky_item">
+	  </Link>
+	  <Link to={`/account/${userInfo._id}`} className="sticky_item" >
           <FontAwesomeIcon icon={faUser} />
           <div className="stickynav_text">Profile</div>
-        </div>
+	  </Link>
       </div>
     </div>
   );

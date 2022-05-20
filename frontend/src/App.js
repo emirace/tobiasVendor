@@ -46,7 +46,9 @@ import Footer from './component/Footer';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
+import CategoryMobileScreen from './screens/CategoryMobileScreen';
 import UserListScreen from './screens/UserListScreen';
+import MyAccountScreen from './screens/MyAccountScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SellerRoute from './component/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
@@ -178,6 +180,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/seller/:id" element={<SellerScreen />} />
               <Route path="/cart" element={<CartScreen />} />
+	  <Route path="/categories" element={<CategoryMobileScreen/>} />
               <Route path="/search" element={<SearchSceen />} />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/signup" element={<SignupScreen />} />
@@ -186,6 +189,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfileScreen />
+                  </ProtectedRoute>
+                }
+              />
+	  	<Route
+                path="/account/:id"
+                element={
+                  <ProtectedRoute>
+                    <MyAccountScreen />
                   </ProtectedRoute>
                 }
               />

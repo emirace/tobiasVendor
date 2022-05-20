@@ -181,38 +181,6 @@ export default function SellerScreen() {
             </div>
           </>
 
-          //   <ul className="card card-body">
-          //     <li>
-          //       <div className="profile_row">
-          //         <div>
-          //           <img
-          //             src={user.seller.logo}
-          //             className="profile_image"
-          //             alt={user.seller.name}
-          //           ></img>
-          //         </div>
-          //         <div className="profile_name">
-          //           <h3>{user.seller.name}</h3>
-          //         </div>
-          //       </div>
-          //     </li>
-          //     <li>
-          //       <Rating
-          //         rating={user.seller.rating}
-          //         caption={''}
-          //         numReviews={user.seller.numReviews}
-          //       ></Rating>
-          //     </li>
-          //     <li className="profile_icon_group">
-          //       <a className="profile_icon" href={`mailto:${user.email}`}>
-          //         <FontAwesomeIcon icon={faMessage} />
-          //       </a>
-          //       <div className="profile_icon">
-          //         <FontAwesomeIcon icon={faHeart} />
-          //       </div>
-          //     </li>
-          //     <li>{user.seller.description}</li>
-          //   </ul>
         )}
       </div>
       <div className="seller_right">
