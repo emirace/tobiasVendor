@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { Store } from '../Store';
 import CheckoutSteps from '../component/CheckoutSteps';
+import SelectOPtion from '../component/SelectOPtion';
 
 export default function ShippingAddressScreen() {
   const navigate = useNavigate();
@@ -50,12 +51,16 @@ export default function ShippingAddressScreen() {
     );
     navigate('/payment');
   };
+
+  const getResult = (data) => {
+    setCountry(data);
+  };
+
   return (
     <div>
       <Helmet>
         <title>Shipping Address</title>
       </Helmet>
-      <CheckoutSteps step1 step2></CheckoutSteps>
       <div className="container ">
         <h1 className="my-3">Shipping Address</h1>
         <Form onSubmit={submitHandler}>
@@ -83,20 +88,23 @@ export default function ShippingAddressScreen() {
               onChange={(e) => setCity(e.target.value)}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="postalCode">
+          <Form.Group
+            className="mb-3 numberimput shadow-none"
+            controlId="postalCode"
+          >
             <Form.Label>Postal Code </Form.Label>
             <Form.Control
               value={postalCode}
+              type="number"
               required
               onChange={(e) => setPostalCode(e.target.value)}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="country">
             <Form.Label>Country </Form.Label>
-            <Form.Control
-              value={country}
-              required
-              onChange={(e) => setCountry(e.target.value)}
+            <SelectOPtion
+              options="Nigeria,South Africa"
+              getResult1={getResult}
             />
           </Form.Group>
 

@@ -85,7 +85,7 @@ const Love = styled.div`
 
 const Logo = styled.div`
   flex: 1;
-  font-size: 50px;
+  font-size: 40px;
   font-weight: bold;
   text-transform: uppercase;
 `;
@@ -215,9 +215,10 @@ export default function Navbar() {
         </Right>
       </Wrapper>
       <Wrapper2>
-        <Link to="/">
-          <Logo>Tobias</Logo>
-        </Link>
+        <Logo>
+          <Link to="/">Tobias</Link>
+        </Logo>
+
         <Search>
           <SearchBox />
         </Search>

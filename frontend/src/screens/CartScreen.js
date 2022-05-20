@@ -64,9 +64,8 @@ export default function CartScreen() {
                       ></img>{' '}
                       <div className="cart_item_detail">
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
-                        <Link to={`/product/${item.slug}`}>
-                          {item.category}
-                        </Link>
+                        <Link to={`/product/${item.slug}`}>{item.size}</Link>
+                        <Link to={`/product/${item.slug}`}>${item.price}</Link>
                       </div>
                     </div>
                     <div className="col-3 d-flex align-items-center">
@@ -109,11 +108,11 @@ export default function CartScreen() {
             <Card.Body>
               <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <h3>
+                  <h4>
                     Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}
                     items) : $
                     {cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
-                  </h3>
+                  </h4>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <div className="d-grid">

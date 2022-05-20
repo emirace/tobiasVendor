@@ -433,7 +433,7 @@ main {
 }
 
 .img-thumbnail {
-  height: 80px;
+  height: 100px;
 }
 
 .small-container {
@@ -847,4 +847,29 @@ a.font13 {
   display: flex;
   flex-direction: column;
   margin-left: 5px;
+  text-transform: capitalize;
+}
+
+.numberimput {
+  width: 200px;
+}
+
+select.select_input_box {
+  height: 40px;
+  margin-left: 20px;
+  border: 1px solid rgb(206, 212, 218);
+  border-radius: 5px;
+}
+.form-control:focus {
+  outline: 0;
+  border: 1px solid rgb(206, 212, 218);
+  background-color: #fff;
+}
+
+select.select_input_box {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

@@ -32,6 +32,8 @@ import {
   faTag,
 } from '@fortawesome/free-solid-svg-icons';
 import '../style/ProductScreen.css';
+import styled from 'styled-components';
+import IconsTooltips from '../component/IconsTooltips';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -54,6 +56,12 @@ const reducer = (state, action) => {
   }
 };
 
+const IconContainer = styled.div`
+  &:hover div {
+    display: block;
+  }
+`;
+
 export default function ProductScreen() {
   let reviewRef = useRef();
 
@@ -63,6 +71,7 @@ export default function ProductScreen() {
   const [specification, setSpecification] = useState(false);
   const [condition, setCondition] = useState(false);
   const [shipping, setShipping] = useState(false);
+  const [size, setSize] = useState('');
 
   const params = useParams();
   const { slug } = params;
@@ -271,9 +280,18 @@ export default function ProductScreen() {
             <div className="single_produc_status">online</div>
           </div>
           <div className="single_product_actions">
-            <FontAwesomeIcon icon={faHeart} />
-            <FontAwesomeIcon icon={faBookmark} />
-            <FontAwesomeIcon icon={faMessage} />
+            <IconContainer>
+              <FontAwesomeIcon icon={faHeart} />
+              <IconsTooltips tips="Like Product " />
+            </IconContainer>
+            <IconContainer>
+              <FontAwesomeIcon icon={faBookmark} />
+              <IconsTooltips tips="Save Product " />
+            </IconContainer>
+            <IconContainer>
+              <FontAwesomeIcon icon={faMessage} />
+              <IconsTooltips tips="Message Seller " />
+            </IconContainer>
           </div>
           <div className="sp_name">{product.name}</div>
           <div className="sp_price_detail">
@@ -281,27 +299,57 @@ export default function ProductScreen() {
             <div className="sp_discount_price">${product.price * 2}</div>
             <div className="sp_discount">( 50% off )</div>
           </div>
-          <div className="single_product_select_size">
-            <div className="select_size_header">select size: </div>
+          <div className="">
+            <div className="select_size_header">select size: {size} </div>
             <input type="radio" name="size" value="s" hidden id="s-size" />
-            <label for="size" className="sp_select_size_btn sp_btn_checked ">
-              s
+            <label
+              for="size"
+              className={`sp_select_size_btn ${
+                size === 's' ? 'sp_btn_checked' : ''
+              }  `}
+              onClick={() => setSize('s')}
+            >
+              S
             </label>
             <input type="radio" name="size" value="m" hidden id="m-size" />
-            <label for="size" className="sp_select_size_btn">
-              m
+            <label
+              for="size"
+              className={`sp_select_size_btn ${
+                size === 'm' ? 'sp_btn_checked' : ''
+              }  `}
+              onClick={() => setSize('m')}
+            >
+              M
             </label>
             <input type="radio" name="size" value="l" hidden id="l-size" />
-            <label for="size" className="sp_select_size_btn">
-              l
+            <label
+              for="size"
+              className={`sp_select_size_btn ${
+                size === 'l' ? 'sp_btn_checked' : ''
+              }  `}
+              onClick={() => setSize('l')}
+            >
+              L
             </label>
             <input type="radio" name="size" value="xl" hidden id="xl-size" />
-            <label for="size" className="sp_select_size_btn">
-              xl
+            <label
+              for="size"
+              className={`sp_select_size_btn ${
+                size === 'xl' ? 'sp_btn_checked' : ''
+              }  `}
+              onClick={() => setSize('xl')}
+            >
+              XL
             </label>
             <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
-            <label for="size" className="sp_select_size_btn">
-              xxl
+            <label
+              for="size"
+              className={`sp_select_size_btn ${
+                size === 'xxl' ? 'sp_btn_checked' : ''
+              }  `}
+              onClick={() => setSize('xxl')}
+            >
+              XXL
             </label>
           </div>
           <div className="sp_btn">
@@ -339,8 +387,6 @@ export default function ProductScreen() {
                 <div className="sp_condition">new</div>Item is in good conditon
               </div>
             </div>
-          </div>
-          <div className="sp_more_detail">
             <div
               className={`sp_detail_section ${
                 shipping ? 'active' : ''
