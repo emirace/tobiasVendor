@@ -194,6 +194,22 @@ const Badge = styled.span`
   top: 0;
 `;
 
+const SellButton = styled.div`
+background:var(--orange-color);
+cursor:pointer;
+color:#fff;
+border-radius:10px;
+padding: 5px 20px;
+margin-left:10px;
+display:none;
+&:hover{
+background:var(--malon-color);
+};
+@media (max-width: 992px) {
+    display: block;
+  }
+`;
+
 export default function Navbar() {
   const { state } = useContext(Store);
   const { cart, userInfo } = state;
@@ -239,6 +255,7 @@ export default function Navbar() {
               )}
             </Badge>
           </MenuItemCart>
+	  <SellButton>Sell</SellButton>
           <Link to={`/account/${userInfo._id}`}>
             <ProfileImg />
           </Link>

@@ -44,16 +44,43 @@ const reducer = (state, action) => {
 const Container = styled.div`
   margin: 30px;
   display: flex;
+  position:relative;
+  @media (max-width: 992px) {
+    flex-direction:column;
+  }
 `;
 
 const Left = styled.div`
   flex: 1;
+  @media (max-width: 992px) {
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    height:100vh;
+    background:blue;
+    z-index:7;
+  }
 `;
 
 const Right = styled.div`
   display: flex;
   flex: 3;
+  @media (max-width: 992px) {
+  backgriund:red;
+    flex:1;
+  }
 `;
+const RightCont = styled.div`
+background:red;
+@media (max-width:992px){
+display:flex;
+flex-direction:column;
+background:red;
+}
+`;
+
 const Menu = styled.div`
   padding: 0 20px;
   border: 1px solid #ddd;
@@ -148,13 +175,13 @@ export default function MyAccountScreen() {
   const { state } = useContext(Store);
   const { userInfo } = state;
 
-  const [display, setDispalay] = useState('order');
+  const [display, setDispalay] = useState(' account');
 
   const displaySection = () => {
     switch (display) {
       case 'account':
         return (
-          <>
+          <RightCont>
             <Left>
               <Card>
                 <CardTitle>
@@ -210,7 +237,7 @@ export default function MyAccountScreen() {
                 <CardTitle>Wallet</CardTitle>
               </Card>
             </Left>
-          </>
+          </RightCont>
         );
 
       case 'order':
