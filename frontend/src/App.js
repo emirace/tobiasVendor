@@ -180,7 +180,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/seller/:id" element={<SellerScreen />} />
               <Route path="/cart" element={<CartScreen />} />
-	  <Route path="/categories" element={<CategoryMobileScreen/>} />
+              <Route path="/categories" element={<CategoryMobileScreen />} />
               <Route path="/search" element={<SearchSceen />} />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/signup" element={<SignupScreen />} />
@@ -192,7 +192,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-	  	<Route
+              <Route
                 path="/account/:id"
                 element={
                   <ProtectedRoute>

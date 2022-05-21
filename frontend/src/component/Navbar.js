@@ -196,7 +196,7 @@ const Badge = styled.span`
 
 export default function Navbar() {
   const { state } = useContext(Store);
-  const { cart } = state;
+  const { cart, userInfo } = state;
 
   return (
     <Container>
@@ -239,7 +239,9 @@ export default function Navbar() {
               )}
             </Badge>
           </MenuItemCart>
-          <ProfileImg />
+          <Link to={`/account/${userInfo._id}`}>
+            <ProfileImg />
+          </Link>
         </RightMenu>
       </Wrapper2>
       <Category>
