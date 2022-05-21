@@ -193,7 +193,7 @@ function App() {
                 }
               />
               <Route
-                path="/account/:id"
+                path="/account"
                 element={
                   <ProtectedRoute>
                     <MyAccountScreen />

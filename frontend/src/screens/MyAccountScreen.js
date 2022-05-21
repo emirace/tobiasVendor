@@ -44,23 +44,23 @@ const reducer = (state, action) => {
 const Container = styled.div`
   margin: 30px;
   display: flex;
-  position:relative;
+  position: relative;
   @media (max-width: 992px) {
-    flex-direction:column;
+    flex-direction: column;
+    margin: 0;
   }
 `;
 
 const Left = styled.div`
   flex: 1;
   @media (max-width: 992px) {
-    position:fixed;
-    top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    height:100vh;
-    background:blue;
-    z-index:7;
+    display: none;
+  }
+`;
+
+const DetailLeft = styled.div`
+  flex: 1;
+  @media (max-width: 992px) {
   }
 `;
 
@@ -68,19 +68,10 @@ const Right = styled.div`
   display: flex;
   flex: 3;
   @media (max-width: 992px) {
-  backgriund:red;
-    flex:1;
+    flex: 1;
+    margin-top: 20px;
   }
 `;
-const RightCont = styled.div`
-background:red;
-@media (max-width:992px){
-display:flex;
-flex-direction:column;
-background:red;
-}
-`;
-
 const Menu = styled.div`
   padding: 0 20px;
   border: 1px solid #ddd;
@@ -155,6 +146,10 @@ const Card = styled.div`
   margin-left: 20px;
   border-radius: 5px;
   height: 170px;
+  @media (max-width: 992px) {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
 `;
 const CardTitle = styled.div`
   text-transform: uppercase;
@@ -171,18 +166,61 @@ const Email = styled.div`
   text-transform: capitalize;
 `;
 
-export default function MyAccountScreen() {
-  const { state } = useContext(Store);
-  const { userInfo } = state;
+const DetailCont = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
-  const [display, setDispalay] = useState(' account');
+const MobileMenu = styled.div`
+  @media (max-width: 992px) {
+    overflow: auto;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: #fff;
+    z-index: 8;
+    padding: 100px 30px 55px 30px;
+  }
+`;
+const MobileMenuItem = styled.div`
+  border-bottom: 1px solid #ddd;
+  padding: 15px 0;
+  & svg {
+    margin-right: 10px;
+  }
+  &:hover {
+    background: var(--orange-color);
+  }
+`;
+
+const AdsImage = styled.img.attrs({
+  src: '/images/p8.png',
+  alt: 'ads',
+})`
+  width: 100vw;
+  height: 100px;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
+export default function MyAccountScreen() {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo, cart } = state;
+  const { shippingAddress: address } = cart;
+
+  const [display, setDispalay] = useState('account');
+  const [hideMenu, setHideMwnu] = useState(false);
 
   const displaySection = () => {
     switch (display) {
       case 'account':
         return (
-          <RightCont>
-            <Left>
+          <DetailCont>
+            <DetailLeft>
               <Card>
                 <CardTitle>
                   account Information{' '}
@@ -217,27 +255,36 @@ export default function MyAccountScreen() {
                 {userInfo.paymentinfo ? (
                   <>payment Information here</>
                 ) : (
-                  <MessageBox>Enter payment Information here</MessageBox>
+                  <MessageBox>Enter Payment Information here</MessageBox>
                 )}
               </Card>
-            </Left>
-            <Left>
+            </DetailLeft>
+            <DetailLeft>
               <Card>
                 <CardTitle>
-                  Shipping Address <FontAwesomeIcon icon={faPen} />
+                  Shipping Address
+                  <Link to="/shipping">
+                    {' '}
+                    <FontAwesomeIcon icon={faPen} />
+                  </Link>
                 </CardTitle>
-
-                <Location>Address: 102 james williams avenue</Location>
-                <Location>City: benin city</Location>
-                <Location>State: Edo state</Location>
-                <Location>Postal Code: 300102</Location>
-                <Location>Country: Nigeria</Location>
+                {address.address ? (
+                  <>
+                    <Location>Address: {address.address} </Location>
+                    <Location>City: {address.city}</Location>
+                    <Location>State: {address.state}</Location>
+                    <Location>Postal Code: {address.postal}</Location>
+                    <Location>Country: {address.country}</Location>
+                  </>
+                ) : (
+                  <MessageBox>Enter Shipping Information here</MessageBox>
+                )}
               </Card>
               <Card>
                 <CardTitle>Wallet</CardTitle>
               </Card>
-            </Left>
-          </RightCont>
+            </DetailLeft>
+          </DetailCont>
         );
 
       case 'order':
@@ -249,8 +296,47 @@ export default function MyAccountScreen() {
     }
   };
 
+  const signoutHandler = () => {
+    ctxDispatch({ type: 'USER_SIGNOUT' });
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
+    window.location.href = '/signin';
+  };
+
   return (
     <Container>
+      <MobileMenu>
+        <AdsImage />
+        <MobileMenuItem
+          onClick={() => {
+            setDispalay('account');
+            setHideMwnu(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faUser} />
+          Account
+        </MobileMenuItem>
+        <MobileMenuItem onClick={() => setDispalay('order')}>
+          <FontAwesomeIcon icon={faBagShopping} />
+          Orders
+        </MobileMenuItem>
+        <MobileMenuItem>
+          <Link to="/messages">
+            <FontAwesomeIcon icon={faEnvelope} />
+            Inbox
+          </Link>
+        </MobileMenuItem>
+        <MobileMenuItem onClick={() => setDispalay('product')}>
+          <FontAwesomeIcon icon={faBasketShopping} />
+          Product
+        </MobileMenuItem>
+        <MobileMenuItem onClick={() => signoutHandler()}>
+          <FontAwesomeIcon icon={faRightFromBracket} />
+          Logout
+        </MobileMenuItem>
+      </MobileMenu>
       <Left>
         <Menu>
           <MenuItem onClick={() => setDispalay('account')}>
@@ -271,7 +357,7 @@ export default function MyAccountScreen() {
             <FontAwesomeIcon icon={faBasketShopping} />
             Product
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => signoutHandler()}>
             <FontAwesomeIcon icon={faRightFromBracket} />
             Logout
           </MenuItem>

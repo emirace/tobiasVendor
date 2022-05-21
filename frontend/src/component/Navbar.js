@@ -195,18 +195,27 @@ const Badge = styled.span`
 `;
 
 const SellButton = styled.div`
-background:var(--orange-color);
-cursor:pointer;
-color:#fff;
-border-radius:10px;
-padding: 5px 20px;
-margin-left:10px;
-display:none;
-&:hover{
-background:var(--malon-color);
-};
-@media (max-width: 992px) {
+  background: var(--orange-color);
+  cursor: pointer;
+  color: #fff;
+  border-radius: 10px;
+  padding: 5px 20px;
+  margin-left: 10px;
+  display: none;
+  &:hover {
+    background: var(--malon-color);
+  }
+  @media (max-width: 992px) {
     display: block;
+  }
+`;
+
+const SignIn = styled.div`
+  margin-left: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  &:hover {
+    color: var(--orange-color);
   }
 `;
 
@@ -255,10 +264,16 @@ export default function Navbar() {
               )}
             </Badge>
           </MenuItemCart>
-	  <SellButton>Sell</SellButton>
-          <Link to={`/account/${userInfo._id}`}>
-            <ProfileImg />
-          </Link>
+          <SellButton>Sell</SellButton>
+          {userInfo ? (
+            <Link to="/account">
+              <ProfileImg />
+            </Link>
+          ) : (
+            <SignIn>
+              <Link to="signin">Signin / Register</Link>
+            </SignIn>
+          )}
         </RightMenu>
       </Wrapper2>
       <Category>

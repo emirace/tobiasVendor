@@ -15,10 +15,11 @@ const Border = styled.div`
   align-items: center;
   cursor: pointer;
   &:before {
-    content: '^';
+    content: '';
     position: absolute;
-    right: 5px;
+    right: 10px;
     top: 50%;
+    transform: translate(0, -50%);
   }
 `;
 const Text = styled.div`
@@ -29,7 +30,7 @@ const Text = styled.div`
 
 export default function SelectOPtion(props) {
   const [currentOption, setCurrentOption] = useState('');
-  const [display, setDisplay] = useState('false');
+  const [display, setDisplay] = useState(false);
   const { options: a, getResult1 } = props;
   const b = a.split(',');
   const TextGroup = styled.div`
