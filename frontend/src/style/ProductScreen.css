@@ -101,13 +101,19 @@
   margin: 10px 0;
 }
 
+.flexSelect {
+  display: flex;
+}
+
 .sp_select_size_btn {
   border: 0.1rem solid;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   margin-right: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sp_btn_checked {

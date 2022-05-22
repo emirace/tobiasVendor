@@ -375,7 +375,6 @@ export default function MyAccountScreen() {
   return (
     <Container>
       <MobileMenu mode={mode} displaymenu={hideMenu}>
-        {console.log(hideMenu)}
         <AdsImage />
         <SwitchCont>
           <Switch

@@ -6,13 +6,11 @@ import { Store } from '../Store';
 import '../style/Footer.css';
 import Newletter from './Newletter';
 
-const CopyRight = styled.div.attrs((props) => ({
-  id: props.footerMode,
-}))`
-  background: white;
+const CopyRight = styled.div`
+  background: ${(props) => (props.back ? '#000' : '#fff')};
   display: flex;
   justify-content: center;
-  color: black;
+  color: ${(props) => (props.back ? '#fff' : '#000')};
   height: 50px;
   align-items: center;
   margin-bottom: 55px;
@@ -27,9 +25,9 @@ export default function Footer() {
   const { mode } = state;
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
-      mode = 'pagebodylight';
+      mode = false;
     } else {
-      mode = 'pagebodydark';
+      mode = true;
     }
     return mode;
   };

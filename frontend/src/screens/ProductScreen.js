@@ -301,108 +301,119 @@ export default function ProductScreen() {
           </div>
           <div className="">
             <div className="select_size_header">select size: {size} </div>
-            <input type="radio" name="size" value="s" hidden id="s-size" />
-            <label
-              for="size"
-              className={`sp_select_size_btn ${
-                size === 's' ? 'sp_btn_checked' : ''
-              }  `}
-              onClick={() => setSize('s')}
-            >
-              S
-            </label>
-            <input type="radio" name="size" value="m" hidden id="m-size" />
-            <label
-              for="size"
-              className={`sp_select_size_btn ${
-                size === 'm' ? 'sp_btn_checked' : ''
-              }  `}
-              onClick={() => setSize('m')}
-            >
-              M
-            </label>
-            <input type="radio" name="size" value="l" hidden id="l-size" />
-            <label
-              for="size"
-              className={`sp_select_size_btn ${
-                size === 'l' ? 'sp_btn_checked' : ''
-              }  `}
-              onClick={() => setSize('l')}
-            >
-              L
-            </label>
-            <input type="radio" name="size" value="xl" hidden id="xl-size" />
-            <label
-              for="size"
-              className={`sp_select_size_btn ${
-                size === 'xl' ? 'sp_btn_checked' : ''
-              }  `}
-              onClick={() => setSize('xl')}
-            >
-              XL
-            </label>
-            <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
-            <label
-              for="size"
-              className={`sp_select_size_btn ${
-                size === 'xxl' ? 'sp_btn_checked' : ''
-              }  `}
-              onClick={() => setSize('xxl')}
-            >
-              XXL
-            </label>
-          </div>
-          <div className="sp_btn">
-            <button onClick={addToCartHandler} className="sp_cart_btn">
-              add to cart
-            </button>
-
-            <button className="sp_wishlist_btn ">wishlist</button>
-          </div>
-          <div className="sp_more_detail">
-            <div
-              className={`sp_detail_section ${
-                itemDetail ? 'active' : ''
-              } sp_detail_section_f`}
-            >
-              <div
-                className="sp_detail_title  sp_condition_cont"
-                onClick={() => toggleCollapse('itemDetail')}
+            <div className="flexSelect">
+              <input type="radio" name="size" value="s" hidden id="s-size" />
+              <label
+                for="size"
+                className={`sp_select_size_btn ${
+                  size === 's' ? 'sp_btn_checked' : ''
+                }  `}
+                onClick={() => setSize('s')}
               >
-                Item Detail
-              </div>
-              <div className="sp_detail_contail">{product.description}</div>
+                S
+              </label>
+              <input type="radio" name="size" value="m" hidden id="m-size" />
+              <label
+                for="size"
+                className={`sp_select_size_btn ${
+                  size === 'm' ? 'sp_btn_checked' : ''
+                }  `}
+                onClick={() => setSize('m')}
+              >
+                M
+              </label>
+              <input type="radio" name="size" value="l" hidden id="l-size" />
+              <label
+                for="size"
+                className={`sp_select_size_btn ${
+                  size === 'l' ? 'sp_btn_checked' : ''
+                }  `}
+                onClick={() => setSize('l')}
+              >
+                L
+              </label>
+              <input type="radio" name="size" value="xl" hidden id="xl-size" />
+              <label
+                for="size"
+                className={`sp_select_size_btn ${
+                  size === 'xl' ? 'sp_btn_checked' : ''
+                }  `}
+                onClick={() => setSize('xl')}
+              >
+                XL
+              </label>
+              <input
+                type="radio"
+                name="size"
+                value="xxl"
+                hidden
+                id="xxl-size"
+              />
+              <label
+                for="size"
+                className={`sp_select_size_btn ${
+                  size === 'xxl' ? 'sp_btn_checked' : ''
+                }  `}
+                onClick={() => setSize('xxl')}
+              >
+                XXL
+              </label>
             </div>
-            <div className={`sp_detail_section ${condition ? 'active' : ''} `}>
-              <div className="">
+            <div className="sp_btn">
+              <button onClick={addToCartHandler} className="sp_cart_btn">
+                add to cart
+              </button>
+
+              <button className="sp_wishlist_btn ">wishlist</button>
+            </div>
+            <div className="sp_more_detail">
+              <div
+                className={`sp_detail_section ${
+                  itemDetail ? 'active' : ''
+                } sp_detail_section_f`}
+              >
                 <div
-                  className="sp_detail_title sp_condition_cont"
-                  onClick={() => toggleCollapse('condition')}
+                  className="sp_detail_title  sp_condition_cont"
+                  onClick={() => toggleCollapse('itemDetail')}
                 >
-                  Condition
+                  Item Detail
+                </div>
+                <div className="sp_detail_contail">{product.description}</div>
+              </div>
+              <div
+                className={`sp_detail_section ${condition ? 'active' : ''} `}
+              >
+                <div className="">
+                  <div
+                    className="sp_detail_title sp_condition_cont"
+                    onClick={() => toggleCollapse('condition')}
+                  >
+                    Condition
+                  </div>
+                </div>
+
+                <div className="sp_detail_contail">
+                  <div className="sp_condition">new</div>Item is in good
+                  conditon
                 </div>
               </div>
-
-              <div className="sp_detail_contail">
-                <div className="sp_condition">new</div>Item is in good conditon
-              </div>
-            </div>
-            <div
-              className={`sp_detail_section ${
-                shipping ? 'active' : ''
-              } sp_detail_section_f`}
-            >
               <div
-                className="sp_detail_title "
-                onClick={() => toggleCollapse('shipping')}
+                className={`sp_detail_section ${
+                  shipping ? 'active' : ''
+                } sp_detail_section_f`}
               >
-                Shipping & Return Policy
-              </div>
-              <div className="sp_detail_contail">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                <div
+                  className="sp_detail_title "
+                  onClick={() => toggleCollapse('shipping')}
+                >
+                  Shipping & Return Policy
+                </div>
+                <div className="sp_detail_contail">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.
+                </div>
               </div>
             </div>
           </div>

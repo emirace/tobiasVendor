@@ -22,7 +22,14 @@ import CategoryListing from '../component/CategoryListing';
 import Navbar from '../component/Navbar';
 import { faCreditCard, faTruckFast } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styled from 'styled-components';
 //import data from '../data';
+
+const SmTitle = styled.div`
+  text-transform: capitalize;
+  position: relative;
+  cursor: pointer;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -390,8 +397,10 @@ export default function ProductsScreen() {
                 <div className="row d-flex justify-content-between">
                   <div className="col-lg-3 col-md-6 col-sm-12">
                     <div className="single-method mb-40">
-                      <FontAwesomeIcon icon={faTruckFast} />
-                      <h6 className="">Free Shipping Method</h6>
+                      <SmTitle>
+                        <FontAwesomeIcon icon={faTruckFast} />
+                        <h6 className="">Free Shipping Method</h6>
+                      </SmTitle>
                       <p>
                         Lorem Ipsum is simply dummy text of the printing and
                         typesetting industry. Lorem Ipsum has been the

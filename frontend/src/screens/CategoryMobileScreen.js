@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import SearchBox from '../component/SearchBox';
+import { Store } from '../Store';
 
 const Container = styled.div`
   position: fixed;
@@ -8,7 +9,7 @@ const Container = styled.div`
   bottom: -55px;
   left: 0;
   right: 0;
-  background: #fff;
+  background: ${(props) => (!props.bg ? '#000' : '#fff')};
   z-index: 7;
   overflow: auto;
   padding: 10px;
@@ -56,6 +57,17 @@ const CateItem = styled.div`
 `;
 
 export default function CategoryMobileScreen() {
+  const { state } = useContext(Store);
+  const { mode } = state;
+  const backMode = (mode) => {
+    if (mode === 'pagebodydark') {
+      mode = false;
+    } else {
+      mode = true;
+    }
+    return mode;
+  };
+  const footerMode = backMode(mode);
   const [display, setDisplay] = useState();
   const [display1, setDisplay1] = useState();
   const [display2, setDisplay2] = useState();
@@ -64,7 +76,7 @@ export default function CategoryMobileScreen() {
 
   return (
     <>
-      <Container>
+      <Container bg={footerMode}>
         <Search>Let's help you find what you are looking for</Search>
         <SearchBox />
 
