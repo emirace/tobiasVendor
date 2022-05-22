@@ -437,7 +437,7 @@ export default function ProductsScreen() {
             <img className="wave_img " src="images/wave2.png" alt=""></img>
             <div className="bg_malon">
               <div className="container ">
-                <div className="row d-flex justify-content-between">
+                <div className="row d-flex justify-content-between my-3">
                   <div className="col-lg-3 col-md-6 col-sm-12">
                     <div className="single-method ">
                       <FontAwesomeIcon icon={faTruckFast} />
