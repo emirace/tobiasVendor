@@ -23,6 +23,16 @@
   background: var(--white-color);
   color: var(--black-color);
 }
+
+#pagebodydark {
+  background: var(--black-color);
+  color: var(--white-color);
+}
+#pagebodylight {
+  background: var(--white-color);
+  color: var(--black-color);
+}
+
 a,
 a:hover,
 a:focus,

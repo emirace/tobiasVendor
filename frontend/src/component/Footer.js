@@ -1,10 +1,39 @@
 import { faCopyright, faHashtag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useContext } from 'react';
+import styled from 'styled-components';
+import { Store } from '../Store';
 import '../style/Footer.css';
 import Newletter from './Newletter';
 
+const CopyRight = styled.div.attrs((props) => ({
+  id: props.footerMode,
+}))`
+  background: white;
+  display: flex;
+  justify-content: center;
+  color: black;
+  height: 50px;
+  align-items: center;
+  margin-bottom: 55px;
+  & svg {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+`;
+
 export default function Footer() {
+  const { state } = useContext(Store);
+  const { mode } = state;
+  const backMode = (mode) => {
+    if (mode === 'pagebodydark') {
+      mode = 'pagebodylight';
+    } else {
+      mode = 'pagebodydark';
+    }
+    return mode;
+  };
+  const footerMode = backMode(mode);
   return (
     <>
       <div className="curve_color">
@@ -93,9 +122,9 @@ export default function Footer() {
           ></img>
         </div>
       </div>
-      <div className="footer_copyright">
+      <CopyRight back={footerMode}>
         <FontAwesomeIcon icon={faCopyright} /> All right reserved
-      </div>
+      </CopyRight>
     </>
   );
 }

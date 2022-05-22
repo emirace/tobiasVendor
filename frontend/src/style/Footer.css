@@ -82,20 +82,6 @@
   }
 }
 
-.footer_copyright {
-  background: white;
-  display: flex;
-  justify-content: center;
-  color: black;
-  height: 50px;
-  align-items: center;
-}
-
-.footer_copyright svg {
-  margin-right: 10px;
-  font-size: 20px;
-}
-
 .footer_black_top {
   position: relative;
   width: 100%;

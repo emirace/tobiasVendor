@@ -24,8 +24,6 @@
 
 .downloadapp_section {
   display: flex;
-  border-top: 1px solid var(--orange-color);
-  border-bottom: 1px solid var(--orange-color);
   padding: 30px 80px;
   margin: 30px 0;
 }
@@ -69,7 +67,11 @@
 @media (max-width: 992px) {
   .downloadapp_section {
     flex-direction: column;
+    padding: 30px 20px;
     margin: 0;
+    height: 400px;
+    overflow: hidden;
+    border-bottom: 5px solid var(--malon-color);
   }
 
   .downloadapp_img {

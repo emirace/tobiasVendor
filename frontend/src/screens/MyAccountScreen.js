@@ -171,10 +171,12 @@ const DetailCont = styled.div`
   flex-direction: column;
 `;
 
-const MobileMenu = styled.div`
+const MobileMenu = styled.div.attrs((props) => ({
+  id: props.mode,
+}))`
   display: none;
   @media (max-width: 992px) {
-  display:block;
+    display: ${(props) => (props.displaymenu ? 'none' : 'block')};
     overflow: auto;
     position: fixed;
     top: 0;
@@ -209,9 +211,62 @@ const AdsImage = styled.img.attrs({
   left: 0;
 `;
 
+const Switch = styled.input.attrs({
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
+})`
+  position: relative;
+
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #000;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+  }
+
+  &:checked {
+    background: #fff;
+    &:before {
+      left: 25px;
+      background: #000;
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    background: #fff;
+    transition: 0.5s;
+  }
+`;
+
+const Label = styled.label.attrs({
+  for: 'darkmodeSwitch',
+})`
+  margin-left: 5px;
+  @media (max-width: 992px) {
+  }
+`;
+
+const SwitchCont = styled.div`
+  padding: 10px 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+`;
+
 export default function MyAccountScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo, cart } = state;
+  const { userInfo, cart, mode } = state;
   const { shippingAddress: address } = cart;
 
   const [display, setDispalay] = useState('account');
@@ -307,10 +362,28 @@ export default function MyAccountScreen() {
     window.location.href = '/signin';
   };
 
+  const darkMode = (mode) => {
+    if (mode) {
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
+      localStorage.setItem('mode', 'pagebodydark');
+    } else {
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
+      localStorage.setItem('mode', 'pagebodylight');
+    }
+  };
+
   return (
     <Container>
-      <MobileMenu>
+      <MobileMenu mode={mode} displaymenu={hideMenu}>
+        {console.log(hideMenu)}
         <AdsImage />
+        <SwitchCont>
+          <Switch
+            checked={mode === 'pagebodydark'}
+            onChange={(e) => darkMode(e.target.checked)}
+          ></Switch>
+          <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+        </SwitchCont>
         <MobileMenuItem
           onClick={() => {
             setDispalay('account');
@@ -320,7 +393,12 @@ export default function MyAccountScreen() {
           <FontAwesomeIcon icon={faUser} />
           Account
         </MobileMenuItem>
-        <MobileMenuItem onClick={() => setDispalay('order')}>
+        <MobileMenuItem
+          onClick={() => {
+            setDispalay('order');
+            setHideMwnu(true);
+          }}
+        >
           <FontAwesomeIcon icon={faBagShopping} />
           Orders
         </MobileMenuItem>
@@ -330,7 +408,12 @@ export default function MyAccountScreen() {
             Inbox
           </Link>
         </MobileMenuItem>
-        <MobileMenuItem onClick={() => setDispalay('product')}>
+        <MobileMenuItem
+          onClick={() => {
+            setDispalay('product');
+            setHideMwnu(true);
+          }}
+        >
           <FontAwesomeIcon icon={faBasketShopping} />
           Product
         </MobileMenuItem>
