@@ -25,10 +25,33 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 //import data from '../data';
 
-const SmTitle = styled.div`
+const SmTitle = styled.h6`
   text-transform: capitalize;
+  display: none;
   position: relative;
   cursor: pointer;
+  &::before {
+    content: '+';
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 992px) {
+    display: block;
+  }
+`;
+
+const SmDetail = styled.p`
+  display: none;
+  position: relative;
+  height: ${(props) => (props.show ? '120px' : 0)};
+  overflow: hidden;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+    display: block;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -110,6 +133,26 @@ export default function ProductsScreen() {
       items: 2,
       slidesToSlide: 1, // optional, default to 1.
     },
+  };
+
+  const [shipMethod1, setShippingMethod1] = useState(false);
+  const [shipMethod2, setShippingMethod2] = useState(false);
+  const [shipMethod3, setShippingMethod3] = useState(false);
+
+  const toggleCollapse = (type) => {
+    switch (type) {
+      case 'shipMethod1':
+        setShippingMethod1(!shipMethod1);
+        break;
+      case 'shipMethod2':
+        setShippingMethod2(!shipMethod2);
+        break;
+      case 'shipMethod3':
+        setShippingMethod3(!shipMethod3);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -396,12 +439,20 @@ export default function ProductsScreen() {
               <div className="container ">
                 <div className="row d-flex justify-content-between">
                   <div className="col-lg-3 col-md-6 col-sm-12">
-                    <div className="single-method mb-40">
-                      <SmTitle>
-                        <FontAwesomeIcon icon={faTruckFast} />
-                        <h6 className="">Free Shipping Method</h6>
+                    <div className="single-method ">
+                      <FontAwesomeIcon icon={faTruckFast} />
+                      <SmTitle onClick={() => toggleCollapse('shipMethod1')}>
+                        Free Shipping Method
                       </SmTitle>
-                      <p>
+                      <SmDetail show={shipMethod1}>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </SmDetail>
+                      <h6 className="d-none d-lg-block">
+                        Free Shipping Method
+                      </h6>
+                      <p className="d-none d-lg-block">
                         Lorem Ipsum is simply dummy text of the printing and
                         typesetting industry. Lorem Ipsum has been the
                         industry's standard dummy text ever since the 1500s,
@@ -411,8 +462,18 @@ export default function ProductsScreen() {
                   <div className="col-lg-3 col-md-6 col-sm-12">
                     <div className="single-method">
                       <FontAwesomeIcon icon={faTruckFast} />
-                      <h6 className="">Free Shipping Method</h6>
-                      <p>
+                      <SmTitle onClick={() => toggleCollapse('shipMethod2')}>
+                        Free Shipping Method
+                      </SmTitle>
+                      <SmDetail show={shipMethod2}>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </SmDetail>
+                      <h6 className="d-none d-lg-block">
+                        Free Shipping Method
+                      </h6>
+                      <p className="d-none d-lg-block">
                         Lorem Ipsum is simply dummy text of the printing and
                         typesetting industry. Lorem Ipsum has been the
                         industry's standard dummy text ever since the 1500s,
@@ -422,8 +483,16 @@ export default function ProductsScreen() {
                   <div className="col-lg-3 col-md-6 col-sm-12">
                     <div className="single-method">
                       <FontAwesomeIcon icon={faCreditCard} />
-                      <h6 className="">Easy Payment Method</h6>
-                      <p>
+                      <SmTitle onClick={() => toggleCollapse('shipMethod3')}>
+                        Easy Payment Method
+                      </SmTitle>
+                      <SmDetail show={shipMethod3}>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry's standard dummy text ever since the 1500s,
+                      </SmDetail>
+                      <h6 className="d-none d-lg-block">Easy Payment Method</h6>
+                      <p className="d-none d-lg-block">
                         Lorem Ipsum is simply dummy text of the printing and
                         typesetting industry. Lorem Ipsum has been the
                         industry's standard dummy text ever since the 1500s,
