@@ -5,6 +5,8 @@ const initialState = {
   userInfo: localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo'))
     : null,
+ mode:localStorage.getItem('mode')                            ? localStorage.getItem('mode')
+          :'pagebodylight',
   cart: {
     cartItems: localStorage.getItem('cartItems')
       ? JSON.parse(localStorage.getItem('cartItems'))
@@ -78,6 +80,8 @@ function reducer(state, action) {
           paymentMethod: action.payload,
         },
       };
+	case 'CHANGE_MODE':
+	  return {...state,mode:action.payload };
     default:
       return state;
   }

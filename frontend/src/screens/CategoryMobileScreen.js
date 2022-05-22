@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import styled from 'styled-components';
 import SearchBox from '../component/SearchBox';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Store } from '../Store';
 
 const Container = styled.div`
 position:fixed;
@@ -60,13 +61,31 @@ position: relative;
   text-transform:capitalize;
 `
 
+const Switch = styled.input.attrs({                          type: 'checkbox',                                                role: 'switch',
+})`                                                        position:relative;                                         width: 40px;                                               height: 15px;                                              -webkit-appearance: none;
+  background: #fff;                                          border-radius: 20px;                                       outline: none;                                             transition: 0.5s;                                          @media (max-width: 992px) {                                                                          }                                                          &:checked {                                                  background: #000;                                          &:before {                                                   left: 25px;
+    }                                                        }                                                          &:before {                                                   width: 15px;                                               height: 15px;                                              border-radius: 50%;
+    content: '';                                               position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--malon-color);
+    transition: 0.5s;
+  }
+`;
+
 export default function CategoryMobileScreen() {
+
+	const { state,dispatxh:ctxDispatch } = useContext(Store);  const { userInfo,mode } = state;
 
 	const [display,setDisplay]=useState();
 	const [display1,setDisplay1]=useState();
 	const [display2,setDisplay2]=useState();
 	const [display3,setDisplay3]=useState();
 	const [display4,setDisplay4]=useState();
+
+	const darkMode = (mode) => {                           if (mode) {                                                   ctxDispatch({type:'CHANGE_MODE',payload:'pagebodydark'});                                                       localStorage.setItem('mode', 'pagebodydark');         
+	} else{                                                        ctxDispatch({type:'CHANGE_MODE',payload:'pagebodylight'});                                                   localStorage.setItem('mode', 'pagebodylight');           };                                                  };
+
   return (<>
 	  <Container>
 	  <Search>Let's help you find what you are looking for
@@ -123,6 +142,12 @@ export default function CategoryMobileScreen() {
           <CateItem>skirts</CateItem>
           </CateItemContainer>
           </CateContainer>
+	  <CateContainer>
+	  <CateTitle>
+	  <Switch                                                      checked={mode === 'pagebodydark'}                          onChange={(e) => darkMode(e.target.checked)}               />
+	  hello
+	  </CateTitle>
+	  </CateContainer>
 	  </Container>
 	  </>
 

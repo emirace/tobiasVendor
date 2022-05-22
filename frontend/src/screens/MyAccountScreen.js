@@ -174,6 +174,7 @@ const DetailCont = styled.div`
 const MobileMenu = styled.div`
   display: none;
   @media (max-width: 992px) {
+  display:block;
     overflow: auto;
     position: fixed;
     top: 0;

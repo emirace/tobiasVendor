@@ -111,7 +111,7 @@ const Label = styled.label.attrs({
 `;
 
 function App() {
-  const { state, f: ctxDispatch } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
   const signoutHandler = () => {
@@ -145,10 +145,11 @@ function App() {
 
   const darkMode = (mode) => {
     if (mode) {
-      setMode('pagebodydark');
+      {/*  setMode('pagebodydark'); */}
+	ctxDispatch({type:'CHANGE_MODE',payload:'pagebodydark'});
       localStorage.setItem('mode', 'pagebodydark');
     } else {
-      setMode('pagebodylight');
+      ctxDispatch({type:'CHANGE_MODE',payload:'pagebodylight'});
       localStorage.setItem('mode', 'pagebodylight');
     }
   };
