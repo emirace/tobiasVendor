@@ -20,8 +20,11 @@ const Search = styled.div`
   justify-content: center;
   align-items: center;
   background: var(--orange-color);
-  margin-bottom: 10px;
+  margin: 15px 0;
   color: #fff;
+`;
+const Searchcont = styled.div`
+  margin-bottom: 15px;
 `;
 
 const CateContainer = styled.div`
@@ -78,7 +81,9 @@ export default function CategoryMobileScreen() {
     <>
       <Container bg={footerMode}>
         <Search>Let's help you find what you are looking for</Search>
-        <SearchBox />
+        <Searchcont>
+          <SearchBox />
+        </Searchcont>
 
         <CateContainer onClick={() => setDisplay(!display)}>
           <CateTitle>Women's wear</CateTitle>

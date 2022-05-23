@@ -915,6 +915,9 @@ form .mb-3 a:hover,
 }
 
 @media (max-width: 992px) {
+  .product-card1 {
+    width: 200px;
+  }
   .center-item .main-item {
     height: 325px;
   }

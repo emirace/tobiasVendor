@@ -100,6 +100,9 @@ const Logo = styled.div`
 `;
 const Search = styled.div`
   flex: 3;
+  @media (max-width: 992px) {
+    display: none;
+  }
 `;
 const RightMenu = styled.div`
   flex: 1;

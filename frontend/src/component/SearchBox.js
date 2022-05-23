@@ -12,10 +12,7 @@ export default function SearchBox() {
     navigate(query ? `/search/?query=${query}` : '/search');
   };
   return (
-    <Form
-      className="d-flex me-auto  search-box-size d-none d-lg-block"
-      onSubmit={submitHandler}
-    >
+    <Form className="d-flex me-auto  search-box-size " onSubmit={submitHandler}>
       <div className="btn-cont input-group ml-4 border-0 shadow-sm rounded-pill ">
         <div className="input-group-prepend pleft border-0">
           <button
