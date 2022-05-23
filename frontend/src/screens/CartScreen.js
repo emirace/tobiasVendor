@@ -10,6 +10,20 @@ import MessageBox from '../component/MessageBox';
 import axios from 'axios';
 import '../style/Cart.css';
 import { Store } from '../Store';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import styled from 'styled-components';
+
+const SumCont = styled.div`
+  display: flex;
+`;
+const Left = styled.div`
+  display: flex;
+  flex: 3;
+`;
+const Right = styled.div`
+  flex: 1;
+`;
 
 export default function CartScreen() {
   const navigate = useNavigate();
@@ -55,7 +69,7 @@ export default function CartScreen() {
             <ListGroup>
               {cartItems.map((item) => (
                 <ListGroup.Item key={item._id}>
-                  <Row className="align-items-center">
+                  <Row className="align-items-center justify-content-between">
                     <div className="col-5 d-flex  align-items-center">
                       <img
                         src={item.image}
@@ -64,8 +78,8 @@ export default function CartScreen() {
                       ></img>{' '}
                       <div className="cart_item_detail">
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
-                        <Link to={`/product/${item.slug}`}>{item.size}</Link>
-                        <Link to={`/product/${item.slug}`}>${item.price}</Link>
+
+                        <div> ${item.price}</div>
                       </div>
                     </div>
                     <div className="col-3 d-flex align-items-center">
@@ -76,7 +90,7 @@ export default function CartScreen() {
                         }
                         disabled={item.quantity === 1}
                       >
-                        <i className="fas fa-minus-circle"></i>
+                        <FontAwesomeIcon icon={faMinus} />
                       </Button>{' '}
                       <span>{item.quantity}</span>{' '}
                       <Button
@@ -86,7 +100,7 @@ export default function CartScreen() {
                         }
                         disabled={item.quantity === item.countInStock}
                       >
-                        <i className="fas fa-plus-circle"></i>
+                        <FontAwesomeIcon icon={faPlus} />
                       </Button>
                     </div>
                     <div className="col-2">
@@ -94,7 +108,7 @@ export default function CartScreen() {
                         onClick={() => removeItemHandler(item)}
                         variant="none"
                       >
-                        <i className="fas fa-trash"></i>
+                        <FontAwesomeIcon icon={faTrash} />
                       </Button>
                     </div>
                   </Row>
@@ -107,6 +121,18 @@ export default function CartScreen() {
           <Card>
             <Card.Body>
               <ListGroup variant="flush">
+                <ListGroup.Item>
+                  {cartItems.map((c) => (
+                    <SumCont>
+                      <Left>
+                        <Right>{c.quantity} </Right>
+                        <Right>x </Right>
+                        <Right>${c.price}</Right>
+                      </Left>
+                      <Right>{' =  $' + c.quantity * c.price}</Right>
+                    </SumCont>
+                  ))}
+                </ListGroup.Item>
                 <ListGroup.Item>
                   <h4>
                     Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}{' '}

@@ -4,6 +4,7 @@
 
 .carousel_item {
   display: flex;
+  margin-right: 30px;
   align-items: center;
   flex-direction: column;
 }
@@ -94,7 +95,7 @@
   }
 
   .downloadapp_right img {
-    width: 100px;
+    width: 150px;
   }
 }
 

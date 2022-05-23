@@ -79,7 +79,6 @@ const Switch = styled.input.attrs({
   }
 
   &:checked {
-    background: #000;
     &:before {
       left: 25px;
     }

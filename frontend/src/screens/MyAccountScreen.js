@@ -168,7 +168,10 @@ const Email = styled.div`
 
 const DetailCont = styled.div`
   display: flex;
-  flex-direction: column;
+  flex: 1;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 
 const MobileMenu = styled.div.attrs((props) => ({

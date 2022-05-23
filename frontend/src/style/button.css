@@ -306,6 +306,7 @@ a {
   bottom: 20px;
   margin-top: 30px;
   background: none;
+  text-shadow: #000 1px 0 10px;
 }
 
 .banner_text span {
@@ -321,6 +322,7 @@ a {
   background: none;
   margin-bottom: 15px;
   line-height: 90px;
+  color: #fff;
 }
 
 .banner_text a {
@@ -330,6 +332,7 @@ a {
   position: relative;
   padding: 0 0 3px;
   display: inline-block;
+  color: #fff;
   background: none;
 }
 
@@ -698,9 +701,14 @@ sm-product1 {
   cursor: pointer; /* Add a pointer on hover */
 }
 
-.discount_pic img {
+.discount_pic {
   min-width: 100%;
   height: 100%;
+}
+.discount_pic img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
 .discount_text {

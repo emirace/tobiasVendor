@@ -12,6 +12,16 @@ import { Store } from '../Store';
 import { getError } from '../utils';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+
+const Track = styled.span`
+  color: var(--orange-color);
+  font-size: 20px;
+  cursor: pointer;
+  &:hover {
+    color: var(--malon-color);
+  }
+`;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -208,7 +218,9 @@ export default function OrderScreen() {
                   Delivered at {order.deliveredAt}
                 </MessageBox>
               ) : (
-                <MessageBox variant="danger">Not Delivered</MessageBox>
+                <MessageBox variant="danger">
+                  Not Delivered. <Track>Track</Track>
+                </MessageBox>
               )}
             </Card.Body>
           </Card>
@@ -262,7 +274,7 @@ export default function OrderScreen() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Items</Col>
+                    <Col>Total Items Cost</Col>
                     <Col>${order.itemsPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>

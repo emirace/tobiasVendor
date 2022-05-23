@@ -12,6 +12,18 @@ import { getError } from '../utils';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import LoadingBox from '../component/LoadingBox';
+import styled from 'styled-components';
+
+const SumCont = styled.div`
+  display: flex;
+`;
+const Left = styled.div`
+  display: flex;
+  flex: 3;
+`;
+const Right = styled.div`
+  flex: 1;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -77,7 +89,6 @@ export default function PlaceOrderScreen() {
 
   return (
     <div className="container">
-      <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
       <Helmet>
         <title>Preview Order</title>
       </Helmet>
@@ -147,8 +158,25 @@ export default function PlaceOrderScreen() {
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>
-                    <Col>Items</Col>
-                    <Col>${cart.itemsPrice.toFixed(2)}</Col>
+                    <div className="col-3">Items</div>
+                    <div className="col-9">
+                      {cart.cartItems.map((c) => (
+                        <>
+                          <SumCont>
+                            <Left>
+                              <Right>{c.quantity} </Right>
+                              <Right>x </Right>
+                              <Right>${c.price}</Right>
+                            </Left>
+                            <Right>{' =  $' + c.quantity * c.price}</Right>
+                          </SumCont>
+                        </>
+                      ))}
+                      <SumCont>
+                        <Left>Total</Left>
+                        <Right>${cart.itemsPrice.toFixed(2)}</Right>
+                      </SumCont>
+                    </div>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>

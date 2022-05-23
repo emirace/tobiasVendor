@@ -1,8 +1,8 @@
 .list-group-item {
   background: none;
   color: inherit !important;
-
-  border: 1px solid #dfdfdf;
+  margin-bottom: 10px;
+  border: 1px solid rgba(99, 91, 91, 0.2);
 }
 
 .d-grid .search-btn1 {
@@ -11,8 +11,16 @@
 
 .card {
   background: none;
-  border: 1px solid #dfdfdf;
+  border: 1px solid rgba(99, 91, 91, 0.2);
 }
 .btn {
   color: inherit;
+}
+.btn:hover {
+  color: var(--orange-color);
+}
+
+.form-control {
+  background: none;
+  border: 2px solid rgba(99, 91, 91, 0.2);
 }

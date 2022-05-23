@@ -28,7 +28,6 @@ export default function PaymentMethodScreen() {
   };
   return (
     <div className="container">
-      <CheckoutSteps step1 step2 step3></CheckoutSteps>
       <Helmet>
         <title>Payment Method</title>
       </Helmet>
