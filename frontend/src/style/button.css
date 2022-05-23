@@ -916,7 +916,30 @@ form .mb-3 a:hover,
 
 @media (max-width: 992px) {
   .product-card1 {
-    width: 200px;
+    width: 162px;
+    height: 342px;
+  }
+
+  .product-brand1 {
+    font-size: 15px;
+  }
+  .product-short-desc1 {
+    font-size: 12px;
+  }
+  .price1 {
+    font-size: 16px;
+  }
+
+  .actual-price1 {
+    font-size: 16px;
+  }
+
+  .discount-tag1 {
+    font-size: 13px;
+  }
+
+  .product-image1 {
+    height: 266px;
   }
   .center-item .main-item {
     height: 325px;
