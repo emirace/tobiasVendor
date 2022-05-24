@@ -37,7 +37,9 @@ const CateTitle = styled.div`
   text-transform: capitalize;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
+  padding-left: 10px;
+  border: 1px solid rgba(99, 91, 91, 0.2);
+  border-radius: 5px;
   position: relative;
   &:before {
     content: '+';

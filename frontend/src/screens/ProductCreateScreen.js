@@ -109,6 +109,7 @@ export default function ProductCreateScreen() {
   };
 
   const uploadFileHandler = async (e, fileType) => {
+    return;
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);
@@ -120,6 +121,7 @@ export default function ProductCreateScreen() {
           authorization: `Bearer ${userInfo.token}`,
         },
       });
+      console.log(data);
       dispatch({ type: 'UPLOAD_SUCCESS' });
       if (fileType === 'images') {
         setImages([...images, data.secure_url]);
@@ -162,7 +164,7 @@ export default function ProductCreateScreen() {
           <Form.Control
             required
             type="file"
-            onChange={(e) => uploadFileHandler(e, image)}
+            onChange={(e) => uploadFileHandler(e, 'image')}
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
@@ -174,7 +176,7 @@ export default function ProductCreateScreen() {
           <Form.Label>Upload Additional Images</Form.Label>
           <Form.Control
             type="file"
-            onChange={(e) => uploadFileHandler(e, images)}
+            onChange={(e) => uploadFileHandler(e, 'images')}
           />
           {loadingUpload ? <LoadingBox></LoadingBox> : ''}
         </Form.Group>

@@ -51,6 +51,7 @@ const reducer = (state, action) => {
       return { ...state, product: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }
@@ -170,7 +171,20 @@ export default function ProductScreen() {
         break;
     }
   };
-
+  const toggleLikes = async () => {
+    console.log('hello');
+    try {
+      const { data } = await axios.put(
+        `/api/products/${product._id}/likes`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      product.likes.unshift(data.like);
+      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+    } catch (err) {}
+  };
   return loading ? (
     <LoadingBox />
   ) : error ? (
@@ -281,7 +295,7 @@ export default function ProductScreen() {
           </div>
           <div className="single_product_actions">
             <IconContainer>
-              <FontAwesomeIcon icon={faHeart} />
+              <FontAwesomeIcon onClick={toggleLikes} icon={faHeart} />
               <IconsTooltips tips="Like Product " />
             </IconContainer>
             <IconContainer>
@@ -292,6 +306,9 @@ export default function ProductScreen() {
               <FontAwesomeIcon icon={faMessage} />
               <IconsTooltips tips="Message Seller " />
             </IconContainer>
+          </div>
+          <div>
+            <b>11 </b> Likes
           </div>
           <div className="sp_name">{product.name}</div>
           <div className="sp_price_detail">
@@ -308,7 +325,7 @@ export default function ProductScreen() {
                 className={`sp_select_size_btn ${
                   size === 's' ? 'sp_btn_checked' : ''
                 }  `}
-                onClick={() => setSize('s')}
+                onClick={() => setSize('small')}
               >
                 S
               </label>
@@ -318,7 +335,7 @@ export default function ProductScreen() {
                 className={`sp_select_size_btn ${
                   size === 'm' ? 'sp_btn_checked' : ''
                 }  `}
-                onClick={() => setSize('m')}
+                onClick={() => setSize('medium')}
               >
                 M
               </label>
@@ -328,7 +345,7 @@ export default function ProductScreen() {
                 className={`sp_select_size_btn ${
                   size === 'l' ? 'sp_btn_checked' : ''
                 }  `}
-                onClick={() => setSize('l')}
+                onClick={() => setSize('large')}
               >
                 L
               </label>
@@ -338,7 +355,7 @@ export default function ProductScreen() {
                 className={`sp_select_size_btn ${
                   size === 'xl' ? 'sp_btn_checked' : ''
                 }  `}
-                onClick={() => setSize('xl')}
+                onClick={() => setSize('xtra large')}
               >
                 XL
               </label>
@@ -354,7 +371,7 @@ export default function ProductScreen() {
                 className={`sp_select_size_btn ${
                   size === 'xxl' ? 'sp_btn_checked' : ''
                 }  `}
-                onClick={() => setSize('xxl')}
+                onClick={() => setSize('xx large')}
               >
                 XXL
               </label>

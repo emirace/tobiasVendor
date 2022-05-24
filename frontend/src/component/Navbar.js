@@ -196,6 +196,8 @@ const SubCategoryItem = styled.li`
   }
 `;
 const Badge = styled.span`
+  width: 12px;
+  height: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,14 +284,15 @@ export default function Navbar() {
           <MenuItemCart>
             <Link to="/cart">
               <FontAwesomeIcon icon={faShoppingCart} />
-            </Link>
-            <IconsTooltips tips="Cart" />
 
-            <Badge>
-              {cart.cartItems.length > 0 && (
-                <span>{cart.cartItems.length}</span>
-              )}
-            </Badge>
+              <IconsTooltips tips="Cart" />
+
+              <Badge>
+                {cart.cartItems.length > 0 && (
+                  <span>{cart.cartItems.length}</span>
+                )}
+              </Badge>
+            </Link>
           </MenuItemCart>
           <SellButton>Sell</SellButton>
           {userInfo ? (

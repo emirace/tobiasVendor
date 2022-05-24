@@ -76,6 +76,7 @@
 
 .single_product_actions {
   display: flex;
+  margin-bottom: 10px;
 }
 
 .single_product_actions svg {

@@ -144,11 +144,37 @@ productRouter.post(
   })
 );
 
+productRouter.post(
+  '/:id/likes',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      if (product.likes.find((x) => x === req.user._id)) {
+        product.likes.pull(req.user._id);
+      } else {
+        product.likes.push(req.user._id);
+      }
+
+      const updatedProduct = await product.save();
+
+      res.status(201).send({
+        message: 'Product Liked',
+        like: updatedProduct.likes[updatedProduct.likes.length - 1],
+      });
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+
 const PAGE_SIZE = 3;
 
 productRouter.get(
   '/admin',
-  isAuth,isAdmin,
+  isAuth,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;

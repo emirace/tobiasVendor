@@ -74,11 +74,11 @@ const Right = styled.div`
 `;
 const Menu = styled.div`
   padding: 0 20px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(99, 91, 91, 0.2);
 `;
 const MenuItem = styled.div`
   margin-bottom: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(99, 91, 91, 0.2);
   position: relative;
   padding: 5px;
   cursor: pointer;
@@ -140,7 +140,7 @@ const Online = styled.div`
 `;
 
 const Card = styled.div`
-  border: 1px solid #ddd;
+  border: 1px solid rgba(99, 91, 91, 0.2);
   padding: 5px 20px;
   margin-bottom: 20px;
   margin-left: 20px;
@@ -192,7 +192,7 @@ const MobileMenu = styled.div.attrs((props) => ({
   }
 `;
 const MobileMenuItem = styled.div`
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid rgba(99, 91, 91, 0.2);
   padding: 15px 0;
   & svg {
     margin-right: 10px;
