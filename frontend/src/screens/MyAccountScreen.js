@@ -19,6 +19,9 @@ import {
   faBasketShopping,
   faUser,
   faPen,
+  faBookmark,
+  faGift,
+  faChartArea,
 } from '@fortawesome/free-solid-svg-icons';
 import Rating from '../component/Rating';
 import { Link, Route, Routes } from 'react-router-dom';
@@ -26,6 +29,8 @@ import MessageBox from '../component/MessageBox';
 import ProtectedRoute from '../component/ProtectedRoute';
 import OrderHistoryScreen from './OrderHistoryScreen';
 import ProductListScreen from './ProductListScreen';
+import UserListScreen from './UserListScreen';
+import DashboardScreen from './DashboardScreen';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -73,7 +78,7 @@ const Right = styled.div`
   }
 `;
 const Menu = styled.div`
-  padding: 0 20px;
+  padding: 20px;
   border: 1px solid rgba(99, 91, 91, 0.2);
 `;
 const MenuItem = styled.div`
@@ -351,6 +356,12 @@ export default function MyAccountScreen() {
         return <OrderHistoryScreen />;
       case 'product':
         return <ProductListScreen />;
+      case 'allproduct':
+        return <ProductListScreen />;
+      case 'alluser':
+        return <UserListScreen />;
+      case 'dashboard':
+        return <DashboardScreen />;
       default:
         break;
     }
@@ -410,15 +421,18 @@ export default function MyAccountScreen() {
             Inbox
           </Link>
         </MobileMenuItem>
-        <MobileMenuItem
-          onClick={() => {
-            setDispalay('product');
-            setHideMwnu(true);
-          }}
-        >
-          <FontAwesomeIcon icon={faBasketShopping} />
-          Product
-        </MobileMenuItem>
+        console.log(userInfo)
+        {userInfo && userInfo.isSeller && (
+          <MobileMenuItem
+            onClick={() => {
+              setDispalay('product');
+              setHideMwnu(true);
+            }}
+          >
+            <FontAwesomeIcon icon={faBasketShopping} />
+            Product
+          </MobileMenuItem>
+        )}
         <MobileMenuItem onClick={() => signoutHandler()}>
           <FontAwesomeIcon icon={faRightFromBracket} />
           Logout
@@ -430,19 +444,47 @@ export default function MyAccountScreen() {
             <FontAwesomeIcon icon={faUser} />
             Account
           </MenuItem>
-          <MenuItem onClick={() => setDispalay('order')}>
-            <FontAwesomeIcon icon={faBagShopping} />
-            Orders
-          </MenuItem>
+
           <MenuItem>
             <Link to="/messages">
               <FontAwesomeIcon icon={faEnvelope} />
               Inbox
             </Link>
           </MenuItem>
-          <MenuItem onClick={() => setDispalay('product')}>
-            <FontAwesomeIcon icon={faBasketShopping} />
-            Product
+          <MenuItem onClick={() => setDispalay('order')}>
+            <FontAwesomeIcon icon={faBagShopping} />
+            Orders
+          </MenuItem>
+          <MenuItem onClick={() => setDispalay('save')}>
+            <FontAwesomeIcon icon={faBookmark} />
+            Saved Items
+          </MenuItem>
+          {userInfo && userInfo.isSeller && (
+            <MenuItem onClick={() => setDispalay('product')}>
+              <FontAwesomeIcon icon={faBasketShopping} />
+              Product
+            </MenuItem>
+          )}
+          {userInfo && userInfo.isAdmin && (
+            <>
+              <MenuItem onClick={() => setDispalay('allproduct')}>
+                <FontAwesomeIcon icon={faBasketShopping} />
+                All Products
+              </MenuItem>
+              <MenuItem onClick={() => setDispalay('alluser')}>
+                <FontAwesomeIcon icon={faUser} />
+                All Users
+              </MenuItem>
+              <MenuItem onClick={() => setDispalay('dashboard')}>
+                <FontAwesomeIcon icon={faChartArea} />
+                Analytics
+              </MenuItem>
+            </>
+          )}
+
+          <MenuItem onClick={() => setDispalay('coupons')}>
+            <FontAwesomeIcon icon={faGift} />
+            Coupons
           </MenuItem>
           <MenuItem onClick={() => signoutHandler()}>
             <FontAwesomeIcon icon={faRightFromBracket} />

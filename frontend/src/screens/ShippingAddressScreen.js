@@ -21,11 +21,7 @@ export default function ShippingAddressScreen() {
     shippingAddress.postalCode || ''
   );
   const [country, setCountry] = useState(shippingAddress.country || '');
-  useEffect(() => {
-    if (!userInfo) {
-      navigate('/signin?redirect=shipping');
-    }
-  });
+  useEffect(() => {});
 
   const submitHandler = (e) => {
     e.preventDefault();

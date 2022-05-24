@@ -13,6 +13,7 @@ import { Store } from '../Store';
 
 const Container = styled.div`
   width: 100%;
+  margin-bottom: 10px;
 `;
 const Wrapper = styled.div`
   padding: 0 20px;
@@ -204,7 +205,6 @@ const Badge = styled.span`
   background: var(--orange-color);
   color: #fff;
   font-size: 10px;
-  padding: 0 3px;
   border-radius: 50%;
   position: absolute;
   right: 0;
@@ -287,11 +287,11 @@ export default function Navbar() {
 
               <IconsTooltips tips="Cart" />
 
-              <Badge>
-                {cart.cartItems.length > 0 && (
+              {cart.cartItems.length > 0 && (
+                <Badge>
                   <span>{cart.cartItems.length}</span>
-                )}
-              </Badge>
+                </Badge>
+              )}
             </Link>
           </MenuItemCart>
           <SellButton>Sell</SellButton>

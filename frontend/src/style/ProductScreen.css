@@ -13,6 +13,7 @@
 
 .single_product_center {
   flex: 3;
+  z-index: 9;
 }
 
 .single_product_right {
@@ -232,6 +233,10 @@
   font-size: 12px;
   display: flex;
   align-items: center;
+}
+
+.orange-color {
+  color: var(--orange-color);
 }
 
 @media (max-width: 992px) {

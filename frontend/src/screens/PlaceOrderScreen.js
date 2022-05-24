@@ -69,7 +69,9 @@ export default function PlaceOrderScreen() {
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
         },
-        { headers: { authorization: `Bearer ${userInfo.token}` } }
+        userInfo
+          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+          : {}
       );
       ctxDispatch({ type: 'CART_CLEAR' });
       dispatch({ type: 'CREATE_SUCCESS' });
@@ -80,12 +82,6 @@ export default function PlaceOrderScreen() {
       toast.error(getError(err));
     }
   };
-
-  useEffect(() => {
-    if (!cart.paymentMethod) {
-      navigate('/payment');
-    }
-  }, [cart, navigate]);
 
   return (
     <div className="container">

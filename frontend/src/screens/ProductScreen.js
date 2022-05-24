@@ -26,6 +26,8 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faAngleLeft,
+  faAngleRight,
   faBookmark,
   faHeart,
   faMessage,
@@ -172,6 +174,10 @@ export default function ProductScreen() {
     }
   };
   const toggleLikes = async () => {
+    if (!userInfo) {
+      toast.error('login to like');
+      return;
+    }
     try {
       if (product.likes.find((x) => x === userInfo._id)) {
         const { data } = await axios.put(
@@ -192,7 +198,9 @@ export default function ProductScreen() {
         );
         dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
       }
-    } catch (err) {}
+    } catch (err) {
+      toast.error(getError(err));
+    }
   };
   return loading ? (
     <LoadingBox />
@@ -226,13 +234,13 @@ export default function ProductScreen() {
                 onClick={() => sliderHandler('left')}
                 className="mobile-image-arrow-left"
               >
-                <i class="fa fa-angle-left"></i>
+                <FontAwesomeIcon icon={faAngleLeft} />
               </div>
               <div
                 onClick={() => sliderHandler('right')}
                 className="mobile-image-arrow-right"
               >
-                <i class="fa fa-angle-right"></i>
+                <FontAwesomeIcon icon={faAngleRight} />
               </div>
               <div className="mobile-image">
                 <img
@@ -304,7 +312,15 @@ export default function ProductScreen() {
           </div>
           <div className="single_product_actions">
             <IconContainer>
-              <FontAwesomeIcon onClick={toggleLikes} icon={faHeart} />
+              <FontAwesomeIcon
+                className={
+                  userInfo && product.likes.find((x) => x === userInfo._id)
+                    ? 'orange-color'
+                    : ''
+                }
+                onClick={toggleLikes}
+                icon={faHeart}
+              />
               <IconsTooltips tips="Like Product " />
             </IconContainer>
             <IconContainer>
@@ -604,10 +620,10 @@ export default function ProductScreen() {
           <h2 className="product-category1">Related Products</h2>
         </div>
         <button className="pre-btn1">
-          <i class="fa fa-angle-left"></i>
+          <FontAwesomeIcon icon={faAngleLeft} />
         </button>
         <button className="next-btn1">
-          <i class="fa fa-angle-right"></i>
+          <FontAwesomeIcon icon={faAngleRight} />
         </button>
         <div className="product-container1">
           <div className="product-card1">

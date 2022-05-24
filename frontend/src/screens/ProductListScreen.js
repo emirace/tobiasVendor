@@ -40,7 +40,13 @@ const reducer = (state, action) => {
   }
 };
 export default function ProductListScreen() {
-  const sellerMode = window.location.href.indexOf('/seller') >= 0;
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+
+  const sellerMode = () => {
+    return userInfo.isSeller && !userInfo.isAdmin ? true : false;
+  };
+  const isSellerMode = sellerMode();
 
   const [
     {
@@ -62,9 +68,6 @@ export default function ProductListScreen() {
   const sp = new URLSearchParams(search);
   const page = sp.get('page') || 1;
 
-  const { state } = useContext(Store);
-  const { userInfo } = state;
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,8 +80,8 @@ export default function ProductListScreen() {
         // });
 
         const { data } = await axios.get(
-          `/api/products/${sellerMode ? 'seller/' : 'admin'}${
-            sellerMode ? userInfo._id : ''
+          `/api/products/${isSellerMode ? 'seller/' : 'admin'}${
+            isSellerMode ? userInfo._id : ''
           }?page=${page}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -98,7 +101,7 @@ export default function ProductListScreen() {
     } else {
       fetchData();
     }
-  }, [page, userInfo, successDelete, sellerMode]);
+  }, [page, userInfo, successDelete, isSellerMode]);
 
   const deleteHandler = async (product) => {
     if (window.confirm('Are you sure to delete?')) {
@@ -182,7 +185,9 @@ export default function ProductListScreen() {
               <Link
                 className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}
                 key={x + 1}
-                to={`/${sellerMode ? 'seller' : 'admin'}/product?page=${x + 1}`}
+                to={`/${isSellerMode ? 'seller' : 'admin'}/product?page=${
+                  x + 1
+                }`}
               >
                 {x + 1}
               </Link>

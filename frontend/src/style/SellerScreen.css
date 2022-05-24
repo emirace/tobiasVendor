@@ -114,6 +114,7 @@
 .seller_follow_btn {
   background: var(--orange-color);
   border: none;
+  width: 72px;
   padding: 0 5px;
   border-radius: 5px;
   color: white;

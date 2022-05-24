@@ -60,6 +60,7 @@ export default function UserEditScreen() {
         setIsAdmin(data.isAdmin);
         setIsSeller(data.isSeller);
         dispatch({ type: 'FETCH_SUCCESS' });
+        console.log(data);
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',

@@ -35,11 +35,9 @@ import Button from 'react-bootstrap/Button';
 import { getError } from './utils';
 import axios from 'axios';
 import SearchBox from './component/SearchBox';
-import ProtectedRoute from './component/ProtectedRoute';
 import SearchSceen from './screens/SearchSceen';
 import DashboardScreen from './screens/DashboardScreen';
 import HomeScreen from './screens/HomeScreen';
-import AdminRoute from './component/AdminRoute';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Footer from './component/Footer';
@@ -50,11 +48,19 @@ import CategoryMobileScreen from './screens/CategoryMobileScreen';
 import UserListScreen from './screens/UserListScreen';
 import MyAccountScreen from './screens/MyAccountScreen';
 import UserEditScreen from './screens/UserEditScreen';
-import SellerRoute from './component/SellerRoute';
 import SellerScreen from './screens/SellerScreen';
 import ProductCreateScreen from './screens/ProductCreateScreen';
 import StickyNav from './component/StickyNav';
 import styled from 'styled-components';
+import {
+  AdminRoute,
+  CartNotEmpty,
+  IsPaymentMethod,
+  IsShippingAdd,
+  ProtectedRoute,
+  SellerRoute,
+} from './component/ProtectedRoute';
+import ScrollToTop from './component/ScrollToTop';
 
 const NavCont = styled.div`
   position: relation;
@@ -154,175 +160,177 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ToastContainer position="top-center" limit={1} />
-      <div className={mode || ''}>
-        <StickyNav />
-        <header style={{ background: 'inherit' }}>
-          <NavCont>
-            <Navbar />
-            <Switch
-              checked={mode === 'pagebodydark'}
-              onChange={(e) => darkMode(e.target.checked)}
-            ></Switch>
-            <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
-          </NavCont>
-        </header>
+      <ScrollToTop>
+        <ToastContainer position="top-center" limit={1} />
+        <div className={mode || ''}>
+          <StickyNav />
+          <header style={{ background: 'inherit' }}>
+            <NavCont>
+              <Navbar />
+              <Switch
+                checked={mode === 'pagebodydark'}
+                onChange={(e) => darkMode(e.target.checked)}
+              ></Switch>
+              <Label>
+                {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
+              </Label>
+            </NavCont>
+          </header>
 
-        <main>
-          <div className="p-0 container-fluid">
-            <Routes>
-              <Route path="/product/:slug" element={<ProductScreen />} />
-              <Route path="/seller/:id" element={<SellerScreen />} />
-              <Route path="/cart" element={<CartScreen />} />
-              <Route path="/categories" element={<CategoryMobileScreen />} />
-              <Route path="/search" element={<SearchSceen />} />
-              <Route path="/signin" element={<SigninScreen />} />
-              <Route path="/signup" element={<SignupScreen />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfileScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/account"
-                element={
-                  <ProtectedRoute>
-                    <MyAccountScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/shipping"
-                element={
-                  <ProtectedRoute>
-                    <ShippingAddressScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/payment"
-                element={
-                  <ProtectedRoute>
-                    <PaymentMethodScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/placeorder"
-                element={
-                  <ProtectedRoute>
-                    <PlaceOrderScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/order/:id"
-                element={
-                  <ProtectedRoute>
-                    <OrderScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/orderhistory"
-                element={
-                  <ProtectedRoute>
-                    <OrderHistoryScreen />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/" element={<HomeScreen />} />
-              <Route path="/home" element={<ProductsScreen />} />
+          <main>
+            <div className="p-0 container-fluid">
+              <Routes>
+                <Route path="/product/:slug" element={<ProductScreen />} />
+                <Route path="/seller/:id" element={<SellerScreen />} />
+                <Route path="/cart" element={<CartScreen />} />
+                <Route path="/categories" element={<CategoryMobileScreen />} />
+                <Route path="/search" element={<SearchSceen />} />
+                <Route path="/signin" element={<SigninScreen />} />
+                <Route path="/signup" element={<SignupScreen />} />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfileScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/account"
+                  element={
+                    <ProtectedRoute>
+                      <MyAccountScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/shipping"
+                  element={
+                    <CartNotEmpty>
+                      <ShippingAddressScreen />
+                    </CartNotEmpty>
+                  }
+                />
+                <Route
+                  path="/payment"
+                  element={
+                    <CartNotEmpty>
+                      <IsShippingAdd>
+                        <PaymentMethodScreen />
+                      </IsShippingAdd>
+                    </CartNotEmpty>
+                  }
+                />
+                <Route
+                  path="/placeorder"
+                  element={
+                    <CartNotEmpty>
+                      <IsShippingAdd>
+                        <IsPaymentMethod>
+                          <PlaceOrderScreen />
+                        </IsPaymentMethod>
+                      </IsShippingAdd>
+                    </CartNotEmpty>
+                  }
+                />
+                <Route path="/order/:id" element={<OrderScreen />} />
+                <Route
+                  path="/orderhistory"
+                  element={
+                    <ProtectedRoute>
+                      <OrderHistoryScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/" element={<HomeScreen />} />
+                <Route path="/home" element={<ProductsScreen />} />
 
-              {/* Admin Routes */}
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <AdminRoute>
-                    <DashboardScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/product"
-                element={
-                  <AdminRoute>
-                    <ProductListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/product/:id"
-                element={
-                  <AdminRoute>
-                    <ProductEditScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/order"
-                element={
-                  <AdminRoute>
-                    <OrderListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/user"
-                element={
-                  <AdminRoute>
-                    <UserListScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/user/:id"
-                element={
-                  <AdminRoute>
-                    <UserEditScreen />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/seller/product"
-                element={
-                  <SellerRoute>
-                    <ProductListScreen />
-                  </SellerRoute>
-                }
-              />
-              <Route
-                path="/seller/product/:id"
-                element={
-                  <SellerRoute>
-                    <ProductEditScreen />
-                  </SellerRoute>
-                }
-              />
-              <Route
-                path="/seller/order"
-                element={
-                  <SellerRoute>
-                    <OrderListScreen />
-                  </SellerRoute>
-                }
-              />
-              <Route
-                path="/createproduct"
-                element={
-                  <SellerRoute>
-                    <ProductCreateScreen />
-                  </SellerRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </main>
-        <Footer />
-        {/* <footer>
+                {/* Admin Routes */}
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <AdminRoute>
+                      <DashboardScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/product"
+                  element={
+                    <AdminRoute>
+                      <ProductListScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/product/:id"
+                  element={
+                    <AdminRoute>
+                      <ProductEditScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/order"
+                  element={
+                    <AdminRoute>
+                      <OrderListScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/user"
+                  element={
+                    <AdminRoute>
+                      <UserListScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/user/:id"
+                  element={
+                    <AdminRoute>
+                      <UserEditScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/seller/product"
+                  element={
+                    <SellerRoute>
+                      <ProductListScreen />
+                    </SellerRoute>
+                  }
+                />
+                <Route
+                  path="/seller/product/:id"
+                  element={
+                    <SellerRoute>
+                      <ProductEditScreen />
+                    </SellerRoute>
+                  }
+                />
+                <Route
+                  path="/seller/order"
+                  element={
+                    <SellerRoute>
+                      <OrderListScreen />
+                    </SellerRoute>
+                  }
+                />
+                <Route
+                  path="/createproduct"
+                  element={
+                    <SellerRoute>
+                      <ProductCreateScreen />
+                    </SellerRoute>
+                  }
+                />
+              </Routes>
+            </div>
+          </main>
+          <Footer />
+          {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">TOBIAS</div>
             <div className="footer-ul-container1">
@@ -479,8 +487,9 @@ function App() {
             Conpany, Best apeal fashion market place
           </p>
         </footer> */}
-        {/* </div> */}
-      </div>
+          {/* </div> */}
+        </div>
+      </ScrollToTop>
     </BrowserRouter>
   );
 }

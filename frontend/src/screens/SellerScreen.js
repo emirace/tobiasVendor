@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoadingBox from '../component/LoadingBox';
@@ -19,6 +19,7 @@ import {
   faTag,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { Store } from '../Store';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -58,6 +59,9 @@ export default function SellerScreen() {
   const params = useParams();
   const { id: sellerId } = params;
 
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const page = sp.get('page') || 1;
@@ -90,6 +94,37 @@ export default function SellerScreen() {
     };
     fetchData();
   }, [page, sellerId]);
+
+  const toggleFollow = async () => {
+    if (!userInfo) {
+      toast.error('login to follow');
+      return;
+    }
+    try {
+      if (user.followers.find((x) => x === userInfo._id)) {
+        const { data } = await axios.put(
+          `/api/users/unfollow/${sellerId}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+      } else {
+        const { data } = await axios.put(
+          `/api/users/follow/${sellerId}`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+      }
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
   return (
     <div className="seller_main_container">
       <div className="seller_left">
@@ -115,15 +150,25 @@ export default function SellerScreen() {
               <div className="seller_profile_name">{user.seller.name}</div>
               <div className="seller_profile_follow">
                 <div className="seller_profile_follower">
-                  <div className="seller_profile_follow_num">102</div>
+                  <div className="seller_profile_follow_num">
+                    {user.followers.length}
+                  </div>
                   <div className="">Followers</div>
                 </div>
                 <div className="seller_profile_follower">
-                  <div className="seller_profile_follow_num">51</div>
+                  <div className="seller_profile_follow_num">
+                    {user.following.length}
+                  </div>
                   <div className="">Following</div>
                 </div>
-                <button type="button" className="seller_follow_btn">
-                  Follow
+                <button
+                  type="button"
+                  onClick={toggleFollow}
+                  className="seller_follow_btn"
+                >
+                  {userInfo && user.followers.find((x) => x === userInfo._id)
+                    ? 'Unfollow'
+                    : 'Follow'}
                 </button>
               </div>
               <Rating
@@ -180,7 +225,6 @@ export default function SellerScreen() {
               </div>
             </div>
           </>
-
         )}
       </div>
       <div className="seller_right">

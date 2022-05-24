@@ -38,11 +38,13 @@ const reducer = (state, action) => {
 };
 
 export default function OrderListScreen() {
-  const sellerMode = window.location.href.indexOf('/seller') >= 0;
-
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
+
+  const sellerMode = () => {
+    return userInfo.isSeller ? true : false;
+  };
 
   const [{ loading, error, orders, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {

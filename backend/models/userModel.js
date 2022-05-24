@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false, required: true },
     isSeller: { type: Boolean, default: false, required: true },
+    followers: [{ type: mongoose.Schema.Types.ObjectID, ref: 'User' }],
+    following: [{ type: mongoose.Schema.Types.ObjectID, ref: 'User' }],
     seller: {
       name: String,
       logo: String,

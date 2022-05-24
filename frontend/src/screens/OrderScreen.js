@@ -102,9 +102,9 @@ export default function OrderScreen() {
         const { data } = await axios.put(
           `/api/orders/${order._id}/pay`,
           details,
-          {
-            headers: { authorization: `Bearer ${userInfo.token}` },
-          }
+          userInfo
+            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+            : {}
         );
         dispatch({ type: 'PAY_SUCCESS', payload: data });
         toast.success('Order is paid');
@@ -123,17 +123,17 @@ export default function OrderScreen() {
     const fetchOrder = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/orders/${orderId}`, {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/orders/${orderId}`,
+          userInfo
+            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+            : {}
+        );
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
-    if (!userInfo) {
-      return navigate('/signin');
-    }
     if (
       !order._id ||
       successPay ||
@@ -149,9 +149,12 @@ export default function OrderScreen() {
       }
     } else {
       const loadPaypalScript = async () => {
-        const { data: clientId } = await axios.get('/api/keys/paypal', {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data: clientId } = await axios.get(
+          '/api/keys/paypal',
+          userInfo
+            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+            : {}
+        );
         paypalDispatch({
           type: 'resetOptions',
           value: {
@@ -176,7 +179,7 @@ export default function OrderScreen() {
   async function deliverOrderHandler() {
     try {
       dispatch({ type: 'DELIVER_REQUEST' });
-      const { data } = await axios.put(
+      await axios.put(
         `/api/orders/${order._id}/deliver`,
         {},
         {
@@ -312,20 +315,23 @@ export default function OrderScreen() {
                     {loadingPay && <LoadingBox></LoadingBox>}
                   </ListGroup.Item>
                 )}
-                {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-                  <ListGroup.Item>
-                    {loadingDeliver && <LoadingBox></LoadingBox>}
-                    <div className="d-grid">
-                      <button
-                        type="button"
-                        className="search-btn1"
-                        onClick={deliverOrderHandler}
-                      >
-                        Deliver Order
-                      </button>
-                    </div>
-                  </ListGroup.Item>
-                )}
+                {userInfo &&
+                  userInfo.isAdmin &&
+                  order.isPaid &&
+                  !order.isDelivered && (
+                    <ListGroup.Item>
+                      {loadingDeliver && <LoadingBox></LoadingBox>}
+                      <div className="d-grid">
+                        <button
+                          type="button"
+                          className="search-btn1"
+                          onClick={deliverOrderHandler}
+                        >
+                          Deliver Order
+                        </button>
+                      </div>
+                    </ListGroup.Item>
+                  )}
               </ListGroup>
             </Card.Body>
           </Card>

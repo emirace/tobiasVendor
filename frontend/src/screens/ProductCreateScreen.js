@@ -109,7 +109,6 @@ export default function ProductCreateScreen() {
   };
 
   const uploadFileHandler = async (e, fileType) => {
-    alert(fileType);
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append('file', file);
@@ -121,7 +120,6 @@ export default function ProductCreateScreen() {
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      console.log(data);
       dispatch({ type: 'UPLOAD_SUCCESS' });
       if (fileType === 'images') {
         setImages([...images, data.secure_url]);
