@@ -172,17 +172,26 @@ export default function ProductScreen() {
     }
   };
   const toggleLikes = async () => {
-    console.log('hello');
     try {
-      const { data } = await axios.put(
-        `/api/products/${product._id}/likes`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      product.likes.unshift(data.like);
-      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+      if (product.likes.find((x) => x === userInfo._id)) {
+        const { data } = await axios.put(
+          `/api/products/${product._id}/unlikes`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
+      } else {
+        const { data } = await axios.put(
+          `/api/products/${product._id}/likes`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
+      }
     } catch (err) {}
   };
   return loading ? (
@@ -308,7 +317,7 @@ export default function ProductScreen() {
             </IconContainer>
           </div>
           <div>
-            <b>11 </b> Likes
+            <b>{product.likes.length} </b> Likes
           </div>
           <div className="sp_name">{product.name}</div>
           <div className="sp_price_detail">

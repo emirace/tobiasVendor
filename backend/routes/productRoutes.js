@@ -61,6 +61,7 @@ productRouter.post(
       numReviews: 0,
       description,
       overview: overview ? overview : '',
+      likes: [],
     });
     const product = await newProduct.save();
     res.send({ message: 'Product Created', product });
@@ -144,24 +145,46 @@ productRouter.post(
   })
 );
 
-productRouter.post(
+productRouter.put(
   '/:id/likes',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate(
+      'seller',
+      'seller.name seller.logo seller.rating seller.numReviews'
+    );
     if (product) {
-      if (product.likes.find((x) => x === req.user._id)) {
-        product.likes.pull(req.user._id);
-      } else {
-        product.likes.push(req.user._id);
-      }
+      product.likes.push(req.user._id);
 
       const updatedProduct = await product.save();
 
       res.status(201).send({
-        message: 'Product Liked',
-        like: updatedProduct.likes[updatedProduct.likes.length - 1],
+        message: 'Liked Product',
+        product: updatedProduct,
+      });
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+productRouter.put(
+  '/:id/unlikes',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId).populate(
+      'seller',
+      'seller.name seller.logo seller.rating seller.numReviews'
+    );
+    if (product) {
+      product.likes.pull(req.user._id);
+      const updatedProduct = await product.save();
+
+      console.log('lll' + updatedProduct.likes);
+      res.status(201).send({
+        message: 'Unliked Product',
+        product: updatedProduct,
       });
     } else {
       res.status(404).send({ message: 'Product Not Found' });
