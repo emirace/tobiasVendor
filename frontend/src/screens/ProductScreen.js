@@ -178,6 +178,10 @@ export default function ProductScreen() {
       toast.error('login to like');
       return;
     }
+    if (product.seller._id === userInfo._id) {
+      alert('it is your product');
+      return;
+    }
     try {
       if (product.likes.find((x) => x === userInfo._id)) {
         const { data } = await axios.put(

@@ -96,6 +96,11 @@ export default function SellerScreen() {
   }, [page, sellerId]);
 
   const toggleFollow = async () => {
+    if (user.name === userInfo.name) {
+      alert('you can like your store');
+      return;
+    }
+
     if (!userInfo) {
       toast.error('login to follow');
       return;

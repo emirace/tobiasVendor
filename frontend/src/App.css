@@ -4,6 +4,10 @@
   box-sizing: border-box;
   font-family: 'roboto', sans-serif;
 }
+
+body {
+  overflow-x: hidden;
+}
 :root {
   --btn-gradient: linear-gradient(
     90deg,

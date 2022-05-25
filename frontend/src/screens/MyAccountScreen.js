@@ -31,6 +31,7 @@ import OrderHistoryScreen from './OrderHistoryScreen';
 import ProductListScreen from './ProductListScreen';
 import UserListScreen from './UserListScreen';
 import DashboardScreen from './DashboardScreen';
+import OrderListScreen from './OrderListScreen';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -358,6 +359,8 @@ export default function MyAccountScreen() {
         return <ProductListScreen />;
       case 'allproduct':
         return <ProductListScreen />;
+      case 'allorder':
+        return <OrderListScreen />;
       case 'alluser':
         return <UserListScreen />;
       case 'dashboard':
@@ -406,6 +409,7 @@ export default function MyAccountScreen() {
           <FontAwesomeIcon icon={faUser} />
           Account
         </MobileMenuItem>
+
         <MobileMenuItem
           onClick={() => {
             setDispalay('order');
@@ -421,7 +425,15 @@ export default function MyAccountScreen() {
             Inbox
           </Link>
         </MobileMenuItem>
-        console.log(userInfo)
+        <MobileMenuItem
+          onClick={() => {
+            setDispalay('saved');
+            setHideMwnu(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faTag} />
+          Saved Item
+        </MobileMenuItem>
         {userInfo && userInfo.isSeller && (
           <MobileMenuItem
             onClick={() => {
@@ -433,6 +445,55 @@ export default function MyAccountScreen() {
             Product
           </MobileMenuItem>
         )}
+        {userInfo && userInfo.isAdmin && (
+          <>
+            <MobileMenuItem
+              onClick={() => {
+                setDispalay('allproduct');
+                setHideMwnu(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faBasketShopping} />
+              All Products
+            </MobileMenuItem>
+            <MobileMenuItem
+              onClick={() => {
+                setDispalay('allorder');
+                setHideMwnu(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faBagShopping} />
+              All Orders
+            </MobileMenuItem>
+            <MobileMenuItem
+              onClick={() => {
+                setDispalay('alluser');
+                setHideMwnu(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faUser} />
+              All Users
+            </MobileMenuItem>
+            <MobileMenuItem
+              onClick={() => {
+                setDispalay('dashboard');
+                setHideMwnu(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faChartArea} />
+              Analytics
+            </MobileMenuItem>
+          </>
+        )}
+        <MobileMenuItem
+          onClick={() => {
+            setDispalay('gift');
+            setHideMwnu(true);
+          }}
+        >
+          <FontAwesomeIcon icon={faGift} />
+          Coupons
+        </MobileMenuItem>
         <MobileMenuItem onClick={() => signoutHandler()}>
           <FontAwesomeIcon icon={faRightFromBracket} />
           Logout
@@ -470,6 +531,10 @@ export default function MyAccountScreen() {
               <MenuItem onClick={() => setDispalay('allproduct')}>
                 <FontAwesomeIcon icon={faBasketShopping} />
                 All Products
+              </MenuItem>
+              <MenuItem onClick={() => setDispalay('allorder')}>
+                <FontAwesomeIcon icon={faBagShopping} />
+                All Order
               </MenuItem>
               <MenuItem onClick={() => setDispalay('alluser')}>
                 <FontAwesomeIcon icon={faUser} />
