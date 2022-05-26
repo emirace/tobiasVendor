@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoadingBox from '../component/LoadingBox';
@@ -19,7 +19,57 @@ import {
   faTag,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import styled from 'styled-components';
 import { Store } from '../Store';
+
+const Right = styled.div`
+  flex: 3;
+  margin: 0 15px;
+`;
+const Tab = styled.div`
+  display: flex;
+  margin-bottom: 5px;
+  border: 1px solid rgba(99, 91, 91, 0.2);
+`;
+const TabItem = styled.div`
+  min-width: 80px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  margin: 10px;
+  position: relative;
+  text-transform: capitalize;
+  &:hover {
+    color: var(--orange-color);
+  }
+  &.active {
+    color: var(--orange-color);
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--orange-color);
+    }
+  }
+`;
+const Content = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  border: 1px solid rgba(99, 91, 91, 0.2);
+  width: 100%;
+  height: 100%;
+  flex-wrap: wrap;
+`;
+const ProductCont = styled.div`
+  width: 214px;
+  height: 450px;
+  background: grey;
+  margin: 10px;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -61,6 +111,8 @@ export default function SellerScreen() {
 
   const { state } = useContext(Store);
   const { userInfo } = state;
+
+  const [displayTab, setDisplayTab] = useState('all');
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -127,6 +179,40 @@ export default function SellerScreen() {
       }
     } catch (err) {
       toast.error(getError(err));
+    }
+  };
+
+  const tabSwitch = (tab) => {
+    switch (tab) {
+      case 'all':
+        return (
+          <>
+            {loading ? (
+              <LoadingBox></LoadingBox>
+            ) : error ? (
+              <MessageBox variant="danger">{error}</MessageBox>
+            ) : products.length === 0 ? (
+              <MessageBox>No Product Found</MessageBox>
+            ) : (
+              products.map((product) => (
+                <ProductCont key={product._id}>
+                  <Product product={product} />
+                </ProductCont>
+              ))
+            )}
+          </>
+        );
+      case 'selling':
+        return <>you have no selling product</>;
+      case 'sold':
+        return <>you have no sold product</>;
+      case 'liked':
+        return <>you have no liked product</>;
+      case 'saved':
+        return <>you have no sved product</>;
+
+      default:
+        break;
     }
   };
 
@@ -232,7 +318,42 @@ export default function SellerScreen() {
           </>
         )}
       </div>
-      <div className="seller_right">
+      <Right>
+        <Tab>
+          <TabItem
+            className={displayTab === 'all' && 'active'}
+            onClick={() => setDisplayTab('all')}
+          >
+            All
+          </TabItem>
+          <TabItem
+            className={displayTab === 'selling' && 'active'}
+            onClick={() => setDisplayTab('selling')}
+          >
+            Selling
+          </TabItem>
+          <TabItem
+            className={displayTab === 'sold' && 'active'}
+            onClick={() => setDisplayTab('sold')}
+          >
+            Sold
+          </TabItem>
+          <TabItem
+            className={displayTab === 'liked' && 'active'}
+            onClick={() => setDisplayTab('liked')}
+          >
+            Liked
+          </TabItem>
+          <TabItem
+            className={displayTab === 'saved' && 'active'}
+            onClick={() => setDisplayTab('saved')}
+          >
+            Saved
+          </TabItem>
+        </Tab>
+        <Content>{tabSwitch(displayTab)}</Content>
+      </Right>
+      {/* <div className="seller_right">
         <div className="seller_right_products">
           {loading ? (
             <LoadingBox></LoadingBox>
@@ -257,7 +378,7 @@ export default function SellerScreen() {
             </Link>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

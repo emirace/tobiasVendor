@@ -34,6 +34,7 @@ userRouter.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
+      user.image = req.body.image || user.image || '';
       if (user.isSeller) {
         user.seller.name = req.body.sellerName || user.seller.name;
         user.seller.logo = req.body.sellerLogo || user.seller.logo;
@@ -87,6 +88,7 @@ userRouter.post(
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
+      image: '',
       password: bcrypt.hashSync(req.body.password),
     });
     const user = await newUser.save();
