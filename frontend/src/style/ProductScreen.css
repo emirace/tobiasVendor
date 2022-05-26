@@ -195,15 +195,20 @@
 }
 
 .sp_detail_title::before {
-  content: '+';
+  content: ' ';
+  width: 10px;
+  height: 10px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  transform: rotate(-45deg) translateY(-50%);
   position: absolute;
   top: 50%;
   right: 20px;
-  transform: translateY(-50%);
 }
 
 .sp_detail_section.active .sp_detail_title::before {
-  content: '-';
+  content: ' ';
+  transform: rotate(134deg);
 }
 
 .sp_detail_section.active .sp_detail_contail {

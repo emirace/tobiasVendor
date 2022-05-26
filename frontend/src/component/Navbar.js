@@ -239,8 +239,62 @@ const SignIn = styled.div`
   }
 `;
 
+const SwitchCont = styled.div`
+  padding: 10px 0;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+`;
+
+const Switch = styled.input.attrs({
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
+})`
+  position: relative;
+
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #fff;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+  }
+
+  &:checked {
+    background: #fff;
+    &:before {
+      left: 25px;
+      background: #000;
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    background: #000;
+    transition: 0.5s;
+  }
+`;
+
+const Label = styled.label.attrs({
+  for: 'darkmodeSwitch',
+})`
+  margin-left: 5px;
+  color: #fff;
+  @media (max-width: 992px) {
+  }
+`;
+
 export default function Navbar() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
@@ -252,10 +306,28 @@ export default function Navbar() {
   };
   const subCateMode = backMode(mode);
 
+  const darkMode = (mode) => {
+    if (mode) {
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
+      localStorage.setItem('mode', 'pagebodydark');
+    } else {
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
+      localStorage.setItem('mode', 'pagebodylight');
+    }
+  };
+
   return (
     <Container>
       <Wrapper>
-        <Left></Left>
+        <Left>
+          <SwitchCont>
+            <Switch
+              checked={mode === 'pagebodydark'}
+              onChange={(e) => darkMode(e.target.checked)}
+            ></Switch>
+            <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+          </SwitchCont>
+        </Left>
         <Center>
           50% discount on Newly Registered User... You Will Love
           <Love>
@@ -278,8 +350,10 @@ export default function Navbar() {
         </Search>
         <RightMenu>
           <MenuItem>
-            <FontAwesomeIcon icon={faEnvelope} />
-            <IconsTooltips tips="Messages" />
+            <Link to="/messages">
+              <FontAwesomeIcon icon={faEnvelope} />
+              <IconsTooltips tips="Messages" />
+            </Link>
           </MenuItem>
           <MenuItemCart>
             <Link to="/cart">

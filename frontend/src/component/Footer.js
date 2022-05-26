@@ -1,6 +1,11 @@
-import { faCopyright, faHashtag } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCopyright,
+  faCreditCard,
+  faHashtag,
+  faTruckFast,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { Store } from '../Store';
 import '../style/Footer.css';
@@ -19,6 +24,48 @@ const CopyRight = styled.div`
     font-size: 20px;
   }
 `;
+const SmDetail = styled.p`
+  display: none;
+  position: relative;
+  height: ${(props) => (props.show ? '120px' : 0)};
+  overflow: hidden;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+    display: block;
+  }
+`;
+
+const SmTitle = styled.div`
+  text-transform: capitalize;
+  display: none;
+  position: relative;
+  cursor: pointer;
+  &::before {
+    content: ' ';
+    width: 10px;
+    height: 10px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    transform: rotate(${(props) => (!props.show ? '-45deg' : '135deg')})
+      translateY(-50%);
+    position: absolute;
+    top: 50%;
+    right: 20px;
+  }
+
+  & svg {
+    width: 40px;
+    margin-right: 10px;
+    margin-bottom: 0 !important;
+  }
+
+  @media (max-width: 992px) {
+    display: flex;
+    font-size: 18px;
+    font-weight: bold;
+    align-items: center;
+  }
+`;
 
 export default function Footer() {
   const { state } = useContext(Store);
@@ -32,8 +79,115 @@ export default function Footer() {
     return mode;
   };
   const footerMode = backMode(mode);
+
+  const [shipMethod1, setShippingMethod1] = useState(false);
+  const [shipMethod2, setShippingMethod2] = useState(false);
+  const [shipMethod3, setShippingMethod3] = useState(false);
+
+  const toggleCollapse = (type) => {
+    switch (type) {
+      case 'shipMethod1':
+        setShippingMethod1(!shipMethod1);
+        break;
+      case 'shipMethod2':
+        setShippingMethod2(!shipMethod2);
+        break;
+      case 'shipMethod3':
+        setShippingMethod3(!shipMethod3);
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <>
+      <section className="shop-method-area">
+        <img className="wave_img " src="images/wave2.png" alt=""></img>
+        <div className="bg_malon">
+          <div className="container ">
+            <div className="row d-flex justify-content-between my-3">
+              <div className="col-lg-3 col-md-6 col-sm-12">
+                <div className="single-method ">
+                  <FontAwesomeIcon
+                    icon={faTruckFast}
+                    className="d-none d-lg-block"
+                  />
+                  <SmTitle
+                    show={shipMethod1}
+                    onClick={() => toggleCollapse('shipMethod1')}
+                  >
+                    <FontAwesomeIcon icon={faTruckFast} />
+                    Free Shipping Method
+                  </SmTitle>
+                  <SmDetail show={shipMethod1}>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </SmDetail>
+                  <h6 className="d-none d-lg-block">Free Shipping Method</h6>
+                  <p className="d-none d-lg-block">
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </p>
+                </div>
+              </div>
+              <div className="col-lg-3 col-md-6 col-sm-12">
+                <div className="single-method">
+                  <FontAwesomeIcon
+                    icon={faTruckFast}
+                    className="d-none d-lg-block"
+                  />
+                  <SmTitle
+                    show={shipMethod2}
+                    onClick={() => toggleCollapse('shipMethod2')}
+                  >
+                    <FontAwesomeIcon icon={faTruckFast} />
+                    Free Shipping Method
+                  </SmTitle>
+                  <SmDetail show={shipMethod2}>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </SmDetail>
+                  <h6 className="d-none d-lg-block">Free Shipping Method</h6>
+                  <p className="d-none d-lg-block">
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </p>
+                </div>
+              </div>
+              <div className="col-lg-3 col-md-6 col-sm-12">
+                <div className="single-method">
+                  <FontAwesomeIcon
+                    icon={faCreditCard}
+                    className="d-none d-lg-block"
+                  />
+                  <SmTitle
+                    show={shipMethod3}
+                    onClick={() => toggleCollapse('shipMethod3')}
+                  >
+                    <FontAwesomeIcon icon={faCreditCard} />
+                    Easy Payment Method
+                  </SmTitle>
+                  <SmDetail show={shipMethod3}>
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </SmDetail>
+                  <h6 className="d-none d-lg-block">Easy Payment Method</h6>
+                  <p className="d-none d-lg-block">
+                    Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's
+                    standard dummy text ever since the 1500s,
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="curve_color">
         <img
           className="wave_img  bg_malon"

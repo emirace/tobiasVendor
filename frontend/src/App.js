@@ -61,6 +61,7 @@ import {
   SellerRoute,
 } from './component/ProtectedRoute';
 import ScrollToTop from './component/ScrollToTop';
+import ChatScreen from './screens/ChatScreen';
 
 const NavCont = styled.div`
   position: relation;
@@ -167,13 +168,6 @@ function App() {
           <header style={{ background: 'inherit' }}>
             <NavCont>
               <Navbar />
-              <Switch
-                checked={mode === 'pagebodydark'}
-                onChange={(e) => darkMode(e.target.checked)}
-              ></Switch>
-              <Label>
-                {mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}
-              </Label>
             </NavCont>
           </header>
 
@@ -192,6 +186,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ProfileScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <ChatScreen />
                     </ProtectedRoute>
                   }
                 />

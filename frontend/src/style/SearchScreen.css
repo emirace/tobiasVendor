@@ -8,15 +8,20 @@
 }
 
 .seaarch_cate_heading::before {
-  content: '+';
+  content: ' ';
+  width: 10px;
+  height: 10px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  transform: rotate(-45deg) translateY(-50%);
   position: absolute;
   top: 50%;
   right: 20px;
-  transform: translateY(-50%);
 }
 
 .search_cate_container.active .seaarch_cate_heading::before {
-  content: '-';
+  content: '';
+  transform: rotate(135deg);
 }
 
 .search_cate_container .search_cate_content {
@@ -48,20 +53,28 @@
 }
 
 .filter_btn {
-  margin-right: 30px;
+  margin: 0 10px;
+  min-width: 100px;
   position: relative;
-  padding: 0 25px;
   color: inherit;
   background: none;
   border: 1px solid;
 }
 
 .filter_btn::before {
-  content: '+';
+  content: ' ';
+  width: 5px;
+  height: 5px;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  transform: rotate(-45deg) translateY(-50%);
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
   right: 10px;
+}
+
+.filter_btn.active::before {
+  transform: rotate(135deg);
 }
 
 .filter_sidebar {
@@ -75,6 +88,7 @@
 }
 
 .search_sortBy {
+  max-width: 100px;
   background: inherit;
   color: inherit;
 }

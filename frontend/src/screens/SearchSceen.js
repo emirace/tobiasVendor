@@ -270,13 +270,15 @@ export default function SearchSceen() {
               <>
                 <Row className="justify-content-between mb-3">
                   <button
-                    className="filter_btn col-3 d-block d-lg-none"
+                    className={`filter_btn col-3 d-block d-lg-none ${
+                      filterSidebar ? 'active' : ''
+                    }`}
                     onClick={() => setFilterSidebar(!filterSidebar)}
                   >
                     Filters
                   </button>
                   <Col className="text-end ">
-                    Sort by{' '}
+                    Sort by
                     <select
                       className="search_sortBy"
                       value={order}
@@ -299,10 +301,7 @@ export default function SearchSceen() {
                     </select>
                   </Col>
                 </Row>
-                <div
-                  className="d-block d-lg-none"
-                  onClick={() => setFilterSidebar(!filterSidebar)}
-                >
+                <div className="d-block d-lg-none">
                   <div
                     className={`filter_sidebar  ${
                       filterSidebar ? 'active' : ''
@@ -319,7 +318,10 @@ export default function SearchSceen() {
                       >
                         category
                       </div>
-                      <ul className="search_cate_content">
+                      <ul
+                        className="search_cate_content"
+                        onClick={() => setFilterSidebar(!filterSidebar)}
+                      >
                         <li>
                           <FontAwesomeIcon icon={faCircleDot} />
                           <Link
@@ -353,7 +355,10 @@ export default function SearchSceen() {
                       >
                         Price
                       </div>
-                      <ul className="search_cate_content">
+                      <ul
+                        className="search_cate_content"
+                        onClick={() => setFilterSidebar(!filterSidebar)}
+                      >
                         <li>
                           <FontAwesomeIcon icon={faCircleDot} />
                           <Link
@@ -387,7 +392,10 @@ export default function SearchSceen() {
                       >
                         Avg Review
                       </div>
-                      <ul className="search_cate_content">
+                      <ul
+                        className="search_cate_content"
+                        onClick={() => setFilterSidebar(!filterSidebar)}
+                      >
                         {ratings.map((r) => (
                           <li key={r.name}>
                             <FontAwesomeIcon icon={faCircleDot} />

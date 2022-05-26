@@ -20,47 +20,8 @@ import 'react-multi-carousel/lib/styles.css';
 import '../style/HomeScreen.css';
 import CategoryListing from '../component/CategoryListing';
 import Navbar from '../component/Navbar';
-import { faCreditCard, faTruckFast } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 //import data from '../data';
-
-const SmTitle = styled.div`
-  text-transform: capitalize;
-  display: none;
-  position: relative;
-  cursor: pointer;
-  &::before {
-    content: '+';
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-  }
-  & svg {
-    width: 40px;
-    margin-right: 10px;
-    margin-bottom: 0 !important;
-  }
-
-  @media (max-width: 992px) {
-    display: flex;
-    font-size: 18px;
-    font-weight: bold;
-    align-items: center;
-  }
-`;
-
-const SmDetail = styled.p`
-  display: none;
-  position: relative;
-  height: ${(props) => (props.show ? '120px' : 0)};
-  overflow: hidden;
-  transition: 0.5s;
-  @media (max-width: 992px) {
-    display: block;
-  }
-`;
 
 const Seller = styled.div`
   display: flex;
@@ -142,7 +103,6 @@ export default function ProductsScreen() {
     };
     fetchData();
   }, []);
-  const product1 = [1, 2, 3];
   const sliderHandler = (direction) => {
     if (direction === 'left') {
       setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
@@ -168,26 +128,6 @@ export default function ProductsScreen() {
       items: 2,
       slidesToSlide: 1, // optional, default to 1.
     },
-  };
-
-  const [shipMethod1, setShippingMethod1] = useState(false);
-  const [shipMethod2, setShippingMethod2] = useState(false);
-  const [shipMethod3, setShippingMethod3] = useState(false);
-
-  const toggleCollapse = (type) => {
-    switch (type) {
-      case 'shipMethod1':
-        setShippingMethod1(!shipMethod1);
-        break;
-      case 'shipMethod2':
-        setShippingMethod2(!shipMethod2);
-        break;
-      case 'shipMethod3':
-        setShippingMethod3(!shipMethod3);
-        break;
-      default:
-        break;
-    }
   };
 
   return (
@@ -455,88 +395,7 @@ export default function ProductsScreen() {
               )}
             </div>
           </section>
-          <section className="shop-method-area">
-            <img className="wave_img " src="images/wave2.png" alt=""></img>
-            <div className="bg_malon">
-              <div className="container ">
-                <div className="row d-flex justify-content-between my-3">
-                  <div className="col-lg-3 col-md-6 col-sm-12">
-                    <div className="single-method ">
-                      <FontAwesomeIcon
-                        icon={faTruckFast}
-                        className="d-none d-lg-block"
-                      />
-                      <SmTitle onClick={() => toggleCollapse('shipMethod1')}>
-                        <FontAwesomeIcon icon={faTruckFast} />
-                        Free Shipping Method
-                      </SmTitle>
-                      <SmDetail show={shipMethod1}>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </SmDetail>
-                      <h6 className="d-none d-lg-block">
-                        Free Shipping Method
-                      </h6>
-                      <p className="d-none d-lg-block">
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-lg-3 col-md-6 col-sm-12">
-                    <div className="single-method">
-                      <FontAwesomeIcon
-                        icon={faTruckFast}
-                        className="d-none d-lg-block"
-                      />
-                      <SmTitle onClick={() => toggleCollapse('shipMethod2')}>
-                        <FontAwesomeIcon icon={faTruckFast} />
-                        Free Shipping Method
-                      </SmTitle>
-                      <SmDetail show={shipMethod2}>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </SmDetail>
-                      <h6 className="d-none d-lg-block">
-                        Free Shipping Method
-                      </h6>
-                      <p className="d-none d-lg-block">
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-lg-3 col-md-6 col-sm-12">
-                    <div className="single-method">
-                      <FontAwesomeIcon
-                        icon={faCreditCard}
-                        className="d-none d-lg-block"
-                      />
-                      <SmTitle onClick={() => toggleCollapse('shipMethod3')}>
-                        <FontAwesomeIcon icon={faCreditCard} />
-                        Easy Payment Method
-                      </SmTitle>
-                      <SmDetail show={shipMethod3}>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </SmDetail>
-                      <h6 className="d-none d-lg-block">Easy Payment Method</h6>
-                      <p className="d-none d-lg-block">
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+
           {/* <section className="carl">
             <div className="left-side1">
               <span className="logo1">fashion</span>
