@@ -234,7 +234,7 @@ export default function ProductScreen() {
         <div className=" col-sm-12 col-md-6 d-block d-md-none">
           <div className=" row justify-content-center">
             <div className="moblie-slider">
-              <div
+              {/* <div
                 onClick={() => sliderHandler('left')}
                 className="mobile-image-arrow-left"
               >
@@ -245,28 +245,21 @@ export default function ProductScreen() {
                 className="mobile-image-arrow-right"
               >
                 <FontAwesomeIcon icon={faAngleRight} />
-              </div>
-              <div className="mobile-image">
+              </div> */}
+              <div className="mobile-image scroll_snap">
                 <img
                   style={{ transform: sliderstyle }}
                   src={product.image}
                   alt="product"
                 ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
+                {product.images.map((image) => (
+                  <img
+                    key={image}
+                    style={{ transform: sliderstyle }}
+                    src={image}
+                    alt="product"
+                  ></img>
+                ))}
               </div>
             </div>
           </div>

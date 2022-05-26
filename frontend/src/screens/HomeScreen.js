@@ -197,7 +197,7 @@ export default function ProductsScreen() {
                 industry. Lorem Ipsum
               </p>
             </div>
-            <div className="CategoryListing_item">
+            <div className="CategoryListing_item scroll_snap">
               <CategoryListing image="/images/card6.png" title="Smart Shirt" />
               <CategoryListing image="/images/card11.png" title="Sport" />
               <CategoryListing image="/images/men.png" title="Colorful" />
@@ -260,7 +260,7 @@ export default function ProductsScreen() {
                 industry. Lorem Ipsum
               </p>
             </div>
-            <div className="CategoryListing_item">
+            <div className="CategoryListing_item scroll_snap">
               <CategoryListing image="/images/card6.png" title="Gucci" />
               <CategoryListing image="/images/card11.png" title="fendi" />
               <CategoryListing image="/images/men.png" title="bottega veneta" />
@@ -281,7 +281,7 @@ export default function ProductsScreen() {
             >
               <i class="fa fa-angle-right"></i>
             </button>
-            <div className="product-container1">
+            <div className="product-container1 scroll_snap">
               {products.map((product) => (
                 <div
                   key={product.slug}
@@ -377,7 +377,7 @@ export default function ProductsScreen() {
                   {sellers.length === 0 && (
                     <MessageBox>No Seller Found</MessageBox>
                   )}
-                  <Seller>
+                  <Seller className="scroll_snap">
                     {sellers.map((seller) => (
                       <Link to={`/seller/${seller._id}`}>
                         <div className="carousel_item">

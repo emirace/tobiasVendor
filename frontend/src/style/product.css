@@ -15,6 +15,14 @@
   border: 1px solid #ff7200;
 }
 
+.scroll_snap {
+  scroll-snap-type: inline mandatory;
+}
+
+.scroll_snap > * {
+  scroll-snap-align: start;
+}
+
 .small-img {
   width: 340px !important;
   height: 414px !important;
