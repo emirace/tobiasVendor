@@ -61,6 +61,9 @@ const Content = styled.div`
   border: 1px solid rgba(99, 91, 91, 0.2);
   margin: 5px;
   padding: 5px;
+  @media (max-width: 992px) {
+    margin: 0;
+  }
 `;
 const Left = styled.div`
   flex: 1;
@@ -122,6 +125,11 @@ const OrderNum = styled.div`
   font-size: 13px;
   margin: 0 5px 10px 5px;
   @media (max-width: 992px) {
+    width: 180px;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 0 0 5px 0;
   }
 `;
@@ -150,6 +158,7 @@ const Date = styled.div`
   margin: 0 5px 10px 5px;
   @media (max-width: 992px) {
     margin: 0 0 5px 0;
+    font-size: 13px;
   }
 `;
 

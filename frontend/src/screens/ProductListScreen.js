@@ -88,6 +88,11 @@ const OrderNum = styled.div`
   font-size: 13px;
   margin: 0 5px 10px 5px;
   @media (max-width: 992px) {
+    width: 180px;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin: 0 0 5px 0;
   }
 `;
@@ -111,6 +116,7 @@ const Date = styled.div`
   margin: 0 5px 10px 5px;
   @media (max-width: 992px) {
     margin: 0 0 5px 0;
+    font-size: 13px;
   }
 `;
 
