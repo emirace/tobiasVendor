@@ -15,11 +15,7 @@ export default function PaymentMethodScreen() {
   const [paymentMethodName, setPaymentMethod] = useState(
     paymentMethod || 'PayPal'
   );
-  useEffect(() => {
-    if (!shippingAddress.address) {
-      navigate('/shipping');
-    }
-  }, [shippingAddress, navigate]);
+  useEffect(() => {}, [shippingAddress, navigate]);
   const submitHandler = (e) => {
     e.preventDefault();
     ctxDispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethodName });

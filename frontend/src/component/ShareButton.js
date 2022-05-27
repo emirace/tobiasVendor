@@ -18,19 +18,44 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
-  position: absolute;
-
-  transition: all 0.5s;
-  bottom: -30px;
-  left: 100%;
-  & button svg {
-    margin: 10px;
+  margin: 10px;
+  & button:nth-child(1) {
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.1s;
   }
+  & button:nth-child(2) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.15s;
+  }
+  & button:nth-child(3) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.2s;
+  }
+  & button:nth-child(4) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.25s;
+  }
+  & button:nth-child(5) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.3s;
+  }
+
   @media (max-width: 992px) {
-    right: 0;
-    left: auto;
-    bottom: auto;
-    top: -15px;
   }
 `;
 

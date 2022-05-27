@@ -1,5 +1,5 @@
 import Button from 'react-bootstrap/Button';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
@@ -13,6 +13,7 @@ import { Store } from '../Store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 
 const SumCont = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ export default function CartScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },
+    userInfo,
   } = state;
 
   const updateCartHandler = async (item, quantity) => {
@@ -48,9 +50,16 @@ export default function CartScreen() {
   const removeItemHandler = (item) => {
     ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
-
   const checkoutHandler = () => {
-    navigate('../shipping');
+    if (cartItems.length === 0) {
+      toast.error('cart is empty');
+    } else {
+      if (userInfo) {
+        navigate('../shipping');
+      } else {
+        navigate('../signin');
+      }
+    }
   };
 
   return (
@@ -147,7 +156,6 @@ export default function CartScreen() {
                       className="search-btn1"
                       onClick={checkoutHandler}
                       variant="primary"
-                      disabled={cartItems.lenth === 0}
                     >
                       Proceed to Checkout
                     </button>

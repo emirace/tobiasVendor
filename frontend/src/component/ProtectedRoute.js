@@ -34,9 +34,13 @@ export function IsShippingAdd({ children }) {
   const {
     cart: { shippingAddress },
   } = state;
-
-  !shippingAddress && toast.error('Enter Shipping Address');
-  return shippingAddress ? children : <Navigate to="/shipping" />;
+  Object.keys(shippingAddress).length === 0 &&
+    toast.error('Enter Shipping Address');
+  return Object.keys(shippingAddress).length === 0 ? (
+    <Navigate to="/shipping" />
+  ) : (
+    children
+  );
 }
 
 export function IsPaymentMethod({ children }) {

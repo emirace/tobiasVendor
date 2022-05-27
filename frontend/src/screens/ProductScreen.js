@@ -337,9 +337,11 @@ export default function ProductScreen() {
                 onClick={() => setShare(!share)}
                 icon={faShareNodes}
               />
-              <IconsTooltips tips="Share " />
-              {share && <ShareButton url={'/'} />}
+              <IconsTooltips className="tiptools" tips="Share " />
             </IconContainer>
+            <span className={share && 'active2'}>
+              <ShareButton url={'/'} />
+            </span>
           </div>
           <div>
             <b>{product.likes.length} </b> Likes
