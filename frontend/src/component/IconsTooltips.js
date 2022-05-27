@@ -7,7 +7,8 @@ const Container = styled.div`
 
 const Tooltip = styled.div`
   position: absolute;
-  display: none;
+  opacity: 0;
+  transition: all 1s;
   bottom: -30px;
   z-index: 9;
   background: white;

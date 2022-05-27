@@ -31,11 +31,13 @@ import {
   faBookmark,
   faHeart,
   faMessage,
+  faShareNodes,
   faTag,
 } from '@fortawesome/free-solid-svg-icons';
 import '../style/ProductScreen.css';
 import styled from 'styled-components';
 import IconsTooltips from '../component/IconsTooltips';
+import ShareButton from '../component/ShareButton';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -60,8 +62,9 @@ const reducer = (state, action) => {
 };
 
 const IconContainer = styled.div`
+  position: relative;
   &:hover div {
-    display: block;
+    opacity: 1;
   }
 `;
 
@@ -75,6 +78,7 @@ export default function ProductScreen() {
   const [condition, setCondition] = useState(false);
   const [shipping, setShipping] = useState(false);
   const [size, setSize] = useState('');
+  const [share, setShare] = useState(false);
 
   const params = useParams();
   const { slug } = params;
@@ -327,6 +331,14 @@ export default function ProductScreen() {
             <IconContainer>
               <FontAwesomeIcon icon={faMessage} />
               <IconsTooltips tips="Message Seller " />
+            </IconContainer>
+            <IconContainer>
+              <FontAwesomeIcon
+                onClick={() => setShare(!share)}
+                icon={faShareNodes}
+              />
+              <IconsTooltips tips="Share " />
+              {share && <ShareButton url={'/'} />}
             </IconContainer>
           </div>
           <div>

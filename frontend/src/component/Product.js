@@ -5,6 +5,17 @@ import { Link } from 'react-router-dom';
 import Rating from './Rating';
 import axios from 'axios';
 import { Store } from '../Store';
+import styled from 'styled-components';
+
+const Sold = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--orange-color);
+`;
 
 export default function Product(props) {
   const { product } = props;
@@ -41,22 +52,26 @@ export default function Product(props) {
         </Link>
         <ul className="product_hover">
           <li>
-            <a href="/#">
+            <Link to="#">
               <i className="fa fa-arrows-alt"></i>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/#">
+            <Link to="#">
               <i className="fa fa-heart"></i>
-            </a>
+            </Link>
           </li>
           <li>
-            <a onClick={() => addToCartHandler(product)}>
+            <Link to="#" onClick={() => addToCartHandler(product)}>
               <i className="fa fa-shopping-bag"></i>
-            </a>
+            </Link>
           </li>
         </ul>
-        {/* <button className="card-btn1">add to wishlist</button> */}
+        {product.sold && (
+          <div className="overlay">
+            <Sold>SOLD</Sold>
+          </div>
+        )}
       </div>
       <div className="product-info1">
         <h2 className="product-brand1">

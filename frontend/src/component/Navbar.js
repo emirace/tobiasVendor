@@ -123,7 +123,7 @@ const MenuItem = styled.div`
     color: var(--orange-color);
   }
   &:hover div {
-    display: block;
+    opacity: 1;
   }
 `;
 const MenuItemCart = styled.div`
@@ -134,7 +134,7 @@ const MenuItemCart = styled.div`
     color: var(--orange-color);
   }
   &:hover div {
-    display: block;
+    opacity: 1;
   }
 `;
 const ProfileImg = styled.img.attrs({
