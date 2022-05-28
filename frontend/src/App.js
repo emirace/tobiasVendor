@@ -62,6 +62,7 @@ import {
 } from './component/ProtectedRoute';
 import ScrollToTop from './component/ScrollToTop';
 import ChatScreen from './screens/ChatScreen';
+import InfoScreen from './screens/InfoScreen';
 
 const NavCont = styled.div`
   position: relation;
@@ -181,6 +182,7 @@ function App() {
                 <Route path="/search" element={<SearchSceen />} />
                 <Route path="/signin" element={<SigninScreen />} />
                 <Route path="/signup" element={<SignupScreen />} />
+                <Route path="/info" element={<InfoScreen />} />
                 <Route
                   path="/profile"
                   element={

@@ -14,13 +14,11 @@
   border: 1px solid rgba(99, 91, 91, 0.2);
 }
 .btn {
-  color: inherit;
+  color: white;
+  background: var(--orange-color);
+  border: 0;
 }
 .btn:hover {
-  color: var(--orange-color);
-}
-
-.form-control {
-  background: none;
-  border: 2px solid rgba(99, 91, 91, 0.2);
+  border: 0;
+  background: var(--malon-color);
 }
