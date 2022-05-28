@@ -14,6 +14,37 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
+const Container = styled.div`
+  width: 100%;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-color);
+  padding: 0 30px;
+`;
+const Header = styled.h1`
+  margin-bottom: 0;
+  width: 100%;
+  padding: 15px 30px;
+  border: 1px solid var(--border-color);
+  border-bottom: 0;
+`;
+const SumaryContDetails = styled.div`
+  border: 1px solid var(--border-color);
+  padding: 15px 30px;
+  margin-bottom: 15px;
+`;
+const SumaryCont = styled.div`
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+`;
+const OrderId = styled.h4``;
+const Heading = styled.h4`
+  padding: 15px 0;
+  text-transform: uppercase;
+`;
+const ItemNum = styled.div``;
+const Date = styled.div``;
+const Price = styled.div``;
+
 const Track = styled.span`
   color: var(--orange-color);
   font-size: 20px;
@@ -22,6 +53,29 @@ const Track = styled.span`
     color: var(--malon-color);
   }
 `;
+const OrderItem = styled.div`
+  display: flex;
+`;
+const Image = styled.img`
+  object-fit: cover;
+  object-position: top;
+  width: 130px;
+  height: 180px;
+`;
+const Details1 = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+const Name = styled.h5`
+  text-transform: capitalize;
+  margin-bottom: 10px;
+`;
+const Quantity = styled.div`
+  margin-bottom: 10px;
+`;
+const ItemPrice = styled.h5``;
 
 function reducer(state, action) {
   switch (action.type) {
@@ -203,8 +257,34 @@ export default function OrderScreen() {
       <Helmet>
         <title>Order {orderId}</title>
       </Helmet>
-      <h1 className="my-3">Order {orderId}</h1>
-      <Row>
+      <Header>Order Detail</Header>
+      <Container>
+        <SumaryCont>
+          <OrderId>Order number {orderId}</OrderId>
+          <ItemNum>
+            {order.orderItems.length} Item
+            {order.orderItems.length > 1 ? 's' : ''}
+          </ItemNum>
+          <Date>Placed on {order.createdAt.substring(0, 10)}</Date>
+          <Price>Total: ${order.totalPrice}</Price>
+        </SumaryCont>
+
+        <Heading>Items in your order</Heading>
+        <SumaryContDetails>
+          {order.orderItems.map((order) => (
+            <OrderItem>
+              <Image src={order.image} alt={order.name} />
+              <Details1>
+                <Name>{order.name}</Name>
+                <Quantity>QTY: {order.quantity}</Quantity>
+                <ItemPrice>$ {order.price}</ItemPrice>
+              </Details1>
+            </OrderItem>
+          ))}
+        </SumaryContDetails>
+      </Container>
+
+      {/* <Row>
         <Col md={8}>
           <Card className="mb-3">
             <Card.Body>
@@ -336,7 +416,7 @@ export default function OrderScreen() {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 }

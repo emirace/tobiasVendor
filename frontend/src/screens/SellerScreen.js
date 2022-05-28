@@ -32,7 +32,7 @@ const Right = styled.div`
 const Tab = styled.div`
   display: flex;
   margin-bottom: 5px;
-  border: 1px solid rgba(99, 91, 91, 0.4);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
 `;
 const TabItem = styled.div`
@@ -63,7 +63,7 @@ const TabItem = styled.div`
 const Content = styled.div`
   display: flex;
   padding: 10px;
-  border: 1px solid rgba(99, 91, 91, 0.4);
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   width: 100%;
   height: 100%;
@@ -431,7 +431,7 @@ export default function SellerScreen() {
           >
             Liked
           </TabItem>
-          {userInfo._id === sellerId && (
+          {userInfo && userInfo._id === sellerId && (
             <TabItem
               className={displayTab === 'saved' && 'active'}
               onClick={() => setDisplayTab('saved')}

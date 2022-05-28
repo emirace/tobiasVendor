@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import LoadingBox from '../component/LoadingBox';
 import styled from 'styled-components';
+import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
 const SumCont = styled.div`
   display: flex;
@@ -30,9 +31,17 @@ const reducer = (state, action) => {
     case 'CREATE_REQUEST':
       return { ...state, loading: true };
     case 'CREATE_SUCCESS':
-      return { ...state, loading: false };
+      return { ...state, loading: false, order: action.payload };
     case 'CREATE_FAIL':
       return { ...state, loading: false };
+    case 'PAY_REQUEST':
+      return { ...state, loadingPay: true };
+    case 'PAY_SUCCESS':
+      return { ...state, loadingPay: false, successPay: true };
+    case 'PAY_FAIL':
+      return { ...state, loadingPay: false };
+    case 'PAY_RESET':
+      return { ...state, loadingPay: false, successPay: false };
 
     default:
       return state;
@@ -43,9 +52,16 @@ export default function PlaceOrderScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const navigate = useNavigate();
-  const [{ loading }, dispatch] = useReducer(reducer, {
-    loading: false,
-  });
+  const [{ loading, loadingPay, order, successPay }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: false,
+      loadingPay: false,
+      order: null,
+    }
+  );
+
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cart.itemsPrice = round2(
@@ -54,6 +70,26 @@ export default function PlaceOrderScreen() {
   cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
   cart.taxPrice = round2(0.15 * cart.itemsPrice);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+
+  useEffect(() => {
+    const loadPaypalScript = async () => {
+      const { data: clientId } = await axios.get(
+        '/api/keys/paypal',
+        userInfo
+          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+          : {}
+      );
+      paypalDispatch({
+        type: 'resetOptions',
+        value: {
+          'client-id': clientId,
+          currency: 'USD',
+        },
+      });
+      paypalDispatch({ type: 'useLoadingStatus', value: 'pending' });
+    };
+    loadPaypalScript();
+  }, [userInfo, paypalDispatch]);
 
   const placeOrderHandler = async () => {
     try {
@@ -73,15 +109,61 @@ export default function PlaceOrderScreen() {
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
           : {}
       );
-      ctxDispatch({ type: 'CART_CLEAR' });
-      dispatch({ type: 'CREATE_SUCCESS' });
-      localStorage.removeItem('cartItems');
-      navigate(`/order/${data.order._id}`);
+      console.log('');
+      dispatch({ type: 'CREATE_SUCCESS', payload: data });
+      return data;
     } catch (err) {
       dispatch({ type: 'CREATE_FAIL' });
       toast.error(getError(err));
     }
   };
+
+  function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: cart.totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
+  }
+
+  const onApprove = async (data, actions) => {
+    const order1 = await placeOrderHandler();
+    console.log(order1);
+    if (order1) {
+      return actions.order.capture().then(async function (details) {
+        try {
+          dispatch({ type: 'PAY_REQUEST' });
+          const { data } = await axios.put(
+            `/api/orders/${order1.order._id}/pay`,
+            details,
+            userInfo
+              ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+              : {}
+          );
+          dispatch({ type: 'PAY_SUCCESS', payload: data });
+          toast.success('Order is paid');
+          localStorage.removeItem('cartItems');
+          ctxDispatch({ type: 'CART_CLEAR' });
+          navigate(`/order/${data.order._id}`);
+        } catch (err) {
+          dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+          toast.error(getError(err));
+        }
+      });
+    } else {
+      toast.error('no order found');
+    }
+  };
+
+  function onError(err) {
+    toast.error(getError(err));
+  }
 
   return (
     <div className="container">
@@ -96,7 +178,10 @@ export default function PlaceOrderScreen() {
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
                 <strong>Name: </strong>
-                {cart.shippingAddress.fullName} <br />
+                {cart.shippingAddress.firstname +
+                  ' ' +
+                  cart.shippingAddress.lastname}
+                <br />
                 <strong>Address: </strong>
                 {cart.shippingAddress.address},{cart.shippingAddress.city},{' '}
                 {cart.shippingAddress.pstalCode}, {cart.shippingAddress.country}
@@ -193,6 +278,21 @@ export default function PlaceOrderScreen() {
                     <Col>${cart.totalPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
+                <ListGroup.Item>
+                  {isPending ? (
+                    <LoadingBox />
+                  ) : (
+                    <div>
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
+                    </div>
+                  )}
+                  {loadingPay && <LoadingBox></LoadingBox>}
+                </ListGroup.Item>
+
                 <ListGroup.Item>
                   <div className="d-grid">
                     <button

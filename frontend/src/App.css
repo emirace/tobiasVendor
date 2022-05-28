@@ -18,6 +18,7 @@ body {
   --orange-color: #f79a23;
   --black-color: black;
   --white-color: white;
+  --border-color: rgba(99, 91, 91, 0.4);
 }
 .pagebodydark {
   background: var(--black-color);
@@ -828,13 +829,17 @@ a.font13 {
   color: var(--orange-color);
 }
 
+.orange {
+  color: var(--orange-color);
+}
 .form-check-input {
-  border: 0;
+  border-color: black;
 }
 
 .form-check-input:focus {
   outline: none;
-  box-shadow: none;
+  border-color: black !important;
+  box-shadow: none !important;
 }
 .form-check-input:checked {
   background-color: black !important;
@@ -904,4 +909,14 @@ select.select_input_box {
 .form-select:focus {
   border-color: var(--orange-color);
   box-shadow: 0 0 0 0.25rem rgba(247, 154, 35, 0.1);
+}
+.lightform {
+  color: black;
+}
+
+.lightform:focus {
+  color: black;
+}
+.btn-primary:active:focus {
+  box-shadow: none;
 }

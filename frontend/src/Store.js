@@ -8,6 +8,9 @@ const initialState = {
   mode: localStorage.getItem('mode')
     ? localStorage.getItem('mode')
     : 'pagebodylight',
+  useraddress: localStorage.getItem('useraddress')
+    ? localStorage.getItem('useraddress')
+    : null,
   cart: {
     cartItems: localStorage.getItem('cartItems')
       ? JSON.parse(localStorage.getItem('cartItems'))
@@ -72,6 +75,11 @@ function reducer(state, action) {
           ...state.cart,
           shippingAddress: action.payload,
         },
+      };
+    case 'SAVE_USER_ADDRESS':
+      return {
+        ...state,
+        useraddress: action.payload,
       };
     case 'SAVE_PAYMENT_METHOD':
       return {
