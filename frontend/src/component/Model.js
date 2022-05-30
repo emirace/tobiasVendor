@@ -2,15 +2,19 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
+import ReviewLists from '../screens/ReviewLists';
 
 const Background = styled.div`
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 `;
 
 const ModelWrapper = styled.div`
@@ -19,38 +23,9 @@ const ModelWrapper = styled.div`
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
   background: #fff;
   color: #000;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   position: relative;
   z-index: 10;
   border-radius: 10px;
-`;
-
-const ModelImg = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px 0 0 10px;
-  background: #000;
-`;
-
-const ModelContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  line-height: 1.8;
-  color: #141414;
-  p {
-    margin-bottom: 1rem;
-  }
-
-  button {
-    padding: 10px 24px;
-    background: #141414;
-    color: #fff;
-    border: none;
-  }
 `;
 
 const CloseModelButton = styled.div`
@@ -62,6 +37,9 @@ const CloseModelButton = styled.div`
   height: 32px;
   padding: 0;
   z-index: 10;
+`;
+const G = styled.div`
+  background: blue;
 `;
 
 export default function Model({ showModel, setShowModel }) {
@@ -77,11 +55,9 @@ export default function Model({ showModel, setShowModel }) {
       {showModel && (
         <Background ref={modelRef} onClick={closeModel}>
           <ModelWrapper showModel={showModel}>
-            <ModelImg src="/images/t6.jpg" alt="pics" />
-            <ModelContent>
-              <h1>Start Shoping</h1>
-              <button>sign in</button>
-            </ModelContent>
+            jkfjgkdjd
+            <G></G>
+            <ReviewLists />
             <CloseModelButton
               ariel-label="Close model"
               onClick={() => setShowModel(!showModel)}

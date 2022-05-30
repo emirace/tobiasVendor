@@ -21,6 +21,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { Store } from '../Store';
+import Model from '../component/Model';
 
 const Right = styled.div`
   flex: 3;
@@ -84,6 +85,10 @@ const ProductCont = styled.div`
   }
 `;
 
+const ReviewsClick = styled.div`
+  cursor: pointer;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_USER_REQUEST':
@@ -126,6 +131,7 @@ export default function SellerScreen() {
   const { userInfo } = state;
 
   const [displayTab, setDisplayTab] = useState('all');
+  const [showModel, setShowModel] = useState(false);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -349,10 +355,13 @@ export default function SellerScreen() {
                     : 'Follow'}
                 </button>
               </div>
-              <Rating
-                rating={user.seller.rating}
-                numReviews={user.seller.numReviews}
-              />
+              <ReviewsClick onClick={() => setShowModel(!showModel)}>
+                <Rating
+                  rating={user.seller.rating}
+                  numReviews={user.seller.numReviews}
+                />
+              </ReviewsClick>
+              <Model showModel={showModel} setShowModel={setShowModel}></Model>
               <button type="buton" className="profile_contact_btn">
                 Contact Me
               </button>
@@ -386,19 +395,9 @@ export default function SellerScreen() {
             </div>
             <div className="seller_profile_block">
               <div className="seller_profile_detail seller_detail_first">
-                <div className="seller_detail_title">Store description</div>
+                <div className="seller_detail_title">About Seller</div>
                 <div className="seller_detail_content">
                   {user.seller.description}
-                </div>
-              </div>
-              <div className="seller_profile_detail ">
-                <div className="seller_detail_title">About seller</div>
-                <div className="seller_detail_content">
-                  The href attribute requires a valid value to be accessible.
-                  Provide a valid, navigable address as the href value. If you
-                  cannot provide a valid href, but still need the element to
-                  resemble a link, use a button and change it with appropriate
-                  styles. Learn more
                 </div>
               </div>
             </div>
