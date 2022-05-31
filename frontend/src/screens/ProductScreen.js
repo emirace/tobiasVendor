@@ -38,6 +38,12 @@ import '../style/ProductScreen.css';
 import styled from 'styled-components';
 import IconsTooltips from '../component/IconsTooltips';
 import ShareButton from '../component/ShareButton';
+import ReviewLists from './ReviewLists';
+import Model from '../component/Model';
+
+const ReviewsClick = styled.div`
+  cursor: pointer;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -105,6 +111,7 @@ export default function ProductScreen() {
   const { cart, userInfo } = state;
   const [selectedImage, setSelectedImage] = useState('');
   const [sliderIndex, setSliderIndex] = useState(0);
+  const [showModel, setShowModel] = useState(false);
 
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
@@ -298,10 +305,15 @@ export default function ProductScreen() {
                 </Link>
               </div>
               <div>Benin City, Nigeria</div>
-              <Rating
-                rating={product.seller.seller.rating}
-                numReviews={product.seller.seller.numReviews}
-              />
+              <ReviewsClick onClick={() => setShowModel(!showModel)}>
+                <Rating
+                  rating={product.seller.seller.rating}
+                  numReviews={product.seller.seller.numReviews}
+                />
+              </ReviewsClick>
+              <Model showModel={showModel} setShowModel={setShowModel}>
+                <ReviewLists />
+              </Model>
             </div>
           </div>
           <div className="single_product_sold_status">

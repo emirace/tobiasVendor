@@ -21,6 +21,8 @@ import '../style/HomeScreen.css';
 import CategoryListing from '../component/CategoryListing';
 import Navbar from '../component/Navbar';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 //import data from '../data';
 
 const Seller = styled.div`
@@ -31,6 +33,9 @@ const Seller = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+`;
+const Imagediv = styled.div`
+  position: relative;
 `;
 
 const reducer = (state, action) => {
@@ -381,11 +386,16 @@ export default function ProductsScreen() {
                     {sellers.map((seller) => (
                       <Link to={`/seller/${seller._id}`}>
                         <div className="carousel_item">
-                          <img
-                            src={seller.seller.logo}
-                            alt={seller.seller.name}
-                            className="carousel_profile_image"
-                          ></img>
+                          <Imagediv>
+                            <img
+                              src={seller.seller.logo}
+                              alt={seller.seller.name}
+                              className="carousel_profile_image"
+                            ></img>
+                            <div className="seller_profile_badge">
+                              <FontAwesomeIcon icon={faStar} />
+                            </div>
+                          </Imagediv>
                           <p className="">{seller.seller.name}</p>
                         </div>
                       </Link>

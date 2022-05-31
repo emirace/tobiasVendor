@@ -50,9 +50,18 @@
   object-fit: cover;
   object-position: top;
 }
-
+#single_product_seller_sq {
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 5px;
+}
 .single_product_seller_name {
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 .single_product_sold_status {

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 import IconsTooltips from './IconsTooltips';
 import {
@@ -293,9 +293,35 @@ const Label = styled.label.attrs({
   }
 `;
 
-export default function Navbar() {
+const ProfileMenu = styled.div`
+  z-index: 9;
+  padding: 15px;
+  position: absolute;
+  left: -15px;
+  top: 50px;
+  box-shadow: ${(props) =>
+    props.mode === 'pagebodylight '
+      ? '0 5px 16px rgba(0, 0, 0, 0.2)'
+      : '0 5px 16px rgba(225, 225, 225, 0.2)'};
+  border-radius: 5px;
+  font-size: 14px;
+  & ul li {
+    white-space: nowrap;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+`;
+const ProfileCont = styled.div`
+  position: relative;
+`;
+
+export default function Navbar({ menu, setmodelRef1 }) {
+  const modelRef = useRef();
+  setmodelRef1(modelRef.current);
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
+
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
       mode = false;
@@ -314,6 +340,15 @@ export default function Navbar() {
       ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
       localStorage.setItem('mode', 'pagebodylight');
     }
+  };
+
+  const signoutHandler = () => {
+    ctxDispatch({ type: 'USER_SIGNOUT' });
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
+    window.location.href = '/signin';
   };
 
   return (
@@ -370,9 +405,22 @@ export default function Navbar() {
           </MenuItemCart>
           <SellButton>Sell</SellButton>
           {userInfo ? (
-            <Link to="/account">
-              <ProfileImg />
-            </Link>
+            <ProfileCont>
+              <ProfileImg ref={modelRef} />
+              {menu && (
+                <ProfileMenu mode={mode} className={mode}>
+                  <ul>
+                    <li>
+                      <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
+                    </li>
+                    <li>
+                      <Link to="/account">Settings</Link>
+                    </li>
+                    <li onClick={() => signoutHandler()}>Log Out</li>
+                  </ul>
+                </ProfileMenu>
+              )}
+            </ProfileCont>
           ) : (
             <SignIn>
               <Link to="signin">Signin / Register</Link>

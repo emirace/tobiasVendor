@@ -18,7 +18,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Badge from 'react-bootstrap/Badge';
 import Container from 'react-bootstrap/Container';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Store } from './Store';
 import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
@@ -155,20 +155,25 @@ function App() {
     }
   };
 
+  const [modelRef1, setmodelRef1] = useState();
   const [menu, setMymenu] = useState(false);
-  const menuToggle = () => {
-    setMymenu(!menu);
-  };
 
+  const closeModel = (e) => {
+    if (modelRef1 !== e.target) {
+      setMymenu(false);
+    } else {
+      setMymenu(!menu);
+    }
+  };
   return (
     <BrowserRouter>
       <ScrollToTop>
         <ToastContainer position="top-center" limit={1} />
-        <div className={mode || ''}>
+        <div className={mode || ''} onClick={closeModel}>
           <StickyNav />
           <header style={{ background: 'inherit' }}>
             <NavCont>
-              <Navbar />
+              <Navbar menu={menu} setmodelRef1={setmodelRef1} />
             </NavCont>
           </header>
 
@@ -177,6 +182,7 @@ function App() {
               <Routes>
                 <Route path="/product/:slug" element={<ProductScreen />} />
                 <Route path="/seller/:id" element={<SellerScreen />} />
+                <Route path="/myaccount" element={<SellerScreen />} />
                 <Route path="/cart" element={<CartScreen />} />
                 <Route path="/categories" element={<CategoryMobileScreen />} />
                 <Route path="/search" element={<SearchSceen />} />

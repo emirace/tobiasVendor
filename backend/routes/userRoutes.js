@@ -10,7 +10,7 @@ userRouter.get(
   '/top-sellers',
   expressAsyncHandler(async (req, res) => {
     const topSellers = await User.find({ isSeller: true })
-      .sort({ 'seller.rating': -1 })
+      .sort({ rating: -1 })
       .limit(10);
     res.send(topSellers);
   })
@@ -34,13 +34,7 @@ userRouter.put(
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
-      user.image = req.body.image || user.image || '';
-      if (user.isSeller) {
-        user.seller.name = req.body.sellerName || user.seller.name;
-        user.seller.logo = req.body.sellerLogo || user.seller.logo;
-        user.seller.description =
-          req.body.sellerDescription || user.seller.description;
-      }
+      user.image = req.body.image || user.image;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
@@ -52,7 +46,6 @@ userRouter.put(
         email: updatedUser.email,
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
-        seller: updatedUser.seller,
       });
     } else {
       res.status(404).send({ message: 'User not Found' });
@@ -71,7 +64,6 @@ userRouter.post(
           name: user.name,
           email: user.email,
           isSeller: user.isSeller,
-          seller: user.seller,
           isAdmin: user.isAdmin,
           token: generateToken(user),
         });
@@ -88,8 +80,10 @@ userRouter.post(
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
-      image: '',
+      image: '/images/pimage.png',
       password: bcrypt.hashSync(req.body.password),
+      rating: 0,
+      numReviews: 0,
     });
     const user = await newUser.save();
     res.send({
@@ -100,6 +94,42 @@ userRouter.post(
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });
+  })
+);
+
+productRouter.post(
+  '/:id/reviews',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (user) {
+      if (user.reviews.find((x) => x.name === req.user.name)) {
+        return res
+          .status(400)
+          .send({ message: 'You already submitted a review' });
+      }
+      const review = {
+        name: req.user.name,
+        rating: Number(req.body.rating),
+        comment: req.body.comment,
+      };
+      user.reviews.push(review);
+      user.numReviews = product.reviews.length;
+      user.rating =
+        user.reviews.reduce((a, c) => c.rating + a, 0) / user.reviews.length;
+
+      const updatedUser = await user.save();
+
+      res.status(201).send({
+        message: 'Review Created',
+        review: updatedUser.reviews[updatedUser.reviews.length - 1],
+        numReviews: userId.numReviews,
+        rating: user.rating,
+      });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
   })
 );
 

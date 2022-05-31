@@ -22,6 +22,7 @@ import {
 import styled from 'styled-components';
 import { Store } from '../Store';
 import Model from '../component/Model';
+import ReviewLists from './ReviewLists';
 
 const Right = styled.div`
   flex: 3;
@@ -323,7 +324,7 @@ export default function SellerScreen() {
                 <img
                   src={user.seller.logo}
                   className="seller_profile_image"
-                  alt={user.seller.name}
+                  alt={user.name}
                 />
                 <div className="seller_profile_badge">
                   <FontAwesomeIcon icon={faStar} />
@@ -331,7 +332,7 @@ export default function SellerScreen() {
               </div>
               <FontAwesomeIcon className="seller_profile_icon" icon={faHeart} />
               <div className="seller_profile_status">online</div>
-              <div className="seller_profile_name">{user.seller.name}</div>
+              <div className="seller_profile_name">{user.name}</div>
               <div className="seller_profile_follow">
                 <div className="seller_profile_follower">
                   <div className="seller_profile_follow_num">
@@ -361,7 +362,9 @@ export default function SellerScreen() {
                   numReviews={user.seller.numReviews}
                 />
               </ReviewsClick>
-              <Model showModel={showModel} setShowModel={setShowModel}></Model>
+              <Model showModel={showModel} setShowModel={setShowModel}>
+                <ReviewLists />
+              </Model>
               <button type="buton" className="profile_contact_btn">
                 Contact Me
               </button>
