@@ -154,11 +154,17 @@ productRouter.put(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      const user = await User.findById(req.user._id).populate('saved', '_id');
+      const user = await User.findById(req.user._id);
       if (user) {
         console.log(user.saved);
-        const existProduct = user.saved.find((x) => x._id === productId);
-        console.log(existProduct);
+        console.log(product._id);
+        console.log('space');
+        user.saved.map((x) =>
+          JSON.stringify(x) === product._id
+            ? console.log('yes)')
+            : console.log(x)
+        );
+
         user.saved.push(productId);
 
         const updatedUser = await user.save();

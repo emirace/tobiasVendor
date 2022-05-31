@@ -63,6 +63,7 @@ import {
 import ScrollToTop from './component/ScrollToTop';
 import ChatScreen from './screens/ChatScreen';
 import InfoScreen from './screens/InfoScreen';
+import MobileProfileScreen from './screens/MobileProfileScreen';
 
 const NavCont = styled.div`
   position: relation;
@@ -214,6 +215,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <MyAccountScreen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profilmenu"
+                  element={
+                    <ProtectedRoute>
+                      <MobileProfileScreen />
                     </ProtectedRoute>
                   }
                 />
