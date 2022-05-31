@@ -137,9 +137,9 @@ const MenuItemCart = styled.div`
     opacity: 1;
   }
 `;
-const ProfileImg = styled.img.attrs({
-  src: '/images/pimage.png',
-})`
+const ProfileImg = styled.img.attrs((props) => ({
+  src: props.src ? props.src : '/images/pimage.png',
+}))`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -315,7 +315,7 @@ const ProfileCont = styled.div`
   position: relative;
 `;
 
-export default function Navbar({ menu, setmodelRef1 }) {
+export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const modelRef = useRef();
   setmodelRef1(modelRef.current);
 
@@ -406,7 +406,11 @@ export default function Navbar({ menu, setmodelRef1 }) {
           <SellButton>Sell</SellButton>
           {userInfo ? (
             <ProfileCont>
-              <ProfileImg ref={modelRef} />
+              <ProfileImg
+                src={userInfo.image}
+                ref={modelRef}
+                onClick={() => setMymenu(!menu)}
+              />
               {menu && (
                 <ProfileMenu mode={mode} className={mode}>
                   <ul>

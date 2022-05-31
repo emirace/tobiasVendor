@@ -1,6 +1,6 @@
 import { faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import Navbar from '../component/Navbar';
 import { Store } from '../Store';
@@ -43,6 +43,8 @@ const User = styled.div`
 export default function ChatScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
+  const [menu, setMymenu] = useState(false);
+  const [modelRef1, setmodelRef1] = useState();
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
       mode = false;
@@ -52,10 +54,17 @@ export default function ChatScreen() {
     return mode;
   };
   const backgroundMode = backMode(mode);
+  const closeModel = (e) => {
+    if (modelRef1 !== e.target) {
+      setMymenu(false);
+    } else {
+      setMymenu(!menu);
+    }
+  };
 
   return (
-    <Container className={mode}>
-      <Navbar />
+    <Container className={mode} onClick={closeModel}>
+      <Navbar menu={menu} setmodelRef1={setmodelRef1} />
       <ChatCont>
         <Left>
           <TopBar>

@@ -184,6 +184,28 @@ export default function ProductScreen() {
         break;
     }
   };
+  const saveItem = async () => {
+    if (!userInfo) {
+      toast.error('login to save item');
+      return;
+    }
+    if (product.seller._id === userInfo._id) {
+      alert('it is your product');
+      return;
+    }
+    try {
+      const { data } = await axios.put(
+        `/api/products/${product._id}/save`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      // dispatch({ type: 'REFRESH_PRODUCT', payload: data.user });
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
   const toggleLikes = async () => {
     if (!userInfo) {
       toast.error('login to like');
@@ -337,7 +359,7 @@ export default function ProductScreen() {
               <IconsTooltips tips="Like Product " />
             </IconContainer>
             <IconContainer>
-              <FontAwesomeIcon icon={faBookmark} />
+              <FontAwesomeIcon onClick={saveItem} icon={faBookmark} />
               <IconsTooltips tips="Save Product " />
             </IconContainer>
             <IconContainer>

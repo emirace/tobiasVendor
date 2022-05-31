@@ -148,6 +148,37 @@ productRouter.post(
 );
 
 productRouter.put(
+  '/:id/save',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      const user = await User.findById(req.user._id).populate('saved', '_id');
+      if (user) {
+        console.log(user.saved);
+        const existProduct = user.saved.find((x) => x._id === productId);
+        console.log(existProduct);
+        user.saved.push(productId);
+
+        const updatedUser = await user.save();
+        res.status(201).send({
+          message: 'Liked Product',
+          user: updatedUser,
+        });
+
+        user.likes.push(productId);
+        const newuser = await user.save();
+      } else {
+        res.status(404).send({ message: 'you must login to like product' });
+      }
+    } else {
+      res.status(404).send({ message: 'Product Not Found' });
+    }
+  })
+);
+
+productRouter.put(
   '/:id/likes',
   isAuth,
   expressAsyncHandler(async (req, res) => {

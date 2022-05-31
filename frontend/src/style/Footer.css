@@ -98,11 +98,13 @@
   width: 100%;
   height: 90px;
   background: var(--orange-color);
+  margin-top: -2px;
 }
 
 .bg_malon {
   background: var(--malon-color) !important;
   color: white;
+  margin-top: -2px;
 }
 
 .bg_black {

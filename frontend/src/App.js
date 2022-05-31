@@ -173,7 +173,11 @@ function App() {
           <StickyNav />
           <header style={{ background: 'inherit' }}>
             <NavCont>
-              <Navbar menu={menu} setmodelRef1={setmodelRef1} />
+              <Navbar
+                menu={menu}
+                setMymenu={setMymenu}
+                setmodelRef1={setmodelRef1}
+              />
             </NavCont>
           </header>
 

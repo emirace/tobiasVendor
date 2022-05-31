@@ -27,13 +27,6 @@ const userSchema = new mongoose.Schema(
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0 },
     numReviews: { type: Number, required: true, default: 0 },
-    seller: {
-      name: String,
-      logo: String,
-      description: String,
-      rating: { type: Number, default: 0, required: true },
-      numReviews: { type: Number, default: 0, required: true },
-    },
   },
   {
     timestamps: true,

@@ -18,10 +18,12 @@ const CopyRight = styled.div`
   color: ${(props) => (props.back ? '#fff' : '#000')};
   height: 50px;
   align-items: center;
-  margin-bottom: 55px;
   & svg {
     margin-right: 10px;
     font-size: 20px;
+  }
+  @media (max-width: 992px) {
+    margin-bottom: 55px;
   }
 `;
 const SmDetail = styled.p`

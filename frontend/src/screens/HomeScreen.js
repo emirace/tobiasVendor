@@ -388,15 +388,15 @@ export default function ProductsScreen() {
                         <div className="carousel_item">
                           <Imagediv>
                             <img
-                              src={seller.seller.logo}
-                              alt={seller.seller.name}
+                              src={seller.image}
+                              alt={seller.name}
                               className="carousel_profile_image"
                             ></img>
                             <div className="seller_profile_badge">
                               <FontAwesomeIcon icon={faStar} />
                             </div>
                           </Imagediv>
-                          <p className="">{seller.seller.name}</p>
+                          <p className="">{seller.name}</p>
                         </div>
                       </Link>
                     ))}

@@ -35,6 +35,7 @@ userRouter.put(
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       user.image = req.body.image || user.image;
+      user.about = req.body.about || user.about;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
@@ -44,6 +45,8 @@ userRouter.put(
         name: updatedUser.name,
         isSeller: updatedUser.isSeller,
         email: updatedUser.email,
+        about: updatedUser.about,
+        image: updatedUser.image,
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser),
       });
@@ -65,6 +68,8 @@ userRouter.post(
           email: user.email,
           isSeller: user.isSeller,
           isAdmin: user.isAdmin,
+          image: user.image,
+
           token: generateToken(user),
         });
         return;
@@ -97,7 +102,7 @@ userRouter.post(
   })
 );
 
-productRouter.post(
+userRouter.post(
   '/:id/reviews',
   isAuth,
   expressAsyncHandler(async (req, res) => {
@@ -143,8 +148,9 @@ userRouter.get(
     if (user) {
       res.send({
         name: user.name,
-        seller: user.seller,
         email: user.email,
+        image: user.image,
+        about: user.about,
         followers: user.followers,
         following: user.following,
         likes: user.likes,
@@ -168,7 +174,7 @@ userRouter.put(
       res.send({
         message: 'Following',
         name: updatedUser.name,
-        seller: updatedUser.seller,
+        // seller: updatedUser.seller,
         email: updatedUser.email,
         followers: updatedUser.followers,
         following: updatedUser.following,
@@ -198,7 +204,7 @@ userRouter.put(
       res.send({
         message: 'Following',
         name: updatedUser.name,
-        seller: updatedUser.seller,
+        // seller: updatedUser.seller,
         email: updatedUser.email,
         followers: updatedUser.followers,
         following: updatedUser.following,

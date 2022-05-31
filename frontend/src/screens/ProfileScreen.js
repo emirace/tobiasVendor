@@ -1,9 +1,11 @@
 import axios from 'axios';
 import React, { useContext, useReducer, useState } from 'react';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
+import LoadingBox from '../component/LoadingBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
 
@@ -15,6 +17,12 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true };
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
       return state;
@@ -27,15 +35,18 @@ export default function ProfileScreen() {
   const [name, setName] = useState(userInfo.name);
   const [email, setEmail] = useState(userInfo.email);
   const [password, setPassword] = useState('');
+  const [image, setImage] = useState('');
+  const [about, setAbout] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [sellerName, setSellerName] = useState(userInfo.seller.name || '');
-  const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo || '');
-  const [sellerDescription, setsellerDescription] = useState(
-    userInfo.seller.description || ''
-  );
+  // const [sellerName, setSellerName] = useState(userInfo.seller.name || '');
+  // const [sellerLogo, setSellerLogo] = useState(userInfo.seller.logo || '');
+  // const [sellerDescription, setsellerDescription] = useState(
+  //   userInfo.seller.description || ''
+  // );
 
-  const [{ loadingUpdate }, dispatch] = useReducer(reducer, {
+  const [{ loadingUpdate, loadingUpload }, dispatch] = useReducer(reducer, {
     loadingUpdate: false,
+    loadingUpload: false,
   });
 
   const submitHandler = async (e) => {
@@ -48,9 +59,11 @@ export default function ProfileScreen() {
           name,
           email,
           password,
-          sellerName,
-          sellerLogo,
-          sellerDescription,
+          image,
+          about,
+          // sellerName,
+          // sellerLogo,
+          // sellerDescription,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -65,6 +78,28 @@ export default function ProfileScreen() {
       toast.success('User updated successfully');
     } catch (err) {
       dispatch({ type: 'FETCH_FAIL' });
+      toast.error(getError(err));
+    }
+  };
+
+  const uploadFileHandler = async (e, fileType) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      console.log('b4 axios');
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      setImage(data.secure_url);
+      toast.success('Image uploaded successfully, click Update to apply It');
+    } catch (err) {
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       toast.error(getError(err));
     }
   };
@@ -93,6 +128,26 @@ export default function ProfileScreen() {
             required
           />
         </Form.Group>
+        <Form.Group as={Col} className="mb-3" controlId="image">
+          <Form.Label>Change Profile Image</Form.Label>
+          <Form.Control
+            required
+            type="file"
+            onChange={(e) => uploadFileHandler(e, 'image')}
+          />
+          {loadingUpload ? <LoadingBox></LoadingBox> : ''}
+        </Form.Group>
+        <Form.Group as={Col} className="mb-3" controlId="description">
+          <Form.Label>About</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            required
+            placeholder="Tell us more about you"
+            defaultValue={about}
+            onChange={(e) => setAbout(e.target.value)}
+          />
+        </Form.Group>
         <Form.Group className="mb-3" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -107,7 +162,7 @@ export default function ProfileScreen() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </Form.Group>
-        {userInfo.isSeller && (
+        {/* {userInfo.isSeller && (
           <>
             <h2>Seller</h2>
             <Form.Group className="mb-3" controlId="sellerName">
@@ -134,8 +189,8 @@ export default function ProfileScreen() {
                 onChange={(e) => setsellerDescription(e.target.value)}
               />
             </Form.Group>
-          </>
-        )}
+          </> 
+        )}*/}
         <div className="mb-3">
           <button type="submit" className=" search-btn1">
             Update

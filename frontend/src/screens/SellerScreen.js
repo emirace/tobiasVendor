@@ -322,7 +322,7 @@ export default function SellerScreen() {
             <div className="seller_profile_block">
               <div className="seller_image_group">
                 <img
-                  src={user.seller.logo}
+                  src={user.image}
                   className="seller_profile_image"
                   alt={user.name}
                 />
@@ -357,10 +357,7 @@ export default function SellerScreen() {
                 </button>
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
-                <Rating
-                  rating={user.seller.rating}
-                  numReviews={user.seller.numReviews}
-                />
+                <Rating rating={user.rating} numReviews={user.numReviews} />
               </ReviewsClick>
               <Model showModel={showModel} setShowModel={setShowModel}>
                 <ReviewLists />
@@ -399,9 +396,7 @@ export default function SellerScreen() {
             <div className="seller_profile_block">
               <div className="seller_profile_detail seller_detail_first">
                 <div className="seller_detail_title">About Seller</div>
-                <div className="seller_detail_content">
-                  {user.seller.description}
-                </div>
+                <div className="seller_detail_content">{user.about}</div>
               </div>
             </div>
           </>
