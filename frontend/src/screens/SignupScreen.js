@@ -7,7 +7,66 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 import { getError } from '../utils';
+
+const SocialLogin = styled.div`
+  color: white;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  cursor: pointer;
+  align-items: center;
+  padding: 10px;
+  margin: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  &.facebook {
+    background: #507cc0;
+  }
+  &.google {
+    background: #df4930;
+  }
+`;
+const FacebookImg = styled.img.attrs((props) => ({
+  src: props.src,
+  alt: props.alt,
+}))`
+  height: 20px;
+  margin-right: 20px;
+`;
+const Or = styled.div`
+  margin: 15px;
+  position: relative;
+  text-transform: uppercase;
+  border: 2px solid var(--orange-color);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+`;
+const Line = styled.div`
+  position: absolute;
+  top: 50%;
+  width: 500px;
+  height: 2px;
+  background: var(--orange-color);
+  z-index: 1;
+`;
+const Social = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const Orgroup = styled.div`
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+`;
 
 export default function SignupScreen() {
   const navigate = useNavigate();
@@ -21,7 +80,7 @@ export default function SignupScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, mode } = state;
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -54,6 +113,20 @@ export default function SignupScreen() {
         <title>Sign Up</title>
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
+      <Social>
+        <SocialLogin className="facebook">
+          <FacebookImg src="/images/facebook.png" alt="facebook" />
+          Facebook
+        </SocialLogin>
+        <SocialLogin className="google">
+          <FacebookImg src="/images/google.png" alt="google" />
+          Google
+        </SocialLogin>
+        <Orgroup>
+          <Or className={mode}>or</Or>
+          <Line />
+        </Orgroup>
+      </Social>
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>

@@ -1,4 +1,8 @@
-import { faMessage, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faMessage,
+  faPaperPlane,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
@@ -15,18 +19,19 @@ const Container = styled.div`
 `;
 const ChatCont = styled.div`
   display: flex;
-  width: 100%;
-  height: 100%;
-  border-top: 1px solid rgba(99, 91, 91, 0.2);
-  padding: 5vw 7vw;
+  box-shadow: 0 1px 10px rgba(225, 225, 225, 0.2);
+  margin: 0 7vw;
+  border-radius: 5px;
 `;
 const Left = styled.div`
   flex: 1;
   border-right: 1px solid rgba(99, 91, 91, 0.2);
+  border-left: 1px solid rgba(99, 91, 91, 0.2);
 `;
 const Right = styled.div`
   flex: 2;
   padding: 10px 30px;
+  border-right: 1px solid rgba(99, 91, 91, 0.2);
 `;
 
 const TopBar = styled.div`
@@ -46,6 +51,10 @@ const Search = styled.input.attrs((props) => ({
   color: white;
   border: 0;
   border-radius: 25rem;
+  padding: 0 10px;
+  &:focus-visible {
+    outline: 0;
+  }
   &::placeholder {
     padding-left: 10px;
     color: white;
@@ -116,26 +125,62 @@ const RightBar = styled.div`
   text-transform: capitalize;
 `;
 const ChatArea = styled.div`
-  padding: 30px 0;
+  margin-top: 20px;
+  height: 340px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const RecievedChat = styled.div`
   display: flex;
-  margin-right: 500px;
   justify-content: start;
-  padding: 20px;
-  background: var(--malon-color);
-  color: #fff;
   margin-bottom: 15px;
-  border-radius: 10px;
 `;
 const SendChat = styled.div`
   display: flex;
   justify-content: end;
+  margin-bottom: 15px;
+`;
+const InlineR = styled.div`
+  display: inline-block;
+  padding: 20px;
+  background: var(--malon-color);
+  color: #fff;
+  border-radius: 10px;
+`;
+const InlineS = styled.div`
+  display: inline-block;
   padding: 20px;
   background: var(--orange-color);
   color: #fff;
   border-radius: 10px;
-  margin-bottom: 15px;
+`;
+const Message = styled.div`
+  display: flex;
+  align-items: center;
+  height: 60px;
+  & svg {
+    font-size: 30px;
+    margin-left: 20px;
+    cursor: pointer;
+  }
+`;
+const TextInput = styled.input`
+  height: 100%;
+  width: 100%;
+  background: #000;
+  border: 0;
+  color: white;
+  padding: 20px;
+  &:focus-visible {
+    outline: 0;
+  }
+
+  &::placeholder {
+    padding: 20px;
+    color: white;
+  }
 `;
 
 export default function ChatScreen() {
@@ -214,9 +259,26 @@ export default function ChatScreen() {
             <RightBar>Report</RightBar>
           </RightTopbar>
           <ChatArea>
-            <RecievedChat>hello</RecievedChat>
-            <SendChat>hi, how are you doing</SendChat>
+            <RecievedChat>
+              <InlineR>hello</InlineR>
+            </RecievedChat>
+            <RecievedChat>
+              <InlineR>hello</InlineR>
+            </RecievedChat>
+            <SendChat>
+              <InlineS>hi, how are you doing</InlineS>
+            </SendChat>
+            <RecievedChat>
+              <InlineR>hello</InlineR>
+            </RecievedChat>
+            <SendChat>
+              <InlineS>hi, how are you doing</InlineS>
+            </SendChat>
           </ChatArea>
+          <Message>
+            <TextInput placeholder="Write a message" />
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </Message>
         </Right>
       </ChatCont>
     </Container>

@@ -367,7 +367,6 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
           50% discount on Newly Registered User... You Will Love
           <Love>
             <FontAwesomeIcon color="#F79A23" icon={faHeart} />
-            <IconsTooltips tips="Love" />
           </Love>
           Shopping with Us
         </Center>
