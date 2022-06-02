@@ -10,7 +10,10 @@ import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import uploadRouter from './routes/UploadRoutes.js';
 import socialRoutes from './routes/socialRoutes.js';
+import passport from 'passport';
 import './passport.js';
+import session from 'express-session';
+import cookieSession from 'cookie-session';
 
 dotenv.config();
 
@@ -27,6 +30,17 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000 * 30,
+    keys: [process.env.COOKIE_KEY],
+  })
+);
+
+app.use(session({ secret: 'SECRET', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');

@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import ProductsScreen from './screens/ProductsScreen';
 import ProductScreen from './screens/ProductScreen';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBagShopping,
@@ -168,192 +169,196 @@ function App() {
   };
   return (
     <BrowserRouter>
-      <ScrollToTop>
-        <ToastContainer position="top-center" limit={1} />
-        <div className={mode || ''} onClick={closeModel}>
-          <StickyNav />
-          <header style={{ background: 'inherit' }}>
-            <NavCont>
-              <Navbar
-                menu={menu}
-                setMymenu={setMymenu}
-                setmodelRef1={setmodelRef1}
-              />
-            </NavCont>
-          </header>
+      <GoogleOAuthProvider clientId="359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com">
+        <ScrollToTop>
+          <ToastContainer position="top-center" limit={1} />
+          <div className={mode || ''} onClick={closeModel}>
+            <StickyNav />
+            <header style={{ background: 'inherit' }}>
+              <NavCont>
+                <Navbar
+                  menu={menu}
+                  setMymenu={setMymenu}
+                  setmodelRef1={setmodelRef1}
+                />
+              </NavCont>
+            </header>
 
-          <main>
-            <div className="p-0 container-fluid">
-              <Routes>
-                <Route path="/product/:slug" element={<ProductScreen />} />
-                <Route path="/seller/:id" element={<SellerScreen />} />
-                <Route path="/myaccount" element={<SellerScreen />} />
-                <Route path="/cart" element={<CartScreen />} />
-                <Route path="/categories" element={<CategoryMobileScreen />} />
-                <Route path="/search" element={<SearchSceen />} />
-                <Route path="/signin" element={<SigninScreen />} />
-                <Route path="/signup" element={<SignupScreen />} />
-                <Route path="/info" element={<InfoScreen />} />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfileScreen />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/messages"
-                  element={
-                    <ProtectedRoute>
-                      <ChatScreen />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/account"
-                  element={
-                    <ProtectedRoute>
-                      <MyAccountScreen />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profilmenu"
-                  element={
-                    <ProtectedRoute>
-                      <MobileProfileScreen />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/shipping"
-                  element={
-                    <CartNotEmpty>
-                      <ShippingAddressScreen />
-                    </CartNotEmpty>
-                  }
-                />
-                <Route
-                  path="/payment"
-                  element={
-                    <CartNotEmpty>
-                      <IsShippingAdd>
-                        <PaymentMethodScreen />
-                      </IsShippingAdd>
-                    </CartNotEmpty>
-                  }
-                />
-                <Route
-                  path="/placeorder"
-                  element={
-                    <CartNotEmpty>
-                      <IsShippingAdd>
-                        <IsPaymentMethod>
-                          <PlaceOrderScreen />
-                        </IsPaymentMethod>
-                      </IsShippingAdd>
-                    </CartNotEmpty>
-                  }
-                />
-                <Route path="/order/:id" element={<OrderScreen />} />
-                <Route
-                  path="/orderhistory"
-                  element={
-                    <ProtectedRoute>
-                      <OrderHistoryScreen />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/" element={<HomeScreen />} />
-                <Route path="/home" element={<ProductsScreen />} />
+            <main>
+              <div className="p-0 container-fluid">
+                <Routes>
+                  <Route path="/product/:slug" element={<ProductScreen />} />
+                  <Route path="/seller/:id" element={<SellerScreen />} />
+                  <Route path="/myaccount" element={<SellerScreen />} />
+                  <Route path="/cart" element={<CartScreen />} />
+                  <Route
+                    path="/categories"
+                    element={<CategoryMobileScreen />}
+                  />
+                  <Route path="/search" element={<SearchSceen />} />
+                  <Route path="/signin" element={<SigninScreen />} />
+                  <Route path="/signup" element={<SignupScreen />} />
+                  <Route path="/info" element={<InfoScreen />} />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <ProfileScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/messages"
+                    element={
+                      <ProtectedRoute>
+                        <ChatScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/account"
+                    element={
+                      <ProtectedRoute>
+                        <MyAccountScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profilmenu"
+                    element={
+                      <ProtectedRoute>
+                        <MobileProfileScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/shipping"
+                    element={
+                      <CartNotEmpty>
+                        <ShippingAddressScreen />
+                      </CartNotEmpty>
+                    }
+                  />
+                  <Route
+                    path="/payment"
+                    element={
+                      <CartNotEmpty>
+                        <IsShippingAdd>
+                          <PaymentMethodScreen />
+                        </IsShippingAdd>
+                      </CartNotEmpty>
+                    }
+                  />
+                  <Route
+                    path="/placeorder"
+                    element={
+                      <CartNotEmpty>
+                        <IsShippingAdd>
+                          <IsPaymentMethod>
+                            <PlaceOrderScreen />
+                          </IsPaymentMethod>
+                        </IsShippingAdd>
+                      </CartNotEmpty>
+                    }
+                  />
+                  <Route path="/order/:id" element={<OrderScreen />} />
+                  <Route
+                    path="/orderhistory"
+                    element={
+                      <ProtectedRoute>
+                        <OrderHistoryScreen />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/" element={<HomeScreen />} />
+                  <Route path="/home" element={<ProductsScreen />} />
 
-                {/* Admin Routes */}
-                <Route
-                  path="/admin/dashboard"
-                  element={
-                    <AdminRoute>
-                      <DashboardScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/product"
-                  element={
-                    <AdminRoute>
-                      <ProductListScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/product/:id"
-                  element={
-                    <AdminRoute>
-                      <ProductEditScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/order"
-                  element={
-                    <AdminRoute>
-                      <OrderListScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/user"
-                  element={
-                    <AdminRoute>
-                      <UserListScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/user/:id"
-                  element={
-                    <AdminRoute>
-                      <UserEditScreen />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/seller/product"
-                  element={
-                    <SellerRoute>
-                      <ProductListScreen />
-                    </SellerRoute>
-                  }
-                />
-                <Route
-                  path="/seller/product/:id"
-                  element={
-                    <SellerRoute>
-                      <ProductEditScreen />
-                    </SellerRoute>
-                  }
-                />
-                <Route
-                  path="/seller/order"
-                  element={
-                    <SellerRoute>
-                      <OrderListScreen />
-                    </SellerRoute>
-                  }
-                />
-                <Route
-                  path="/createproduct"
-                  element={
-                    <SellerRoute>
-                      <ProductCreateScreen />
-                    </SellerRoute>
-                  }
-                />
-              </Routes>
-            </div>
-          </main>
-          <Footer />
-          {/* <footer>
+                  {/* Admin Routes */}
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <AdminRoute>
+                        <DashboardScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/product"
+                    element={
+                      <AdminRoute>
+                        <ProductListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/product/:id"
+                    element={
+                      <AdminRoute>
+                        <ProductEditScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/order"
+                    element={
+                      <AdminRoute>
+                        <OrderListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/user"
+                    element={
+                      <AdminRoute>
+                        <UserListScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/user/:id"
+                    element={
+                      <AdminRoute>
+                        <UserEditScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/product"
+                    element={
+                      <SellerRoute>
+                        <ProductListScreen />
+                      </SellerRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/product/:id"
+                    element={
+                      <SellerRoute>
+                        <ProductEditScreen />
+                      </SellerRoute>
+                    }
+                  />
+                  <Route
+                    path="/seller/order"
+                    element={
+                      <SellerRoute>
+                        <OrderListScreen />
+                      </SellerRoute>
+                    }
+                  />
+                  <Route
+                    path="/createproduct"
+                    element={
+                      <SellerRoute>
+                        <ProductCreateScreen />
+                      </SellerRoute>
+                    }
+                  />
+                </Routes>
+              </div>
+            </main>
+            <Footer />
+            {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">TOBIAS</div>
             <div className="footer-ul-container1">
@@ -510,9 +515,10 @@ function App() {
             Conpany, Best apeal fashion market place
           </p>
         </footer> */}
-          {/* </div> */}
-        </div>
-      </ScrollToTop>
+            {/* </div> */}
+          </div>
+        </ScrollToTop>
+      </GoogleOAuthProvider>
     </BrowserRouter>
   );
 }

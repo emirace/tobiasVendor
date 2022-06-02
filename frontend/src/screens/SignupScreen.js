@@ -9,8 +9,12 @@ import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { getError } from '../utils';
+import { useGoogleLogin } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
+import { GoogleLogin } from '@react-oauth/google';
 
-const SocialLogin = styled.div`
+const SocialLogin = styled.button`
+  border: 0;
   color: white;
   display: flex;
   width: 100%;
@@ -79,6 +83,8 @@ export default function SignupScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [showForm, setShowForm] = useState(false);
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
@@ -107,6 +113,17 @@ export default function SignupScreen() {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
+
+  const responseGoogle = (res) => {
+    const data = jwt_decode(res.access_token);
+    console.log(res);
+    console.log(data);
+  };
+
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => responseGoogle(tokenResponse),
+  });
+
   return (
     <Container className="small-container">
       <Helmet>
@@ -118,10 +135,20 @@ export default function SignupScreen() {
           <FacebookImg src="/images/facebook.png" alt="facebook" />
           Facebook
         </SocialLogin>
-        <SocialLogin className="google">
+        <SocialLogin className="google" onClick={() => login()}>
           <FacebookImg src="/images/google.png" alt="google" />
           Google
         </SocialLogin>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            const data = jwt_decode(credentialResponse);
+            console.log(data);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
+        ;
         <Orgroup>
           <Or className={mode}>or</Or>
           <Line />
@@ -130,32 +157,41 @@ export default function SignupScreen() {
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>
-          <Form.Control required onChange={(e) => setName(e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
           <Form.Control
-            type="email"
             required
-            onChange={(e) => setEmail(e.target.value)}
+            onClick={() => setShowForm(true)}
+            onChange={(e) => setName(e.target.value)}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            required
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </Form.Group>
+        {showForm && (
+          <>
+            <Form.Group className="mb-3" controlId="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                required
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="confirmPassword">
+              <Form.Label>Confirm Password</Form.Label>
+              <Form.Control
+                type="password"
+                required
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </Form.Group>
+          </>
+        )}
+
         <div className="mb-3">
           <button type="submit" className="search-btn1">
             Sign Up

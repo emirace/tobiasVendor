@@ -74,6 +74,14 @@ export const isSellerOrAdmin = (req, res, next) => {
   }
 };
 
+export const isSocialAuth = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.status(401).send({ message: 'User not authorize' });
+  }
+};
+
 export const slugify = (Text) => {
   return Text.toLowerCase()
     .replace(/ /g, '-')
