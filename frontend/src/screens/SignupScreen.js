@@ -141,8 +141,7 @@ export default function SignupScreen() {
         </SocialLogin>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            const data = jwt_decode(credentialResponse);
-            console.log(data);
+            responseGoogle(credentialResponse);
           }}
           onError={() => {
             console.log('Login Failed');
