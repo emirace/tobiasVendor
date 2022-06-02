@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema(
     about: { type: String },
     reviews: [reviewSchema],
     rating: { type: Number, required: true, default: 0 },
-    phone: { type: Number, default: 0 },
+    phone: { type: Number },
+    googleId: { type: String },
     numReviews: { type: Number, required: true, default: 0 },
   },
   {

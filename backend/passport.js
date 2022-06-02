@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from './models/userModel.js';
 
 dotenv.config();
@@ -10,7 +10,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:5000/auth/google/callback',
+      callbackURL: 'http://localhost:5000/api/socials/google/callback',
       //   passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, cb) => {
