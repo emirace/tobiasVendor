@@ -167,6 +167,9 @@ function App() {
       setMymenu(!menu);
     }
   };
+  const changeRef = (res) => {
+    setmodelRef1(res);
+  };
   return (
     <BrowserRouter>
       <GoogleOAuthProvider clientId="359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com">
@@ -179,7 +182,7 @@ function App() {
                 <Navbar
                   menu={menu}
                   setMymenu={setMymenu}
-                  setmodelRef1={setmodelRef1}
+                  setmodelRef1={changeRef}
                 />
               </NavCont>
             </header>

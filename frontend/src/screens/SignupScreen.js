@@ -9,22 +9,21 @@ import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { getError } from '../utils';
-import { useGoogleLogin } from '@react-oauth/google';
 import jwt_decode from 'jwt-decode';
-import { GoogleLogin } from '@react-oauth/google';
 
 const SocialLogin = styled.button`
   border: 0;
   color: white;
   display: flex;
-  width: 100%;
+  width: 400px;
   justify-content: center;
   cursor: pointer;
   align-items: center;
-  padding: 10px;
+  padding: 8px;
   margin: 15px;
   border-radius: 5px;
   font-weight: bold;
+
   &.facebook {
     background: #507cc0;
   }
@@ -80,6 +79,7 @@ export default function SignupScreen() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -99,30 +99,44 @@ export default function SignupScreen() {
         name,
         email,
         password,
+        phone,
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userinfo', JSON.stringify(data));
+      localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(redirect || '/');
     } catch (err) {
       toast.error(getError(err));
     }
   };
+  async function responseGoogle(res) {
+    const profile = jwt_decode(res.credential);
+    const { data } = await axios.post('/api/users/google-signup', {
+      name: profile.name,
+      email: profile.email,
+      image: profile.picture,
+    });
+    console.log(data);
+    ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+    localStorage.setItem('userInfo', JSON.stringify(data));
+    navigate(redirect || '/');
+  }
+  useEffect(() => {
+    /*global google*/
+    google.accounts.id.initialize({
+      client_id:
+        '359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com',
+      callback: responseGoogle,
+    });
+    google.accounts.id.renderButton(document.getElementById('signindiv'), {
+      width: '500px',
+    });
+  }, []);
 
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
-
-  const responseGoogle = (res) => {
-    const data = jwt_decode(res.access_token);
-    console.log(res);
-    console.log(data);
-  };
-
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => responseGoogle(tokenResponse),
-  });
 
   return (
     <Container className="small-container">
@@ -131,23 +145,11 @@ export default function SignupScreen() {
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
       <Social>
-        <SocialLogin className="facebook">
+        <SocialLogin id="" className="facebook">
           <FacebookImg src="/images/facebook.png" alt="facebook" />
           Facebook
         </SocialLogin>
-        <SocialLogin className="google" onClick={() => login()}>
-          <FacebookImg src="/images/google.png" alt="google" />
-          Google
-        </SocialLogin>
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            responseGoogle(credentialResponse);
-          }}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        />
-        ;
+        <div id="signindiv"></div>
         <Orgroup>
           <Or className={mode}>or</Or>
           <Line />
@@ -170,6 +172,14 @@ export default function SignupScreen() {
                 type="email"
                 required
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="phone">
+              <Form.Label>Phone</Form.Label>
+              <Form.Control
+                type="number"
+                required
+                onChange={(e) => setPhone(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">

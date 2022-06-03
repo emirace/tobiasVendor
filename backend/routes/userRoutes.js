@@ -85,6 +85,7 @@ userRouter.post(
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
+      phone: req.body.phone,
       image: '/images/pimage.png',
       password: bcrypt.hashSync(req.body.password),
       rating: 0,
@@ -97,6 +98,51 @@ userRouter.post(
       email: user.email,
       isSeller: user.isSeller,
       isAdmin: user.isAdmin,
+      token: generateToken(user),
+    });
+  })
+);
+
+userRouter.post(
+  '/google-signin',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      res.send({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isSeller: user.isSeller,
+        isAdmin: user.isAdmin,
+        image: user.image,
+
+        token: generateToken(user),
+      });
+      return;
+    }
+    res.status(401).send({ message: 'Invalid email or password' });
+  })
+);
+
+userRouter.post(
+  '/google-signup',
+  expressAsyncHandler(async (req, res) => {
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      image: req.body.image,
+      password: null,
+      rating: 0,
+      numReviews: 0,
+    });
+    const user = await newUser.save();
+    res.send({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isSeller: user.isSeller,
+      isAdmin: user.isAdmin,
+      image: user.image,
       token: generateToken(user),
     });
   })
