@@ -70,10 +70,15 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 5000;
 
 const httpServer = http.Server(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: {
+    origin: 'http://localhost:3000',
+  },
+});
 const users = [];
 
 io.on('connection', (socket) => {
+  console.log('user connected');
   socket.on('disconnect', () => {
     const user = users.find((x) => x.socketId === socket.id);
     if (user) {
@@ -81,9 +86,10 @@ io.on('connection', (socket) => {
       console.log('offline', user.name);
       const admin = users.find((x) => x.isAdmin && x.online);
       if (admin) {
-        oi.to(admin.socketId).emit('updatedUser', user);
+        io.to(admin.socketId).emit('updatedUser', user);
       }
     }
+    io.emit('getUsers', users);
   });
   socket.on('onlogin', (user) => {
     const updatedUser = {
@@ -107,6 +113,7 @@ io.on('connection', (socket) => {
     if (updatedUser.isAdmin) {
       io.to(updatedUser.socketId).emit('listUsers', users);
     }
+    io.emit('getUsers', users);
   });
   socket.on('onUserSelected', (user) => {
     const admin = users.find((x) => x.isAdmin && x.online);
@@ -135,6 +142,14 @@ io.on('connection', (socket) => {
         });
       }
     }
+  });
+  socket.on('sendMessage', ({ senderId, receiverId, text }) => {
+    const user = users.find((x) => x._id === receiverId);
+    console.log(receiverId);
+    io.to(user.socketId).emit('getMessage', {
+      senderId,
+      text,
+    });
   });
 });
 

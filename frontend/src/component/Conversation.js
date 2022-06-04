@@ -48,7 +48,6 @@ export default function Conversation({ conversation }) {
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    console.log(conversation);
     const friendId = conversation.members.find((m) => m !== userInfo._id);
 
     const getUser = async () => {
@@ -57,7 +56,6 @@ export default function Conversation({ conversation }) {
           header: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUser(data);
-        console.log(data);
       } catch (err) {
         console.log(err);
       }

@@ -5,12 +5,19 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
-import React, { useEffect, useContext, useState, useReducer } from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useReducer,
+  useRef,
+} from 'react';
 import styled from 'styled-components';
 import Navbar from '../component/Navbar';
 import { Store } from '../Store';
 import Conversation from '../component/Conversation';
 import Messages from '../component/Messages';
+import { io } from 'socket.io-client';
 
 const Container = styled.div`
   position: fixed;
@@ -91,7 +98,7 @@ const RightBar = styled.div`
 `;
 const ChatArea = styled.div`
   margin-top: 20px;
-  height: 340px;
+  height: 380px;
   overflow-y: auto;
   &::-webkit-scrollbar {
     display: none;
@@ -175,12 +182,21 @@ const reducer = (state, action) => {
   }
 };
 
+const ENDPOINT =
+  window.location.host.indexOf('localhost') >= 0
+    ? 'ws://127.0.0.1:5000'
+    : window.location.host;
+
 export default function ChatScreen() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
   const [menu, setMymenu] = useState(false);
-  const [currentChat, setCurrentChat] = useState(null);
+  const [currentChat, setCurrentChat] = useState('');
+  const [newMessage, setNewMessage] = useState('');
+  const [arrivalMessage, setArrivalMessage] = useState(null);
   const [modelRef1, setmodelRef1] = useState();
+  const socket = useRef();
+  const scrollref = useRef();
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
       mode = false;
@@ -210,6 +226,33 @@ export default function ChatScreen() {
   );
 
   useEffect(() => {
+    socket.current = io(ENDPOINT);
+    socket.current.on('getMessage', (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createAt: Date.now(),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.Includes(arrivalMessage.sender) &&
+      dispatch({
+        type: 'MSG_SUCCESS',
+        payload: (prev) => [...prev, arrivalMessage],
+      });
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    socket.current.emit('onlogin', userInfo);
+    socket.current.on('getUsers', (users) => {
+      console.log(users);
+    });
+  }, [userInfo]);
+
+  useEffect(() => {
     const getConversation = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
@@ -232,7 +275,7 @@ export default function ChatScreen() {
         const { data } = await axios.get(`/api/messages/${currentChat._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'MSG_SUCCESS', oayload: data.messages });
+        dispatch({ type: 'MSG_SUCCESS', payload: data.messages });
       } catch (err) {
         dispatch({ type: 'MSG_FAIL' });
 
@@ -240,7 +283,36 @@ export default function ChatScreen() {
       }
     };
     getMessages();
-  }, [currentChat]);
+  }, [currentChat, userInfo]);
+
+  useEffect(() => {
+    scrollref.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const message = {
+      text: newMessage,
+      conversationId: currentChat._id,
+    };
+    try {
+      const { data } = await axios.post('api/messages', message, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      dispatch({ type: 'MSG_SUCCESS', payload: [...messages, data.message] });
+      const receiverId = currentChat.members.find(
+        (member) => member !== userInfo._id
+      );
+      socket.current.emit('sendMessage', {
+        senderId: userInfo._id,
+        receiverId,
+        text: newMessage,
+      });
+      setNewMessage('');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container className={mode} onClick={closeModel}>
@@ -267,19 +339,24 @@ export default function ChatScreen() {
         <Right>
           {currentChat ? (
             <>
-              <RightTopbar>
-                <LeftBar>
-                  <SmallImg src="/images/pro.jpg" />
-                  <SmallName>John Doe</SmallName>
-                </LeftBar>
-                <RightBar>Report</RightBar>
-              </RightTopbar>
               <ChatArea>
-                <Messages />
+                {messages.map((m) => (
+                  <div ref={scrollref}>
+                    <Messages
+                      key={m._id}
+                      own={m.sender === userInfo._id}
+                      message={m}
+                    />
+                  </div>
+                ))}
               </ChatArea>
               <Message>
-                <TextInput placeholder="Write a message" />
-                <FontAwesomeIcon icon={faPaperPlane} />
+                <TextInput
+                  placeholder="Write a message"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                />
+                <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
               </Message>
             </>
           ) : (

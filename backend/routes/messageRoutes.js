@@ -10,13 +10,13 @@ messageRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const newmessage = new Message({
-      conversationId: req.body.ConversationId,
-      sender: req.user.id,
+      conversationId: req.body.conversationId,
+      sender: req.user._id,
       text: req.body.text,
     });
     try {
       const savedmessage = await newmessage.save();
-      res.status(200).send({ message: 'message sent', savedmessage });
+      res.status(200).send({ messages: 'message sent', message: savedmessage });
     } catch (err) {
       res.status(500).send({ message: 'message sending failed', err });
     }
