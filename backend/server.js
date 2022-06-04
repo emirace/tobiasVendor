@@ -118,7 +118,7 @@ io.on('connection', (socket) => {
   socket.on('onUserSelected', (user) => {
     const admin = users.find((x) => x.isAdmin && x.online);
     if (admin) {
-      const existUser = users.find((x) => x.id === user._id);
+      const existUser = users.find((x) => x._id === user._id);
       io.to(admin.socketId).emit('selectedUser', existUser);
     }
   });
@@ -145,11 +145,12 @@ io.on('connection', (socket) => {
   });
   socket.on('sendMessage', ({ senderId, receiverId, text }) => {
     const user = users.find((x) => x._id === receiverId);
-    console.log(receiverId);
-    io.to(user.socketId).emit('getMessage', {
-      senderId,
-      text,
-    });
+    if (user) {
+      io.to(user.socketId).emit('getMessage', {
+        senderId,
+        text,
+      });
+    }
   });
 });
 

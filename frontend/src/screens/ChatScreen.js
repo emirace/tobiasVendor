@@ -237,6 +237,7 @@ export default function ChatScreen() {
   }, []);
 
   useEffect(() => {
+    console.log(currentChat);
     arrivalMessage &&
       currentChat?.members.Includes(arrivalMessage.sender) &&
       dispatch({
