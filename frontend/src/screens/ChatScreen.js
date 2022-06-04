@@ -4,10 +4,13 @@ import {
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useContext, useState, useReducer } from 'react';
 import styled from 'styled-components';
 import Navbar from '../component/Navbar';
 import { Store } from '../Store';
+import Conversation from '../component/Conversation';
+import Messages from '../component/Messages';
 
 const Container = styled.div`
   position: fixed;
@@ -58,44 +61,6 @@ const Search = styled.input.attrs((props) => ({
   &::placeholder {
     padding-left: 10px;
     color: white;
-  }
-`;
-const ProfileImg = styled.img.attrs((props) => ({
-  src: props.src,
-}))`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: top;
-  margin-right: 15px;
-`;
-const ProfileDetail = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-const Name = styled.div`
-  color: var(--orange-color);
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-transform: capitalize;
-`;
-const LastMsg = styled.div`
-  font-size: 14px;
-  width: 250px;
-  overflow: hidden;
-  display: inline-block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const User = styled.div`
-  padding: 15px 25px;
-  display: flex;
-  align-items: center;
-  &.active {
-    border-bottom: 2px solid var(--orange-color);
   }
 `;
 
@@ -182,11 +147,39 @@ const TextInput = styled.input`
     color: white;
   }
 `;
+const NoConversation = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  color: rgba(99, 91, 91, 0.2);
+  text-align: center;
+`;
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'FETCH_REQUEST':
+      return { ...state, loading: true };
+    case 'FETCH_SUCCESS':
+      return { ...state, conversations: action.payload, loading: false };
+    case 'FETCH_FAIL':
+      return { ...state, loading: false, error: action.payload };
+    case 'MSG_REQUEST':
+      return { ...state, loadingMessages: true };
+    case 'MSG_SUCCESS':
+      return { ...state, messages: action.payload, loadingMessages: false };
+    case 'MSG_FAIL':
+      return { ...state, loadingMessages: false, error: action.payload };
+    default:
+      return state;
+  }
+};
 
 export default function ChatScreen() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
   const [menu, setMymenu] = useState(false);
+  const [currentChat, setCurrentChat] = useState(null);
   const [modelRef1, setmodelRef1] = useState();
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
@@ -196,7 +189,9 @@ export default function ChatScreen() {
     }
     return mode;
   };
-  const backgroundMode = backMode(mode);
+  const backgroundMode = (mode1) => {
+    setmodelRef1(mode1);
+  };
   const closeModel = (e) => {
     if (modelRef1 !== e.target) {
       setMymenu(false);
@@ -204,10 +199,52 @@ export default function ChatScreen() {
       setMymenu(!menu);
     }
   };
+  const [{ loading, error, conversations, messages }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: true,
+      error: '',
+      conversations: [],
+      messages: [],
+    }
+  );
+
+  useEffect(() => {
+    const getConversation = async () => {
+      try {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`/api/conversations/user`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'FETCH_SUCCESS', payload: data.conversations });
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: err });
+        console.log(err);
+      }
+    };
+    getConversation();
+  }, [userInfo]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        dispatch({ type: 'MSG_REQUEST' });
+        const { data } = await axios.get(`/api/messages/${currentChat._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'MSG_SUCCESS', oayload: data.messages });
+      } catch (err) {
+        dispatch({ type: 'MSG_FAIL' });
+
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [currentChat]);
 
   return (
     <Container className={mode} onClick={closeModel}>
-      <Navbar menu={menu} setmodelRef1={setmodelRef1} />
+      <Navbar menu={menu} setmodelRef1={backgroundMode} />
       <ChatCont>
         <Left>
           <TopBar>
@@ -219,66 +256,37 @@ export default function ChatScreen() {
               <FontAwesomeIcon icon={faMessage} />
             </div>
           </TopBar>
-          <User className="active">
-            <ProfileImg src={'/images/pro.jpg'} />
-            <ProfileDetail>
-              <Name>John Doe</Name>
-              <LastMsg>
-                it is nice talking eith ice talking eith ice talking eith yo
-                talking eith you
-              </LastMsg>
-            </ProfileDetail>
-          </User>
-          <User>
-            <ProfileImg src={'/images/pro.jpg'} />
-            <ProfileDetail>
-              <Name>John Doe</Name>
-              <LastMsg>
-                it is nice talking eith ice talking eith ice talking eith yo
-                talking eith you
-              </LastMsg>
-            </ProfileDetail>
-          </User>
-          <User>
-            <ProfileImg src={'/images/pro.jpg'} />
-            <ProfileDetail>
-              <Name>John Doe</Name>
-              <LastMsg>
-                it is nice talking eith ice talking eith ice talking eith yo
-                talking eith you
-              </LastMsg>
-            </ProfileDetail>
-          </User>
+          {conversations.length < 1
+            ? 'no conversation'
+            : conversations.map((c) => (
+                <div onClick={() => setCurrentChat(c)} key={c._id}>
+                  <Conversation conversation={c} />
+                </div>
+              ))}
         </Left>
         <Right>
-          <RightTopbar>
-            <LeftBar>
-              <SmallImg src="/images/pro.jpg" />
-              <SmallName>John Doe</SmallName>
-            </LeftBar>
-            <RightBar>Report</RightBar>
-          </RightTopbar>
-          <ChatArea>
-            <RecievedChat>
-              <InlineR>hello</InlineR>
-            </RecievedChat>
-            <RecievedChat>
-              <InlineR>hello</InlineR>
-            </RecievedChat>
-            <SendChat>
-              <InlineS>hi, how are you doing</InlineS>
-            </SendChat>
-            <RecievedChat>
-              <InlineR>hello</InlineR>
-            </RecievedChat>
-            <SendChat>
-              <InlineS>hi, how are you doing</InlineS>
-            </SendChat>
-          </ChatArea>
-          <Message>
-            <TextInput placeholder="Write a message" />
-            <FontAwesomeIcon icon={faPaperPlane} />
-          </Message>
+          {currentChat ? (
+            <>
+              <RightTopbar>
+                <LeftBar>
+                  <SmallImg src="/images/pro.jpg" />
+                  <SmallName>John Doe</SmallName>
+                </LeftBar>
+                <RightBar>Report</RightBar>
+              </RightTopbar>
+              <ChatArea>
+                <Messages />
+              </ChatArea>
+              <Message>
+                <TextInput placeholder="Write a message" />
+                <FontAwesomeIcon icon={faPaperPlane} />
+              </Message>
+            </>
+          ) : (
+            <NoConversation>
+              Select a conversation to start a chat{' '}
+            </NoConversation>
+          )}
         </Right>
       </ChatCont>
     </Container>

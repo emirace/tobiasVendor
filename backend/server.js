@@ -14,6 +14,8 @@ import passport from 'passport';
 import './passport.js';
 import session from 'express-session';
 import cookieSession from 'cookie-session';
+import conversationRouter from './routes/conversationRoutes.js';
+import messageRouter from './routes/messageRoutes.js';
 
 dotenv.config();
 
@@ -52,6 +54,8 @@ app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/socials', socialRoutes);
+app.use('/api/conversations', conversationRouter);
+app.use('/api/messages', messageRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
