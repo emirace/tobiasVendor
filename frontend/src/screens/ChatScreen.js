@@ -237,15 +237,24 @@ export default function ChatScreen() {
     });
   }, []);
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
-    arrivalMessage &&
+    if (
+      arrivalMessage &&
       currentChat &&
-      currentChat?.members.includes(arrivalMessage.sender) &&
-      dispatch({
-        type: 'MSG_SUCCESS',
-        payload: [...messages, arrivalMessage.message],
-      });
-  }, [arrivalMessage, currentChat, messages]);
+      currentChat?.members.includes(arrivalMessage.sender)
+    ) {
+      if (currentChat._id === arrivalMessage.message.conversationId) {
+        dispatch({
+          type: 'MSG_SUCCESS',
+          payload: [...messages, arrivalMessage.message],
+        });
+      } else {
+        console.log('chat not in view');
+      }
+    }
+  }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
     socket.current.emit('onlogin', userInfo);
