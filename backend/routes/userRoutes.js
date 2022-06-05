@@ -193,6 +193,7 @@ userRouter.get(
 
     if (user) {
       res.send({
+        _id: user._id,
         name: user.name,
         email: user.email,
         image: user.image,
@@ -215,16 +216,25 @@ userRouter.put(
     const user1 = await User.findById(req.params.id);
     const user = await User.findById(req.user._id);
     if (user1 && user) {
-      user1.followers.push(req.user._id);
-      const updatedUser = await user1.save();
-      res.send({
-        message: 'Following',
-        name: updatedUser.name,
-        // seller: updatedUser.seller,
-        email: updatedUser.email,
-        followers: updatedUser.followers,
-        following: updatedUser.following,
-      });
+      if (user1.followers.includes(req.user._id)) {
+        res.send({ message: 'Already following this user' });
+        return;
+      } else {
+        user1.followers.push(req.user._id);
+        const updatedUser = await user1.save();
+        res.send({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          image: updatedUser.image,
+          about: updatedUser.about,
+          followers: updatedUser.followers,
+          following: updatedUser.following,
+          likes: updatedUser.likes,
+          saved: updatedUser.saved,
+          message: 'Following',
+        });
+      }
     } else {
       res.status(404).send({ message: 'User Not Found' });
     }
@@ -248,12 +258,16 @@ userRouter.put(
       user1.followers.pull(req.user._id);
       const updatedUser = await user1.save();
       res.send({
-        message: 'Following',
+        _id: updatedUser._id,
         name: updatedUser.name,
-        // seller: updatedUser.seller,
         email: updatedUser.email,
+        image: updatedUser.image,
+        about: updatedUser.about,
         followers: updatedUser.followers,
         following: updatedUser.following,
+        likes: updatedUser.likes,
+        saved: updatedUser.saved,
+        message: 'Following',
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });
@@ -265,6 +279,32 @@ userRouter.put(
     } else {
       res.status(404).send({ message: 'User Not Found' });
     }
+  })
+);
+
+userRouter.get(
+  '/followers/:id',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).populate('followers');
+    let followerList = [];
+    user.followers.map((f) => {
+      const { _id, name, image } = f;
+      followerList.push({ _id, name, image });
+    });
+    res.send(followerList);
+  })
+);
+
+userRouter.get(
+  '/following/:id',
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).populate('following');
+    let followingList = [];
+    user.following.map((f) => {
+      const { _id, name, image } = f;
+      followingList.push({ _id, name, image });
+    });
+    res.send(followingList);
   })
 );
 

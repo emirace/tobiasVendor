@@ -193,8 +193,9 @@ export default function ChatScreen() {
   const [menu, setMymenu] = useState(false);
   const [currentChat, setCurrentChat] = useState('');
   const [newMessage, setNewMessage] = useState('');
-  const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [arrivalMessage, setArrivalMessage] = useState('');
   const [modelRef1, setmodelRef1] = useState();
+  const [onlineUser, setOnlineUser] = useState([]);
   const socket = useRef();
   const scrollref = useRef();
   const backMode = (mode) => {
@@ -231,25 +232,25 @@ export default function ChatScreen() {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
-        createAt: Date.now(),
+        message: data.message,
       });
     });
   }, []);
 
   useEffect(() => {
-    console.log(currentChat);
     arrivalMessage &&
-      currentChat?.members.Includes(arrivalMessage.sender) &&
+      currentChat &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
       dispatch({
         type: 'MSG_SUCCESS',
-        payload: (prev) => [...prev, arrivalMessage],
+        payload: [...messages, arrivalMessage.message],
       });
-  }, [arrivalMessage, currentChat]);
+  }, [arrivalMessage, currentChat, messages]);
 
   useEffect(() => {
     socket.current.emit('onlogin', userInfo);
     socket.current.on('getUsers', (users) => {
-      console.log(users);
+      setOnlineUser(users);
     });
   }, [userInfo]);
 
@@ -305,11 +306,49 @@ export default function ChatScreen() {
         (member) => member !== userInfo._id
       );
       socket.current.emit('sendMessage', {
+        message: data.message,
         senderId: userInfo._id,
         receiverId,
         text: newMessage,
       });
       setNewMessage('');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const isOnlineCon = (c) => {
+    if (onlineUser.length > 0) {
+      let onlineUserList = [];
+      onlineUser.map((o) => onlineUserList.push(o._id));
+      if (
+        onlineUserList.includes(
+          c.members.find((member) => member !== userInfo._id)
+        )
+      ) {
+        return true;
+      } else return false;
+    }
+  };
+
+  const selectCoversation = async (user) => {
+    try {
+      const { data } = await axios.get(
+        `/api/conversations/find/${userInfo._id}/${user._id}`
+      );
+      setCurrentChat(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addConversation = async (id) => {
+    try {
+      const { data } = await axios.post(
+        `/api/conversations/`,
+        { recieverId: id },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
+      );
     } catch (err) {
       console.log(err);
     }
@@ -333,7 +372,7 @@ export default function ChatScreen() {
             ? 'no conversation'
             : conversations.map((c) => (
                 <div onClick={() => setCurrentChat(c)} key={c._id}>
-                  <Conversation conversation={c} />
+                  <Conversation conversation={c} status={isOnlineCon(c)} />
                 </div>
               ))}
         </Left>

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Store } from '../Store';
 
 const User = styled.div`
+  position: relative;
   cursor: pointer;
   padding: 15px 25px;
   display: flex;
@@ -41,8 +42,17 @@ const LastMsg = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
+const Badge = styled.div`
+  width: 15px;
+  position: absolute;
+  right: 30px;
+  top: 30%;
+  height: 15px;
+  border-radius: 50%;
+  background: green;
+`;
 
-export default function Conversation({ conversation }) {
+export default function Conversation({ conversation, status }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [user, setUser] = useState({});
@@ -73,6 +83,7 @@ export default function Conversation({ conversation }) {
             eith you
           </LastMsg>
         </ProfileDetail>
+        {status && <Badge />}
       </User>
     </>
   );

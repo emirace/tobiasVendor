@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoadingBox from '../component/LoadingBox';
 import MessageBox from '../component/MessageBox';
@@ -137,6 +137,8 @@ export default function SellerScreen() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const page = sp.get('page') || 1;
+
+  const navigate = useNavigate();
 
   const [{ loading, loadingUser, error, products, pages, user }, dispatch] =
     useReducer(reducer, {
@@ -310,6 +312,19 @@ export default function SellerScreen() {
     }
   };
 
+  const addConversation = async (id) => {
+    try {
+      const { data } = await axios.post(
+        `/api/conversations/`,
+        { recieverId: id },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
+      );
+      navigate('/messages');
+    } catch (err) {
+      console.log(err, err.message);
+    }
+  };
+
   return (
     <div className="seller_main_container">
       <div className="seller_left">
@@ -362,8 +377,12 @@ export default function SellerScreen() {
               <Model showModel={showModel} setShowModel={setShowModel}>
                 <ReviewLists />
               </Model>
-              <button type="buton" className="profile_contact_btn">
-                Contact Me
+              <button
+                onClick={() => addConversation(user._id)}
+                type="buton"
+                className="profile_contact_btn"
+              >
+                Message Me
               </button>
               <div className="seller_profile_detail">
                 <div className="seller_single_detail">

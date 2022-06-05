@@ -75,14 +75,14 @@ const io = new Server(httpServer, {
     origin: 'http://localhost:3000',
   },
 });
-const users = [];
+let users = [];
 
 io.on('connection', (socket) => {
   console.log('user connected');
   socket.on('disconnect', () => {
     const user = users.find((x) => x.socketId === socket.id);
     if (user) {
-      user.online = false;
+      users = users.filter((user) => user.socketId !== socket.id);
       console.log('offline', user.name);
       const admin = users.find((x) => x.isAdmin && x.online);
       if (admin) {
@@ -94,14 +94,11 @@ io.on('connection', (socket) => {
   socket.on('onlogin', (user) => {
     const updatedUser = {
       ...user,
-      online: true,
       socketId: socket.id,
-      messages: [],
     };
     const existUser = users.find((x) => x._id === updatedUser._id);
     if (existUser) {
       existUser.socketId = socket.id;
-      existUser.online = true;
     } else {
       users.push(updatedUser);
     }
@@ -143,12 +140,13 @@ io.on('connection', (socket) => {
       }
     }
   });
-  socket.on('sendMessage', ({ senderId, receiverId, text }) => {
+  socket.on('sendMessage', ({ message, senderId, receiverId, text }) => {
     const user = users.find((x) => x._id === receiverId);
     if (user) {
       io.to(user.socketId).emit('getMessage', {
         senderId,
         text,
+        message,
       });
     }
   });
