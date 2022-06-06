@@ -22,6 +22,11 @@ const initialState = {
       ? JSON.parse(localStorage.getItem('shippingAddress'))
       : {},
   },
+  notification: {
+    text: '',
+    buttonText: '',
+    showStatus: false,
+  },
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -91,6 +96,24 @@ function reducer(state, action) {
       };
     case 'CHANGE_MODE':
       return { ...state, mode: action.payload };
+    case 'SHOW_NOTIFICAATION':
+      return {
+        ...state,
+        notification: {
+          text: action.payload.text,
+          buttonText: action.payload.buttonText,
+          showStatus: action.payload.showStatus,
+        },
+      };
+    case 'REMOVE_NOTIFICAATION':
+      return {
+        ...state,
+        notification: {
+          text: '',
+          buttonText: '',
+          showStatus: false,
+        },
+      };
     default:
       return state;
   }

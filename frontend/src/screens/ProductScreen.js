@@ -44,6 +44,38 @@ import Model from '../component/Model';
 const ReviewsClick = styled.div`
   cursor: pointer;
 `;
+const Tab = styled.div`
+  display: flex;
+  margin: 10px 30px 5px 30px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  justify-content: center;
+`;
+const TabItem = styled.div`
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  margin: 10px;
+  position: relative;
+  text-transform: capitalize;
+  min-width: 50px;
+  &:hover {
+    color: var(--orange-color);
+  }
+  &.active {
+    color: var(--orange-color);
+    font-weight: bold;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--orange-color);
+    }
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -61,6 +93,8 @@ const reducer = (state, action) => {
       return { ...state, product: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
+    case 'COMMENT_SUCCESS':
+      return { ...state, comments: action.payload };
 
     default:
       return state;
@@ -79,6 +113,7 @@ export default function ProductScreen() {
 
   const [rating, setRAting] = useState(0);
   const [comment, setComment] = useState('');
+  const [comment2, setComment2] = useState('');
   const [itemDetail, setItemDetail] = useState(false);
   const [specification, setSpecification] = useState(false);
   const [condition, setCondition] = useState(false);
@@ -86,14 +121,17 @@ export default function ProductScreen() {
   const [size, setSize] = useState('');
   const [share, setShare] = useState(false);
 
+  const [displayTab, setDisplayTab] = useState('comments');
+
   const params = useParams();
   const { slug } = params;
 
-  const [{ loading, error, product, loadingCreateReview }, dispatch] =
+  const [{ loading, error, product, comments, loadingCreateReview }, dispatch] =
     useReducer(reducer, {
       product: [],
       loading: true,
       error: '',
+      comments: [],
     });
   useEffect(() => {
     const fetchData = async () => {
@@ -107,6 +145,18 @@ export default function ProductScreen() {
     };
     fetchData();
   }, [slug]);
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        const { data } = await axios.get(`/api/comments/${product._id}`);
+        dispatch({ type: 'COMMENT_SUCCESS', payload: data });
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchComment();
+  });
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const [selectedImage, setSelectedImage] = useState('');
@@ -166,6 +216,30 @@ export default function ProductScreen() {
     } catch (err) {
       toast.error(getError(error));
       dispatch({ type: 'CREATE_FAIL' });
+    }
+  };
+
+  const submitCommentHandler = async (e) => {
+    e.preventDefault();
+    if (!comment) {
+      toast.error('Please enter comment');
+      return;
+    }
+    try {
+      const { data } = await axios.post(
+        `/api/comments/${product._id}`,
+        { comment: comment2 },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      dispatch({ type: 'COMMENT_SUCCESS', payload: data });
+      window.scrollTo({
+        behavior: 'smooth',
+        top: reviewRef.current.offsetTop,
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -239,6 +313,143 @@ export default function ProductScreen() {
       toast.error(getError(err));
     }
   };
+
+  const switchTab = (tab) => {
+    switch (tab) {
+      case 'comments':
+        return (
+          <>
+            <div className="my-3 mx-4">
+              <div className="my-3" ref={reviewRef}>
+                {comments.length === 0 && (
+                  <MessageBox>There is no comments</MessageBox>
+                )}
+              </div>
+              <ListGroup>
+                {comments.map((comment) => (
+                  <ListGroup.Item key={comment._id}>
+                    <strong>{comment.name}</strong>
+                    <p>{comment.createdAt.substring(0, 10)}</p>
+                    <p>{comment.comment}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+              <div className="my-3">
+                {userInfo ? (
+                  <form onSubmit={submitCommentHandler}>
+                    <h4>Write Comment</h4>
+                    <FloatingLabel
+                      controlId="floatingTextarea"
+                      lablel="Coments"
+                      className="my-3"
+                    >
+                      <Form.Control
+                        as="textarea"
+                        placeholder="Leave a comment here"
+                        value={comment2}
+                        onChange={(e) => setComment2(e.target.value)}
+                      />
+                    </FloatingLabel>
+                    <div className="my-3">
+                      <Button disabled={loadingCreateReview} type="submit">
+                        Submit
+                      </Button>
+                      {loadingCreateReview && <LoadingBox></LoadingBox>}
+                    </div>
+                  </form>
+                ) : (
+                  <MessageBox>
+                    Please{' '}
+                    <Link to={`/signin?redirect=/product/${product.slug}`}>
+                      Sign In
+                    </Link>{' '}
+                    to write a review
+                  </MessageBox>
+                )}
+              </div>
+            </div>
+          </>
+        );
+      case 'reviews':
+        return (
+          <>
+            <div className="my-3 mx-4">
+              <div className="my-3" ref={reviewRef}>
+                {product.reviews.length === 0 && (
+                  <MessageBox>There is no reviews</MessageBox>
+                )}
+              </div>
+              <ListGroup>
+                {product.reviews.map((review) => (
+                  <ListGroup.Item key={review._id}>
+                    <strong>{review.name}</strong>
+                    <Rating rating={review.rating} caption=" "></Rating>
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+              <div className="my-3">
+                {userInfo ? (
+                  <form onSubmit={submitHandler}>
+                    <h2>Write a customer review</h2>
+                    <Form.Group className="my-3" controlId="rating">
+                      <Form.Label>Rating</Form.Label>
+                      <Form.Select
+                        aria-label="Rating"
+                        value={rating}
+                        onChange={(e) => setRAting(e.target.value)}
+                      >
+                        <option value="">Select...</option>
+                        <option value="1">1- Poor</option>
+                        <option value="2">2- Fair</option>
+                        <option value="3">3- Good</option>
+                        <option value="4">4- Very good</option>
+                        <option value="5">5- Excelent</option>
+                      </Form.Select>
+                    </Form.Group>
+                    <FloatingLabel
+                      controlId="floatingTextarea"
+                      lablel="Coments"
+                      className="my-3"
+                    >
+                      <Form.Control
+                        as="textarea"
+                        placeholder="Leave a comment here"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
+                    </FloatingLabel>
+                    <div className="my-3">
+                      <button
+                        className="search-btn1"
+                        disabled={loadingCreateReview}
+                        type="submit"
+                      >
+                        Submit
+                      </button>
+                      {loadingCreateReview && <LoadingBox></LoadingBox>}
+                    </div>
+                  </form>
+                ) : (
+                  <MessageBox>
+                    Please{' '}
+                    <Link to={`/signin?redirect=/product/${product.slug}`}>
+                      Sign In
+                    </Link>{' '}
+                    to write a review
+                  </MessageBox>
+                )}
+              </div>
+            </div>
+          </>
+        );
+
+      default:
+        break;
+    }
+  };
+
   return loading ? (
     <LoadingBox />
   ) : error ? (
@@ -806,76 +1017,23 @@ export default function ProductScreen() {
           </div>
         </div>
       </section>
-      <div className="my-3 mx-4">
-        <h2 ref={reviewRef}>Reviews</h2>
-        <div className="my-3">
-          {product.reviews.length === 0 && (
-            <MessageBox>There is no reviews</MessageBox>
-          )}
-        </div>
-        <ListGroup>
-          {product.reviews.map((review) => (
-            <ListGroup.Item key={review._id}>
-              <strong>{review.name}</strong>
-              <Rating rating={review.rating} caption=" "></Rating>
-              <p>{review.createdAt.substring(0, 10)}</p>
-              <p>{review.comment}</p>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-        <div className="my-3">
-          {userInfo ? (
-            <form onSubmit={submitHandler}>
-              <h2>Write a customer review</h2>
-              <Form.Group className="my-3" controlId="rating">
-                <Form.Label>Rating</Form.Label>
-                <Form.Select
-                  aria-label="Rating"
-                  value={rating}
-                  onChange={(e) => setRAting(e.target.value)}
-                >
-                  <option value="">Select...</option>
-                  <option value="1">1- Poor</option>
-                  <option value="2">2- Fair</option>
-                  <option value="3">3- Good</option>
-                  <option value="4">4- Very good</option>
-                  <option value="5">5- Excelent</option>
-                </Form.Select>
-              </Form.Group>
-              <FloatingLabel
-                controlId="floatingTextarea"
-                lablel="Coments"
-                className="my-3"
-              >
-                <Form.Control
-                  as="textarea"
-                  placeholder="Leave a comment here"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-              </FloatingLabel>
-              <div className="my-3">
-                <button
-                  className="search-btn1"
-                  disabled={loadingCreateReview}
-                  type="submit"
-                >
-                  Submit
-                </button>
-                {loadingCreateReview && <LoadingBox></LoadingBox>}
-              </div>
-            </form>
-          ) : (
-            <MessageBox>
-              Please{' '}
-              <Link to={`/signin?redirect=/product/${product.slug}`}>
-                Sign In
-              </Link>{' '}
-              to write a review
-            </MessageBox>
-          )}
-        </div>
-      </div>
+      <section>
+        <Tab>
+          <TabItem
+            className={displayTab === 'comments' && 'active'}
+            onClick={() => setDisplayTab('comments')}
+          >
+            Comments
+          </TabItem>
+          <TabItem
+            className={displayTab === 'reviews' && 'active'}
+            onClick={() => setDisplayTab('reviews')}
+          >
+            Reviews
+          </TabItem>
+        </Tab>
+        {switchTab(displayTab)}
+      </section>
       {/* <Row>
         <Col md={6}>
           <img className="img-large" src={product.image} alt={product.name} />

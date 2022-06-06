@@ -16,6 +16,7 @@ import session from 'express-session';
 import cookieSession from 'cookie-session';
 import conversationRouter from './routes/conversationRoutes.js';
 import messageRouter from './routes/messageRoutes.js';
+import commentRouter from './routes/commentRoustes.js';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use('/api/orders', orderRouter);
 app.use('/api/socials', socialRoutes);
 app.use('/api/conversations', conversationRouter);
 app.use('/api/messages', messageRouter);
+app.use('/api/comments', commentRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));

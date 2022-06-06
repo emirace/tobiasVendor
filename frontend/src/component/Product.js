@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import Rating from './Rating';
 import axios from 'axios';
 import { Store } from '../Store';
 import styled from 'styled-components';
+import Notification from './Notification';
 
 const Sold = styled.div`
   position: absolute;
@@ -25,6 +26,8 @@ export default function Product(props) {
     cart: { cartItems },
   } = state;
 
+  const [showNotification, setShowNotification] = useState(false);
+
   const addToCartHandler = async (item) => {
     const existItem = cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
@@ -33,14 +36,26 @@ export default function Product(props) {
       window.alert('Sorry. Product is out of stock');
       return;
     }
-    //
+
     ctxDispatch({
       type: 'CART_ADD_ITEM',
       payload: { ...item, quantity },
     });
+    ctxDispatch({
+      type: 'SHOW_NOTIFICAATION',
+      payload: {
+        text: 'Item added to Cart',
+        showStatus: true,
+        buttonText: 'Checkout',
+      },
+    });
+    console.log(state);
   };
   return (
     <div className="product-card1">
+      {showNotification && (
+        <Notification text="Item added to Cart" buttonText={'Checkout'} />
+      )}
       <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
           <span className="discount-tag1 ">50% off</span>
