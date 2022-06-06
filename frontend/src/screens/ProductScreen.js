@@ -95,6 +95,9 @@ const reducer = (state, action) => {
       return { ...state, loading: false, error: action.payload };
     case 'COMMENT_SUCCESS':
       return { ...state, comments: action.payload };
+    case 'COMMENT2_SUCCESS':
+      const com = action.payload;
+      return { ...state, comments: { ...state.comments, com } };
 
     default:
       return state;
@@ -156,7 +159,7 @@ export default function ProductScreen() {
       }
     };
     fetchComment();
-  });
+  }, [product]);
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
   const [selectedImage, setSelectedImage] = useState('');
@@ -221,7 +224,7 @@ export default function ProductScreen() {
 
   const submitCommentHandler = async (e) => {
     e.preventDefault();
-    if (!comment) {
+    if (!comment2) {
       toast.error('Please enter comment');
       return;
     }
@@ -233,7 +236,11 @@ export default function ProductScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'COMMENT_SUCCESS', payload: data });
+      console.log(data);
+      comments.push(data);
+      dispatch({ type: 'COMMENT_SUCCESS', payload: comments });
+      setComment2('');
+
       window.scrollTo({
         behavior: 'smooth',
         top: reviewRef.current.offsetTop,
@@ -326,6 +333,7 @@ export default function ProductScreen() {
                 )}
               </div>
               <ListGroup>
+                {console.log(comments)}
                 {comments.map((comment) => (
                   <ListGroup.Item key={comment._id}>
                     <strong>{comment.name}</strong>
@@ -584,7 +592,7 @@ export default function ProductScreen() {
               />
               <IconsTooltips className="tiptools" tips="Share " />
             </IconContainer>
-            <span className={share && 'active2'}>
+            <span className={share ? 'active2' : ''}>
               <ShareButton url={'/'} />
             </span>
           </div>

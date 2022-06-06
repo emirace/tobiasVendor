@@ -31,7 +31,7 @@ commentRouter.get(
   '/:id',
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const comments = await Comment.findbyId({ productId });
+    const comments = await Comment.find({ productId });
     res.send(comments);
   })
 );
