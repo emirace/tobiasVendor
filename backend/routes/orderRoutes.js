@@ -109,7 +109,9 @@ orderRouter.get(
   '/:id',
 
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate(
+      'orderItems.product'
+    );
     if (order) {
       res.send(order);
     } else {
@@ -138,16 +140,21 @@ orderRouter.put(
   '/:id/pay',
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-      const products=[];
-      order.orderItems.map((x)=>(
-          const product=await Product.findById(x._id);
-          products.push(product);
-      ))
+    const products = [];
+    console.log(product);
+    order.orderItems.map((i) => products.push(i._id));
+    const records = await Product.find({
+      _id: { $in: products },
+    });
+    console.log(record);
+    records.map(async (p) => {
+      p = { ...p, sold: true };
+      await p.save();
+    });
+    console.log(record);
+    0;
+
     if (order) {
-        products.map((p)=>(
-            p.sold=true;
-            await  p.save()
-        ))
       order.isPaid = true;
       order.paidAt = Date.now();
       order.paymentResult = {
