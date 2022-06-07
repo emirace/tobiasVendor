@@ -138,7 +138,16 @@ orderRouter.put(
   '/:id/pay',
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
+      const products=[];
+      order.orderItems.map((x)=>(
+          const product=await Product.findById(x._id);
+          products.push(product);
+      ))
     if (order) {
+        products.map((p)=>(
+            p.sold=true;
+            await  p.save()
+        ))
       order.isPaid = true;
       order.paidAt = Date.now();
       order.paymentResult = {
