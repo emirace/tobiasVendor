@@ -146,7 +146,7 @@ orderRouter.put(
     const records = await Product.find({
       _id: { $in: products },
     });
-    console.log(record);
+    console.log(records);
     records.map(async (p) => {
       p = { ...p, sold: true };
       await p.save();
