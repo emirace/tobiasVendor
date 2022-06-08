@@ -27,6 +27,11 @@ const initialState = {
     buttonText: '',
     showStatus: false,
   },
+  toast: {
+    message: '',
+    state1: '',
+    showStatus: false,
+  },
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -111,6 +116,24 @@ function reducer(state, action) {
         notification: {
           text: '',
           buttonText: '',
+          showStatus: false,
+        },
+      };
+    case 'SHOW_TOAST':
+      return {
+        ...state,
+        toast: {
+          message: action.payload.message,
+          state1: action.payload.state1,
+          showStatus: action.payload.showStatus,
+        },
+      };
+    case 'REMOVE_TOAST':
+      return {
+        ...state,
+        toast: {
+          message: '',
+          state1: '',
           showStatus: false,
         },
       };

@@ -939,3 +939,8 @@ select.select_input_box {
 .btn-primary-outline:active:focus {
   box-shadow: none;
 }
+
+.toast {
+  border: 0;
+  width: auto;
+}

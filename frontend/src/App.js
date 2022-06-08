@@ -66,6 +66,7 @@ import ChatScreen from './screens/ChatScreen';
 import InfoScreen from './screens/InfoScreen';
 import MobileProfileScreen from './screens/MobileProfileScreen';
 import Notification from './component/Notification';
+import ToastNotification from './component/ToastNotification';
 
 const NavCont = styled.div`
   position: relation;
@@ -160,9 +161,6 @@ function App() {
 
   const [modelRef1, setmodelRef1] = useState();
   const [menu, setMymenu] = useState(false);
-  const [showNotification, setShowNotification] = useState(true);
-  const [textNotification, setTextNotification] = useState(true);
-  const [buttonNotification, setButtonNotification] = useState(true);
 
   const closeModel = (e) => {
     if (modelRef1 !== e.target) {
@@ -174,17 +172,15 @@ function App() {
   const changeRef = (res) => {
     setmodelRef1(res);
   };
+
   return (
     <BrowserRouter>
       <GoogleOAuthProvider clientId="359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com">
         <ScrollToTop>
           <ToastContainer position="top-center" limit={1} />
           <div className={mode || ''} onClick={closeModel}>
-            <Notification
-              text={textNotification}
-              buttonText={buttonNotification}
-              showStatus={showNotification}
-            />
+            <Notification />
+            <ToastNotification />
             <StickyNav />
             <header style={{ background: 'inherit' }}>
               <NavCont>

@@ -45,7 +45,7 @@ const CloseModelButton = styled.div`
   z-index: 10;
 `;
 
-export default function Model({ showModel, setShowModel, children }) {
+export default function ModelLogin({ showModel, setShowModel, children }) {
   const modelRef = useRef();
 
   const { state } = useContext(Store);

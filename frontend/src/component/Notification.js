@@ -56,10 +56,11 @@ const Content = styled.div`
 export default function Notification() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { notification: note } = state;
+
   const closeHandler = () => {
     ctxDispatch({ type: 'REMOVE_NOTIFICAATION' });
   };
-  console.log('note', note);
+
   return (
     note.showStatus && (
       <NotificationCon className="show">
