@@ -19,6 +19,7 @@ const Container = styled.div`
   height: calc(100vh-168px);
   background: var(--dark-ev1);
   position: sticky;
+  border-radius: 0.2rem;
   top: 168px;
 `;
 const Wrapper = styled.div`

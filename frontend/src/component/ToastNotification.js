@@ -30,10 +30,10 @@ const ToastCont = styled.div`
   }
 
   &.success {
-    background: #00c028;
+    background: var(--green-color);
   }
   &.error {
-    background: #d50000;
+    background: var(--red-color);
   }
 `;
 

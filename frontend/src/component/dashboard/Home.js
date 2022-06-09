@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import Chart from './Chart';
 import FeatureInfo from './FeatureInfo';
+import WidgetLarge from './WidgetLarge';
+import WidgetSmall from './WidgetSmall';
 
 const Container = styled.div`
   flex: 4;
@@ -61,7 +63,10 @@ export default function Home() {
     <Container>
       <FeatureInfo />
       <Chart title="Users Analytics" data={data} dataKey="uv" grid />
-      <HomeWidget></HomeWidget>
+      <HomeWidget>
+        <WidgetSmall />
+        <WidgetLarge />
+      </HomeWidget>
     </Container>
   );
 }
