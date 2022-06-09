@@ -5,7 +5,9 @@ import Sidebar from '../component/dashboard/Sidebar';
 
 const Container = styled.div`
   display: flex;
+  margin-top: 10px;
 `;
+
 export default function DashboardNewScreen() {
   return (
     <Container>
