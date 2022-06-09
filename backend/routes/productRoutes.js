@@ -163,6 +163,7 @@ productRouter.put(
           res.status(201).send({
             message: 'Product unsaved',
             user: updatedUser,
+            status: 'visible1 error',
           });
         } else {
           user.saved.push(productId);
@@ -170,15 +171,9 @@ productRouter.put(
           res.status(201).send({
             message: 'Product saved',
             user: updatedUser,
+            status: 'visible1 success',
           });
         }
-
-        const updatedUser = await user.save();
-
-        res.status(201).send({
-          message: 'saved Product',
-          user: updatedUser,
-        });
       } else {
         res.status(404).send({
           message: 'you must login to like product',
@@ -195,10 +190,7 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      'seller',
-      'seller.name seller.logo seller.rating seller.numReviews'
-    );
+    const product = await Product.findById(productId).populate('seller');
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -227,10 +219,7 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      'seller',
-      'seller.name seller.logo seller.rating seller.numReviews'
-    );
+    const product = await Product.findById(productId).populate('seller');
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {

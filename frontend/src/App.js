@@ -67,6 +67,7 @@ import InfoScreen from './screens/InfoScreen';
 import MobileProfileScreen from './screens/MobileProfileScreen';
 import Notification from './component/Notification';
 import ToastNotification from './component/ToastNotification';
+import DashboardNewScreen from './screens/DashboardNewScreen';
 
 const NavCont = styled.div`
   position: relation;
@@ -281,6 +282,7 @@ function App() {
                   <Route path="/" element={<HomeScreen />} />
                   <Route path="/home" element={<ProductsScreen />} />
 
+                  <Route path="/dashboard" element={<DashboardNewScreen />} />
                   {/* Admin Routes */}
                   <Route
                     path="/admin/dashboard"

@@ -53,7 +53,14 @@ export default function Product(props) {
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
-      window.alert('Sorry. Product is out of stock');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Sorry. Product is out of stock',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
 
@@ -77,7 +84,14 @@ export default function Product(props) {
       return;
     }
     if (product.seller._id === userInfo._id) {
-      alert('it is your product');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: "You can't like your product",
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
     try {

@@ -9,16 +9,15 @@ body {
   overflow-x: hidden;
 }
 :root {
-  --btn-gradient: linear-gradient(
-    90deg,
-    rgba(86, 0, 0, 1) 0%,
-    rgba(247, 154, 35, 1) 100%
-  );
-  --malon-color: #560000;
-  --orange-color: #f79a23;
+  --malon-color: #8a1719;
+  --orange-color: #eb9f40;
   --black-color: black;
   --white-color: white;
   --border-color: rgba(99, 91, 91, 0.4);
+  --dark-ev1: #121212;
+  --dark-ev2: #2c2824;
+  --dark-ev3: #231d16;
+  --dark-ev4: #2a2117;
 }
 .pagebodydark {
   background: var(--black-color);
