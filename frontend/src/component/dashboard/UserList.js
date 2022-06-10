@@ -25,8 +25,8 @@ const Edit = styled.button`
   border: none;
   border-radius: 0.2rem;
   padding: 5px 10px;
-  background: var(--green-color);
-  color: var(--white-color);
+  background: var(--dark-ev3);
+  color: var(--orange-color);
   cursor: pointer;
   margin-right: 10px;
 `;
@@ -119,23 +119,31 @@ export default function UserList() {
             border: 'none',
           },
           '& .Mui-checked': {
-            color: 'var(--orange-color)',
+            color: 'var(--orange-color) !important',
           },
           '& .Mui-selected': {
+            'background-color': 'var(--dark-ev2) !important',
+          },
+          '& .MuiDataGrid-row:hover': {
             'background-color': 'var(--dark-ev2) !important',
           },
           '& .Mui-selected:hover': {
             'background-color': 'var(--dark-ev3) !important',
           },
-          '& .MuiDataGrid-row:hover': {
-            'background-color': 'var(--dark-ev2) !important',
-          },
+
           '& .MuiDataGrid-cell:focus': {
-            outline: 'solid var(--orange-color) 1px',
+            outline: 'solid var(--orange-color) 1px  !important',
           },
           '& .MuiDataGrid-columnHeader:focus': {
-            outline: 'solid var(--orange-color) 1px',
+            outline: 'solid var(--orange-color) 1px  !important',
           },
+          '& .MuiCheckbox-root:hover': {
+            'background-color': 'var(--dark-ev3)  !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within':
+            {
+              outline: 'solid var(--orange-color) 1px  !important',
+            },
         }}
         rows={rows}
         columns={columns}

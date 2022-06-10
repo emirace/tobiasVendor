@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Home from '../component/dashboard/Home';
 import Sidebar from '../component/dashboard/Sidebar';
+import User from '../component/dashboard/User';
 import UserList from '../component/dashboard/UserList';
 
 const Container = styled.div`
@@ -14,7 +15,8 @@ export default function DashboardNewScreen() {
     <Container>
       <Sidebar />
       {/* <Home /> */}
-      <UserList />
+      {/* <UserList /> */}
+      <User />
     </Container>
   );
 }
