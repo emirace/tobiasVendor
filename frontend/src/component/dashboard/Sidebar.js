@@ -13,6 +13,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   flex: 1;
@@ -50,16 +51,21 @@ const ListItem = styled.li`
   }
 `;
 
-export default function Sidebar() {
+export default function Sidebar({ setDisplayTab }) {
   return (
     <Container>
       <Wrapper>
         <Menu>
           <Title>Dashboard</Title>
           <List>
-            <ListItem className="active">
-              <FontAwesomeIcon icon={faHouse} /> Home
-            </ListItem>
+            <Link to="/dashboard/home">
+              <ListItem
+                className="active"
+                onClick={() => setDisplayTab('home')}
+              >
+                <FontAwesomeIcon icon={faHouse} /> Home
+              </ListItem>
+            </Link>
             <ListItem>
               <FontAwesomeIcon icon={faChartLine} /> Analytics
             </ListItem>
@@ -71,12 +77,16 @@ export default function Sidebar() {
         <Menu>
           <Title>Quick Menu</Title>
           <List>
-            <ListItem className="">
-              <FontAwesomeIcon icon={faUser} /> Users
-            </ListItem>
-            <ListItem>
-              <FontAwesomeIcon icon={faBasketShopping} /> Products
-            </ListItem>
+            <Link to="/dashboard/userlist">
+              <ListItem className="">
+                <FontAwesomeIcon icon={faUser} /> Users
+              </ListItem>
+            </Link>
+            <Link to="/dashboard/productlist">
+              <ListItem>
+                <FontAwesomeIcon icon={faBasketShopping} /> Products
+              </ListItem>
+            </Link>
             <ListItem>
               <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
             </ListItem>

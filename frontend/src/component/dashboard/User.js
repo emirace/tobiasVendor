@@ -5,6 +5,7 @@ import {
   faEnvelope,
   faLocationDot,
   faPhone,
+  faUpload,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -74,7 +75,9 @@ const BottomTitle = styled.span`
   font-size: 14px;
   font-weight: 600;
 `;
-const Username = styled.span``;
+const Username = styled.span`
+  margin-left: 10px;
+`;
 const Info = styled.div`
   display: flex;
   align-items: center;
@@ -82,6 +85,73 @@ const Info = styled.div`
   & svg {
     font-size: 14px;
   }
+`;
+const Left = styled.div``;
+const Right = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+const UpdateTitle = styled.span`
+  font-size: 22px;
+  font-weight: 600;
+`;
+const Form = styled.form`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+const Item = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+`;
+const Label = styled.label`
+  margin-bottom: 5px;
+  font-size: 14px;
+`;
+const TextInput = styled.input`
+  border: none;
+  width: 250px;
+  height: 30px;
+  border-bottom: 1px solid var(--dark-ev3);
+  background: none;
+  padding-left: 10px;
+  color: var(--white-color);
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid var(--orange-color);
+  }
+  &::placeholder {
+    font-size: 12px;
+  }
+`;
+const Upload = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const UploadImg = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 20px;
+`;
+const UploadInput = styled.input`
+  display: none;
+`;
+const UploadLabel = styled.label`
+  & svg {
+    cursor: pointer;
+  }
+`;
+const UploadButton = styled.button`
+  border: none;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  padding: 5px;
+  background: var(--orange-color);
+  color: var(--white-color);
 `;
 
 export default function User() {
@@ -94,7 +164,7 @@ export default function User() {
       <UserContainer>
         <Show>
           <ShowTop>
-            <Image src="/images/men.png" alt="" />
+            <Image src="/images/men.png" alt="p" />
             <TopTitle>
               <Name>John Doe</Name>
               <UserTitle>Seller</UserTitle>
@@ -110,6 +180,8 @@ export default function User() {
               <FontAwesomeIcon icon={faCalendarDays} />
               <Username>02 Jan 2022</Username>
             </Info>
+            <BottomTitle>Account Details</BottomTitle>
+
             <Info>
               <FontAwesomeIcon icon={faPhone} />
               <Username>08012345678</Username>
@@ -124,7 +196,43 @@ export default function User() {
             </Info>
           </ShowBottom>
         </Show>
-        <Update></Update>
+        <Update>
+          <UpdateTitle>Edit</UpdateTitle>
+          <Form>
+            <Left>
+              <Item>
+                <Label>Full Name</Label>
+                <TextInput placeholder="John Doe" />
+              </Item>
+              <Item>
+                <Label>Email</Label>
+                <TextInput placeholder="John@mail.com" />
+              </Item>
+              <Item>
+                <Label>DOB</Label>
+                <TextInput placeholder="02 Jan 2022" />
+              </Item>
+              <Item>
+                <Label>Phone</Label>
+                <TextInput placeholder="09012345678" />
+              </Item>
+              <Item>
+                <Label>Address</Label>
+                <TextInput placeholder="address" />
+              </Item>
+            </Left>
+            <Right>
+              <Upload>
+                <UploadImg src="/images/men.png" alt="" />
+                <UploadLabel htmlFor="file">
+                  <FontAwesomeIcon icon={faUpload} />
+                </UploadLabel>
+                <UploadInput type="file" id="file" />
+              </Upload>
+              <UploadButton>Update</UploadButton>
+            </Right>
+          </Form>
+        </Update>
       </UserContainer>
     </Container>
   );

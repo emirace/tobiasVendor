@@ -283,6 +283,10 @@ function App() {
                   <Route path="/home" element={<ProductsScreen />} />
 
                   <Route path="/dashboard" element={<DashboardNewScreen />} />
+                  <Route
+                    path="/dashboard/:tab"
+                    element={<DashboardNewScreen />}
+                  />
                   {/* Admin Routes */}
                   <Route
                     path="/admin/dashboard"
