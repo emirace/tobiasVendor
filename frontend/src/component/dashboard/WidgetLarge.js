@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   flex: 2;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   padding: 20px;
   border-radius: 0.2rem;
 `;
@@ -48,26 +50,32 @@ const Button = styled.button`
   border: 0;
   border-radius: 0.2rem;
   &.Approved {
-    background: #112014;
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? '#112014' : '#d6f5dc'};
     color: var(--green-color);
   }
   &.Declined {
-    background: #211111;
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? '#211111' : '#f8d6d6'};
     color: var(--red-color);
   }
   &.Pending {
-    background: var(--dark-ev3);
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
     color: var(--orange-color);
   }
 `;
 
 export default function WidgetLarge() {
+  const { state } = useContext(Store);
+  const { mode } = state;
+
   const actionButton = (type) => {
     return <Button className={type}>{type}</Button>;
   };
 
   return (
-    <Container>
+    <Container mode={mode}>
       <Tittle>Latest transactions</Tittle>
       <Table>
         <Tr>

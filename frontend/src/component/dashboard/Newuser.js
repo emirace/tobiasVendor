@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   flex: 4;
@@ -24,9 +26,12 @@ const Label = styled.label`
 `;
 const Input = styled.input`
   background: none;
-  border: 1px solid var(--dark-ev3);
+  color: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
+  border: 1px solid
+    ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   border-radius: 0.2rem;
-  color: var(--white-color);
   height: 40px;
   padding: 10px;
   &:focus-visible {
@@ -48,7 +53,10 @@ const Gender = styled.div`
       position: relative;
       top: 11px;
       left: -1px;
-      background-color: var(--black-color);
+      background-color: ${(props) =>
+        props.mode === 'pagebodydark'
+          ? 'var(--black-color)'
+          : 'var(--white-color)'};
       border: 1px solid var(--orange-color);
     }
     &:checked::after {
@@ -84,33 +92,35 @@ const Button = styled.button`
 `;
 
 export default function Newuser() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   return (
     <Container>
       <Title>New User</Title>
       <Form>
         <Item>
           <Label>Username</Label>
-          <Input type="text" placeholder="John" />
+          <Input mode={mode} type="text" placeholder="John" />
         </Item>
         <Item>
           <Label>Full Name</Label>
-          <Input type="text" placeholder="John Doe" />
+          <Input mode={mode} type="text" placeholder="John Doe" />
         </Item>
         <Item>
           <Label>Email</Label>
-          <Input type="email" placeholder="John@example.com" />
+          <Input mode={mode} type="email" placeholder="John@example.com" />
         </Item>
         <Item>
           <Label>Password</Label>
-          <Input type="password" placeholder="password" />
+          <Input mode={mode} type="password" placeholder="password" />
         </Item>
         <Item>
           <Label>Phone</Label>
-          <Input type="text" placeholder="+123456789" />
+          <Input mode={mode} type="text" placeholder="+123456789" />
         </Item>
         <Item>
           <Label>Gender</Label>
-          <Gender>
+          <Gender mode={mode}>
             <Input type="radio" name="gender" id="male" value="male" />
             <Label htmlFor="male">Male</Label>
             <Input type="radio" name="gender" id="female" value="female" />
@@ -120,7 +130,9 @@ export default function Newuser() {
           </Gender>
         </Item>
       </Form>
-      <Button>Create</Button>
+      <Link to="/dashboard/newuser">
+        <Button>Create</Button>
+      </Link>
     </Container>
   );
 }

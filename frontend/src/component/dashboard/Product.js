@@ -1,8 +1,10 @@
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Chart from './Chart';
+import { Store } from '../../Store';
 
 const ProductC = styled.div`
   flex: 4;
@@ -32,7 +34,8 @@ const Bottom = styled.div`
   padding: 20px;
   margin: 20px;
   border-radius: 0.2rem;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
 const TopLeft = styled.div`
   flex: 1;
@@ -40,7 +43,8 @@ const TopLeft = styled.div`
 const TopRight = styled.div`
   flex: 1;
   padding: 20px;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   margin: 20px;
   border-radius: 0.2rem;
 `;
@@ -89,7 +93,9 @@ const Input = styled.input`
   margin-bottom: 10px;
   border: none;
   padding: 5px;
-  border-bottom: 1px solid var(--dark-ev3);
+  border-bottom: 1px solid
+    ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   background: none;
   &:focus-visible {
     outline: none;
@@ -98,6 +104,8 @@ const Input = styled.input`
 `;
 const Label = styled.label`
   margin-bottom: 10px;
+  margin-top: 15px;
+
   font-size: 14px;
 `;
 const Upload = styled.form`
@@ -128,6 +136,8 @@ const Gender = styled.div`
   align-items: center;
 
   & input {
+    width: auto;
+    margin: 0;
     &::after {
       width: 15px;
       height: 15px;
@@ -136,9 +146,12 @@ const Gender = styled.div`
       visibility: visible;
       border-radius: 15px;
       position: relative;
-      top: 11px;
+      top: -2px;
       left: -1px;
-      background-color: var(--black-color);
+      background-color: ${(props) =>
+        props.mode === 'pagebodydark'
+          ? 'var(--black-color)'
+          : 'var(--white-color)'};
       border: 1px solid var(--orange-color);
     }
     &:checked::after {
@@ -149,14 +162,17 @@ const Gender = styled.div`
       visibility: visible;
       border-radius: 15px;
       position: relative;
-      top: 11px;
+      top: -2px;
       left: -1px;
-      background-color: var(--orange-color);
+      background-color: ${(props) =>
+        props.mode === 'pagebodydark'
+          ? 'var(--black-color)'
+          : 'var(--white-color)'};
       border: 1px solid var(--orange-color);
     }
   }
   & label {
-    margin: 10px;
+    margin: 0 10px;
     font-size: 18px;
     font-weight: 300;
   }
@@ -170,6 +186,8 @@ const Item = styled.div`
 `;
 
 export default function Product() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   const productData = [
     {
       name: 'Page A',
@@ -194,13 +212,15 @@ export default function Product() {
     <ProductC>
       <ProductTitleCont>
         <Title>Product</Title>
-        <AddButton>Create</AddButton>
+        <Link to="/dashboard/newproduct">
+          <AddButton>Create</AddButton>
+        </Link>
       </ProductTitleCont>
       <Top>
         <TopLeft>
           <Chart title="Sales Performance" data={productData} dataKey="uv" />
         </TopLeft>
-        <TopRight>
+        <TopRight mode={mode}>
           <InfoTop>
             <Image src="/images/card1.png" alt="" />
             <Name>Slim Shirt</Name>
@@ -225,16 +245,23 @@ export default function Product() {
           </InfoBottom>
         </TopRight>
       </Top>
-      <Bottom>
+      <Bottom mode={mode}>
         <Form>
           <FormLeft>
             <Label>Product Name</Label>
             <Input type="text" placeholder="Product Name" />
             <Label>Active</Label>
-            <Gender>
+            <Gender mode={mode}>
               <Input type="radio" name="gender" id="yes" value="yes" />
               <Label htmlFor="yes">Yes</Label>
               <Input type="radio" name="gender" id="no" value="no" />
+              <Label htmlFor="no">No</Label>
+            </Gender>
+            <Label>Badge</Label>
+            <Gender mode={mode}>
+              <Input type="radio" name="badge" id="yes" value="yes" />
+              <Label htmlFor="yes">Yes</Label>
+              <Input type="radio" name="badge" id="no" value="no" />
               <Label htmlFor="no">No</Label>
             </Gender>
           </FormLeft>

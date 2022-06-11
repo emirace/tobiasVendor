@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import Chart from './Chart';
 import FeatureInfo from './FeatureInfo';
@@ -7,6 +6,11 @@ import WidgetSmall from './WidgetSmall';
 
 const Container = styled.div`
   flex: 4;
+`;
+const Widgets = styled.div`
+  display: flex;
+  gap: 20px;
+  margin: 0 20px;
 `;
 
 const HomeWidget = styled.div`
@@ -61,7 +65,12 @@ export default function Home() {
   ];
   return (
     <Container>
-      <FeatureInfo />
+      <Widgets>
+        <FeatureInfo />
+        <FeatureInfo />
+        <FeatureInfo />
+        <FeatureInfo />
+      </Widgets>
       <Chart title="Users Analytics" data={data} dataKey="uv" grid />
       <HomeWidget>
         <WidgetSmall />

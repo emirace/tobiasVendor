@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import {
   LineChart,
@@ -8,18 +8,22 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   margin: 20px;
   padding: 20px;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   border-radius: 0.2rem;
 `;
 const Title = styled.h3``;
 
 export default function Chart({ title, data, dataKey, grid }) {
+  const { state } = useContext(Store);
+  const { mode } = state;
   return (
-    <Container>
+    <Container mode={mode}>
       <Title>{title}</Title>
       <ResponsiveContainer width="100%" aspect={4 / 1}>
         <LineChart data={data}>
@@ -30,7 +34,13 @@ export default function Chart({ title, data, dataKey, grid }) {
             stroke="var(--orange-color)"
           />
           <Tooltip />
-          {grid && <CartesianGrid stroke="var(--dark-ev2)" />}
+          {grid && (
+            <CartesianGrid
+              stroke={
+                mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'
+              }
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
     </Container>

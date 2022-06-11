@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import {
   faCalendarDays,
@@ -9,6 +9,8 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   flex: 4;
@@ -35,13 +37,15 @@ const UserContainer = styled.div`
 const Show = styled.div`
   flex: 1;
   padding: 20px;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   border-radius: 0.2rem;
 `;
 const Update = styled.div`
   flex: 2;
   padding: 20px;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   border-radius: 0.2rem;
   margin-left: 20px;
 `;
@@ -114,10 +118,15 @@ const TextInput = styled.input`
   border: none;
   width: 250px;
   height: 30px;
-  border-bottom: 1px solid var(--dark-ev3);
+  border-bottom: 1px solid
+    ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   background: none;
   padding-left: 10px;
-  color: var(--white-color);
+  color: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   &:focus {
     outline: none;
     border-bottom: 1px solid var(--orange-color);
@@ -153,16 +162,63 @@ const UploadButton = styled.button`
   background: var(--orange-color);
   color: var(--white-color);
 `;
+const Gender = styled.div`
+  display: flex;
+  align-items: center;
+
+  & input {
+    width: auto;
+    margin: 0;
+    &::after {
+      width: 15px;
+      height: 15px;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border-radius: 15px;
+      position: relative;
+      top: -2px;
+      left: -1px;
+      background-color: ${(props) =>
+        props.mode === 'pagebodydark'
+          ? 'var(--black-color)'
+          : 'var(--white-color)'};
+      border: 1px solid var(--orange-color);
+    }
+    &:checked::after {
+      width: 15px;
+      height: 15px;
+      content: '';
+      display: inline-block;
+      visibility: visible;
+      border-radius: 15px;
+      position: relative;
+      top: -2px;
+      left: -1px;
+      background-color: var(--orange-color);
+      border: 1px solid var(--orange-color);
+    }
+  }
+  & label {
+    margin: 0 10px;
+    font-size: 18px;
+    font-weight: 300;
+  }
+`;
 
 export default function User() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   return (
     <Container>
       <TitleCont>
         <Title>Edit User</Title>
-        <AddButton>Create</AddButton>
+        <Link to="/dashboard/newuser">
+          <AddButton>Create</AddButton>
+        </Link>
       </TitleCont>
       <UserContainer>
-        <Show>
+        <Show mode={mode}>
           <ShowTop>
             <Image src="/images/men.png" alt="p" />
             <TopTitle>
@@ -196,29 +252,29 @@ export default function User() {
             </Info>
           </ShowBottom>
         </Show>
-        <Update>
+        <Update mode={mode}>
           <UpdateTitle>Edit</UpdateTitle>
           <Form>
             <Left>
               <Item>
                 <Label>Full Name</Label>
-                <TextInput placeholder="John Doe" />
+                <TextInput mode={mode} placeholder="John Doe" />
               </Item>
               <Item>
                 <Label>Email</Label>
-                <TextInput placeholder="John@mail.com" />
+                <TextInput mode={mode} placeholder="John@mail.com" />
               </Item>
               <Item>
                 <Label>DOB</Label>
-                <TextInput placeholder="02 Jan 2022" />
+                <TextInput mode={mode} placeholder="02 Jan 2022" />
               </Item>
               <Item>
                 <Label>Phone</Label>
-                <TextInput placeholder="09012345678" />
+                <TextInput mode={mode} placeholder="09012345678" />
               </Item>
               <Item>
                 <Label>Address</Label>
-                <TextInput placeholder="address" />
+                <TextInput mode={mode} placeholder="address" />
               </Item>
             </Left>
             <Right>
@@ -229,6 +285,28 @@ export default function User() {
                 </UploadLabel>
                 <UploadInput type="file" id="file" />
               </Upload>
+              <div>
+                <Label>Active</Label>
+                <Gender mode={mode}>
+                  <input
+                    checked
+                    type="radio"
+                    name="gender"
+                    id="yes"
+                    value="yes"
+                  />
+                  <Label htmlFor="yes">Yes</Label>
+                  <input type="radio" name="gender" id="no" value="no" />
+                  <Label htmlFor="no">No</Label>
+                </Gender>
+                <Label>Badge</Label>
+                <Gender mode={mode}>
+                  <input type="radio" name="badge" id="yes" value="yes" />
+                  <Label htmlFor="yes">Yes</Label>
+                  <input checked type="radio" name="badge" id="no" value="no" />
+                  <Label htmlFor="no">No</Label>
+                </Gender>
+              </div>
               <UploadButton>Update</UploadButton>
             </Right>
           </Form>

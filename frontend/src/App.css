@@ -21,6 +21,10 @@ body {
   --dark-ev2: #2c2824;
   --dark-ev3: #231d16;
   --dark-ev4: #2a2117;
+  --light-ev1: #f3f3f3;
+  --light-ev2: #ececec;
+  --light-ev3: #e5e5e5;
+  --light-ev4: #dedede;
 }
 .pagebodydark {
   background: var(--black-color);

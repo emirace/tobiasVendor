@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Home from '../component/dashboard/Home';
+import NewProduct from '../component/dashboard/NewProduct';
 import Newuser from '../component/dashboard/Newuser';
 import Product from '../component/dashboard/Product';
 import ProductList from '../component/dashboard/ProductList';
@@ -35,6 +36,8 @@ export default function DashboardNewScreen() {
         return <User />;
       case 'newuser':
         return <Newuser />;
+      case 'newproduct':
+        return <NewProduct />;
       case 'productlist':
         return <ProductList />;
       case 'product':
@@ -46,7 +49,7 @@ export default function DashboardNewScreen() {
   return (
     <Container>
       {console.log('tab', tab)}
-      <Sidebar setDisplayTab={setDisplayTab} />
+      <Sidebar current={tab} />
       {tabSwitch(displayTab)}
     </Container>
   );

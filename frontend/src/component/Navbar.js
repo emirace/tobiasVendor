@@ -417,7 +417,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                       <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
                     </li>
                     <li>
-                      <Link to="/account">Settings</Link>
+                      <Link to="/dashboard">Dashboard</Link>
                     </li>
                     <li onClick={() => signoutHandler()}>Log Out</li>
                   </ul>

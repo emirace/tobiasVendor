@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBasketShopping,
@@ -14,11 +14,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   flex: 1;
   height: calc(100vh-168px);
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
@@ -43,7 +45,8 @@ const ListItem = styled.li`
   border-radius: 0.2rem;
   &.active,
   &:hover {
-    background: var(--dark-ev2);
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
   }
   & svg {
     margin-right: 5px;
@@ -51,26 +54,34 @@ const ListItem = styled.li`
   }
 `;
 
-export default function Sidebar({ setDisplayTab }) {
+export default function Sidebar({ current }) {
+  const { state } = useContext(Store);
+  const { mode } = state;
   return (
-    <Container>
+    <Container mode={mode}>
       <Wrapper>
         <Menu>
           <Title>Dashboard</Title>
           <List>
             <Link to="/dashboard/home">
               <ListItem
-                className="active"
-                onClick={() => setDisplayTab('home')}
+                mode={mode}
+                className={current === 'home' ? 'active' : ''}
               >
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
             </Link>
-            <ListItem>
+            <ListItem
+              mode={mode}
+              className={current === 'analytics' ? 'active' : ''}
+            >
               <FontAwesomeIcon icon={faChartLine} /> Analytics
             </ListItem>
-            <ListItem>
-              <FontAwesomeIcon icon={faChartBar} /> Sales
+            <ListItem
+              mode={mode}
+              className={current === 'sales' ? 'active' : ''}
+            >
+              <FontAwesomeIcon icon={faChartBar} /> Ordera
             </ListItem>
           </List>
         </Menu>
@@ -78,19 +89,31 @@ export default function Sidebar({ setDisplayTab }) {
           <Title>Quick Menu</Title>
           <List>
             <Link to="/dashboard/userlist">
-              <ListItem className="">
+              <ListItem
+                mode={mode}
+                className={current === 'userlist' ? 'active' : ''}
+              >
                 <FontAwesomeIcon icon={faUser} /> Users
               </ListItem>
             </Link>
             <Link to="/dashboard/productlist">
-              <ListItem>
+              <ListItem
+                mode={mode}
+                className={current === 'productlist' ? 'active' : ''}
+              >
                 <FontAwesomeIcon icon={faBasketShopping} /> Products
               </ListItem>
             </Link>
-            <ListItem>
+            <ListItem
+              mode={mode}
+              className={current === 'transactions' ? 'active' : ''}
+            >
               <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
             </ListItem>
-            <ListItem>
+            <ListItem
+              mode={mode}
+              className={current === 'report' ? 'active' : ''}
+            >
               <FontAwesomeIcon icon={faChartColumn} /> Reports
             </ListItem>
           </List>
@@ -98,13 +121,24 @@ export default function Sidebar({ setDisplayTab }) {
         <Menu>
           <Title>Notification</Title>
           <List>
-            <ListItem className="">
-              <FontAwesomeIcon icon={faMessage} /> Messages
-            </ListItem>
-            <ListItem>
+            <Link to="/messages">
+              <ListItem
+                className={current === 'message' ? 'active' : ''}
+                mode={mode}
+              >
+                <FontAwesomeIcon icon={faMessage} /> Messages
+              </ListItem>
+            </Link>
+            <ListItem
+              mode={mode}
+              className={current === 'support' ? 'active' : ''}
+            >
               <FontAwesomeIcon icon={faComment} /> Support
             </ListItem>
-            <ListItem>
+            <ListItem
+              mode={mode}
+              className={current === 'notification' ? 'active' : ''}
+            >
               <FontAwesomeIcon icon={faBell} /> Notification
             </ListItem>
           </List>

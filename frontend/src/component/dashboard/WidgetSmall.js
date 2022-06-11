@@ -1,11 +1,13 @@
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   flex: 1;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   padding: 20px;
   margin-right: 20px;
   border-radius: 0.2rem;
@@ -56,8 +58,10 @@ const Button = styled.button`
 `;
 
 export default function WidgetSmall() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   return (
-    <Container>
+    <Container mode={mode}>
       <Tittle>New Join Members</Tittle>
       <List>
         <ListItem>

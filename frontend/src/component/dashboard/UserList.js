@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { DataGrid } from '@mui/x-data-grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Store } from '../../Store';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   flex: 4;
-  background: var(--dark-ev1);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   margin: 0 20px;
   border-radius: 0.2rem;
+`;
+const Title = styled.h1`
+  padding: 20px 20px 0 20px;
 `;
 const User = styled.div`
   display: flex;
@@ -25,7 +31,8 @@ const Edit = styled.button`
   border: none;
   border-radius: 0.2rem;
   padding: 5px 10px;
-  background: var(--dark-ev3);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
   color: var(--orange-color);
   cursor: pointer;
   margin-right: 10px;
@@ -38,6 +45,8 @@ const ActionSec = styled.div`
 `;
 
 export default function UserList() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     {
@@ -71,7 +80,9 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <ActionSec>
-            <Edit>Edit</Edit>
+            <Link to="/dashboard/user">
+              <Edit mode={mode}>Edit</Edit>
+            </Link>
             <FontAwesomeIcon icon={faTrash} />
           </ActionSec>
         );
@@ -107,10 +118,15 @@ export default function UserList() {
   ];
 
   return (
-    <Container>
+    <Container mode={mode}>
+      <Title>User List</Title>
       <DataGrid
         sx={{
-          color: '#fff',
+          color: `${
+            mode === 'pagebodydark'
+              ? 'var(--white-color)'
+              : 'var(--black-color)'
+          }`,
           border: 'none',
           '& .MuiDataGrid-columnHeaders': {
             border: 'none',
@@ -122,13 +138,19 @@ export default function UserList() {
             color: 'var(--orange-color) !important',
           },
           '& .Mui-selected': {
-            'background-color': 'var(--dark-ev2) !important',
+            'background-color': `${
+              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+            } !important`,
           },
           '& .MuiDataGrid-row:hover': {
-            'background-color': 'var(--dark-ev2) !important',
+            'background-color': `${
+              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+            } !important`,
           },
           '& .Mui-selected:hover': {
-            'background-color': 'var(--dark-ev3) !important',
+            'background-color': `${
+              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+            } !important`,
           },
 
           '& .MuiDataGrid-cell:focus': {
@@ -138,7 +160,9 @@ export default function UserList() {
             outline: 'solid var(--orange-color) 1px  !important',
           },
           '& .MuiCheckbox-root:hover': {
-            'background-color': 'var(--dark-ev3)  !important',
+            'background-color': `${
+              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+            }   !important`,
           },
           '& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within':
             {
