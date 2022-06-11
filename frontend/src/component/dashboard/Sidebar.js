@@ -81,7 +81,7 @@ export default function Sidebar({ current }) {
               mode={mode}
               className={current === 'sales' ? 'active' : ''}
             >
-              <FontAwesomeIcon icon={faChartBar} /> Ordera
+              <FontAwesomeIcon icon={faChartBar} /> Orders
             </ListItem>
           </List>
         </Menu>

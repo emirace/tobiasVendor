@@ -66,10 +66,10 @@ export default function Home() {
   return (
     <Container>
       <Widgets>
-        <FeatureInfo />
-        <FeatureInfo />
-        <FeatureInfo />
-        <FeatureInfo />
+        <FeatureInfo type="user" />
+        <FeatureInfo type="order" />
+        <FeatureInfo type="earning" />
+        <FeatureInfo type="balance" />
       </Widgets>
       <Chart title="Users Analytics" data={data} dataKey="uv" grid />
       <HomeWidget>

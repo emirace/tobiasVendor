@@ -14,8 +14,87 @@ import Product from '../component/Product';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
-
 import '../style/SearchScreen.css';
+import styled from 'styled-components';
+
+const Container = styled.div`
+  display: flex;
+  margin-top: 10px;
+`;
+const Left = styled.div`
+  flex: 1;
+  height: calc(100vh-168px);
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+  position: sticky;
+  border-radius: 0.2rem;
+  top: 168px;
+`;
+const Right = styled.div`
+  flex: 4;
+  margin: 0 20px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+`;
+
+const Wrapper = styled.div`
+  padding: 20px;
+`;
+const Menu = styled.div`
+  margin-bottom: 10px;
+`;
+const Title = styled.h3`
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+  &::after {
+    content: ' ';
+    width: 8px;
+    height: 8px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    transform: rotate(-45deg) translateY(-50%);
+    position: absolute;
+    top: 50%;
+    right: 20px;
+  }
+  &.activate::after {
+    content: '';
+    transform: rotate(135deg);
+  }
+`;
+
+const List = styled.ul`
+  padding: 5px;
+  height: 0;
+  overflow: hidden;
+  transition: 0.5s;
+  &.activate {
+    height: 250px;
+  }
+`;
+const ListItem = styled.li`
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border-radius: 0.2rem;
+  &.active,
+  &:hover {
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
+  }
+  & svg {
+    margin-right: 5px;
+    max-width: 14px;
+  }
+`;
+const Color = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -81,6 +160,7 @@ export default function SearchSceen() {
   const price = sp.get('price') || 'all';
   const order = sp.get('order') || 'newest';
   const page = sp.get('page') || 1;
+  const color = sp.get('color') || 'all';
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
@@ -125,7 +205,8 @@ export default function SearchSceen() {
     const filterRating = filter.rating || rating;
     const filterPrice = filter.price || price;
     const filterOrder = filter.order || order;
-    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}`;
+    const filterColor = filter.color || color;
+    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&color=${filterColor}`;
   };
 
   const [filterSidebar, setFilterSidebar] = useState(false);
@@ -133,6 +214,7 @@ export default function SearchSceen() {
   const [cateClass, setCateClass] = useState(true);
   const [priceClass, setPriceClass] = useState(true);
   const [reviewClass, setReviewClass] = useState(true);
+  const [colorClass, setColorClass] = useState(true);
   const toggleCollapse = (type) => {
     switch (type) {
       case 'category':
@@ -143,6 +225,9 @@ export default function SearchSceen() {
         break;
       case 'review':
         setReviewClass(!reviewClass);
+        break;
+      case 'color':
+        setColorClass(!colorClass);
         break;
 
       default:
@@ -159,7 +244,261 @@ export default function SearchSceen() {
       <Helmet>
         <title>Search Product</title>
       </Helmet>
-      <div className="container">
+      <Container>
+        <Left mode={mode}>
+          <Wrapper>
+            <Menu>
+              <Title onClick={() => toggleCollapse('category')}>
+                Categories
+              </Title>
+              <List className={cateClass ? 'activate' : ''}>
+                <Link
+                  className={'all' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'all' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'womenswear' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'womenswear' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Womenswear
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'menswear' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'menswear' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Menswear
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'kids' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'kids' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Kids
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'curve+plus' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'curve+plus' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Curve+Plus
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'tops' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'tops' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Tops
+                  </ListItem>
+                </Link>
+                <Link
+                  className={'outerwear' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'outerwear' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    Outerwear
+                  </ListItem>
+                </Link>
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse('price')}>Prices</Title>
+              <List className={priceClass ? 'activate' : ''}>
+                <Link
+                  className={'all' === price ? 'text-bold' : ''}
+                  to={getFilterUrl({ price: 'all' })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {prices.map((p) => (
+                  <div key={p.value}>
+                    <Link
+                      className={p.value === price ? 'text-bold' : ''}
+                      to={getFilterUrl({ price: p.value })}
+                    >
+                      <ListItem mode={mode}>
+                        <FontAwesomeIcon icon={faCircleDot} />
+                        {p.name}
+                      </ListItem>
+                    </Link>
+                  </div>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title
+                className={reviewClass ? 'activate' : ''}
+                onClick={() => toggleCollapse('review')}
+              >
+                Reviews
+              </Title>
+              <List className={reviewClass ? 'activate' : ''}>
+                {ratings.map((r) => (
+                  <div key={r.name}>
+                    <Link
+                      className={
+                        `${r.rating}` === `${rating}` ? 'text-bold' : ''
+                      }
+                      to={getFilterUrl({ rating: r.rating })}
+                    >
+                      <ListItem mode={mode}>
+                        <Rating caption={' & up'} rating={r.rating}></Rating>
+                      </ListItem>
+                    </Link>
+                  </div>
+                ))}
+                <Link
+                  className={rating === 'all' ? 'text-bold' : ''}
+                  to={getFilterUrl({ rating: 'all' })}
+                >
+                  <ListItem mode={mode}>
+                    <Rating caption={' & up'} rating={0}></Rating>
+                  </ListItem>
+                </Link>
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse('color')}>Color</Title>
+              <List className={colorClass ? 'activate' : ''}>
+                <Link
+                  className={'all' === color ? 'text-bold' : ''}
+                  to={getFilterUrl({ color: 'all' })}
+                >
+                  <ListItem mode={mode}>All</ListItem>
+                </Link>
+                <Color>
+                  <Link
+                    className={'all' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'black' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'black',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'womenswear' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'red' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'red',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'menswear' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'green' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'green',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'kids' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'blue' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'blue',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'curve+plus' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'pink' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'pink',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'tops' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'orange' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'orange',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    className={'outerwear' === color ? 'text-bold' : ''}
+                    to={getFilterUrl({ color: 'purple' })}
+                  >
+                    <ListItem mode={mode}>
+                      <div
+                        style={{
+                          background: 'purple',
+                          width: '30px',
+                          height: '20px',
+                          borderRadius: '0.2rem',
+                        }}
+                      ></div>
+                    </ListItem>
+                  </Link>
+                </Color>
+              </List>
+            </Menu>
+          </Wrapper>
+        </Left>
+        <Right mode={mode}></Right>
+      </Container>
+      {/* <div className="container">
         <Row>
           <Col md={3} className="d-none d-lg-block">
             <div
@@ -477,7 +816,7 @@ export default function SearchSceen() {
             )}
           </Col>
         </Row>
-      </div>
+      </div> */}
     </div>
   );
 }
