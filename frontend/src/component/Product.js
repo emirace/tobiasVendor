@@ -156,19 +156,19 @@ export default function Product(props) {
         </Link>
         <ul className="product_hover">
           <li>
-            <Link to="#" onClick={() => setShowModel(!showModel)}>
+            <span onClick={() => setShowModel(!showModel)}>
               <i className="fa fa-arrows-alt"></i>
-            </Link>
+            </span>
           </li>
           <li>
-            <Link to="#" onClick={toggleLikes}>
+            <span onClick={toggleLikes}>
               <i className="fa fa-heart"></i>
-            </Link>
+            </span>
           </li>
           <li>
-            <Link to="#" onClick={() => addToCartHandler(product)}>
+            <span onClick={() => addToCartHandler(product)}>
               <i className="fa fa-shopping-bag"></i>
-            </Link>
+            </span>
           </li>
         </ul>
         {product.sold && (

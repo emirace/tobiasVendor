@@ -96,3 +96,10 @@
 .search_result {
   align-items: center;
 }
+
+.color_black {
+  color: var(--black-color);
+}
+.color_black:focus {
+  color: var(--black-color);
+}

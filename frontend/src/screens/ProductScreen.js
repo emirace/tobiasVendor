@@ -114,6 +114,8 @@ const IconContainer = styled.div`
 `;
 
 export default function ProductScreen() {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart, userInfo, mode } = state;
   let reviewRef = useRef();
   const navigate = useNavigate();
 
@@ -163,8 +165,7 @@ export default function ProductScreen() {
     };
     fetchComment();
   }, [product]);
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo } = state;
+
   const [selectedImage, setSelectedImage] = useState('');
   const [sliderIndex, setSliderIndex] = useState(0);
   const [showModel, setShowModel] = useState(false);
@@ -411,6 +412,9 @@ export default function ProductScreen() {
                         as="textarea"
                         placeholder="Leave a comment here"
                         value={comment2}
+                        className={` ${
+                          mode === 'pagebodydark' ? '' : 'color_black'
+                        }`}
                         onChange={(e) => setComment2(e.target.value)}
                       />
                     </FloatingLabel>
@@ -478,6 +482,9 @@ export default function ProductScreen() {
                       className="my-3"
                     >
                       <Form.Control
+                        className={` ${
+                          mode === 'pagebodydark' ? '' : 'color_black'
+                        }`}
                         as="textarea"
                         placeholder="Leave a comment here"
                         value={comment}

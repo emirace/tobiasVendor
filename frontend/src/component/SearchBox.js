@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
+import { Store } from '../Store';
 
 export default function SearchBox() {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const { state } = useContext(Store);
+  const { mode } = state;
   const submitHandler = (e) => {
     e.preventDefault();
     navigate(query ? `/search/?query=${query}` : '/search');
@@ -31,8 +34,10 @@ export default function SearchBox() {
           placeholder="Search anything..."
           aria-label="Search Products..."
           aria-describedby="button-search"
-          className=" bg-transparent searchbtn border-0 rounded-pill"
-        ></Form.Control>
+          className={`bg-transparent searchbtn border-0 rounded-pill ${
+            mode == 'pagebodydark' ? '' : 'color_black'
+          }`}
+        />
       </div>
     </Form>
   );

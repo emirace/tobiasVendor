@@ -227,15 +227,15 @@ a {
   margin-right: 0;
 }
 
-.product_hover li:hover a {
+.product_hover li:hover span {
   background-color: var(--orange-color);
 }
-.product_hover li:hover a i {
+.product_hover li:hover span i {
   color: #fff;
   transform: rotate(360deg);
 }
 
-.product_hover li a {
+.product_hover li span {
   font-size: 18px;
   color: #000;
   display: block;
@@ -248,7 +248,7 @@ a {
   transition: all 0.5s;
 }
 
-.product_hover li a i {
+.product_hover li span i {
   position: relative;
   display: inline-block;
   transform: rotate(0);
