@@ -287,7 +287,16 @@ function App() {
                     path="/dashboard/:tab"
                     element={<DashboardNewScreen />}
                   />
+
                   {/* Admin Routes */}
+                  <Route
+                    path="/dashboard/:tab/:id"
+                    element={
+                      <AdminRoute>
+                        <DashboardNewScreen />
+                      </AdminRoute>
+                    }
+                  />
                   <Route
                     path="/admin/dashboard"
                     element={

@@ -6,6 +6,8 @@ import expressAsyncHandler from 'express-async-handler';
 
 const userRouter = express.Router();
 
+// get all seller, which is all users now
+
 userRouter.get(
   '/top-sellers',
   expressAsyncHandler(async (req, res) => {
@@ -16,6 +18,8 @@ userRouter.get(
   })
 );
 
+// get all users admin
+
 userRouter.get(
   '/',
   isAuth,
@@ -25,6 +29,8 @@ userRouter.get(
     res.send(users);
   })
 );
+
+// get login users
 
 userRouter.put(
   '/profile',

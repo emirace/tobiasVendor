@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   faCalendarDays,
@@ -9,8 +9,9 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Store } from '../../Store';
+import axios from 'axios';
 
 const Container = styled.div`
   flex: 4;
@@ -208,9 +209,24 @@ const Gender = styled.div`
 
 export default function User() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+  const params = useParams();
+  const { id } = params;
+  const [user, setUser] = useState([]);
+
+  useEffect(() => {
+    if (id) {
+      const fetchUser = async () => {
+        const { data } = await axios.get(`/api/users/seller/${id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+
+        setUser(data);
+      };
+      fetchUser();
+    }
+  }, [id, userInfo]);
   return (
-    <Container>
       <TitleCont>
         <Title>Edit User</Title>
         <Link to="/dashboard/newuser">
@@ -220,7 +236,7 @@ export default function User() {
       <UserContainer>
         <Show mode={mode}>
           <ShowTop>
-            <Image src="/images/men.png" alt="p" />
+            <Image src={user.image} alt="p" />
             <TopTitle>
               <Name>John Doe</Name>
               <UserTitle>Seller</UserTitle>

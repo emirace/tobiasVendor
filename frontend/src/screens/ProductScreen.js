@@ -375,7 +375,7 @@ export default function ProductScreen() {
         });
       }
     } catch (err) {
-      toast.error(getError(err));
+      console.log(getError(err));
     }
   };
 
