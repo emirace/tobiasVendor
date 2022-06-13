@@ -9,8 +9,10 @@ const User = styled.div`
   padding: 15px 25px;
   display: flex;
   align-items: center;
+  margin: 10px 0;
   &.active {
-    border-bottom: 2px solid var(--orange-color);
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   }
 `;
 const ProfileImg = styled.img.attrs((props) => ({
@@ -52,9 +54,9 @@ const Badge = styled.div`
   background: green;
 `;
 
-export default function Conversation({ conversation, status }) {
+export default function Conversation({ conversation, status, currentChat }) {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, mode } = state;
   const [user, setUser] = useState({});
 
   useEffect(() => {
@@ -74,7 +76,10 @@ export default function Conversation({ conversation, status }) {
   }, [conversation, userInfo]);
   return (
     <>
-      <User className="active">
+      <User
+        mode={mode}
+        className={currentChat === conversation._id ? 'active' : ''}
+      >
         <ProfileImg src={user.image} />
         <ProfileDetail>
           <Name>{user.name}</Name>

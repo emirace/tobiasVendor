@@ -15,6 +15,22 @@ import LoadingBox from '../component/LoadingBox';
 import styled from 'styled-components';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
+const Container = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+const Main = styled.div`
+  padding: 20px 5vw 0 5vw;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+`;
+const LeftC = styled.div`
+  flex: 8;
+`;
+const RightC = styled.div`
+  flex: 4;
+`;
+
 const SumCont = styled.div`
   display: flex;
 `;
@@ -24,6 +40,12 @@ const Left = styled.div`
 `;
 const Right = styled.div`
   flex: 1;
+`;
+const Section = styled.div`
+  margin: 20px 0;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 `;
 
 const reducer = (state, action) => {
@@ -50,7 +72,7 @@ const reducer = (state, action) => {
 
 export default function PlaceOrderScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo } = state;
+  const { cart, userInfo, mode } = state;
   const navigate = useNavigate();
   const [{ loading, loadingPay, order, successPay }, dispatch] = useReducer(
     reducer,
@@ -117,6 +139,35 @@ export default function PlaceOrderScreen() {
       toast.error(getError(err));
     }
   };
+  const saveOrderHandler = async () => {
+    try {
+      dispatch({ type: 'CREATE_REQUEST' });
+      const { data } = await axios.post(
+        '/api/orders',
+        {
+          orderItems: cart.cartItems,
+          shippingAddress: cart.shippingAddress,
+          paymentMethod: cart.paymentMethod,
+          itemsPrice: cart.itemsPrice,
+          shippingPrice: cart.shippingPrice,
+          taxPrice: cart.taxPrice,
+          totalPrice: cart.totalPrice,
+        },
+        userInfo
+          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+          : {}
+      );
+      console.log('');
+      dispatch({ type: 'CREATE_SUCCESS', payload: data });
+      toast.success('Order is saved');
+      localStorage.removeItem('cartItems');
+      ctxDispatch({ type: 'CART_CLEAR' });
+      navigate(`/order/${data.order._id}`);
+    } catch (err) {
+      dispatch({ type: 'CREATE_FAIL' });
+      toast.error(getError(err));
+    }
+  };
 
   function createOrder(data, actions) {
     return actions.order
@@ -166,21 +217,19 @@ export default function PlaceOrderScreen() {
   }
 
   return (
-    <div className="container">
+    <Main mode={mode}>
       <Helmet>
         <title>Preview Order</title>
       </Helmet>
       <h1 className="my-3">Preview Order</h1>
-      <Row>
-        <Col md={8}>
-          <Card className="mb-3">
+      <Container>
+        <LeftC>
+          <Section mode={mode}>
             <Card.Body>
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
                 <strong>Name: </strong>
-                {cart.shippingAddress.firstname +
-                  ' ' +
-                  cart.shippingAddress.lastname}
+                {cart.shippingAddress.fullName || cart.useraddress.fullName}
                 <br />
                 <strong>Address: </strong>
                 {cart.shippingAddress.address},{cart.shippingAddress.city},{' '}
@@ -190,8 +239,8 @@ export default function PlaceOrderScreen() {
                 Edit
               </Link>
             </Card.Body>
-          </Card>
-          <Card className="mb-3">
+          </Section>
+          <Section mode={mode}>
             <Card.Body>
               <Card.Title>Payment</Card.Title>
               <Card.Text>
@@ -202,8 +251,8 @@ export default function PlaceOrderScreen() {
                 Edit
               </Link>
             </Card.Body>
-          </Card>
-          <Card className="mb-3">
+          </Section>
+          <Section mode={mode}>
             <Card.Body>
               <Card.Title>Items</Card.Title>
               <ListGroup variant="flush">
@@ -230,10 +279,10 @@ export default function PlaceOrderScreen() {
                 Edit
               </Link>
             </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card>
+          </Section>
+        </LeftC>
+        <RightC>
+          <Section mode={mode}>
             <Card.Body>
               <Card.Title>Oeder Summary</Card.Title>
               <ListGroup variant="flush">
@@ -298,19 +347,19 @@ export default function PlaceOrderScreen() {
                     <button
                       className="search-btn1"
                       type="button"
-                      onClick={placeOrderHandler}
+                      onClick={saveOrderHandler}
                       disabled={cart.cartItems.length === 0}
                     >
-                      Place Order
+                      Save Order
                     </button>
                     {loading && <LoadingBox></LoadingBox>}
                   </div>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+          </Section>
+        </RightC>
+      </Container>
+    </Main>
   );
 }

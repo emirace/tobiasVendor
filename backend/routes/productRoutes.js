@@ -12,6 +12,8 @@ import expressAsyncHandler from 'express-async-handler';
 
 const productRouter = express.Router();
 
+// get all product
+
 productRouter.get('/', async (req, res) => {
   const products = await Product.find();
   res.send(products);
@@ -245,6 +247,8 @@ productRouter.put(
 
 const PAGE_SIZE = 10;
 
+// get all Product with pagination
+
 productRouter.get(
   '/admin',
   isAuth,
@@ -267,6 +271,8 @@ productRouter.get(
     });
   })
 );
+
+// get all Product with pagination for a user
 
 productRouter.get(
   '/seller/:id',

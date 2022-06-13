@@ -315,11 +315,11 @@ export default function SellerScreen() {
   const addConversation = async (id) => {
     try {
       const { data } = await axios.post(
-        `/api/conversations/`,
+        `/api/conversations`,
         { recieverId: id },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      navigate('/messages');
+      navigate(`/messages?conversation=${sellerId}`);
     } catch (err) {
       console.log(err, err.message);
     }

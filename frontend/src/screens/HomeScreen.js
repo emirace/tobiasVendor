@@ -138,7 +138,7 @@ export default function ProductsScreen() {
   return (
     <div>
       <Helmet>
-        <title>Tobias</title>
+        <title>Repeddle</title>
       </Helmet>
       <Row>
         <Col position-relative>

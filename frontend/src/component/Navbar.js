@@ -376,7 +376,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
       </Wrapper>
       <Wrapper2>
         <Logo>
-          <Link to="/">Tobias</Link>
+          <Link to="/">Repeddle</Link>
         </Logo>
 
         <Search>

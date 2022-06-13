@@ -888,10 +888,13 @@ a.font13 {
 .cart_item_detail {
   display: flex;
   flex-direction: column;
-  margin-left: 5px;
+  margin-left: 20px;
   text-transform: capitalize;
 }
 
+.cart_item_detail span {
+  font-size: 12px;
+}
 .numberimput {
   width: 200px;
 }

@@ -207,7 +207,7 @@ export default function Footer() {
       </div>
       <div className="footer_container">
         <div className="footer_left">
-          <h1 className="footer_logo">TOBIAS</h1>
+          <h1 className="footer_logo">REPEDDLE</h1>
           <p className="footer_desc">
             The href attribute requires a valid value to be accessible. Provide
             a valid, navigable address as the href value. If you cannot provide
@@ -267,7 +267,7 @@ export default function Footer() {
             <i className="fa fa-phone"></i> +1 234 56 78
           </div>
           <div className="footer_contacts">
-            <i className="fa fa-envelope"></i> support@tobias.com
+            <i className="fa fa-envelope"></i> support@repeddle.com
           </div>
           <img
             src="https://i.ibb.co/Qfvn4z6/payment.png"

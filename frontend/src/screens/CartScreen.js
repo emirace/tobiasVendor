@@ -145,6 +145,37 @@ export default function CartScreen() {
   const removeItemHandler = (item) => {
     ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item });
   };
+
+  const addToCartHandler = async (item) => {
+    const existItem = cartItems.find((x) => x._id === item._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${item._id}`);
+    if (data.countInStock < quantity) {
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Sorry. Product is out of stock',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+      return;
+    }
+
+    ctxDispatch({
+      type: 'CART_ADD_ITEM',
+      payload: { ...item, quantity },
+    });
+    ctxDispatch({
+      type: 'SHOW_NOTIFICAATION',
+      payload: {
+        text: 'Item added to Cart',
+        showStatus: true,
+        buttonText: 'Checkout',
+      },
+    });
+  };
+
   const checkoutHandler = () => {
     if (cartItems.length === 0) {
       toast.error('cart is empty');
@@ -186,6 +217,7 @@ export default function CartScreen() {
                           <Link to={`/product/${item.slug}`}>{item.name}</Link>
 
                           <div> ${item.price}</div>
+                          <span>Size: {item.size}</span>
                         </div>
                       </div>
                       <div className="col-3 d-flex align-items-center">
@@ -226,43 +258,46 @@ export default function CartScreen() {
           {userInfo && (
             <Bottom mode={mode}>
               <h1>Save Item</h1>
-              {cartItems.length === 0 ? (
-                <MessageBox>
-                  Cart is empty. <Link to="/">Go Shopping</Link>
-                </MessageBox>
+              {user.saved && user.saved.length === 0 ? (
+                <MessageBox>No save item</MessageBox>
               ) : (
                 <>
                   {user.saved &&
-                    user.saved.map((product, index) => (
-                      <Item key={index}>
-                        <Row className="align-items-center justify-content-between">
-                          <div className="col-5 d-flex  align-items-center">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="img-fluid rounded img-thumbnail"
-                            ></img>{' '}
-                            <div className="cart_item_detail">
-                              <Link to={`/product/${product.slug}`}>
-                                {product.name}
-                              </Link>
+                    user.saved.map((product, index) => {
+                      const existItem = cartItems.find(
+                        (x) => x._id === product._id
+                      );
+                      return (
+                        !existItem && (
+                          <Item key={index}>
+                            <Row className="align-items-center justify-content-between">
+                              <div className="col-5 d-flex  align-items-center">
+                                <img
+                                  src={product.image}
+                                  alt={product.name}
+                                  className="img-fluid rounded img-thumbnail"
+                                ></img>{' '}
+                                <div className="cart_item_detail">
+                                  <Link to={`/product/${product.slug}`}>
+                                    {product.name}
+                                  </Link>
 
-                              <div> ${product.price}</div>
-                            </div>
-                          </div>
-                          <div className="col-2">
-                            <Button
-                              onClick={() =>
-                                updateCartHandler(product, product.quantity + 1)
-                              }
-                              variant="none"
-                            >
-                              Add to Cart
-                            </Button>
-                          </div>
-                        </Row>
-                      </Item>
-                    ))}
+                                  <div> ${product.price}</div>
+                                </div>
+                              </div>
+                              <div className="col-2">
+                                <Button
+                                  onClick={() => addToCartHandler(product)}
+                                  variant="none"
+                                >
+                                  Add to Cart
+                                </Button>
+                              </div>
+                            </Row>
+                          </Item>
+                        )
+                      );
+                    })}
                 </>
               )}
             </Bottom>

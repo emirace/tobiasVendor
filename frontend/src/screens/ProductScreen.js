@@ -528,7 +528,7 @@ export default function ProductScreen() {
         { recieverId: id },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      navigate('/messages');
+      navigate(`/messages?conversation=${product.seller._id}`);
     } catch (err) {
       console.log(err, err.message);
     }
@@ -1133,7 +1133,7 @@ export default function ProductScreen() {
             Reviews
           </TabItem>
         </Tab>
-        {switchTab(displayTab)}
+        <div className="container">{switchTab(displayTab)}</div>
       </section>
       {/* <Row>
         <Col md={6}>

@@ -1,10 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import styled from 'styled-components';
 import { DataGrid } from '@mui/x-data-grid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '../../Store';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { getError } from '../../utils';
 
 const ProductLists = styled.div`
   flex: 4;
@@ -50,9 +52,49 @@ const Stock = styled.div`
   }
 `;
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'USERS_REQUEST':
+      return { ...state, loading: true };
+    case 'USERS_SUCCESS':
+      return {
+        ...state,
+        products: action.payload,
+        loading: false,
+      };
+    case 'USERS_FAIL':
+      return { ...state, loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
 export default function ProductList() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+
+  const [{ loading, products, error }, dispatch] = useReducer(reducer, {
+    loading: true,
+    products: [],
+    error: '',
+  });
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        dispatch({ type: 'USERS_FETCH' });
+        const { data } = await axios.get('/api/products/admin', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: 'USERS_SUCCESS', payload: data.products });
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchAllUsers();
+  }, [userInfo]);
+
   const columns = [
     { field: 'id', headerName: 'ID', width: 100 },
     {
@@ -104,30 +146,30 @@ export default function ProductList() {
       },
     },
   ];
+  const rows = products.map((p) => ({
+    id: p._id,
+    name: p.name,
+    image: p.image,
+    stock: p.countInStock,
+    price: p.price,
+  }));
 
-  const rows = [
-    {
-      id: 1,
-      name: 'John Doe',
-      image: '/images/men.png',
-      stock: 10,
-      price: '$242.32',
-    },
-    {
-      id: 2,
-      name: 'John Doe',
-      image: '/images/men.png',
-      stock: 0,
-      price: '$242.32',
-    },
-    {
-      id: 3,
-      name: 'John Doe',
-      image: '/images/men.png',
-      stock: 10,
-      price: '$242.32',
-    },
-  ];
+  const deleteHandler = async (product) => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        dispatch({ type: 'DELETE_REQUEST' });
+        await axios.delete(`/api/products/${product._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        toast.success('product delected successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({ type: 'DELETE_FAIL' });
+      }
+    }
+  };
+
   return (
     <ProductLists mode={mode}>
       <Title>Product List</Title>

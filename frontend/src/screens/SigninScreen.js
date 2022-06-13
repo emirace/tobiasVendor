@@ -71,7 +71,6 @@ const Line = styled.div`
 `;
 const Social = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
 `;
 const Orgroup = styled.div`
@@ -115,7 +114,7 @@ export default function SigninScreen() {
       callback: responseGoogle,
     });
     google.accounts.id.renderButton(document.getElementById('signindiv'), {
-      width: '500px',
+      width: '250px',
     });
   }, []);
 
@@ -151,11 +150,11 @@ export default function SigninScreen() {
           Facebook
         </SocialLogin>
         <div id="signindiv"></div>
-        <Orgroup>
-          <Or className={mode}>or</Or>
-          <Line />
-        </Orgroup>
       </Social>
+      <Orgroup>
+        <Or className={mode}>or</Or>
+        <Line />
+      </Orgroup>
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>

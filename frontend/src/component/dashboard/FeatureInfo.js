@@ -2,12 +2,14 @@ import {
   faArrowDown,
   faArrowUp,
   faBagShopping,
+  faBasketShopping,
   faFileInvoice,
   faMoneyBill,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Store } from '../../Store';
 
@@ -22,7 +24,6 @@ const Item = styled.div`
   flex: 1;
   padding: 20px;
   border-radius: 0.2rem;
-  cursor: pointer;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
@@ -53,6 +54,7 @@ const Counter = styled.span`
 `;
 const Links = styled.span`
   font-size: 12px;
+  cursor: pointer;
   width: max-content;
   border-bottom: 1px solid
     ${(props) =>
@@ -71,7 +73,7 @@ const Percentage = styled.div`
   }
 `;
 
-export default function FeatureInfo({ type }) {
+export default function FeatureInfo({ type, number }) {
   const { state } = useContext(Store);
   const { mode } = state;
   let data;
@@ -82,6 +84,7 @@ export default function FeatureInfo({ type }) {
         title: 'USERS',
         isMoney: false,
         link: 'See all users',
+        to: '/dashboard/userlist',
         icon: (
           <FontAwesomeIcon
             style={{
@@ -98,6 +101,7 @@ export default function FeatureInfo({ type }) {
       data = {
         title: 'ORDERS',
         isMoney: false,
+        to: '/dashboard/orderlist',
         link: 'view all orders',
         icon: (
           <FontAwesomeIcon
@@ -115,6 +119,7 @@ export default function FeatureInfo({ type }) {
       data = {
         title: 'EARNINGS',
         isMoney: true,
+        to: '/dashboard/earning',
         link: 'view all net earning',
         icon: (
           <FontAwesomeIcon
@@ -128,11 +133,12 @@ export default function FeatureInfo({ type }) {
         ),
       };
       break;
-    case 'balance':
+    case 'product':
       data = {
-        title: 'BALANCE',
-        isMoney: true,
-        link: 'See details',
+        title: 'PRODUCTS',
+        isMoney: false,
+        to: '/dashboard/productlist',
+        link: 'View product list',
         icon: (
           <FontAwesomeIcon
             style={{
@@ -140,7 +146,7 @@ export default function FeatureInfo({ type }) {
               background: `${mode === 'pagebodydark' ? '#464646' : '#d9d9d9'}`,
             }}
             className="icon"
-            icon={faFileInvoice}
+            icon={faBasketShopping}
           />
         ),
       };
@@ -156,8 +162,12 @@ export default function FeatureInfo({ type }) {
       <Item mode={mode}>
         <Left>
           <Title>{data.title}</Title>
-          <Counter>{data.isMoney && '$'} 1254</Counter>
-          <Links>{data.link}</Links>
+          <Counter>
+            {data.isMoney && '$'} {number}
+          </Counter>
+          <Links>
+            <Link to={data.to}>{data.link}</Link>
+          </Links>
         </Left>
         <Right>
           <Percentage>

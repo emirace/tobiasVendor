@@ -14,10 +14,14 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 
+const Main = styled.div`
+  padding: 20px 5vw 0 5vw;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+`;
 const Container = styled.div`
   width: 100%;
   margin-bottom: 30px;
-  border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 0 30px;
   @media (max-width: 992px) {
@@ -29,28 +33,28 @@ const Header = styled.h1`
   margin-bottom: 0;
   width: 100%;
   padding: 15px 30px;
-  border: 1px solid var(--border-color);
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
-  border-bottom: 0;
   @media (max-width: 992px) {
     padding: 10px 10px;
     margin-top: 15px;
   }
 `;
 const SumaryContDetails = styled.div`
-  border: 1px solid var(--border-color);
   border-radius: 5px;
-  padding: 15px 30px;
+  padding: 15px 20px;
   margin-bottom: 15px;
   height: 100%;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+
   @media (max-width: 992px) {
     padding: 10px 15px;
   }
 `;
 const SumaryCont = styled.div`
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 `;
 const OrderId = styled.div`
   font-weight: bold;
@@ -183,7 +187,7 @@ function reducer(state, action) {
 
 export default function OrderScreen() {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, mode } = state;
   const [
     {
       loading,
@@ -339,13 +343,13 @@ export default function OrderScreen() {
   ) : error ? (
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
-    <div className="container">
+    <Main mode={mode}>
       <Helmet>
         <title>Order {orderId}</title>
       </Helmet>
       <Header>Order Detail</Header>
       <Container>
-        <SumaryCont>
+        <SumaryCont mode={mode}>
           <OrderId>Order number {orderId}</OrderId>
           <ItemNum>
             {order.orderItems.length} Item
@@ -358,7 +362,7 @@ export default function OrderScreen() {
         <Heading>Items in your order</Heading>
 
         {order.orderItems.map((orderitem) => (
-          <SumaryContDetails>
+          <SumaryContDetails mode={mode}>
             {order.isDelivered ? (
               <StatusDeliver>Delivered</StatusDeliver>
             ) : (
@@ -390,7 +394,7 @@ export default function OrderScreen() {
         <PaymentDlivery>
           <PaymentDliveryItem>
             <Heading>Payment</Heading>
-            <SumaryContDetails>
+            <SumaryContDetails mode={mode}>
               <Name>Pay Method</Name>
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />
@@ -404,7 +408,7 @@ export default function OrderScreen() {
           </PaymentDliveryItem>
           <PaymentDliveryItem>
             <Heading>Delivery</Heading>
-            <SumaryContDetails>
+            <SumaryContDetails mode={mode}>
               <Name>Deliver Option</Name>
               <ItemNum>Home delivery</ItemNum>
               <hr />
@@ -552,6 +556,6 @@ export default function OrderScreen() {
           </Card>
         </Col>
       </Row> */}
-    </div>
+    </Main>
   );
 }

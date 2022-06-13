@@ -374,7 +374,7 @@ function App() {
             <Footer />
             {/* <footer>
           <div className="footer-content1">
-            <div className="brand-logo1">TOBIAS</div>
+            <div className="brand-logo1">REPEDDLE</div>
             <div className="footer-ul-container1">
               <ul className="category1">
                 <li className="category-title1">Men</li>

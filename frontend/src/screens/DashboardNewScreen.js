@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Home from '../component/dashboard/Home';
@@ -9,6 +10,8 @@ import ProductList from '../component/dashboard/ProductList';
 import Sidebar from '../component/dashboard/Sidebar';
 import User from '../component/dashboard/User';
 import UserList from '../component/dashboard/UserList';
+import { Store } from '../Store';
+import { getError } from '../utils';
 
 const Container = styled.div`
   display: flex;
@@ -48,7 +51,6 @@ export default function DashboardNewScreen() {
   };
   return (
     <Container>
-      {console.log('tab', tab)}
       <Sidebar current={tab} />
       {tabSwitch(displayTab)}
     </Container>

@@ -71,6 +71,14 @@ orderRouter.get(
         },
       },
     ]);
+    const products = await Product.aggregate([
+      {
+        $group: {
+          _id: null,
+          numProducts: { $sum: 1 },
+        },
+      },
+    ]);
     const dailyOrders = await Order.aggregate([
       {
         $group: {
@@ -89,7 +97,7 @@ orderRouter.get(
         },
       },
     ]);
-    res.send({ users, orders, dailyOrders, productCategories });
+    res.send({ users, orders, dailyOrders, products, productCategories });
   })
 );
 

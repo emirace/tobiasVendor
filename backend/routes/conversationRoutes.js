@@ -12,14 +12,25 @@ conversationRouter.post(
     if (req.user._id === req.body.recieverId) {
       throw { message: 'you cannot message yourself' };
     }
+    const existConversation = await Conversation.findOne({
+      members: { $all: [req.user._id, req.body.recieverId] },
+    });
+    if (existConversation) {
+      res
+        .status(200)
+        .send({ message: 'conversation continue', existConversation });
+      return;
+    }
     const newConversation = new Conversation({
       members: [req.user._id, req.body.recieverId],
     });
     try {
       const savedConversation = await newConversation.save();
-      res.status(200).send({ message: 'message sent', savedConversation });
+      res
+        .status(200)
+        .send({ message: 'conversation started', savedConversation });
     } catch (err) {
-      res.status(500).send({ message: 'message sending failed', err });
+      res.status(500).send({ message: 'conversation failed', err });
     }
   })
 );
