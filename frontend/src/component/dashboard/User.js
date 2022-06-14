@@ -227,6 +227,7 @@ export default function User() {
     }
   }, [id, userInfo]);
   return (
+    <Container>
       <TitleCont>
         <Title>Edit User</Title>
         <Link to="/dashboard/newuser">
@@ -238,7 +239,7 @@ export default function User() {
           <ShowTop>
             <Image src={user.image} alt="p" />
             <TopTitle>
-              <Name>John Doe</Name>
+              <Name>{user.name}</Name>
               <UserTitle>Seller</UserTitle>
             </TopTitle>
           </ShowTop>
@@ -246,7 +247,7 @@ export default function User() {
             <BottomTitle>Account Details</BottomTitle>
             <Info>
               <FontAwesomeIcon icon={faUser} />
-              <Username>@Johndoe</Username>
+              <Username>@{user.name}</Username>
             </Info>
             <Info>
               <FontAwesomeIcon icon={faCalendarDays} />
@@ -260,7 +261,7 @@ export default function User() {
             </Info>
             <Info>
               <FontAwesomeIcon icon={faEnvelope} />
-              <Username>example@email.com</Username>
+              <Username>{user.email}</Username>
             </Info>
             <Info>
               <FontAwesomeIcon icon={faLocationDot} />
@@ -274,11 +275,11 @@ export default function User() {
             <Left>
               <Item>
                 <Label>Full Name</Label>
-                <TextInput mode={mode} placeholder="John Doe" />
+                <TextInput mode={mode} placeholder={user.name} />
               </Item>
               <Item>
                 <Label>Email</Label>
-                <TextInput mode={mode} placeholder="John@mail.com" />
+                <TextInput mode={mode} placeholder={user.email} />
               </Item>
               <Item>
                 <Label>DOB</Label>
@@ -295,7 +296,7 @@ export default function User() {
             </Left>
             <Right>
               <Upload>
-                <UploadImg src="/images/men.png" alt="" />
+                <UploadImg src={user.image} alt="" />
                 <UploadLabel htmlFor="file">
                   <FontAwesomeIcon icon={faUpload} />
                 </UploadLabel>
