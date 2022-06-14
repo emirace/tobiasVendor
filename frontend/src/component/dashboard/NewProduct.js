@@ -32,6 +32,9 @@ const Left = styled.div`
 `;
 const Right = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 const Form = styled.form`
   display: flex;
@@ -45,7 +48,7 @@ const Item = styled.div`
   margin: 20px 20px 0 0;
   width: 100%;
   &.half {
-    width: 100px;
+    width: 118px;
     margin-right: 5px;
   }
 `;
@@ -199,6 +202,7 @@ const SmallItems = styled.div`
 `;
 const Price = styled.div`
   display: flex;
+  align-items: center;
 `;
 const Discount = styled.div`
   display: flex;
@@ -207,7 +211,7 @@ const Discount = styled.div`
 const PriceDisplay = styled.div`
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin: 55px 0 0 30px;
 `;
 const Offer = styled.div`
   font-size: 25px;
@@ -222,6 +226,25 @@ const Actual = styled.div`
   font-weight: 300;
   text-decoration: line-through;
 `;
+const Button = styled.button`
+  width: 200px;
+  border: none;
+  background: var(--orange-color);
+  color: var(--white-color);
+  padding: 7px 10px;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  margin-top: 30px;
+  &:hover {
+    background: var(--malon-color);
+  }
+`;
+const Top = styled.div``;
+const ButtonC = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+const sizes = [];
 export default function NewProduct() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -229,6 +252,11 @@ export default function NewProduct() {
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Womenswear');
   const [brand, setBrand] = useState('');
+  const [size, setSize] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [specification, setSpecification] = useState('');
+  const [feature, setFeature] = useState('');
   const [image1, setImage1] = useState('');
   const [image2, setImage2] = useState('');
   const [image3, setImage3] = useState('');
@@ -236,6 +264,23 @@ export default function NewProduct() {
   const [price, setPrice] = useState('');
   const [discount, setDiscount] = useState('');
   const [condition, setCondition] = useState('New');
+  const [tempsize, setTempsize] = useState('');
+
+  const submitHandler = () => {};
+
+  const sizeHandler = (sizenow) => {
+    const exist = sizes.map((s) => {
+      if (s.size === sizenow) {
+        return true;
+      }
+    });
+    if (exist) sizes.push({ size: sizenow });
+    console.log('sixe', sizes);
+    setTempsize(sizenow);
+  };
+
+  const uploadHandler = () => {};
+
   return (
     <NewProductC mode={mode}>
       <TitleCont>
@@ -250,7 +295,11 @@ export default function NewProduct() {
           <Left>
             <Item>
               <Label>Product Name</Label>
-              <TextInput mode={mode} type="text" />
+              <TextInput
+                mode={mode}
+                type="text"
+                onChange={(e) => setName(e.targer.value)}
+              />
             </Item>
             <ItemCont>
               <ItemLeft>
@@ -341,7 +390,11 @@ export default function NewProduct() {
             </ItemCont>
             <Item>
               <Label>Brand</Label>
-              <TextInput mode={mode} type="text" />
+              <TextInput
+                mode={mode}
+                type="text"
+                onChange={(e) => setBrand(e.targer.value)}
+              />
             </Item>
             <Sizes>
               <SizeLeft>
@@ -374,8 +427,8 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={condition}
-                      onChange={(e) => setCondition(e.target.value)}
+                      value={tempsize}
+                      onChange={(e) => sizeHandler(e.target.value)}
                       displayEmpty
                     >
                       <MenuItem value="S">S</MenuItem>
@@ -429,8 +482,8 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={condition}
-                      onChange={(e) => setCondition(e.target.value)}
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
                       displayEmpty
                     >
                       <MenuItem value="Nigeria">Nigeria</MenuItem>
@@ -440,6 +493,13 @@ export default function NewProduct() {
                 </Item>
               </SizeRight>
             </Sizes>
+            <Item>
+              <Label>Description</Label>
+              <TextArea
+                mode={mode}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Item>
             <Price>
               <Item className="half">
                 <Label>Price</Label>
@@ -458,95 +518,118 @@ export default function NewProduct() {
                     type="number"
                     onChange={(e) => {
                       if (price) {
-                        const value = (price * e.target.value) / 100;
-                        setDiscount(price - value);
+                        const value = (price * (100 - e.target.value)) / 100;
+                        setDiscount(value);
                       }
                     }}
                   />
                   <span>%</span>
                 </Discount>
               </Item>
+              <PriceDisplay>
+                <Offer>${discount || price}</Offer>
+                <Actual>${price}</Actual>
+              </PriceDisplay>
             </Price>
-            <PriceDisplay>
-              <Offer>${price}</Offer>
-              <Actual>${discount}</Actual>
-            </PriceDisplay>
           </Left>
           <Right>
-            <Label>Product Image</Label>
-            <ImageRow>
-              <BigImageC mode={mode}>
-                {image1 ? (
-                  <BigImage />
-                ) : (
-                  <AddImage htmlFor="image1">
-                    <FontAwesomeIcon icon={faImage} />
-                    <div>
-                      Click to Browse <span>Image</span>
-                    </div>
-                    <Upload type="file" id="image1" />
-                  </AddImage>
-                )}
-              </BigImageC>
-              <BigImageC mode={mode}>
-                {image2 ? (
-                  <BigImage />
-                ) : (
-                  <AddImage htmlFor="image2">
-                    <FontAwesomeIcon icon={faImage} />
-                    <div>
-                      Click to Browse <span>Image</span>
-                    </div>
-                    <Upload type="file" id="image2" />
-                  </AddImage>
-                )}
-              </BigImageC>
-              <SmallImageRow>
-                <SmallImageC mode={mode}>
-                  {image3 ? (
-                    <SmallImage />
+            <Top>
+              <Label>Product Image</Label>
+              <ImageRow>
+                <BigImageC mode={mode}>
+                  {image1 ? (
+                    <BigImage />
                   ) : (
-                    <AddImage htmlFor="image3">
+                    <AddImage htmlFor="image1">
                       <FontAwesomeIcon icon={faImage} />
                       <div>
                         Click to Browse <span>Image</span>
                       </div>
-                      <Upload type="file" id="image3" />
+                      <Upload
+                        type="file"
+                        id="image1"
+                        onChange={() => uploadHandler()}
+                      />
                     </AddImage>
                   )}
-                </SmallImageC>
-                <SmallImageC mode={mode}>
-                  {image4 ? (
-                    <SmallImage />
+                </BigImageC>
+                <BigImageC mode={mode}>
+                  {image2 ? (
+                    <BigImage />
                   ) : (
-                    <AddImage htmlFor="image4">
+                    <AddImage htmlFor="image2">
                       <FontAwesomeIcon icon={faImage} />
                       <div>
                         Click to Browse <span>Image</span>
                       </div>
-                      <Upload type="file" id="image4" />
+                      <Upload
+                        type="file"
+                        id="image2"
+                        onChange={() => uploadHandler()}
+                      />
                     </AddImage>
                   )}
-                </SmallImageC>
-              </SmallImageRow>
-            </ImageRow>
-            <TitleDetails>
-              You will need to add aleast one image and a max of four images.
-              Add clear and quality images.Ensure ypu follow the image uplaod
-              rules.
-            </TitleDetails>
-            <Item>
-              <Label>Description</Label>
-              <TextArea mode={mode} />
-            </Item>
-            <Item>
-              <Label>Specification</Label>
-              <TextArea mode={mode} />
-            </Item>
-            <Item>
-              <Label>Key Features</Label>
-              <TextArea mode={mode} />
-            </Item>
+                </BigImageC>
+                <SmallImageRow>
+                  <SmallImageC mode={mode}>
+                    {image3 ? (
+                      <SmallImage />
+                    ) : (
+                      <AddImage htmlFor="image3">
+                        <FontAwesomeIcon icon={faImage} />
+                        <div>
+                          Click to Browse <span>Image</span>
+                        </div>
+                        <Upload
+                          type="file"
+                          id="image3"
+                          onChange={() => uploadHandler()}
+                        />
+                      </AddImage>
+                    )}
+                  </SmallImageC>
+                  <SmallImageC mode={mode}>
+                    {image4 ? (
+                      <SmallImage />
+                    ) : (
+                      <AddImage htmlFor="image4">
+                        <FontAwesomeIcon icon={faImage} />
+                        <div>
+                          Click to Browse <span>Image</span>
+                        </div>
+                        <Upload
+                          type="file"
+                          id="image4"
+                          onChange={() => uploadHandler()}
+                        />
+                      </AddImage>
+                    )}
+                  </SmallImageC>
+                </SmallImageRow>
+              </ImageRow>
+              <TitleDetails>
+                You will need to add aleast one image and a max of four images.
+                Add clear and quality images.Ensure ypu follow the image uplaod
+                rules.
+              </TitleDetails>
+              <Item>
+                <Label>Specification</Label>
+                <TextArea
+                  mode={mode}
+                  onChange={(e) => setSpecification(e.targert.value)}
+                />
+              </Item>
+              <Item>
+                <Label>Key Features</Label>
+                <TextArea
+                  mode={mode}
+                  onChange={(e) => setFeature(e.targer.value)}
+                />
+              </Item>
+            </Top>
+            <ButtonC>
+              <Button onClick={submitHandler}>Add Product</Button>
+            </ButtonC>
           </Right>
         </Form>
       </Content>
