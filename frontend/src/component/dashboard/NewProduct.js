@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Store } from '../../Store';
-import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -43,6 +43,11 @@ const Item = styled.div`
   display: flex;
   flex-direction: column;
   margin: 20px 20px 0 0;
+  width: 100%;
+  &.half {
+    width: 100px;
+    margin-right: 5px;
+  }
 `;
 const TextInput = styled.input`
   background: none;
@@ -59,6 +64,10 @@ const TextInput = styled.input`
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
+  &.half {
+    width: 100px;
+    margin-right: 5px;
+  }
 `;
 const Label = styled.label`
   margin-bottom: 10px;
@@ -67,6 +76,7 @@ const Label = styled.label`
 `;
 const ItemCont = styled.div`
   display: flex;
+  gap: 20px;
 `;
 const ItemLeft = styled.div`
   flex: 8;
@@ -75,7 +85,7 @@ const ItemRight = styled.div`
   flex: 4;
 `;
 const TextArea = styled.textarea`
-  height: 200px;
+  height: 100px;
   border-radius: 0.2rem;
   background: none;
   color: ${(props) =>
@@ -146,6 +156,7 @@ const Upload = styled.input`
 const Sizes = styled.div`
   display: flex;
   margin: 20px 0;
+  gap: 20px;
 `;
 const SizeLeft = styled.div`
   flex: 1;
@@ -172,8 +183,13 @@ const SizeInput = styled.input`
   }
 `;
 const SmallItem = styled.div`
-  &label {
-    margin-right: 5px;
+  & input {
+    margin-left: 5px;
+  }
+  & svg {
+    font-size: 10px;
+    margin-left: 5px;
+    cursor: pointer;
   }
   margin: 10px;
 `;
@@ -181,7 +197,31 @@ const SmallItems = styled.div`
   display: flex;
   flex-wrap: wrap;
 `;
+const Price = styled.div`
+  display: flex;
+`;
+const Discount = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const PriceDisplay = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+`;
+const Offer = styled.div`
+  font-size: 25px;
+  margin-right: 20px;
+  font-weight: 300;
+  color: var(--orange-color);
+`;
+const Actual = styled.div`
+  font-size: 25px;
+  color: var(--malon-color);
 
+  font-weight: 300;
+  text-decoration: line-through;
+`;
 export default function NewProduct() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -193,6 +233,8 @@ export default function NewProduct() {
   const [image2, setImage2] = useState('');
   const [image3, setImage3] = useState('');
   const [image4, setImage4] = useState('');
+  const [price, setPrice] = useState('');
+  const [discount, setDiscount] = useState('');
   const [condition, setCondition] = useState('New');
   return (
     <NewProductC mode={mode}>
@@ -301,10 +343,134 @@ export default function NewProduct() {
               <Label>Brand</Label>
               <TextInput mode={mode} type="text" />
             </Item>
-            <Item>
-              <Label>Description</Label>
-              <TextArea mode={mode} />
-            </Item>
+            <Sizes>
+              <SizeLeft>
+                <Item>
+                  <Label>Add Size</Label>
+                  <FormControl
+                    sx={{
+                      margin: 0,
+                      borderRadius: '0.2rem',
+                      border: `1px solid ${
+                        mode === 'pagebodydark'
+                          ? 'var(--dark-ev4)'
+                          : 'var(--light-ev4)'
+                      }`,
+                      '& .MuiOutlinedInput-root': {
+                        color: `${
+                          mode === 'pagebodydark'
+                            ? 'var(--white-color)'
+                            : 'var(--black-color)'
+                        }`,
+                        '&:hover': {
+                          outline: 'none',
+                          border: 0,
+                        },
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: '0 !important',
+                      },
+                    }}
+                    size="small"
+                  >
+                    <Select
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="S">S</MenuItem>
+                      <MenuItem value="M">M</MenuItem>
+                      <MenuItem value="L">L</MenuItem>
+                      <MenuItem value="XL">XL</MenuItem>
+                      <MenuItem value="XXL">XXL</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Item>
+                <SmallItems>
+                  <SmallItem>
+                    <Label>SM</Label>:
+                    <SizeInput mode={mode} />
+                    <FontAwesomeIcon icon={faTimes} />
+                  </SmallItem>
+                  <SmallItem>
+                    <Label>LG</Label>:
+                    <SizeInput mode={mode} />
+                    <FontAwesomeIcon icon={faTimes} />
+                  </SmallItem>
+                </SmallItems>
+              </SizeLeft>
+              <SizeRight>
+                <Item>
+                  <Label>Shipping Location</Label>
+                  <FormControl
+                    sx={{
+                      margin: 0,
+                      borderRadius: '0.2rem',
+                      border: `1px solid ${
+                        mode === 'pagebodydark'
+                          ? 'var(--dark-ev4)'
+                          : 'var(--light-ev4)'
+                      }`,
+                      '& .MuiOutlinedInput-root': {
+                        color: `${
+                          mode === 'pagebodydark'
+                            ? 'var(--white-color)'
+                            : 'var(--black-color)'
+                        }`,
+                        '&:hover': {
+                          outline: 'none',
+                          border: 0,
+                        },
+                      },
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: '0 !important',
+                      },
+                    }}
+                    size="small"
+                  >
+                    <Select
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="Nigeria">Nigeria</MenuItem>
+                      <MenuItem value="South African">South African</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Item>
+              </SizeRight>
+            </Sizes>
+            <Price>
+              <Item className="half">
+                <Label>Price</Label>
+                <TextInput
+                  mode={mode}
+                  type="number"
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </Item>
+              <Item className="half">
+                <Label>Discount</Label>
+                <Discount>
+                  <TextInput
+                    className="half"
+                    mode={mode}
+                    type="number"
+                    onChange={(e) => {
+                      if (price) {
+                        const value = (price * e.target.value) / 100;
+                        setDiscount(price - value);
+                      }
+                    }}
+                  />
+                  <span>%</span>
+                </Discount>
+              </Item>
+            </Price>
+            <PriceDisplay>
+              <Offer>${price}</Offer>
+              <Actual>${discount}</Actual>
+            </PriceDisplay>
           </Left>
           <Right>
             <Label>Product Image</Label>
@@ -369,64 +535,18 @@ export default function NewProduct() {
               Add clear and quality images.Ensure ypu follow the image uplaod
               rules.
             </TitleDetails>
-            <Sizes>
-              <SizeLeft>
-                <Item>
-                  <Label>Add Size</Label>
-                  <FormControl
-                    sx={{
-                      margin: 0,
-                      borderRadius: '0.2rem',
-                      border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
-                      }`,
-                      '& .MuiOutlinedInput-root': {
-                        color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
-                        }`,
-                        '&:hover': {
-                          outline: 'none',
-                          border: 0,
-                        },
-                      },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
-                      },
-                    }}
-                    size="small"
-                  >
-                    <Select
-                      value={condition}
-                      onChange={(e) => setCondition(e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="New">New</MenuItem>
-                      <MenuItem value="Used">Used</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Item>
-                <SmallItems>
-                  <SmallItem>
-                    <Label>sm</Label>:
-                    <SizeInput mode={mode} />
-                  </SmallItem>
-                  <SmallItem>
-                    <Label>lg</Label>:
-                    <SizeInput mode={mode} />
-                  </SmallItem>
-                </SmallItems>
-              </SizeLeft>
-              <SizeRight>
-                <Item>
-                  <Label>Shipping Location</Label>
-                  <TextInput mode={mode} type="text" />
-                </Item>
-              </SizeRight>
-            </Sizes>
+            <Item>
+              <Label>Description</Label>
+              <TextArea mode={mode} />
+            </Item>
+            <Item>
+              <Label>Specification</Label>
+              <TextArea mode={mode} />
+            </Item>
+            <Item>
+              <Label>Key Features</Label>
+              <TextArea mode={mode} />
+            </Item>
           </Right>
         </Form>
       </Content>
