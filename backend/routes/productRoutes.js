@@ -44,7 +44,11 @@ productRouter.post(
       // overview,
     } = req.body;
     const slugName = slugify(name);
+    console.log('sizes1', sizes);
     const images = [image2, image3, image4];
+    const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
+    console.log('sizes2', sizes);
+    console.log('count', countInStock);
     const newProduct = new Product({
       name,
       seller: req.user._id,
@@ -57,8 +61,9 @@ productRouter.post(
       category,
       shippingLocation: location,
       brand: brand ? brand : 'other',
+      specification,
       condition,
-      size: sizes,
+      sizes: sizes,
       keyFeatures: feature ? feature : '',
       rating: 0,
       numReviews: 0,
@@ -67,8 +72,10 @@ productRouter.post(
       likes: [],
       sold: false,
       active: true,
+      countInStock: countInStock,
     });
     const product = await newProduct.save();
+    console.log(product);
     res.send({ message: 'Product Created', product });
   })
 );

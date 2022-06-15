@@ -207,6 +207,7 @@ a {
 }
 
 .product_hover {
+  z-index: 3;
   position: absolute;
   left: 0;
   width: 100%;

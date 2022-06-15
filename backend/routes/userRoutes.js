@@ -208,6 +208,7 @@ userRouter.get(
         following: user.following,
         likes: user.likes,
         saved: user.saved,
+        sold: user.sold,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });

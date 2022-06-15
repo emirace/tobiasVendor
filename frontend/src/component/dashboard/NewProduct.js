@@ -336,6 +336,7 @@ export default function NewProduct() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    console.log('sizes', sizes);
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
@@ -363,7 +364,7 @@ export default function NewProduct() {
             price,
             location,
             specification,
-            sizes,
+            sizes: sizes,
             condition,
             feature,
           },

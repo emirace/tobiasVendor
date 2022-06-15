@@ -172,9 +172,11 @@ export default function Product(props) {
           </li>
         </ul>
         {product.sold && (
-          <div className="overlay">
-            <Sold>SOLD</Sold>
-          </div>
+          <Link to={`/product/${product.slug}`}>
+            <div className="overlay">
+              <Sold>SOLD</Sold>
+            </div>
+          </Link>
         )}
       </div>
       <div className="product-info1">

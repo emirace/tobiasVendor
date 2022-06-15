@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema(
     brand: { type: String },
     category: { type: String, required: true },
     description: { type: String, required: true },
-    sizes: [{ type: String, required: true }],
+    sizes: { type: Array, required: true, default: [] },
     condition: { type: String, required: true },
     shippingLocation: { type: String, required: true },
     keyFeatures: { type: String },
@@ -36,6 +36,7 @@ const productSchema = new mongoose.Schema(
     reviews: [reviewSchema],
     sold: { type: Boolean },
     active: { type: Boolean },
+    countInStock: { type: Number, required: true },
   },
   {
     timestamps: true,

@@ -25,3 +25,15 @@
 .btn:focus-visible {
   outline: none;
 }
+
+.btn-primary:active {
+  color: #fff;
+  background-color: var(--orange-color);
+  border-color: var(--orange-color);
+}
+
+.btn-primary:focus {
+  color: #fff;
+  background-color: var(--orange-color);
+  border-color: var(--orange-color);
+}

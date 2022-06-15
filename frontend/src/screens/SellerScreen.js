@@ -145,6 +145,7 @@ export default function SellerScreen() {
       loading: true,
       loadingUser: true,
       error: '',
+      user: {},
     });
 
   useEffect(() => {
@@ -389,7 +390,8 @@ export default function SellerScreen() {
                   <div>
                     <FontAwesomeIcon icon={faTag} /> Sold
                   </div>
-                  <div className="seller_single_right">{0}</div>
+                  {console.log('user', user)}
+                  <div className="seller_single_right">{user.sold.length}</div>
                 </div>
 
                 <div className="seller_single_detail">
