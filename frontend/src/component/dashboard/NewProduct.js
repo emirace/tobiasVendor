@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Store } from '../../Store';
@@ -6,6 +6,10 @@ import { faImage, faTimes } from '@fortawesome/free-solid-svg-icons';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import axios from 'axios';
+import { getError } from '../../utils';
+import LoadingBox from '../LoadingBox';
+import { useNavigate } from 'react-router-dom';
 
 const NewProductC = styled.div`
   flex: 4;
@@ -71,6 +75,9 @@ const TextInput = styled.input`
     width: 100px;
     margin-right: 5px;
   }
+  &:invalid {
+    /* outline: 1px solid var(--red-color); */
+  }
 `;
 const Label = styled.label`
   margin-bottom: 10px;
@@ -110,7 +117,9 @@ const ImageRow = styled.div`
 const BigImage = styled.img`
   width: 100%;
   height: 100%;
+  border-radius: 00.2rem;
   object-fit: cover;
+  object-position: top;
 `;
 const BigImageC = styled.div`
   border-radius: 0.2rem;
@@ -137,6 +146,8 @@ const SmallImageC = styled.div`
 const SmallImage = styled.img`
   width: 100%;
   height: 100%;
+  object-position: top;
+  border-radius: 0.2rem;
   object-fit: cover;
 `;
 const AddImage = styled.label`
@@ -170,6 +181,7 @@ const SizeRight = styled.div`
 `;
 const SizeInput = styled.input`
   background: none;
+  font-size: 12px;
   color: ${(props) =>
     props.mode === 'pagebodydark'
       ? 'var(--white-color)'
@@ -179,7 +191,7 @@ const SizeInput = styled.input`
       props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
   border-radius: 0.2rem;
   height: 20px;
-  width: 35px;
+  width: 40px;
   padding: 10px;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
@@ -244,15 +256,40 @@ const ButtonC = styled.div`
   display: flex;
   justify-content: end;
 `;
-const sizes = [];
+const Error = styled.div`
+  color: var(--red-color);
+  font-size: 12px;
+  margin: 24px 10px 0 0;
+`;
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'CREATE_REQUEST':
+      return { ...state, loading: true };
+    case 'CREATE_SUCCESS':
+      return { ...state, loading: false, error: '' };
+    case 'CREATE_FAIL':
+      return { ...state, loading: false, error: action.payload };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true };
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+let sizes = [];
 export default function NewProduct() {
-  const { state } = useContext(Store);
-  const { mode } = state;
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { mode, userInfo } = state;
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Womenswear');
   const [brand, setBrand] = useState('');
-  const [size, setSize] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [specification, setSpecification] = useState('');
@@ -265,21 +302,156 @@ export default function NewProduct() {
   const [discount, setDiscount] = useState('');
   const [condition, setCondition] = useState('New');
   const [tempsize, setTempsize] = useState('');
+  const [validated, setValidated] = useState(false);
+  const [formError, setFormError] = useState('');
 
-  const submitHandler = () => {};
+  const navigate = useNavigate();
+
+  const [{ loading, error, loadingUpload, errorUpload }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: false,
+      error: '',
+      loadingUpload: false,
+      errorUpload: '',
+    }
+  );
 
   const sizeHandler = (sizenow) => {
-    const exist = sizes.map((s) => {
-      if (s.size === sizenow) {
-        return true;
-      }
+    const exist = sizes.filter((s) => {
+      return s.size === sizenow;
     });
-    if (exist) sizes.push({ size: sizenow });
+    if (exist.length > 0) {
+      const newsizes = sizes.filter((s) => {
+        return s.size !== sizenow;
+      });
+      sizes = newsizes;
+    } else {
+      sizes.push({ size: sizenow, value: '0' });
+    }
     console.log('sixe', sizes);
+    console.log('exist', exist);
     setTempsize(sizenow);
   };
 
-  const uploadHandler = () => {};
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+      setValidated(true);
+      setFormError('Fill all required field *');
+    } else {
+      setFormError('');
+
+      try {
+        dispatch({ type: 'CREATE_REQUEST' });
+        await axios.post(
+          '/api/products',
+          {
+            name,
+            image1,
+            image2,
+            image3,
+            image4,
+            // video,
+            category,
+            description,
+            brand,
+            discount,
+            price,
+            location,
+            specification,
+            sizes,
+            condition,
+            feature,
+          },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Product created successfully',
+            showStatus: true,
+            state1: 'visible1 success',
+          },
+        });
+        dispatch({ type: 'CREATE_SUCCESS' });
+        navigate(`/dashboard/productlist`);
+      } catch (err) {
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Error creating product, try again late',
+            showStatus: true,
+            state1: 'visible1 error',
+          },
+        });
+        console.log(getError(err));
+        dispatch({ type: 'CREATE_FAIL' });
+      }
+    }
+  };
+
+  const smallSizeHandler = (label, value) => {
+    const sizeIndex = sizes.findIndex((x) => x.size === label);
+    sizes[sizeIndex].value = value;
+    console.log('value', sizes);
+  };
+  //   const deleteSizeHandler = (label) => {
+  //     const newsizes = sizes.filter((s) => {
+  //       return s.size !== label;
+  //     });
+  //     sizes = newsizes;
+  //     console.log('new', sizes);
+  //   };
+
+  const uploadHandler = async (e, fileType) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      if (fileType === 'image1') {
+        setImage1(data.secure_url);
+      } else if (fileType === 'image2') {
+        setImage2(data.secure_url);
+      } else if (fileType === 'image3') {
+        setImage3(data.secure_url);
+      } else {
+        setImage4(data.secure_url);
+      }
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Image Uploaded',
+          showStatus: true,
+          state1: 'visible1 success',
+        },
+      });
+    } catch (err) {
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Failed uploading image',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+      console.log(getError(err));
+    }
+  };
 
   return (
     <NewProductC mode={mode}>
@@ -291,14 +463,15 @@ export default function NewProduct() {
         </TitleDetails>
       </TitleCont>
       <Content>
-        <Form>
+        <Form noValidate validated={validated} onSubmit={submitHandler}>
           <Left>
             <Item>
               <Label>Product Name</Label>
               <TextInput
+                required
                 mode={mode}
                 type="text"
-                onChange={(e) => setName(e.targer.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </Item>
             <ItemCont>
@@ -393,7 +566,7 @@ export default function NewProduct() {
               <TextInput
                 mode={mode}
                 type="text"
-                onChange={(e) => setBrand(e.targer.value)}
+                onChange={(e) => setBrand(e.target.value)}
               />
             </Item>
             <Sizes>
@@ -440,16 +613,21 @@ export default function NewProduct() {
                   </FormControl>
                 </Item>
                 <SmallItems>
-                  <SmallItem>
-                    <Label>SM</Label>:
-                    <SizeInput mode={mode} />
-                    <FontAwesomeIcon icon={faTimes} />
-                  </SmallItem>
-                  <SmallItem>
-                    <Label>LG</Label>:
-                    <SizeInput mode={mode} />
-                    <FontAwesomeIcon icon={faTimes} />
-                  </SmallItem>
+                  {sizes.map((s) => (
+                    <SmallItem>
+                      <Label>{s.size}</Label>:
+                      <SizeInput
+                        mode={mode}
+                        onChange={(e) =>
+                          smallSizeHandler(s.size, e.target.value)
+                        }
+                      />
+                      {/* <FontAwesomeIcon
+                        onClick={() => deleteSizeHandler(s.size)}
+                        icon={faTimes}
+                      /> */}
+                    </SmallItem>
+                  ))}
                 </SmallItems>
               </SizeLeft>
               <SizeRight>
@@ -538,70 +716,94 @@ export default function NewProduct() {
               <ImageRow>
                 <BigImageC mode={mode}>
                   {image1 ? (
-                    <BigImage />
+                    <BigImage src={image1} alt="product image" />
                   ) : (
                     <AddImage htmlFor="image1">
-                      <FontAwesomeIcon icon={faImage} />
-                      <div>
-                        Click to Browse <span>Image</span>
-                      </div>
-                      <Upload
-                        type="file"
-                        id="image1"
-                        onChange={() => uploadHandler()}
-                      />
+                      {loadingUpload ? (
+                        <LoadingBox></LoadingBox>
+                      ) : (
+                        <>
+                          <FontAwesomeIcon icon={faImage} />
+                          <div>
+                            Click to Browse <span>Image</span>
+                          </div>
+                          <Upload
+                            type="file"
+                            id="image1"
+                            onChange={(e) => uploadHandler(e, 'image1')}
+                          />
+                        </>
+                      )}
                     </AddImage>
                   )}
                 </BigImageC>
                 <BigImageC mode={mode}>
                   {image2 ? (
-                    <BigImage />
+                    <BigImage src={image2} alt="product image" />
                   ) : (
                     <AddImage htmlFor="image2">
-                      <FontAwesomeIcon icon={faImage} />
-                      <div>
-                        Click to Browse <span>Image</span>
-                      </div>
-                      <Upload
-                        type="file"
-                        id="image2"
-                        onChange={() => uploadHandler()}
-                      />
+                      {loadingUpload ? (
+                        <LoadingBox></LoadingBox>
+                      ) : (
+                        <>
+                          <FontAwesomeIcon icon={faImage} />
+                          <div>
+                            Click to Browse <span>Image</span>
+                          </div>
+                          <Upload
+                            type="file"
+                            id="image2"
+                            onChange={(e) => uploadHandler(e, 'image2')}
+                          />
+                        </>
+                      )}
                     </AddImage>
                   )}
                 </BigImageC>
                 <SmallImageRow>
                   <SmallImageC mode={mode}>
                     {image3 ? (
-                      <SmallImage />
+                      <SmallImage src={image3} alt="product image" />
                     ) : (
                       <AddImage htmlFor="image3">
-                        <FontAwesomeIcon icon={faImage} />
-                        <div>
-                          Click to Browse <span>Image</span>
-                        </div>
-                        <Upload
-                          type="file"
-                          id="image3"
-                          onChange={() => uploadHandler()}
-                        />
+                        {loadingUpload ? (
+                          <LoadingBox></LoadingBox>
+                        ) : (
+                          <>
+                            <FontAwesomeIcon icon={faImage} />
+                            <div>
+                              Click to Browse <span>Image</span>
+                            </div>
+                            <Upload
+                              type="file"
+                              id="image3"
+                              onChange={(e) => uploadHandler(e, 'image3')}
+                            />
+                          </>
+                        )}
                       </AddImage>
                     )}
                   </SmallImageC>
                   <SmallImageC mode={mode}>
                     {image4 ? (
-                      <SmallImage />
+                      <SmallImage src={image4} alt="product image" />
                     ) : (
                       <AddImage htmlFor="image4">
-                        <FontAwesomeIcon icon={faImage} />
-                        <div>
-                          Click to Browse <span>Image</span>
-                        </div>
-                        <Upload
-                          type="file"
-                          id="image4"
-                          onChange={() => uploadHandler()}
-                        />
+                        {loadingUpload ? (
+                          <LoadingBox></LoadingBox>
+                        ) : (
+                          <>
+                            <FontAwesomeIcon icon={faImage} />
+                            <div>
+                              Click to Browse <span>Image</span>
+                            </div>
+                            <Upload
+                              type="file"
+                              id="image4"
+                              onChange={(e) => uploadHandler(e, 'image4')}
+                            />
+                          </>
+                        )}
                       </AddImage>
                     )}
                   </SmallImageC>
@@ -616,19 +818,20 @@ export default function NewProduct() {
                 <Label>Specification</Label>
                 <TextArea
                   mode={mode}
-                  onChange={(e) => setSpecification(e.targert.value)}
+                  onChange={(e) => setSpecification(e.target.value)}
                 />
               </Item>
               <Item>
                 <Label>Key Features</Label>
                 <TextArea
                   mode={mode}
-                  onChange={(e) => setFeature(e.targer.value)}
+                  onChange={(e) => setFeature(e.target.value)}
                 />
               </Item>
             </Top>
             <ButtonC>
-              <Button onClick={submitHandler}>Add Product</Button>
+              <Error>{formError}</Error>
+              <Button type="submit">Add Product</Button>
             </ButtonC>
           </Right>
         </Form>

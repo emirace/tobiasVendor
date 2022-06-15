@@ -147,22 +147,19 @@ orderRouter.put(
 orderRouter.put(
   '/:id/pay',
   expressAsyncHandler(async (req, res) => {
-    console.log('hello');
     const order = await Order.findById(req.params.id);
     const products = [];
-    console.log('productsId', products);
     order.orderItems.map((i) => products.push(i._id));
-    console.log('products', products);
     const records = await Product.find({
       _id: { $in: products },
     });
-    console.log('record', records);
     records.map(async (p) => {
-      console.log(p);
       p.sold = true;
+      const seller = await User.findById(p.seller);
+      console.log(seller);
+      seller.sold.push(p._id);
       await p.save();
     });
-    console.log('recordAfter', records);
 
     if (order) {
       order.isPaid = true;

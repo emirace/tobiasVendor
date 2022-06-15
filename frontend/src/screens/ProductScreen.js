@@ -545,9 +545,9 @@ export default function ProductScreen() {
       </Helmet>
       <div className="single_product_container">
         <div className="single_product_left">
-          {[product.image, ...product.images].map((x) => (
+          {[product.image, ...product.images].map((x, index) => (
             <div
-              key={x}
+              key={index}
               className="single_product_multi_image"
               onClick={() => setSelectedImage(x)}
             >
@@ -633,7 +633,7 @@ export default function ProductScreen() {
           <div className="single_product_sold_status">
             <div className="single_produc_sold">
               <FontAwesomeIcon icon={faTag} />
-              51 sold
+              {product.seller.sold.length}
             </div>
             <div className="single_produc_status">online</div>
           </div>
