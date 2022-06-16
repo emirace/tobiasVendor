@@ -65,10 +65,13 @@ const TopBar = styled.div`
 const Search = styled.input.attrs((props) => ({
   placeholder: props.placeholder,
 }))`
-  background: black;
+  background: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--black-color)'
+      : 'var(--white-color)'};
   color: white;
   border: 0;
-  border-radius: 25rem;
+  border-radius: 0.2rem;
   padding: 0 10px;
   &:focus-visible {
     outline: 0;
@@ -434,7 +437,7 @@ export default function ChatScreen() {
           <TopBar>
             <div>
               <FontAwesomeIcon icon={faSearch} />
-              <Search placeholder="Search..." />
+              <Search placeholder="Search..." mode={mode} />
             </div>
             <div>
               <FontAwesomeIcon icon={faMessage} />

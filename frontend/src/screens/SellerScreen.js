@@ -398,7 +398,9 @@ export default function SellerScreen() {
                   <div>
                     <FontAwesomeIcon icon={faUser} /> Member since
                   </div>
-                  <div className="seller_single_right">2022</div>
+                  <div className="seller_single_right">
+                    {user.createdAt.substring(0, 10)}
+                  </div>
                 </div>
                 <div className="seller_single_detail">
                   <div>

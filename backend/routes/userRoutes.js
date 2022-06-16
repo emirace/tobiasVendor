@@ -209,6 +209,14 @@ userRouter.get(
         likes: user.likes,
         saved: user.saved,
         sold: user.sold,
+        createdAt: user.createdAt,
+        numReviews: user.numReviews,
+        rating: user.rating,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        address: user.address,
+        active: user.active,
+        badge: user.badge,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });
@@ -340,11 +348,17 @@ userRouter.put(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
+    const useractive = () => (req.body.active === 'yes' ? true : false);
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
-      user.isAdmin = Boolean(req.body.isAdmin);
-      user.isSeller = Boolean(req.body.isSeller);
+      user.dob = req.body.dob || user.dob;
+      user.phone = req.body.phone || user.phone;
+      user.address = req.body.address || user.address;
+      user.image = req.body.image || user.image;
+      user.active = req.body.active === '' ? user.active : useractive();
+      user.badge = req.body.badge || user.badge;
+
       const updatedUser = await user.save();
       res.send({
         message: 'User Updated',
