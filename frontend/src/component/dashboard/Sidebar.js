@@ -77,12 +77,14 @@ export default function Sidebar({ current }) {
             >
               <FontAwesomeIcon icon={faChartLine} /> Analytics
             </ListItem>
-            <ListItem
-              mode={mode}
-              className={current === 'sales' ? 'active' : ''}
-            >
-              <FontAwesomeIcon icon={faChartBar} /> Orders
-            </ListItem>
+            <Link to="/dashboard/orderlist">
+              <ListItem
+                mode={mode}
+                className={current === 'sales' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faChartBar} /> Orders
+              </ListItem>
+            </Link>
           </List>
         </Menu>
         <Menu>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Home from '../component/dashboard/Home';
 import NewProduct from '../component/dashboard/NewProduct';
 import Newuser from '../component/dashboard/Newuser';
+import OrderList from '../component/dashboard/OrderList';
 import Product from '../component/dashboard/Product';
 import ProductList from '../component/dashboard/ProductList';
 import Sidebar from '../component/dashboard/Sidebar';
@@ -43,6 +44,8 @@ export default function DashboardNewScreen() {
         return <NewProduct />;
       case 'productlist':
         return <ProductList />;
+      case 'orderlist':
+        return <OrderList />;
       case 'product':
         return <Product />;
       default:

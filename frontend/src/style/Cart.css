@@ -13,10 +13,10 @@
   background: none;
   border: 1px solid rgba(99, 91, 91, 0.2);
 }
-.btn {
+/* .btn {
   color: var(--white-color);
   margin: 0 5px;
-}
+} */
 .btn:hover {
   border: 0;
   background: var(--malon-color);

@@ -217,6 +217,8 @@ export default function UserList() {
       {console.log('user', users)}
       <DataGrid
         sx={{
+          width: '100%',
+          height: '650px',
           color: `${
             mode === 'pagebodydark'
               ? 'var(--white-color)'

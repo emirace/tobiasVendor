@@ -10,7 +10,6 @@ import { getError } from '../../utils';
 
 const ProductLists = styled.div`
   flex: 4;
-  height: 100vh;
   margin: 0 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
@@ -215,7 +214,7 @@ export default function OrderList() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Product List</Title>
+      <Title>Order List</Title>
       <DataGrid
         sx={{
           width: '100%',
@@ -226,6 +225,21 @@ export default function OrderList() {
               : 'var(--black-color)'
           }`,
           border: 'none',
+          '& p.MuiTablePagination-displayedRows': {
+            margin: 0,
+            color: `${
+              mode === 'pagebodydark'
+                ? 'var(--white-color)'
+                : 'var(--black-color)'
+            }`,
+          },
+          '& .MuiButtonBase-root': {
+            color: `${
+              mode === 'pagebodydark'
+                ? 'var(--white-color)'
+                : 'var(--black-color)'
+            }`,
+          },
           '& .MuiDataGrid-columnHeaders': {
             border: 'none',
           },

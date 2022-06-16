@@ -1,8 +1,11 @@
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Store } from '../../Store';
+import { getError } from '../../utils';
 
 const Container = styled.div`
   flex: 1;
@@ -59,61 +62,43 @@ const Button = styled.button`
 
 export default function WidgetSmall() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+
+  const [users, setUsers] = useState();
+
+  useEffect(() => {
+    const fetchAllUser = async () => {
+      try {
+        const { data } = await axios.get('/api/users', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setUsers(data);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchAllUser();
+  }, [userInfo]);
+
   return (
     <Container mode={mode}>
       <Tittle>New Join Members</Tittle>
       <List>
-        <ListItem>
-          <Img src="/images/men.png" alt="profile" />
-          <User>
-            <Username>John Doe</Username>
-            <Role>Seller</Role>
-          </User>
-          <Button>
-            <FontAwesomeIcon icon={faEye} /> Display
-          </Button>
-        </ListItem>
-        <ListItem>
-          <Img src="/images/men.png" alt="profile" />
-          <User>
-            <Username>John Doe</Username>
-            <Role>Seller</Role>
-          </User>
-          <Button>
-            <FontAwesomeIcon icon={faEye} /> Display
-          </Button>
-        </ListItem>
-        <ListItem>
-          <Img src="/images/men.png" alt="profile" />
-          <User>
-            <Username>John Doe</Username>
-            <Role>Seller</Role>
-          </User>
-          <Button>
-            <FontAwesomeIcon icon={faEye} /> Display
-          </Button>
-        </ListItem>
-        <ListItem>
-          <Img src="/images/men.png" alt="profile" />
-          <User>
-            <Username>John Doe</Username>
-            <Role>Seller</Role>
-          </User>
-          <Button>
-            <FontAwesomeIcon icon={faEye} /> Display
-          </Button>
-        </ListItem>
-        <ListItem>
-          <Img src="/images/men.png" alt="profile" />
-          <User>
-            <Username>John Doe</Username>
-            <Role>Seller</Role>
-          </User>
-          <Button>
-            <FontAwesomeIcon icon={faEye} /> Display
-          </Button>
-        </ListItem>
+        {users &&
+          users.map((u) => (
+            <ListItem>
+              <Img src={u.image} alt="profile" />
+              <User>
+                <Username>{u.name}</Username>
+                <Role>{u.isAdmin ? 'Admin' : 'User'}</Role>
+              </User>
+              <Link to={`/dashboard/user/${u._id}`}>
+                <Button>
+                  <FontAwesomeIcon icon={faEye} /> View
+                </Button>
+              </Link>
+            </ListItem>
+          ))}
       </List>
     </Container>
   );
