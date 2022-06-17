@@ -329,8 +329,6 @@ export default function NewProduct() {
     } else {
       sizes.push({ size: sizenow, value: '0' });
     }
-    console.log('sixe', sizes);
-    console.log('exist', exist);
     setTempsize(sizenow);
   };
 
@@ -400,7 +398,6 @@ export default function NewProduct() {
   const smallSizeHandler = (label, value) => {
     const sizeIndex = sizes.findIndex((x) => x.size === label);
     sizes[sizeIndex].value = value;
-    console.log('value', sizes);
   };
   //   const deleteSizeHandler = (label) => {
   //     const newsizes = sizes.filter((s) => {

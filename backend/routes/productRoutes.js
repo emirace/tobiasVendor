@@ -44,11 +44,8 @@ productRouter.post(
       // overview,
     } = req.body;
     const slugName = slugify(name);
-    console.log('sizes1', sizes);
     const images = [image2, image3, image4];
     const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
-    console.log('sizes2', sizes);
-    console.log('count', countInStock);
     const newProduct = new Product({
       name,
       seller: req.user._id,
@@ -87,20 +84,33 @@ productRouter.put(
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
-    if (product) {
-      product.name = req.body.name;
-      product.price = req.body.price;
-      product.image = req.body.image;
-      product.images = req.body.images;
-      product.category = req.body.category;
-      product.brand = req.body.brand;
-      product.countInStock = req.body.countInStock;
-      product.description = req.body.description;
+    const slugName = slugify(req.body.name);
+    const images = [req.body.image2, req.body.image3, req.body.image4];
+    const countInStock = req.body.sizes.reduce(
+      (a, b) => (a = a + Number(b.value)),
+      0
+    );
+    if (product.seller === req.user._id || req.user.isAdmin) {
+      if (product) {
+        product.name = req.body.name || product.name;
+        product.price = req.body.price || product.price;
+        product.actualPrice = req.body.discount || product.actualPrice;
+        product.category = req.body.category || product.category;
+        product.image = req.body.image1 || product.image;
+        product.images = images || product.images;
+        product.brand = req.body.brand || product.brand;
+        product.countInStock = countInStock || product.countInStock;
+        product.description = req.body.description || product.description;
+        product.specification = req.body.specification || product.specification;
+        product.keyFeatures = req.body.feature || product.keyFeatures;
 
-      await product.save();
-      res.send({ message: 'Product Updated' });
+        await product.save();
+        res.send({ message: 'Product Updated' });
+      } else {
+        res.status(404).send({ message: '{Product Not Found' });
+      }
     } else {
-      res.status(404).send({ message: '{Product Not Found' });
+      res.status(404).send({ message: "can't edit someelse product" });
     }
   })
 );
