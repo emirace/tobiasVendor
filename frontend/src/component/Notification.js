@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Store } from '../Store';
+import { Link } from 'react-router-dom';
 
 const NotificationCon = styled.div`
   position: fixed;
@@ -67,7 +68,9 @@ export default function Notification() {
         <FontAwesomeIcon className="warning" icon={faBell} />
         <Content>
           <p>{note.text}</p>
-          <button> {note.buttonText}</button>
+          <Link to={note.link} onClick={closeHandler}>
+            <button> {note.buttonText}</button>
+          </Link>
         </Content>
         <FontAwesomeIcon
           onClick={closeHandler}

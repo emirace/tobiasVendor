@@ -11,6 +11,7 @@ import Product from '../component/Product';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBolt,
+  faCirclePlus,
   faGlobe,
   faHeart,
   faLocationDot,
@@ -33,9 +34,11 @@ const Right = styled.div`
 `;
 const Tab = styled.div`
   display: flex;
+  justify-content: center;
   margin-bottom: 5px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+  border-radius: 0.2rem;
 `;
 const TabItem = styled.div`
   display: flex;
@@ -44,7 +47,7 @@ const TabItem = styled.div`
   margin: 10px;
   position: relative;
   text-transform: capitalize;
-  min-width: 50px;
+  min-width: 70px;
   &:hover {
     color: var(--orange-color);
   }
@@ -65,8 +68,9 @@ const TabItem = styled.div`
 const Content = styled.div`
   display: flex;
   padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+  border-radius: 0.2rem;
   width: 100%;
   height: 100%;
   flex-wrap: wrap;
@@ -88,6 +92,40 @@ const ProductCont = styled.div`
 
 const ReviewsClick = styled.div`
   cursor: pointer;
+`;
+
+const AddProduct = styled.div`
+  display: flex;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+  &:hover {
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+  }
+  & svg {
+    color: var(--orange-color);
+    font-size: 50px;
+    margin-bottom: 5px;
+  }
+`;
+
+const SellerLeft = styled.div`
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+  border-radius: 0.2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 15px;
+  margin-bottom: 35px;
 `;
 
 const reducer = (state, action) => {
@@ -129,7 +167,7 @@ export default function SellerScreen() {
   const { id: sellerId } = params;
 
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, mode } = state;
 
   const [displayTab, setDisplayTab] = useState('all');
   const [showModel, setShowModel] = useState(false);
@@ -213,6 +251,14 @@ export default function SellerScreen() {
       case 'all':
         return (
           <>
+            <ProductCont>
+              <Link to="/dashboard/newproduct">
+                <AddProduct mode={mode}>
+                  <FontAwesomeIcon icon={faCirclePlus} />
+                  <span>Add Product</span>
+                </AddProduct>
+              </Link>
+            </ProductCont>
             {loading ? (
               <LoadingBox></LoadingBox>
             ) : error ? (
@@ -335,7 +381,7 @@ export default function SellerScreen() {
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <>
-            <div className="seller_profile_block">
+            <SellerLeft mode={mode}>
               <div className="seller_image_group">
                 <img
                   src={user.image}
@@ -415,18 +461,18 @@ export default function SellerScreen() {
                   <div className="seller_single_right">English</div>
                 </div>
               </div>
-            </div>
-            <div className="seller_profile_block">
+            </SellerLeft>
+            <SellerLeft mode={mode}>
               <div className="seller_profile_detail seller_detail_first">
                 <div className="seller_detail_title">About Seller</div>
                 <div className="seller_detail_content">{user.about}</div>
               </div>
-            </div>
+            </SellerLeft>
           </>
         )}
       </div>
       <Right>
-        <Tab>
+        <Tab mode={mode}>
           <TabItem
             className={displayTab === 'all' && 'active'}
             onClick={() => setDisplayTab('all')}
@@ -460,7 +506,7 @@ export default function SellerScreen() {
             </TabItem>
           )}
         </Tab>
-        <Content>{tabSwitch(displayTab)}</Content>
+        <Content mode={mode}>{tabSwitch(displayTab)}</Content>
       </Right>
       {/* <div className="seller_right">
         <div className="seller_right_products">

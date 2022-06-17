@@ -72,7 +72,6 @@ productRouter.post(
       countInStock: countInStock,
     });
     const product = await newProduct.save();
-    console.log(product);
     res.send({ message: 'Product Created', product });
   })
 );
@@ -83,14 +82,19 @@ productRouter.put(
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate(
+      'seller',
+      'seller._id'
+    );
     const slugName = slugify(req.body.name);
     const images = [req.body.image2, req.body.image3, req.body.image4];
     const countInStock = req.body.sizes.reduce(
       (a, b) => (a = a + Number(b.value)),
       0
     );
-    if (product.seller === req.user._id || req.user.isAdmin) {
+    const useractive = () => (req.body.active === 'yes' ? true : false);
+    const userbadge = () => (req.body.badge === 'yes' ? true : false);
+    if (product.seller._id.toString() === req.user._id || req.user.isAdmin) {
       if (product) {
         product.name = req.body.name || product.name;
         product.price = req.body.price || product.price;
@@ -103,14 +107,20 @@ productRouter.put(
         product.description = req.body.description || product.description;
         product.specification = req.body.specification || product.specification;
         product.keyFeatures = req.body.feature || product.keyFeatures;
+        product.badge = req.body.badge === '' ? req.user.badge : userbadge();
+        product.active =
+          req.body.active === '' ? req.user.active : useractive();
+        product.sizes = req.body.sizes || product.sizes;
 
         await product.save();
         res.send({ message: 'Product Updated' });
       } else {
-        res.status(404).send({ message: '{Product Not Found' });
+        res.status(404).send({ message: 'Product Not Found' });
+        throw { message: 'Product Not Found' };
       }
     } else {
       res.status(404).send({ message: "can't edit someelse product" });
+      throw { message: 'you cannot message yourself' };
     }
   })
 );

@@ -225,6 +225,21 @@ export default function UserList() {
               : 'var(--black-color)'
           }`,
           border: 'none',
+          '& p.MuiTablePagination-displayedRows': {
+            margin: 0,
+            color: `${
+              mode === 'pagebodydark'
+                ? 'var(--white-color)'
+                : 'var(--black-color)'
+            }`,
+          },
+          '& .MuiButtonBase-root': {
+            color: `${
+              mode === 'pagebodydark'
+                ? 'var(--white-color)'
+                : 'var(--black-color)'
+            }`,
+          },
           '& .MuiDataGrid-columnHeaders': {
             border: 'none',
           },

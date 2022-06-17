@@ -74,6 +74,7 @@ export default function Product(props) {
         text: 'Item added to Cart',
         showStatus: true,
         buttonText: 'Checkout',
+        link: '/cart',
       },
     });
   };

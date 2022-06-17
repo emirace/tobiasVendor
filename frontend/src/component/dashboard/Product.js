@@ -60,6 +60,10 @@ const InfoTop = styled.div`
 `;
 const InfoBottom = styled.div`
   margin-top: 10px;
+  & a {
+    color: var(--orange-color);
+    font-size: 14px;
+  }
 `;
 const Image = styled.img`
   width: 40px;
@@ -72,7 +76,7 @@ const Name = styled.div`
   font-weight: 600;
 `;
 const InfoItem = styled.div`
-  width: 150px;
+  width: 50%;
   display: flex;
   justify-content: space-between;
 `;
@@ -394,8 +398,8 @@ export default function Product() {
 
         setProduct(data);
         setName(data.name);
-        setActive(data.active);
-        setBadge(data.badge);
+        data.active ? setActive('yes') : setActive('no');
+        data.badge ? setBadge('yes') : setBadge('no');
         setImage1(data.image);
         setImage2(data.images[0]);
         setImage3(data.images[1]);
@@ -423,6 +427,8 @@ export default function Product() {
           name,
           price,
           image1,
+          badge,
+          active,
           image2,
           image3,
           image4,
@@ -552,7 +558,6 @@ export default function Product() {
     ((product.price - product.actualPrice) / product.price) * 100;
   return (
     <ProductC>
-      {console.log('percent', percentage.toString())}
       <ProductTitleCont>
         <Title>Product</Title>
         <Link to="/dashboard/newproduct">
@@ -587,6 +592,9 @@ export default function Product() {
               <InfoKey>in stock:</InfoKey>
               <InfoValue>{product.countInStock > 0 ? 'yes' : 'no'}</InfoValue>
             </InfoItem>
+            <Link to={`/product/${product.slug}`}>
+              Click to view full details
+            </Link>
           </InfoBottom>
         </TopRight>
       </Top>
@@ -594,52 +602,53 @@ export default function Product() {
         <Form onSubmit={submitHandler}>
           <FormLeft>
             <Label>Product Name</Label>
-            <Input type="text" placeholder={name} mode={mode} />
+            <Input
+              type="text"
+              placeholder={name}
+              mode={mode}
+              onChange={(e) => setName(e.target.value)}
+            />
             <Label>Active</Label>
             <Gender mode={mode}>
               <Input
                 type="radio"
-                name="gender"
-                id="yes"
+                name="active"
+                id="active"
                 value="yes"
-                checked={
-                  active === 'yes' ? true : product.active ? true : false
-                }
+                checked={active === 'yes' ? true : false}
                 onChange={(e) => setActive(e.target.value)}
               />
-              <Label htmlFor="yes">Yes</Label>
+              <Label htmlFor="active">Yes</Label>
               <Input
                 type="radio"
-                name="gender"
-                id="no"
+                name="active"
+                id="active2"
                 value="no"
-                checked={
-                  active === 'no' ? true : !product.active ? true : false
-                }
+                checked={active === 'no' ? true : false}
                 onChange={(e) => setActive(e.target.value)}
               />
-              <Label htmlFor="no">No</Label>
+              <Label htmlFor="active2">No</Label>
             </Gender>
             <Label>Badge</Label>
             <Gender mode={mode}>
               <Input
                 type="radio"
                 name="badge"
-                id="yes"
+                id="badgeyes"
                 value="yes"
-                checked={badge === 'yes' ? true : product.badge ? true : false}
+                checked={badge === 'yes' ? true : false}
                 onChange={(e) => setBadge(e.target.value)}
               />
-              <Label htmlFor="yes">Yes</Label>
+              <Label htmlFor="badgeyes">Yes</Label>
               <Input
                 type="radio"
                 name="badge"
-                id="no"
+                id="badgeno"
                 value="no"
-                checked={badge === 'no' ? true : !product.badge ? true : false}
+                checked={badge === 'no' ? true : false}
                 onChange={(e) => setBadge(e.target.value)}
               />
-              <Label htmlFor="no">No</Label>
+              <Label htmlFor="badgeno">No</Label>
             </Gender>
             <Item>
               <Label>Category</Label>
@@ -719,7 +728,6 @@ export default function Product() {
               <Item className="half">
                 <Label>Discount</Label>
                 <Discount>
-                  {console.log(product)}
                   <TextInput
                     placeholder={percentage.toString().substring(0, 5)}
                     className="half"
@@ -782,8 +790,8 @@ export default function Product() {
               </FormControl>
             </Item>
             <SmallItems>
-              {sizes.map((s) => (
-                <SmallItem>
+              {sizes.map((s, index) => (
+                <SmallItem key={index}>
                   <Label>{s.size}</Label>:
                   <SizeInput
                     placeholder={s.value}

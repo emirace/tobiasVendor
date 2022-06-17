@@ -295,7 +295,7 @@ export default function ProductScreen() {
         setShipping(!shipping);
         break;
       case 'features':
-        setFeatures(!specification);
+        setFeatures(!features);
         break;
       case 'specification':
         setSpecification(!specification);
@@ -306,7 +306,14 @@ export default function ProductScreen() {
   };
   const saveItem = async () => {
     if (!userInfo) {
-      toast.error('login to save item');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'login to save item',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
     if (product.seller._id === userInfo._id) {
@@ -549,7 +556,14 @@ export default function ProductScreen() {
       );
       navigate(`/messages?conversation=${product.seller._id}`);
     } catch (err) {
-      console.log(err, err.message);
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
     }
   };
 
@@ -762,7 +776,7 @@ export default function ProductScreen() {
               <IconsTooltips className="tiptools" tips="Share " />
             </IconContainer>
             <span className={share ? 'active2' : ''}>
-              <ShareButton url={'/'} />
+              <ShareButton url={`fb.com`} />
             </span>
           </div>
           <div>
@@ -773,8 +787,11 @@ export default function ProductScreen() {
             <div className="sp_actual_price">${product.actualPrice}</div>
             <div className="sp_discount_price">${product.price}</div>
             <div className="sp_discount">
-              ( {((product.price - product.actualPrice) / product.price) * 100}%
-              )
+              ({' '}
+              {(((product.price - product.actualPrice) / product.price) * 100)
+                .toString()
+                .substring(0, 5)}
+              % )
             </div>
           </div>
           <div className="">
@@ -842,7 +859,9 @@ export default function ProductScreen() {
                 add to cart
               </button>
 
-              <button className="sp_wishlist_btn ">wishlist</button>
+              <button className="sp_wishlist_btn " onClick={saveItem}>
+                wishlist
+              </button>
             </div>
             <div className="sp_more_detail">
               <div

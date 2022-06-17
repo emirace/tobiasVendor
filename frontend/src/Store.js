@@ -26,6 +26,7 @@ const initialState = {
     text: '',
     buttonText: '',
     showStatus: false,
+    link: '',
   },
   toast: {
     message: '',
@@ -109,6 +110,7 @@ function reducer(state, action) {
           text: action.payload.text,
           buttonText: action.payload.buttonText,
           showStatus: action.payload.showStatus,
+          link: action.payload.link,
         },
       };
     case 'REMOVE_NOTIFICAATION':
@@ -117,6 +119,7 @@ function reducer(state, action) {
         notification: {
           text: '',
           buttonText: '',
+          link: '',
           showStatus: false,
         },
       };
