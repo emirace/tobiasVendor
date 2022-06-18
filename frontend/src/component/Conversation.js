@@ -103,7 +103,7 @@ export default function Conversation({ conversation, status, currentChat }) {
         <ProfileDetail>
           <Name>{user.name}</Name>
           <LastMsg>
-            {message.messages
+            {message.message && message.messages.length > 0
               ? message.messages[message.messages.length - 1].text
               : 'No messages'}
           </LastMsg>

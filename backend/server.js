@@ -9,9 +9,6 @@ import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import uploadRouter from './routes/UploadRoutes.js';
-import socialRoutes from './routes/socialRoutes.js';
-import passport from 'passport';
-import './passport.js';
 import session from 'express-session';
 import cookieSession from 'cookie-session';
 import conversationRouter from './routes/conversationRoutes.js';
@@ -42,8 +39,6 @@ app.use(
 );
 
 app.use(session({ secret: 'SECRET', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
@@ -54,7 +49,6 @@ app.use('/api/seed', seedRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
-app.use('/api/socials', socialRoutes);
 app.use('/api/conversations', conversationRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/comments', commentRouter);
