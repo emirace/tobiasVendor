@@ -103,7 +103,7 @@ export default function SignupScreen() {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      window.location.href = redirect || '/';
     } catch (err) {
       toast.error(getError(err));
     }

@@ -327,7 +327,6 @@ userRouter.get(
 userRouter.get(
   '/:id',
   isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user) {
@@ -346,7 +345,6 @@ userRouter.get(
 userRouter.put(
   '/:id',
   isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     const useractive = () => (req.body.active === 'yes' ? true : false);

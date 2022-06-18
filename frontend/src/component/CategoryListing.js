@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../style/CategoryListing.css';
 
 export default function CategoryListing(props) {
@@ -7,7 +8,9 @@ export default function CategoryListing(props) {
     <div className="catelisting_container">
       <div className="categorylisting_img">
         <img src={image} alt="" />
-        <div className="categorylisting_title">{title}</div>
+        <Link to={`/category/${title}`}>
+          <div className="categorylisting_title">{title}</div>
+        </Link>
       </div>
     </div>
   );

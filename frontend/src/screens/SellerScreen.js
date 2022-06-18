@@ -16,6 +16,7 @@ import {
   faHeart,
   faLocationDot,
   faMessage,
+  faPen,
   faStar,
   faTag,
   faUser,
@@ -410,7 +411,9 @@ export default function SellerScreen() {
                   <FontAwesomeIcon icon={faStar} />
                 </div>
               </div>
-              <FontAwesomeIcon className="seller_profile_icon" icon={faHeart} />
+              <Link to="/dashboard/user">
+                <FontAwesomeIcon className="seller_profile_icon" icon={faPen} />
+              </Link>
               <div className="seller_profile_status">online</div>
               <div className="seller_profile_name">{user.name}</div>
               <div className="seller_profile_follow">

@@ -231,7 +231,7 @@ export default function ProductsScreen() {
                       ></img>
                       <div className="main-item-text">
                         <h4>Classic Men Wears</h4>
-                        <a href="/">Shop Now</a>
+                        <Link to="/category/Classic Men Wears">Shop Now</Link>
                       </div>
                     </div>
                   </Col>
@@ -244,7 +244,7 @@ export default function ProductsScreen() {
                       ></img>
                       <div className="main-item-text">
                         <h4>Smart Kid's Wears</h4>
-                        <a href="/">Shop Now</a>
+                        <Link to="/category/Smart Kid's Wears">Shop Now</Link>
                       </div>
                     </div>
                   </Col>
@@ -258,7 +258,9 @@ export default function ProductsScreen() {
                     ></img>
                     <div className="main-item-text">
                       <h1>High Taste Women Wears</h1>
-                      <button class="search-btn1">Shop Now</button>
+                      <Link to="/category/Womens Wears">
+                        <button className="search-btn1">Shop Now</button>
+                      </Link>
                     </div>
                   </div>
                 </Col>
@@ -287,13 +289,13 @@ export default function ProductsScreen() {
               <h2 className="product-category1">New deals</h2>
             </div>
             <button onClick={() => sliderHandler('left')} className="pre-btn1">
-              <i class="fa fa-angle-left"></i>
+              <i className="fa fa-angle-left"></i>
             </button>
             <button
               onClick={() => sliderHandler('right')}
               className="next-btn1"
             >
-              <i class="fa fa-angle-right"></i>
+              <i className="fa fa-angle-right"></i>
             </button>
             <div className="product-container1 scroll_snap">
               {products.map((product) => (
@@ -339,7 +341,11 @@ export default function ProductsScreen() {
               <div className="row">
                 <div className=" col-md-6 p-0">
                   <div className="discount_pic">
-                    <img src="/images/t3.jpg" alt="" class="img-fluid"></img>
+                    <img
+                      src="/images/t3.jpg"
+                      alt=""
+                      className="img-fluid"
+                    ></img>
                   </div>
                 </div>
                 <div className=" col-md-6 p-0">
@@ -352,19 +358,19 @@ export default function ProductsScreen() {
                       </h5>
                     </div>
                     <div className="discount_countdown">
-                      <div class="countdown_item">
+                      <div className="countdown_item">
                         <span>22</span>
                         <p>Days</p>
                       </div>
-                      <div class="countdown_item">
+                      <div className="countdown_item">
                         <span>18</span>
                         <p>Hours</p>
                       </div>
-                      <div class="countdown_item">
+                      <div className="countdown_item">
                         <span>46</span>
                         <p>Min</p>
                       </div>
-                      <div class="countdown_item">
+                      <div className="countdown_item">
                         <span>05</span>
                         <p>Sec</p>
                       </div>

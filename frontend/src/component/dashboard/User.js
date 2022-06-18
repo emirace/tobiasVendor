@@ -307,7 +307,7 @@ export default function User() {
       }
     } catch (err) {
       dispatch({ type: 'FETCH_FAIL' });
-      console.log(err);
+      console.log(getError(err));
     }
   }, [id, userInfo]);
 
