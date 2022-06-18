@@ -196,7 +196,14 @@ export default function Footer() {
           src="images/wave23.png"
           alt=""
         ></img>
-        <div className="footer_black_top"></div>
+        <div className="footer_black_top">
+          <img src="/images/gucci.png" alt="gucci" />
+          <img src="/images/dg.png" alt="gucci" />
+          <img src="/images/prada.png" alt="luis" />
+          <img src="/images/luis.png" alt="luis" />
+          <img src="/images/Versace.png" alt="luis" />
+          <img src="/images/Chanel.png" alt="luis" />
+        </div>
       </div>
       <div className="curve_color">
         <img className="wave_img bg_black" src="images/wave.png" alt=""></img>

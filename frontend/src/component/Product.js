@@ -11,16 +11,6 @@ import Model from '../component/Model';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
-const Sold = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--orange-color);
-`;
-
 const ModelImg = styled.img.attrs((props) => ({
   src: props.src,
   alt: props.alt,
@@ -172,13 +162,6 @@ export default function Product(props) {
             </span>
           </li>
         </ul>
-        {product.sold && (
-          <Link to={`/product/${product.slug}`}>
-            <div className="overlay">
-              <Sold>SOLD</Sold>
-            </div>
-          </Link>
-        )}
       </div>
       <div className="product-info1">
         <h2 className="product-brand1">

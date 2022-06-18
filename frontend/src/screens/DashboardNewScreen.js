@@ -9,10 +9,12 @@ import OrderList from '../component/dashboard/OrderList';
 import Product from '../component/dashboard/Product';
 import ProductList from '../component/dashboard/ProductList';
 import Sidebar from '../component/dashboard/Sidebar';
+import Analytics from '../component/dashboard/Analytics';
 import User from '../component/dashboard/User';
 import UserList from '../component/dashboard/UserList';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import { Helmet } from 'react-helmet-async';
 
 const Container = styled.div`
   display: flex;
@@ -48,12 +50,17 @@ export default function DashboardNewScreen() {
         return <OrderList />;
       case 'product':
         return <Product />;
+      case 'analytics':
+        return <Analytics />;
       default:
         break;
     }
   };
   return (
     <Container>
+      <Helmet>
+        <title>Dashboard</title>
+      </Helmet>
       <Sidebar current={tab} />
       {tabSwitch(displayTab)}
     </Container>

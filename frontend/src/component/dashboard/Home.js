@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import { Store } from '../../Store';
 import { getError } from '../../utils';
@@ -9,6 +9,7 @@ import Chart from './Chart';
 import FeatureInfo from './FeatureInfo';
 import WidgetLarge from './WidgetLarge';
 import WidgetSmall from './WidgetSmall';
+import WidgetSmallProduct from './WidgetSmallProduct';
 
 const Container = styled.div`
   flex: 4;
@@ -47,25 +48,65 @@ export default function Home() {
   const { userInfo } = state;
 
   const [{ loading, users, error }, dispatch] = useReducer(reducer, {
-    loading: true,
+    loading: false,
     users: [],
     error: '',
   });
+  const [products, setProduct] = useState();
 
   useEffect(() => {
     const fetchAllUsers = async () => {
+      if (userInfo.isAdmin) {
+        try {
+          dispatch({ type: 'USERS_FETCH' });
+          const { data } = await axios.get('/api/orders/summary', {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          dispatch({ type: 'USERS_SUCCESS', payload: data });
+        } catch (err) {
+          dispatch({ type: 'USERS_FAIL', payload: err });
+
+          console.log(getError(err));
+        }
+      } else {
+        try {
+          dispatch({ type: 'USERS_FETCH' });
+          const { data } = await axios.get(
+            `/api/orders/seller/${userInfo._id}`,
+            {
+              headers: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
+          dispatch({ type: 'USERS_SUCCESS', payload: data });
+          console.log('data', data);
+        } catch (err) {
+          dispatch({ type: 'USERS_FAIL', payload: err });
+
+          console.log(getError(err));
+        }
+      }
+    };
+
+    fetchAllUsers();
+  }, [userInfo]);
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        dispatch({ type: 'USERS_FETCH' });
-        const { data } = await axios.get('/api/orders/summary', {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
-        dispatch({ type: 'USERS_SUCCESS', payload: data });
+        const { data } = await axios.get(
+          `/api/products/seller/${userInfo._id}?page=${1}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        setProduct(data);
       } catch (err) {
         console.log(getError(err));
       }
     };
-    fetchAllUsers();
+    fetchData();
   }, [userInfo]);
+  console.log(products);
 
   const data = [
     {
@@ -97,6 +138,7 @@ export default function Home() {
       uv: 3490,
     },
   ];
+  console.log(users);
   return (
     <Container>
       {loading ? (
@@ -106,18 +148,51 @@ export default function Home() {
       ) : (
         <>
           <Widgets>
-            {console.log(users)}
-            <FeatureInfo type="user" number={users.users[0].numUsers} />
-            <FeatureInfo type="order" number={users.orders[0].numOrders} />
+            {userInfo.isAdmin && users.orders ? (
+              <FeatureInfo type="user" number={users.users[0].numUsers} />
+            ) : (
+              ''
+            )}
+            <FeatureInfo
+              type="order"
+              number={
+                users.orders && userInfo.isAdmin
+                  ? users.orders[0].numOrders
+                  : users.length
+              }
+            />
             <FeatureInfo
               type="product"
-              number={users.products[0].numProducts}
+              number={
+                users.orders && userInfo.isAdmin
+                  ? users.products[0].numProducts
+                  : products
+                  ? products.products.length
+                  : ''
+              }
             />
-            <FeatureInfo type="earning" number={users.orders[0].numSales} />
+            <FeatureInfo
+              type="earning"
+              number={
+                users.orders && userInfo.isAdmin
+                  ? users.orders[0].numSales
+                  : '565'
+              }
+            />
           </Widgets>
-          <Chart title="Users Analytics" data={data} dataKey="uv" grid />
+          <Chart
+            title="Product Sales Analytics"
+            data={data}
+            dataKey="uv"
+            grid
+          />
           <HomeWidget>
-            <WidgetSmall />
+            {userInfo.isAdmin ? (
+              <WidgetSmall />
+            ) : (
+              <WidgetSmallProduct products={products && products.products} />
+            )}
+
             <WidgetLarge />
           </HomeWidget>
         </>

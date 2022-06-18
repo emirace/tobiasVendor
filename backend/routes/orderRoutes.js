@@ -20,7 +20,6 @@ orderRouter.get(
 orderRouter.get(
   '/seller/:id',
   isAuth,
-  isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const seller = req.params.id;
 
@@ -98,6 +97,53 @@ orderRouter.get(
       },
     ]);
     res.send({ users, orders, dailyOrders, products, productCategories });
+  })
+);
+orderRouter.get(
+  '/summary/user',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const seller = req.user._id;
+    const orders = await Order.aggregate([
+      { $match: { seller: seller } },
+      {
+        $group: {
+          _id: null,
+          numOrders: { $sum: 1 },
+          numSales: { $sum: '$totalPrice' },
+        },
+      },
+    ]);
+    const products = await Product.aggregate([
+      { $match: { seller: seller } },
+      {
+        $group: {
+          _id: null,
+          numProducts: { $sum: 1 },
+        },
+      },
+    ]);
+    const dailyOrders = await Order.aggregate([
+      { $match: { seller: seller } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          orders: { $sum: 1 },
+          sales: { $sum: '$totalPrice' },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+    const productCategories = await Product.aggregate([
+      { $match: { seller: seller } },
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    res.send({ orders, dailyOrders, products, productCategories });
   })
 );
 

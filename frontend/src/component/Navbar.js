@@ -433,7 +433,9 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
       </Wrapper2>
       <Category>
         <CategoryGroup>
-          <CategoryItem>Womenswear</CategoryItem>
+          <Link to="/category/womenswear">
+            <CategoryItem>Womenswear</CategoryItem>
+          </Link>
           <SubCategory bg={subCateMode}>
             <SubCategoryItem>Sub Category</SubCategoryItem>
             <SubCategoryItem>Sub Category</SubCategoryItem>
@@ -441,17 +443,27 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
           </SubCategory>
         </CategoryGroup>
         <CategoryGroup>
-          <CategoryItem>Menswear</CategoryItem>
+          <Link to="/category/menswear">
+            <CategoryItem>Menswear</CategoryItem>
+          </Link>
           <SubCategory bg={subCateMode}>
             <SubCategoryItem>Sub Category 2</SubCategoryItem>
             <SubCategoryItem>Sub Category 2</SubCategoryItem>
             <SubCategoryItem>Sub Category 2</SubCategoryItem>
           </SubCategory>
         </CategoryGroup>
-        <CategoryItem>Kids</CategoryItem>
-        <CategoryItem>Curve +Plus</CategoryItem>
-        <CategoryItem>Shop by brand</CategoryItem>
-        <CategoryItem>Shop by outfit</CategoryItem>
+        <Link to="/category/kids">
+          <CategoryItem>Kids</CategoryItem>
+        </Link>
+        <Link to="/category/curve-plus">
+          <CategoryItem>Curve +Plus</CategoryItem>
+        </Link>
+        <Link to="/brand">
+          <CategoryItem>Shop by brand</CategoryItem>
+        </Link>
+        <Link to="shopbyoutfit">
+          <CategoryItem>Shop by outfit</CategoryItem>
+        </Link>
       </Category>
     </Container>
   );

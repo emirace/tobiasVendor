@@ -188,10 +188,6 @@ export default function ProductListScreen() {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
 
-        // const { data } = await axios.get(`/api/products/admin?page=${page}`, {
-        //   headers: { Authorization: `Bearer ${userInfo.token}` },
-        // });
-
         const { data } = await axios.get(
           `/api/products/${isSellerMode ? 'seller/' : 'admin'}${
             isSellerMode ? userInfo._id : ''

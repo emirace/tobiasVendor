@@ -79,6 +79,7 @@ const Content = styled.div`
   }
 `;
 const ProductCont = styled.div`
+  position: relative;
   width: 214px;
   height: 450px;
   margin: 10px;
@@ -126,6 +127,16 @@ const SellerLeft = styled.div`
   align-items: center;
   padding: 0 15px;
   margin-bottom: 35px;
+`;
+
+const Sold = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--orange-color);
 `;
 
 const reducer = (state, action) => {
@@ -311,6 +322,13 @@ export default function SellerScreen() {
                   product.sold && (
                     <ProductCont key={product._id}>
                       <Product product={product} />
+                      {product.sold && (
+                        <Link to={`/product/${product.slug}`}>
+                          <div className="overlay">
+                            <Sold>SOLD</Sold>
+                          </div>
+                        </Link>
+                      )}
                     </ProductCont>
                   )
               )

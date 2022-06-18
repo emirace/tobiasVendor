@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -23,6 +23,7 @@ import Notification from '../component/Notification';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { Store } from '../Store';
 //import data from '../data';
 
 const Seller = styled.div`
@@ -70,7 +71,15 @@ const reducer = (state, action) => {
   }
 };
 
+const AppSection = styled.div`
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+  border-radius: 0.2rem;
+`;
+
 export default function ProductsScreen() {
+  const { state } = useContext(Store);
+  const { mode } = state;
   const [{ loading, loadingUser, error, sellers, products }, dispatch] =
     useReducer(reducer, {
       products: [],
@@ -300,7 +309,7 @@ export default function ProductsScreen() {
               ))}
             </div>
           </section>
-          <section>
+          <AppSection mode={mode}>
             <div className="downloadapp_section">
               <div className="downloadapp_left">
                 <div className="downloadapp_section_text">
@@ -323,7 +332,7 @@ export default function ProductsScreen() {
                 />
               </div>
             </div>
-          </section>
+          </AppSection>
 
           <section className="discount spad">
             <div className="container">
@@ -392,9 +401,11 @@ export default function ProductsScreen() {
                               alt={seller.name}
                               className="carousel_profile_image"
                             ></img>
-                            <div className="seller_profile_badge">
-                              <FontAwesomeIcon icon={faStar} />
-                            </div>
+                            {seller.badge && (
+                              <div className="seller_profile_badge">
+                                <FontAwesomeIcon icon={faStar} />
+                              </div>
+                            )}
                           </Imagediv>
                           <p className="">{seller.name}</p>
                         </div>

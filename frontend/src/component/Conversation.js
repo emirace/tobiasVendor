@@ -37,10 +37,11 @@ const Name = styled.div`
   text-transform: capitalize;
 `;
 const LastMsg = styled.div`
-  font-size: 14px;
+  font-size: 12px;
+  display: flex;
+  justify-content: end;
   width: 250px;
   overflow: hidden;
-  display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
@@ -74,6 +75,24 @@ export default function Conversation({ conversation, status, currentChat }) {
     };
     getUser();
   }, [conversation, userInfo]);
+
+  const [message, setMessage] = useState({});
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const { data } = await axios.get(`/api/messages/${conversation._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setMessage(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [conversation, userInfo]);
+  console.log(message.messages);
+
   return (
     <>
       <User
@@ -84,8 +103,9 @@ export default function Conversation({ conversation, status, currentChat }) {
         <ProfileDetail>
           <Name>{user.name}</Name>
           <LastMsg>
-            it is nice talking eith ice talking eith ice talking eith yo talking
-            eith you
+            {message.messages
+              ? message.messages[message.messages.length - 1].text
+              : 'No messages'}
           </LastMsg>
         </ProfileDetail>
         {status && <Badge />}

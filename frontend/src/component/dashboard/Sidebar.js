@@ -56,7 +56,7 @@ const ListItem = styled.li`
 
 export default function Sidebar({ current }) {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
   return (
     <Container mode={mode}>
       <Wrapper>
@@ -71,12 +71,14 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
             </Link>
-            <ListItem
-              mode={mode}
-              className={current === 'analytics' ? 'active' : ''}
-            >
-              <FontAwesomeIcon icon={faChartLine} /> Analytics
-            </ListItem>
+            <Link to="/dashboard/analytics">
+              <ListItem
+                mode={mode}
+                className={current === 'analytics' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faChartLine} /> Analytics
+              </ListItem>
+            </Link>
             <Link to="/dashboard/orderlist">
               <ListItem
                 mode={mode}
@@ -90,14 +92,17 @@ export default function Sidebar({ current }) {
         <Menu>
           <Title>Quick Menu</Title>
           <List>
-            <Link to="/dashboard/userlist">
-              <ListItem
-                mode={mode}
-                className={current === 'userlist' ? 'active' : ''}
-              >
-                <FontAwesomeIcon icon={faUser} /> Users
-              </ListItem>
-            </Link>
+            {userInfo.isAdmin && (
+              <Link to="/dashboard/userlist">
+                <ListItem
+                  mode={mode}
+                  className={current === 'userlist' ? 'active' : ''}
+                >
+                  <FontAwesomeIcon icon={faUser} /> Users
+                </ListItem>
+              </Link>
+            )}
+
             <Link to="/dashboard/productlist">
               <ListItem
                 mode={mode}
@@ -112,12 +117,14 @@ export default function Sidebar({ current }) {
             >
               <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
             </ListItem>
-            <ListItem
-              mode={mode}
-              className={current === 'report' ? 'active' : ''}
-            >
-              <FontAwesomeIcon icon={faChartColumn} /> Reports
-            </ListItem>
+            {userInfo.isAdmin && (
+              <ListItem
+                mode={mode}
+                className={current === 'report' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faChartColumn} /> Reports
+              </ListItem>
+            )}
           </List>
         </Menu>
         <Menu>

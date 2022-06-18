@@ -97,14 +97,22 @@ export default function ProductList() {
       products: [],
       error: '',
     });
-
+  const sellerMode = () => {
+    return userInfo.isAdmin ? false : true;
+  };
+  const isSellerMode = sellerMode();
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: 'USERS_FETCH' });
-        const { data } = await axios.get('/api/products/admin', {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/products/${isSellerMode ? 'seller/' : 'admin'}${
+            isSellerMode ? userInfo._id : ''
+          }`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         dispatch({ type: 'USERS_SUCCESS', payload: data.products });
       } catch (err) {
         console.log(getError(err));

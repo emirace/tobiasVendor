@@ -68,6 +68,9 @@ import MobileProfileScreen from './screens/MobileProfileScreen';
 import Notification from './component/Notification';
 import ToastNotification from './component/ToastNotification';
 import DashboardNewScreen from './screens/DashboardNewScreen';
+import CategorypageScreen from './screens/CategorypageScreen';
+import BrandScreen from './screens/BrandScreen';
+import ShopByOutfit from './screens/ShopByOutfit';
 
 const NavCont = styled.div`
   position: relation;
@@ -287,6 +290,14 @@ function App() {
                     path="/dashboard/:tab"
                     element={<DashboardNewScreen />}
                   />
+
+                  <Route
+                    path="/category/:name"
+                    element={<CategorypageScreen />}
+                  />
+
+                  <Route path="/brand" element={<BrandScreen />} />
+                  <Route path="/shopbyoutfit" element={<ShopByOutfit />} />
 
                   {/* Admin Routes */}
                   <Route

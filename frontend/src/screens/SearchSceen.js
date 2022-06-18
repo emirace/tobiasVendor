@@ -304,8 +304,8 @@ export default function SearchSceen() {
                   </ListItem>
                 </Link>
                 <Link
-                  className={'womenswear' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'womenswear' })}
+                  className={'Womenswear' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'Womenswear' })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -313,8 +313,8 @@ export default function SearchSceen() {
                   </ListItem>
                 </Link>
                 <Link
-                  className={'menswear' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'menswear' })}
+                  className={'Menwear' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'Menwear' })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -322,8 +322,8 @@ export default function SearchSceen() {
                   </ListItem>
                 </Link>
                 <Link
-                  className={'kids' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'kids' })}
+                  className={'Kids' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'Kids' })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -331,8 +331,8 @@ export default function SearchSceen() {
                   </ListItem>
                 </Link>
                 <Link
-                  className={'curve+plus' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'curve+plus' })}
+                  className={'Curve+plus' === category ? 'text-bold' : ''}
+                  to={getFilterUrl({ category: 'Curve+plus' })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -395,8 +395,8 @@ export default function SearchSceen() {
                     All
                   </ListItem>
                 </Link>
-                {prices.map((p) => (
-                  <div key={p.value}>
+                {prices.map((p, index) => (
+                  <div key={index}>
                     <Link
                       className={p.value === price ? 'text-bold' : ''}
                       to={getFilterUrl({ price: p.value })}
@@ -418,8 +418,8 @@ export default function SearchSceen() {
                 Reviews
               </Title>
               <List className={reviewClass ? 'activate' : ''}>
-                {ratings.map((r) => (
-                  <div key={r.name}>
+                {ratings.map((r, index) => (
+                  <div key={index}>
                     <Link
                       className={
                         `${r.rating}` === `${rating}` ? 'text-bold' : ''
@@ -588,8 +588,8 @@ export default function SearchSceen() {
                 <MessageBox>No Product Found</MessageBox>
               )}
               <ProductListC>
-                {products.map((product) => (
-                  <Product product={product}></Product>
+                {products.map((product, index) => (
+                  <Product product={product} key={index}></Product>
                 ))}
               </ProductListC>
             </>

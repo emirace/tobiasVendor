@@ -69,7 +69,10 @@ const Search = styled.input.attrs((props) => ({
     props.mode === 'pagebodydark'
       ? 'var(--black-color)'
       : 'var(--white-color)'};
-  color: white;
+  color: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   border: 0;
   border-radius: 0.2rem;
   padding: 0 10px;
@@ -78,7 +81,8 @@ const Search = styled.input.attrs((props) => ({
   }
   &::placeholder {
     padding-left: 10px;
-    color: white;
+    color: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--light-ev4)' : 'var(--dark-ev4)'};
   }
 `;
 
@@ -428,6 +432,7 @@ export default function ChatScreen() {
       console.log(err);
     }
   };
+  console.log('message', messages);
 
   return (
     <Container className={mode} onClick={closeModel}>
@@ -446,8 +451,8 @@ export default function ChatScreen() {
           <Conserv>
             {conversations.length < 1
               ? 'no conversation'
-              : conversations.map((c) => (
-                  <div onClick={() => setCurrentChat(c)} key={c._id}>
+              : conversations.map((c, index) => (
+                  <div onClick={() => setCurrentChat(c)} key={index}>
                     <Conversation
                       conversation={c}
                       status={isOnlineCon(c)}
@@ -461,8 +466,8 @@ export default function ChatScreen() {
           {currentChat ? (
             <>
               <ChatArea>
-                {messages.map((m) => (
-                  <div ref={scrollref}>
+                {messages.map((m, index) => (
+                  <div ref={scrollref} key={index}>
                     <Messages
                       key={m._id}
                       own={m.sender === userInfo._id}

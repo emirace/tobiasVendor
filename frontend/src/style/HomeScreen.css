@@ -48,6 +48,8 @@
 
 .downloadapp_img img {
   width: 20vw;
+  margin-right: 5px;
+  cursor: pointer;
 }
 
 .downloadapp_right {
