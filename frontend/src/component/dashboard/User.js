@@ -294,6 +294,7 @@ export default function User() {
   useEffect(() => {
     try {
       dispatch({ type: 'FETCH_REQUEST' });
+      console.log(id);
       if (id) {
         const fetchUser = async () => {
           const { data } = await axios.get(`/api/users/seller/${id}`, {
@@ -301,6 +302,18 @@ export default function User() {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
+          dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        };
+        fetchUser();
+      } else {
+        console.log('hello');
+        const fetchUser = async () => {
+          const { data } = await axios.get(`/api/users/user`, {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          });
+          console.log('user_data', data);
           dispatch({ type: 'FETCH_SUCCESS', payload: data });
         };
         fetchUser();

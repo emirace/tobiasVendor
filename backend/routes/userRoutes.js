@@ -12,9 +12,13 @@ userRouter.get(
   '/top-sellers',
   expressAsyncHandler(async (req, res) => {
     const topSellers = await User.find({ isSeller: true })
+      .select('name image badge ')
       .sort({ rating: -1 })
       .limit(10);
-    res.send(topSellers);
+
+    res.send({
+      topSellers,
+    });
   })
 );
 
@@ -29,8 +33,6 @@ userRouter.get(
     res.send(users);
   })
 );
-
-// get login users
 
 userRouter.put(
   '/profile',
@@ -323,7 +325,40 @@ userRouter.get(
     res.send(followingList);
   })
 );
-
+userRouter.get(
+  '/profile/user',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log(req.user._id);
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    if (user) {
+      res.send({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        about: user.about,
+        followers: user.followers,
+        following: user.following,
+        likes: user.likes,
+        saved: user.saved,
+        sold: user.sold,
+        createdAt: user.createdAt,
+        numReviews: user.numReviews,
+        rating: user.rating,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        address: user.address,
+        active: user.active,
+        badge: user.badge,
+        dob: user.dob,
+      });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
 userRouter.get(
   '/:id',
   isAuth,
@@ -335,6 +370,41 @@ userRouter.get(
         email: user.email,
         isAdmin: user.isAdmin,
         isSeller: user.isSeller,
+      });
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
+userRouter.get(
+  '/profile/user',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log(req.user._id);
+    const user = await User.findById(req.user._id);
+    console.log(user);
+    if (user) {
+      res.send({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        about: user.about,
+        followers: user.followers,
+        following: user.following,
+        likes: user.likes,
+        saved: user.saved,
+        sold: user.sold,
+        createdAt: user.createdAt,
+        numReviews: user.numReviews,
+        rating: user.rating,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        address: user.address,
+        active: user.active,
+        badge: user.badge,
+        dob: user.dob,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });

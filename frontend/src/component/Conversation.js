@@ -91,7 +91,6 @@ export default function Conversation({ conversation, status, currentChat }) {
     };
     getMessages();
   }, [conversation, userInfo]);
-  console.log(message.messages);
 
   return (
     <>

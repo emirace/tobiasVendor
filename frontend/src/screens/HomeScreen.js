@@ -101,7 +101,7 @@ export default function ProductsScreen() {
 
         dispatch({ type: 'FETCH_USERS_REQUEST' });
         const { data: topSellers } = await axios.get('/api/users/top-sellers');
-
+        console.log(topSellers);
         dispatch({
           type: 'FETCH_USERS_SUCCESS',
           payload: topSellers,
@@ -398,8 +398,8 @@ export default function ProductsScreen() {
                     <MessageBox>No Seller Found</MessageBox>
                   )}
                   <Seller className="scroll_snap">
-                    {sellers.map((seller) => (
-                      <Link to={`/seller/${seller._id}`}>
+                    {sellers.topSellers.map((seller, index) => (
+                      <Link to={`/seller/${seller._id}`} key={index}>
                         <div className="carousel_item">
                           <Imagediv>
                             <img
