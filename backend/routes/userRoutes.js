@@ -40,10 +40,13 @@ userRouter.put(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
+      user.about = req.body.about || user.about;
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
+      user.dob = req.body.dob || user.dob;
+      user.phone = req.body.phone || user.phone;
+      user.address = req.body.address || user.address;
       user.image = req.body.image || user.image;
-      user.about = req.body.about || user.about;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
@@ -415,6 +418,7 @@ userRouter.get(
 userRouter.put(
   '/:id',
   isAuth,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     const useractive = () => (req.body.active === 'yes' ? true : false);
@@ -425,6 +429,7 @@ userRouter.put(
       user.dob = req.body.dob || user.dob;
       user.phone = req.body.phone || user.phone;
       user.address = req.body.address || user.address;
+      user.about = req.body.about || user.about;
       user.image = req.body.image || user.image;
       user.active = req.body.active === '' ? user.active : useractive();
       user.badge = req.body.badge === '' ? user.badge : userbadge();

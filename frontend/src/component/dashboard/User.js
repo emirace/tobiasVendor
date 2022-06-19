@@ -277,7 +277,6 @@ export default function User() {
     loadingUpdate: '',
     user: {},
   });
-  console.log('user', user);
 
   const navigate = useNavigate();
 
@@ -286,15 +285,17 @@ export default function User() {
   const [dob, setDob] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [about, setAbout] = useState('');
   const [image, setImage] = useState('');
   const [active, setActive] = useState('');
   const [badge, setBadge] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   useEffect(() => {
     try {
       dispatch({ type: 'FETCH_REQUEST' });
-      console.log(id);
+
       if (id) {
         const fetchUser = async () => {
           const { data } = await axios.get(`/api/users/seller/${id}`, {
@@ -306,14 +307,12 @@ export default function User() {
         };
         fetchUser();
       } else {
-        console.log('hello');
         const fetchUser = async () => {
-          const { data } = await axios.get(`/api/users/user`, {
+          const { data } = await axios.get(`/api/users/profile/user`, {
             headers: {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
-          console.log('user_data', data);
           dispatch({ type: 'FETCH_SUCCESS', payload: data });
         };
         fetchUser();
@@ -327,9 +326,21 @@ export default function User() {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
+      if (!id && password !== confirmPassword) {
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Password do not match',
+            showStatus: true,
+            state1: 'visible1 error',
+          },
+        });
+        return;
+      }
       dispatch({ type: 'UPDATE_REQUEST' });
+
       await axios.put(
-        `/api/users/${user._id}`,
+        id ? `/api/users/${user._id}` : `/api/users/profile`,
         {
           _id: user._id,
           name,
@@ -340,6 +351,7 @@ export default function User() {
           image,
           active,
           badge,
+          password,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -354,7 +366,7 @@ export default function User() {
           state1: 'visible1 success',
         },
       });
-      navigate('/dashboard/userlist');
+      navigate(id ? '/dashboard/userlist' : `../../seller/${user._id}`);
     } catch (err) {
       console.log(getError(err));
       dispatch({ type: 'UPDATE_FAIL' });
@@ -401,9 +413,6 @@ export default function User() {
     <Container>
       <TitleCont>
         <Title>Edit User</Title>
-        <Link to="/dashboard/newuser">
-          <AddButton>Create</AddButton>
-        </Link>
       </TitleCont>
       <UserContainer>
         <Show mode={mode}>
@@ -518,52 +527,81 @@ export default function User() {
                 />
               </Upload>
               <div>
-                <Label>Active</Label>
-                <Gender mode={mode}>
-                  <input
-                    checked={
-                      active === 'yes' ? true : user.active ? true : false
-                    }
-                    type="radio"
-                    name="gender"
-                    id="yes"
-                    value="yes"
-                    onChange={(e) => setActive(e.target.value)}
-                  />
-                  <Label htmlFor="yes">Yes</Label>
-                  <input
-                    checked={
-                      active === 'no' ? true : !user.active ? true : false
-                    }
-                    type="radio"
-                    name="gender"
-                    id="no"
-                    value="no"
-                    onClick={(e) => setActive(e.target.value)}
-                  />
-                  <Label htmlFor="no">No</Label>
-                </Gender>
-                <Label>Badge</Label>
-                <Gender mode={mode}>
-                  <input
-                    checked={badge === 'yes' ? true : user.badge ? true : false}
-                    type="radio"
-                    name="badge"
-                    id="badgeyes"
-                    value="yes"
-                    onClick={(e) => setBadge(e.target.value)}
-                  />
-                  <Label htmlFor="badgeyes">Yes</Label>
-                  <input
-                    checked={badge === 'no' ? true : !user.badge ? true : false}
-                    type="radio"
-                    name="badge"
-                    id="badgeno"
-                    value="no"
-                    onChange={(e) => setBadge(e.target.value)}
-                  />
-                  <Label htmlFor="badgeno">No</Label>
-                </Gender>
+                {id && userInfo.isAdmin ? (
+                  <>
+                    <Label>Active</Label>
+                    <Gender mode={mode}>
+                      <input
+                        checked={
+                          active === 'yes' ? true : user.active ? true : false
+                        }
+                        type="radio"
+                        name="gender"
+                        id="yes"
+                        value="yes"
+                        onChange={(e) => setActive(e.target.value)}
+                      />
+                      <Label htmlFor="yes">Yes</Label>
+                      <input
+                        checked={
+                          active === 'no' ? true : !user.active ? true : false
+                        }
+                        type="radio"
+                        name="gender"
+                        id="no"
+                        value="no"
+                        onClick={(e) => setActive(e.target.value)}
+                      />
+                      <Label htmlFor="no">No</Label>
+                    </Gender>
+                    <Label>Badge</Label>
+                    <Gender mode={mode}>
+                      <input
+                        checked={
+                          badge === 'yes' ? true : user.badge ? true : false
+                        }
+                        type="radio"
+                        name="badge"
+                        id="badgeyes"
+                        value="yes"
+                        onClick={(e) => setBadge(e.target.value)}
+                      />
+                      <Label htmlFor="badgeyes">Yes</Label>
+                      <input
+                        checked={
+                          badge === 'no' ? true : !user.badge ? true : false
+                        }
+                        type="radio"
+                        name="badge"
+                        id="badgeno"
+                        value="no"
+                        onChange={(e) => setBadge(e.target.value)}
+                      />
+                      <Label htmlFor="badgeno">No</Label>
+                    </Gender>
+                  </>
+                ) : (
+                  <>
+                    <Item>
+                      <Label>Password</Label>
+                      <TextInput
+                        mode={mode}
+                        name="password"
+                        type="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </Item>
+                    <Item>
+                      <Label>Confirm Password</Label>
+                      <TextInput
+                        mode={mode}
+                        name="confirmPassword"
+                        type="password"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </Item>
+                  </>
+                )}
               </div>
               <UploadButton type="submit">Update</UploadButton>
               {loadingUpdate ? <LoadingBox></LoadingBox> : ''}

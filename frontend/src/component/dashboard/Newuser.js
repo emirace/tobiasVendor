@@ -85,54 +85,46 @@ const Button = styled.button`
   border: none;
   background: var(--orange-color);
   color: var(--white-color);
-  padding: 7px 10px;
+  padding: 5px 10px;
   border-radius: 0.2rem;
   cursor: pointer;
-  margin-top: 30px;
+  margin-top: 20px;
+  &.add {
+    margin-top: 0;
+    width: 80px;
+  }
+`;
+const InputCont = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 30px;
 `;
 
 export default function Newuser() {
   const { state } = useContext(Store);
   const { mode } = state;
+
+  const submitHandler = () => {};
   return (
     <Container>
-      <Title>New User</Title>
-      <Form>
-        <Item>
-          <Label>Username</Label>
-          <Input mode={mode} type="text" placeholder="John" />
-        </Item>
-        <Item>
-          <Label>Full Name</Label>
-          <Input mode={mode} type="text" placeholder="John Doe" />
-        </Item>
-        <Item>
-          <Label>Email</Label>
-          <Input mode={mode} type="email" placeholder="John@example.com" />
-        </Item>
-        <Item>
-          <Label>Password</Label>
-          <Input mode={mode} type="password" placeholder="password" />
-        </Item>
-        <Item>
-          <Label>Phone</Label>
-          <Input mode={mode} type="text" placeholder="+123456789" />
-        </Item>
-        <Item>
-          <Label>Gender</Label>
-          <Gender mode={mode}>
-            <Input type="radio" name="gender" id="male" value="male" />
-            <Label htmlFor="male">Male</Label>
-            <Input type="radio" name="gender" id="female" value="female" />
-            <Label htmlFor="female">Female</Label>
-            <Input type="radio" name="gender" id="other" value="other" />
-            <Label htmlFor="other">Other</Label>
-          </Gender>
-        </Item>
-      </Form>
-      <Link to="/dashboard/newuser">
-        <Button>Create</Button>
-      </Link>
+      <Title>Categories</Title>
+      <Item>
+        <Label>Category Name</Label>
+        <Input mode={mode} type="text" placeholder="Enter category name" />
+      </Item>
+      <Item>
+        <Label>Sub Categories</Label>
+        <InputCont>
+          <Input
+            mode={mode}
+            className="half"
+            type="text"
+            placeholder="Enter Sub category"
+          />
+          <Button className="add">Add </Button>
+        </InputCont>
+      </Item>
+      <Button>Add Category</Button>
     </Container>
   );
 }
