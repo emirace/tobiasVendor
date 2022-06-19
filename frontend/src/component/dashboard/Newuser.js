@@ -99,7 +99,7 @@ const InputCont = styled.div`
   align-items: center;
   gap: 30px;
 `;
-
+let subCategories = [];
 export default function Newuser() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -121,7 +121,9 @@ export default function Newuser() {
             type="text"
             placeholder="Enter Sub category"
           />
-          <Button className="add">Add </Button>
+          <Button className="add" onClick={(e) => sizeHandler(e.target.value)}>
+            Add{' '}
+          </Button>
         </InputCont>
       </Item>
       <Button>Add Category</Button>
