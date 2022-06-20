@@ -298,9 +298,9 @@ export default function ProductsScreen() {
               <i className="fa fa-angle-right"></i>
             </button>
             <div className="product-container1 scroll_snap">
-              {products.map((product) => (
+              {products.map((product, index) => (
                 <div
-                  key={product.slug}
+                  key={index}
                   className="smooth1"
                   style={{
                     transform: sliderstyle,
@@ -398,25 +398,28 @@ export default function ProductsScreen() {
                     <MessageBox>No Seller Found</MessageBox>
                   )}
                   <Seller className="scroll_snap">
-                    {sellers.topSellers.map((seller, index) => (
-                      <Link to={`/seller/${seller._id}`} key={index}>
-                        <div className="carousel_item">
-                          <Imagediv>
-                            <img
-                              src={seller.image}
-                              alt={seller.name}
-                              className="carousel_profile_image"
-                            ></img>
-                            {seller.badge && (
-                              <div className="seller_profile_badge">
-                                <FontAwesomeIcon icon={faStar} />
-                              </div>
-                            )}
-                          </Imagediv>
-                          <p className="">{seller.name}</p>
-                        </div>
-                      </Link>
-                    ))}
+                    {console.log(sellers.topSellers)}
+                    {sellers.topSellers &&
+                      sellers.topSellers.length > 0 &&
+                      sellers.topSellers.map((seller, index) => (
+                        <Link to={`/seller/${seller._id}`} key={index}>
+                          <div className="carousel_item">
+                            <Imagediv>
+                              <img
+                                src={seller.image}
+                                alt={seller.name}
+                                className="carousel_profile_image"
+                              ></img>
+                              {seller.badge && (
+                                <div className="seller_profile_badge">
+                                  <FontAwesomeIcon icon={faStar} />
+                                </div>
+                              )}
+                            </Imagediv>
+                            <p className="">{seller.name}</p>
+                          </div>
+                        </Link>
+                      ))}
                   </Seller>
                 </>
               )}

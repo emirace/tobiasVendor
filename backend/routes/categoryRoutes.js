@@ -1,5 +1,5 @@
 import express from 'express';
-import Category from '../models/commentModel.js';
+import Category from '../models/categoryModel.js';
 import { isAdmin, isAuth } from '../utils.js';
 import expressAsyncHandler from 'express-async-handler';
 
@@ -10,7 +10,7 @@ const categoryRouter = express.Router();
 categoryRouter.get(
   '/',
   expressAsyncHandler(async (req, res) => {
-    const categories = await Category.fing();
+    const categories = await Category.find();
     res.send(categories);
   })
 );
@@ -56,11 +56,11 @@ categoryRouter.put(
 // delete a category
 
 categoryRouter.delete(
-  '/',
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const category = await Category.findById(req.body.id);
+    const category = await Category.findById(req.params.id);
     if (category) {
       await category.remove();
       res.send('Category deleted');

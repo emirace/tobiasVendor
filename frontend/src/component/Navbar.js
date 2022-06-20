@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import IconsTooltips from './IconsTooltips';
 import {
@@ -10,10 +10,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SearchBox from './SearchBox';
 import { Link } from 'react-router-dom';
 import { Store } from '../Store';
+import axios from 'axios';
+import { getError } from '../utils';
 
 const Container = styled.div`
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
 const Wrapper = styled.div`
   padding: 0 20px;
@@ -174,19 +179,7 @@ const CategoryGroup = styled.div`
     display: block;
   }
 `;
-const SubCategory = styled.ul.attrs({})`
-  position: absolute;
-  box-shadow: ${(props) =>
-    props.bg
-      ? '0 0 3px rgba(0, 0, 0, 0.2)'
-      : '0 0 3px rgba(225, 225, 225, 0.2)'};
-  top: 35px;
-  left: 20px;
-  background: ${(props) => (props.bg ? '#fff' : '#000')};
-  display: none;
-  padding: 20px;
-  z-index: 9;
-`;
+
 const SubCategoryItem = styled.li`
   white-space: nowrap;
   padding-bottom: 10px;
@@ -225,6 +218,20 @@ const SellButton = styled.div`
   @media (max-width: 992px) {
     display: block;
   }
+`;
+
+const SubCategory = styled.ul.attrs({})`
+  position: absolute;
+  box-shadow: ${(props) =>
+    props.bg
+      ? '0 0 3px rgba(0, 0, 0, 0.2)'
+      : '0 0 3px rgba(225, 225, 225, 0.2)'};
+  top: 35px;
+  left: 20px;
+  background: ${(props) => (props.bg ? '#fff' : '#000')};
+  display: none;
+  padding: 20px;
+  z-index: 9;
 `;
 
 const SignIn = styled.div`
@@ -322,6 +329,22 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
 
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    try {
+      const fetchCategories = async () => {
+        const { data } = await axios.get('/api/categories', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setCategories(data);
+      };
+      fetchCategories();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo]);
+
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
       mode = false;
@@ -352,7 +375,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   };
 
   return (
-    <Container>
+    <Container mode={mode}>
       <Wrapper>
         <Left>
           <SwitchCont>
@@ -432,32 +455,22 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         </RightMenu>
       </Wrapper2>
       <Category>
-        <CategoryGroup>
-          <Link to="/category/womenswear">
-            <CategoryItem>Womenswear</CategoryItem>
-          </Link>
-          <SubCategory bg={subCateMode}>
-            <SubCategoryItem>Sub Category</SubCategoryItem>
-            <SubCategoryItem>Sub Category</SubCategoryItem>
-            <SubCategoryItem>Sub Category</SubCategoryItem>
-          </SubCategory>
-        </CategoryGroup>
-        <CategoryGroup>
-          <Link to="/category/menswear">
-            <CategoryItem>Menswear</CategoryItem>
-          </Link>
-          <SubCategory bg={subCateMode}>
-            <SubCategoryItem>Sub Category 2</SubCategoryItem>
-            <SubCategoryItem>Sub Category 2</SubCategoryItem>
-            <SubCategoryItem>Sub Category 2</SubCategoryItem>
-          </SubCategory>
-        </CategoryGroup>
-        <Link to="/category/kids">
-          <CategoryItem>Kids</CategoryItem>
-        </Link>
-        <Link to="/category/curve-plus">
-          <CategoryItem>Curve +Plus</CategoryItem>
-        </Link>
+        {console.log(categories)}
+        {categories.length &&
+          categories.map((c) => (
+            <CategoryGroup>
+              <Link to={`/category/${c.name}`}>
+                <CategoryItem>{c.name}</CategoryItem>
+              </Link>
+              <SubCategory bg={subCateMode}>
+                {c.subCategories.length &&
+                  c.subCategories.map((s) => (
+                    <SubCategoryItem>{s}</SubCategoryItem>
+                  ))}
+              </SubCategory>
+            </CategoryGroup>
+          ))}
+
         <Link to="/brand">
           <CategoryItem>Shop by brand</CategoryItem>
         </Link>

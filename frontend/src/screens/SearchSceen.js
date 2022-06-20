@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { getError } from '../utils';
 import axios from 'axios';
@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import '../style/SearchScreen.css';
 import styled from 'styled-components';
+import { Store } from '../Store';
 
 const Container = styled.div`
   display: flex;
@@ -176,6 +177,9 @@ const ratings = [
 
 export default function SearchSceen() {
   const navigate = useNavigate();
+  const { state } = useContext(Store);
+  const { mode, userInfo } = state;
+
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const category = sp.get('category') || 'all';
@@ -213,17 +217,20 @@ export default function SearchSceen() {
   }, [category, order, page, price, query, rating]);
 
   const [categories, setCategories] = useState([]);
+
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axios.get(`/api/products/categories`);
+    try {
+      const fetchCategories = async () => {
+        const { data } = await axios.get('/api/categories', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         setCategories(data);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
-    fetchCategories();
-  }, [dispatch]);
+      };
+      fetchCategories();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo]);
 
   const getFilterUrl = (filter) => {
     const filterPage = filter.page || page;
@@ -268,10 +275,6 @@ export default function SearchSceen() {
     }
   };
 
-  const mode = localStorage.getItem('mode')
-    ? localStorage.getItem('mode')
-    : 'pagebodylight';
-
   const handleInput = (e) => {
     e.preventDefault();
     setBrandInput(e.target.value);
@@ -303,60 +306,18 @@ export default function SearchSceen() {
                     All
                   </ListItem>
                 </Link>
-                <Link
-                  className={'Womenswear' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'Womenswear' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Womenswear
-                  </ListItem>
-                </Link>
-                <Link
-                  className={'Menwear' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'Menwear' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Menswear
-                  </ListItem>
-                </Link>
-                <Link
-                  className={'Kids' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'Kids' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Kids
-                  </ListItem>
-                </Link>
-                <Link
-                  className={'Curve+plus' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'Curve+plus' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Curve+Plus
-                  </ListItem>
-                </Link>
-                <Link
-                  className={'tops' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'tops' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Tops
-                  </ListItem>
-                </Link>
-                <Link
-                  className={'outerwear' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'outerwear' })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    Outerwear
-                  </ListItem>
-                </Link>
+                {categories.length &&
+                  categories.map((c) => (
+                    <Link
+                      className={c.name === category ? 'text-bold' : ''}
+                      to={getFilterUrl({ category: c.name })}
+                    >
+                      <ListItem mode={mode}>
+                        <FontAwesomeIcon icon={faCircleDot} />
+                        {c.name}
+                      </ListItem>
+                    </Link>
+                  ))}
               </List>
             </Menu>
             <Menu>

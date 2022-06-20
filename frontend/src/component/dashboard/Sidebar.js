@@ -8,6 +8,7 @@ import {
   faChartLine,
   faComment,
   faHouse,
+  faListCheck,
   faMessage,
   faMoneyBillTransfer,
   faUser,
@@ -125,6 +126,16 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faChartColumn} /> Reports
               </ListItem>
             )}
+            {userInfo.isAdmin && (
+              <Link to="/dashboard/newuser">
+                <ListItem
+                  mode={mode}
+                  className={current === 'newuser' ? 'active' : ''}
+                >
+                  <FontAwesomeIcon icon={faListCheck} /> Categories
+                </ListItem>
+              </Link>
+            )}
           </List>
         </Menu>
         <Menu>
@@ -144,12 +155,12 @@ export default function Sidebar({ current }) {
             >
               <FontAwesomeIcon icon={faComment} /> Support
             </ListItem>
-            <ListItem
+            {/* <ListItem
               mode={mode}
               className={current === 'notification' ? 'active' : ''}
             >
               <FontAwesomeIcon icon={faBell} /> Notification
-            </ListItem>
+            </ListItem> */}
           </List>
         </Menu>
       </Wrapper>
