@@ -334,9 +334,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   useEffect(() => {
     try {
       const fetchCategories = async () => {
-        const { data } = await axios.get('/api/categories', {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get('/api/categories');
         setCategories(data);
       };
       fetchCategories();
