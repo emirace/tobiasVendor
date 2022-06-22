@@ -254,6 +254,10 @@ userRouter.put(
           likes: updatedUser.likes,
           saved: updatedUser.saved,
           message: 'Following',
+          sold: updatedUser.sold,
+          createdAt: updatedUser.createdAt,
+          rating: updatedUser.rating,
+          numReviews: updatedUser.numReviews,
         });
       }
     } else {
@@ -289,6 +293,10 @@ userRouter.put(
         likes: updatedUser.likes,
         saved: updatedUser.saved,
         message: 'Following',
+        createdAt: updatedUser.createdAt,
+        sold: updatedUser.sold,
+        rating: updatedUser.rating,
+        numReviews: updatedUser.numReviews,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });

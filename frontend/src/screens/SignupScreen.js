@@ -160,6 +160,7 @@ export default function SignupScreen() {
           <Form.Label>Name</Form.Label>
           <Form.Control
             required
+            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
             onClick={() => setShowForm(true)}
             onChange={(e) => setName(e.target.value)}
           />
@@ -170,6 +171,7 @@ export default function SignupScreen() {
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
+                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
                 required
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -177,6 +179,7 @@ export default function SignupScreen() {
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>Phone</Form.Label>
               <Form.Control
+                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
                 type="number"
                 required
                 onChange={(e) => setPhone(e.target.value)}
@@ -186,6 +189,7 @@ export default function SignupScreen() {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
                 required
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -194,6 +198,7 @@ export default function SignupScreen() {
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type="password"
+                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
                 required
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />

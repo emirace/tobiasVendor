@@ -162,6 +162,7 @@ export default function Signin() {
           <Form.Control
             type="email"
             required
+            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>

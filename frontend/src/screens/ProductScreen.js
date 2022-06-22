@@ -42,6 +42,7 @@ import ReviewLists from './ReviewLists';
 import Model from '../component/Model';
 import ModelLogin from '../component/ModelLogin';
 import Signin from '../component/Signin';
+import Comment from '../component/Comment';
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -210,6 +211,7 @@ export default function ProductScreen() {
         text: 'Item added to Cart',
         showStatus: true,
         buttonText: 'Checkout',
+        link: '/cart',
       },
     });
   };
@@ -258,7 +260,14 @@ export default function ProductScreen() {
   const submitCommentHandler = async (e) => {
     e.preventDefault();
     if (!comment2) {
-      toast.error('Please enter comment');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Enter a comment',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
     try {
@@ -350,7 +359,14 @@ export default function ProductScreen() {
   };
   const toggleLikes = async () => {
     if (!userInfo) {
-      toast.error('login to like');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Login to like',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
     if (product.seller._id === userInfo._id) {
@@ -416,15 +432,10 @@ export default function ProductScreen() {
                   <MessageBox>There is no comments</MessageBox>
                 )}
               </div>
-              <ListGroup>
-                {comments.map((comment) => (
-                  <ListGroup.Item key={comment._id}>
-                    <strong>{comment.name}</strong>
-                    <p>{comment.createdAt.substring(0, 10)}</p>
-                    <p>{comment.comment}</p>
-                  </ListGroup.Item>
+              {comments.length > 0 &&
+                comments.map((comment) => (
+                  <Comment key={comment._id} commentC={comment} />
                 ))}
-              </ListGroup>
               <div className="my-3">
                 {userInfo ? (
                   <form onSubmit={submitCommentHandler}>

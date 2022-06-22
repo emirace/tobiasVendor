@@ -160,6 +160,7 @@ export default function SigninScreen() {
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
+            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
             required
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -168,6 +169,7 @@ export default function SigninScreen() {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
+            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
             required
             onChange={(e) => setPassword(e.target.value)}
           />

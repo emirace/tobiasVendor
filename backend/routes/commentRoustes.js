@@ -3,8 +3,11 @@ import Product from '../models/productModel.js';
 import Comment from '../models/commentModel.js';
 import { isAuth } from '../utils.js';
 import expressAsyncHandler from 'express-async-handler';
+import User from '../models/userModel.js';
 
 const commentRouter = express.Router();
+
+// post comment
 
 commentRouter.post(
   '/:id',
@@ -17,6 +20,9 @@ commentRouter.post(
         productId: product._id,
         name: req.user.name,
         comment: req.body.comment,
+        image: req.user.image,
+        replies: [],
+        likes: [],
       });
       const newComment = await commentnow.save();
 
@@ -27,6 +33,8 @@ commentRouter.post(
   })
 );
 
+// get all comments
+
 commentRouter.get(
   '/:id',
   expressAsyncHandler(async (req, res) => {
@@ -35,5 +43,104 @@ commentRouter.get(
     res.send(comments);
   })
 );
+
+// like a comment
+
+commentRouter.put(
+  '/:id/like',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const commentId = req.params.id;
+    const comment = await Comment.findById(commentId);
+    if (comment) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        comment.likes.push(req.user._id);
+        const updatedComment = await comment.save();
+        res
+          .status(201)
+          .send({ message: 'Comment Liked', comment: updatedComment });
+      } else {
+        res.status(404).send({ message: 'You must login to like comment' });
+      }
+    } else {
+      res.status(404).send({ message: 'Comment Not Found' });
+    }
+  })
+);
+
+// Unlike comment
+
+commentRouter.put(
+  '/:id/unlike',
+  expressAsyncHandler(async (req, res) => {
+    const commentId = req.params.id;
+    const comment = await Comment.findById(commentId);
+    if (comment) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        comment.likes.pull(req.user._id);
+        const updatedComment = await comment.save();
+        res
+          .status(201)
+          .send({ message: 'Comment UnLiked', comment: updatedComment });
+      } else {
+        res.status(404).send({ message: 'You must login to like comment' });
+      }
+    } else {
+      res.status(404).send({ message: 'Comment Not Found' });
+    }
+  })
+);
+
+// post reply
+
+commentRouter.post(
+  '/reply/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const id = req.params.id;
+    const comment = await Comment.findById(id);
+    if (comment) {
+      const reply = {
+        name: req.user.name,
+        comment: req.body.reply,
+        image: req.user.image,
+      };
+      comment.replies.push(reply);
+      const updateComment = await comment.save();
+      res.status(201).send({
+        message: 'Reply Send',
+        comment: updateComment,
+      });
+    } else {
+      res.status(404).send({ message: 'Comment Not Found' });
+    }
+  })
+);
+
+// like a reply
+
+// commentRouter.put(
+//   '/reply/:id/like',
+//   expressAsyncHandler(async (req, res) => {
+//     const commentId = req.params.id;
+//     const comment = await Comment.findById(commentId);
+//     if (comment) {
+//       const user = await User.findById(req.user._id);
+//       if (user) {
+//         comment.likes.push(req.user._id);
+//         const updatedComment = await comment.save();
+//         res
+//           .status(201)
+//           .send({ message: 'Comment Liked', comment: updatedComment });
+//       } else {
+//         res.status(404).send({ message: 'You must login to like comment' });
+//       }
+//     }else {
+//       res.status(404).send({ message: 'Comment Not Found' });
+//     }
+//   })
+// );
 
 export default commentRouter;

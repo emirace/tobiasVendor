@@ -35,7 +35,7 @@ export default function SearchBox() {
           aria-label="Search Products..."
           aria-describedby="button-search"
           className={`bg-transparent searchbtn border-0 rounded-pill ${
-            mode == 'pagebodydark' ? '' : 'color_black'
+            mode === 'pagebodydark' ? '' : 'color_black'
           }`}
         />
       </div>
