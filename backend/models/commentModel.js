@@ -4,7 +4,7 @@ const replySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     comment: { type: String, required: true },
-    image: { type: String },
+    userImage: { type: String },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   {
@@ -17,6 +17,7 @@ const commentSchema = new mongoose.Schema(
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
     name: { type: String, required: true },
     comment: { type: String, required: true },
+    userImage: { type: String },
     image: { type: String },
     replies: [replySchema],
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

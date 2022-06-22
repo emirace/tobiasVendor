@@ -111,14 +111,18 @@ export default function Comment({ commentC }) {
     }
     if (comment.likes.find((x) => x === userInfo._id)) {
       try {
-        const { data } = await axios.put(`/api/comments/${id}/unlike`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.put(
+          `/api/comments/${id}/unlike`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         setComment(data.comment);
         ctxDispatch({
           type: 'SHOW_TOAST',
           payload: {
-            message: 'Item unliked',
+            message: 'Comment unliked',
             showStatus: true,
             state1: 'visible1 error',
           },
@@ -128,9 +132,13 @@ export default function Comment({ commentC }) {
       }
     } else {
       try {
-        const { data } = await axios.put(`/api/comments/${id}/like`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.put(
+          `/api/comments/${id}/like`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         setComment(data.comment);
         ctxDispatch({
           type: 'SHOW_TOAST',
@@ -170,15 +178,73 @@ export default function Comment({ commentC }) {
         }
       );
       setComment(data.comment);
+      setReply('');
     } catch (err) {
       console.log(getError(err));
+    }
+  };
+
+  const likeReplyHandler = async (reply) => {
+    if (reply.name === userInfo.name) {
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: "You can't like your product",
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+      return;
+    }
+    if (reply.likes.find((x) => x === userInfo._id)) {
+      try {
+        const { data } = await axios.put(
+          `/api/comments/${comment._id}/${reply._id}/unlike`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        setComment(data.comment);
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Reply unliked',
+            showStatus: true,
+            state1: 'visible1 error',
+          },
+        });
+      } catch (err) {
+        console.log(getError(err));
+      }
+    } else {
+      try {
+        const { data } = await axios.put(
+          `/api/comments/reply/${comment._id}/${reply._id}/like`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        setComment(data.comment);
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Comment Liked',
+            showStatus: true,
+            state1: 'visible1 success',
+          },
+        });
+      } catch (err) {
+        console.log(getError(err));
+      }
     }
   };
 
   return (
     <>
       <Container mode={mode}>
-        <Image src="/images/pimage.png" alt="pimage" />
+        <Image src={comment.userImage} alt="pimage" />
         <Content>
           <Top>
             <Name>{comment.name}</Name>
@@ -201,7 +267,7 @@ export default function Comment({ commentC }) {
         <>
           {comment.replies.map((r) => (
             <SubCont mode={mode}>
-              <SmallImage src="/images/pimage.png" alt="pimage" />
+              <SmallImage src={r.userImage} alt="pimage" />
               <Content>
                 <Top>
                   <Name>{r.name}</Name>
@@ -210,7 +276,10 @@ export default function Comment({ commentC }) {
                 <CommentText>{r.comment}</CommentText>
                 <Action className="reply">
                   <Like>{r.likes.length} like</Like>
-                  <FontAwesomeIcon icon={faHeart} />
+                  <FontAwesomeIcon
+                    onClick={() => likeReplyHandler(r)}
+                    icon={faHeart}
+                  />
                 </Action>
               </Content>
             </SubCont>

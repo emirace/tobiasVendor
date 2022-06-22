@@ -101,6 +101,12 @@ const reducer = (state, action) => {
     case 'COMMENT2_SUCCESS':
       const com = action.payload;
       return { ...state, comments: { ...state.comments, com } };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true };
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
       return state;
@@ -173,6 +179,7 @@ export default function ProductScreen() {
   const [showModel, setShowModel] = useState(false);
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [selectSize, setSelectSize] = useState('');
+  const [image, setImage] = useState('');
 
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
@@ -273,7 +280,7 @@ export default function ProductScreen() {
     try {
       const { data } = await axios.post(
         `/api/comments/${product._id}`,
-        { comment: comment2 },
+        { comment: comment2, image },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -421,6 +428,42 @@ export default function ProductScreen() {
     }
   };
 
+  const uploadImageHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      setImage(data.secure_url);
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Image Uploaded',
+          showStatus: true,
+          state1: 'visible1 success',
+        },
+      });
+    } catch (err) {
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Failed uploading image',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+      console.log(getError(err));
+    }
+  };
+
   const switchTab = (tab) => {
     switch (tab) {
       case 'comments':
@@ -453,6 +496,10 @@ export default function ProductScreen() {
                           mode === 'pagebodydark' ? '' : 'color_black'
                         }`}
                         onChange={(e) => setComment2(e.target.value)}
+                      />
+                      <input
+                        type="file"
+                        onChange={(e) => uploadImageHandler(e)}
                       />
                     </FloatingLabel>
                     <div className="my-3">

@@ -20,7 +20,8 @@ commentRouter.post(
         productId: product._id,
         name: req.user.name,
         comment: req.body.comment,
-        image: req.user.image,
+        userImage: req.user.image,
+        image: req.body.image ? req.body.image : '',
         replies: [],
         likes: [],
       });
@@ -73,6 +74,7 @@ commentRouter.put(
 
 commentRouter.put(
   '/:id/unlike',
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const commentId = req.params.id;
     const comment = await Comment.findById(commentId);
@@ -105,7 +107,7 @@ commentRouter.post(
       const reply = {
         name: req.user.name,
         comment: req.body.reply,
-        image: req.user.image,
+        userImage: req.user.image,
       };
       comment.replies.push(reply);
       const updateComment = await comment.save();
@@ -121,26 +123,33 @@ commentRouter.post(
 
 // like a reply
 
-// commentRouter.put(
-//   '/reply/:id/like',
-//   expressAsyncHandler(async (req, res) => {
-//     const commentId = req.params.id;
-//     const comment = await Comment.findById(commentId);
-//     if (comment) {
-//       const user = await User.findById(req.user._id);
-//       if (user) {
-//         comment.likes.push(req.user._id);
-//         const updatedComment = await comment.save();
-//         res
-//           .status(201)
-//           .send({ message: 'Comment Liked', comment: updatedComment });
-//       } else {
-//         res.status(404).send({ message: 'You must login to like comment' });
-//       }
-//     }else {
-//       res.status(404).send({ message: 'Comment Not Found' });
-//     }
-//   })
-// );
+commentRouter.put(
+  '/reply/:id/:reply/like',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const commentId = req.params.id;
+    const replyId = req.params.reply;
+    const comment = await Comment.findById(commentId);
+    if (comment) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        const reply = comment.replies.filter(
+          (x) => x._id.toString() === replyId
+        );
+        console.log(reply);
+        return;
+        comment.likes.push(req.user._id);
+        const updatedComment = await comment.save();
+        res
+          .status(201)
+          .send({ message: 'Comment Liked', comment: updatedComment });
+      } else {
+        res.status(404).send({ message: 'You must login to like comment' });
+      }
+    } else {
+      res.status(404).send({ message: 'Comment Not Found' });
+    }
+  })
+);
 
 export default commentRouter;
