@@ -127,10 +127,10 @@ export default function Sidebar({ current }) {
               </ListItem>
             )}
             {userInfo.isAdmin && (
-              <Link to="/dashboard/newuser">
+              <Link to="/dashboard/categories">
                 <ListItem
                   mode={mode}
-                  className={current === 'newuser' ? 'active' : ''}
+                  className={current === 'categories' ? 'active' : ''}
                 >
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>

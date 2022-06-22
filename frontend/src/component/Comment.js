@@ -43,12 +43,13 @@ const Action = styled.div`
   align-items: center;
   width: 125px;
   &.reply {
-    width: 125px;
+    width: 80px;
   }
 `;
 const Reply = styled.div`
   font-size: 13px;
   cursor: pointer;
+  text-decoration: underline;
   &:hover {
     color: var(--malon-color);
   }
@@ -75,14 +76,26 @@ const Button = styled.button`
 const SubCont = styled.div`
   padding: 20px;
   display: flex;
+  border-radius: 0.2rem;
   margin: 5px 0 5px 90px;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
 const Textarea = styled.textarea`
   margin: 10px 0 0 90px;
-  width: 100%;
+  width: 80%;
   padding: 10px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--black-color)'
+      : 'var(--white-color)'};
+
+  color: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
+
   &:focus-visible {
     outline: 1px solid var(--orange-color);
     border: 1px solid var(--orange-color);
@@ -102,7 +115,7 @@ export default function Comment({ commentC }) {
       ctxDispatch({
         type: 'SHOW_TOAST',
         payload: {
-          message: "You can't like your product",
+          message: "You can't like your comment",
           showStatus: true,
           state1: 'visible1 error',
         },
@@ -189,7 +202,7 @@ export default function Comment({ commentC }) {
       ctxDispatch({
         type: 'SHOW_TOAST',
         payload: {
-          message: "You can't like your product",
+          message: "You can't like your reply",
           showStatus: true,
           state1: 'visible1 error',
         },
@@ -199,7 +212,7 @@ export default function Comment({ commentC }) {
     if (reply.likes.find((x) => x === userInfo._id)) {
       try {
         const { data } = await axios.put(
-          `/api/comments/${comment._id}/${reply._id}/unlike`,
+          `/api/comments/reply/${comment._id}/${reply._id}/unlike`,
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -287,7 +300,8 @@ export default function Comment({ commentC }) {
           <form onSubmit={submitReplyHandler}>
             <Textarea
               placeholder="Leave a reply here"
-              className={` ${mode === 'pagebodydark' ? '' : 'color_black'}`}
+              mode={mode}
+              value={reply}
               onChange={(e) => setReply(e.target.value)}
             />
             <div>

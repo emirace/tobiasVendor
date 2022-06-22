@@ -182,7 +182,7 @@ const Edit = styled.button`
 `;
 
 let subCategories = [];
-export default function Newuser() {
+export default function Categories() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [currentCat, setCurrentCat] = useState('');

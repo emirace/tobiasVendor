@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Home from '../component/dashboard/Home';
 import NewProduct from '../component/dashboard/NewProduct';
-import Newuser from '../component/dashboard/Newuser';
 import OrderList from '../component/dashboard/OrderList';
 import Product from '../component/dashboard/Product';
 import ProductList from '../component/dashboard/ProductList';
@@ -15,6 +14,7 @@ import UserList from '../component/dashboard/UserList';
 import { Store } from '../Store';
 import { getError } from '../utils';
 import { Helmet } from 'react-helmet-async';
+import Categories from '../component/dashboard/Categories';
 
 const Container = styled.div`
   display: flex;
@@ -40,8 +40,8 @@ export default function DashboardNewScreen() {
         return <UserList />;
       case 'user':
         return <User />;
-      case 'newuser':
-        return <Newuser />;
+      case 'categories':
+        return <Categories />;
       case 'newproduct':
         return <NewProduct />;
       case 'productlist':

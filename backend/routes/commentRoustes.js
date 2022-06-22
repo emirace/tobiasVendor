@@ -15,12 +15,13 @@ commentRouter.post(
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
+    const user = await User.findById(req.user._id);
     if (product) {
       const commentnow = new Comment({
         productId: product._id,
         name: req.user.name,
         comment: req.body.comment,
-        userImage: req.user.image,
+        userImage: user.image,
         image: req.body.image ? req.body.image : '',
         replies: [],
         likes: [],
@@ -56,6 +57,13 @@ commentRouter.put(
     if (comment) {
       const user = await User.findById(req.user._id);
       if (user) {
+        const exist = comment.likes.filter(
+          (x) => x.toString() === req.user._id
+        );
+        if (exist.length > 0) {
+          return;
+        }
+
         comment.likes.push(req.user._id);
         const updatedComment = await comment.save();
         res
@@ -103,11 +111,12 @@ commentRouter.post(
   expressAsyncHandler(async (req, res) => {
     const id = req.params.id;
     const comment = await Comment.findById(id);
+    const user = await User.findById(req.user._id);
     if (comment) {
       const reply = {
         name: req.user.name,
         comment: req.body.reply,
-        userImage: req.user.image,
+        userImage: user.image,
       };
       comment.replies.push(reply);
       const updateComment = await comment.save();
@@ -131,21 +140,41 @@ commentRouter.put(
     const replyId = req.params.reply;
     const comment = await Comment.findById(commentId);
     if (comment) {
-      const user = await User.findById(req.user._id);
-      if (user) {
-        const reply = comment.replies.filter(
-          (x) => x._id.toString() === replyId
-        );
-        console.log(reply);
+      const index = comment.replies.findIndex((x) => {
+        return x._id.toString() === replyId;
+      });
+      const exist = comment.replies[index].likes.filter(
+        (x) => x.toString() === req.user._id
+      );
+      if (exist.length > 0) {
         return;
-        comment.likes.push(req.user._id);
-        const updatedComment = await comment.save();
-        res
-          .status(201)
-          .send({ message: 'Comment Liked', comment: updatedComment });
-      } else {
-        res.status(404).send({ message: 'You must login to like comment' });
       }
+      comment.replies[index].likes.push(req.user._id);
+      const updatedComment = await comment.save();
+      res.status(201).send({ message: 'Reply Liked', comment: updatedComment });
+    } else {
+      res.status(404).send({ message: 'Comment Not Found' });
+    }
+  })
+);
+
+// unlike comment
+
+commentRouter.put(
+  '/reply/:id/:reply/unlike',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const commentId = req.params.id;
+    const replyId = req.params.reply;
+    const comment = await Comment.findById(commentId);
+    if (comment) {
+      const index = comment.replies.findIndex((x) => {
+        return x._id.toString() === replyId;
+      });
+
+      comment.replies[index].likes.pull(req.user._id);
+      const updatedComment = await comment.save();
+      res.status(201).send({ message: 'Reply Liked', comment: updatedComment });
     } else {
       res.status(404).send({ message: 'Comment Not Found' });
     }
