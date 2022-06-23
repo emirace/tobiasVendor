@@ -16,7 +16,6 @@ import { getError } from '../utils';
 const Container = styled.div`
   width: 100%;
   margin-bottom: 20px;
-  padding-bottom: 20px;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
@@ -165,16 +164,16 @@ const Category = styled.ul`
   }
 `;
 const CategoryItem = styled.li`
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 15px;
   text-transform: capitalize;
-  padding: 10px 20px;
   cursor: pointer;
-
   &:hover {
     color: var(--orange-color);
   }
 `;
 const CategoryGroup = styled.div`
+  margin: 10px 20px;
   &:hover ul {
     display: flex;
   }
@@ -182,7 +181,14 @@ const CategoryGroup = styled.div`
 
 const SubCategoryItem = styled.li`
   white-space: nowrap;
+  align-self: start;
+  font-weight: 500;
+`;
+const SubCategoryItemS = styled.li`
+  white-space: nowrap;
+  align-self: start;
   padding-bottom: 10px;
+  font-weight: 500;
   cursor: pointer;
   &:hover {
     color: var(--orange-color);
@@ -226,14 +232,15 @@ const SubCategory = styled.ul.attrs({})`
     props.bg
       ? '0 0 3px rgba(0, 0, 0, 0.2)'
       : '0 0 3px rgba(225, 225, 225, 0.2)'};
-  top: 35px;
+  top: 32px;
   left: 0;
   width: 100vw;
   height: 350px;
   background: ${(props) => (props.bg ? '#fff' : '#000')};
   display: none;
   flex-direction: column;
-  padding: 50px 150px;
+  align-items: center;
+  padding: 40px 150px;
   z-index: 9;
   flex-wrap: wrap;
 `;
@@ -325,8 +332,21 @@ const ProfileMenu = styled.div`
 const ProfileCont = styled.div`
   position: relative;
 `;
-const UList = styled.ul``;
-const SList = styled.li``;
+const Group = styled.div`
+  align-self: start;
+  margin-bottom: 10px;
+`;
+const UList = styled.ul`
+  display: flex;
+  flex-direction: column;
+`;
+const SList = styled.li`
+  cursor: pointer;
+  &:hover {
+    color: var(--orange-color);
+    text-decoration: underline;
+  }
+`;
 
 export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const modelRef = useRef();
@@ -462,37 +482,41 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         {categories.length &&
           categories.map((c) => (
             <CategoryGroup>
-              <Link to={`/category/${c.name}`}>
-                <CategoryItem>{c.name}</CategoryItem>
-              </Link>
+              <CategoryItem>
+                <Link to={`/category/${c.name}`}>{c.name}</Link>
+              </CategoryItem>
+
               <SubCategory bg={subCateMode}>
                 {c.subCategories.length &&
                   c.subCategories.map((s) => {
                     if (s.items.length === 0) {
-                      return <SubCategoryItem>{s.name}</SubCategoryItem>;
+                      return <SubCategoryItemS>{s.name} >></SubCategoryItemS>;
                     } else {
                       return (
-                        <div>
+                        <Group>
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
                               <SList>{l}</SList>
                             ))}
                           </UList>
-                        </div>
+                        </Group>
                       );
                     }
                   })}
               </SubCategory>
             </CategoryGroup>
           ))}
-
-        <Link to="/brand">
-          <CategoryItem>Shop by brand</CategoryItem>
-        </Link>
-        <Link to="shopbyoutfit">
-          <CategoryItem>Shop by outfit</CategoryItem>
-        </Link>
+        <CategoryGroup>
+          <Link to="/brand">
+            <CategoryItem>Shop by brand</CategoryItem>
+          </Link>
+        </CategoryGroup>
+        <CategoryGroup>
+          <Link to="shopbyoutfit">
+            <CategoryItem>Shop by outfit</CategoryItem>
+          </Link>
+        </CategoryGroup>
       </Category>
     </Container>
   );
