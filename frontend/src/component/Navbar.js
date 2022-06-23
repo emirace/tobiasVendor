@@ -228,8 +228,11 @@ const SubCategory = styled.ul.attrs({})`
       : '0 0 3px rgba(225, 225, 225, 0.2)'};
   top: 35px;
   left: 20px;
+  width: 90vw;
+  height: 450px;
   background: ${(props) => (props.bg ? '#fff' : '#000')};
   display: none;
+  justify-content:center;
   padding: 20px;
   z-index: 9;
 `;
@@ -321,6 +324,8 @@ const ProfileMenu = styled.div`
 const ProfileCont = styled.div`
   position: relative;
 `;
+const UList = styled.ul``;
+const SList = styled.li``;
 
 export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const modelRef = useRef();
@@ -453,7 +458,6 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         </RightMenu>
       </Wrapper2>
       <Category>
-        {console.log(categories)}
         {categories.length &&
           categories.map((c) => (
             <CategoryGroup>
@@ -462,9 +466,22 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
               </Link>
               <SubCategory bg={subCateMode}>
                 {c.subCategories.length &&
-                  c.subCategories.map((s) => (
-                    <SubCategoryItem>{s}</SubCategoryItem>
-                  ))}
+                  c.subCategories.map((s) => {
+                    if (s.items.length === 0) {
+                      return <SubCategoryItem>{s.name}</SubCategoryItem>;
+                    } else {
+                      return (
+                        <>
+                          <SubCategoryItem>{s.name}</SubCategoryItem>
+                          <UList>
+                            {s.items.map((l) => (
+                              <SList>{l}</SList>
+                            ))}
+                          </UList>
+                        </>
+                      );
+                    }
+                  })}
               </SubCategory>
             </CategoryGroup>
           ))}

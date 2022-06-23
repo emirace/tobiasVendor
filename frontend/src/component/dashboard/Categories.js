@@ -63,45 +63,19 @@ const Input = styled.input`
     outline: 1px solid var(--orange-color);
   }
 `;
-const Gender = styled.div`
-  display: flex;
-  align-items: center;
-
-  & input {
-    &::after {
-      width: 15px;
-      height: 15px;
-      content: '';
-      display: inline-block;
-      visibility: visible;
-      border-radius: 15px;
-      position: relative;
-      top: 11px;
-      left: -1px;
-      background-color: ${(props) =>
-        props.mode === 'pagebodydark'
-          ? 'var(--black-color)'
-          : 'var(--white-color)'};
-      border: 1px solid var(--orange-color);
-    }
-    &:checked::after {
-      width: 15px;
-      height: 15px;
-      content: '';
-      display: inline-block;
-      visibility: visible;
-      border-radius: 15px;
-      position: relative;
-      top: 11px;
-      left: -1px;
-      background-color: var(--orange-color);
-      border: 1px solid var(--orange-color);
-    }
-  }
-  & label {
-    margin: 10px;
-    font-size: 18px;
-    font-weight: 300;
+const Textarea = styled.textarea`
+  background: none;
+  color: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
+  border: 1px solid
+    ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+  border-radius: 0.2rem;
+  width: 80%;
+  height: 80px;
+  padding: 10px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
   }
 `;
 
@@ -136,6 +110,10 @@ const CatList = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+`;
+const SubCat = styled.div`
+  display: flex;
+  align-items: center;
   & svg {
     margin-left: 5px;
     font-size: 13px;
@@ -186,11 +164,14 @@ export default function Categories() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [currentCat, setCurrentCat] = useState('');
+  const [currentCatItem, setCurrentCatItem] = useState('');
   const [name, setName] = useState('');
   const [categories, setCategories] = useState([]);
   const [refresh, setrefresh] = useState(false);
   const [editCat, setEditCat] = useState(false);
+  const [editCatSub, setEditCatSub] = useState(false);
   const [editCurrentCat, setEditCurrentCat] = useState({});
+  const [index, setIndex] = useState({});
 
   useEffect(() => {
     try {
@@ -208,9 +189,30 @@ export default function Categories() {
 
   const submitHandler = async () => {
     try {
-      const exist = categories.some((e) => e.name === name);
-      exist ? setEditCat(true) : setEditCat(false);
       if (!editCat) {
+        const exist = categories.some((e) => e.name === name);
+        if (exist) {
+          ctxDispatch({
+            type: 'SHOW_TOAST',
+            payload: {
+              message: 'Categories name already exist',
+              showStatus: true,
+              state1: 'visible1 error',
+            },
+          });
+          return;
+        }
+        if (!name) {
+          ctxDispatch({
+            type: 'SHOW_TOAST',
+            payload: {
+              message: 'Enter a valid category name',
+              showStatus: true,
+              state1: 'visible1 error',
+            },
+          });
+          return;
+        }
         await axios.post(
           '/api/categories',
           {
@@ -260,21 +262,50 @@ export default function Categories() {
     }
   };
 
-  const sizeHandler = (sizenow) => {
+  const sizeHandler = (name) => {
     const exist = subCategories.filter((s) => {
-      return s === sizenow;
+      return s.name === name;
     });
     if (exist.length > 0) {
       const newsizes = subCategories.filter((s) => {
-        return s !== sizenow;
+        return s.name !== name;
       });
+      console.log(subCategories);
       subCategories = newsizes;
+      console.log(subCategories);
+      setCurrentCatItem('');
       setCurrentCat('');
-    } else {
-      subCategories.push(sizenow);
-      setCurrentCat('');
+      setrefresh(!refresh);
+
+      return;
     }
-    setrefresh(!refresh);
+    if (!editCatSub) {
+      if (currentCatItem === '') {
+        const subCategoriesObject = { name: currentCat, items: [] };
+        subCategories[index] = subCategoriesObject;
+      } else {
+        const CatArray = currentCatItem.split(',');
+        const subCategoriesObject = { name: currentCat, items: CatArray };
+        subCategories.push(subCategoriesObject);
+      }
+      setCurrentCat('');
+      setCurrentCatItem('');
+      setrefresh(!refresh);
+    } else {
+      if (currentCatItem === '') {
+        const subCategoriesObject = { name: currentCat, items: [] };
+        subCategories[index] = subCategoriesObject;
+      } else {
+        const CatArray = currentCatItem.split(',');
+        const subCategoriesObject = { name: currentCat, items: CatArray };
+        subCategories[index] = subCategoriesObject;
+      }
+      setCurrentCat('');
+      setCurrentCatItem('');
+      setrefresh(!refresh);
+      setEditCatSub(false);
+      console.log(subCategories);
+    }
   };
 
   const editHandler = (c, type) => {
@@ -288,6 +319,12 @@ export default function Categories() {
     subCategories = c.subCategories;
     setEditCat(true);
     setEditCurrentCat(c);
+  };
+  const editSubCategories = (sub) => {
+    setIndex(sub);
+    setEditCatSub(true);
+    setCurrentCat(subCategories[sub].name);
+    setCurrentCatItem(subCategories[sub].items.toString());
   };
 
   const deleteHandler = async (c) => {
@@ -324,17 +361,6 @@ export default function Categories() {
               placeholder="Enter category name"
             />
           </Item>
-          <SubCont>
-            {subCategories.map((c, index) => (
-              <CatList mode={mode} key={index}>
-                {c}
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  onClick={(e) => sizeHandler(c)}
-                />
-              </CatList>
-            ))}
-          </SubCont>
           <Item>
             <Label>Sub Categories</Label>
             <InputCont>
@@ -346,15 +372,39 @@ export default function Categories() {
                 placeholder="Enter Sub category"
                 onChange={(e) => setCurrentCat(e.target.value)}
               />
-              <Button
+            </InputCont>
+          </Item>
+          <Item>
+            <Label>Sub Categories Items</Label>
+            <InputCont>
+              <Textarea
                 mode={mode}
-                className="add"
-                onClick={(e) => sizeHandler(currentCat)}
-              >
+                className="half"
+                value={currentCatItem}
+                type="text"
+                placeholder="Enter Sub category"
+                onChange={(e) => setCurrentCatItem(e.target.value)}
+              />
+              <Button mode={mode} className="add" onClick={sizeHandler}>
                 Add
               </Button>
             </InputCont>
           </Item>
+
+          <SubCont>
+            {subCategories.map((c, index) => (
+              <SubCat>
+                <CatList mode={mode} key={index}>
+                  <div onClick={() => editSubCategories(index)}>{c.name}</div>
+                </CatList>
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  onClick={(e) => sizeHandler(c.name)}
+                />
+              </SubCat>
+            ))}
+          </SubCont>
+
           <Button onClick={submitHandler}>
             {editCat ? 'Update Category' : 'Add Category'}
           </Button>
