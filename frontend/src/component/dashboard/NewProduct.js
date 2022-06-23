@@ -89,10 +89,10 @@ const ItemCont = styled.div`
   gap: 20px;
 `;
 const ItemLeft = styled.div`
-  flex: 8;
+  flex: 1;
 `;
 const ItemRight = styled.div`
-  flex: 4;
+  flex: 1;
 `;
 const TextArea = styled.textarea`
   height: 100px;
@@ -262,6 +262,23 @@ const Error = styled.div`
   margin: 24px 10px 0 0;
 `;
 
+const BrandList = styled.div`
+  max-height: 200px;
+  overflow: auto;
+  border-bottom-left-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+`;
+const BrandListItem = styled.div`
+  padding: 10px 20px;
+  font-size: 15px;
+  &:hover {
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'CREATE_REQUEST':
@@ -289,6 +306,8 @@ export default function NewProduct() {
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Womenswear');
+  const [subCategory1, setSunCategory1] = useState('Womenswear');
+  const [subCategory2, setSunCategory2] = useState('Womenswear');
   const [brand, setBrand] = useState('');
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
@@ -451,6 +470,18 @@ export default function NewProduct() {
     }
   };
 
+  const [showSelect, setShowSelect] = useState(false);
+  let brands = ['Nike', 'Gucci', 'Rolex', 'Louis Vuitto', 'Adidas', 'Dior'];
+  const handleSelect = (b) => {
+    setBrand(b);
+    setShowSelect(false);
+  };
+  if (brand.length > 0) {
+    brands = brands.filter((i) => {
+      return i.toLowerCase().match(brand);
+    });
+  }
+
   return (
     <NewProductC mode={mode}>
       <TitleCont>
@@ -472,10 +503,53 @@ export default function NewProduct() {
                 onChange={(e) => setName(e.target.value)}
               />
             </Item>
+            <Item>
+              <Label>Category</Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: '0.2rem',
+                  border: `1px solid ${
+                    mode === 'pagebodydark'
+                      ? 'var(--dark-ev4)'
+                      : 'var(--light-ev4)'
+                  }`,
+                  '& .MuiOutlinedInput-root': {
+                    color: `${
+                      mode === 'pagebodydark'
+                        ? 'var(--white-color)'
+                        : 'var(--black-color)'
+                    }`,
+                    '&:hover': {
+                      outline: 0,
+                      border: 0,
+                    },
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '0 !important',
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  displayEmpty
+                  inputProps={{
+                    'aria-label': 'Without label',
+                  }}
+                >
+                  <MenuItem value={'Womenswear'}>Womenswear</MenuItem>
+                  <MenuItem value={'Menswear'}>Menswear</MenuItem>
+                  <MenuItem value={'Kids'}>Kids</MenuItem>
+                  <MenuItem value={'Cureve Plus'}>Cureve Plus</MenuItem>
+                </Select>
+              </FormControl>
+            </Item>
             <ItemCont>
               <ItemLeft>
                 <Item>
-                  <Label>Category</Label>
+                  <Label>Sub Category 1</Label>
                   <FormControl
                     sx={{
                       margin: 0,
@@ -504,7 +578,7 @@ export default function NewProduct() {
                   >
                     <Select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      onChange={(e) => setSunCategory1(e.target.value)}
                       displayEmpty
                       inputProps={{
                         'aria-label': 'Without label',
@@ -520,7 +594,7 @@ export default function NewProduct() {
               </ItemLeft>
               <ItemRight>
                 <Item>
-                  <Label>Condition</Label>
+                  <Label>Sub Category 2</Label>
                   <FormControl
                     sx={{
                       margin: 0,
@@ -560,12 +634,64 @@ export default function NewProduct() {
               </ItemRight>
             </ItemCont>
             <Item>
+              <Label>Condition</Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: '0.2rem',
+                  border: `1px solid ${
+                    mode === 'pagebodydark'
+                      ? 'var(--dark-ev4)'
+                      : 'var(--light-ev4)'
+                  }`,
+                  '& .MuiOutlinedInput-root': {
+                    color: `${
+                      mode === 'pagebodydark'
+                        ? 'var(--white-color)'
+                        : 'var(--black-color)'
+                    }`,
+                    '&:hover': {
+                      outline: 'none',
+                      border: 0,
+                    },
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: '0 !important',
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value="New">New</MenuItem>
+                  <MenuItem value="Used">Used</MenuItem>
+                </Select>
+              </FormControl>
+            </Item>
+            <Item>
               <Label>Brand</Label>
               <TextInput
                 mode={mode}
                 type="text"
-                onChange={(e) => setBrand(e.target.value)}
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  setShowSelect(true);
+                }}
+                onClick={() => setShowSelect(true)}
               />
+              {showSelect && (
+                <BrandList mode={mode}>
+                  {brands.map((b) => (
+                    <BrandListItem mode={mode} onClick={() => setBrand(b)}>
+                      {b}
+                    </BrandListItem>
+                  ))}
+                </BrandList>
+              )}
             </Item>
             <Sizes>
               <SizeLeft>
