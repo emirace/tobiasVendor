@@ -472,7 +472,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                       return <SubCategoryItem>{s.name}</SubCategoryItem>;
                     } else {
                       return (
-                        <dic>
+                        <div>
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
