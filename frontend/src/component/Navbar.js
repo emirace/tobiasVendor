@@ -156,6 +156,7 @@ const ProfileImg = styled.img.attrs((props) => ({
   }
 `;
 const Category = styled.ul`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -174,9 +175,8 @@ const CategoryItem = styled.li`
   }
 `;
 const CategoryGroup = styled.div`
-  position: relative;
   &:hover ul {
-    display: block;
+    display: flex;
   }
 `;
 
@@ -227,14 +227,15 @@ const SubCategory = styled.ul.attrs({})`
       ? '0 0 3px rgba(0, 0, 0, 0.2)'
       : '0 0 3px rgba(225, 225, 225, 0.2)'};
   top: 35px;
-  left: 20px;
-  width: 90vw;
-  height: 450px;
+  left: 0;
+  width: 100vw;
+  height: 350px;
   background: ${(props) => (props.bg ? '#fff' : '#000')};
   display: none;
-  justify-content:center;
-  padding: 20px;
+  flex-direction: column;
+  padding: 50px 150px;
   z-index: 9;
+  flex-wrap: wrap;
 `;
 
 const SignIn = styled.div`
@@ -471,14 +472,14 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                       return <SubCategoryItem>{s.name}</SubCategoryItem>;
                     } else {
                       return (
-                        <>
+                        <dic>
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
                               <SList>{l}</SList>
                             ))}
                           </UList>
-                        </>
+                        </div>
                       );
                     }
                   })}
