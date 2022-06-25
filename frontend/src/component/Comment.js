@@ -102,6 +102,10 @@ const Textarea = styled.textarea`
     box-shadow: 0 0 0 0.25rem rgb(247 154 35 / 10%);
   }
 `;
+const CommentImg = styled.img`
+  margin-top: 5px;
+  height: 200px;
+`;
 
 export default function Comment({ commentC }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -259,21 +263,27 @@ export default function Comment({ commentC }) {
       <Container mode={mode}>
         <Image src={comment.userImage} alt="pimage" />
         <Content>
-          <Top>
-            <Name>{comment.name}</Name>
-            <Time>{format(comment.createdAt)}</Time>
-          </Top>
-          <CommentText>{comment.comment}</CommentText>
-          <Action>
-            <Reply onClick={() => setReplyArea(!replyArea)}>
-              {comment.replies.length} reply
-            </Reply>
-            <Like>{comment.likes.length} like</Like>
-            <FontAwesomeIcon
-              icon={faHeart}
-              onClick={() => likeComment(comment._id)}
-            />
-          </Action>
+          <div>
+            <Top>
+              <Name>{comment.name}</Name>
+              <Time>{format(comment.createdAt)}</Time>
+            </Top>
+            <CommentText>{comment.comment}</CommentText>
+            <Action>
+              <Reply onClick={() => setReplyArea(!replyArea)}>
+                {comment.replies.length} reply
+              </Reply>
+              <Like>{comment.likes.length} like</Like>
+              <FontAwesomeIcon
+                // color={comment.likes.includes(userInfo._id ? 'red' : '')}
+                icon={faHeart}
+                onClick={() => likeComment(comment._id)}
+              />
+            </Action>
+          </div>
+          <div>
+            <CommentImg src={comment.image} alt="d" />
+          </div>
         </Content>
       </Container>
       {replyArea && (

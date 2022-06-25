@@ -500,6 +500,7 @@ export default function ProductScreen() {
                       />
                       <input
                         type="file"
+                        label="hello"
                         onChange={(e) => uploadImageHandler(e)}
                       />
                     </FloatingLabel>
