@@ -54,6 +54,7 @@ app.use('/api/conversations', conversationRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/categories', categoryRouter);
+app.use('/api/replies', categoryRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
