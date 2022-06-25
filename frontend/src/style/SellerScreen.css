@@ -101,7 +101,7 @@
   width: 100%;
   margin: 10px 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .seller_profile_follower {
@@ -129,6 +129,15 @@
   margin: 20px 0;
   padding: 4px 0;
   border: 0;
+}
+.profile_report_btn {
+  width: 100%;
+  background: none;
+  color: var(--malon-color);
+  border-radius: 5px;
+  margin: 20px 0;
+  padding: 4px 0;
+  border: 1px solid var(--malon-color);
 }
 
 .seller_profile_detail {

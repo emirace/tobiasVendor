@@ -31,6 +31,8 @@ productRouter.post(
       image3,
       image4,
       // video,
+      product,
+      subCategory,
       category,
       description,
       brand,
@@ -38,10 +40,14 @@ productRouter.post(
       price,
       location,
       specification,
-      sizes,
+      sizes: sizes,
       condition,
       feature,
-      // overview,
+      luxury,
+      vintage,
+      material,
+      color,
+      luxuryImage,
     } = req.body;
     const slugName = slugify(name);
     const images = [image2, image3, image4];
@@ -55,7 +61,9 @@ productRouter.post(
       // video: video ? video : '',
       price,
       actualPrice: discount,
+      product,
       category,
+      subCategory,
       shippingLocation: location,
       brand: brand ? brand : 'other',
       specification,
@@ -70,9 +78,14 @@ productRouter.post(
       sold: false,
       active: true,
       countInStock: countInStock,
+      luxury,
+      vintage,
+      material,
+      color,
+      luxuryImage,
     });
-    const product = await newProduct.save();
-    res.send({ message: 'Product Created', product });
+    const createdProduct = await newProduct.save();
+    res.send({ message: 'Product Created', createdProduct });
   })
 );
 
@@ -99,7 +112,9 @@ productRouter.put(
         product.name = req.body.name || product.name;
         product.price = req.body.price || product.price;
         product.actualPrice = req.body.discount || product.actualPrice;
+        product.product = req.body.product || product.category;
         product.category = req.body.category || product.category;
+        product.subCategory = req.body.subCategory || product.subCategory;
         product.image = req.body.image1 || product.image;
         product.images = images || product.images;
         product.brand = req.body.brand || product.brand;

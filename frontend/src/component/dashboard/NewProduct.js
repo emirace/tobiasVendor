@@ -365,8 +365,9 @@ export default function NewProduct() {
   const [material, setMaterial] = useState('Womenswear');
   const [brand, setBrand] = useState('');
   const [color, setColor] = useState('');
-  const [luxury, setLuxury] = useState('');
-  const [vintage, setVintage] = useState('');
+  const [luxury, setLuxury] = useState(false);
+  const [luxuryImage, setLuxuryImage] = useState('');
+  const [vintage, setVintage] = useState(false);
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [specification, setSpecification] = useState('');
@@ -444,6 +445,11 @@ export default function NewProduct() {
             sizes: sizes,
             condition,
             feature,
+            luxury,
+            vintage,
+            material,
+            color,
+            luxuryImage,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -505,6 +511,8 @@ export default function NewProduct() {
         setImage2(data.secure_url);
       } else if (fileType === 'image3') {
         setImage3(data.secure_url);
+      } else if (fileType === 'luxury') {
+        setLuxuryImage(data.secure_url);
       } else {
         setImage4(data.secure_url);
       }
@@ -1073,43 +1081,49 @@ export default function NewProduct() {
                   <ItemCheck>
                     <Checkbox
                       type="checkbox"
-                      onChange={(e) => setLuxury(e.target.value)}
+                      checked={luxury}
+                      onChange={(e) => setLuxury(e.target.checked)}
                     />
                     <Label>Luxury</Label>
                   </ItemCheck>
                   <ItemCheck>
                     <Checkbox
+                      checked={vintage}
                       type="checkbox"
-                      onChange={(e) => setVintage(e.target.value)}
+                      onChange={(e) => setVintage(e.target.checked)}
                     />
                     <Label>Vintage</Label>
                   </ItemCheck>
                 </div>
-                <VimageCont>
-                  <BigImageC mode={mode}>
-                    {image1 ? (
-                      <BigImage src={image1} alt="product image" />
-                    ) : (
-                      <AddImage htmlFor="image1">
-                        {loadingUpload ? (
-                          <LoadingBox></LoadingBox>
-                        ) : (
-                          <>
-                            <FontAwesomeIcon icon={faImage} />
-                            <div>
-                              Click to Browse <span>Image</span>
-                            </div>
-                            <Upload
-                              type="file"
-                              id="image1"
-                              onChange={(e) => uploadHandler(e, 'image1')}
-                            />
-                          </>
-                        )}
-                      </AddImage>
-                    )}
-                  </BigImageC>
-                </VimageCont>
+                {vintage || luxury ? (
+                  <VimageCont>
+                    <BigImageC mode={mode}>
+                      {luxuryImage ? (
+                        <BigImage src={luxuryImage} alt="product image" />
+                      ) : (
+                        <AddImage htmlFor="image1">
+                          {loadingUpload ? (
+                            <LoadingBox></LoadingBox>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon icon={faImage} />
+                              <div>
+                                Click to Browse <span>Image</span>
+                              </div>
+                              <Upload
+                                type="file"
+                                id="image1"
+                                onChange={(e) => uploadHandler(e, 'luxury')}
+                              />
+                            </>
+                          )}
+                        </AddImage>
+                      )}
+                    </BigImageC>
+                  </VimageCont>
+                ) : (
+                  ''
+                )}
               </ImageRow>
 
               <Item>
@@ -1132,6 +1146,41 @@ export default function NewProduct() {
                   mode={mode}
                   onChange={(e) => setFeature(e.target.value)}
                 />
+                <FormControl
+                  sx={{
+                    margin: 0,
+                    borderRadius: '0.2rem',
+                    border: `1px solid ${
+                      mode === 'pagebodydark'
+                        ? 'var(--dark-ev4)'
+                        : 'var(--light-ev4)'
+                    }`,
+                    '& .MuiOutlinedInput-root': {
+                      color: `${
+                        mode === 'pagebodydark'
+                          ? 'var(--white-color)'
+                          : 'var(--black-color)'
+                      }`,
+                      '&:hover': {
+                        outline: 'none',
+                        border: 0,
+                      },
+                    },
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      border: '0 !important',
+                    },
+                  }}
+                  size="small"
+                >
+                  <Select
+                    value={feature}
+                    onChange={(e) => setFeature(e.target.value)}
+                    displayEmpty
+                  >
+                    <MenuItem value="New">New</MenuItem>
+                    <MenuItem value="Used">Used</MenuItem>
+                  </Select>
+                </FormControl>
               </Item>
             </Top>
             <ButtonC>

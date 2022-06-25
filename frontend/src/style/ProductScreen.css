@@ -118,7 +118,7 @@
 }
 
 .sp_select_size_btn {
-  border: 0.1rem solid;
+  border: 2px solid;
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -198,7 +198,7 @@
 }
 
 .sp_detail_title {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   position: relative;
   cursor: pointer;
@@ -222,7 +222,9 @@
 }
 
 .sp_detail_section.active .sp_detail_contail {
-  height: 200px;
+  height: auto;
+  margin-bottom: 20px;
+  margin-left: 20px;
 }
 
 .sp_detail_contail {

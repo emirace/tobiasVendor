@@ -43,6 +43,7 @@ import Model from '../component/Model';
 import ModelLogin from '../component/ModelLogin';
 import Signin from '../component/Signin';
 import Comment from '../component/Comment';
+import ProtectionRight from '../component/ProtectionRight';
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -994,6 +995,7 @@ export default function ProductScreen() {
                 <div className="sp_detail_contail">{product.specification}</div>
               </div>
             </div>
+            <ProtectionRight />
           </div>
         </div>
       </div>

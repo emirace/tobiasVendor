@@ -25,6 +25,8 @@ import styled from 'styled-components';
 import { Store } from '../Store';
 import Model from '../component/Model';
 import ReviewLists from './ReviewLists';
+import ModelLogin from '../component/ModelLogin';
+import Report from '../component/Report';
 
 const Right = styled.div`
   flex: 3;
@@ -178,10 +180,11 @@ export default function SellerScreen() {
   const params = useParams();
   const { id: sellerId } = params;
 
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
   const [displayTab, setDisplayTab] = useState('all');
+  const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
 
   const { search } = useLocation();
@@ -230,7 +233,14 @@ export default function SellerScreen() {
     }
 
     if (!userInfo) {
-      toast.error('login to follow');
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: "you can't follow yourself",
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       return;
     }
     try {
@@ -412,7 +422,12 @@ export default function SellerScreen() {
                 </div>
               </div>
               <Link to="/dashboard/user">
-                <FontAwesomeIcon className="seller_profile_icon" icon={faPen} />
+                {userInfo && userInfo._id === sellerId && (
+                  <FontAwesomeIcon
+                    className="seller_profile_icon"
+                    icon={faPen}
+                  />
+                )}
               </Link>
               <div className="seller_profile_status">online</div>
               <div className="seller_profile_name">{user.name}</div>
@@ -429,15 +444,17 @@ export default function SellerScreen() {
                   </div>
                   <div className="">Following</div>
                 </div>
-                <button
-                  type="button"
-                  onClick={toggleFollow}
-                  className="seller_follow_btn"
-                >
-                  {userInfo && user.followers.find((x) => x === userInfo._id)
-                    ? 'Unfollow'
-                    : 'Follow'}
-                </button>
+                {userInfo && userInfo._id !== user._id && (
+                  <button
+                    type="button"
+                    onClick={toggleFollow}
+                    className="seller_follow_btn"
+                  >
+                    {userInfo && user.followers.find((x) => x === userInfo._id)
+                      ? 'Unfollow'
+                      : 'Follow'}
+                  </button>
+                )}
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating rating={user.rating} numReviews={user.numReviews} />
@@ -489,6 +506,19 @@ export default function SellerScreen() {
                 <div className="seller_detail_content">{user.about}</div>
               </div>
             </SellerLeft>
+            <button
+              onClick={() => setShowLoginModel(!showLoginModel)}
+              type="buton"
+              className="profile_report_btn"
+            >
+              Report Seller
+            </button>
+            <ModelLogin
+              showModel={showLoginModel}
+              setShowModel={setShowLoginModel}
+            >
+              <Report reportedUser={sellerId} />
+            </ModelLogin>
           </>
         )}
       </div>
