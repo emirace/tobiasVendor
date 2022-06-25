@@ -15,6 +15,7 @@ import conversationRouter from './routes/conversationRoutes.js';
 import messageRouter from './routes/messageRoutes.js';
 import commentRouter from './routes/commentRoustes.js';
 import categoryRouter from './routes/categoryRoutes.js';
+import reportRouter from './routes/reportRoutes.js';
 
 dotenv.config();
 
@@ -54,7 +55,7 @@ app.use('/api/conversations', conversationRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/categories', categoryRouter);
-app.use('/api/replies', categoryRouter);
+app.use('/api/reports', reportRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));

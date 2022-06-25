@@ -32,7 +32,6 @@ export default function Product(props) {
   const {
     cart: { cartItems },
     userInfo,
-    toast,
   } = state;
   const [showModel, setShowModel] = useState(false);
   const [product, setProduct] = useState(p1);
