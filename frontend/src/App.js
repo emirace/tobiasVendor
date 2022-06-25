@@ -70,6 +70,7 @@ import ToastNotification from './component/ToastNotification';
 import DashboardNewScreen from './screens/DashboardNewScreen';
 import CategorypageScreen from './screens/CategorypageScreen';
 import BrandScreen from './screens/BrandScreen';
+import { io } from 'socket.io-client';
 import ShopByOutfit from './screens/ShopByOutfit';
 
 const NavCont = styled.div`
@@ -176,6 +177,19 @@ function App() {
   const changeRef = (res) => {
     setmodelRef1(res);
   };
+  const ENDPOINT =
+    window.location.host.indexOf('localhost') >= 0
+      ? 'ws://127.0.0.1:5000'
+      : window.location.host;
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io(ENDPOINT);
+    socket.current.emit('onlogin', userInfo);
+    socket.current.on('getUsers', (users) => {
+      ctxDispatch({ type: 'SET_ONLINE', payload: users });
+    });
+  }, [userInfo]);
 
   return (
     <BrowserRouter>

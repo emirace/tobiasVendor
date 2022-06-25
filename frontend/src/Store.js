@@ -33,6 +33,7 @@ const initialState = {
     state1: '',
     showStatus: false,
   },
+  onlineUser: [],
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -103,6 +104,8 @@ function reducer(state, action) {
       };
     case 'CHANGE_MODE':
       return { ...state, mode: action.payload };
+    case 'SET_ONLINE':
+      return { ...state, onlineUser: action.payload };
     case 'SHOW_NOTIFICAATION':
       return {
         ...state,

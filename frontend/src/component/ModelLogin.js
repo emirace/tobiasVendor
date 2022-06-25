@@ -21,6 +21,7 @@ const Background = styled.div`
 const ModelWrapper = styled.div`
   width: 75%;
   height: 600px;
+  border-radius: 0.2rem;
   box-shadow: ${(props) =>
     props.mode === 'pagebodylight '
       ? '0 5px 16px rgba(0, 0, 0, 0.2)'

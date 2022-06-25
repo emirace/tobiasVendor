@@ -150,6 +150,22 @@ io.on('connection', (socket) => {
       });
     }
   });
+
+  socket.on('sendReport', ({ report, senderId }) => {
+    const user = users.find((x) => x._id === senderId);
+    const admin = users.find((x) => x.isAdmin && x.online);
+    if (!user.isAdmin) {
+      io.to(user.socketId).emit('getReport', {
+        senderId,
+        report,
+      });
+    } else {
+      io.to(admin.socketId).emit('getReport', {
+        senderId,
+        report,
+      });
+    }
+  });
 });
 
 httpServer.listen(port, () => {
