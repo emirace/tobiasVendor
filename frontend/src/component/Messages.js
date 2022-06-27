@@ -1,6 +1,8 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { format } from 'timeago.js';
+import { getError } from '../utils';
 
 const RecievedChat = styled.div`
   display: flex;
@@ -10,7 +12,7 @@ const RecievedChat = styled.div`
 const SendChat = styled.div`
   display: flex;
   justify-content: end;
-  margin-bottom: 15px;
+  margin-top: 15px;
 `;
 const InlineR = styled.div`
   display: inline-block;
@@ -34,17 +36,40 @@ const TimeS = styled.div`
   text-align: right;
   font-size: 13px;
 `;
-
-export default function Messages({ message, own }) {
+const Reporting = styled.div`
+  text-align: right;
+`;
+export default function Messages({ message, own, report }) {
+  const [user, setUser] = useState();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (report) {
+        try {
+          const { data: dataUser } = await axios.get(
+            `/api/users/seller/${message.reportedUser}`
+          );
+          setUser(dataUser);
+        } catch (err) {
+          console.log(getError(err));
+        }
+      }
+    };
+    fetchData();
+  }, [message, report]);
   return (
     <>
       {own ? (
-        <SendChat>
-          <div>
-            <InlineS>{message.text}</InlineS>
-            <TimeS>{format(message.createdAt)}</TimeS>
-          </div>
-        </SendChat>
+        <>
+          <SendChat>
+            <div>
+              <InlineS>{message.text}</InlineS>
+              <TimeS>{format(message.createdAt)}</TimeS>
+            </div>
+          </SendChat>
+          {report && user && !message.admin && (
+            <Reporting>Reporting: {user.name}</Reporting>
+          )}
+        </>
       ) : (
         <RecievedChat>
           <div>

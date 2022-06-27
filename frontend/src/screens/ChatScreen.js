@@ -610,7 +610,7 @@ export default function ChatScreen() {
               <ChatArea>
                 {reports.map((m, index) => (
                   <div ref={scrollref} key={index}>
-                    <Messages own={!m.admin} message={m} />
+                    <Messages own={!m.admin} message={m} report={true} />
                   </div>
                 ))}
               </ChatArea>

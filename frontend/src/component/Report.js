@@ -18,6 +18,7 @@ const Container = styled.div`
     props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
 const ChatArea = styled.div`
+  position: relative;
   height: calc(100% - 40px);
   width: 100%;
   border-radius: 0.2rem;
@@ -26,7 +27,6 @@ const ChatArea = styled.div`
     props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 `;
 const ChatBox = styled.div`
-  position: relative;
   height: calc(100% - 66px);
   padding: 40px 40px 0 40px;
   overflow-y: auto;
@@ -75,11 +75,37 @@ const TextInput = styled.input`
 
 const ReportedUser = styled.div`
   position: absolute;
-  width: 200px;
-  height: 100px;
-  top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 30px;
+  transform: translateX(-50%);
   left: 50%;
-  background: red;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+  padding: 10px 20px;
+`;
+
+const Image = styled.img`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+const Name = styled.div`
+  margin-left: 10px;
+  font-weight: bold;
+  text-transform: capitalize;
+`;
+const Text = styled.div`
+  font-size: 15px;
+  font-weight: 300;
+  margin-bottom: 5px;
+`;
+const UserCont = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const reducer = (state, action) => {
@@ -132,7 +158,7 @@ export default function Report({ reportedUser }) {
     const getMessages = async () => {
       try {
         dispatch({ type: 'MSG_REQUEST' });
-        const { data } = await axios.get(`/api/reports/${userInfo._id}`, {
+        const { data } = await axios.get(`/api/reports/${reportedUser}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: 'MSG_SUCCESS', payload: data.reports });
@@ -143,7 +169,7 @@ export default function Report({ reportedUser }) {
       }
     };
     getMessages();
-  }, [userInfo]);
+  }, [reportedUser, userInfo]);
   useEffect(() => {
     if (arrivalReport) {
       dispatch({
@@ -156,6 +182,20 @@ export default function Report({ reportedUser }) {
   useEffect(() => {
     scrollref.current?.scrollIntoView({ behavior: 'smooth' });
   }, [reports]);
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: dataUser } = await axios.get(
+          `/api/users/seller/${reportedUser}`
+        );
+        setUser(dataUser);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchData();
+  }, [reportedUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -200,8 +240,17 @@ export default function Report({ reportedUser }) {
               </div>
             ))
           )}
-          <ReportedUser></ReportedUser>
         </ChatBox>
+        {user && (
+          <ReportedUser mode={mode}>
+            <Text>Reporting:</Text>
+            <UserCont>
+              <Image src={user.image} alt="reported User" />
+              <Name>{user.name}</Name>
+            </UserCont>
+          </ReportedUser>
+        )}
+
         <Message>
           <TextInput
             mode={mode}
