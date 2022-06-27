@@ -22,15 +22,17 @@ const ChatArea = styled.div`
   width: 100%;
   border-radius: 0.2rem;
   margin-top: 20px;
-  overflow-y: auto;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+`;
+const ChatBox = styled.div`
+  position: relative;
+  height: calc(100% - 66px);
+  padding: 40px 40px 0 40px;
+  overflow-y: auto;
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-const ChatBox = styled.div`
-  height: calc(100% - 66px);
 `;
 const Message = styled.div`
   display: flex;
@@ -69,6 +71,15 @@ const TextInput = styled.input`
         ? 'var(--white-color)'
         : 'var(--black-color)'};
   }
+`;
+
+const ReportedUser = styled.div`
+  position: absolute;
+  width: 200px;
+  height: 100px;
+  top: 50px;
+  left: 50%;
+  background: red;
 `;
 
 const reducer = (state, action) => {
@@ -111,17 +122,13 @@ export default function Report({ reportedUser }) {
 
   useEffect(() => {
     socket.current = io(ENDPOINT);
-    socket.current.on('getMessage', (data) => {
-      setArrivalReport({
-        sender: data.senderId,
-        text: data.text,
-        message: data.message,
-      });
+    socket.current.emit('onlogin', userInfo);
+    socket.current.on('getReport', (data) => {
+      setArrivalReport(data.report);
     });
-  }, []);
+  }, [userInfo]);
 
   useEffect(() => {
-    socket.current = io(ENDPOINT);
     const getMessages = async () => {
       try {
         dispatch({ type: 'MSG_REQUEST' });
@@ -141,7 +148,7 @@ export default function Report({ reportedUser }) {
     if (arrivalReport) {
       dispatch({
         type: 'MSG_SUCCESS',
-        payload: arrivalReport,
+        payload: [...reports, arrivalReport],
       });
     }
   }, [arrivalReport]);
@@ -157,6 +164,7 @@ export default function Report({ reportedUser }) {
         '/api/reports/',
         {
           reportedUser,
+          user: userInfo._id,
           text: reply,
         },
         {
@@ -170,7 +178,6 @@ export default function Report({ reportedUser }) {
 
       socket.current.emit('sendReport', {
         report: data.savedReport,
-        senderId: userInfo._id,
       });
 
       setReply('');
@@ -186,13 +193,14 @@ export default function Report({ reportedUser }) {
           {loadingReports ? (
             <LoadingBox />
           ) : (
-            reports.reports &&
-            reports.reports.map((m, index) => (
+            reports !== [] &&
+            reports.map((m, index) => (
               <div ref={scrollref} key={index}>
-                <Messages own={m.sender === userInfo._id} message={m} />
+                <Messages own={!m.admin} message={m} />
               </div>
             ))
           )}
+          <ReportedUser></ReportedUser>
         </ChatBox>
         <Message>
           <TextInput

@@ -20,6 +20,8 @@ import Messages from '../component/Messages';
 import { io } from 'socket.io-client';
 import { useLocation } from 'react-router-dom';
 import { getError } from '../utils';
+import ReportConversation from '../component/Report/ReportConversation';
+import Report from '../component/Report';
 
 const Container = styled.div`
   position: fixed;
@@ -86,31 +88,6 @@ const Search = styled.input.attrs((props) => ({
   }
 `;
 
-const RightTopbar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-const LeftBar = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const SmallImg = styled.img.attrs((props) => ({
-  src: props.src,
-}))`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: top;
-  margin-right: 15px;
-`;
-const SmallName = styled.div`
-  text-transform: capitalize;
-`;
-const RightBar = styled.div`
-  text-transform: capitalize;
-`;
 const ChatArea = styled.div`
   margin-top: 20px;
   height: 380px;
@@ -119,30 +96,7 @@ const ChatArea = styled.div`
     display: none;
   }
 `;
-const RecievedChat = styled.div`
-  display: flex;
-  justify-content: start;
-  margin-bottom: 15px;
-`;
-const SendChat = styled.div`
-  display: flex;
-  justify-content: end;
-  margin-bottom: 15px;
-`;
-const InlineR = styled.div`
-  display: inline-block;
-  padding: 20px;
-  background: var(--malon-color);
-  color: #fff;
-  border-radius: 10px;
-`;
-const InlineS = styled.div`
-  display: inline-block;
-  padding: 20px;
-  background: var(--orange-color);
-  color: #fff;
-  border-radius: 10px;
-`;
+
 const Message = styled.div`
   display: flex;
   align-items: center;
@@ -199,6 +153,25 @@ const Conserv = styled.div`
   }
 `;
 
+const Tab = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding: 0 10px;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+`;
+const TabItem = styled.div`
+  cursor: pointer;
+  padding: 10px 30px;
+  &:hover {
+    color: var(--orange-color);
+  }
+  &.active {
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -232,12 +205,14 @@ export default function ChatScreen() {
   const { mode, userInfo } = state;
   const [menu, setMymenu] = useState(false);
   const [currentChat, setCurrentChat] = useState('');
+  const [currentReply, setCurrentReply] = useState('');
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState('');
   const [modelRef1, setmodelRef1] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
   const socket = useRef();
   const scrollref = useRef();
+  const [reports, setReports] = useState([]);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -273,6 +248,7 @@ export default function ChatScreen() {
 
   useEffect(() => {
     socket.current = io(ENDPOINT);
+    socket.current.emit('onlogin', userInfo);
     socket.current.on('getMessage', (data) => {
       setArrivalMessage({
         sender: data.senderId,
@@ -280,9 +256,21 @@ export default function ChatScreen() {
         message: data.message,
       });
     });
+  }, [userInfo]);
+
+  const [arrivalReport, setArrivalReport] = useState();
+
+  useEffect(() => {
+    socket.current.on('getReport', (data) => {
+      setArrivalReport(data.report);
+    });
   }, []);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (arrivalReport) {
+      setReports([...reports, arrivalReport]);
+    }
+  }, [arrivalReport]);
 
   useEffect(() => {
     if (
@@ -302,7 +290,6 @@ export default function ChatScreen() {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit('onlogin', userInfo);
     socket.current.on('getUsers', (users) => {
       setOnlineUser(users);
     });
@@ -326,6 +313,42 @@ export default function ChatScreen() {
     };
     getConversation();
   }, [userInfo]);
+
+  const [reportConversions, setReportConversions] = useState([]);
+  useEffect(() => {
+    const getReportConversation = async () => {
+      try {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`/api/reportConversation`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setReportConversions(data.conversations);
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: err });
+        console.log(err);
+      }
+    };
+    getReportConversation();
+  }, [userInfo]);
+
+  const [reports1, setReports1] = useState(false);
+
+  useEffect(() => {
+    const getReport = async () => {
+      try {
+        if (currentReply) {
+          const { data } = await axios.get(`/api/reports/${currentReply}`, {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          setReports(data.reports);
+        }
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: err });
+        console.log(getError(err));
+      }
+    };
+    getReport();
+  }, [currentReply, userInfo, reports1]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -353,7 +376,6 @@ export default function ChatScreen() {
             { headers: { Authorization: `Bearer ${userInfo.token}` } }
           );
           setCurrentChat(data);
-          console.log('data', sp);
         } catch (err) {
           console.log(getError(err));
         }
@@ -364,7 +386,7 @@ export default function ChatScreen() {
 
   useEffect(() => {
     scrollref.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, reports]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -432,7 +454,85 @@ export default function ChatScreen() {
       console.log(err);
     }
   };
-  console.log('message', messages);
+  const [currentTab, setCurrentTab] = useState('messages');
+  const toggleTab = (tab) => {
+    switch (tab) {
+      case 'messages':
+        return (
+          <Conserv>
+            {conversations.length < 1
+              ? 'No Conversation'
+              : conversations.map((c, index) => (
+                  <div onClick={() => setCurrentChat(c)} key={index}>
+                    <Conversation
+                      conversation={c}
+                      status={isOnlineCon(c)}
+                      currentChat={currentChat._id}
+                    />
+                  </div>
+                ))}
+          </Conserv>
+        );
+      case 'reports':
+        return (
+          <Conserv>
+            {reportConversions.length < 1
+              ? 'No Reports'
+              : reportConversions.map((r, index) => (
+                  <div key={index} onClick={() => setCurrentReply(r.user)}>
+                    <ReportConversation
+                      currentReply={currentReply}
+                      userId={r.user}
+                    />
+                  </div>
+                ))}
+          </Conserv>
+        );
+      case 'supports':
+        return <Conserv>No supports</Conserv>;
+
+      default:
+        break;
+    }
+  };
+
+  const handleSubmitReply = async () => {
+    try {
+      const { data } = await axios.post(
+        '/api/reports/',
+        {
+          reportedUser: reports[0].reportedUser.toString(),
+          user: currentReply,
+          text: newMessage,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      socket.current.emit('sendReport', {
+        report: data.savedReport,
+      });
+
+      setReports1(!reports1);
+      //
+      // const newreports = reports.map((r) => {
+      //   if (r._id === data.savedReport.user) {
+      //     r.user.push(data.savedReport);
+      //   }
+      //   return r;
+      // });
+      // console.log('newreport', newreports);
+      // setReports1(data.savedReport);
+
+      // socket.current.emit('sendReport', {
+      //   report: data.savedReport,
+      // });
+
+      setNewMessage('');
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
 
   return (
     <Container className={mode} onClick={closeModel}>
@@ -448,31 +548,69 @@ export default function ChatScreen() {
               <FontAwesomeIcon icon={faMessage} />
             </div>
           </TopBar>
-          <Conserv>
-            {conversations.length < 1
-              ? 'no conversation'
-              : conversations.map((c, index) => (
-                  <div onClick={() => setCurrentChat(c)} key={index}>
-                    <Conversation
-                      conversation={c}
-                      status={isOnlineCon(c)}
-                      currentChat={currentChat._id}
-                    />
-                  </div>
-                ))}
-          </Conserv>
+          {toggleTab(currentTab)}
+          {userInfo && userInfo.isAdmin && (
+            <Tab mode={mode}>
+              <TabItem
+                className={currentTab === 'messages' ? 'active' : ''}
+                mode={mode}
+                onClick={() => setCurrentTab('messages')}
+              >
+                Messages
+              </TabItem>
+              <TabItem
+                mode={mode}
+                className={currentTab === 'reports' ? 'active' : ''}
+                onClick={() => setCurrentTab('reports')}
+              >
+                Reports
+              </TabItem>
+              <TabItem
+                mode={mode}
+                className={currentTab === 'supports' ? 'active' : ''}
+                onClick={() => setCurrentTab('supports')}
+              >
+                Supports
+              </TabItem>
+            </Tab>
+          )}
         </Left>
         <Right mode={mode}>
-          {currentChat ? (
+          {currentTab === 'messages' ? (
+            currentChat ? (
+              <>
+                <ChatArea>
+                  {messages.map((m, index) => (
+                    <div ref={scrollref} key={index}>
+                      <Messages
+                        key={m._id}
+                        own={m.sender === userInfo._id}
+                        message={m}
+                      />
+                    </div>
+                  ))}
+                </ChatArea>
+                <Message>
+                  <TextInput
+                    mode={mode}
+                    placeholder="Write a message"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                  />
+                  <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
+                </Message>
+              </>
+            ) : (
+              <NoConversation>
+                Select a conversation to start a chat
+              </NoConversation>
+            )
+          ) : currentReply ? (
             <>
               <ChatArea>
-                {messages.map((m, index) => (
+                {reports.map((m, index) => (
                   <div ref={scrollref} key={index}>
-                    <Messages
-                      key={m._id}
-                      own={m.sender === userInfo._id}
-                      message={m}
-                    />
+                    <Messages own={!m.admin} message={m} />
                   </div>
                 ))}
               </ChatArea>
@@ -483,14 +621,18 @@ export default function ChatScreen() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                 />
-                <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
+                <FontAwesomeIcon
+                  icon={faPaperPlane}
+                  onClick={handleSubmitReply}
+                />
               </Message>
             </>
           ) : (
             <NoConversation>
-              Select a conversation to start a chat{' '}
+              Select a conversation to reply a report
             </NoConversation>
           )}
+          {}
         </Right>
       </ChatCont>
     </Container>

@@ -16,6 +16,7 @@ import messageRouter from './routes/messageRoutes.js';
 import commentRouter from './routes/commentRoustes.js';
 import categoryRouter from './routes/categoryRoutes.js';
 import reportRouter from './routes/reportRoutes.js';
+import reportConversionRouter from './routes/reportConversationRoutes.js';
 
 dotenv.config();
 
@@ -56,6 +57,7 @@ app.use('/api/messages', messageRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/categories', categoryRouter);
 app.use('/api/reports', reportRouter);
+app.use('/api/reportConversation', reportConversionRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
@@ -84,7 +86,7 @@ io.on('connection', (socket) => {
     if (user) {
       users = users.filter((user) => user.socketId !== socket.id);
       console.log('offline', user.name);
-      const admin = users.find((x) => x.isAdmin && x.online);
+      const admin = users.find((x) => x.isAdmin);
       if (admin) {
         io.to(admin.socketId).emit('updatedUser', user);
       }
@@ -102,8 +104,7 @@ io.on('connection', (socket) => {
     } else {
       users.push(updatedUser);
     }
-    console.log('Online', user.name);
-    const admin = users.find((x) => x.isAdmin && x.online);
+    const admin = users.find((x) => x.isAdmin);
     if (admin) {
       io.to(admin.socketId).emit('updatedUser', updatedUser);
     }
@@ -111,9 +112,10 @@ io.on('connection', (socket) => {
       io.to(updatedUser.socketId).emit('listUsers', users);
     }
     io.emit('getUsers', users);
+    console.log('online', user.name, updatedUser.socketId);
   });
   socket.on('onUserSelected', (user) => {
-    const admin = users.find((x) => x.isAdmin && x.online);
+    const admin = users.find((x) => x.isAdmin);
     if (admin) {
       const existUser = users.find((x) => x._id === user._id);
       io.to(admin.socketId).emit('selectedUser', existUser);
@@ -121,16 +123,16 @@ io.on('connection', (socket) => {
   });
   socket.on('onMessage', (message) => {
     if (message.isAdmin) {
-      const user = users.find((x) => x._id === message._id && x.online);
+      const user = users.find((x) => x._id === message._id);
       if (user) {
         io.to(user.socketId).emit('message', message);
         user.messages.push(message);
       }
     } else {
-      const admin = users.find((x) => x.isAdmin && x.online);
+      const admin = users.find((x) => x.isAdmin);
       if (admin) {
         io.to(admin.socketId).emit('message', message);
-        const user = users.find((x) => x._id === message._id && x.online);
+        const user = users.find((x) => x._id === message._id);
         user.messages.push(message);
       } else {
         io.to(socket.id).emit('message', {
@@ -141,29 +143,39 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('sendMessage', ({ message, senderId, receiverId, text }) => {
+    console.log('send msg');
+
     const user = users.find((x) => x._id === receiverId);
     if (user) {
+      console.log(user.name, user.socketId);
+
       io.to(user.socketId).emit('getMessage', {
         senderId,
         text,
         message,
       });
+    } else {
+      console.log('user', users);
     }
   });
 
-  socket.on('sendReport', ({ report, senderId }) => {
-    const user = users.find((x) => x._id === senderId);
-    const admin = users.find((x) => x.isAdmin && x.online);
-    if (!user.isAdmin) {
+  socket.on('sendReport', ({ report }) => {
+    const user = users.find((x) => x._id === report.user);
+    const admin = users.find((x) => x.isAdmin);
+    if (user && report.admin) {
+      console.log('hellog useeeeeeer', report);
       io.to(user.socketId).emit('getReport', {
-        senderId,
         report,
       });
     } else {
-      io.to(admin.socketId).emit('getReport', {
-        senderId,
-        report,
-      });
+      console.log('hellog admin', admin, users);
+      if (admin) {
+        console.log('hellog admin is on');
+
+        io.to(admin.socketId).emit('getReport', {
+          report,
+        });
+      }
     }
   });
 });

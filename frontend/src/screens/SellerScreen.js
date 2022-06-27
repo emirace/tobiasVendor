@@ -401,6 +401,22 @@ export default function SellerScreen() {
     }
   };
 
+  const handlereport = async () => {
+    try {
+      await axios.post(
+        '/api/reportConversation',
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+    } catch (err) {
+      console.log(getError(err));
+    }
+
+    setShowLoginModel(!showLoginModel);
+  };
+
   return (
     <div className="seller_main_container">
       <div className="seller_left">
@@ -474,7 +490,6 @@ export default function SellerScreen() {
                   <div>
                     <FontAwesomeIcon icon={faTag} /> Sold
                   </div>
-                  {console.log('user', user)}
                   <div className="seller_single_right">{user.sold.length}</div>
                 </div>
 
@@ -507,7 +522,7 @@ export default function SellerScreen() {
               </div>
             </SellerLeft>
             <button
-              onClick={() => setShowLoginModel(!showLoginModel)}
+              onClick={handlereport}
               type="buton"
               className="profile_report_btn"
             >
