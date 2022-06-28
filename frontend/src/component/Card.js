@@ -19,8 +19,8 @@ const Add = styled.div`
   border: 1px solid;
   border-radius: 50%;
   background-color: var(--orange-color);
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
