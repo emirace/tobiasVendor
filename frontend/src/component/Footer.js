@@ -104,7 +104,11 @@ export default function Footer() {
   return (
     <>
       <section className="shop-method-area">
-        <img className="wave_img " src="images/wave2.png" alt=""></img>
+        <img
+          className="wave_img "
+          src="https://res.cloudinary.com/emirace/image/upload/v1656370086/wave2_k9xnpv.png"
+          alt=""
+        ></img>
         <div className="bg_malon">
           <div className="container ">
             <div className="row d-flex justify-content-between my-3">
@@ -193,7 +197,7 @@ export default function Footer() {
       <div className="curve_color">
         <img
           className="wave_img  bg_malon"
-          src="images/wave23.png"
+          src="https://res.cloudinary.com/emirace/image/upload/v1656370275/wave23_htx1rw.png"
           alt=""
         ></img>
         <div className="footer_black_top">
@@ -206,7 +210,11 @@ export default function Footer() {
         </div>
       </div>
       <div className="curve_color">
-        <img className="wave_img bg_black" src="images/wave.png" alt=""></img>
+        <img
+          className="wave_img bg_black"
+          src="https://res.cloudinary.com/emirace/image/upload/v1656370086/wave_p4ujhx.png"
+          alt=""
+        ></img>
 
         <div className="footer_orange_top">
           <Newletter />

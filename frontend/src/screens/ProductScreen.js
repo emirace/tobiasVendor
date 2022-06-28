@@ -126,7 +126,6 @@ export default function ProductScreen() {
   const { cart, userInfo, mode } = state;
   let reviewRef = useRef();
   const navigate = useNavigate();
-
   const [rating, setRAting] = useState(0);
   const [comment, setComment] = useState('');
   const [comment2, setComment2] = useState('');
@@ -137,9 +136,7 @@ export default function ProductScreen() {
   const [features, setFeatures] = useState(false);
   const [size, setSize] = useState('');
   const [share, setShare] = useState(false);
-
   const [displayTab, setDisplayTab] = useState('comments');
-
   const params = useParams();
   const { slug } = params;
 
@@ -150,6 +147,7 @@ export default function ProductScreen() {
       error: '',
       comments: [],
     });
+
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
@@ -174,6 +172,21 @@ export default function ProductScreen() {
     };
     fetchComment();
   }, [product]);
+  const [refresh, setRefresh] = useState(true);
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: dataUser } = await axios.get(
+          `/api/users/seller/${userInfo._id}`
+        );
+        setUser(dataUser);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchData();
+  }, [userInfo, refresh]);
 
   const [selectedImage, setSelectedImage] = useState('');
   const [sliderIndex, setSliderIndex] = useState(0);
@@ -360,6 +373,7 @@ export default function ProductScreen() {
           state1: data.status,
         },
       });
+      setRefresh(!refresh);
       // dispatch({ type: 'REFRESH_PRODUCT', payload: data.user });
     } catch (err) {
       toast.error(getError(err));
@@ -802,7 +816,16 @@ export default function ProductScreen() {
             </IconContainer>
 
             <IconContainer>
+              {console.log(user.saved, product._id.toString())}
               <FontAwesomeIcon
+                className={
+                  userInfo &&
+                  user &&
+                  user.saved &&
+                  user.saved.find((x) => x._id === product._id)
+                    ? 'orange-color'
+                    : ''
+                }
                 onClick={() => {
                   if (!userInfo) {
                     setShowLoginModel(true);

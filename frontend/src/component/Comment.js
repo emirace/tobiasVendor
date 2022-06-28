@@ -275,7 +275,11 @@ export default function Comment({ commentC }) {
               </Reply>
               <Like>{comment.likes.length} like</Like>
               <FontAwesomeIcon
-                // color={comment.likes.includes(userInfo._id ? 'red' : '')}
+                className={
+                  userInfo && comment.likes.find((x) => x === userInfo._id)
+                    ? 'orange-color'
+                    : ''
+                }
                 icon={faHeart}
                 onClick={() => likeComment(comment._id)}
               />

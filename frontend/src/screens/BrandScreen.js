@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import styled from 'styled-components';
+import { Store } from '../Store';
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -29,8 +30,15 @@ const Content = styled.div`
   margin: 0 10vw;
 `;
 const Header = styled.div`
+  width: 30px;
+  border-radius: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 20px;
   margin: 20px 0;
+  background: ${(props) =>
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
 `;
 const BrandGroup = styled.div`
   margin: 0 20px;
@@ -10654,6 +10662,9 @@ ZYIA
 ZZs`;
 
 export default function BrandScreen() {
+  const { state } = useContext(Store);
+  const { mode } = state;
+
   const alpha = Array.from(Array(26)).map((e, i) => i + 65);
   const alphabet = alpha.map((x) => String.fromCharCode(x));
   const brandArray = Brands.split('\n');
@@ -10680,7 +10691,9 @@ export default function BrandScreen() {
       <Content>
         {alphabet.map((x, i) => (
           <div key={i}>
-            <Header ref={scrollref.current[i]}>{x}</Header>
+            <Header ref={scrollref.current[i]} mode={mode}>
+              {x}
+            </Header>
             <BrandGroup>
               {brandArray
                 .filter((r) => r.charAt(0) === x)
