@@ -479,7 +479,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         </RightMenu>
       </Wrapper2>
       <Category>
-        {categories.length &&
+        {categories.length > 0 &&
           categories.map((c) => (
             <CategoryGroup>
               <CategoryItem>
@@ -487,10 +487,10 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
               </CategoryItem>
 
               <SubCategory bg={subCateMode}>
-                {c.subCategories.length &&
+                {c.subCategories.length > 0 &&
                   c.subCategories.map((s) => {
                     if (s.items.length === 0) {
-                      return <SubCategoryItemS>{s.name} >></SubCategoryItemS>;
+                      return <SubCategoryItemS>{s.name} </SubCategoryItemS>;
                     } else {
                       return (
                         <Group>

@@ -11,7 +11,6 @@ const uploadRouter = express.Router();
 uploadRouter.post(
   '/',
   isAuth,
-  isSellerOrAdmin,
   upload.single('file'),
 
   async (req, res) => {
@@ -20,7 +19,6 @@ uploadRouter.post(
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
     });
-
     const streamUpload = () => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream((error, result) => {

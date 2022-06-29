@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Store } from '../../Store';
@@ -360,9 +360,9 @@ export default function NewProduct() {
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState('Womenswear');
-  const [product, setProduct] = useState('Womenswear');
-  const [subCategory, setSubCategory] = useState('Womenswear');
-  const [material, setMaterial] = useState('Womenswear');
+  const [product, setProduct] = useState('');
+  const [subCategory, setSubCategory] = useState('');
+  const [material, setMaterial] = useState('');
   const [brand, setBrand] = useState('');
   const [color, setColor] = useState('');
   const [luxury, setLuxury] = useState(false);
@@ -394,6 +394,20 @@ export default function NewProduct() {
       errorUpload: '',
     }
   );
+
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get(`/api/categories`);
+        setCategories(data);
+        console.log(data);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchCategories();
+  }, [dispatch]);
 
   const sizeHandler = (sizenow) => {
     const exist = sizes.filter((s) => {
@@ -607,10 +621,13 @@ export default function NewProduct() {
                     'aria-label': 'Without label',
                   }}
                 >
-                  <MenuItem value={'Womenswear'}>Womenswear</MenuItem>
-                  <MenuItem value={'Menswear'}>Menswear</MenuItem>
-                  <MenuItem value={'Kids'}>Kids</MenuItem>
-                  <MenuItem value={'Cureve Plus'}>Cureve Plus</MenuItem>
+                  {categories.length > 0 &&
+                    categories.map(
+                      (cat) =>
+                        cat.name === product && (
+                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
+                        )
+                    )}
                 </Select>
               </FormControl>
             </Item>
@@ -652,10 +669,10 @@ export default function NewProduct() {
                         'aria-label': 'Without label',
                       }}
                     >
-                      <MenuItem value={'Womenswear'}>Womenswear</MenuItem>
-                      <MenuItem value={'Menswear'}>Menswear</MenuItem>
-                      <MenuItem value={'Kids'}>Kids</MenuItem>
-                      <MenuItem value={'Cureve Plus'}>Cureve Plus</MenuItem>
+                      {categories.length > 0 &&
+                        categories.map((cat) => (
+                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
+                        ))}
                     </Select>
                   </FormControl>
                 </Item>

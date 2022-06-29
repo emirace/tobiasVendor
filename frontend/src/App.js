@@ -74,6 +74,8 @@ import { io } from 'socket.io-client';
 import ShopByOutfit from './screens/ShopByOutfit';
 import CreateOutfitScreen from './screens/CreateOutfitScreen';
 import CreateOutfitPicScreen from './screens/CreateOutfitPicScreen';
+// import LogRockect from 'logrocket';
+// LogRockect.init('mzhw6i/tobias');
 
 const NavCont = styled.div`
   position: relation;

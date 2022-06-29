@@ -1,9 +1,18 @@
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
+import LoadingBox from '../component/LoadingBox';
 import Model from '../component/Model';
 import { Store } from '../Store';
+import { getError } from '../utils';
 
 const Container = styled.div`
   display: flex;
@@ -83,16 +92,71 @@ const Add = styled.div`
   opacity: 6;
   cursor: pointer;
 `;
+const Pointers = styled.div`
+  display: flex;
+  margin: 20px 0;
+`;
+const Pointer = styled.div`
+  margin: 15px;
+  padding: 5px 20px;
+  border: 1px solid;
+  border-radius: 15px;
+  cursor: pointer;
+  &.active {
+    background: ${(props) =>
+      props.mode === 'pagebodydark'
+        ? 'var(--white-color)'
+        : 'var(--black-color)'};
+    color: ${(props) =>
+      props.mode === 'pagebodydark'
+        ? 'var(--black-color)'
+        : 'var(--white-color)'};
+  }
+`;
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'CREATE_REQUEST':
+      return { ...state, loading: true };
+    case 'CREATE_SUCCESS':
+      return { ...state, loading: false, error: '' };
+    case 'CREATE_FAIL':
+      return { ...state, loading: false, error: action.payload };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true };
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
 const Dots = [];
 
 export default function CreateOutfitPicScreen() {
-  const { state } = useContext(Store);
-  const { mode } = state;
-  const [image, setImage] = useState('/images/card4.png');
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { mode, userInfo } = state;
+  const [image, setImage] = useState('/images/card1.png');
   const [showModel, setShowModel] = useState(false);
+  const [selectedPointer, setSelectedPointer] = useState();
 
   const ref = useRef(null);
+
+  const [{ loading, error, loadingUpload, errorUpload }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: false,
+      error: '',
+      loadingUpload: false,
+      errorUpload: '',
+    }
+  );
 
   useEffect(() => {
     const currentRef = ref.current;
@@ -123,6 +187,43 @@ export default function CreateOutfitPicScreen() {
     }
   }, [showModel]);
 
+  const uploadHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      setImage(data.secure_url);
+
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Image Uploaded',
+          showStatus: true,
+          state1: 'visible1 success',
+        },
+      });
+    } catch (err) {
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Failed uploading image',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+      console.log(getError(err));
+    }
+  };
+
   return (
     <Container>
       <ImageCont>
@@ -151,14 +252,35 @@ export default function CreateOutfitPicScreen() {
           <Upload mode={mode}>
             <Camera htmlFor="image1">
               <div>Upload Image</div>
-              <FontAwesomeIcon icon={faCamera} />
-              <Input type="file" id="image1" />
+              {loadingUpload ? (
+                <LoadingBox />
+              ) : (
+                <FontAwesomeIcon icon={faCamera} />
+              )}
+              <Input
+                type="file"
+                id="image1"
+                onChange={(e) => uploadHandler(e)}
+              />
             </Camera>
           </Upload>
         )}
       </ImageCont>
       <ProductDetail>
         <Title>NewProduct</Title>
+        <Pointers>
+          {Dots.length > 0 &&
+            Dots.map((dot, i) => (
+              <Pointer
+                key={i}
+                className={selectedPointer === i ? 'active' : ''}
+                mode={mode}
+                onClick={() => setSelectedPointer(i)}
+              >
+                Pointer {1 + i}
+              </Pointer>
+            ))}
+        </Pointers>
       </ProductDetail>
     </Container>
   );

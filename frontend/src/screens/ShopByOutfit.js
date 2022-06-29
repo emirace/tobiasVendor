@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Card from '../component/Card';
 import { Store } from '../Store';
@@ -64,6 +65,10 @@ export default function ShopByOutfit() {
       <Categories>
         <SubCategories mode={mode}>All</SubCategories>
         <SubCategories mode={mode}>At the Office</SubCategories>
+
+        <SubCategories mode={mode}>
+          <Link to="../createoutfits">Add Outfit</Link>
+        </SubCategories>
       </Categories>
       <Content>
         <CardCont>

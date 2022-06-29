@@ -102,6 +102,7 @@ const InputCont = styled.div`
   gap: 30px;
 `;
 const CatList = styled.div`
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -117,6 +118,7 @@ const SubCat = styled.div`
   & svg {
     margin-left: 5px;
     font-size: 13px;
+    cursor: pointer;
   }
 `;
 
@@ -282,7 +284,7 @@ export default function Categories() {
     if (!editCatSub) {
       if (currentCatItem === '') {
         const subCategoriesObject = { name: currentCat, items: [] };
-        subCategories[index] = subCategoriesObject;
+        subCategories.push(subCategoriesObject);
       } else {
         const CatArray = currentCatItem.split(',');
         const subCategoriesObject = { name: currentCat, items: CatArray };
