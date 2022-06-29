@@ -45,6 +45,9 @@ const Content = styled.div`
   padding: 0 25px;
   flex-wrap: wrap;
 `;
+const CardCont = styled.div`
+  width: 23%;
+`;
 
 export default function ShopByOutfit() {
   const { state } = useContext(Store);
@@ -63,12 +66,24 @@ export default function ShopByOutfit() {
         <SubCategories mode={mode}>At the Office</SubCategories>
       </Categories>
       <Content>
-        <Card src="/images/women.png" name="johnnycage" />
-        <Card src="/images/card1.png" name="indianajone" />
-        <Card src="/images/card2.png" name="kareem" />
-        <Card src="/images/p1.jpg" name="fanstatic" />
-        <Card src="/images/card2.png" name="kareem" />
-        <Card src="/images/p1.jpg" name="fanstatic" />
+        <CardCont>
+          <Card src="/images/women.png" name="johnnycage" />
+        </CardCont>
+        <CardCont>
+          <Card src="/images/card1.png" name="indianajone" />
+        </CardCont>
+        <CardCont>
+          <Card src="/images/card2.png" name="kareem" />
+        </CardCont>
+        <CardCont>
+          <Card src="/images/p1.jpg" name="fanstatic" />
+        </CardCont>
+        <CardCont>
+          <Card src="/images/card2.png" name="kareem" />
+        </CardCont>
+        <CardCont>
+          <Card src="/images/p1.jpg" name="fanstatic" />
+        </CardCont>
       </Content>
     </Container>
   );

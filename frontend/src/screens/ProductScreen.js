@@ -870,7 +870,7 @@ export default function ProductScreen() {
             <div className="sp_actual_price">${product.actualPrice}</div>
             <div className="sp_discount_price">${product.price}</div>
             <div className="sp_discount">
-              ({' '}
+              (
               {(((product.price - product.actualPrice) / product.price) * 100)
                 .toString()
                 .substring(0, 5)}

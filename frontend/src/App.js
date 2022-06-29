@@ -72,6 +72,8 @@ import CategorypageScreen from './screens/CategorypageScreen';
 import BrandScreen from './screens/BrandScreen';
 import { io } from 'socket.io-client';
 import ShopByOutfit from './screens/ShopByOutfit';
+import CreateOutfitScreen from './screens/CreateOutfitScreen';
+import CreateOutfitPicScreen from './screens/CreateOutfitPicScreen';
 
 const NavCont = styled.div`
   position: relation;
@@ -212,6 +214,11 @@ function App() {
                   <Route path="/signin" element={<SigninScreen />} />
                   <Route path="/signup" element={<SignupScreen />} />
                   <Route path="/info" element={<InfoScreen />} />
+                  <Route path="/outfits" element={<CreateOutfitScreen />} />
+                  <Route
+                    path="/createoutfits"
+                    element={<CreateOutfitPicScreen />}
+                  />
                   <Route
                     path="/profile"
                     element={
