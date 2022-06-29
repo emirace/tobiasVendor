@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Store } from '../../Store';
-import { faImage, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+  faImage,
+  faQuestionCircle,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -10,6 +14,7 @@ import axios from 'axios';
 import { getError } from '../../utils';
 import LoadingBox from '../LoadingBox';
 import { useNavigate } from 'react-router-dom';
+import IconsTooltips from '../IconsTooltips';
 
 const NewProductC = styled.div`
   flex: 4;
@@ -33,6 +38,7 @@ const TitleDetails = styled.span`
   width: 70%;
   font-size: 10px;
   line-height: 1.2;
+  margin-bottom: 5px;
 `;
 const Content = styled.div``;
 const Left = styled.div`
@@ -90,6 +96,14 @@ const Label = styled.label`
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: 600;
+  & svg {
+    margin-left: 10px;
+  }
+  & .question {
+    &:hover {
+      color: red;
+    }
+  }
 `;
 const ItemCont = styled.div`
   display: flex;
@@ -328,6 +342,29 @@ const VimageCont = styled.div`
   height: 150px;
   margin-top: 20px;
 `;
+const Tips = styled.span`
+  position: relative;
+  &:hover::after {
+    content: '${(props) => props.tips}';
+    width: 200px;
+    position: absolute;
+    border-radius: 0.5rem;
+    left: 30px;
+    font-size: 10px;
+    z-index: 2;
+    line-height: 1.2;
+    font-weight: 400;
+    padding: 5px;
+    background: ${(props) =>
+      props.mode === 'pagebodydark'
+        ? 'var(--white-color)'
+        : 'var(--black-color)'};
+    color: ${(props) =>
+      props.mode === 'pagebodydark'
+        ? 'var(--black-color)'
+        : 'var(--white-color)'};
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -359,8 +396,8 @@ export default function NewProduct() {
   const { mode, userInfo } = state;
 
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('');
   const [product, setProduct] = useState('');
+  const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
   const [material, setMaterial] = useState('');
   const [brand, setBrand] = useState('');
@@ -569,8 +606,10 @@ export default function NewProduct() {
       <TitleCont>
         <Title>NewProduct</Title>
         <TitleDetails>
-          When adding product, do not ignore to fill relavant fields and
-          following the product adding rules
+          When adding product, do not ignore to fill all relevant fields and
+          following the product adding rules. Always remember; The best picture
+          and descriptions sells faster. Ensure to upload high quality product
+          photos with all details showing.
         </TitleDetails>
       </TitleCont>
       <Content>
@@ -708,7 +747,7 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={condition}
+                      value={subCategory}
                       onChange={(e) => setSubCategory(e.target.value)}
                       displayEmpty
                     >
@@ -718,11 +757,9 @@ export default function NewProduct() {
                             cat.name === product &&
                             cat.subCategories.map(
                               (sub) =>
-                                cat.subCategories.name === category &&
-                                cat.subCategories.items.map((item, i) => (
-                                  <MenuItem key={i} value={item}>
-                                    {item}
-                                  </MenuItem>
+                                sub.name === category &&
+                                sub.items.map((item, i) => (
+                                  <MenuItem value={item}>{item}</MenuItem>
                                 ))
                             )
                         )}
@@ -764,13 +801,31 @@ export default function NewProduct() {
                   onChange={(e) => setCondition(e.target.value)}
                   displayEmpty
                 >
-                  <MenuItem value="New">New</MenuItem>
-                  <MenuItem value="Used">Used</MenuItem>
+                  <MenuItem value="New with Tags">New with Tags</MenuItem>
+                  <MenuItem value="New with No Tags">New with No Tags</MenuItem>
+                  <MenuItem value="Excellent Condition">
+                    Excellent Condition
+                  </MenuItem>
+                  <MenuItem value="Good Condition">Good Condition</MenuItem>
+                  <MenuItem value="Fair Condition">Fair Condition</MenuItem>
                 </Select>
               </FormControl>
             </Item>
             <Item>
-              <Label>Materail/Fabric</Label>
+              <Label>
+                Materail/Fabric
+                <Tips
+                  mode={mode}
+                  tips={`How do I know what the primary material of the product is?
+                      This information is mostly indicated on the Product
+                      labels, please refer to the label detailing the
+                      composition of your Product.`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+
+              <TitleDetails>Specify Product's primary material.</TitleDetails>
               <FormControl
                 sx={{
                   margin: 0,
@@ -802,8 +857,29 @@ export default function NewProduct() {
                   onChange={(e) => setMaterial(e.target.value)}
                   displayEmpty
                 >
-                  <MenuItem value="New">New</MenuItem>
-                  <MenuItem value="Used">Used</MenuItem>
+                  <MenuItem value="Acrylic">Acrylic</MenuItem>
+                  <MenuItem value="Cashmere">Cashmere</MenuItem>
+                  <MenuItem value="Cloth">Cloth</MenuItem>
+                  <MenuItem value="Cotton">Cotton</MenuItem>
+                  <MenuItem value="Exotic leathers">Exotic leathers</MenuItem>
+                  <MenuItem value="Faux fur">Faux fur</MenuItem>
+                  <MenuItem value="Fur">Fur</MenuItem>
+                  <MenuItem value="Leather">Leather</MenuItem>
+                  <MenuItem value="Linen">Linen</MenuItem>
+                  <MenuItem value="Polyester">Polyester</MenuItem>
+                  <MenuItem value="Polyurethane">Polyurethane</MenuItem>
+                  <MenuItem value="Pony-style calfskin">
+                    Pony-style calfskin
+                  </MenuItem>
+                  <MenuItem value="Suede">Suede</MenuItem>
+                  <MenuItem value="Silk">Silk</MenuItem>
+                  <MenuItem value="Rayon">Rayon</MenuItem>
+                  <MenuItem value="Synthetic">Synthetic</MenuItem>
+                  <MenuItem value="Spandex">Spandex</MenuItem>
+                  <MenuItem value="Tweed">Tweed</MenuItem>
+                  <MenuItem value="Vegan leather">Vegan leather</MenuItem>
+                  <MenuItem value="Velvet">Velvet</MenuItem>
+                  <MenuItem value="Wool">Wool</MenuItem>
                 </Select>
               </FormControl>
             </Item>
@@ -830,7 +906,24 @@ export default function NewProduct() {
               )}
             </Item>
             <Item>
-              <Label>Color</Label>
+              <Label>
+                Color
+                <Tips
+                  mode={mode}
+                  tips={`How can I ensure that colour of the 
+                  product is clear? For you to get accuracy in 
+                  colour. Please take photos using a good source 
+                  of natural light to ensure clear colour. The 
+                  best and 
+                  accurate photos always sale 95% faster`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <TitleDetails>
+                Specify the main colour of the product (choose 2 colours
+                minimum)
+              </TitleDetails>
               <FormControl
                 sx={{
                   margin: 0,
@@ -862,15 +955,29 @@ export default function NewProduct() {
                   onChange={(e) => setColor(e.target.value)}
                   displayEmpty
                 >
-                  <MenuItem value="New">New</MenuItem>
-                  <MenuItem value="Used">Used</MenuItem>
+                  <MenuItem value="Red">Red</MenuItem>
+                  <MenuItem value="Green">Green</MenuItem>
+                  <MenuItem value="Blue">Blue</MenuItem>
+                  <MenuItem value="Yellow">Yellow</MenuItem>
+                  <MenuItem value="Black">Black</MenuItem>
+                  <MenuItem value="White">White</MenuItem>
                 </Select>
               </FormControl>
             </Item>
             <Sizes>
               <SizeLeft>
                 <Item>
-                  <Label>Add Size</Label>
+                  <Label>
+                    Add Size
+                    <Tips
+                      mode={mode}
+                      tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+                  Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size. Size Guide: Upload the size guide document on the product description page so all users can see`}
+                    >
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Tips>
+                  </Label>
+
                   <FormControl
                     sx={{
                       margin: 0,
@@ -911,10 +1018,14 @@ export default function NewProduct() {
                   </FormControl>
                 </Item>
                 <SmallItems>
+                  <TitleDetails>
+                    Provide the exact size as indicated on your product's label.
+                  </TitleDetails>
                   {sizes.map((s) => (
                     <SmallItem>
                       <Label>{s.size}</Label>:
                       <SizeInput
+                        placeholder="qty"
                         mode={mode}
                         onChange={(e) =>
                           smallSizeHandler(s.size, e.target.value)
@@ -1115,6 +1226,10 @@ export default function NewProduct() {
                       onChange={(e) => setLuxury(e.target.checked)}
                     />
                     <Label>Luxury</Label>
+                    <TitleDetails>
+                      Product that is a well-known luxury brand. Please kindly
+                      select this box only if your goods are Luxury product
+                    </TitleDetails>
                   </ItemCheck>
                   <ItemCheck>
                     <Checkbox
@@ -1123,6 +1238,10 @@ export default function NewProduct() {
                       onChange={(e) => setVintage(e.target.checked)}
                     />
                     <Label>Vintage</Label>
+                    <TitleDetails>
+                      Product that is at least 15 years old. Please kindly
+                      select this box only if your goods are Vintage product
+                    </TitleDetails>
                   </ItemCheck>
                 </div>
                 {vintage || luxury ? (
@@ -1137,9 +1256,7 @@ export default function NewProduct() {
                           ) : (
                             <>
                               <FontAwesomeIcon icon={faImage} />
-                              <div>
-                                Click to Browse <span>Image</span>
-                              </div>
+                              <div>“Certificate, invoice, serial number”</div>
                               <Upload
                                 type="file"
                                 id="image1"
@@ -1150,6 +1267,12 @@ export default function NewProduct() {
                         </AddImage>
                       )}
                     </BigImageC>
+                    <TitleDetails>
+                      This information is mandatory for luxury brands. This
+                      information will not be publicly displayed. Only use this
+                      option if you select any of the above, “Vintage or luxury
+                      Product”
+                    </TitleDetails>
                   </VimageCont>
                 ) : (
                   ''
@@ -1172,10 +1295,6 @@ export default function NewProduct() {
               </Item>
               <Item>
                 <Label>Key Features</Label>
-                <TextArea
-                  mode={mode}
-                  onChange={(e) => setFeature(e.target.value)}
-                />
                 <FormControl
                   sx={{
                     margin: 0,
@@ -1207,8 +1326,34 @@ export default function NewProduct() {
                     onChange={(e) => setFeature(e.target.value)}
                     displayEmpty
                   >
-                    <MenuItem value="New">New</MenuItem>
-                    <MenuItem value="Used">Used</MenuItem>
+                    <MenuItem value="Abstract">Abstract</MenuItem>
+                    <MenuItem value="Argyle">Argyle</MenuItem>
+                    <MenuItem value="Camo">Camo</MenuItem>
+                    <MenuItem value="Checked">Checked</MenuItem>
+                    <MenuItem value="Chevron & Herringbone">
+                      Chevron & Herringbone
+                    </MenuItem>
+                    <MenuItem value="Color Block">Color Block</MenuItem>
+                    <MenuItem value="Crocodile">Crocodile</MenuItem>
+                    <MenuItem value="Floral">Floral</MenuItem>
+                    <MenuItem value="Gingham">Gingham</MenuItem>
+                    <MenuItem value="Graphic">Graphic</MenuItem>
+                    <MenuItem value="Houndstooth">Houndstooth</MenuItem>
+                    <MenuItem value="Leopard">Leopard</MenuItem>
+                    <MenuItem value="Metalic">Metalic</MenuItem>
+                    <MenuItem value="Paisley">Paisley</MenuItem>
+                    <MenuItem value="Plain">Plain</MenuItem>
+                    <MenuItem value="Polkadot">Polkadot</MenuItem>
+                    <MenuItem value="Snakeskin">Snakeskin</MenuItem>
+                    <MenuItem value="Stripes">Stripes</MenuItem>
+                    <MenuItem value="Stars">Stars</MenuItem>
+                    <MenuItem value="Solid">Solid</MenuItem>
+                    <MenuItem value="Tartan">Tartan</MenuItem>
+                    <MenuItem value="Tie-Dye">Tie-Dye</MenuItem>
+                    <MenuItem value="Tropical">Tropical</MenuItem>
+                    <MenuItem value="Tweed">Tweed</MenuItem>
+                    <MenuItem value="Zebra">Zebra</MenuItem>
+                    <MenuItem value="Other">Other</MenuItem>
                   </Select>
                 </FormControl>
               </Item>
