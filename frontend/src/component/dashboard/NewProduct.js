@@ -359,7 +359,7 @@ export default function NewProduct() {
   const { mode, userInfo } = state;
 
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('Womenswear');
+  const [category, setCategory] = useState('');
   const [product, setProduct] = useState('');
   const [subCategory, setSubCategory] = useState('');
   const [material, setMaterial] = useState('');
@@ -622,12 +622,9 @@ export default function NewProduct() {
                   }}
                 >
                   {categories.length > 0 &&
-                    categories.map(
-                      (cat) =>
-                        cat.name === product && (
-                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
-                        )
-                    )}
+                    categories.map((cat) => (
+                      <MenuItem value={cat.name}>{cat.name}</MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Item>
@@ -670,9 +667,13 @@ export default function NewProduct() {
                       }}
                     >
                       {categories.length > 0 &&
-                        categories.map((cat) => (
-                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
-                        ))}
+                        categories.map(
+                          (cat) =>
+                            cat.name === product &&
+                            cat.subCategories.map((sub) => (
+                              <MenuItem value={sub.name}>{sub.name}</MenuItem>
+                            ))
+                        )}
                     </Select>
                   </FormControl>
                 </Item>
@@ -711,8 +712,20 @@ export default function NewProduct() {
                       onChange={(e) => setSubCategory(e.target.value)}
                       displayEmpty
                     >
-                      <MenuItem value="New">New</MenuItem>
-                      <MenuItem value="Used">Used</MenuItem>
+                      {categories.length > 0 &&
+                        categories.map(
+                          (cat) =>
+                            cat.name === product &&
+                            cat.subCategories.map(
+                              (sub) =>
+                                cat.subCategories.name === category &&
+                                cat.subCategories.items.map((item, i) => (
+                                  <MenuItem key={i} value={item}>
+                                    {item}
+                                  </MenuItem>
+                                ))
+                            )
+                        )}
                     </Select>
                   </FormControl>
                 </Item>
