@@ -15,6 +15,7 @@ import { Store } from '../Store';
 import { getError } from '../utils';
 import { Helmet } from 'react-helmet-async';
 import Categories from '../component/dashboard/Categories';
+import Transactions from '../component/dashboard/Transactions';
 
 const Container = styled.div`
   display: flex;
@@ -52,6 +53,8 @@ export default function DashboardNewScreen() {
         return <Product />;
       case 'analytics':
         return <Analytics />;
+      case 'wallet':
+        return <Transactions />;
       default:
         break;
     }

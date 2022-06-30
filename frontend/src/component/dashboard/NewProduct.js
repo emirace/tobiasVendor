@@ -338,9 +338,13 @@ const ItemCheck = styled.div`
   width: 100%;
 `;
 const VimageCont = styled.div`
+  flex: 1;
   width: 150px;
   height: 150px;
   margin-top: 20px;
+`;
+const VintageCont = styled.div`
+  flex: 1;
 `;
 const Tips = styled.span`
   position: relative;
@@ -364,6 +368,10 @@ const Tips = styled.span`
         ? 'var(--black-color)'
         : 'var(--white-color)'};
   }
+`;
+const LuxuryCont = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const reducer = (state, action) => {
@@ -1218,18 +1226,20 @@ export default function NewProduct() {
                 rules.
               </TitleDetails>
               <ImageRow>
-                <div>
+                <VintageCont>
                   <ItemCheck>
                     <Checkbox
                       type="checkbox"
                       checked={luxury}
                       onChange={(e) => setLuxury(e.target.checked)}
                     />
-                    <Label>Luxury</Label>
-                    <TitleDetails>
-                      Product that is a well-known luxury brand. Please kindly
-                      select this box only if your goods are Luxury product
-                    </TitleDetails>
+                    <LuxuryCont>
+                      <Label>Luxury</Label>
+                      <TitleDetails>
+                        Product that is a well-known luxury brand. Please kindly
+                        select this box only if your goods are Luxury product
+                      </TitleDetails>
+                    </LuxuryCont>
                   </ItemCheck>
                   <ItemCheck>
                     <Checkbox
@@ -1237,13 +1247,15 @@ export default function NewProduct() {
                       type="checkbox"
                       onChange={(e) => setVintage(e.target.checked)}
                     />
-                    <Label>Vintage</Label>
-                    <TitleDetails>
-                      Product that is at least 15 years old. Please kindly
-                      select this box only if your goods are Vintage product
-                    </TitleDetails>
+                    <LuxuryCont>
+                      <Label>Vintage</Label>
+                      <TitleDetails>
+                        Product that is at least 15 years old. Please kindly
+                        select this box only if your goods are Vintage product
+                      </TitleDetails>
+                    </LuxuryCont>
                   </ItemCheck>
-                </div>
+                </VintageCont>
                 {vintage || luxury ? (
                   <VimageCont>
                     <BigImageC mode={mode}>
