@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema(
     dob: { type: Date },
     reviews: [reviewSchema],
     rating: { type: Number, default: 0 },
+    wallet: { type: Number, default: 0 },
     phone: { type: Number },
     googleId: { type: String },
     address: { type: String },

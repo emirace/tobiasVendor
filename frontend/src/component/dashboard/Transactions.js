@@ -74,16 +74,22 @@ const Currency = styled.div`
 const Bottom = styled.div`
   display: flex;
   justify-content: space-around;
-  margin: 30px 120px 10px 120px;
+  margin: 20px 120px 10px 120px;
 `;
 const Action = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 0.2rem;
+  padding: 8px;
   cursor: pointer;
   & svg {
     font-size: 45px;
     margin-bottom: 10px;
+  }
+  &:hover {
+    background-color: var(--orange-color);
+    color: white;
   }
 `;
 const TextSmall = styled.div`
@@ -119,7 +125,7 @@ export default function Transactions() {
             </Action>
             <Action>
               <FontAwesomeIcon icon={faMoneyBillTransfer} />
-              <TextSmall>Top Up</TextSmall>
+              <TextSmall>Transfer</TextSmall>
             </Action>
           </Bottom>
         </Detail>
