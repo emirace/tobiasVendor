@@ -203,20 +203,22 @@ const ENDPOINT =
 export default function ChatScreen() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const sellerId = sp.get('conversation');
+  const productId = sp.get('product');
   const [menu, setMymenu] = useState(false);
   const [currentChat, setCurrentChat] = useState('');
   const [currentReply, setCurrentReply] = useState('');
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState(
+    productId && `(Product ${productId})`
+  );
   const [arrivalMessage, setArrivalMessage] = useState('');
   const [modelRef1, setmodelRef1] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
   const socket = useRef();
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
-
-  const { search } = useLocation();
-  const sp = new URLSearchParams(search);
-  const sellerId = sp.get('conversation');
 
   const backMode = (mode) => {
     if (mode === 'pagebodydark') {
@@ -632,7 +634,6 @@ export default function ChatScreen() {
               Select a conversation to reply a report
             </NoConversation>
           )}
-          {}
         </Right>
       </ChatCont>
     </Container>

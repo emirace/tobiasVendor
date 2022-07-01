@@ -87,7 +87,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function OrderList() {
+export default function Saleslist() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -102,7 +102,7 @@ export default function OrderList() {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: 'USERS_FETCH' });
-        const { data } = await axios.get(`/api/orders/mine`, {
+        const { data } = await axios.get(`/api/orders/seller/${userInfo._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: 'USERS_SUCCESS', payload: data });
@@ -204,7 +204,7 @@ export default function OrderList() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Order List</Title>
+      <Title>Sale List</Title>
       <DataGrid
         sx={{
           width: '100%',

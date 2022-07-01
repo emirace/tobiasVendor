@@ -628,7 +628,9 @@ export default function ProductScreen() {
         { recieverId: id },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      navigate(`/messages?conversation=${product.seller._id}`);
+      navigate(
+        `/messages?conversation=${product.seller._id}&product=${product._id}`
+      );
     } catch (err) {
       ctxDispatch({
         type: 'SHOW_TOAST',

@@ -91,6 +91,14 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faChartBar} /> Orders
               </ListItem>
             </Link>
+            <Link to="/dashboard/saleslist">
+              <ListItem
+                mode={mode}
+                className={current === 'sales' ? 'active' : ''}
+              >
+                <FontAwesomeIcon icon={faChartBar} /> Sales
+              </ListItem>
+            </Link>
           </List>
         </Menu>
         <Menu>
