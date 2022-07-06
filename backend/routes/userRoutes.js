@@ -44,12 +44,16 @@ userRouter.put(
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
       user.dob = req.body.dob || user.dob;
+      user.accountName = req.body.accountName || user.accountName;
+      user.accountNumber = req.body.accountNumber || user.accountNumber;
+      user.bankName = req.body.bankName || user.bankName;
       user.phone = req.body.phone || user.phone;
       user.address = req.body.address || user.address;
       user.image = req.body.image || user.image;
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
+      console.log(user);
       const updatedUser = await user.save();
       res.send({
         _id: updatedUser._id,
@@ -223,6 +227,9 @@ userRouter.get(
         active: user.active,
         badge: user.badge,
         dob: user.dob,
+        accountName: user.accountName,
+        accountNumber: user.accountNumber,
+        bankName: user.bankName,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });
@@ -364,6 +371,9 @@ userRouter.get(
         active: user.active,
         badge: user.badge,
         dob: user.dob,
+        accountName: user.accountName,
+        accountNumber: user.accountNumber,
+        bankName: user.bankName,
       });
     } else {
       res.status(404).send({ message: 'User Not Found' });

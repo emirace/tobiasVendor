@@ -74,7 +74,7 @@ const port = process.env.PORT || 5000;
 const httpServer = http.Server(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost', 'https://localhost'],
   },
 });
 let users = [];

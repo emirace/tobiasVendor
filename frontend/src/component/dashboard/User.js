@@ -4,7 +4,9 @@ import {
   faCalendarDays,
   faEnvelope,
   faLocationDot,
+  faMoneyBill,
   faPhone,
+  faPlus,
   faUpload,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +16,7 @@ import { Store } from '../../Store';
 import axios from 'axios';
 import { getError } from '../../utils';
 import LoadingBox from '../LoadingBox';
+import SmallModel from '../SmallModel';
 
 const Container = styled.div`
   flex: 4;
@@ -32,6 +35,9 @@ const AddButton = styled.button`
   border-radius: 0.2rem;
   background: var(--green-color);
   color: var(--white-color);
+  &:hover {
+    background: var(--malon-color);
+  }
 `;
 const UserContainer = styled.div`
   display: flex;
@@ -123,6 +129,11 @@ const Form = styled.form`
     width: 100%;
   }
 `;
+const Form2 = styled.form`
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
+`;
 const Item = styled.div`
   display: flex;
   flex-direction: column;
@@ -173,6 +184,7 @@ const UploadLabel = styled.label`
   }
 `;
 const UploadButton = styled.button`
+  margin-top: 5px;
   border: none;
   border-radius: 0.2rem;
   cursor: pointer;
@@ -243,6 +255,15 @@ const Wamount = styled.div`
   font-size: 25px;
   font-weight: 300;
 `;
+const AccButton = styled.div`
+  margin-left: 5px;
+  padding: 5px;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  &:hover {
+    background: var(--malon-color);
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -303,6 +324,10 @@ export default function User() {
   const [badge, setBadge] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showModel, setShowModel] = useState(false);
+  const [accountName, setAccountName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [bankName, setBankName] = useState('');
 
   useEffect(() => {
     try {
@@ -364,6 +389,9 @@ export default function User() {
           active,
           badge,
           password,
+          accountName,
+          accountNumber,
+          bankName,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -462,6 +490,49 @@ export default function User() {
             <Info>
               <FontAwesomeIcon icon={faLocationDot} />
               <Username>{user.address}</Username>
+            </Info>
+            <Info>
+              <FontAwesomeIcon icon={faMoneyBill} />
+              <Username>Account Detail</Username>
+              <AccButton onClick={() => setShowModel(!showModel)}>
+                <FontAwesomeIcon icon={faPlus} />
+              </AccButton>
+              <SmallModel showModel={showModel} setShowModel={setShowModel}>
+                <Form2>
+                  <Item>
+                    <Label>Account Name</Label>
+                    <TextInput
+                      mode={mode}
+                      name="accountName"
+                      placeholder={user.accountName}
+                      type="text"
+                      onChange={(e) => setAccountName(e.target.value)}
+                    />
+                  </Item>
+                  {console.log(user)}
+                  <Item>
+                    <Label>Account Number</Label>
+                    <TextInput
+                      mode={mode}
+                      placeholder={user.accountNumber}
+                      name="accountNumber"
+                      type="number"
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                    />
+                  </Item>
+                  <Item>
+                    <Label>Bank Name</Label>
+                    <TextInput
+                      mode={mode}
+                      name="bankName"
+                      placeholder={user.bankName}
+                      type="text"
+                      onChange={(e) => setBankName(e.target.value)}
+                    />
+                  </Item>
+                  <UploadButton onClick={submitHandler}>Update</UploadButton>
+                </Form2>
+              </SmallModel>
             </Info>
           </ShowBottom>
         </Show>

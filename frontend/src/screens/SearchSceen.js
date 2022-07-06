@@ -5,7 +5,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import LinkContainer from 'react-router-bootstrap/LinkContainer';
 import Rating from '../component/Rating';
 import LoadingBox from '../component/LoadingBox';
@@ -119,6 +118,12 @@ const Result = styled.div`
   display: flex;
   margin-bottom: 5px;
 `;
+const RowCont = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Col = styled.div``;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -530,21 +535,46 @@ export default function SearchSceen() {
             <MessageBox variant="danger">{error}</MessageBox>
           ) : (
             <>
-              <Result>
-                {countProducts === 0 ? 'No' : countProducts} Results
-                {query !== 'all' && ' : ' + query}
-                {category !== 'all' && ' : ' + category}
-                {price !== 'all' && ' : Price ' + price}
-                {rating !== 'all' && ' : Rating' + rating + ' & up'}
-                {query !== 'all' ||
-                category !== 'all' ||
-                rating !== 'all' ||
-                price !== 'all' ? (
-                  <Button variant="none" onClick={() => navigate('/search')}>
-                    <i className="fas fa-times-circle"></i>
-                  </Button>
-                ) : null}
-              </Result>
+              <RowCont>
+                <Result>
+                  {countProducts === 0 ? 'No' : countProducts} Results
+                  {query !== 'all' && ' : ' + query}
+                  {category !== 'all' && ' : ' + category}
+                  {price !== 'all' && ' : Price ' + price}
+                  {rating !== 'all' && ' : Rating' + rating + ' & up'}
+                  {query !== 'all' ||
+                  category !== 'all' ||
+                  rating !== 'all' ||
+                  price !== 'all' ? (
+                    <Button variant="none" onClick={() => navigate('/search')}>
+                      <i className="fas fa-times-circle"></i>
+                    </Button>
+                  ) : null}
+                </Result>
+                <Col>
+                  Sort by{'  '}
+                  <select
+                    className="search_sortBy"
+                    value={order}
+                    onChange={(e) => {
+                      navigate(getFilterUrl({ order: e.target.value }));
+                    }}
+                  >
+                    <option className={mode || ''} value="newest">
+                      Newest Arrivals
+                    </option>
+                    <option className={mode || ''} value="lowest">
+                      Price: Low to High
+                    </option>
+                    <option className={mode || ''} value="highest">
+                      Price: High to Low
+                    </option>
+                    <option className={mode || ''} value="toprated">
+                      Avg. Customer Reviews
+                    </option>
+                  </select>
+                </Col>
+              </RowCont>
               {products.length === 0 && (
                 <MessageBox>No Product Found</MessageBox>
               )}
