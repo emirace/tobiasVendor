@@ -33,6 +33,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: ["http://localhost:3000", "http://localhost:19006"] }));
 
 app.use(
   cookieSession({
@@ -74,11 +75,7 @@ const port = process.env.PORT || 5000;
 const httpServer = http.Server(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:19006",
-      "https://localhost",
-    ],
+    origin: ["http://localhost:3000"],
   },
 });
 let users = [];
