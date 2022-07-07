@@ -1,7 +1,10 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import SearchBox from '../component/SearchBox';
-import { Store } from '../Store';
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import SearchBox from "../component/SearchBox";
+import { Store } from "../Store";
+import { getError } from "../utils";
 
 const Container = styled.div`
   position: fixed;
@@ -9,7 +12,7 @@ const Container = styled.div`
   bottom: -55px;
   left: 0;
   right: 0;
-  background: ${(props) => (!props.bg ? '#000' : '#fff')};
+  background: ${(props) => (!props.bg ? "#000" : "#fff")};
   z-index: 7;
   overflow: auto;
   padding: 10px;
@@ -42,7 +45,7 @@ const CateTitle = styled.div`
   border-radius: 5px;
   position: relative;
   &:before {
-    content: '+';
+    content: "+";
     position: absolute;
     top: 50%;
     right: 20px;
@@ -63,9 +66,22 @@ const CateItem = styled.div`
 
 export default function CategoryMobileScreen() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+  const [categories, setCategories] = useState(null);
+  useEffect(() => {
+    try {
+      const fetchCategories = async () => {
+        const { data } = await axios.get("/api/categories");
+        setCategories(data);
+      };
+      fetchCategories();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo]);
+
   const backMode = (mode) => {
-    if (mode === 'pagebodydark') {
+    if (mode === "pagebodydark") {
       mode = false;
     } else {
       mode = true;
@@ -74,10 +90,6 @@ export default function CategoryMobileScreen() {
   };
   const footerMode = backMode(mode);
   const [display, setDisplay] = useState();
-  const [display1, setDisplay1] = useState();
-  const [display2, setDisplay2] = useState();
-  const [display3, setDisplay3] = useState();
-  const [display4, setDisplay4] = useState();
 
   return (
     <>
@@ -87,50 +99,29 @@ export default function CategoryMobileScreen() {
           <SearchBox />
         </Searchcont>
 
-        <CateContainer onClick={() => setDisplay(!display)}>
-          <CateTitle>Women's wear</CateTitle>
-          <CateItemContainer className={display ? 'active' : ''}>
-            <CateItem>Shirts</CateItem>
-            <CateItem>Jeans</CateItem>
-            <CateItem>pants</CateItem>
-            <CateItem>skirts</CateItem>
-          </CateItemContainer>
-        </CateContainer>
-        <CateContainer onClick={() => setDisplay1(!display1)}>
-          <CateTitle>Men's wear</CateTitle>
-          <CateItemContainer className={display1 ? 'active' : ''}>
-            <CateItem>Shirts</CateItem>
-            <CateItem>Jeans</CateItem>
-            <CateItem>pants</CateItem>
-            <CateItem>skirts</CateItem>
-          </CateItemContainer>
-        </CateContainer>
-        <CateContainer onClick={() => setDisplay2(!display2)}>
-          <CateTitle>Kids</CateTitle>
-          <CateItemContainer className={display2 ? 'active' : ''}>
-            <CateItem>Shirts</CateItem>
-            <CateItem>Jeans</CateItem>
-            <CateItem>pants</CateItem>
-            <CateItem>skirts</CateItem>
-          </CateItemContainer>
-        </CateContainer>
-        <CateContainer onClick={() => setDisplay3(!display3)}>
-          <CateTitle>Vacation</CateTitle>
-          <CateItemContainer className={display3 ? 'active' : ''}>
-            <CateItem>Shirts</CateItem>
-            <CateItem>Jeans</CateItem>
-            <CateItem>pants</CateItem>
-            <CateItem>skirts</CateItem>
-          </CateItemContainer>
-        </CateContainer>
-        <CateContainer onClick={() => setDisplay4(!display4)}>
-          <CateTitle>Summer</CateTitle>
-          <CateItemContainer className={display4 ? 'active' : ''}>
-            <CateItem>Shirts</CateItem>
-            <CateItem>Jeans</CateItem>
-            <CateItem>pants</CateItem>
-            <CateItem>skirts</CateItem>
-          </CateItemContainer>
+        <CateContainer>
+          {categories &&
+            categories.map((c) => (
+              <>
+                <CateTitle
+                  onClick={() => {
+                    display === c.name ? setDisplay("") : setDisplay(c.name);
+                  }}
+                >
+                  {c.name}
+                </CateTitle>
+                <CateItemContainer
+                  className={display === c.name ? "active" : ""}
+                >
+                  {c.subCategories.length > 0 &&
+                    c.subCategories.map((s) => (
+                      <Link to="/search">
+                        <CateItem>{s.name}</CateItem>
+                      </Link>
+                    ))}
+                </CateItemContainer>
+              </>
+            ))}
         </CateContainer>
       </Container>
     </>

@@ -1,21 +1,21 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { getError } from '../utils';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { Helmet } from 'react-helmet-async';
-import Row from 'react-bootstrap/Row';
-import LinkContainer from 'react-router-bootstrap/LinkContainer';
-import Rating from '../component/Rating';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import Product from '../component/Product';
-import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleDot } from '@fortawesome/free-solid-svg-icons';
-import '../style/SearchScreen.css';
-import styled from 'styled-components';
-import { Store } from '../Store';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { getError } from "../utils";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
+import Row from "react-bootstrap/Row";
+import LinkContainer from "react-router-bootstrap/LinkContainer";
+import Rating from "../component/Rating";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import Product from "../component/Product";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleDot, faTimes } from "@fortawesome/free-solid-svg-icons";
+import "../style/SearchScreen.css";
+import styled from "styled-components";
+import { Store } from "../Store";
 
 const Container = styled.div`
   display: flex;
@@ -25,10 +25,19 @@ const Left = styled.div`
   flex: 2;
   height: calc(100vh-168px);
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
+  @media (max-height: 992px) {
+    left${(props) => (props.showFilter ? 0 : "-100vw")};
+    display: ${(props) => (props.showFilter ? "block" : "none")};
+    transition: left 2s;
+    z-index: 9;
+    position: absolute;
+    width:100vw;
+    top: 0;
+  }
 `;
 const Right = styled.div`
   flex: 6;
@@ -36,7 +45,11 @@ const Right = styled.div`
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 0;
+    padding: 10px;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -49,8 +62,9 @@ const Title = styled.h3`
   font-size: 14px;
   cursor: pointer;
   position: relative;
+  z-index: 1;
   &::after {
-    content: ' ';
+    content: " ";
     width: 8px;
     height: 8px;
     border-bottom: 1px solid;
@@ -61,7 +75,7 @@ const Title = styled.h3`
     right: 20px;
   }
   &.activate::after {
-    content: '';
+    content: "";
     transform: rotate(135deg);
   }
 `;
@@ -84,7 +98,7 @@ const ListItem = styled.li`
   &.active,
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
   }
   & svg {
     margin-right: 5px;
@@ -103,9 +117,9 @@ const Input = styled.input`
   border-radius: 0.4rem;
   margin-top: 5px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
 `;
 
 const ProductListC = styled.div`
@@ -117,6 +131,9 @@ const ProductListC = styled.div`
 const Result = styled.div`
   display: flex;
   margin-bottom: 5px;
+  @media (max-width: 992px) {
+    display: none;
+  }
 `;
 const RowCont = styled.div`
   display: flex;
@@ -125,11 +142,33 @@ const RowCont = styled.div`
 
 const Col = styled.div``;
 
+const Close = styled.div`
+  display: flex;
+  justify-content: end;
+  margin: 5px;
+  padding: 10px 20px;
+  & svg {
+    font-size: 15px;
+  }
+`;
+const Filter = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange-color);
+  width: 100%;
+  text-align: center;
+  z-index: 9;
+  padding: 5px 7px;
+  color: white;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return {
         ...state,
         products: action.payload.products,
@@ -138,7 +177,7 @@ const reducer = (state, action) => {
         countProducts: action.payload.countProducts,
         loading: false,
       };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
 
     default:
@@ -148,34 +187,34 @@ const reducer = (state, action) => {
 
 const prices = [
   {
-    name: '$1 to $50',
-    value: '1-50',
+    name: "$1 to $50",
+    value: "1-50",
   },
   {
-    name: '$51 to $200',
-    value: '51-200',
+    name: "$51 to $200",
+    value: "51-200",
   },
   {
-    name: '$201 to $1000',
-    value: '201-1000',
+    name: "$201 to $1000",
+    value: "201-1000",
   },
 ];
 
 const ratings = [
   {
-    name: '4stars & up',
+    name: "4stars & up",
     rating: 4,
   },
   {
-    name: '3stars & up',
+    name: "3stars & up",
     rating: 3,
   },
   {
-    name: '2stars & up',
+    name: "2stars & up",
     rating: 2,
   },
   {
-    name: '1star & up',
+    name: "1star & up",
     rating: 1,
   },
 ];
@@ -187,22 +226,22 @@ export default function SearchSceen() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const category = sp.get('category') || 'all';
-  const query = sp.get('query') || 'all';
-  const rating = sp.get('rating') || 'all';
-  const price = sp.get('price') || 'all';
-  const order = sp.get('order') || 'newest';
-  const page = sp.get('page') || 1;
-  const color = sp.get('color') || 'all';
-  const brand = sp.get('brand') || 'all';
+  const category = sp.get("category") || "all";
+  const query = sp.get("query") || "all";
+  const rating = sp.get("rating") || "all";
+  const price = sp.get("price") || "all";
+  const order = sp.get("order") || "newest";
+  const page = sp.get("page") || 1;
+  const color = sp.get("color") || "all";
+  const brand = sp.get("brand") || "all";
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
       loading: true,
-      error: '',
+      error: "",
     });
 
-  let brands = ['Nike', 'Gucci', 'Rolex', 'Louis Vuitto', 'Adidas', 'Dior'];
+  let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -210,10 +249,10 @@ export default function SearchSceen() {
         const { data } = await axios.get(
           `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
         );
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({
-          type: 'FETCH_FAIL',
+          type: "FETCH_FAIL",
           payload: getError(err),
         });
       }
@@ -226,7 +265,7 @@ export default function SearchSceen() {
   useEffect(() => {
     try {
       const fetchCategories = async () => {
-        const { data } = await axios.get('/api/categories', {
+        const { data } = await axios.get("/api/categories", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setCategories(data);
@@ -256,22 +295,22 @@ export default function SearchSceen() {
   const [reviewClass, setReviewClass] = useState(true);
   const [colorClass, setColorClass] = useState(true);
   const [brandClass, setBrandClass] = useState(true);
-  const [brandInput, setBrandInput] = useState('');
+  const [brandInput, setBrandInput] = useState("");
   const toggleCollapse = (type) => {
     switch (type) {
-      case 'category':
+      case "category":
         setCateClass(!cateClass);
         break;
-      case 'price':
+      case "price":
         setPriceClass(!priceClass);
         break;
-      case 'review':
+      case "review":
         setReviewClass(!reviewClass);
         break;
-      case 'color':
+      case "color":
         setColorClass(!colorClass);
         break;
-      case 'brand':
+      case "brand":
         setBrandClass(!brandClass);
         break;
 
@@ -289,22 +328,32 @@ export default function SearchSceen() {
       return i.toLowerCase().match(brandInput);
     });
   }
+
+  const [showFilter, setShowFilter] = useState(false);
+
   return (
     <div>
       <Helmet>
         <title>Search Product</title>
       </Helmet>
       <Container>
-        <Left mode={mode}>
+        <Left mode={mode} showFilter={showFilter}>
+          <Close onClick={() => setShowFilter(false)}>
+            <FontAwesomeIcon icon={faTimes} />
+          </Close>
+          {showFilter && (
+            <Filter onClick={() => setShowFilter(false)}>Filter</Filter>
+          )}
+
           <Wrapper>
             <Menu>
-              <Title onClick={() => toggleCollapse('category')}>
+              <Title onClick={() => toggleCollapse("category")}>
                 Categories
               </Title>
-              <List className={cateClass ? 'activate' : ''}>
+              <List className={cateClass ? "activate" : ""}>
                 <Link
-                  className={'all' === category ? 'text-bold' : ''}
-                  to={getFilterUrl({ category: 'all' })}
+                  className={"all" === category ? "text-bold" : ""}
+                  to={getFilterUrl({ category: "all" })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -314,7 +363,7 @@ export default function SearchSceen() {
                 {categories.length &&
                   categories.map((c) => (
                     <Link
-                      className={c.name === category ? 'text-bold' : ''}
+                      className={c.name === category ? "text-bold" : ""}
                       to={getFilterUrl({ category: c.name })}
                     >
                       <ListItem mode={mode}>
@@ -326,8 +375,8 @@ export default function SearchSceen() {
               </List>
             </Menu>
             <Menu>
-              <Title onClick={() => toggleCollapse('brand')}>Brands</Title>
-              <List className={brandClass ? 'activate' : ''}>
+              <Title onClick={() => toggleCollapse("brand")}>Brands</Title>
+              <List className={brandClass ? "activate" : ""}>
                 <Input
                   mode={mode}
                   type="text"
@@ -337,7 +386,7 @@ export default function SearchSceen() {
                 {brands.map((p, index) => (
                   <div key={index}>
                     <Link
-                      className={p === brand ? 'text-bold' : ''}
+                      className={p === brand ? "text-bold" : ""}
                       to={getFilterUrl({ brand: p })}
                     >
                       <ListItem mode={mode}>
@@ -350,11 +399,11 @@ export default function SearchSceen() {
               </List>
             </Menu>
             <Menu>
-              <Title onClick={() => toggleCollapse('price')}>Prices</Title>
-              <List className={priceClass ? 'activate' : ''}>
+              <Title onClick={() => toggleCollapse("price")}>Prices</Title>
+              <List className={priceClass ? "activate" : ""}>
                 <Link
-                  className={'all' === price ? 'text-bold' : ''}
-                  to={getFilterUrl({ price: 'all' })}
+                  className={"all" === price ? "text-bold" : ""}
+                  to={getFilterUrl({ price: "all" })}
                 >
                   <ListItem mode={mode}>
                     <FontAwesomeIcon icon={faCircleDot} />
@@ -364,7 +413,7 @@ export default function SearchSceen() {
                 {prices.map((p, index) => (
                   <div key={index}>
                     <Link
-                      className={p.value === price ? 'text-bold' : ''}
+                      className={p.value === price ? "text-bold" : ""}
                       to={getFilterUrl({ price: p.value })}
                     >
                       <ListItem mode={mode}>
@@ -378,147 +427,147 @@ export default function SearchSceen() {
             </Menu>
             <Menu>
               <Title
-                className={reviewClass ? 'activate' : ''}
-                onClick={() => toggleCollapse('review')}
+                className={reviewClass ? "activate" : ""}
+                onClick={() => toggleCollapse("review")}
               >
                 Reviews
               </Title>
-              <List className={reviewClass ? 'activate' : ''}>
+              <List className={reviewClass ? "activate" : ""}>
                 {ratings.map((r, index) => (
                   <div key={index}>
                     <Link
                       className={
-                        `${r.rating}` === `${rating}` ? 'text-bold' : ''
+                        `${r.rating}` === `${rating}` ? "text-bold" : ""
                       }
                       to={getFilterUrl({ rating: r.rating })}
                     >
                       <ListItem mode={mode}>
-                        <Rating caption={' & up'} rating={r.rating}></Rating>
+                        <Rating caption={" & up"} rating={r.rating}></Rating>
                       </ListItem>
                     </Link>
                   </div>
                 ))}
                 <Link
-                  className={rating === 'all' ? 'text-bold' : ''}
-                  to={getFilterUrl({ rating: 'all' })}
+                  className={rating === "all" ? "text-bold" : ""}
+                  to={getFilterUrl({ rating: "all" })}
                 >
                   <ListItem mode={mode}>
-                    <Rating caption={' & up'} rating={0}></Rating>
+                    <Rating caption={" & up"} rating={0}></Rating>
                   </ListItem>
                 </Link>
               </List>
             </Menu>
             <Menu>
-              <Title onClick={() => toggleCollapse('color')}>Color</Title>
-              <List className={colorClass ? 'activate' : ''}>
+              <Title onClick={() => toggleCollapse("color")}>Color</Title>
+              <List className={colorClass ? "activate" : ""}>
                 <Link
-                  className={'all' === color ? 'text-bold' : ''}
-                  to={getFilterUrl({ color: 'all' })}
+                  className={"all" === color ? "text-bold" : ""}
+                  to={getFilterUrl({ color: "all" })}
                 >
                   <ListItem mode={mode}>All</ListItem>
                 </Link>
                 <Color>
                   <Link
-                    className={'all' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'black' })}
+                    className={"all" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "black" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'black',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "black",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'womenswear' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'red' })}
+                    className={"womenswear" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "red" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'red',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "red",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'menswear' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'green' })}
+                    className={"menswear" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "green" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'green',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "green",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'kids' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'blue' })}
+                    className={"kids" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "blue" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'blue',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "blue",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'curve+plus' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'pink' })}
+                    className={"curve+plus" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "pink" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'pink',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "pink",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'tops' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'orange' })}
+                    className={"tops" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "orange" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'orange',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "orange",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
                   </Link>
                   <Link
-                    className={'outerwear' === color ? 'text-bold' : ''}
-                    to={getFilterUrl({ color: 'purple' })}
+                    className={"outerwear" === color ? "text-bold" : ""}
+                    to={getFilterUrl({ color: "purple" })}
                   >
                     <ListItem mode={mode}>
                       <div
                         style={{
-                          background: 'purple',
-                          width: '30px',
-                          height: '20px',
-                          borderRadius: '0.2rem',
+                          background: "purple",
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
                         }}
                       ></div>
                     </ListItem>
@@ -536,23 +585,24 @@ export default function SearchSceen() {
           ) : (
             <>
               <RowCont>
+                <div onClick={() => setShowFilter(true)}>Filters</div>
                 <Result>
-                  {countProducts === 0 ? 'No' : countProducts} Results
-                  {query !== 'all' && ' : ' + query}
-                  {category !== 'all' && ' : ' + category}
-                  {price !== 'all' && ' : Price ' + price}
-                  {rating !== 'all' && ' : Rating' + rating + ' & up'}
-                  {query !== 'all' ||
-                  category !== 'all' ||
-                  rating !== 'all' ||
-                  price !== 'all' ? (
-                    <Button variant="none" onClick={() => navigate('/search')}>
+                  {countProducts === 0 ? "No" : countProducts} Results
+                  {query !== "all" && " : " + query}
+                  {category !== "all" && " : " + category}
+                  {price !== "all" && " : Price " + price}
+                  {rating !== "all" && " : Rating" + rating + " & up"}
+                  {query !== "all" ||
+                  category !== "all" ||
+                  rating !== "all" ||
+                  price !== "all" ? (
+                    <Button variant="none" onClick={() => navigate("/search")}>
                       <i className="fas fa-times-circle"></i>
                     </Button>
                   ) : null}
                 </Result>
                 <Col>
-                  Sort by{'  '}
+                  Sort by{"  "}
                   <select
                     className="search_sortBy"
                     value={order}
@@ -560,16 +610,16 @@ export default function SearchSceen() {
                       navigate(getFilterUrl({ order: e.target.value }));
                     }}
                   >
-                    <option className={mode || ''} value="newest">
+                    <option className={mode || ""} value="newest">
                       Newest Arrivals
                     </option>
-                    <option className={mode || ''} value="lowest">
+                    <option className={mode || ""} value="lowest">
                       Price: Low to High
                     </option>
-                    <option className={mode || ''} value="highest">
+                    <option className={mode || ""} value="highest">
                       Price: High to Low
                     </option>
-                    <option className={mode || ''} value="toprated">
+                    <option className={mode || ""} value="toprated">
                       Avg. Customer Reviews
                     </option>
                   </select>

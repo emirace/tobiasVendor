@@ -46,6 +46,7 @@ const Left = styled.div`
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   @media (max-width: 992px) {
+    margin: 0;
     display: ${(props) => (props.showLeft ? "" : "none")};
   }
 `;
