@@ -1,25 +1,28 @@
-import Button from 'react-bootstrap/Button';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import Col from 'react-bootstrap/Col';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
-import MessageBox from '../component/MessageBox';
-import axios from 'axios';
-import '../style/Cart.css';
-import { Store } from '../Store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import Button from "react-bootstrap/Button";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import Col from "react-bootstrap/Col";
+import ListGroup from "react-bootstrap/ListGroup";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
+import MessageBox from "../component/MessageBox";
+import axios from "axios";
+import "../style/Cart.css";
+import { Store } from "../Store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { toast } from "react-toastify";
+import { getError } from "../utils";
 
 const CartCont = styled.div`
   display: flex;
   margin: 20px;
   gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const LeftCorner = styled.div`
   flex: 3;
@@ -33,7 +36,7 @@ const RightCorner = styled.div`
   border-radius: 0.2rem;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 
 const Top = styled.div`
@@ -41,14 +44,14 @@ const Top = styled.div`
   border-radius: 0.2rem;
   margin: 0 0 20px 0;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Bottom = styled.div`
   padding: 20px;
   margin: 0 0 20px 0;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 
 const SumCont = styled.div`
@@ -75,16 +78,16 @@ const Summary = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_USER_REQUEST':
+    case "FETCH_USER_REQUEST":
       return { ...state, loadingUser: true };
-    case 'FETCH_USER_SUCCESS':
+    case "FETCH_USER_SUCCESS":
       return {
         ...state,
         loadingUser: false,
         user: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_PRODUCT_REQUEST':
+    case "FETCH_PRODUCT_REQUEST":
       return { ...state, loadingUser: true };
     default:
       return state;
@@ -101,19 +104,19 @@ export default function CartScreen() {
   } = state;
   const [{ loadingUser, error, user }, dispatch] = useReducer(reducer, {
     loadingUser: true,
-    error: '',
+    error: "",
     user: {},
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch({ type: 'FETCH_USER_REQUEST' });
+        dispatch({ type: "FETCH_USER_REQUEST" });
         const { data: dataUser } = await axios.get(
           `/api/users/seller/${userInfo._id}`
         );
-        console.log('userdata', dataUser);
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: dataUser });
+        console.log("userdata", dataUser);
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
       } catch (err) {
         console.log(err);
       }
@@ -124,26 +127,26 @@ export default function CartScreen() {
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Sorry. Product is out of stock',
+          message: "Sorry. Product is out of stock",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
-    console.log('item', item);
-    console.log('quan', quantity);
+    console.log("item", item);
+    console.log("quan", quantity);
     //
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: { ...item, quantity },
     });
   };
 
   const removeItemHandler = (item) => {
-    ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item });
+    ctxDispatch({ type: "CART_REMOVE_ITEM", payload: item });
   };
 
   const addToCartHandler = async (item) => {
@@ -152,38 +155,38 @@ export default function CartScreen() {
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Sorry. Product is out of stock',
+          message: "Sorry. Product is out of stock",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
 
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: { ...item, quantity },
     });
     ctxDispatch({
-      type: 'SHOW_NOTIFICAATION',
+      type: "SHOW_NOTIFICAATION",
       payload: {
-        text: 'Item added to Cart',
+        text: "Item added to Cart",
         showStatus: true,
-        buttonText: 'Checkout',
+        buttonText: "Checkout",
       },
     });
   };
 
   const checkoutHandler = () => {
     if (cartItems.length === 0) {
-      toast.error('cart is empty');
+      toast.error("cart is empty");
     } else {
       if (userInfo) {
-        navigate('../shipping');
+        navigate("../shipping");
       } else {
-        navigate('../signin');
+        navigate("../signin");
       }
     }
   };
@@ -212,7 +215,7 @@ export default function CartScreen() {
                           src={item.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
-                        ></img>{' '}
+                        ></img>{" "}
                         <div className="cart_item_detail">
                           <Link to={`/product/${item.slug}`}>{item.name}</Link>
 
@@ -229,8 +232,8 @@ export default function CartScreen() {
                           disabled={item.quantity === 1}
                         >
                           <FontAwesomeIcon icon={faMinus} />
-                        </Button>{' '}
-                        <span>{item.quantity}</span>{' '}
+                        </Button>{" "}
+                        <span>{item.quantity}</span>{" "}
                         <Button
                           variant="none"
                           onClick={() =>
@@ -276,7 +279,7 @@ export default function CartScreen() {
                                   src={product.image}
                                   alt={product.name}
                                   className="img-fluid rounded img-thumbnail"
-                                ></img>{' '}
+                                ></img>{" "}
                                 <div className="cart_item_detail">
                                   <Link to={`/product/${product.slug}`}>
                                     {product.name}
@@ -312,7 +315,7 @@ export default function CartScreen() {
                   <Right>x </Right>
                   <Right>${c.price}</Right>
                 </Left>
-                <Right>{' =  $' + c.quantity * c.price}</Right>
+                <Right>{" =  $" + c.quantity * c.price}</Right>
               </SumCont>
             ))}
             <div>
