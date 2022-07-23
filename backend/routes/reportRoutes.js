@@ -1,13 +1,13 @@
-import express from 'express';
-import Message from '../models/messageModel.js';
-import expressAsyncHandler from 'express-async-handler';
-import { isAuth, isAdmin } from '../utils.js';
-import Report from '../models/reportModel.js';
+import express from "express";
+import Message from "../models/messageModel.js";
+import expressAsyncHandler from "express-async-handler";
+import { isAuth, isAdmin } from "../utils.js";
+import Report from "../models/reportModel.js";
 
 const reportRouter = express.Router();
 
 reportRouter.post(
-  '/',
+  "/",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const newReport = new Report({
@@ -15,9 +15,10 @@ reportRouter.post(
       user: req.body.user,
       admin: req.user.isAdmin,
       text: req.body.text,
+      productName: req.body.productName,
     });
     const savedReport = await newReport.save();
-    res.status(200).send({ messages: 'Report sent', savedReport });
+    res.status(200).send({ messages: "Report sent", savedReport });
   })
 );
 
@@ -39,11 +40,11 @@ reportRouter.post(
 // );
 
 reportRouter.get(
-  '/:user',
+  "/:user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const reports = await Report.find({ user: req.params.user });
-    res.status(200).send({ message: 'Report fetch successful', reports });
+    res.status(200).send({ message: "Report fetch successful", reports });
   })
 );
 

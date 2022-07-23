@@ -1,9 +1,9 @@
-import './App.css';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import ProductsScreen from './screens/ProductsScreen';
-import ProductScreen from './screens/ProductScreen';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import "./App.css";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import ProductsScreen from "./screens/ProductsScreen";
+import ProductScreen from "./screens/ProductScreen";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
   faCircleHalfStroke,
@@ -12,47 +12,47 @@ import {
   faHeart,
   faRightFromBracket,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import Navbar from './component/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Badge from 'react-bootstrap/Badge';
-import Container from 'react-bootstrap/Container';
-import { LinkContainer } from 'react-router-bootstrap';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { Store } from './Store';
-import CartScreen from './screens/CartScreen';
-import SigninScreen from './screens/SigninScreen';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ShippingAddressScreen from './screens/ShippingAddressScreen';
-import SignupScreen from './screens/SignupScreen';
-import PaymentMethodScreen from './screens/PaymentMethodScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
-import OrderScreen from './screens/OrderScreen';
-import OrderHistoryScreen from './screens/OrderHistoryScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import Button from 'react-bootstrap/Button';
-import { getError } from './utils';
-import axios from 'axios';
-import SearchBox from './component/SearchBox';
-import SearchSceen from './screens/SearchSceen';
-import DashboardScreen from './screens/DashboardScreen';
-import HomeScreen from './screens/HomeScreen';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Footer from './component/Footer';
-import ProductListScreen from './screens/ProductListScreen';
-import ProductEditScreen from './screens/ProductEditScreen';
-import OrderListScreen from './screens/OrderListScreen';
-import CategoryMobileScreen from './screens/CategoryMobileScreen';
-import UserListScreen from './screens/UserListScreen';
-import MyAccountScreen from './screens/MyAccountScreen';
-import UserEditScreen from './screens/UserEditScreen';
-import SellerScreen from './screens/SellerScreen';
-import ProductCreateScreen from './screens/ProductCreateScreen';
-import StickyNav from './component/StickyNav';
-import styled from 'styled-components';
+} from "@fortawesome/free-solid-svg-icons";
+import Navbar from "./component/Navbar";
+import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Badge from "react-bootstrap/Badge";
+import Container from "react-bootstrap/Container";
+import { LinkContainer } from "react-router-bootstrap";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Store } from "./Store";
+import CartScreen from "./screens/CartScreen";
+import SigninScreen from "./screens/SigninScreen";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ShippingAddressScreen from "./screens/ShippingAddressScreen";
+import SignupScreen from "./screens/SignupScreen";
+import PaymentMethodScreen from "./screens/PaymentMethodScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
+import OrderHistoryScreen from "./screens/OrderHistoryScreen";
+import ProfileScreen from "./screens/ProfileScreen";
+import Button from "react-bootstrap/Button";
+import { getError } from "./utils";
+import axios from "axios";
+import SearchBox from "./component/SearchBox";
+import SearchSceen from "./screens/SearchSceen";
+import DashboardScreen from "./screens/DashboardScreen";
+import HomeScreen from "./screens/HomeScreen";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Footer from "./component/Footer";
+import ProductListScreen from "./screens/ProductListScreen";
+import ProductEditScreen from "./screens/ProductEditScreen";
+import OrderListScreen from "./screens/OrderListScreen";
+import CategoryMobileScreen from "./screens/CategoryMobileScreen";
+import UserListScreen from "./screens/UserListScreen";
+import MyAccountScreen from "./screens/MyAccountScreen";
+import UserEditScreen from "./screens/UserEditScreen";
+import SellerScreen from "./screens/SellerScreen";
+import ProductCreateScreen from "./screens/ProductCreateScreen";
+import StickyNav from "./component/StickyNav";
+import styled from "styled-components";
 import {
   AdminRoute,
   CartNotEmpty,
@@ -60,20 +60,20 @@ import {
   IsShippingAdd,
   ProtectedRoute,
   SellerRoute,
-} from './component/ProtectedRoute';
-import ScrollToTop from './component/ScrollToTop';
-import ChatScreen from './screens/ChatScreen';
-import InfoScreen from './screens/InfoScreen';
-import MobileProfileScreen from './screens/MobileProfileScreen';
-import Notification from './component/Notification';
-import ToastNotification from './component/ToastNotification';
-import DashboardNewScreen from './screens/DashboardNewScreen';
-import CategorypageScreen from './screens/CategorypageScreen';
-import BrandScreen from './screens/BrandScreen';
-import { io } from 'socket.io-client';
-import ShopByOutfit from './screens/ShopByOutfit';
-import CreateOutfitScreen from './screens/CreateOutfitScreen';
-import CreateOutfitPicScreen from './screens/CreateOutfitPicScreen';
+} from "./component/ProtectedRoute";
+import ScrollToTop from "./component/ScrollToTop";
+import ChatScreen from "./screens/ChatScreen";
+import InfoScreen from "./screens/InfoScreen";
+import MobileProfileScreen from "./screens/MobileProfileScreen";
+import Notification from "./component/Notification";
+import ToastNotification from "./component/ToastNotification";
+import DashboardNewScreen from "./screens/DashboardNewScreen";
+import CategorypageScreen from "./screens/CategorypageScreen";
+import BrandScreen from "./screens/BrandScreen";
+import { io } from "socket.io-client";
+import ShopByOutfit from "./screens/ShopByOutfit";
+import CreateOutfitScreen from "./screens/CreateOutfitScreen";
+import CreateOutfitPicScreen from "./screens/CreateOutfitPicScreen";
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
 
@@ -81,9 +81,9 @@ const NavCont = styled.div`
   position: relation;
 `;
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: absolute;
   top: 10px;
@@ -108,7 +108,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -118,7 +118,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: 'darkmodeSwitch',
+  for: "darkmodeSwitch",
 })`
   color: #fff;
   margin-left: 5px;
@@ -135,12 +135,12 @@ function App() {
   const { cart, userInfo, mode } = state;
 
   const signoutHandler = () => {
-    ctxDispatch({ type: 'USER_SIGNOUT' });
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems');
-    localStorage.removeItem('shippingAddress');
-    localStorage.removeItem('paymentMethod');
-    window.location.href = '/signin';
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("shippingAddress");
+    localStorage.removeItem("paymentMethod");
+    window.location.href = "/signin";
   };
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
@@ -149,7 +149,7 @@ function App() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get('/api/products/categories');
+        const { data } = await axios.get("/api/products/categories");
         setCategories(data);
       } catch (err) {
         console.log(getError(err));
@@ -160,11 +160,11 @@ function App() {
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
-      localStorage.setItem('mode', 'pagebodydark');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
     } else {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
-      localStorage.setItem('mode', 'pagebodylight');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
     }
   };
 
@@ -187,11 +187,11 @@ function App() {
       <GoogleOAuthProvider clientId="359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com">
         <ScrollToTop>
           <ToastContainer position="top-center" limit={1} />
-          <div className={mode || ''} onClick={closeModel}>
+          <div className={mode || ""} onClick={closeModel}>
             <Notification />
             <ToastNotification />
             <StickyNav />
-            <header style={{ background: 'inherit' }}>
+            <header style={{ background: "inherit" }}>
               <NavCont>
                 <Navbar
                   menu={menu}
@@ -292,6 +292,14 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+                    path="/dashboard/:tab/:id"
+                    element={
+                      <ProtectedRoute>
+                        <DashboardNewScreen />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route path="/" element={<HomeScreen />} />
                   <Route path="/home" element={<ProductsScreen />} />
 
@@ -310,14 +318,7 @@ function App() {
                   <Route path="/shopbyoutfit" element={<ShopByOutfit />} />
 
                   {/* Admin Routes */}
-                  <Route
-                    path="/dashboard/:tab/:id"
-                    element={
-                      <AdminRoute>
-                        <DashboardNewScreen />
-                      </AdminRoute>
-                    }
-                  />
+
                   <Route
                     path="/admin/dashboard"
                     element={

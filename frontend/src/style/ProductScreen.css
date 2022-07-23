@@ -167,8 +167,10 @@
   color: white;
   border: 0;
   padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
   text-transform: uppercase;
-  border-radius: 10px;
+  border-radius: 5px;
   margin-bottom: 20px;
 }
 
@@ -178,9 +180,11 @@
 .sp_wishlist_btn {
   width: 100%;
   background: none;
+  font-weight: bold;
+  font-size: 18px;
   color: var(--orange-color);
   border: 0.1rem solid var(--orange-color);
-  padding: 10px;
+  padding: 5px;
   text-transform: uppercase;
   border-radius: 10px;
 }
@@ -205,7 +209,7 @@
 }
 
 .sp_detail_title::before {
-  content: ' ';
+  content: " ";
   width: 10px;
   height: 10px;
   border-bottom: 1px solid;
@@ -217,7 +221,7 @@
 }
 
 .sp_detail_section.active .sp_detail_title::before {
-  content: ' ';
+  content: " ";
   transform: rotate(134deg);
 }
 

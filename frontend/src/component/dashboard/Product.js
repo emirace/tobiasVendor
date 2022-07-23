@@ -1,16 +1,16 @@
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState, useEffect, useReducer } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import Chart from './Chart';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import { Store } from '../../Store';
-import axios from 'axios';
-import { getError } from '../../utils';
-import LoadingBox from '../LoadingBox';
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useState, useEffect, useReducer } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
+import Chart from "./Chart";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import { Store } from "../../Store";
+import axios from "axios";
+import { getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
 
 const ProductC = styled.div`
   flex: 4;
@@ -41,7 +41,7 @@ const Bottom = styled.div`
   margin: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const TopLeft = styled.div`
   flex: 1;
@@ -50,7 +50,7 @@ const TopRight = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   margin: 20px;
   border-radius: 0.2rem;
 `;
@@ -111,12 +111,12 @@ const Input = styled.input`
   border: none;
   padding: 5px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: none;
   &:focus-visible {
     outline: none;
@@ -129,7 +129,7 @@ const Label = styled.label`
 
   font-size: 14px;
 `;
-const Upload = styled.form`
+const Upload = styled.div`
   display: flex;
   align-items: center;
   margin-top: 15px;
@@ -163,7 +163,7 @@ const Gender = styled.div`
     &::after {
       width: 15px;
       height: 15px;
-      content: '';
+      content: "";
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -171,15 +171,15 @@ const Gender = styled.div`
       top: -2px;
       left: -1px;
       background-color: ${(props) =>
-        props.mode === 'pagebodydark'
-          ? 'var(--black-color)'
-          : 'var(--white-color)'};
+        props.mode === "pagebodydark"
+          ? "var(--black-color)"
+          : "var(--white-color)"};
       border: 1px solid var(--orange-color);
     }
     &:checked::after {
       width: 15px;
       height: 15px;
-      content: '';
+      content: "";
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -223,18 +223,18 @@ const SelBox = styled.div`
   border-radius: 0.2rem;
   padding: 5px;
   background-color: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 40px;
   padding: 10px;
@@ -254,16 +254,16 @@ const TextArea = styled.textarea`
   border-radius: 0.2rem;
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   padding: 10px;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 
 const Price = styled.div`
@@ -296,12 +296,12 @@ const SizeInput = styled.input`
   background: none;
   font-size: 12px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 20px;
   width: 40px;
@@ -326,25 +326,36 @@ const SmallItems = styled.div`
   flex-wrap: wrap;
 `;
 
+const ItemCont = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+const ItemLeft = styled.div`
+  flex: 1;
+`;
+const ItemRight = styled.div`
+  flex: 1;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return { ...state, loading: false };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'UPDATE_REQUEST':
+    case "UPDATE_REQUEST":
       return { ...state, loadingUpdate: true };
-    case 'UPDATE_SUCCESS':
+    case "UPDATE_SUCCESS":
       return { ...state, loadingUpdate: false };
-    case 'UPDATE_FAIL':
+    case "UPDATE_FAIL":
       return { ...state, loadingUpdate: false };
-    case 'UPLOAD_REQUEST':
-      return { ...state, loadingUpload: true, errorUpload: '' };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true, errorUpload: "" };
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return {
         ...state,
         loadingUpload: false,
@@ -363,29 +374,31 @@ export default function Product() {
   const { mode, userInfo } = state;
   const params = useParams();
   const { id } = params;
-  const [product, setProduct] = useState('');
+  const [product, setProduct] = useState("");
 
   const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
     useReducer(reducer, {
       loading: true,
-      error: '',
+      error: "",
     });
 
-  const [name, setName] = useState('');
-  const [active, setActive] = useState('');
-  const [badge, setBadge] = useState('');
-  const [image1, setImage1] = useState('');
-  const [image2, setImage2] = useState('');
-  const [image3, setImage3] = useState('');
-  const [image4, setImage4] = useState('');
-  const [category, setCategory] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState('');
-  const [brand, setBrand] = useState('');
-  const [tempsize, setTempsize] = useState('');
-  const [specification, setSpecification] = useState('');
-  const [feature, setFeature] = useState('');
+  const [name, setName] = useState("");
+  const [active, setActive] = useState("");
+  const [badge, setBadge] = useState("");
+  const [image1, setImage1] = useState("");
+  const [image2, setImage2] = useState("");
+  const [image3, setImage3] = useState("");
+  const [image4, setImage4] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [brand, setBrand] = useState("");
+  const [tempsize, setTempsize] = useState("");
+  const [specification, setSpecification] = useState("");
+  const [feature, setFeature] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [mainCate, setMainCate] = useState("");
 
   const navigate = useNavigate();
 
@@ -395,11 +408,11 @@ export default function Product() {
         const { data } = await axios.get(`/api/products/${id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-
+        console.log(data);
         setProduct(data);
         setName(data.name);
-        data.active ? setActive('yes') : setActive('no');
-        data.badge ? setBadge('yes') : setBadge('no');
+        data.active ? setActive("yes") : setActive("no");
+        data.badge ? setBadge("yes") : setBadge("no");
         setImage1(data.image);
         setImage2(data.images[0]);
         setImage3(data.images[1]);
@@ -411,6 +424,8 @@ export default function Product() {
         setBrand(data.brand);
         setSpecification(data.specification);
         setFeature(data.keyFeatures);
+        setMainCate(data.product);
+        setSubCategory(data.subCategory);
         sizes = data.sizes;
       };
       fetchProduct();
@@ -419,8 +434,19 @@ export default function Product() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (product.sold) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't edit already checkout product",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     try {
-      dispatch({ type: 'UPDATE_REQUEST' });
+      dispatch({ type: "UPDATE_REQUEST" });
       await axios.put(
         `/api/products/${id}`,
         {
@@ -432,6 +458,8 @@ export default function Product() {
           image2,
           image3,
           image4,
+          mainCate,
+          subCategory,
           category,
           brand,
           specification,
@@ -444,74 +472,88 @@ export default function Product() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'UPDATE_SUCCESS' });
+      dispatch({ type: "UPDATE_SUCCESS" });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Product updated successfully',
+          message: "Product updated successfully",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
-      navigate('/dashboard/productlist');
+      navigate("/dashboard/productlist");
     } catch (err) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed updating product, try again late',
+          message: "Failed updating product, try again late",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
-      dispatch({ type: 'UPDATE_FAIL' });
+      dispatch({ type: "UPDATE_FAIL" });
     }
   };
+
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get(`/api/categories`);
+        setCategories(data);
+        console.log(data);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchCategories();
+  }, [dispatch]);
 
   const uploadHandler = async (e, fileType) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-      if (fileType === 'image1') {
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      if (fileType === "image1") {
         setImage1(data.secure_url);
-      } else if (fileType === 'image2') {
+      } else if (fileType === "image2") {
         setImage2(data.secure_url);
-      } else if (fileType === 'image3') {
+      } else if (fileType === "image3") {
         setImage3(data.secure_url);
       } else {
         setImage4(data.secure_url);
       }
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed uploading image',
+          message: "Failed uploading image",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
     }
   };
 
-  const [currentImage, setCurrentImage] = useState('image1');
+  const [currentImage, setCurrentImage] = useState("image1");
 
   const smallSizeHandler = (label, value) => {
     const sizeIndex = sizes.findIndex((x) => x.size === label);
@@ -528,26 +570,26 @@ export default function Product() {
       });
       sizes = newsizes;
     } else {
-      sizes.push({ size: sizenow, value: '0' });
+      sizes.push({ size: sizenow, value: "0" });
     }
     setTempsize(sizenow);
   };
 
   const productData = [
     {
-      name: 'Page A',
+      name: "Page A",
       uv: 4000,
       pv: 2400,
       amt: 2400,
     },
     {
-      name: 'Page B',
+      name: "Page B",
       uv: 3000,
       pv: 1398,
       amt: 2210,
     },
     {
-      name: 'Page C',
+      name: "Page C",
       uv: 2000,
       pv: 9800,
       amt: 2290,
@@ -581,16 +623,16 @@ export default function Product() {
             <InfoItem>
               <InfoKey>seller:</InfoKey>
               <InfoValue>
-                {product ? product.seller.seller.name : 'loading...'}
+                {product ? product.seller.seller.name : "loading..."}
               </InfoValue>
             </InfoItem>
             <InfoItem>
               <InfoKey>active:</InfoKey>
-              <InfoValue>{product.active ? 'yes' : 'no'}</InfoValue>
+              <InfoValue>{product.active ? "yes" : "no"}</InfoValue>
             </InfoItem>
             <InfoItem>
               <InfoKey>in stock:</InfoKey>
-              <InfoValue>{product.countInStock > 0 ? 'yes' : 'no'}</InfoValue>
+              <InfoValue>{product.countInStock > 0 ? "yes" : "no"}</InfoValue>
             </InfoItem>
             <Link to={`/product/${product.slug}`}>
               Click to view full details
@@ -608,75 +650,120 @@ export default function Product() {
               mode={mode}
               onChange={(e) => setName(e.target.value)}
             />
-            <Label>Active</Label>
-            <Gender mode={mode}>
-              <Input
-                type="radio"
-                name="active"
-                id="active"
-                value="yes"
-                checked={active === 'yes' ? true : false}
-                onChange={(e) => setActive(e.target.value)}
-              />
-              <Label htmlFor="active">Yes</Label>
-              <Input
-                type="radio"
-                name="active"
-                id="active2"
-                value="no"
-                checked={active === 'no' ? true : false}
-                onChange={(e) => setActive(e.target.value)}
-              />
-              <Label htmlFor="active2">No</Label>
-            </Gender>
-            <Label>Badge</Label>
-            <Gender mode={mode}>
-              <Input
-                type="radio"
-                name="badge"
-                id="badgeyes"
-                value="yes"
-                checked={badge === 'yes' ? true : false}
-                onChange={(e) => setBadge(e.target.value)}
-              />
-              <Label htmlFor="badgeyes">Yes</Label>
-              <Input
-                type="radio"
-                name="badge"
-                id="badgeno"
-                value="no"
-                checked={badge === 'no' ? true : false}
-                onChange={(e) => setBadge(e.target.value)}
-              />
-              <Label htmlFor="badgeno">No</Label>
-            </Gender>
+            {userInfo.isAdmin && (
+              <>
+                <Label>Active</Label>
+                <Gender mode={mode}>
+                  <Input
+                    type="radio"
+                    name="active"
+                    id="active"
+                    value="yes"
+                    checked={active === "yes" ? true : false}
+                    onChange={(e) => setActive(e.target.value)}
+                  />
+                  <Label htmlFor="active">Yes</Label>
+                  <Input
+                    type="radio"
+                    name="active"
+                    id="active2"
+                    value="no"
+                    checked={active === "no" ? true : false}
+                    onChange={(e) => setActive(e.target.value)}
+                  />
+                  <Label htmlFor="active2">No</Label>
+                </Gender>
+                <Label>Badge</Label>
+                <Gender mode={mode}>
+                  <Input
+                    type="radio"
+                    name="badge"
+                    id="badgeyes"
+                    value="yes"
+                    checked={badge === "yes" ? true : false}
+                    onChange={(e) => setBadge(e.target.value)}
+                  />
+                  <Label htmlFor="badgeyes">Yes</Label>
+                  <Input
+                    type="radio"
+                    name="badge"
+                    id="badgeno"
+                    value="no"
+                    checked={badge === "no" ? true : false}
+                    onChange={(e) => setBadge(e.target.value)}
+                  />
+                  <Label htmlFor="badgeno">No</Label>
+                </Gender>
+              </>
+            )}
+            <Item>
+              <Label>Main Category</Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: 0,
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  value={mainCate}
+                  onChange={(e) => setMainCate(e.target.value)}
+                  displayEmpty
+                  inputProps={{
+                    "aria-label": "Without label",
+                  }}
+                >
+                  {categories.length > 0 &&
+                    categories.map((cat) => (
+                      <MenuItem value={cat.name}>{cat.name}</MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </Item>
+
             <Item>
               <Label>Category</Label>
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '.MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '& .MuiMenuItem-root': {
-                      'background-color': 'red',
-                    },
-                    '&:hover': {
+                    "&:hover": {
                       outline: 0,
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -686,16 +773,70 @@ export default function Product() {
                   onChange={(e) => setCategory(e.target.value)}
                   displayEmpty
                   inputProps={{
-                    'aria-label': 'Without label',
+                    "aria-label": "Without label",
                   }}
                 >
-                  <MenuItem value={'Womenswear'}>Womenswear</MenuItem>
-                  <MenuItem value={'Menswear'}>Menswear</MenuItem>
-                  <MenuItem value={'Kids'}>Kids</MenuItem>
-                  <MenuItem value={'Cureve Plus'}>Cureve Plus</MenuItem>
+                  {categories.length > 0 &&
+                    categories.map(
+                      (cat) =>
+                        cat.name === mainCate &&
+                        cat.subCategories.map((sub) => (
+                          <MenuItem value={sub.name}>{sub.name}</MenuItem>
+                        ))
+                    )}
                 </Select>
               </FormControl>
             </Item>
+
+            <Item>
+              <Label>Sub Category</Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  value={subCategory}
+                  onChange={(e) => setSubCategory(e.target.value)}
+                  displayEmpty
+                >
+                  {categories.length > 0 &&
+                    categories.map(
+                      (cat) =>
+                        cat.name === mainCate &&
+                        cat.subCategories.map(
+                          (sub) =>
+                            sub.name === category &&
+                            sub.items.map((item, i) => (
+                              <MenuItem value={item}>{item}</MenuItem>
+                            ))
+                        )
+                    )}
+                </Select>
+              </FormControl>
+            </Item>
+
             <Item>
               <Label>Brand</Label>
               <TextInput
@@ -753,25 +894,25 @@ export default function Product() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -828,15 +969,15 @@ export default function Product() {
                 {!loadingUpload ? (
                   <UploadImg
                     src={
-                      currentImage === 'image1'
+                      currentImage === "image1"
                         ? image1
-                        : currentImage === 'image2'
+                        : currentImage === "image2"
                         ? image2
-                        : currentImage === 'image3'
+                        : currentImage === "image3"
                         ? image3
-                        : currentImage === 'image4'
+                        : currentImage === "image4"
                         ? image4
-                        : ''
+                        : ""
                     }
                     alt=""
                   />
@@ -854,16 +995,16 @@ export default function Product() {
                 />
               </Upload>
               <SelBoxGroup>
-                <SelBox onClick={() => setCurrentImage('image1')} mode={mode}>
+                <SelBox onClick={() => setCurrentImage("image1")} mode={mode}>
                   1
                 </SelBox>
-                <SelBox onClick={() => setCurrentImage('image2')} mode={mode}>
+                <SelBox onClick={() => setCurrentImage("image2")} mode={mode}>
                   2
                 </SelBox>
-                <SelBox onClick={() => setCurrentImage('image3')} mode={mode}>
+                <SelBox onClick={() => setCurrentImage("image3")} mode={mode}>
                   3
                 </SelBox>
-                <SelBox onClick={() => setCurrentImage('image4')} mode={mode}>
+                <SelBox onClick={() => setCurrentImage("image4")} mode={mode}>
                   4
                 </SelBox>
               </SelBoxGroup>

@@ -1,15 +1,15 @@
-import React, { useContext, useState } from 'react';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
-import Rating from './Rating';
-import axios from 'axios';
-import { Store } from '../Store';
-import styled from 'styled-components';
-import Notification from './Notification';
-import Model from '../component/Model';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import React, { useContext, useState } from "react";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+import Rating from "./Rating";
+import axios from "axios";
+import { Store } from "../Store";
+import styled from "styled-components";
+import Notification from "./Notification";
+import Model from "../component/Model";
+import { toast } from "react-toastify";
+import { getError } from "../utils";
 
 const ModelImg = styled.img.attrs((props) => ({
   src: props.src,
@@ -43,43 +43,50 @@ export default function Product(props) {
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Sorry. Product is out of stock',
+          message: "Sorry. Product is out of stock",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
 
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: { ...item, quantity },
     });
     ctxDispatch({
-      type: 'SHOW_NOTIFICAATION',
+      type: "SHOW_NOTIFICAATION",
       payload: {
-        text: 'Item added to Cart',
+        text: "Item added to Cart",
         showStatus: true,
-        buttonText: 'Checkout',
-        link: '/cart',
+        buttonText: "Checkout",
+        link: "/cart",
       },
     });
   };
 
   const toggleLikes = async () => {
     if (!userInfo) {
-      toast.error('login to like');
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Login to like a product",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       return;
     }
     if (product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't like your product",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -95,11 +102,11 @@ export default function Product(props) {
         );
         setProduct(data.product);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Item Liked',
+            message: "Item unLiked",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 error",
           },
         });
       } else {
@@ -112,11 +119,11 @@ export default function Product(props) {
         );
         setProduct(data.product);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Item unLiked',
+            message: "Item Liked",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 success",
           },
         });
       }
@@ -128,7 +135,7 @@ export default function Product(props) {
   return (
     <div className="product-card1">
       {showNotification && (
-        <Notification text="Item added to Cart" buttonText={'Checkout'} />
+        <Notification text="Item added to Cart" buttonText={"Checkout"} />
       )}
       <Model showModel={showModel} setShowModel={setShowModel}>
         <ConImg>

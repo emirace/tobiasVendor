@@ -1,49 +1,56 @@
-import axios from 'axios';
+import axios from "axios";
 import React, {
   useContext,
   useEffect,
   useReducer,
   useRef,
   useState,
-} from 'react';
-import ReactImageMagnify from 'react-image-magnify';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import Badge from 'react-bootstrap/Badge';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Rating from '../component/Rating';
-import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import { getError } from '../utils';
-import { Store } from '../Store';
-import '../style/product.css';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import { toast } from 'react-toastify';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "react";
+import ReactImageMagnify from "react-image-magnify";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
+import Badge from "react-bootstrap/Badge";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Rating from "../component/Rating";
+import { Helmet } from "react-helmet-async";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import { getError } from "../utils";
+import { Store } from "../Store";
+import "../style/product.css";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faAngleRight,
   faBookmark,
+  faFaceSmile,
   faHeart,
   faMessage,
+  faQuestionCircle,
   faShareNodes,
   faTag,
-} from '@fortawesome/free-solid-svg-icons';
-import '../style/ProductScreen.css';
-import styled from 'styled-components';
-import IconsTooltips from '../component/IconsTooltips';
-import ShareButton from '../component/ShareButton';
-import ReviewLists from './ReviewLists';
-import Model from '../component/Model';
-import ModelLogin from '../component/ModelLogin';
-import Signin from '../component/Signin';
-import Comment from '../component/Comment';
-import ProtectionRight from '../component/ProtectionRight';
+  faThumbsDown,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
+import "../style/ProductScreen.css";
+import styled from "styled-components";
+import IconsTooltips from "../component/IconsTooltips";
+import ShareButton from "../component/ShareButton";
+import ReviewLists from "./ReviewLists";
+import Model from "../component/Model";
+import ModelLogin from "../component/ModelLogin";
+import Signin from "../component/Signin";
+import Comment from "../component/Comment";
+import ProtectionRight from "../component/ProtectionRight";
+import Report from "../component/Report";
+import { format } from "timeago.js";
+import Sizechart from "../component/Sizechart";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -70,7 +77,7 @@ const TabItem = styled.div`
     color: var(--orange-color);
     font-weight: bold;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -80,33 +87,47 @@ const TabItem = styled.div`
     }
   }
 `;
+const Overview = styled.div`
+  display: flex;
+  padding: 0 20px 20px 20px;
+`;
+const LeftOverview = styled.div`
+  flex: 1;
+`;
+const RightOverview = styled.div`
+  flex: 3;
+`;
+const Key = styled.div`
+  font-weight: 500;
+`;
+const Value = styled.div``;
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'REFRESH_PRODUCT':
+    case "REFRESH_PRODUCT":
       return { ...state, product: action.payload };
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loadingCreateReview: true };
-    case 'CREATE_SUCCESS':
+    case "CREATE_SUCCESS":
       return { ...state, loadingCreateReview: false };
-    case 'CREATE_FAIL':
+    case "CREATE_FAIL":
       return { ...state, loadingCreateReview: false };
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return { ...state, product: action.payload, loading: false };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'COMMENT_SUCCESS':
+    case "COMMENT_SUCCESS":
       return { ...state, comments: action.payload };
-    case 'COMMENT2_SUCCESS':
+    case "COMMENT2_SUCCESS":
       const com = action.payload;
       return { ...state, comments: { ...state.comments, com } };
-    case 'UPLOAD_REQUEST':
+    case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
@@ -121,51 +142,92 @@ const IconContainer = styled.div`
   }
 `;
 
+const ReportButton = styled.div`
+  margin: 10px;
+  color: var(--malon-color);
+  text-align: right;
+`;
+const CustomMessage = styled.div`
+  & a {
+    font-weight: bold;
+    color: var(--orange-color);
+    font-size: 15px;
+    &:hover {
+      color: var(--malon-color);
+    }
+  }
+`;
+const Thumbs = styled.div`
+  display: flex;
+  & svg {
+    font-size: 18px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+`;
+
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
   let reviewRef = useRef();
   const navigate = useNavigate();
   const [rating, setRAting] = useState(0);
-  const [comment, setComment] = useState('');
-  const [comment2, setComment2] = useState('');
+  const [comment, setComment] = useState("");
+  const [like, setLike] = useState("");
+  const [comment2, setComment2] = useState("");
   const [itemDetail, setItemDetail] = useState(false);
   const [specification, setSpecification] = useState(false);
   const [condition, setCondition] = useState(false);
   const [shipping, setShipping] = useState(false);
   const [features, setFeatures] = useState(false);
-  const [size, setSize] = useState('');
+  const [size, setSize] = useState("");
   const [share, setShare] = useState(false);
-  const [displayTab, setDisplayTab] = useState('comments');
+  const [displayTab, setDisplayTab] = useState("comments");
+  const [reportModel, setReportModel] = useState(false);
+  const [sizechartModel, setSizechartModel] = useState(false);
   const params = useParams();
   const { slug } = params;
 
   const [{ loading, error, product, comments, loadingCreateReview }, dispatch] =
     useReducer(reducer, {
-      product: [],
+      product: null,
       loading: true,
-      error: '',
+      error: "",
       comments: [],
     });
+  useEffect(() => {
+    const viewItem = async () => {
+      try {
+        const { data } = await axios.get(`/api/products/slug/${slug}`);
+        if (data) {
+          await axios.put(`/api/recentviews/${data._id}`);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    viewItem();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({ type: "FETCH_REQUEST" });
       try {
         const result = await axios.get(`/api/products/slug/${slug}`);
-        dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
     fetchData();
   }, [slug]);
-
   useEffect(() => {
     const fetchComment = async () => {
       try {
-        const { data } = await axios.get(`/api/comments/${product._id}`);
-        dispatch({ type: 'COMMENT_SUCCESS', payload: data });
+        if (product) {
+          const { data } = await axios.get(`/api/comments/${product._id}`);
+          dispatch({ type: "COMMENT_SUCCESS", payload: data });
+        }
       } catch (err) {
         console.log(err);
       }
@@ -188,23 +250,23 @@ export default function ProductScreen() {
     fetchData();
   }, [userInfo, refresh]);
 
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState("");
   const [sliderIndex, setSliderIndex] = useState(0);
   const [showModel, setShowModel] = useState(false);
   const [showLoginModel, setShowLoginModel] = useState(false);
-  const [selectSize, setSelectSize] = useState('');
-  const [image, setImage] = useState('');
+  const [selectSize, setSelectSize] = useState("");
+  const [image, setImage] = useState("");
 
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     if (!selectSize) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Select Size',
+          message: "Select Size",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -212,33 +274,33 @@ export default function ProductScreen() {
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Sorry. Product is out of stock',
+          message: "Sorry. Product is out of stock",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
 
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: { ...product, quantity, selectSize },
     });
     ctxDispatch({
-      type: 'SHOW_NOTIFICAATION',
+      type: "SHOW_NOTIFICAATION",
       payload: {
-        text: 'Item added to Cart',
+        text: "Item added to Cart",
         showStatus: true,
-        buttonText: 'Checkout',
-        link: '/cart',
+        buttonText: "Checkout",
+        link: "/cart",
       },
     });
   };
 
   const sliderHandler = (direction) => {
-    if (direction === 'left') {
+    if (direction === "left") {
       setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : 3);
     } else {
       setSliderIndex(sliderIndex < 3 ? sliderIndex + 1 : 0);
@@ -249,32 +311,39 @@ export default function ProductScreen() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!comment || !rating) {
-      toast.error('Please enter comment and rating');
+    if (!comment || !rating || !like) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please enter review and rating",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       return;
     }
     try {
-      dispatch({ type: 'CREATE_REQUEST' });
+      dispatch({ type: "CREATE_REQUEST" });
       const { data } = await axios.post(
         `/api/products/${product._id}/reviews`,
-        { rating, comment, name: userInfo.name },
+        { rating, comment, name: userInfo.name, like },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'CREATE_SUCCESS' });
-      toast.success('REview submitted successfully');
+      dispatch({ type: "CREATE_SUCCESS" });
+      toast.success("REview submitted successfully");
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
-      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
+      dispatch({ type: "REFRESH_PRODUCT", payload: product });
       window.scrollTo({
-        behavior: 'smooth',
+        behavior: "smooth",
         top: reviewRef.current.offsetTop,
       });
     } catch (err) {
       toast.error(getError(error));
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
     }
   };
 
@@ -282,11 +351,11 @@ export default function ProductScreen() {
     e.preventDefault();
     if (!comment2) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Enter a comment',
+          message: "Enter a comment",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -301,11 +370,11 @@ export default function ProductScreen() {
       );
       console.log(data);
       comments.push(data);
-      dispatch({ type: 'COMMENT_SUCCESS', payload: comments });
-      setComment2('');
+      dispatch({ type: "COMMENT_SUCCESS", payload: comments });
+      setComment2("");
 
       window.scrollTo({
-        behavior: 'smooth',
+        behavior: "smooth",
         top: reviewRef.current.offsetTop,
       });
     } catch (err) {
@@ -315,19 +384,19 @@ export default function ProductScreen() {
 
   const toggleCollapse = (type) => {
     switch (type) {
-      case 'itemDetail':
+      case "itemDetail":
         setItemDetail(!itemDetail);
         break;
-      case 'condition':
+      case "condition":
         setCondition(!condition);
         break;
-      case 'shipping':
+      case "shipping":
         setShipping(!shipping);
         break;
-      case 'features':
+      case "features":
         setFeatures(!features);
         break;
-      case 'specification':
+      case "specification":
         setSpecification(!specification);
         break;
       default:
@@ -337,22 +406,22 @@ export default function ProductScreen() {
   const saveItem = async () => {
     if (!userInfo) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'login to save item',
+          message: "login to save item",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     if (product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't save your product",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -366,7 +435,7 @@ export default function ProductScreen() {
         }
       );
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: data.message,
           showStatus: true,
@@ -382,22 +451,22 @@ export default function ProductScreen() {
   const toggleLikes = async () => {
     if (!userInfo) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Login to like',
+          message: "Login to like",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     if (product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't like your product",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -411,13 +480,13 @@ export default function ProductScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
+        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Item unLiked',
+            message: "Item unLiked",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
       } else {
@@ -428,13 +497,13 @@ export default function ProductScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
+        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Item Liked',
+            message: "Item Liked",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
       }
@@ -446,42 +515,74 @@ export default function ProductScreen() {
   const uploadImageHandler = async (e) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
+      dispatch({ type: "UPLOAD_SUCCESS" });
       setImage(data.secure_url);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed uploading image',
+          message: "Failed uploading image",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
     }
   };
 
+  const handlereport = async () => {
+    try {
+      await axios.post(
+        "/api/reportConversation",
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+    } catch (err) {
+      console.log(getError(err));
+    }
+
+    setReportModel(!reportModel);
+  };
+
+  const conditionDetails = (item) => {
+    if (item === "New with Tags") {
+      return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it (include a photo of the tag). This product shows no alterations, no defects and comes with Original purchase tags.";
+    } else if (item === "New with No Tags") {
+      return "A preowned secondhand product that has never been worn or use but doesn’t have original purchase tags. This product should show no defects or alterations.";
+    } else if (item === "Excellent Condition") {
+      return "A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Please kindly take clear picture of the slight usage signs to be visible on the product Image. Product must not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. ";
+    } else if (item === "Good Condition") {
+      return "A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected. Any slight defect must be mentioned and indicated in the product description and photo. ";
+    } else if (item === "Fair Condition") {
+      return "A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are to be shown on product photos and mentioned in description.";
+    } else {
+      return "No condition Selected";
+    }
+  };
+
   const switchTab = (tab) => {
     switch (tab) {
-      case 'comments':
+      case "comments":
         return (
           <>
             <div className="my-3 mx-4">
@@ -508,7 +609,7 @@ export default function ProductScreen() {
                         placeholder="Leave a comment here"
                         value={comment2}
                         className={` ${
-                          mode === 'pagebodydark' ? '' : 'color_black'
+                          mode === "pagebodydark" ? "" : "color_black"
                         }`}
                         onChange={(e) => setComment2(e.target.value)}
                       />
@@ -526,19 +627,19 @@ export default function ProductScreen() {
                     </div>
                   </form>
                 ) : (
-                  <MessageBox>
-                    Please{' '}
+                  <CustomMessage>
+                    Please{" "}
                     <Link to={`/signin?redirect=/product/${product.slug}`}>
                       Sign In
-                    </Link>{' '}
-                    to write a review
-                  </MessageBox>
+                    </Link>{" "}
+                    to write a comment
+                  </CustomMessage>
                 )}
               </div>
             </div>
           </>
         );
-      case 'reviews':
+      case "reviews":
         return (
           <>
             <div className="my-3 mx-4">
@@ -550,7 +651,24 @@ export default function ProductScreen() {
               <ListGroup>
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
+                    <strong>{review.name}</strong>{" "}
+                    <FontAwesomeIcon
+                      icon={
+                        review.like === "yes"
+                          ? faThumbsUp
+                          : review.like === "no"
+                          ? faThumbsDown
+                          : faFaceSmile
+                      }
+                      color={
+                        review.like === "yes"
+                          ? "#eb9f40"
+                          : review.like === "no"
+                          ? "red"
+                          : "grey"
+                      }
+                      size={"lg"}
+                    />
                     <Rating rating={review.rating} caption=" "></Rating>
                     <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
@@ -576,6 +694,19 @@ export default function ProductScreen() {
                         <option value="5">5- Excelent</option>
                       </Form.Select>
                     </Form.Group>
+                    <Thumbs>
+                      <div>Like</div>
+                      <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        onClick={() => setLike("yes")}
+                        color={like === "yes" ? "#eb9f40" : "grey"}
+                      />
+                      <FontAwesomeIcon
+                        icon={faThumbsDown}
+                        onClick={() => setLike("no")}
+                        color={like === "no" ? "#eb9f40" : "grey"}
+                      />
+                    </Thumbs>
                     <FloatingLabel
                       controlId="floatingTextarea"
                       lablel="Coments"
@@ -583,7 +714,7 @@ export default function ProductScreen() {
                     >
                       <Form.Control
                         className={` ${
-                          mode === 'pagebodydark' ? '' : 'color_black'
+                          mode === "pagebodydark" ? "" : "color_black"
                         }`}
                         as="textarea"
                         placeholder="Leave a comment here"
@@ -603,13 +734,13 @@ export default function ProductScreen() {
                     </div>
                   </form>
                 ) : (
-                  <MessageBox>
-                    Please{' '}
+                  <CustomMessage>
+                    Please{" "}
                     <Link to={`/signin?redirect=/product/${product.slug}`}>
                       Sign In
-                    </Link>{' '}
+                    </Link>{" "}
                     to write a review
-                  </MessageBox>
+                  </CustomMessage>
                 )}
               </div>
             </div>
@@ -633,11 +764,11 @@ export default function ProductScreen() {
       );
     } catch (err) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -645,54 +776,54 @@ export default function ProductScreen() {
 
   const sizeHandler = (item) => {
     switch (item) {
-      case 'S':
-        const current = product.sizes.filter((s) => s.size === 'S');
+      case "S":
+        const current = product.sizes.filter((s) => s.size === "S");
         if (current.length > 0) {
           setSize(`Small ( ${current[0].value} left)`);
-          setSelectSize('S');
+          setSelectSize("S");
         } else {
-          setSize('Out of stock');
-          setSelectSize('');
+          setSize("Out of stock");
+          setSelectSize("");
         }
         break;
-      case 'M':
-        const current1 = product.sizes.filter((s) => s.size === 'M');
+      case "M":
+        const current1 = product.sizes.filter((s) => s.size === "M");
         if (current1.length > 0) {
           setSize(`Medium ( ${current1[0].value} left)`);
-          setSelectSize('M');
+          setSelectSize("M");
         } else {
-          setSize('Out of stock');
-          setSelectSize('');
+          setSize("Out of stock");
+          setSelectSize("");
         }
         break;
-      case 'L':
-        const current2 = product.sizes.filter((s) => s.size === 'L');
+      case "L":
+        const current2 = product.sizes.filter((s) => s.size === "L");
         if (current2.length > 0) {
           setSize(`Large ( ${current2[0].value} left)`);
-          setSelectSize('L');
+          setSelectSize("L");
         } else {
-          setSize('Out of stock');
-          setSelectSize('');
+          setSize("Out of stock");
+          setSelectSize("");
         }
         break;
-      case 'XL':
-        const current3 = product.sizes.filter((s) => s.size === 'XL');
+      case "XL":
+        const current3 = product.sizes.filter((s) => s.size === "XL");
         if (current3.length > 0) {
           setSize(`XL ( ${current3[0].value} left)`);
-          setSelectSize('XL');
+          setSelectSize("XL");
         } else {
-          setSize('Out of stock');
-          setSelectSize('');
+          setSize("Out of stock");
+          setSelectSize("");
         }
         break;
-      case 'XXL':
-        const current4 = product.sizes.filter((s) => s.size === 'XXL');
+      case "XXL":
+        const current4 = product.sizes.filter((s) => s.size === "XXL");
         if (current4.length > 0) {
           setSize(`XXL ( ${current4[0].value} left)`);
-          setSelectSize('XXL');
+          setSelectSize("XXL");
         } else {
-          setSize('Out of stock');
-          setSelectSize('');
+          setSize("Out of stock");
+          setSelectSize("");
         }
         break;
       default:
@@ -720,7 +851,7 @@ export default function ProductScreen() {
               <img
                 src={x}
                 alt=""
-                className={selectedImage === x ? 'active1' : ''}
+                className={selectedImage === x ? "active1" : ""}
               />
             </div>
           ))}
@@ -808,8 +939,8 @@ export default function ProductScreen() {
               <FontAwesomeIcon
                 className={
                   userInfo && product.likes.find((x) => x === userInfo._id)
-                    ? 'orange-color'
-                    : ''
+                    ? "orange-color"
+                    : ""
                 }
                 onClick={toggleLikes}
                 icon={faHeart}
@@ -818,15 +949,14 @@ export default function ProductScreen() {
             </IconContainer>
 
             <IconContainer>
-              {console.log(user.saved, product._id.toString())}
               <FontAwesomeIcon
                 className={
                   userInfo &&
                   user &&
                   user.saved &&
                   user.saved.find((x) => x._id === product._id)
-                    ? 'orange-color'
-                    : ''
+                    ? "orange-color"
+                    : ""
                 }
                 onClick={() => {
                   if (!userInfo) {
@@ -860,14 +990,30 @@ export default function ProductScreen() {
               />
               <IconsTooltips className="tiptools" tips="Share " />
             </IconContainer>
-            <span className={share ? 'active2' : ''}>
-              <ShareButton url={`fb.com`} />
+            <span className={share ? "active2" : ""}>
+              <ShareButton url={window.location.href} />
             </span>
           </div>
-          <div>
-            <b>{product.likes.length} </b> Likes
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div>
+              <b>{product.likes.length} </b> Likes
+            </div>
+            <div>Created {format(product.createdAt)}</div>
           </div>
-          <div className="sp_name">{product.name}</div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="sp_name">{product.name}</div>
+            <div
+              style={{
+                fontSize: 15,
+                marginLeft: 20,
+                fontWeight: "400",
+                color: "grey",
+              }}
+              className="sp_name"
+            >
+              {product.brand}
+            </div>
+          </div>
           <div className="sp_price_detail">
             <div className="sp_actual_price">${product.actualPrice}</div>
             <div className="sp_discount_price">${product.price}</div>
@@ -886,9 +1032,9 @@ export default function ProductScreen() {
               <label
                 for="size"
                 className={`sp_select_size_btn ${
-                  selectSize === 'S' ? 'sp_btn_checked' : ''
+                  selectSize === "S" ? "sp_btn_checked" : ""
                 }  `}
-                onClick={() => sizeHandler('S')}
+                onClick={() => sizeHandler("S")}
               >
                 S
               </label>
@@ -896,9 +1042,9 @@ export default function ProductScreen() {
               <label
                 for="size"
                 className={`sp_select_size_btn ${
-                  selectSize === 'M' ? 'sp_btn_checked' : ''
+                  selectSize === "M" ? "sp_btn_checked" : ""
                 }  `}
-                onClick={() => sizeHandler('M')}
+                onClick={() => sizeHandler("M")}
               >
                 M
               </label>
@@ -906,9 +1052,9 @@ export default function ProductScreen() {
               <label
                 for="size"
                 className={`sp_select_size_btn ${
-                  selectSize === 'L' ? 'sp_btn_checked' : ''
+                  selectSize === "L" ? "sp_btn_checked" : ""
                 }  `}
-                onClick={() => sizeHandler('L')}
+                onClick={() => sizeHandler("L")}
               >
                 L
               </label>
@@ -916,9 +1062,9 @@ export default function ProductScreen() {
               <label
                 for="size"
                 className={`sp_select_size_btn ${
-                  selectSize === 'XL' ? 'sp_btn_checked' : ''
+                  selectSize === "XL" ? "sp_btn_checked" : ""
                 }  `}
-                onClick={() => sizeHandler('XL')}
+                onClick={() => sizeHandler("XL")}
               >
                 XL
               </label>
@@ -932,61 +1078,101 @@ export default function ProductScreen() {
               <label
                 for="size"
                 className={`sp_select_size_btn ${
-                  selectSize === 'XXL' ? 'sp_btn_checked' : ''
+                  selectSize === "XXL" ? "sp_btn_checked" : ""
                 }  `}
-                onClick={() => sizeHandler('XXL')}
+                onClick={() => sizeHandler("XXL")}
               >
                 XXL
               </label>
+
+              <FontAwesomeIcon
+                onClick={() => setSizechartModel(true)}
+                icon={faQuestionCircle}
+              />
+
+              <ModelLogin
+                showModel={sizechartModel}
+                setShowModel={setSizechartModel}
+              >
+                <Sizechart />
+              </ModelLogin>
             </div>
             <div className="sp_btn">
-              <button onClick={addToCartHandler} className="sp_cart_btn">
-                add to cart
-              </button>
+              {product.countInStock > 0 ? (
+                <button onClick={addToCartHandler} className="sp_cart_btn">
+                  add to cart
+                </button>
+              ) : (
+                <button
+                  style={{ backgroundColor: "grey" }}
+                  className="sp_cart_btn"
+                >
+                  sold out
+                </button>
+              )}
 
               <button className="sp_wishlist_btn " onClick={saveItem}>
                 wishlist
               </button>
             </div>
             <div className="sp_more_detail">
+              <div className="sp_detail_title ">Overview</div>
+              <Overview>
+                <LeftOverview>
+                  <Key>Price</Key>
+                  <Key>Brand</Key>
+                  <Key>Category</Key>
+                  <Key>SubCategory</Key>
+                  <Key>Color</Key>
+                  <Key>Size</Key>
+                </LeftOverview>
+                <RightOverview>
+                  <Value>{product.actualPrice}</Value>
+                  <Value>{product.brand}</Value>
+                  <Value>{product.category}</Value>
+                  <Value>{product.subCategory || "nal"}</Value>
+                  <Value>{product.color || "nal"}</Value>
+                  <Value>{product.size || "nal"}</Value>
+                </RightOverview>
+              </Overview>
               <div
                 className={`sp_detail_section ${
-                  itemDetail ? 'active' : ''
+                  itemDetail ? "active" : ""
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title  sp_condition_cont"
-                  onClick={() => toggleCollapse('itemDetail')}
+                  onClick={() => toggleCollapse("itemDetail")}
                 >
                   Item Description
                 </div>
                 <div className="sp_detail_contail">{product.description}</div>
               </div>
               <div
-                className={`sp_detail_section ${condition ? 'active' : ''} `}
+                className={`sp_detail_section ${condition ? "active" : ""} `}
               >
                 <div className="">
                   <div
                     className="sp_detail_title sp_condition_cont"
-                    onClick={() => toggleCollapse('condition')}
+                    onClick={() => toggleCollapse("condition")}
                   >
                     Condition
                   </div>
                 </div>
 
                 <div className="sp_detail_contail">
-                  <div className="sp_condition">{product.condition}</div>Item is
-                  in good conditon
+                  <div className="sp_condition">{product.condition}</div>
+                  {conditionDetails(product.condition)}
                 </div>
               </div>
               <div
                 className={`sp_detail_section ${
-                  shipping ? 'active' : ''
+                  shipping ? "active" : ""
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title "
-                  onClick={() => toggleCollapse('shipping')}
+                  onClick={() => toggleCollapse("shipping")}
                 >
                   Shipping Location
                 </div>
@@ -996,12 +1182,12 @@ export default function ProductScreen() {
               </div>
               <div
                 className={`sp_detail_section ${
-                  features ? 'active' : ''
+                  features ? "active" : ""
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title "
-                  onClick={() => toggleCollapse('features')}
+                  onClick={() => toggleCollapse("features")}
                 >
                   Key Features
                 </div>
@@ -1009,12 +1195,12 @@ export default function ProductScreen() {
               </div>
               <div
                 className={`sp_detail_section ${
-                  specification ? 'active' : ''
+                  specification ? "active" : ""
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title "
-                  onClick={() => toggleCollapse('specification')}
+                  onClick={() => toggleCollapse("specification")}
                 >
                   Specification
                 </div>
@@ -1022,6 +1208,14 @@ export default function ProductScreen() {
               </div>
             </div>
             <ProtectionRight />
+            <ReportButton onClick={handlereport}>Report Item</ReportButton>
+
+            <ModelLogin showModel={reportModel} setShowModel={setReportModel}>
+              <Report
+                reportedUser={product.seller._id}
+                productName={product.name}
+              />
+            </ModelLogin>
           </div>
         </div>
       </div>
@@ -1328,14 +1522,14 @@ export default function ProductScreen() {
       <section>
         <Tab>
           <TabItem
-            className={displayTab === 'comments' && 'active'}
-            onClick={() => setDisplayTab('comments')}
+            className={displayTab === "comments" && "active"}
+            onClick={() => setDisplayTab("comments")}
           >
             Comments
           </TabItem>
           <TabItem
-            className={displayTab === 'reviews' && 'active'}
-            onClick={() => setDisplayTab('reviews')}
+            className={displayTab === "reviews" && "active"}
+            onClick={() => setDisplayTab("reviews")}
           >
             Reviews
           </TabItem>

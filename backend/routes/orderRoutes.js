@@ -1,35 +1,51 @@
-import express from 'express';
-import { isAuth, isAdmin, isSellerOrAdmin, isAuthOrNot } from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import Order from '../models/orderModel.js';
-import User from '../models/userModel.js';
-import Product from '../models/productModel.js';
+import express from "express";
+import { isAuth, isAdmin, isSellerOrAdmin, isAuthOrNot } from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import Order from "../models/orderModel.js";
+import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
 
 const orderRouter = express.Router();
 
 orderRouter.get(
-  '/',
+  "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find().populate('user', 'name');
+    const orders = await Order.find().populate("user", "name");
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/seller/:id',
+  "/seller/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            orderId: {
+              $regex: searchQuery,
+              $options: "i",
+            },
+          }
+        : {};
+    console.log({ ...queryFilter });
+
     const seller = req.params.id;
 
-    const orders = await Order.find({ seller }).populate('user', 'name');
+    const orders = await Order.find({ seller, ...queryFilter }).populate(
+      "user",
+      "name"
+    );
     res.send(orders);
   })
 );
 
 orderRouter.post(
-  '/',
+  "/",
   isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
     const newOrder = new Order({
@@ -44,12 +60,14 @@ orderRouter.post(
       user: req.user ? req.user._id : null,
     });
     const order = await newOrder.save();
-    res.status(201).send({ message: 'New Order Created', order });
+    order.orderId = order._id.toString();
+    const neworder = await order.save();
+    res.status(201).send({ message: "New Order Created", order });
   })
 );
 
 orderRouter.get(
-  '/summary',
+  "/summary",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -58,7 +76,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -81,9 +99,9 @@ orderRouter.get(
     const dailyOrders = await Order.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -91,7 +109,7 @@ orderRouter.get(
     const productCategories = await Product.aggregate([
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -100,7 +118,7 @@ orderRouter.get(
   })
 );
 orderRouter.get(
-  '/summary/user',
+  "/summary/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const seller = req.user._id;
@@ -110,7 +128,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -127,9 +145,9 @@ orderRouter.get(
       { $match: { seller: seller } },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -138,7 +156,7 @@ orderRouter.get(
       { $match: { seller: seller } },
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -148,50 +166,79 @@ orderRouter.get(
 );
 
 orderRouter.get(
-  '/mine',
+  "/mine",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user._id }).populate(
-      'user',
-      'name'
-    );
+    const { query } = req;
+    const searchQuery = query.q;
+
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            orderId: {
+              $regex: searchQuery,
+              $options: "i",
+            },
+          }
+        : {};
+    console.log({ ...queryFilter });
+
+    const orders = await Order.find({ user: req.user._id, ...queryFilter })
+      .populate("user", "name")
+      .limit(10);
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/:id',
+  "/:id",
 
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id).populate(
-      'orderItems.product'
+      "orderItems.product"
     );
     if (order) {
       res.send(order);
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.put(
-  '/:id/deliver',
+  "/:id/deliver",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-    if (order) {
-      order.isDelivered = true;
+    if (order && order.seller.toString() === req.user._id) {
+      order.deliveryStatus = req.body.deliveryStatus;
       order.deliveredAt = Date.now();
       await order.save();
-      res.send({ message: 'Order Delivered' });
+      res.send({ message: "Order Delivery Status changed" });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.put(
-  '/:id/pay',
+  "/:id/status",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order && order.seller.toString() === req.user._id) {
+      order.status = "reject";
+      order.reason = req.body.reason;
+      await order.save();
+      res.send({ message: "Order Status changed" });
+    } else {
+      res.status(404).send({ message: "Order Not Found" });
+    }
+  })
+);
+
+orderRouter.put(
+  "/:id/pay",
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     const products = [];
@@ -202,10 +249,10 @@ orderRouter.put(
     records.map(async (p) => {
       p.sold = true;
       const seller = await User.findById(p.seller);
-      console.log('seller 1', seller);
+      console.log("seller 1", seller);
       seller.sold.push(p._id);
       await seller.save();
-      console.log('seller 2', seller);
+      console.log("seller 2", seller);
       await p.save();
     });
 
@@ -219,24 +266,24 @@ orderRouter.put(
         email_address: req.body.email_address,
       };
       const updateOrder = await order.save();
-      res.send({ message: 'Order Paid', order: updateOrder });
+      res.send({ message: "Order Paid", order: updateOrder });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
       await order.remove();
-      res.send({ message: 'Order Deleted' });
+      res.send({ message: "Order Deleted" });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );

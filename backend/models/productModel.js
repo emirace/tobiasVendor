@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
+    like: { type: String },
   },
   {
     timestamps: true,
@@ -14,10 +15,11 @@ const reviewSchema = new mongoose.Schema(
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    seller: { type: mongoose.Schema.Types.ObjectID, ref: 'User' },
+    seller: { type: mongoose.Schema.Types.ObjectID, ref: "User" },
     slug: { type: String, required: true, unique: true },
     image: { type: String, required: true },
     images: [String],
+    tags: [String],
     video: { type: String },
     brand: { type: String },
     color: { type: String },
@@ -36,7 +38,7 @@ const productSchema = new mongoose.Schema(
     actualPrice: { type: Number },
     rating: { type: Number, required: true },
     numReviews: { type: Number, required: true },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reviews: [reviewSchema],
     sold: { type: Boolean },
     badge: { type: Boolean },
@@ -56,5 +58,5 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
 export default Product;

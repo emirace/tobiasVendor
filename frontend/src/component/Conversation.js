@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../Store";
 
 const User = styled.div`
   position: relative;
@@ -12,7 +12,7 @@ const User = styled.div`
   margin: 10px 0;
   &.active {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   }
 `;
 const ProfileImg = styled.img.attrs((props) => ({
@@ -91,12 +91,11 @@ export default function Conversation({ conversation, status, currentChat }) {
     };
     getMessages();
   }, [conversation, userInfo]);
-
   return (
     <>
       <User
         mode={mode}
-        className={currentChat === conversation._id ? 'active' : ''}
+        className={currentChat === conversation._id ? "active" : ""}
       >
         <ProfileImg src={user.image} />
         <ProfileDetail>
@@ -104,7 +103,7 @@ export default function Conversation({ conversation, status, currentChat }) {
           <LastMsg>
             {message.message && message.messages.length > 0
               ? message.messages[message.messages.length - 1].text
-              : 'No messages'}
+              : "No messages"}
           </LastMsg>
         </ProfileDetail>
         {status && <Badge />}

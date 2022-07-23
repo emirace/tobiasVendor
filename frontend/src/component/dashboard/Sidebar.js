@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBasketShopping,
   faBell,
@@ -7,21 +7,22 @@ import {
   faChartColumn,
   faChartLine,
   faComment,
+  faHome,
   faHouse,
   faListCheck,
   faMessage,
   faMoneyBillTransfer,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Store } from '../../Store';
+} from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { Store } from "../../Store";
 
 const Container = styled.div`
   flex: 1;
   height: calc(100vh-168px);
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
@@ -50,7 +51,7 @@ const ListItem = styled.li`
   &.active,
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
   }
   & svg {
     margin-right: 5px;
@@ -70,23 +71,25 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/home">
               <ListItem
                 mode={mode}
-                className={current === 'home' ? 'active' : ''}
+                className={current === "home" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
             </Link>
-            <Link to="/dashboard/analytics">
-              <ListItem
-                mode={mode}
-                className={current === 'analytics' ? 'active' : ''}
-              >
-                <FontAwesomeIcon icon={faChartLine} /> Analytics
-              </ListItem>
-            </Link>
+            {userInfo.isAdmin && (
+              <Link to="/dashboard/analytics">
+                <ListItem
+                  mode={mode}
+                  className={current === "analytics" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faChartLine} /> Analytics
+                </ListItem>
+              </Link>
+            )}
             <Link to="/dashboard/orderlist">
               <ListItem
                 mode={mode}
-                className={current === 'sales' ? 'active' : ''}
+                className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Orders
               </ListItem>
@@ -94,7 +97,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/saleslist">
               <ListItem
                 mode={mode}
-                className={current === 'sales' ? 'active' : ''}
+                className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Sales
               </ListItem>
@@ -108,7 +111,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/userlist">
                 <ListItem
                   mode={mode}
-                  className={current === 'userlist' ? 'active' : ''}
+                  className={current === "userlist" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faUser} /> Users
                 </ListItem>
@@ -118,7 +121,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/productlist">
               <ListItem
                 mode={mode}
-                className={current === 'productlist' ? 'active' : ''}
+                className={current === "productlist" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faBasketShopping} /> Products
               </ListItem>
@@ -126,15 +129,23 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/wallet">
               <ListItem
                 mode={mode}
-                className={current === 'transactions' ? 'active' : ''}
+                className={current === "transactions" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
+              </ListItem>
+            </Link>
+            <Link to="/dashboard/address">
+              <ListItem
+                mode={mode}
+                className={current === "address" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faHome} /> Address Book
               </ListItem>
             </Link>
             {userInfo.isAdmin && (
               <ListItem
                 mode={mode}
-                className={current === 'report' ? 'active' : ''}
+                className={current === "report" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartColumn} /> Reports
               </ListItem>
@@ -143,7 +154,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/categories">
                 <ListItem
                   mode={mode}
-                  className={current === 'categories' ? 'active' : ''}
+                  className={current === "categories" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>
@@ -156,7 +167,7 @@ export default function Sidebar({ current }) {
           <List>
             <Link to="/messages">
               <ListItem
-                className={current === 'message' ? 'active' : ''}
+                className={current === "message" ? "active" : ""}
                 mode={mode}
               >
                 <FontAwesomeIcon icon={faMessage} /> Messages
@@ -164,7 +175,7 @@ export default function Sidebar({ current }) {
             </Link>
             <ListItem
               mode={mode}
-              className={current === 'support' ? 'active' : ''}
+              className={current === "support" ? "active" : ""}
             >
               <FontAwesomeIcon icon={faComment} /> Support
             </ListItem>

@@ -18,6 +18,10 @@ import categoryRouter from "./routes/categoryRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
 import reportConversionRouter from "./routes/reportConversationRoutes.js";
 import cors from "cors";
+import addressRouter from "./routes/addressRoutes.js";
+import brandRouter from "./routes/brandRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
+import recentViewRouter from "./routes/recentViewRoutes.js";
 
 dotenv.config();
 
@@ -59,6 +63,10 @@ app.use("/api/messages", messageRouter);
 app.use("/api/comments", commentRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/reports", reportRouter);
+app.use("/api/addresses", addressRouter);
+app.use("/api/brands", brandRouter);
+app.use("/api/admins", adminRouter);
+app.use("/api/recentviews", recentViewRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();

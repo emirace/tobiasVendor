@@ -1,13 +1,13 @@
-import { faClose } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useRef } from 'react';
-import styled from 'styled-components';
-import ReviewLists from '../screens/ReviewLists';
-import { Store } from '../Store';
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useRef } from "react";
+import styled from "styled-components";
+import ReviewLists from "../screens/ReviewLists";
+import { Store } from "../Store";
 
 const Background = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.8);
   position: fixed;
   top: 0;
@@ -19,13 +19,13 @@ const Background = styled.div`
 `;
 
 const ModelWrapper = styled.div`
-  width: 75%;
-  height: 600px;
+  width: auto;
+  height: 100vh;
   border-radius: 0.2rem;
   box-shadow: ${(props) =>
-    props.mode === 'pagebodylight '
-      ? '0 5px 16px rgba(0, 0, 0, 0.2)'
-      : '0 5px 16px rgba(225, 225, 225, 0.2)'};
+    props.mode === "pagebodylight "
+      ? "0 5px 16px rgba(0, 0, 0, 0.2)"
+      : "0 5px 16px rgba(225, 225, 225, 0.2)"};
   position: relative;
   z-index: 10;
   border-radius: 10px;

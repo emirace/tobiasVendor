@@ -1,24 +1,24 @@
 @font-face {
-  font-family: 'AbsentiaSans';
-  src: url(../public/fonts/AbsentiaSansBold.ttf) format('truetype');
+  font-family: "AbsentiaSans";
+  src: url(../public/fonts/AbsentiaSansBold.ttf) format("truetype");
   font-weight: bold;
   font-style: normal;
 }
 @font-face {
-  font-family: 'AbsentiaSans';
-  src: url(../public/fonts/AbsentiaSansMedium.ttf) format('truetype');
+  font-family: "AbsentiaSans";
+  src: url(../public/fonts/AbsentiaSansMedium.ttf) format("truetype");
   font-weight: 500;
   font-style: normal;
 }
 @font-face {
-  font-family: 'AbsentiaSans';
-  src: url(../public/fonts/AbsentiaSansRegular.ttf) format('truetype');
+  font-family: "AbsentiaSans";
+  src: url(../public/fonts/AbsentiaSansRegular.ttf) format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
-  font-family: 'AbsentiaSans';
-  src: url(../public/fonts/AbsentiaSansLight.ttf) format('truetype');
+  font-family: "AbsentiaSans";
+  src: url(../public/fonts/AbsentiaSansLight.ttf) format("truetype");
   font-weight: 300;
   font-style: normal;
 }
@@ -27,7 +27,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'AbsentiaSans', sans-serif;
+  font-family: "AbsentiaSans", sans-serif;
 }
 
 body {
@@ -465,6 +465,7 @@ main {
 }
 .btn {
   color: var(--white-color);
+  background: var(--orange-color);
   border: 0;
   margin: 0 5px;
 }
@@ -748,7 +749,7 @@ a.font13 {
 .mydropdown .mymenu::before {
   border-top: 1px solid #dfdfdf;
   border-left: 1px solid #dfdfdf;
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   right: 28px;
@@ -827,7 +828,7 @@ a.font13 {
 .mydropdown .mymenuside::before {
   border-top: 1px solid #dfdfdf;
   border-left: 1px solid #dfdfdf;
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   left: 28px;

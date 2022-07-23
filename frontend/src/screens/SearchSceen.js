@@ -29,13 +29,13 @@ const Left = styled.div`
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
-  @media (max-height: 992px) {
-    left${(props) => (props.showFilter ? 0 : "-100vw")};
+  @media (max-width: 992px) {
+    left: ${(props) => (props.showFilter ? 0 : "-100vw")};
     display: ${(props) => (props.showFilter ? "block" : "none")};
     transition: left 2s;
     z-index: 9;
     position: absolute;
-    width:100vw;
+    width: 100vw;
     top: 0;
   }
 `;
@@ -188,14 +188,17 @@ const reducer = (state, action) => {
 const prices = [
   {
     name: "$1 to $50",
+    id: 1,
     value: "1-50",
   },
   {
     name: "$51 to $200",
+    id: 2,
     value: "51-200",
   },
   {
     name: "$201 to $1000",
+    id: 3,
     value: "201-1000",
   },
 ];
@@ -219,6 +222,38 @@ const ratings = [
   },
 ];
 
+const color1 = [
+  { name: "red", id: 1 },
+  { name: "anthracite", id: 2 },
+  { name: "beige", id: 3 },
+  { name: "black", id: 4 },
+  { name: "blue", id: 5 },
+  { name: "brown", id: 6 },
+  { name: "burgubdy", id: 7 },
+  { name: "camel", id: 8 },
+  { name: "ecru", id: 9 },
+  { name: "gold", id: 10 },
+  { name: "green", id: 11 },
+  { name: "grey", id: 12 },
+  { name: "khaki", id: 13 },
+  { name: "metallic", id: 14 },
+  { name: "multiculour", id: 15 },
+  { name: "navy", id: 16 },
+  { name: "orange", id: 17 },
+  { name: "pink", id: 18 },
+  { name: "purple", id: 19 },
+  { name: "silver", id: 20 },
+  { name: "turquoise", id: 21 },
+  { name: "white", id: 22 },
+  { name: "yellow", id: 23 },
+];
+const sizelist = [
+  { id: 1, name: "S" },
+  { id: 2, name: "M" },
+  { id: 3, name: "L" },
+  { id: 4, name: "XL" },
+  { id: 5, name: "XXL" },
+];
 export default function SearchSceen() {
   const navigate = useNavigate();
   const { state } = useContext(Store);
@@ -234,6 +269,7 @@ export default function SearchSceen() {
   const page = sp.get("page") || 1;
   const color = sp.get("color") || "all";
   const brand = sp.get("brand") || "all";
+  const size = sp.get("size") || "all";
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
@@ -247,8 +283,9 @@ export default function SearchSceen() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
+          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}`
         );
+        console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({
@@ -258,7 +295,7 @@ export default function SearchSceen() {
       }
     };
     fetchData();
-  }, [category, order, page, price, query, rating]);
+  }, [category, order, page, price, query, rating, brand, color, size]);
 
   const [categories, setCategories] = useState([]);
 
@@ -275,6 +312,16 @@ export default function SearchSceen() {
       console.log(getError(err));
     }
   }, [userInfo]);
+  const [queryBrand, setQueryBrand] = useState(null);
+  const [searchBrand, setSearchBrand] = useState(null);
+  useEffect(() => {
+    const getSearch = async () => {
+      const { data } = await axios.get(`/api/brands/search?q=${queryBrand}`);
+      console.log(data);
+      setSearchBrand(data);
+    };
+    getSearch();
+  }, [queryBrand]);
 
   const getFilterUrl = (filter) => {
     const filterPage = filter.page || page;
@@ -285,7 +332,8 @@ export default function SearchSceen() {
     const filterOrder = filter.order || order;
     const filterColor = filter.color || color;
     const filterBrand = filter.brand || brand;
-    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&color=${filterColor}&brand=${filterBrand}`;
+    const filterSize = filter.size || size;
+    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&color=${filterColor}&brand=${filterBrand}&size=${filterSize}`;
   };
 
   const [filterSidebar, setFilterSidebar] = useState(false);
@@ -294,6 +342,7 @@ export default function SearchSceen() {
   const [priceClass, setPriceClass] = useState(true);
   const [reviewClass, setReviewClass] = useState(true);
   const [colorClass, setColorClass] = useState(true);
+  const [sizeClass, setSizeClass] = useState(true);
   const [brandClass, setBrandClass] = useState(true);
   const [brandInput, setBrandInput] = useState("");
   const toggleCollapse = (type) => {
@@ -310,6 +359,9 @@ export default function SearchSceen() {
       case "color":
         setColorClass(!colorClass);
         break;
+      case "size":
+        setSizeClass(!sizeClass);
+        break;
       case "brand":
         setBrandClass(!brandClass);
         break;
@@ -321,7 +373,7 @@ export default function SearchSceen() {
 
   const handleInput = (e) => {
     e.preventDefault();
-    setBrandInput(e.target.value);
+    setQueryBrand(e.target.value);
   };
   if (brandInput.length > 0) {
     brands = brands.filter((i) => {
@@ -383,19 +435,29 @@ export default function SearchSceen() {
                   placeholder="Search brands"
                   onChange={handleInput}
                 />
-                {brands.map((p, index) => (
-                  <div key={index}>
-                    <Link
-                      className={p === brand ? "text-bold" : ""}
-                      to={getFilterUrl({ brand: p })}
-                    >
-                      <ListItem mode={mode}>
-                        <FontAwesomeIcon icon={faCircleDot} />
-                        {p}
-                      </ListItem>
-                    </Link>
-                  </div>
-                ))}
+                <Link
+                  className={"all" === brand ? "text-bold" : ""}
+                  to={getFilterUrl({ brand: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {searchBrand &&
+                  searchBrand.map((p, index) => (
+                    <div key={p._id}>
+                      <Link
+                        className={p.name === brand ? "text-bold" : ""}
+                        to={getFilterUrl({ brand: p.name })}
+                      >
+                        <ListItem mode={mode}>
+                          <FontAwesomeIcon icon={faCircleDot} />
+                          {p.name}
+                        </ListItem>
+                      </Link>
+                    </div>
+                  ))}
               </List>
             </Menu>
             <Menu>
@@ -411,7 +473,7 @@ export default function SearchSceen() {
                   </ListItem>
                 </Link>
                 {prices.map((p, index) => (
-                  <div key={index}>
+                  <div key={p.id}>
                     <Link
                       className={p.value === price ? "text-bold" : ""}
                       to={getFilterUrl({ price: p.value })}
@@ -433,8 +495,8 @@ export default function SearchSceen() {
                 Reviews
               </Title>
               <List className={reviewClass ? "activate" : ""}>
-                {ratings.map((r, index) => (
-                  <div key={index}>
+                {ratings.map((r) => (
+                  <div key={r.rating}>
                     <Link
                       className={
                         `${r.rating}` === `${rating}` ? "text-bold" : ""
@@ -467,111 +529,59 @@ export default function SearchSceen() {
                   <ListItem mode={mode}>All</ListItem>
                 </Link>
                 <Color>
-                  <Link
-                    className={"all" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "black" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "black",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"womenswear" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "red" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "red",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"menswear" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "green" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "green",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"kids" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "blue" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "blue",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"curve+plus" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "pink" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "pink",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"tops" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "orange" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "orange",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
-                  <Link
-                    className={"outerwear" === color ? "text-bold" : ""}
-                    to={getFilterUrl({ color: "purple" })}
-                  >
-                    <ListItem mode={mode}>
-                      <div
-                        style={{
-                          background: "purple",
-                          width: "30px",
-                          height: "20px",
-                          borderRadius: "0.2rem",
-                        }}
-                      ></div>
-                    </ListItem>
-                  </Link>
+                  {color1.map((c, i) => (
+                    <Link
+                      key={c.id}
+                      className={c.name === color ? "text-bold" : ""}
+                      to={getFilterUrl({ color: c.name })}
+                    >
+                      <ListItem mode={mode}>
+                        <div
+                          style={{
+                            background: c.name,
+                            width: "30px",
+                            height: "20px",
+                            borderRadius: "0.2rem",
+                          }}
+                        ></div>
+                      </ListItem>
+                    </Link>
+                  ))}
+                </Color>
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("size")}>Size</Title>
+              <List className={sizeClass ? "activate" : ""}>
+                <Link
+                  className={"all" === size ? "text-bold" : ""}
+                  to={getFilterUrl({ size: "all" })}
+                >
+                  <ListItem mode={mode}>All</ListItem>
+                </Link>
+                <Color>
+                  {sizelist.map((c, i) => (
+                    <Link
+                      key={c.id}
+                      className={c.name === size ? "text-bold" : ""}
+                      to={getFilterUrl({ size: c.name })}
+                    >
+                      <ListItem mode={mode}>
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            textTransform: "uppercase",
+                            borderWidth: "1px",
+                            width: "30px",
+                            height: "20px",
+                            borderRadius: "0.2rem",
+                          }}
+                        >
+                          {c.name}
+                        </div>
+                      </ListItem>
+                    </Link>
+                  ))}
                 </Color>
               </List>
             </Menu>
@@ -630,7 +640,7 @@ export default function SearchSceen() {
               )}
               <ProductListC>
                 {products.map((product, index) => (
-                  <Product product={product} key={index}></Product>
+                  <Product product={product} key={product._id}></Product>
                 ))}
               </ProductListC>
             </>

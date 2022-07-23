@@ -1,21 +1,21 @@
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useRef } from 'react';
-import { useState } from 'react';
-import { io } from 'socket.io-client';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import LoadingBox from './LoadingBox';
-import Messages from './Messages';
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useRef } from "react";
+import { useState } from "react";
+import { io } from "socket.io-client";
+import styled from "styled-components";
+import { Store } from "../Store";
+import { getError } from "../utils";
+import LoadingBox from "./LoadingBox";
+import Messages from "./Messages";
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const ChatArea = styled.div`
   position: relative;
@@ -24,7 +24,7 @@ const ChatArea = styled.div`
   border-radius: 0.2rem;
   margin-top: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const ChatBox = styled.div`
   height: calc(100% - 66px);
@@ -49,17 +49,17 @@ const TextInput = styled.input`
   height: 100%;
   width: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   border-radius: 0.2rem;
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   padding: 20px;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
@@ -67,9 +67,9 @@ const TextInput = styled.input`
   &::placeholder {
     padding: 20px;
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
   }
 `;
 
@@ -83,7 +83,7 @@ const ReportedUser = styled.div`
   left: 50%;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   padding: 10px 20px;
 `;
 
@@ -110,15 +110,15 @@ const UserCont = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'MSG_REQUEST':
+    case "MSG_REQUEST":
       return { ...state, loadingReports: true };
-    case 'MSG_SUCCESS':
+    case "MSG_SUCCESS":
       return {
         ...state,
         reports: action.payload,
         loadingReports: false,
       };
-    case 'MSG_FAIL':
+    case "MSG_FAIL":
       return { ...state, loadingReports: false, error: action.payload };
     default:
       return state;
@@ -126,11 +126,11 @@ const reducer = (state, action) => {
 };
 
 const ENDPOINT =
-  window.location.host.indexOf('localhost') >= 0
-    ? 'ws://127.0.0.1:5000'
+  window.location.host.indexOf("localhost") >= 0
+    ? "ws://127.0.0.1:5000"
     : window.location.host;
 
-export default function Report({ reportedUser }) {
+export default function Report({ reportedUser, productName }) {
   const { state } = useContext(Store);
   const { userInfo, mode } = state;
 
@@ -140,7 +140,7 @@ export default function Report({ reportedUser }) {
 
   const [{ loadingReports, error, reports }, dispatch] = useReducer(reducer, {
     loadingReports: true,
-    error: '',
+    error: "",
     reports: [],
   });
 
@@ -148,8 +148,8 @@ export default function Report({ reportedUser }) {
 
   useEffect(() => {
     socket.current = io(ENDPOINT);
-    socket.current.emit('onlogin', userInfo);
-    socket.current.on('getReport', (data) => {
+    socket.current.emit("onlogin", userInfo);
+    socket.current.on("getReport", (data) => {
       setArrivalReport(data.report);
     });
   }, [userInfo]);
@@ -157,13 +157,13 @@ export default function Report({ reportedUser }) {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        dispatch({ type: 'MSG_REQUEST' });
+        dispatch({ type: "MSG_REQUEST" });
         const { data } = await axios.get(`/api/reports/${reportedUser}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'MSG_SUCCESS', payload: data.reports });
+        dispatch({ type: "MSG_SUCCESS", payload: data.reports });
       } catch (err) {
-        dispatch({ type: 'MSG_FAIL' });
+        dispatch({ type: "MSG_FAIL" });
 
         console.log(getError(err));
       }
@@ -173,14 +173,14 @@ export default function Report({ reportedUser }) {
   useEffect(() => {
     if (arrivalReport) {
       dispatch({
-        type: 'MSG_SUCCESS',
+        type: "MSG_SUCCESS",
         payload: [...reports, arrivalReport],
       });
     }
   }, [arrivalReport]);
 
   useEffect(() => {
-    scrollref.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollref.current?.scrollIntoView({ behavior: "smooth" });
   }, [reports]);
   const [user, setUser] = useState({});
   useEffect(() => {
@@ -201,26 +201,27 @@ export default function Report({ reportedUser }) {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        '/api/reports/',
+        "/api/reports/",
         {
           reportedUser,
           user: userInfo._id,
           text: reply,
+          productName: productName || "",
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
       dispatch({
-        type: 'MSG_SUCCESS',
+        type: "MSG_SUCCESS",
         payload: [...reports, data.savedReport],
       });
 
-      socket.current.emit('sendReport', {
+      socket.current.emit("sendReport", {
         report: data.savedReport,
       });
 
-      setReply('');
+      setReply("");
     } catch (err) {
       console.log(getError(err));
     }
@@ -244,22 +245,35 @@ export default function Report({ reportedUser }) {
         {user && (
           <ReportedUser mode={mode}>
             <Text>Reporting:</Text>
-            <UserCont>
-              <Image src={user.image} alt="reported User" />
-              <Name>{user.name}</Name>
-            </UserCont>
+            {productName ? (
+              <div>{productName}</div>
+            ) : (
+              <UserCont>
+                <Image src={user.image} alt="reported User" />
+                <Name>{user.name}</Name>
+              </UserCont>
+            )}
           </ReportedUser>
         )}
 
         <Message>
           <TextInput
             mode={mode}
-            placeholder="Write a message"
+            placeholder="Write a Report/Complain"
             value={reply}
             onChange={(e) => setReply(e.target.value)}
           />
           <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
         </Message>
+        <div
+          style={{ textAlign: "center", fontSize: 12, marginHorizontal: 20 }}
+        >
+          Please leave all information that will help us resolve your query.
+          Please include an order number if your report is related to an order
+          you purchased from this seller, or you can go to your purchase history
+          and report the related item directly from the report tab on the item
+          page.
+        </div>
       </ChatArea>
     </Container>
   );

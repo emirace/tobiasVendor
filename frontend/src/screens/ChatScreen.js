@@ -644,9 +644,15 @@ export default function ChatScreen() {
           ) : currentReply ? (
             <>
               <ChatArea>
+                {console.log("report", reports)}
                 {reports.map((m, index) => (
                   <div ref={scrollref} key={index}>
-                    <Messages own={!m.admin} message={m} report={true} />
+                    <Messages
+                      own={!m.admin}
+                      message={m}
+                      report={true}
+                      product={m.productName ? m.productName : false}
+                    />
                   </div>
                 ))}
               </ChatArea>

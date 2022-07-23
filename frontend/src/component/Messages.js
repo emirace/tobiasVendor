@@ -1,8 +1,8 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { format } from 'timeago.js';
-import { getError } from '../utils';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { format } from "timeago.js";
+import { getError } from "../utils";
 
 const RecievedChat = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ const TimeS = styled.div`
 const Reporting = styled.div`
   text-align: right;
 `;
-export default function Messages({ message, own, report }) {
+export default function Messages({ message, own, report, product }) {
   const [user, setUser] = useState();
   useEffect(() => {
     const fetchData = async () => {
@@ -58,6 +58,7 @@ export default function Messages({ message, own, report }) {
   }, [message, report]);
   return (
     <>
+      {console.log("in msg", product)}
       {own ? (
         <>
           <SendChat>
@@ -67,7 +68,7 @@ export default function Messages({ message, own, report }) {
             </div>
           </SendChat>
           {report && user && !message.admin && (
-            <Reporting>Reporting: {user.name}</Reporting>
+            <Reporting>Reporting: {product ? product : user.name}</Reporting>
           )}
         </>
       ) : (

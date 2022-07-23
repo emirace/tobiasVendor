@@ -1,6 +1,9 @@
-import React, { useContext, useRef } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
+import axios from "axios";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../Store";
+import { getError } from "../utils";
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -38,7 +41,7 @@ const Header = styled.div`
   font-size: 20px;
   margin: 20px 0;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 const BrandGroup = styled.div`
   margin: 0 20px;
@@ -10661,23 +10664,108 @@ ZYDO
 ZYIA
 ZZs`;
 
+const Search = styled.div`
+  margin: 0 10vw;
+  position: relative;
+`;
+const SearchInput = styled.input`
+  width: 100%;
+  height: 45px;
+  padding: 15px;
+  border: 1px solid var(--malon-color);
+  border-radius: 5px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  &::placeholder {
+    padding: 10px;
+  }
+`;
+const SearchData = styled.div`
+  padding: 5px;
+  color: grey;
+  text-tranform: capitalize;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+  }
+`;
+const SearchContainer = styled.div`
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  position: absolute;
+  top: 50px;
+  width: 100%;
+`;
+
 export default function BrandScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
 
   const alpha = Array.from(Array(26)).map((e, i) => i + 65);
   const alphabet = alpha.map((x) => String.fromCharCode(x));
-  const brandArray = Brands.split('\n');
+  const brandArray = Brands.split("\n");
 
   const scrollref = useRef(alphabet.map(React.createRef));
+  const [dataBrands, setDataBrands] = useState(null);
+  const [query, setQuery] = useState(null);
+
+  useEffect(() => {
+    const getBrand = async () => {
+      const { data } = await axios.get("/api/brands");
+      setDataBrands(data);
+    };
+    getBrand();
+  }, []);
+
+  const [searchBrand, setSearchBrand] = useState(null);
+  useEffect(() => {
+    console.log(query);
+    const getSearch = async () => {
+      const { data } = await axios.get(`/api/brands/search?q=${query}`);
+      console.log(data);
+      setSearchBrand(data);
+    };
+    getSearch();
+  }, [query]);
+
+  // useEffect(() => {
+  //   const postbrand = () => {
+  //     brandArray.map((y, i) => {
+  //       // console.log(x);
+  //       // if (x === "A") {
+  //       // }
+
+  //       if (y.charAt(0) === "B") {
+  //         // addBrand(y, "B");
+  //         // console.log(y, "B");
+  //       }
+  //     });
+  //   };
+  //   postbrand();
+  // }, []);
 
   const scrollToAlpha = (i) =>
     scrollref.current[i].current &&
     window.scrollTo({
       top: scrollref.current[i].current.offsetTop,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
-
+  const addBrand = async (brand, al) => {
+    try {
+      await axios.post("/api/brands", {
+        name: brand,
+        alpha: al,
+      });
+      console.log(brand);
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
   return (
     <Container>
       <Title>Brands</Title>
@@ -10688,22 +10776,35 @@ export default function BrandScreen() {
           </div>
         ))}
       </AlphaGroup>
-      <Content>
+      <Search>
+        <SearchInput
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search brands"
+        />
+        <SearchContainer mode={mode}>
+          {searchBrand &&
+            searchBrand.map((brand) => (
+              <Link to={`/Search?brand=${brand.name}`}>
+                <SearchData mode={mode}>{brand.name}</SearchData>
+              </Link>
+            ))}
+        </SearchContainer>
+      </Search>
+      {/* <Content>
         {alphabet.map((x, i) => (
           <div key={i}>
             <Header ref={scrollref.current[i]} mode={mode}>
               {x}
             </Header>
             <BrandGroup>
-              {brandArray
-                .filter((r) => r.charAt(0) === x)
-                .map((x, i) => (
-                  <Brand key={i}>{x}</Brand>
-                ))}
+              {dataBrands &&
+                dataBrands.map((y, i) => {
+                  return <Brand key={i}>{y.name}</Brand>;
+                })}
             </BrandGroup>
           </div>
         ))}
-      </Content>
+      </Content> */}
     </Container>
   );
 }

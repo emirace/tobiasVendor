@@ -1,14 +1,14 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import Rating from '../component/Rating';
-import { getError } from '../utils';
-import '../style/SellerScreen.css';
-import Product from '../component/Product';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import Rating from "../component/Rating";
+import { getError } from "../utils";
+import "../style/SellerScreen.css";
+import Product from "../component/Product";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBolt,
   faCirclePlus,
@@ -20,13 +20,13 @@ import {
   faStar,
   faTag,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import Model from '../component/Model';
-import ReviewLists from './ReviewLists';
-import ModelLogin from '../component/ModelLogin';
-import Report from '../component/Report';
+} from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { Store } from "../Store";
+import Model from "../component/Model";
+import ReviewLists from "./ReviewLists";
+import ModelLogin from "../component/ModelLogin";
+import Report from "../component/Report";
 
 const Right = styled.div`
   flex: 3;
@@ -40,7 +40,7 @@ const Tab = styled.div`
   justify-content: center;
   margin-bottom: 5px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
 `;
 const TabItem = styled.div`
@@ -58,7 +58,7 @@ const TabItem = styled.div`
     color: var(--orange-color);
     font-weight: bold;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -72,7 +72,7 @@ const Content = styled.div`
   display: flex;
   padding: 10px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
   width: 100%;
   height: 100%;
@@ -108,10 +108,10 @@ const AddProduct = styled.div`
   width: 100%;
   height: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   }
   & svg {
     color: var(--orange-color);
@@ -122,7 +122,7 @@ const AddProduct = styled.div`
 
 const SellerLeft = styled.div`
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
   position: relative;
   display: flex;
@@ -144,18 +144,18 @@ const Sold = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_USER_REQUEST':
+    case "FETCH_USER_REQUEST":
       return { ...state, loadingUser: true };
-    case 'FETCH_USER_SUCCESS':
+    case "FETCH_USER_SUCCESS":
       return {
         ...state,
         loadingUser: false,
         user: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_PRODUCT_REQUEST':
+    case "FETCH_PRODUCT_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_PRODUCT_SUCCESS':
+    case "FETCH_PRODUCT_SUCCESS":
       return {
         ...state,
         products: action.payload.products,
@@ -163,7 +163,7 @@ const reducer = (state, action) => {
         pages: action.payload.pages,
         loading: false,
       };
-    case 'FETCH_PRODUCT_FAIL':
+    case "FETCH_PRODUCT_FAIL":
       return {
         ...state,
         loading: false,
@@ -183,13 +183,13 @@ export default function SellerScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
-  const [displayTab, setDisplayTab] = useState('all');
+  const [displayTab, setDisplayTab] = useState("all");
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const page = sp.get('page') || 1;
+  const page = sp.get("page") || 1;
 
   const navigate = useNavigate();
 
@@ -197,29 +197,29 @@ export default function SellerScreen() {
     useReducer(reducer, {
       loading: true,
       loadingUser: true,
-      error: '',
+      error: "",
       user: {},
     });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch({ type: 'FETCH_USER_REQUEST' });
+        dispatch({ type: "FETCH_USER_REQUEST" });
         const { data: dataUser } = await axios.get(
           `/api/users/seller/${sellerId}`
         );
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: dataUser });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
 
-        dispatch({ type: 'FETCH_PRODUCT_REQUEST' });
+        dispatch({ type: "FETCH_PRODUCT_REQUEST" });
         const { data: dataProduct } = await axios.get(
           `/api/products/seller/${sellerId}?page=${page}`
         );
         dispatch({
-          type: 'FETCH_PRODUCT_SUCCESS',
+          type: "FETCH_PRODUCT_SUCCESS",
           payload: dataProduct,
         });
       } catch (err) {
-        dispatch({ type: 'FETCH_PRODUCT_FAIL', error: getError(err) });
+        dispatch({ type: "FETCH_PRODUCT_FAIL", error: getError(err) });
         toast.error(getError(err));
       }
     };
@@ -228,17 +228,17 @@ export default function SellerScreen() {
 
   const toggleFollow = async () => {
     if (user.name === userInfo.name) {
-      alert('you can like your store');
+      alert("you can't like your store");
       return;
     }
 
     if (!userInfo) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "you can't follow yourself",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -252,7 +252,7 @@ export default function SellerScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
       } else {
         const { data } = await axios.put(
           `/api/users/follow/${sellerId}`,
@@ -261,7 +261,7 @@ export default function SellerScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
       }
     } catch (err) {
       toast.error(getError(err));
@@ -270,7 +270,7 @@ export default function SellerScreen() {
 
   const tabSwitch = (tab) => {
     switch (tab) {
-      case 'all':
+      case "all":
         return (
           <>
             <ProductCont>
@@ -296,7 +296,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'selling':
+      case "selling":
         return (
           <>
             {loading ? (
@@ -318,7 +318,7 @@ export default function SellerScreen() {
           </>
         );
 
-      case 'sold':
+      case "sold":
         return (
           <>
             {loading ? (
@@ -346,7 +346,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'liked':
+      case "liked":
         return (
           <>
             {loading ? (
@@ -364,7 +364,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'saved':
+      case "saved":
         return (
           <>
             {loading ? (
@@ -404,7 +404,7 @@ export default function SellerScreen() {
   const handlereport = async () => {
     try {
       await axios.post(
-        '/api/reportConversation',
+        "/api/reportConversation",
         {},
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -467,8 +467,8 @@ export default function SellerScreen() {
                     className="seller_follow_btn"
                   >
                     {userInfo && user.followers.find((x) => x === userInfo._id)
-                      ? 'Unfollow'
-                      : 'Follow'}
+                      ? "Unfollow"
+                      : "Follow"}
                   </button>
                 )}
               </div>
@@ -540,33 +540,33 @@ export default function SellerScreen() {
       <Right>
         <Tab mode={mode}>
           <TabItem
-            className={displayTab === 'all' && 'active'}
-            onClick={() => setDisplayTab('all')}
+            className={displayTab === "all" && "active"}
+            onClick={() => setDisplayTab("all")}
           >
             All
           </TabItem>
           <TabItem
-            className={displayTab === 'selling' && 'active'}
-            onClick={() => setDisplayTab('selling')}
+            className={displayTab === "selling" && "active"}
+            onClick={() => setDisplayTab("selling")}
           >
             Selling
           </TabItem>
           <TabItem
-            className={displayTab === 'sold' && 'active'}
-            onClick={() => setDisplayTab('sold')}
+            className={displayTab === "sold" && "active"}
+            onClick={() => setDisplayTab("sold")}
           >
             Sold
           </TabItem>
           <TabItem
-            className={displayTab === 'liked' && 'active'}
-            onClick={() => setDisplayTab('liked')}
+            className={displayTab === "liked" && "active"}
+            onClick={() => setDisplayTab("liked")}
           >
             Liked
           </TabItem>
           {userInfo && userInfo._id === sellerId && (
             <TabItem
-              className={displayTab === 'saved' && 'active'}
-              onClick={() => setDisplayTab('saved')}
+              className={displayTab === "saved" && "active"}
+              onClick={() => setDisplayTab("saved")}
             >
               Saved
             </TabItem>

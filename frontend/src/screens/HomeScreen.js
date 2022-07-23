@@ -1,29 +1,29 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from "react";
 
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Product from '../component/Product';
-import { Helmet } from 'react-helmet-async';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import Button from 'react-bootstrap/Button';
-import HotDeals from '../component/HotDeals';
-import OwlCarousel from 'react-owl-carousel';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
-import Newletter from '../component/Newletter';
-import 'react-multi-carousel/lib/styles.css';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import '../style/HomeScreen.css';
-import CategoryListing from '../component/CategoryListing';
-import Notification from '../component/Notification';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { Store } from '../Store';
+import axios from "axios";
+import { Link } from "react-router-dom";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Product from "../component/Product";
+import { Helmet } from "react-helmet-async";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import Button from "react-bootstrap/Button";
+import HotDeals from "../component/HotDeals";
+import OwlCarousel from "react-owl-carousel";
+import "owl.carousel/dist/assets/owl.carousel.css";
+import "owl.carousel/dist/assets/owl.theme.default.css";
+import Newletter from "../component/Newletter";
+import "react-multi-carousel/lib/styles.css";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import "../style/HomeScreen.css";
+import CategoryListing from "../component/CategoryListing";
+import Notification from "../component/Notification";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { Store } from "../Store";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -41,15 +41,15 @@ const Imagediv = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return {
         ...state,
         products: action.payload,
         loading: false,
       };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return {
         ...state,
         loading: false,
@@ -57,9 +57,9 @@ const reducer = (state, action) => {
         error: action.payload,
       };
 
-    case 'FETCH_USERS_REQUEST':
+    case "FETCH_USERS_REQUEST":
       return { ...state, loadingUser: true };
-    case 'FETCH_USERS_SUCCESS':
+    case "FETCH_USERS_SUCCESS":
       return {
         ...state,
         sellers: action.payload,
@@ -73,7 +73,7 @@ const reducer = (state, action) => {
 
 const AppSection = styled.div`
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
 `;
 
@@ -85,30 +85,30 @@ export default function ProductsScreen() {
       products: [],
       loading: true,
       sellers: [],
-      error: '',
+      error: "",
     });
   const [sliderIndex, setSliderIndex] = useState(0);
   //const [products, setProducts] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({ type: "FETCH_REQUEST" });
       try {
-        const result = await axios.get('/api/products');
+        const result = await axios.get("/api/products");
         dispatch({
-          type: 'FETCH_SUCCESS',
+          type: "FETCH_SUCCESS",
           payload: result.data,
         });
 
-        dispatch({ type: 'FETCH_USERS_REQUEST' });
-        const { data: topSellers } = await axios.get('/api/users/top-sellers');
+        dispatch({ type: "FETCH_USERS_REQUEST" });
+        const { data: topSellers } = await axios.get("/api/users/top-sellers");
         console.log(topSellers);
         dispatch({
-          type: 'FETCH_USERS_SUCCESS',
+          type: "FETCH_USERS_SUCCESS",
           payload: topSellers,
         });
       } catch (err) {
         dispatch({
-          type: 'FETCH_FAIL',
+          type: "FETCH_FAIL",
           payload: err.message,
         });
       }
@@ -118,7 +118,7 @@ export default function ProductsScreen() {
     fetchData();
   }, []);
   const sliderHandler = (direction) => {
-    if (direction === 'left') {
+    if (direction === "left") {
       setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
       setSliderIndex(sliderIndex < products.length - 5 ? sliderIndex + 1 : 0);
@@ -288,11 +288,11 @@ export default function ProductsScreen() {
             <div className="product-title">
               <h2 className="product-category1">New deals</h2>
             </div>
-            <button onClick={() => sliderHandler('left')} className="pre-btn1">
+            <button onClick={() => sliderHandler("left")} className="pre-btn1">
               <i className="fa fa-angle-left"></i>
             </button>
             <button
-              onClick={() => sliderHandler('right')}
+              onClick={() => sliderHandler("right")}
               className="next-btn1"
             >
               <i className="fa fa-angle-right"></i>
@@ -302,9 +302,9 @@ export default function ProductsScreen() {
                 <div
                   key={index}
                   className="smooth1"
-                  style={{
-                    transform: sliderstyle,
-                  }}
+                  // style={{
+                  //   transform: sliderstyle,
+                  // }}
                 >
                   <Product product={product} />
                 </div>

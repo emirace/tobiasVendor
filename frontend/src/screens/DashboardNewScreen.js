@@ -1,22 +1,24 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import Home from '../component/dashboard/Home';
-import NewProduct from '../component/dashboard/NewProduct';
-import OrderList from '../component/dashboard/OrderList';
-import Product from '../component/dashboard/Product';
-import ProductList from '../component/dashboard/ProductList';
-import Sidebar from '../component/dashboard/Sidebar';
-import Analytics from '../component/dashboard/Analytics';
-import User from '../component/dashboard/User';
-import UserList from '../component/dashboard/UserList';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import { Helmet } from 'react-helmet-async';
-import Categories from '../component/dashboard/Categories';
-import Transactions from '../component/dashboard/Transactions';
-import Saleslist from '../component/dashboard/Saleslist';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import Home from "../component/dashboard/Home";
+import NewProduct from "../component/dashboard/NewProduct";
+import OrderList from "../component/dashboard/OrderList";
+import Product from "../component/dashboard/Product";
+import ProductList from "../component/dashboard/ProductList";
+import Sidebar from "../component/dashboard/Sidebar";
+import User from "../component/dashboard/User";
+import UserList from "../component/dashboard/UserList";
+import { Store } from "../Store";
+import { getError } from "../utils";
+import { Helmet } from "react-helmet-async";
+import Categories from "../component/dashboard/Categories";
+import Transactions from "../component/dashboard/Transactions";
+import Saleslist from "../component/dashboard/Saleslist";
+import AddressBook from "../component/dashboard/AddressBook";
+import Analytics from "../component/dashboard/admin/Analytics";
+import Earning from "../component/dashboard/Earning";
 
 const Container = styled.div`
   display: flex;
@@ -26,7 +28,7 @@ const Container = styled.div`
 export default function DashboardNewScreen() {
   const params = useParams();
   const { tab } = params;
-  const [displayTab, setDisplayTab] = useState('home');
+  const [displayTab, setDisplayTab] = useState("home");
 
   useEffect(() => {
     if (tab) {
@@ -36,28 +38,32 @@ export default function DashboardNewScreen() {
 
   const tabSwitch = (tab) => {
     switch (tab) {
-      case 'home':
+      case "home":
         return <Home />;
-      case 'userlist':
+      case "userlist":
         return <UserList />;
-      case 'user':
+      case "user":
         return <User />;
-      case 'categories':
+      case "categories":
         return <Categories />;
-      case 'newproduct':
+      case "newproduct":
         return <NewProduct />;
-      case 'productlist':
+      case "productlist":
         return <ProductList />;
-      case 'orderlist':
+      case "orderlist":
         return <OrderList />;
-      case 'product':
+      case "product":
         return <Product />;
-      case 'analytics':
+      case "analytics":
         return <Analytics />;
-      case 'wallet':
+      case "wallet":
         return <Transactions />;
-      case 'saleslist':
+      case "saleslist":
         return <Saleslist />;
+      case "address":
+        return <AddressBook />;
+      case "earning":
+        return <Earning />;
       default:
         break;
     }

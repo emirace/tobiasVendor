@@ -75,6 +75,16 @@ const Summary = styled.div`
   justify-content: space-between;
   height: 100%;
 `;
+const CustomMessage = styled.div`
+  & a {
+    font-weight: bold;
+    color: var(--orange-color);
+    font-size: 15px;
+    &:hover {
+      color: var(--malon-color);
+    }
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -184,7 +194,7 @@ export default function CartScreen() {
       toast.error("cart is empty");
     } else {
       if (userInfo) {
-        navigate("../shipping");
+        navigate("../info");
       } else {
         navigate("../signin");
       }
@@ -203,7 +213,9 @@ export default function CartScreen() {
             <h1>Shopping Cart</h1>
             {cartItems.length === 0 ? (
               <MessageBox>
-                Cart is empty. <Link to="/">Go Shopping</Link>
+                <CustomMessage>
+                  Cart is empty. <Link to={`/`}>Go Shopping</Link>
+                </CustomMessage>
               </MessageBox>
             ) : (
               <>

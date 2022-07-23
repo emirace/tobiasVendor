@@ -1,20 +1,22 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Store } from '../../Store';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Store } from "../../Store";
 import {
   faImage,
   faQuestionCircle,
   faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import axios from 'axios';
-import { getError } from '../../utils';
-import LoadingBox from '../LoadingBox';
-import { useNavigate } from 'react-router-dom';
-import IconsTooltips from '../IconsTooltips';
+} from "@fortawesome/free-solid-svg-icons";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import axios from "axios";
+import { getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
+import { useNavigate } from "react-router-dom";
+import IconsTooltips from "../IconsTooltips";
+import ModelLogin from "../ModelLogin";
+import Condition from "../Condition";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -22,7 +24,7 @@ const NewProductC = styled.div`
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
@@ -58,6 +60,7 @@ const Form = styled.form`
   }
 `;
 const Item = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   margin: 20px 20px 0 0;
@@ -70,12 +73,12 @@ const Item = styled.div`
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 40px;
   padding: 10px;
@@ -120,16 +123,16 @@ const TextArea = styled.textarea`
   border-radius: 0.2rem;
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   padding: 10px;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const ImageRow = styled.div`
   display: flex;
@@ -149,7 +152,7 @@ const BigImageC = styled.div`
   height: 150px;
   border: 1px dashed
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const SmallImageRow = styled.div`
   flex: 1;
@@ -162,7 +165,7 @@ const SmallImageC = styled.div`
   border-radius: 0.2rem;
   border: 1px dashed
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const SmallImage = styled.img`
   width: 100%;
@@ -204,12 +207,12 @@ const SizeInput = styled.input`
   background: none;
   font-size: 12px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 20px;
   width: 40px;
@@ -284,19 +287,22 @@ const Error = styled.div`
 `;
 
 const BrandList = styled.div`
-  max-height: 200px;
+  position: absolute;
+  max-height: 300px;
   overflow: auto;
+  top: 70px;
+  z-index: 9;
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const BrandListItem = styled.div`
   padding: 10px 20px;
   font-size: 15px;
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   }
 `;
 
@@ -306,22 +312,22 @@ const Checkbox = styled.input`
   &::after {
     width: 15px;
     height: 15px;
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     position: relative;
     top: -2px;
     left: -1px;
     background-color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
     border: 1px solid var(--orange-color);
   }
   &:checked::after {
     width: 15px;
     height: 15px;
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     position: relative;
@@ -349,7 +355,7 @@ const VintageCont = styled.div`
 const Tips = styled.span`
   position: relative;
   &:hover::after {
-    content: '${(props) => props.tips}';
+    content: "${(props) => props.tips}";
     width: 200px;
     position: absolute;
     border-radius: 0.5rem;
@@ -360,33 +366,85 @@ const Tips = styled.span`
     font-weight: 400;
     padding: 5px;
     background: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
   }
 `;
 const LuxuryCont = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const TagCont = styled.div``;
+const TagInputCont = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
+  border-radius: 0.2rem;
+  height: 40px;
+`;
+const TagInput = styled.input`
+  flex: 1;
+  background: none;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  border: 0;
+  height: 40px;
+  padding: 10px;
+  &:focus-visible {
+    outline: none;
+  }
+`;
+const AddTag = styled.div`
+  padding: 2px 5px;
+  background: var(--malon-color);
+  color: var(--white-color);
+  margin: 0 5px;
+`;
+const TagItem = styled.div`
+  display: flex;
+  padding: 2px 5px;
+  margin: 5px;
+  align-items: center;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+  & svg {
+    margin-left: 10px;
+    font-size: 11px;
+  }
+`;
+const LinkTo = styled.span`
+  text-decoration: underline;
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 400;
+  &:hover {
+    color: var(--orange-color);
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loading: true };
-    case 'CREATE_SUCCESS':
-      return { ...state, loading: false, error: '' };
-    case 'CREATE_FAIL':
+    case "CREATE_SUCCESS":
+      return { ...state, loading: false, error: "" };
+    case "CREATE_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'UPLOAD_REQUEST':
+    case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return {
         ...state,
         loadingUpload: false,
@@ -399,34 +457,64 @@ const reducer = (state, action) => {
 };
 
 let sizes = [];
+let tags = [];
+
+const color1 = [
+  "red",
+  "anthracite",
+  "beige",
+  "black",
+  "blue",
+  "brown",
+  "burgubdy",
+  "camel",
+  "ecru",
+  "gold",
+  "green",
+  "grey",
+  "khaki",
+  "metallic",
+  "multiculour",
+  "navy",
+  "orange",
+  "pink",
+  "purple",
+  "silver",
+  "turquoise",
+  "white",
+  "yellow",
+];
 export default function NewProduct() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
-  const [name, setName] = useState('');
-  const [product, setProduct] = useState('');
-  const [category, setCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
-  const [material, setMaterial] = useState('');
-  const [brand, setBrand] = useState('');
-  const [color, setColor] = useState('');
+  const [name, setName] = useState("");
+  const [product, setProduct] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [material, setMaterial] = useState("");
+  const [brand, setBrand] = useState("");
+  const [color, setColor] = useState("");
   const [luxury, setLuxury] = useState(false);
-  const [luxuryImage, setLuxuryImage] = useState('');
+  const [luxuryImage, setLuxuryImage] = useState("");
   const [vintage, setVintage] = useState(false);
-  const [location, setLocation] = useState('');
-  const [description, setDescription] = useState('');
-  const [specification, setSpecification] = useState('');
-  const [feature, setFeature] = useState('');
-  const [image1, setImage1] = useState('');
-  const [image2, setImage2] = useState('');
-  const [image3, setImage3] = useState('');
-  const [image4, setImage4] = useState('');
-  const [price, setPrice] = useState('');
-  const [discount, setDiscount] = useState('');
-  const [condition, setCondition] = useState('New');
-  const [tempsize, setTempsize] = useState('');
+  const [location, setLocation] = useState("");
+  const [description, setDescription] = useState("");
+  const [specification, setSpecification] = useState("");
+  const [feature, setFeature] = useState("");
+  const [image1, setImage1] = useState("");
+  const [image2, setImage2] = useState("");
+  const [image3, setImage3] = useState("");
+  const [image4, setImage4] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [condition, setCondition] = useState("New");
+  const [tempsize, setTempsize] = useState("");
   const [validated, setValidated] = useState(false);
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
+  const [tag, setTag] = useState(null);
+  const [deliveryOption, setDeliveryOption] = useState("");
+  const [showConditionModal, setShowConditionModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -434,9 +522,9 @@ export default function NewProduct() {
     reducer,
     {
       loading: false,
-      error: '',
+      error: "",
       loadingUpload: false,
-      errorUpload: '',
+      errorUpload: "",
     }
   );
 
@@ -454,6 +542,18 @@ export default function NewProduct() {
     fetchCategories();
   }, [dispatch]);
 
+  const [searchBrand, setSearchBrand] = useState(null);
+  const [brandQuery, setBrandQuery] = useState("");
+  useEffect(() => {
+    console.log(brandQuery);
+    const getSearch = async () => {
+      const { data } = await axios.get(`/api/brands/search?q=${brandQuery}`);
+      console.log(data);
+      setSearchBrand(data);
+    };
+    getSearch();
+  }, [brandQuery]);
+
   const sizeHandler = (sizenow) => {
     const exist = sizes.filter((s) => {
       return s.size === sizenow;
@@ -464,27 +564,37 @@ export default function NewProduct() {
       });
       sizes = newsizes;
     } else {
-      sizes.push({ size: sizenow, value: '0' });
+      sizes.push({ size: sizenow, value: "0" });
     }
     setTempsize(sizenow);
+  };
+  const handleTags = (tag) => {
+    console.log(tags);
+    tags.push(tag);
+    setTag("");
+  };
+  const removeTags = (tag) => {
+    tags.pop(tag);
+    const newtags = tags.filter((data) => data != tag);
+    tags = newtags;
   };
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log('sizes', sizes);
+    console.log("sizes", sizes);
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() !== false) {
       e.preventDefault();
       e.stopPropagation();
       setValidated(true);
-      setFormError('Fill all required field *');
+      setFormError("Fill all required field *");
     } else {
-      setFormError('');
+      setFormError("");
 
       try {
-        dispatch({ type: 'CREATE_REQUEST' });
+        dispatch({ type: "CREATE_REQUEST" });
         await axios.post(
-          '/api/products',
+          "/api/products",
           {
             name,
             image1,
@@ -498,6 +608,8 @@ export default function NewProduct() {
             description,
             brand,
             discount,
+            deliveryOption,
+            tags,
             price,
             location,
             specification,
@@ -515,26 +627,26 @@ export default function NewProduct() {
           }
         );
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Product created successfully',
+            message: "Product created successfully",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
-        dispatch({ type: 'CREATE_SUCCESS' });
+        dispatch({ type: "CREATE_SUCCESS" });
         navigate(`/dashboard/productlist`);
       } catch (err) {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Error creating product, try again late',
+            message: "Error creating product, try again late",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         console.log(getError(err));
-        dispatch({ type: 'CREATE_FAIL' });
+        dispatch({ type: "CREATE_FAIL" });
       }
     }
   };
@@ -554,43 +666,43 @@ export default function NewProduct() {
   const uploadHandler = async (e, fileType) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-      if (fileType === 'image1') {
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      if (fileType === "image1") {
         setImage1(data.secure_url);
-      } else if (fileType === 'image2') {
+      } else if (fileType === "image2") {
         setImage2(data.secure_url);
-      } else if (fileType === 'image3') {
+      } else if (fileType === "image3") {
         setImage3(data.secure_url);
-      } else if (fileType === 'luxury') {
+      } else if (fileType === "luxury") {
         setLuxuryImage(data.secure_url);
       } else {
         setImage4(data.secure_url);
       }
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed uploading image',
+          message: "Failed uploading image",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
@@ -598,12 +710,12 @@ export default function NewProduct() {
   };
 
   const [showSelect, setShowSelect] = useState(false);
-  let brands = ['Nike', 'Gucci', 'Rolex', 'Louis Vuitto', 'Adidas', 'Dior'];
+  let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
   const handleSelect = (b) => {
     setBrand(b);
     setShowSelect(false);
   };
-  if (brand.length > 0) {
+  if (brand) {
     brands = brands.filter((i) => {
       return i.toLowerCase().match(brand);
     });
@@ -633,29 +745,29 @@ export default function NewProduct() {
               />
             </Item>
             <Item>
-              <Label>Product</Label>
+              <Label>Main Category</Label>
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
+                    "&:hover": {
                       outline: 0,
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -665,7 +777,7 @@ export default function NewProduct() {
                   onChange={(e) => setProduct(e.target.value)}
                   displayEmpty
                   inputProps={{
-                    'aria-label': 'Without label',
+                    "aria-label": "Without label",
                   }}
                 >
                   {categories.length > 0 &&
@@ -682,25 +794,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
+                        "&:hover": {
                           outline: 0,
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -710,7 +822,7 @@ export default function NewProduct() {
                       onChange={(e) => setCategory(e.target.value)}
                       displayEmpty
                       inputProps={{
-                        'aria-label': 'Without label',
+                        "aria-label": "Without label",
                       }}
                     >
                       {categories.length > 0 &&
@@ -731,25 +843,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -777,29 +889,48 @@ export default function NewProduct() {
               </ItemRight>
             </ItemCont>
             <Item>
-              <Label>Condition</Label>
+              <Label>
+                Condition{" "}
+                <Tips
+                  mode={mode}
+                  tips={`What happens if I’m not certain of my product condition?
+                      Should you not be certain which condition your product falls under when listing, we suggest you choose between the last three option depending on what you see (if your product isn’t NEW or with TAG) and take very clear visible photos indicating every little details. Also, to avoid returns and help you sell fast, give every possible information in your product description so as to clearly inform buyer about your product’s condition.
+                      `}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>{" "}
+                <LinkTo onClick={() => setShowConditionModal(true)}>
+                  help?
+                </LinkTo>
+              </Label>
+              <ModelLogin
+                setShowModel={setShowConditionModal}
+                showModel={showConditionModal}
+              >
+                <Condition />
+              </ModelLogin>
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -837,25 +968,25 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -892,26 +1023,35 @@ export default function NewProduct() {
               </FormControl>
             </Item>
             <Item>
-              <Label>Brand</Label>
+              <Label>Brands</Label>
+              {brand}
               <TextInput
                 mode={mode}
                 type="text"
-                value={brand}
+                value={brand.length > 0 ? brand : brandQuery}
                 onChange={(e) => {
-                  setBrand(e.target.value);
-                  setShowSelect(true);
+                  setBrand("");
+                  setBrandQuery(e.target.value);
                 }}
-                onClick={() => setShowSelect(true)}
+                onBlur={() => brand.length > 0 && setBrandQuery("")}
               />
-              {showSelect && (
-                <BrandList mode={mode}>
-                  {brands.map((b) => (
-                    <BrandListItem mode={mode} onClick={() => setBrand(b)}>
-                      {b}
+              <BrandList mode={mode}>
+                {searchBrand &&
+                  brandQuery.length > 0 &&
+                  searchBrand.map((b) => (
+                    <BrandListItem
+                      key={b._id}
+                      mode={mode}
+                      onClick={() => {
+                        setBrand(b.name);
+                        setBrandQuery("");
+                        console.log("hello", brand);
+                      }}
+                    >
+                      {b.name}
                     </BrandListItem>
                   ))}
-                </BrandList>
-              )}
+              </BrandList>
             </Item>
             <Item>
               <Label>
@@ -935,25 +1075,25 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
@@ -989,25 +1129,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1021,7 +1161,11 @@ export default function NewProduct() {
                       <MenuItem value="M">M</MenuItem>
                       <MenuItem value="L">L</MenuItem>
                       <MenuItem value="XL">XL</MenuItem>
-                      <MenuItem value="XXL">XXL</MenuItem>
+                      <MenuItem value="XXL">42</MenuItem>
+                      <MenuItem value="XXL">43</MenuItem>
+                      <MenuItem value="XXL">44</MenuItem>
+                      <MenuItem value="XXL">45</MenuItem>
+                      <MenuItem value="XXL">46</MenuItem>
                     </Select>
                   </FormControl>
                 </Item>
@@ -1053,25 +1197,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1085,13 +1229,30 @@ export default function NewProduct() {
                       <MenuItem value="South African">South African</MenuItem>
                     </Select>
                   </FormControl>
+
+                  <TitleDetails>
+                    Please select if your product can be shipped anywhere around
+                    your country. If you're in Nigeria, Only select Nigeria. If
+                    you are selling in South Africa only select South Africa
+                  </TitleDetails>
                 </Item>
               </SizeRight>
             </Sizes>
 
             <Price>
               <Item className="half">
-                <Label>Price</Label>
+                <Label>
+                  Price{" "}
+                  <Tips
+                    mode={mode}
+                    tips={`
+                  Any price suggestion for my product?
+We encourage you to be as reasonable as possible, as over prized products are turn off to buyers. Keep in mind that our community are experienced secondhand THRIFT buyers & sellers both in vintage and luxury goods and overpricing may affect the sale of your product. However, buyers will appreciate a fairly reasonable price that’s worth the value of your product. Also, bear in mind that there might be competitive product you may be selling on our app or website, hence, be sure to beat any possible competition you can. Offer discounts, promos or free delivery where and when possible as these are great ways to sell FAST! We are doing our best to provide you with competitive goods and price suggestions for similar and previously SOLD products. 
+`}
+                  >
+                    <FontAwesomeIcon icon={faQuestionCircle} />
+                  </Tips>
+                </Label>
                 <TextInput
                   mode={mode}
                   type="number"
@@ -1120,6 +1281,19 @@ export default function NewProduct() {
                 <Actual>${price}</Actual>
               </PriceDisplay>
             </Price>
+            <TitleDetails>
+              <div style={{ color: "red", fontSize: "13px" }}>
+                Our Commission
+              </div>
+              To give you unmatched user experience and support the growth of
+              your business as part of our community, you will not be charged
+              Repeddle commission fee until 3oth November 2022. To understand
+              how our fee works after the grace period, please have a look at
+              our fee structure{" "}
+              <span style={{ color: "red", textDecoration: "underline" }}>
+                here{" "}
+              </span>
+            </TitleDetails>
           </Left>
           <Right>
             <Top>
@@ -1141,7 +1315,7 @@ export default function NewProduct() {
                           <Upload
                             type="file"
                             id="image1"
-                            onChange={(e) => uploadHandler(e, 'image1')}
+                            onChange={(e) => uploadHandler(e, "image1")}
                           />
                         </>
                       )}
@@ -1164,7 +1338,7 @@ export default function NewProduct() {
                           <Upload
                             type="file"
                             id="image2"
-                            onChange={(e) => uploadHandler(e, 'image2')}
+                            onChange={(e) => uploadHandler(e, "image2")}
                           />
                         </>
                       )}
@@ -1188,7 +1362,7 @@ export default function NewProduct() {
                             <Upload
                               type="file"
                               id="image3"
-                              onChange={(e) => uploadHandler(e, 'image3')}
+                              onChange={(e) => uploadHandler(e, "image3")}
                             />
                           </>
                         )}
@@ -1211,7 +1385,7 @@ export default function NewProduct() {
                             <Upload
                               type="file"
                               id="image4"
-                              onChange={(e) => uploadHandler(e, 'image4')}
+                              onChange={(e) => uploadHandler(e, "image4")}
                             />
                           </>
                         )}
@@ -1272,7 +1446,7 @@ export default function NewProduct() {
                               <Upload
                                 type="file"
                                 id="image1"
-                                onChange={(e) => uploadHandler(e, 'luxury')}
+                                onChange={(e) => uploadHandler(e, "luxury")}
                               />
                             </>
                           )}
@@ -1287,7 +1461,7 @@ export default function NewProduct() {
                     </TitleDetails>
                   </VimageCont>
                 ) : (
-                  ''
+                  ""
                 )}
               </ImageRow>
 
@@ -1300,6 +1474,11 @@ export default function NewProduct() {
               </Item>
               <Item>
                 <Label>Specification</Label>
+
+                <TitleDetails>
+                  FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
+                  brackets as shown on the label of clothes/shoes
+                </TitleDetails>
                 <TextArea
                   mode={mode}
                   onChange={(e) => setSpecification(e.target.value)}
@@ -1310,25 +1489,25 @@ export default function NewProduct() {
                 <FormControl
                   sx={{
                     margin: 0,
-                    borderRadius: '0.2rem',
+                    borderRadius: "0.2rem",
                     border: `1px solid ${
-                      mode === 'pagebodydark'
-                        ? 'var(--dark-ev4)'
-                        : 'var(--light-ev4)'
+                      mode === "pagebodydark"
+                        ? "var(--dark-ev4)"
+                        : "var(--light-ev4)"
                     }`,
-                    '& .MuiOutlinedInput-root': {
+                    "& .MuiOutlinedInput-root": {
                       color: `${
-                        mode === 'pagebodydark'
-                          ? 'var(--white-color)'
-                          : 'var(--black-color)'
+                        mode === "pagebodydark"
+                          ? "var(--white-color)"
+                          : "var(--black-color)"
                       }`,
-                      '&:hover': {
-                        outline: 'none',
+                      "&:hover": {
+                        outline: "none",
                         border: 0,
                       },
                     },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: '0 !important',
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "0 !important",
                     },
                   }}
                   size="small"
@@ -1368,6 +1547,70 @@ export default function NewProduct() {
                     <MenuItem value="Other">Other</MenuItem>
                   </Select>
                 </FormControl>
+              </Item>
+              <Item>
+                <Label>Delivery Option</Label>
+                <FormControl
+                  sx={{
+                    margin: 0,
+                    borderRadius: "0.2rem",
+                    border: `1px solid ${
+                      mode === "pagebodydark"
+                        ? "var(--dark-ev4)"
+                        : "var(--light-ev4)"
+                    }`,
+                    "& .MuiOutlinedInput-root": {
+                      color: `${
+                        mode === "pagebodydark"
+                          ? "var(--white-color)"
+                          : "var(--black-color)"
+                      }`,
+                      "&:hover": {
+                        outline: "none",
+                        border: 0,
+                      },
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "0 !important",
+                    },
+                  }}
+                  size="small"
+                >
+                  <Select
+                    value={deliveryOption}
+                    onChange={(e) => setDeliveryOption(e.target.value)}
+                    displayEmpty
+                  >
+                    <MenuItem value="1">Delivery Option 1</MenuItem>
+                    <MenuItem value="2">Delivery Option 2</MenuItem>
+                  </Select>
+                </FormControl>
+              </Item>
+
+              <Item>
+                <Label>Add Tags</Label>
+                <TagCont>
+                  <TagInputCont>
+                    <TagInput
+                      mode={mode}
+                      value={tag}
+                      type="text"
+                      onChange={(e) => setTag(e.target.value)}
+                    />
+                    <AddTag onClick={() => handleTags(tag)}>Add</AddTag>
+                  </TagInputCont>
+                  <div style={{ display: "flex", flexWrap: "wrap" }}>
+                    {tags.map((t, i) => (
+                      <TagItem mode={mode} key={i}>
+                        {t}
+                        <FontAwesomeIcon
+                          onClick={() => removeTags(t)}
+                          icon={faTimes}
+                        />
+                      </TagItem>
+                    ))}
+                  </div>
+                </TagCont>
               </Item>
             </Top>
             <ButtonC>

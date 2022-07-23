@@ -1,23 +1,25 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer } from 'react';
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import { Store } from "../Store";
+import { getError } from "../utils";
+import ListGroup from "react-bootstrap/ListGroup";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import moment from "moment";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Container = styled.div`
   width: 100%;
@@ -44,7 +46,7 @@ const SumaryContDetails = styled.div`
   margin-bottom: 15px;
   height: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   @media (max-width: 992px) {
     padding: 10px 15px;
@@ -54,7 +56,7 @@ const SumaryCont = styled.div`
   padding: 15px 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const OrderId = styled.div`
   font-weight: bold;
@@ -146,38 +148,39 @@ const PaymentDliveryItem = styled.div`
   margin: 5px;
   height: 100%;
 `;
+
 function reducer(state, action) {
   switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true, error: '' };
-    case 'FETCH_SUCCESS':
+    case "FETCH_REQUEST":
+      return { ...state, loading: true, error: "" };
+    case "FETCH_SUCCESS":
       return {
         ...state,
         loading: false,
         order: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'PAY_REQUEST':
+    case "PAY_REQUEST":
       return { ...state, loadingPay: true };
-    case 'PAY_SUCCESS':
+    case "PAY_SUCCESS":
       return { ...state, loadingPay: false, successPay: true };
-    case 'PAY_FAIL':
+    case "PAY_FAIL":
       return { ...state, loadingPay: false };
-    case 'PAY_RESET':
+    case "PAY_RESET":
       return { ...state, loadingPay: false, successPay: false };
-    case 'DELIVER_REQUEST':
+    case "DELIVER_REQUEST":
       return { ...state, loadingDeliver: true };
-    case 'DELIVER_SUCCESS':
+    case "DELIVER_SUCCESS":
       return { ...state, loadingDeliver: false, successDeliver: true };
-    case 'DELIVER_FAIL':
+    case "DELIVER_FAIL":
       return {
         ...state,
         loadingDeliver: false,
         errorDeliver: action.payload,
       };
-    case 'DELIVER_RESET':
+    case "DELIVER_RESET":
       return { ...state, loadingDeliver: false, successDeliver: false };
 
     default:
@@ -202,7 +205,7 @@ export default function OrderScreen() {
   ] = useReducer(reducer, {
     loading: true,
     order: {},
-    error: '',
+    error: "",
     successPay: false,
     loadingPay: false,
   });
@@ -230,7 +233,7 @@ export default function OrderScreen() {
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
       try {
-        dispatch({ type: 'PAY_REQUEST' });
+        dispatch({ type: "PAY_REQUEST" });
         const { data } = await axios.put(
           `/api/orders/${order._id}/pay`,
           details,
@@ -242,10 +245,10 @@ export default function OrderScreen() {
               }
             : {}
         );
-        dispatch({ type: 'PAY_SUCCESS', payload: data });
-        toast.success('Order is paid');
+        dispatch({ type: "PAY_SUCCESS", payload: data });
+        toast.success("Order is paid");
       } catch (err) {
-        dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+        dispatch({ type: "PAY_FAIL", payload: getError(err) });
         toast.error(getError(err));
       }
     });
@@ -258,7 +261,7 @@ export default function OrderScreen() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        dispatch({ type: 'FETCH_REQUEST' });
+        dispatch({ type: "FETCH_REQUEST" });
         const { data } = await axios.get(
           `/api/orders/${orderId}`,
           userInfo
@@ -269,9 +272,9 @@ export default function OrderScreen() {
               }
             : {}
         );
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
     if (
@@ -282,15 +285,15 @@ export default function OrderScreen() {
     ) {
       fetchOrder();
       if (successPay) {
-        dispatch({ type: 'PAY_RESET' });
+        dispatch({ type: "PAY_RESET" });
       }
       if (successDeliver) {
-        dispatch({ type: 'DELIVER_RESET' });
+        dispatch({ type: "DELIVER_RESET" });
       }
     } else {
       const loadPaypalScript = async () => {
         const { data: clientId } = await axios.get(
-          '/api/keys/paypal',
+          "/api/keys/paypal",
           userInfo
             ? {
                 headers: {
@@ -300,13 +303,13 @@ export default function OrderScreen() {
             : {}
         );
         paypalDispatch({
-          type: 'resetOptions',
+          type: "resetOptions",
           value: {
-            'client-id': clientId,
-            currency: 'USD',
+            "client-id": clientId,
+            currency: "USD",
           },
         });
-        paypalDispatch({ type: 'useLoadingStatus', value: 'pending' });
+        paypalDispatch({ type: "useLoadingStatus", value: "pending" });
       };
       loadPaypalScript();
     }
@@ -320,24 +323,23 @@ export default function OrderScreen() {
     successDeliver,
   ]);
 
-  async function deliverOrderHandler() {
+  async function deliverOrderHandler(deliveryStatus) {
     try {
-      dispatch({ type: 'DELIVER_REQUEST' });
+      dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
         `/api/orders/${order._id}/deliver`,
-        {},
+        { deliveryStatus },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'DELIVER_SUCCESS' });
-      toast.success('Order delivered');
+      dispatch({ type: "DELIVER_SUCCESS" });
+      toast.success("Order delivered");
     } catch (err) {
       toast.error(getError(err));
-      dispatch({ type: 'DELIVER_FAIL' });
+      dispatch({ type: "DELIVER_FAIL" });
     }
   }
-
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -353,9 +355,12 @@ export default function OrderScreen() {
           <OrderId>Order number {orderId}</OrderId>
           <ItemNum>
             {order.orderItems.length} Item
-            {order.orderItems.length > 1 ? 's' : ''}
+            {order.orderItems.length > 1 ? "s" : ""}
           </ItemNum>
-          <Date>Placed on {order.createdAt.substring(0, 10)}</Date>
+          <Date>
+            Placed on{" "}
+            {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+          </Date>
           <Price>Total: ${order.totalPrice}</Price>
         </SumaryCont>
 
@@ -363,13 +368,78 @@ export default function OrderScreen() {
 
         {order.orderItems.map((orderitem) => (
           <SumaryContDetails mode={mode}>
-            {order.isDelivered ? (
-              <StatusDeliver>Delivered</StatusDeliver>
-            ) : (
-              <StatusPending>Shipped</StatusPending>
-            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <div>
+                <StatusPending>{order.deliveryStatus}</StatusPending>
+                <Name>
+                  On{" "}
+                  {moment(order.deliveredAt).format("MMMM Do YYYY, h:mm:ss a")}
+                </Name>
+              </div>
+              {order.seller === userInfo._id && (
+                <div>
+                  <FormControl
+                    sx={{
+                      minWidth: "200px",
+                      margin: 0,
+                      borderRadius: "0.2rem",
+                      border: `1px solid ${
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
+                      }`,
+                      "& .MuiOutlinedInput-root": {
+                        color: `${
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
+                        }`,
+                        "&:hover": {
+                          outline: "none",
+                          border: 0,
+                        },
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
+                      },
+                    }}
+                    size="small"
+                  >
+                    <InputLabel
+                      sx={{
+                        color: `${
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
+                        }`,
+                      }}
+                      id="deliveryStatus"
+                    >
+                      Set delivery Status
+                    </InputLabel>
 
-            <Name>On {order.createdAt.substring(0, 10)}</Name>
+                    <Select
+                      onChange={(e) => deliverOrderHandler(e.target.value)}
+                      displayEmpty
+                      id="deliveryStatus"
+                    >
+                      <MenuItem value="Not yet Dispatched">
+                        Not yet Dispatched
+                      </MenuItem>
+                      <MenuItem value="Dispatch">Dispatch</MenuItem>
+                      <MenuItem value="In transit">In transit</MenuItem>
+                      <MenuItem value="Deliveed">Delivered</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+            </div>
             <hr />
             <DetailButton>
               <OrderItem>
@@ -400,7 +470,7 @@ export default function OrderScreen() {
               <hr />
               <Name>Pay Details</Name>
               <ItemNum>
-                Item Total:{'   '} <ItemPrice> ${order.totalPrice}</ItemPrice>
+                Item Total:{"   "} <ItemPrice> ${order.totalPrice}</ItemPrice>
               </ItemNum>
               <ItemNum>Shipping Fee: ${0}</ItemNum>
               <ItemNum>Total: ${order.totalPrice}</ItemNum>
@@ -414,7 +484,7 @@ export default function OrderScreen() {
               <hr />
               <Name>Deliver Address</Name>
               <ItemNum>
-                {order.shippingAddress.address}, {order.shippingAddress.city},{' '}
+                {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
                 {order.shippingAddress.postalCode},
                 {order.shippingAddress.country}
               </ItemNum>

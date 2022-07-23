@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
 import {
   faCalendarDays,
   faEnvelope,
@@ -9,14 +9,14 @@ import {
   faPlus,
   faUpload,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Store } from '../../Store';
-import axios from 'axios';
-import { getError } from '../../utils';
-import LoadingBox from '../LoadingBox';
-import SmallModel from '../SmallModel';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Store } from "../../Store";
+import axios from "axios";
+import { getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
+import SmallModel from "../SmallModel";
 
 const Container = styled.div`
   flex: 4;
@@ -51,14 +51,14 @@ const Show = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
 `;
 const Update = styled.div`
   flex: 2;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
   margin-left: 20px;
   @media (max-width: 992px) {
@@ -149,13 +149,13 @@ const TextInput = styled.input`
   height: 30px;
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: none;
   padding-left: 10px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &:focus {
     outline: none;
     border-bottom: 1px solid var(--orange-color);
@@ -202,7 +202,7 @@ const Gender = styled.div`
     &::after {
       width: 15px;
       height: 15px;
-      content: '';
+      content: "";
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -210,15 +210,15 @@ const Gender = styled.div`
       top: -2px;
       left: -1px;
       background-color: ${(props) =>
-        props.mode === 'pagebodydark'
-          ? 'var(--black-color)'
-          : 'var(--white-color)'};
+        props.mode === "pagebodydark"
+          ? "var(--black-color)"
+          : "var(--white-color)"};
       border: 1px solid var(--orange-color);
     }
     &:checked::after {
       width: 15px;
       height: 15px;
-      content: '';
+      content: "";
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -246,7 +246,7 @@ const Wallet = styled.div`
   border-radius: 0.2rem;
   align-items: center;
   background-color: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 const Wbalance = styled.div`
   font-size: 10px;
@@ -267,23 +267,23 @@ const AccButton = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true, error: '' };
-    case 'FETCH_SUCCESS':
+    case "FETCH_REQUEST":
+      return { ...state, loading: true, error: "" };
+    case "FETCH_SUCCESS":
       return { ...state, loading: false, user: action.payload };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'UPDATE_REQUEST':
+    case "UPDATE_REQUEST":
       return { ...state, loadingUpdate: true };
-    case 'UPDATE_SUCCESS':
+    case "UPDATE_SUCCESS":
       return { ...state, loadingUpdate: false };
-    case 'UPDATE_FAIL':
+    case "UPDATE_FAIL":
       return { ...state, loadingUpdate: false };
-    case 'UPLOAD_REQUEST':
+    case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return {
         ...state,
         loadingUpload: false,
@@ -306,32 +306,32 @@ export default function User() {
     dispatch,
   ] = useReducer(reducer, {
     loading: true,
-    error: '',
-    loadingUpdate: '',
+    error: "",
+    loadingUpdate: "",
     user: {},
   });
 
   const navigate = useNavigate();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [dob, setDob] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [about, setAbout] = useState('');
-  const [image, setImage] = useState('');
-  const [active, setActive] = useState('');
-  const [badge, setBadge] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [dob, setDob] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [about, setAbout] = useState("");
+  const [image, setImage] = useState("");
+  const [active, setActive] = useState("");
+  const [badge, setBadge] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showModel, setShowModel] = useState(false);
-  const [accountName, setAccountName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [bankName, setBankName] = useState('');
+  const [accountName, setAccountName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankName, setBankName] = useState("");
 
   useEffect(() => {
     try {
-      dispatch({ type: 'FETCH_REQUEST' });
+      dispatch({ type: "FETCH_REQUEST" });
 
       if (id) {
         const fetchUser = async () => {
@@ -340,7 +340,7 @@ export default function User() {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
-          dispatch({ type: 'FETCH_SUCCESS', payload: data });
+          dispatch({ type: "FETCH_SUCCESS", payload: data });
         };
         fetchUser();
       } else {
@@ -350,12 +350,12 @@ export default function User() {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
-          dispatch({ type: 'FETCH_SUCCESS', payload: data });
+          dispatch({ type: "FETCH_SUCCESS", payload: data });
         };
         fetchUser();
       }
     } catch (err) {
-      dispatch({ type: 'FETCH_FAIL' });
+      dispatch({ type: "FETCH_FAIL" });
       console.log(getError(err));
     }
   }, [id, userInfo]);
@@ -365,16 +365,16 @@ export default function User() {
     try {
       if (!id && password !== confirmPassword) {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Password do not match',
+            message: "Password do not match",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         return;
       }
-      dispatch({ type: 'UPDATE_REQUEST' });
+      dispatch({ type: "UPDATE_REQUEST" });
 
       await axios.put(
         id ? `/api/users/${user._id}` : `/api/users/profile`,
@@ -397,52 +397,52 @@ export default function User() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'UPDATE_SUCCESS' });
+      dispatch({ type: "UPDATE_SUCCESS" });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'User Updated',
+          message: "User Updated",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
-      navigate(id ? '/dashboard/userlist' : `../../seller/${user._id}`);
+      navigate(id ? "/dashboard/userlist" : `../../seller/${user._id}`);
     } catch (err) {
       console.log(getError(err));
-      dispatch({ type: 'UPDATE_FAIL' });
+      dispatch({ type: "UPDATE_FAIL" });
     }
   };
 
   const uploadHandler = async (e) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
+      dispatch({ type: "UPLOAD_SUCCESS" });
       setImage(data.secure_url);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed uploading image',
+          message: "Failed uploading image",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
@@ -460,7 +460,7 @@ export default function User() {
             <Image src={user.image} alt="p" />
             <TopTitle>
               <Name>{user.name}</Name>
-              <UserTitle>{user.isAdmin ? 'Admin' : 'Seller'}</UserTitle>
+              <UserTitle>{user.isAdmin ? "Admin" : "Seller"}</UserTitle>
             </TopTitle>
             <Wallet mode={mode}>
               <Wbalance>Wallet Balance</Wbalance>
@@ -534,6 +534,12 @@ export default function User() {
                 </Form2>
               </SmallModel>
             </Info>
+
+            <Info>
+              <Username>{user.accountName}</Username>
+              <Username>{user.accountNumber}</Username>
+              <Username>{user.bankName}</Username>
+            </Info>
           </ShowBottom>
         </Show>
         <Update mode={mode}>
@@ -593,7 +599,7 @@ export default function User() {
                         ? image
                         : user.image
                         ? user.image
-                        : '/images/pimage.png'
+                        : "/images/pimage.png"
                     }
                     alt=""
                   />
@@ -614,7 +620,7 @@ export default function User() {
                     <Gender mode={mode}>
                       <input
                         checked={
-                          active === 'yes' ? true : user.active ? true : false
+                          active === "yes" ? true : user.active ? true : false
                         }
                         type="radio"
                         name="gender"
@@ -625,7 +631,7 @@ export default function User() {
                       <Label htmlFor="yes">Yes</Label>
                       <input
                         checked={
-                          active === 'no' ? true : !user.active ? true : false
+                          active === "no" ? true : !user.active ? true : false
                         }
                         type="radio"
                         name="gender"
@@ -639,7 +645,7 @@ export default function User() {
                     <Gender mode={mode}>
                       <input
                         checked={
-                          badge === 'yes' ? true : user.badge ? true : false
+                          badge === "yes" ? true : user.badge ? true : false
                         }
                         type="radio"
                         name="badge"
@@ -650,7 +656,7 @@ export default function User() {
                       <Label htmlFor="badgeyes">Yes</Label>
                       <input
                         checked={
-                          badge === 'no' ? true : !user.badge ? true : false
+                          badge === "no" ? true : !user.badge ? true : false
                         }
                         type="radio"
                         name="badge"
@@ -685,7 +691,7 @@ export default function User() {
                 )}
               </div>
               <UploadButton type="submit">Update</UploadButton>
-              {loadingUpdate ? <LoadingBox></LoadingBox> : ''}
+              {loadingUpdate ? <LoadingBox></LoadingBox> : ""}
             </Right>
           </Form>
         </Update>

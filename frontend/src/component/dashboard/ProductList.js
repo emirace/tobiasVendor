@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useReducer } from 'react';
-import styled from 'styled-components';
-import { DataGrid } from '@mui/x-data-grid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Store } from '../../Store';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { getError } from '../../utils';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
+import { DataGrid } from "@mui/x-data-grid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Store } from "../../Store";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { getError } from "../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -39,7 +39,7 @@ const Edit = styled.button`
   border-radius: 0.2rem;
   padding: 5px 10px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
   cursor: pointer;
   margin-right: 10px;
@@ -61,25 +61,48 @@ const Stock = styled.div`
   }
 `;
 
+const SearchCont = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+const SearchInput = styled.input`
+  width: 40%;
+  height: 45px;
+  padding: 15px;
+  border: 1px solid var(--malon-color);
+  border-radius: 5px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  &::placeholder {
+    padding: 10px;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'USERS_REQUEST':
+    case "USERS_REQUEST":
       return { ...state, loading: true };
-    case 'USERS_SUCCESS':
+    case "USERS_SUCCESS":
       return {
         ...state,
         products: action.payload,
         loading: false,
       };
-    case 'USERS_FAIL':
+    case "USERS_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'DELETE_REQUEST':
+    case "DELETE_REQUEST":
       return { ...state, loadingDelete: true, successDelete: false };
-    case 'DELETE_SUCCESS':
+    case "DELETE_SUCCESS":
       return { ...state, loadingDelete: false, successDelete: true };
-    case 'DELETE_FAIL':
+    case "DELETE_FAIL":
       return { ...state, loadingDelete: false, successDelete: false };
-    case 'DELETE_RESET':
+    case "DELETE_RESET":
       return { ...state, loadingDelete: false, successDelete: false };
 
     default:
@@ -95,56 +118,57 @@ export default function ProductList() {
     useReducer(reducer, {
       loading: true,
       products: [],
-      error: '',
+      error: "",
     });
   const sellerMode = () => {
     return userInfo.isAdmin ? false : true;
   };
   const isSellerMode = sellerMode();
+  const [productsQuery, setProductsQuery] = useState("all");
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
-        dispatch({ type: 'USERS_FETCH' });
+        dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/${isSellerMode ? 'seller/' : 'admin'}${
-            isSellerMode ? userInfo._id : ''
-          }`,
+          `/api/products/${isSellerMode ? "seller/search/" : "admin"}${
+            isSellerMode ? userInfo._id : ""
+          }?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'USERS_SUCCESS', payload: data.products });
+        dispatch({ type: "USERS_SUCCESS", payload: data.products });
       } catch (err) {
         console.log(getError(err));
       }
     };
     if (successDelete) {
-      dispatch({ type: 'DELETE_RESET' });
+      dispatch({ type: "DELETE_RESET" });
     } else {
       fetchAllProduct();
     }
-  }, [successDelete, userInfo]);
+  }, [successDelete, userInfo, productsQuery]);
 
   const deleteHandler = async (product) => {
-    console.log('params', product);
-    if (window.confirm('Are you sure to delete?')) {
+    console.log("params", product);
+    if (window.confirm("Are you sure to delete?")) {
       try {
-        dispatch({ type: 'DELETE_REQUEST' });
+        dispatch({ type: "DELETE_REQUEST" });
         await axios.delete(`/api/products/${product}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'DELETE_SUCCESS' });
+        dispatch({ type: "DELETE_SUCCESS" });
       } catch (err) {
-        dispatch({ type: 'DELETE_FAIL' });
+        dispatch({ type: "DELETE_FAIL" });
       }
     }
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+    { field: "id", headerName: "ID", width: 100 },
     {
-      field: 'product',
-      headerName: 'Product',
+      field: "product",
+      headerName: "Product",
       width: 200,
       renderCell: (params) => {
         return (
@@ -155,29 +179,29 @@ export default function ProductList() {
         );
       },
     },
-    { field: 'stock', headerName: 'Stock', width: 100 },
+    { field: "stock", headerName: "Stock", width: 100 },
     {
-      field: 'status',
-      headerName: 'Status',
+      field: "status",
+      headerName: "Status",
       width: 200,
       renderCell: (params) => {
         return params.row.stock ? (
-          <Stock>{params.row.stock ? 'In Stock' : 'Out of Stock'}</Stock>
+          <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
         ) : (
           <Stock className="empty">
-            {params.row.stock ? 'In Stock' : 'Out of Stock'}
+            {params.row.stock ? "In Stock" : "Out of Stock"}
           </Stock>
         );
       },
     },
     {
-      field: 'price',
-      headerName: 'Price',
+      field: "price",
+      headerName: "Price",
       width: 150,
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 150,
       renderCell: (params) => {
         return (
@@ -185,10 +209,12 @@ export default function ProductList() {
             <Link to={`/dashboard/product/${params.row.id}`}>
               <Edit mode={mode}>Edit</Edit>
             </Link>
-            <FontAwesomeIcon
-              onClick={() => deleteHandler(params.row.id)}
-              icon={faTrash}
-            />
+            {userInfo.isAdmin && (
+              <FontAwesomeIcon
+                onClick={() => deleteHandler(params.row.id)}
+                icon={faTrash}
+              />
+            )}
           </ActionSec>
         );
       },
@@ -199,80 +225,86 @@ export default function ProductList() {
     name: p.name,
     image: p.image,
     stock: p.countInStock,
-    price: '$' + p.price,
+    price: "$" + p.price,
     slug: p.slug,
   }));
 
   return (
     <ProductLists mode={mode}>
       <Title>Product List</Title>
+      <SearchCont>
+        <SearchInput
+          onChange={(e) => setProductsQuery(e.target.value)}
+          placeholder="Search "
+        />
+      </SearchCont>
       <DataGrid
         sx={{
-          width: '100%',
-          height: '650px',
+          width: "100%",
+          height: "650px",
           color: `${
-            mode === 'pagebodydark'
-              ? 'var(--white-color)'
-              : 'var(--black-color)'
+            mode === "pagebodydark"
+              ? "var(--white-color)"
+              : "var(--black-color)"
           }`,
-          border: 'none',
-          '& p.MuiTablePagination-displayedRows': {
+          border: "none",
+          "& p.MuiTablePagination-displayedRows": {
             margin: 0,
             color: `${
-              mode === 'pagebodydark'
-                ? 'var(--white-color)'
-                : 'var(--black-color)'
+              mode === "pagebodydark"
+                ? "var(--white-color)"
+                : "var(--black-color)"
             }`,
           },
-          '& .MuiButtonBase-root': {
+          "& .MuiButtonBase-root": {
             color: `${
-              mode === 'pagebodydark'
-                ? 'var(--white-color)'
-                : 'var(--black-color)'
+              mode === "pagebodydark"
+                ? "var(--white-color)"
+                : "var(--black-color)"
             }`,
           },
-          '& .MuiDataGrid-columnHeaders': {
-            border: 'none',
+          "& .MuiDataGrid-columnHeaders": {
+            border: "none",
           },
-          '& .MuiDataGrid-cell': {
-            border: 'none',
+          "& .MuiDataGrid-cell": {
+            border: "none",
           },
-          '& .Mui-checked': {
-            color: 'var(--orange-color) !important',
+          "& .Mui-checked": {
+            color: "var(--orange-color) !important",
           },
-          '& .Mui-selected': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+          "& .Mui-selected": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
             } !important`,
           },
-          '& .MuiDataGrid-row:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+          "& .MuiDataGrid-row:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
             } !important`,
           },
-          '& .Mui-selected:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+          "& .Mui-selected:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
             } !important`,
           },
 
-          '& .MuiDataGrid-cell:focus': {
-            outline: 'solid var(--orange-color) 1px  !important',
-            borderRadius: '0.2rem',
+          "& .MuiDataGrid-cell:focus": {
+            outline: "solid var(--orange-color) 1px  !important",
+            borderRadius: "0.2rem",
           },
-          '& .MuiDataGrid-columnHeader:focus': {
-            outline: 'solid var(--orange-color) 1px  !important',
-            borderRadius: '0.2rem',
+          "& .MuiDataGrid-columnHeader:focus": {
+            outline: "solid var(--orange-color) 1px  !important",
+            borderRadius: "0.2rem",
           },
-          '& .MuiCheckbox-root:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+          "& .MuiCheckbox-root:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
             }   !important`,
           },
-          '& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within':
+          "& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within":
             {
-              outline: 'solid var(--orange-color) 1px  !important',
-              borderRadius: '0.2rem',
+              outline: "solid var(--orange-color) 1px  !important",
+              borderRadius: "0.2rem",
             },
         }}
         rows={rows}

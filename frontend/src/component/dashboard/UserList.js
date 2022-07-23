@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useReducer } from 'react';
-import styled from 'styled-components';
-import { DataGrid } from '@mui/x-data-grid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Store } from '../../Store';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { getError } from '../../utils';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
+import { DataGrid } from "@mui/x-data-grid";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Store } from "../../Store";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { getError } from "../../utils";
 
 const Container = styled.div`
   flex: 4;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   margin: 0 20px;
   border-radius: 0.2rem;
 `;
@@ -34,7 +34,7 @@ const Edit = styled.button`
   border-radius: 0.2rem;
   padding: 5px 10px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
   cursor: pointer;
   margin-right: 10px;
@@ -52,23 +52,23 @@ const ActionSec = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'USERS_REQUEST':
+    case "USERS_REQUEST":
       return { ...state, loading: true };
-    case 'USERS_SUCCESS':
+    case "USERS_SUCCESS":
       return {
         ...state,
         users: action.payload,
         loading: false,
       };
-    case 'USERS_FAIL':
+    case "USERS_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'DELETE_REQUEST':
+    case "DELETE_REQUEST":
       return { ...state, loadingDelete: true, successDelete: false };
-    case 'DELETE_SUCCESS':
+    case "DELETE_SUCCESS":
       return { ...state, loadingDelete: false, successDelete: true };
-    case 'DELETE_FAIL':
+    case "DELETE_FAIL":
       return { ...state, loadingDelete: false };
-    case 'DELETE_RESET':
+    case "DELETE_RESET":
       return { ...state, loadingDelete: false, successDelete: false };
 
     default:
@@ -84,56 +84,56 @@ export default function UserList() {
     useReducer(reducer, {
       loading: true,
       users: [],
-      error: '',
+      error: "",
     });
-
+  const [userQuery, setUserQuery] = useState("all");
   useEffect(() => {
     const fetchAllUser = async () => {
       try {
-        dispatch({ type: 'USERS_FETCH' });
-        const { data } = await axios.get('/api/users', {
+        dispatch({ type: "USERS_FETCH" });
+        const { data } = await axios.get(`/api/users?q=${userQuery}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'USERS_SUCCESS', payload: data });
+        dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
         console.log(getError(err));
       }
     };
     if (successDelete) {
-      dispatch({ type: 'DELETE_RESET' });
+      dispatch({ type: "DELETE_RESET" });
     } else {
       fetchAllUser();
     }
   }, [successDelete, userInfo]);
 
   const deleteHandler = async (user) => {
-    if (window.confirm('Are you sure to delete')) {
+    if (window.confirm("Are you sure to delete")) {
       try {
-        dispatch({ type: 'DELETE_REQUEST' });
+        dispatch({ type: "DELETE_REQUEST" });
         await axios.delete(`/api/users/${user}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'DELETE_SUCCESS' });
+        dispatch({ type: "DELETE_SUCCESS" });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'User deleted',
+            message: "User deleted",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
       } catch (err) {
         console.log(getError(err));
-        dispatch({ type: 'DELETE_FAIL' });
+        dispatch({ type: "DELETE_FAIL" });
       }
     }
   };
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
+    { field: "id", headerName: "ID", width: 100 },
     {
-      field: 'user',
-      headerName: 'User',
+      field: "user",
+      headerName: "User",
       width: 200,
       renderCell: (params) => {
         return (
@@ -144,20 +144,20 @@ export default function UserList() {
         );
       },
     },
-    { field: 'email', headerName: 'Email', width: 200 },
+    { field: "email", headerName: "Email", width: 200 },
     {
-      field: 'status',
-      headerName: 'Status',
+      field: "status",
+      headerName: "Status",
       width: 120,
     },
     {
-      field: 'transactions',
-      headerName: 'Transaction',
+      field: "transactions",
+      headerName: "Transaction",
       width: 150,
     },
     {
-      field: 'action',
-      headerName: 'Action',
+      field: "action",
+      headerName: "Action",
       width: 150,
       renderCell: (params) => {
         return (
@@ -180,8 +180,8 @@ export default function UserList() {
     username: u.name,
     image: u.image,
     email: u.email,
-    status: 'online',
-    transactions: '$242.23',
+    status: "online",
+    transactions: "$242.23",
   }));
 
   //   const rows = [
@@ -214,71 +214,71 @@ export default function UserList() {
   return (
     <Container mode={mode}>
       <Title>User List</Title>
-      {console.log('user', users)}
+      {console.log("user", users)}
       <DataGrid
         sx={{
-          width: '100%',
-          height: '650px',
+          width: "100%",
+          height: "650px",
           color: `${
-            mode === 'pagebodydark'
-              ? 'var(--white-color)'
-              : 'var(--black-color)'
+            mode === "pagebodydark"
+              ? "var(--white-color)"
+              : "var(--black-color)"
           }`,
-          border: 'none',
-          '& p.MuiTablePagination-displayedRows': {
+          border: "none",
+          "& p.MuiTablePagination-displayedRows": {
             margin: 0,
             color: `${
-              mode === 'pagebodydark'
-                ? 'var(--white-color)'
-                : 'var(--black-color)'
+              mode === "pagebodydark"
+                ? "var(--white-color)"
+                : "var(--black-color)"
             }`,
           },
-          '& .MuiButtonBase-root': {
+          "& .MuiButtonBase-root": {
             color: `${
-              mode === 'pagebodydark'
-                ? 'var(--white-color)'
-                : 'var(--black-color)'
+              mode === "pagebodydark"
+                ? "var(--white-color)"
+                : "var(--black-color)"
             }`,
           },
-          '& .MuiDataGrid-columnHeaders': {
-            border: 'none',
+          "& .MuiDataGrid-columnHeaders": {
+            border: "none",
           },
-          '& .MuiDataGrid-cell': {
-            border: 'none',
+          "& .MuiDataGrid-cell": {
+            border: "none",
           },
-          '& .Mui-checked': {
-            color: 'var(--orange-color) !important',
+          "& .Mui-checked": {
+            color: "var(--orange-color) !important",
           },
-          '& .Mui-selected': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+          "& .Mui-selected": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
             } !important`,
           },
-          '& .MuiDataGrid-row:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'
+          "& .MuiDataGrid-row:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
             } !important`,
           },
-          '& .Mui-selected:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+          "& .Mui-selected:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
             } !important`,
           },
 
-          '& .MuiDataGrid-cell:focus': {
-            outline: 'solid var(--orange-color) 1px  !important',
+          "& .MuiDataGrid-cell:focus": {
+            outline: "solid var(--orange-color) 1px  !important",
           },
-          '& .MuiDataGrid-columnHeader:focus': {
-            outline: 'solid var(--orange-color) 1px  !important',
+          "& .MuiDataGrid-columnHeader:focus": {
+            outline: "solid var(--orange-color) 1px  !important",
           },
-          '& .MuiCheckbox-root:hover': {
-            'background-color': `${
-              mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'
+          "& .MuiCheckbox-root:hover": {
+            "background-color": `${
+              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
             }   !important`,
           },
-          '& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within':
+          "& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within":
             {
-              outline: 'solid var(--orange-color) 1px  !important',
+              outline: "solid var(--orange-color) 1px  !important",
             },
         }}
         rows={rows}
