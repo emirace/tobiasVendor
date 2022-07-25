@@ -108,6 +108,7 @@ export default function AddressBook() {
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   const [{ loadingAddress, error, addresses }, dispatch] = useReducer(reducer, {
     loadingAddress: true,
@@ -131,7 +132,7 @@ export default function AddressBook() {
       }
     };
     getAddress();
-  }, []);
+  }, [refresh]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -220,6 +221,18 @@ export default function AddressBook() {
     setApartment(item.apartment);
     setSelected(item._id);
   };
+
+  const deletehandle = async () => {
+    try {
+      console.log(selected);
+      await axios.delete(`/api/addresses/${selected}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      setRefresh(!refresh);
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
   return (
     <Container mode={mode}>
       <TitleCont>
@@ -241,14 +254,24 @@ export default function AddressBook() {
                   {address.state}, {address.country}{" "}
                 </Full>
               </Option>
-              <Edit
-                onClick={() => {
-                  setShowEditForm(true);
-                  handleSelect(address);
-                }}
-              >
-                Edit
-              </Edit>
+              <div style={{ display: "flex", gap: "20px" }}>
+                <Edit
+                  onClick={() => {
+                    setShowEditForm(true);
+                    handleSelect(address);
+                  }}
+                >
+                  Edit
+                </Edit>
+                <Edit
+                  onClick={() => {
+                    handleSelect(address);
+                    deletehandle();
+                  }}
+                >
+                  Delete
+                </Edit>
+              </div>
             </Manual>
           ))
         ) : (

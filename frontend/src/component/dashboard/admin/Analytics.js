@@ -9,6 +9,7 @@ import { getError } from "../../../utils";
 import moment from "moment";
 import LoadingBox from "../../LoadingBox";
 import WidgetSmall from "../WidgetSmall";
+import FeatureInfo from "../FeatureInfo";
 const Container = styled.div`
   flex: 4;
   min-width: 0;
@@ -165,12 +166,23 @@ const NameCont = styled.div`
   justify-content: space-between;
   width: 100%;
 `;
+
+const Widgets = styled.div`
+  display: flex;
+  gap: 20px;
+  margin: 0 20px 20px 0;
+  @media (max-width: 992px) {
+    flex-wrap: wrap;
+  }
+`;
 export default function Analytics() {
   const { state } = useContext(Store);
   const { userInfo, mode } = state;
 
   const [users, setUsers] = useState();
+  const [users2, setUsers2] = useState();
   const [products, setProducts] = useState();
+  const [product, setProduct] = useState();
   const [soldProducts, setSoldProducts] = useState();
   const [mostView, setMostView] = useState();
   const [error, setError] = useState();
@@ -234,8 +246,98 @@ export default function Analytics() {
     };
     OutOfStock();
   }, [userInfo]);
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      if (userInfo.isAdmin) {
+        try {
+          const { data } = await axios.get("/api/orders/summary", {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          setUsers2(data);
+        } catch (err) {
+          console.log(getError(err));
+        }
+      } else {
+        try {
+          const { data } = await axios.get(
+            `/api/orders/seller/${userInfo._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+              },
+            }
+          );
+          setUsers2(data);
+          console.log("data", data);
+        } catch (err) {
+          setError(getError(err));
+          console.log(getError(err));
+        }
+      }
+    };
+
+    fetchAllUsers();
+  }, [userInfo]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get(
+          `/api/products/seller/${userInfo._id}?page=${1}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        setProduct(data);
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    fetchData();
+  }, [userInfo]);
   return (
     <Container>
+      {console.log(users2)}
+      {error ? (
+        error
+      ) : !users2 ? (
+        <LoadingBox />
+      ) : (
+        <Widgets>
+          {userInfo.isAdmin && users2.orders ? (
+            <FeatureInfo type="user" number={users2.users[0].numUsers} />
+          ) : (
+            ""
+          )}
+          <FeatureInfo
+            type="order"
+            number={
+              users2.orders && userInfo.isAdmin
+                ? users2.orders[0].numOrders
+                : users2.length
+            }
+          />
+          <FeatureInfo
+            type="product"
+            number={
+              users2.orders && userInfo.isAdmin
+                ? users2.products[0].numProducts
+                : products
+                ? products.products.length
+                : ""
+            }
+          />
+          <FeatureInfo
+            type="earning"
+            number={
+              users2.orders && userInfo.isAdmin
+                ? users2.orders[0].numSales
+                : "565"
+            }
+          />
+        </Widgets>
+      )}
       <Content mode={mode}>
         <NameCont>
           <Tittle>New Join Members</Tittle>

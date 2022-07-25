@@ -17,7 +17,7 @@ export default function Earning() {
   return (
     <Container>
       <Row>
-        <FeatureInfo type="earning" number={"565"} />
+        <FeatureInfo type="today" number={"565"} />
         <FeatureInfo type="earning" number={"565"} />
       </Row>
       <WidgetLarge />

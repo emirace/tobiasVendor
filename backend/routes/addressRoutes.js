@@ -73,12 +73,13 @@ addressRouter.delete(
   "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.params.id);
     const address = await Address.findById(req.params.id);
     if (address) {
-      await category.remove();
-      res.send("Category deleted");
+      await address.remove();
+      res.send("Adress deleted");
     } else {
-      res.status(404).send("Category not found");
+      res.status(404).send("Address not found");
     }
   })
 );

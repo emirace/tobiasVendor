@@ -265,9 +265,7 @@ function App() {
                     path="/payment"
                     element={
                       <CartNotEmpty>
-                        <IsShippingAdd>
-                          <PaymentMethodScreen />
-                        </IsShippingAdd>
+                        <PaymentMethodScreen />
                       </CartNotEmpty>
                     }
                   />
@@ -275,11 +273,9 @@ function App() {
                     path="/placeorder"
                     element={
                       <CartNotEmpty>
-                        <IsShippingAdd>
-                          <IsPaymentMethod>
-                            <PlaceOrderScreen />
-                          </IsPaymentMethod>
-                        </IsShippingAdd>
+                        <IsPaymentMethod>
+                          <PlaceOrderScreen />
+                        </IsPaymentMethod>
                       </CartNotEmpty>
                     }
                   />

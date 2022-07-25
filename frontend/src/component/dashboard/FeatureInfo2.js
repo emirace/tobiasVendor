@@ -25,7 +25,8 @@ const Item = styled.div`
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+  border-left: 2px solid var(--orange-color);
 `;
 const Left = styled.div`
   display: flex;
@@ -81,7 +82,7 @@ export default function FeatureInfo({ type, number }) {
   switch (type) {
     case "user":
       data = {
-        title: " TOTAL USERS",
+        title: "USERS",
         isMoney: false,
         link: "See all users",
         to: "/dashboard/userlist",
@@ -99,7 +100,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "order":
       data = {
-        title: " TOTAL ORDERS",
+        title: "ORDERS",
         isMoney: false,
         to: "/dashboard/orderlist",
         link: "view all orders",
@@ -117,45 +118,9 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "earning":
       data = {
-        title: " TOTAL EARNINGS",
+        title: "EARNINGS",
         isMoney: true,
         to: "/dashboard/earning",
-        link: "view all net earning",
-        icon: (
-          <FontAwesomeIcon
-            className="icon"
-            icon={faMoneyBill}
-            style={{
-              color: "var(--green-color)",
-              background: `${mode === "pagebodydark" ? "#1d3b23" : "#d6f5dc"}`,
-            }}
-          />
-        ),
-      };
-      break;
-    case "earning":
-      data = {
-        title: " TOTAL EARNINGS",
-        isMoney: true,
-        to: "/dashboard/earning",
-        link: "view all net earning",
-        icon: (
-          <FontAwesomeIcon
-            className="icon"
-            icon={faMoneyBill}
-            style={{
-              color: "var(--green-color)",
-              background: `${mode === "pagebodydark" ? "#1d3b23" : "#d6f5dc"}`,
-            }}
-          />
-        ),
-      };
-      break;
-    case "today":
-      data = {
-        title: " TOTAL TODAY",
-        isMoney: true,
-        to: "",
         link: "view all net earning",
         icon: (
           <FontAwesomeIcon
@@ -171,7 +136,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "product":
       data = {
-        title: " TOTAL PRODUCTS",
+        title: "PRODUCTS",
         isMoney: false,
         to: "/dashboard/productlist",
         link: "View product list",
@@ -183,6 +148,25 @@ export default function FeatureInfo({ type, number }) {
             }}
             className="icon"
             icon={faBasketShopping}
+          />
+        ),
+      };
+
+      break;
+    case "purchase":
+      data = {
+        title: "PURCHASES",
+        isMoney: false,
+        to: "/dashboard/productlist",
+        link: "View product list",
+        icon: (
+          <FontAwesomeIcon
+            style={{
+              color: "var(--orange-color)",
+              background: `${mode === "pagebodydark" ? "#473527" : "#fcf0e0"}`,
+            }}
+            className="icon"
+            icon={faBagShopping}
           />
         ),
       };
@@ -201,11 +185,6 @@ export default function FeatureInfo({ type, number }) {
           <Counter>
             {data.isMoney && "$"} {number}
           </Counter>
-          {data.to && (
-            <Links>
-              <Link to={data.to}>{data.link}</Link>
-            </Links>
-          )}
         </Left>
         <Right>
           <Percentage>

@@ -1,43 +1,43 @@
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer } from "react";
 
 export const Store = createContext();
 const initialState = {
-  userInfo: localStorage.getItem('userInfo')
-    ? JSON.parse(localStorage.getItem('userInfo'))
+  userInfo: localStorage.getItem("userInfo")
+    ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
-  mode: localStorage.getItem('mode')
-    ? localStorage.getItem('mode')
-    : 'pagebodylight',
-  useraddress: localStorage.getItem('useraddress')
-    ? localStorage.getItem('useraddress')
+  mode: localStorage.getItem("mode")
+    ? localStorage.getItem("mode")
+    : "pagebodylight",
+  useraddress: localStorage.getItem("useraddress")
+    ? localStorage.getItem("useraddress")
     : null,
   cart: {
-    cartItems: localStorage.getItem('cartItems')
-      ? JSON.parse(localStorage.getItem('cartItems'))
+    cartItems: localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
       : [],
-    paymentMethod: localStorage.getItem('paymentMethod')
-      ? localStorage.getItem('paymentMethod')
-      : '',
-    shippingAddress: localStorage.getItem('shippingAddress')
-      ? JSON.parse(localStorage.getItem('shippingAddress'))
+    paymentMethod: localStorage.getItem("paymentMethod")
+      ? localStorage.getItem("paymentMethod")
+      : "",
+    shippingAddress: localStorage.getItem("shippingAddress")
+      ? JSON.parse(localStorage.getItem("shippingAddress"))
       : {},
   },
   notification: {
-    text: '',
-    buttonText: '',
+    text: "",
+    buttonText: "",
     showStatus: false,
-    link: '',
+    link: "",
   },
   toast: {
-    message: '',
-    state1: '',
+    message: "",
+    state1: "",
     showStatus: false,
   },
   onlineUser: [],
 };
 function reducer(state, action) {
   switch (action.type) {
-    case 'CART_ADD_ITEM':
+    case "CART_ADD_ITEM":
       //add to cart
       console.log(action.payload);
       const newItem = action.payload;
@@ -49,7 +49,7 @@ function reducer(state, action) {
             item._id === existItem._id ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     //   return {
     //     ...state,
@@ -59,19 +59,19 @@ function reducer(state, action) {
     //     },
     //   };
 
-    case 'CART_REMOVE_ITEM': {
+    case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id
       );
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
-    case 'CART_CLEAR': {
+    case "CART_CLEAR": {
       return { ...state, cart: { ...state.cart, cartItems: [] } };
     }
-    case 'USER_SIGNIN':
+    case "USER_SIGNIN":
       return { ...state, userInfo: action.payload };
-    case 'USER_SIGNOUT':
+    case "USER_SIGNOUT":
       return {
         ...state,
         userInfo: null,
@@ -81,7 +81,7 @@ function reducer(state, action) {
           paymentMethod: [],
         },
       };
-    case 'SAVE_SHIPPING_ADDRESS':
+    case "SAVE_SHIPPING_ADDRESS":
       return {
         ...state,
         cart: {
@@ -89,12 +89,12 @@ function reducer(state, action) {
           shippingAddress: action.payload,
         },
       };
-    case 'SAVE_USER_ADDRESS':
+    case "SAVE_USER_ADDRESS":
       return {
         ...state,
         useraddress: action.payload,
       };
-    case 'SAVE_PAYMENT_METHOD':
+    case "SAVE_PAYMENT_METHOD":
       return {
         ...state,
         cart: {
@@ -102,11 +102,11 @@ function reducer(state, action) {
           paymentMethod: action.payload,
         },
       };
-    case 'CHANGE_MODE':
+    case "CHANGE_MODE":
       return { ...state, mode: action.payload };
-    case 'SET_ONLINE':
+    case "SET_ONLINE":
       return { ...state, onlineUser: action.payload };
-    case 'SHOW_NOTIFICAATION':
+    case "SHOW_NOTIFICAATION":
       return {
         ...state,
         notification: {
@@ -116,17 +116,17 @@ function reducer(state, action) {
           link: action.payload.link,
         },
       };
-    case 'REMOVE_NOTIFICAATION':
+    case "REMOVE_NOTIFICAATION":
       return {
         ...state,
         notification: {
-          text: '',
-          buttonText: '',
-          link: '',
+          text: "",
+          buttonText: "",
+          link: "",
           showStatus: false,
         },
       };
-    case 'SHOW_TOAST':
+    case "SHOW_TOAST":
       return {
         ...state,
         toast: {
@@ -135,12 +135,12 @@ function reducer(state, action) {
           showStatus: action.payload.showStatus,
         },
       };
-    case 'REMOVE_TOAST':
+    case "REMOVE_TOAST":
       return {
         ...state,
         toast: {
-          message: '',
-          state1: '',
+          message: "",
+          state1: "",
           showStatus: false,
         },
       };

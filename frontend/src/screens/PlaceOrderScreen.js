@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useReducer } from 'react';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { Helmet } from 'react-helmet-async';
-import CheckoutSteps from '../component/CheckoutSteps';
-import { Store } from '../Store';
-import { Link, useNavigate } from 'react-router-dom';
-import { getError } from '../utils';
-import { toast } from 'react-toastify';
-import axios from 'axios';
-import LoadingBox from '../component/LoadingBox';
-import styled from 'styled-components';
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import React, { useContext, useEffect, useReducer } from "react";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import ListGroup from "react-bootstrap/ListGroup";
+import { Helmet } from "react-helmet-async";
+import CheckoutSteps from "../component/CheckoutSteps";
+import { Store } from "../Store";
+import { Link, useNavigate } from "react-router-dom";
+import { getError } from "../utils";
+import { toast } from "react-toastify";
+import axios from "axios";
+import LoadingBox from "../component/LoadingBox";
+import styled from "styled-components";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 const Container = styled.div`
   display: flex;
@@ -22,7 +22,7 @@ const Container = styled.div`
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const LeftC = styled.div`
   flex: 8;
@@ -45,24 +45,24 @@ const Section = styled.div`
   margin: 20px 0;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loading: true };
-    case 'CREATE_SUCCESS':
+    case "CREATE_SUCCESS":
       return { ...state, loading: false, order: action.payload };
-    case 'CREATE_FAIL':
+    case "CREATE_FAIL":
       return { ...state, loading: false };
-    case 'PAY_REQUEST':
+    case "PAY_REQUEST":
       return { ...state, loadingPay: true };
-    case 'PAY_SUCCESS':
+    case "PAY_SUCCESS":
       return { ...state, loadingPay: false, successPay: true };
-    case 'PAY_FAIL':
+    case "PAY_FAIL":
       return { ...state, loadingPay: false };
-    case 'PAY_RESET':
+    case "PAY_RESET":
       return { ...state, loadingPay: false, successPay: false };
 
     default:
@@ -96,28 +96,28 @@ export default function PlaceOrderScreen() {
   useEffect(() => {
     const loadPaypalScript = async () => {
       const { data: clientId } = await axios.get(
-        '/api/keys/paypal',
+        "/api/keys/paypal",
         userInfo
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
           : {}
       );
       paypalDispatch({
-        type: 'resetOptions',
+        type: "resetOptions",
         value: {
-          'client-id': clientId,
-          currency: 'USD',
+          "client-id": clientId,
+          currency: "USD",
         },
       });
-      paypalDispatch({ type: 'useLoadingStatus', value: 'pending' });
+      paypalDispatch({ type: "useLoadingStatus", value: "pending" });
     };
     loadPaypalScript();
   }, [userInfo, paypalDispatch]);
 
   const placeOrderHandler = async () => {
     try {
-      dispatch({ type: 'CREATE_REQUEST' });
+      dispatch({ type: "CREATE_REQUEST" });
       const { data } = await axios.post(
-        '/api/orders',
+        "/api/orders",
         {
           orderItems: cart.cartItems,
           shippingAddress: cart.shippingAddress,
@@ -131,19 +131,19 @@ export default function PlaceOrderScreen() {
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
           : {}
       );
-      console.log('');
-      dispatch({ type: 'CREATE_SUCCESS', payload: data });
+      console.log("");
+      dispatch({ type: "CREATE_SUCCESS", payload: data });
       return data;
     } catch (err) {
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
       toast.error(getError(err));
     }
   };
   const saveOrderHandler = async () => {
     try {
-      dispatch({ type: 'CREATE_REQUEST' });
+      dispatch({ type: "CREATE_REQUEST" });
       const { data } = await axios.post(
-        '/api/orders',
+        "/api/orders",
         {
           orderItems: cart.cartItems,
           shippingAddress: cart.shippingAddress,
@@ -157,14 +157,14 @@ export default function PlaceOrderScreen() {
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
           : {}
       );
-      console.log('');
-      dispatch({ type: 'CREATE_SUCCESS', payload: data });
-      toast.success('Order is saved');
-      localStorage.removeItem('cartItems');
-      ctxDispatch({ type: 'CART_CLEAR' });
+      console.log("");
+      dispatch({ type: "CREATE_SUCCESS", payload: data });
+      toast.success("Order is saved");
+      localStorage.removeItem("cartItems");
+      ctxDispatch({ type: "CART_CLEAR" });
       navigate(`/order/${data.order._id}`);
     } catch (err) {
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
       toast.error(getError(err));
     }
   };
@@ -189,7 +189,7 @@ export default function PlaceOrderScreen() {
     if (order1) {
       return actions.order.capture().then(async function (details) {
         try {
-          dispatch({ type: 'PAY_REQUEST' });
+          dispatch({ type: "PAY_REQUEST" });
           const { data } = await axios.put(
             `/api/orders/${order1.order._id}/pay`,
             details,
@@ -197,18 +197,18 @@ export default function PlaceOrderScreen() {
               ? { headers: { authorization: `Bearer ${userInfo.token}` } }
               : {}
           );
-          dispatch({ type: 'PAY_SUCCESS', payload: data });
-          toast.success('Order is paid');
-          localStorage.removeItem('cartItems');
-          ctxDispatch({ type: 'CART_CLEAR' });
+          dispatch({ type: "PAY_SUCCESS", payload: data });
+          toast.success("Order is paid");
+          localStorage.removeItem("cartItems");
+          ctxDispatch({ type: "CART_CLEAR" });
           navigate(`/order/${data.order._id}`);
         } catch (err) {
-          dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+          dispatch({ type: "PAY_FAIL", payload: getError(err) });
           toast.error(getError(err));
         }
       });
     } else {
-      toast.error('no order found');
+      toast.error("no order found");
     }
   };
 
@@ -228,12 +228,15 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
+                {console.log(cart)}
                 <strong>Name: </strong>
-                {cart.shippingAddress.fullName || cart.useraddress.fullName}
-                <br />
+                {/* {cart.shippingAddress.fullName || cart.useraddress.fullName}
+                <br /> */}
                 <strong>Address: </strong>
-                {cart.shippingAddress.address},{cart.shippingAddress.city},{' '}
-                {cart.shippingAddress.pstalCode}, {cart.shippingAddress.country}
+                {cart.shippingAddress.apartment}
+                {cart.shippingAddress.address},{cart.shippingAddress.city},
+                {cart.shippingAddress.state},{cart.shippingAddress.postalCode},{" "}
+                {cart.shippingAddress.country}
               </Card.Text>
               <Link className="simple_link" to="/shipping">
                 Edit
@@ -264,7 +267,7 @@ export default function PlaceOrderScreen() {
                           src={item.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
-                        ></img>{' '}
+                        ></img>{" "}
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
                       </div>
                       <div className="col-3">
@@ -298,7 +301,7 @@ export default function PlaceOrderScreen() {
                               <Right>x </Right>
                               <Right>${c.price}</Right>
                             </Left>
-                            <Right>{' =  $' + c.quantity * c.price}</Right>
+                            <Right>{" =  $" + c.quantity * c.price}</Right>
                           </SumCont>
                         </>
                       ))}

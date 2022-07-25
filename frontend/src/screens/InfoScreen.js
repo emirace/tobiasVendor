@@ -208,9 +208,9 @@ export default function InfoScreen() {
   const handleContinue = () => {
     if (name) {
       const useraddress = {
-        name,
-        zipcode: postalCode,
-        street: street,
+        fullName: name,
+        postalCode: postalCode,
+        address: street,
         city,
         state: state1,
         country,
@@ -219,6 +219,7 @@ export default function InfoScreen() {
       console.log(useraddress);
       ctxDispatch({ type: "SAVE_USER_ADDRESS", payload: useraddress });
       localStorage.setItem("useraddress", JSON.stringify(useraddress));
+      localStorage.setItem("shippingAddress", JSON.stringify(useraddress));
       navigate("../payment");
     } else {
       ctxDispatch({

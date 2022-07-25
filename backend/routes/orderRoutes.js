@@ -4,6 +4,7 @@ import expressAsyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
+import mongoose from "mongoose";
 
 const orderRouter = express.Router();
 
@@ -121,9 +122,21 @@ orderRouter.get(
   "/summary/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const seller = req.user._id;
+    const { query } = req;
+    const { from, to } = query;
+    const seller = mongoose.Types.ObjectId(req.user._id);
     const orders = await Order.aggregate([
       { $match: { seller: seller } },
+      {
+        $group: {
+          _id: null,
+          numOrders: { $sum: 1 },
+          numSales: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+    const purchases = await Order.aggregate([
+      { $match: { user: seller } },
       {
         $group: {
           _id: null,
@@ -142,7 +155,12 @@ orderRouter.get(
       },
     ]);
     const dailyOrders = await Order.aggregate([
-      { $match: { seller: seller } },
+      {
+        $match: {
+          seller: seller,
+          createdAt: { $gte: new Date(from), $lte: new Date(to) },
+        },
+      },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -152,6 +170,40 @@ orderRouter.get(
       },
       { $sort: { _id: 1 } },
     ]);
+
+    const dailyPurchase = await Order.aggregate([
+      {
+        $match: {
+          user: seller,
+          createdAt: { $gte: new Date(from), $lte: new Date(to) },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          orders: { $sum: 1 },
+          sales: { $sum: "$totalPrice" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const dailyProducts = await Product.aggregate([
+      {
+        $match: {
+          seller: seller,
+          createdAt: { $gte: new Date(from), $lte: new Date(to) },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          products: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
     const productCategories = await Product.aggregate([
       { $match: { seller: seller } },
       {
@@ -161,7 +213,15 @@ orderRouter.get(
         },
       },
     ]);
-    res.send({ orders, dailyOrders, products, productCategories });
+    res.send({
+      orders,
+      dailyOrders,
+      purchases,
+      products,
+      productCategories,
+      dailyProducts,
+      dailyPurchase,
+    });
   })
 );
 
