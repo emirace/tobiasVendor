@@ -19,6 +19,7 @@ import Saleslist from "../component/dashboard/Saleslist";
 import AddressBook from "../component/dashboard/AddressBook";
 import Analytics from "../component/dashboard/admin/Analytics";
 import Earning from "../component/dashboard/Earning";
+import Coupon from "../component/dashboard/Coupon";
 
 const Container = styled.div`
   display: flex;
@@ -64,6 +65,8 @@ export default function DashboardNewScreen() {
         return <AddressBook />;
       case "earning":
         return <Earning />;
+      case "coupon":
+        return <Coupon />;
       default:
         break;
     }

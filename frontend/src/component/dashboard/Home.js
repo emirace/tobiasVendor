@@ -11,6 +11,9 @@ import FeatureInfo2 from "./FeatureInfo2";
 import WidgetLarge from "./WidgetLarge";
 import WidgetSmall from "./WidgetSmall";
 import WidgetSmallProduct from "./WidgetSmallProduct";
+import moment from "moment";
+
+const today = moment().startOf("day");
 
 const Container = styled.div`
   flex: 4;
@@ -18,7 +21,6 @@ const Container = styled.div`
 const Widgets = styled.div`
   display: flex;
   gap: 20px;
-  margin: 0 20px;
   @media (max-width: 992px) {
     flex-wrap: wrap;
   }
@@ -219,36 +221,53 @@ export default function Home() {
       ) : (
         <>
           <WidgetsCont mode={mode}>
-            <h3 style={{ marginLeft: "40px" }}>Today</h3>
+            <h3>Today</h3>
             <Widgets>
               <FeatureInfo2
                 type="earning"
                 number={
-                  orders && orders.orders.length ? orders.orders[0].numSales : 0
+                  orders && orders.todayOrders.length
+                    ? orders.todayOrders[0].sales
+                    : 0
                 }
               />
               {console.log("order", orders)}
               <FeatureInfo2
                 type="order"
                 number={
-                  orders && orders.orders.length
-                    ? orders.orders[0].numOrders
+                  orders && orders.todayOrders.length
+                    ? orders.todayOrders[0].orders
                     : 0
                 }
               />
               <FeatureInfo2
                 type="product"
-                number={orders && orders.products[0].numProducts}
+                number={
+                  orders && orders.todayProducts.length
+                    ? orders.todayProducts[0].numProducts
+                    : 0
+                }
               />
               <FeatureInfo2
                 type="purchase"
-                number={orders && orders.purchases[0].numOrders}
+                number={
+                  orders && orders.todayPurchases.length
+                    ? orders.todayPurchases[0].orders
+                    : 0
+                }
               />
             </Widgets>
           </WidgetsCont>
 
           <Filter>
-            <Goto>Today</Goto>
+            <Goto
+              onClick={() => {
+                setFrom(today.toDate());
+                setTo(moment(today).endOf("day").toDate());
+              }}
+            >
+              Today
+            </Goto>
             <Date>
               From:{" "}
               <DateInput

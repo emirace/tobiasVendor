@@ -5,6 +5,9 @@ import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
 import mongoose from "mongoose";
+import moment from "moment";
+
+const today = moment().startOf("day");
 
 const orderRouter = express.Router();
 
@@ -154,11 +157,69 @@ orderRouter.get(
         },
       },
     ]);
+
+    const todayProducts = await Product.aggregate([
+      {
+        $match: {
+          seller: seller,
+          createdAt: {
+            $gte: today.toDate(),
+            $lte: moment(today).endOf("day").toDate(),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          numProducts: { $sum: 1 },
+        },
+      },
+    ]);
     const dailyOrders = await Order.aggregate([
       {
         $match: {
           seller: seller,
           createdAt: { $gte: new Date(from), $lte: new Date(to) },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          orders: { $sum: 1 },
+          sales: { $sum: "$totalPrice" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const todayOrders = await Order.aggregate([
+      {
+        $match: {
+          seller: seller,
+          createdAt: {
+            $gte: today.toDate(),
+            $lte: moment(today).endOf("day").toDate(),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          orders: { $sum: 1 },
+          sales: { $sum: "$totalPrice" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const todayPurchases = await Order.aggregate([
+      {
+        $match: {
+          user: seller,
+          createdAt: {
+            $gte: today.toDate(),
+            $lte: moment(today).endOf("day").toDate(),
+          },
         },
       },
       {
@@ -221,6 +282,9 @@ orderRouter.get(
       productCategories,
       dailyProducts,
       dailyPurchase,
+      todayOrders,
+      todayPurchases,
+      todayProducts,
     });
   })
 );

@@ -382,7 +382,7 @@ export default function OrderScreen() {
                   {moment(order.deliveredAt).format("MMMM Do YYYY, h:mm:ss a")}
                 </Name>
               </div>
-              {order.seller === userInfo._id && (
+              {userInfo && order.seller === userInfo._id && (
                 <div>
                   <FormControl
                     sx={{

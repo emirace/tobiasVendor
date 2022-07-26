@@ -74,6 +74,7 @@ import { io } from "socket.io-client";
 import ShopByOutfit from "./screens/ShopByOutfit";
 import CreateOutfitScreen from "./screens/CreateOutfitScreen";
 import CreateOutfitPicScreen from "./screens/CreateOutfitPicScreen";
+import InfoScreenNonLogin from "./screens/InfoScreenNonlogin";
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
 
@@ -215,7 +216,8 @@ function App() {
                   <Route path="/search" element={<SearchSceen />} />
                   <Route path="/signin" element={<SigninScreen />} />
                   <Route path="/signup" element={<SignupScreen />} />
-                  <Route path="/info" element={<InfoScreen />} />
+                  <Route path="/delivery" element={<InfoScreen />} />
+                  <Route path="/delivery2" element={<InfoScreenNonLogin />} />
                   <Route path="/outfits" element={<CreateOutfitScreen />} />
                   <Route
                     path="/createoutfits"

@@ -230,12 +230,12 @@ export default function PlaceOrderScreen() {
               <Card.Text>
                 {console.log(cart)}
                 <strong>Name: </strong>
-                {/* {cart.shippingAddress.fullName || cart.useraddress.fullName}
-                <br /> */}
+                {cart.shippingAddress.fullName || cart.useraddress.fullName}
+                <br />
                 <strong>Address: </strong>
-                {cart.shippingAddress.apartment}
-                {cart.shippingAddress.address},{cart.shippingAddress.city},
-                {cart.shippingAddress.state},{cart.shippingAddress.postalCode},{" "}
+                {cart.shippingAddress.apartment}, {cart.shippingAddress.address}
+                , {cart.shippingAddress.city}, {cart.shippingAddress.state},{" "}
+                {cart.shippingAddress.postalCode},{" "}
                 {cart.shippingAddress.country}
               </Card.Text>
               <Link className="simple_link" to="/shipping">

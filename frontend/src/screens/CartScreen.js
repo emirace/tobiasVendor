@@ -194,7 +194,7 @@ export default function CartScreen() {
       toast.error("cart is empty");
     } else {
       if (userInfo) {
-        navigate("../info");
+        navigate("../delivery");
       } else {
         navigate("../signin");
       }

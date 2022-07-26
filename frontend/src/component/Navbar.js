@@ -1,23 +1,23 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import IconsTooltips from './IconsTooltips';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import IconsTooltips from "./IconsTooltips";
 import {
   faEnvelope,
   faHeart,
   faShoppingCart,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SearchBox from './SearchBox';
-import { Link } from 'react-router-dom';
-import { Store } from '../Store';
-import axios from 'axios';
-import { getError } from '../utils';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchBox from "./SearchBox";
+import { Link } from "react-router-dom";
+import { Store } from "../Store";
+import axios from "axios";
+import { getError } from "../utils";
 
 const Container = styled.div`
   width: 100%;
   margin-bottom: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Wrapper = styled.div`
   padding: 0 20px;
@@ -68,7 +68,7 @@ const Center = styled.div`
 `;
 const Right = styled.div`
   flex: 1;
-  content: '';
+  content: "";
   display: flex;
   justify-content: end;
   @media (max-width: 992px) {
@@ -142,7 +142,7 @@ const MenuItemCart = styled.div`
   }
 `;
 const ProfileImg = styled.img.attrs((props) => ({
-  src: props.src ? props.src : '/images/pimage.png',
+  src: props.src ? props.src : "/images/pimage.png",
 }))`
   width: 40px;
   height: 40px;
@@ -230,13 +230,13 @@ const SubCategory = styled.ul.attrs({})`
   position: absolute;
   box-shadow: ${(props) =>
     props.bg
-      ? '0 0 3px rgba(0, 0, 0, 0.2)'
-      : '0 0 3px rgba(225, 225, 225, 0.2)'};
+      ? "0 0 3px rgba(0, 0, 0, 0.2)"
+      : "0 0 3px rgba(225, 225, 225, 0.2)"};
   top: 32px;
   left: 0;
   width: 100vw;
   height: 350px;
-  background: ${(props) => (props.bg ? '#fff' : '#000')};
+  background: ${(props) => (props.bg ? "#fff" : "#000")};
   display: none;
   flex-direction: column;
   align-items: center;
@@ -265,9 +265,9 @@ const SwitchCont = styled.div`
 `;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
 
@@ -292,7 +292,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -303,7 +303,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: 'darkmodeSwitch',
+  for: "darkmodeSwitch",
 })`
   margin-left: 5px;
   color: #fff;
@@ -318,9 +318,9 @@ const ProfileMenu = styled.div`
   left: -15px;
   top: 50px;
   box-shadow: ${(props) =>
-    props.mode === 'pagebodylight '
-      ? '0 5px 16px rgba(0, 0, 0, 0.2)'
-      : '0 5px 16px rgba(225, 225, 225, 0.2)'};
+    props.mode === "pagebodylight "
+      ? "0 5px 16px rgba(0, 0, 0, 0.2)"
+      : "0 5px 16px rgba(225, 225, 225, 0.2)"};
   border-radius: 5px;
   font-size: 14px;
   & ul li {
@@ -360,7 +360,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   useEffect(() => {
     try {
       const fetchCategories = async () => {
-        const { data } = await axios.get('/api/categories');
+        const { data } = await axios.get("/api/categories");
         setCategories(data);
       };
       fetchCategories();
@@ -370,7 +370,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   }, [userInfo]);
 
   const backMode = (mode) => {
-    if (mode === 'pagebodydark') {
+    if (mode === "pagebodydark") {
       mode = false;
     } else {
       mode = true;
@@ -381,21 +381,22 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
-      localStorage.setItem('mode', 'pagebodydark');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
     } else {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
-      localStorage.setItem('mode', 'pagebodylight');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
     }
   };
 
   const signoutHandler = () => {
-    ctxDispatch({ type: 'USER_SIGNOUT' });
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems');
-    localStorage.removeItem('shippingAddress');
-    localStorage.removeItem('paymentMethod');
-    window.location.href = '/signin';
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("shippingAddress");
+    localStorage.removeItem("useraddress");
+    localStorage.removeItem("paymentMethod");
+    window.location.href = "/signin";
   };
 
   return (
@@ -404,10 +405,10 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         <Left>
           <SwitchCont>
             <Switch
-              checked={mode === 'pagebodydark'}
+              checked={mode === "pagebodydark"}
               onChange={(e) => darkMode(e.target.checked)}
             ></Switch>
-            <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+            <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
           </SwitchCont>
         </Left>
         <Center>

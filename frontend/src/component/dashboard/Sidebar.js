@@ -7,6 +7,7 @@ import {
   faChartColumn,
   faChartLine,
   faComment,
+  faGift,
   faHome,
   faHouse,
   faListCheck,
@@ -76,22 +77,20 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
             </Link>
-            {userInfo.isAdmin && (
-              <Link to="/dashboard/analytics">
-                <ListItem
-                  mode={mode}
-                  className={current === "analytics" ? "active" : ""}
-                >
-                  <FontAwesomeIcon icon={faChartLine} /> Analytics
-                </ListItem>
-              </Link>
-            )}
             <Link to="/dashboard/orderlist">
               <ListItem
                 mode={mode}
                 className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Orders
+              </ListItem>
+            </Link>
+            <Link to="/dashboard/productlist">
+              <ListItem
+                mode={mode}
+                className={current === "productlist" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faBasketShopping} /> Products
               </ListItem>
             </Link>
             <Link to="/dashboard/saleslist">
@@ -102,30 +101,6 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faChartBar} /> Sales
               </ListItem>
             </Link>
-          </List>
-        </Menu>
-        <Menu>
-          <Title>Quick Menu</Title>
-          <List>
-            {userInfo.isAdmin && (
-              <Link to="/dashboard/userlist">
-                <ListItem
-                  mode={mode}
-                  className={current === "userlist" ? "active" : ""}
-                >
-                  <FontAwesomeIcon icon={faUser} /> Users
-                </ListItem>
-              </Link>
-            )}
-
-            <Link to="/dashboard/productlist">
-              <ListItem
-                mode={mode}
-                className={current === "productlist" ? "active" : ""}
-              >
-                <FontAwesomeIcon icon={faBasketShopping} /> Products
-              </ListItem>
-            </Link>
             <Link to="/dashboard/wallet">
               <ListItem
                 mode={mode}
@@ -134,6 +109,11 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
               </ListItem>
             </Link>
+          </List>
+        </Menu>
+        <Menu>
+          <Title>Quick Menu</Title>
+          <List>
             <Link to="/dashboard/address">
               <ListItem
                 mode={mode}
@@ -142,15 +122,44 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faHome} /> Address Book
               </ListItem>
             </Link>
-            {userInfo.isAdmin && (
+            <Link to="/dashboard/coupon">
+              <ListItem
+                mode={mode}
+                className={current === "address" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faGift} /> Coupon/Gift
+              </ListItem>
+            </Link>
+          </List>
+        </Menu>
+        {userInfo.isAdmin && (
+          <Menu>
+            <Title>Admin</Title>
+            <List>
+              <Link to="/dashboard/analytics">
+                <ListItem
+                  mode={mode}
+                  className={current === "analytics" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faChartLine} /> Analytics
+                </ListItem>
+              </Link>
+              <Link to="/dashboard/userlist">
+                <ListItem
+                  mode={mode}
+                  className={current === "userlist" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faUser} /> Users
+                </ListItem>
+              </Link>
+
               <ListItem
                 mode={mode}
                 className={current === "report" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartColumn} /> Reports
               </ListItem>
-            )}
-            {userInfo.isAdmin && (
+
               <Link to="/dashboard/categories">
                 <ListItem
                   mode={mode}
@@ -159,9 +168,9 @@ export default function Sidebar({ current }) {
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>
               </Link>
-            )}
-          </List>
-        </Menu>
+            </List>
+          </Menu>
+        )}
         <Menu>
           <Title>Notification</Title>
           <List>

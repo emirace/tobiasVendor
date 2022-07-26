@@ -22,6 +22,7 @@ import addressRouter from "./routes/addressRoutes.js";
 import brandRouter from "./routes/brandRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import recentViewRouter from "./routes/recentViewRoutes.js";
+import nonLoginRouter from "./routes/nonLoginRoutes.js";
 
 dotenv.config();
 
@@ -67,6 +68,7 @@ app.use("/api/addresses", addressRouter);
 app.use("/api/brands", brandRouter);
 app.use("/api/admins", adminRouter);
 app.use("/api/recentviews", recentViewRouter);
+app.use("/api/nonLogin", nonLoginRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();
