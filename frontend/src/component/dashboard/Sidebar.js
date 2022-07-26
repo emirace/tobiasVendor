@@ -82,7 +82,7 @@ export default function Sidebar({ current }) {
                 mode={mode}
                 className={current === "sales" ? "active" : ""}
               >
-                <FontAwesomeIcon icon={faChartBar} /> Orders
+                <FontAwesomeIcon icon={faChartBar} /> Purchase Orders
               </ListItem>
             </Link>
             <Link to="/dashboard/productlist">
@@ -98,7 +98,7 @@ export default function Sidebar({ current }) {
                 mode={mode}
                 className={current === "sales" ? "active" : ""}
               >
-                <FontAwesomeIcon icon={faChartBar} /> Sales
+                <FontAwesomeIcon icon={faChartBar} /> Sold Orders
               </ListItem>
             </Link>
             <Link to="/dashboard/wallet">
