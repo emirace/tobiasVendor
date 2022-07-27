@@ -89,6 +89,60 @@ const Orgroup = styled.div`
   justify-content: center;
 `;
 
+const SwitchCont = styled.div`
+  padding: 10px 0;
+  display: none;
+  justify-content: end;
+  align-items: center;
+  @media (max-width: 992px) {
+    display: flex;
+  }
+`;
+const Switch = styled.input.attrs({
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
+})`
+  position: relative;
+
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #000;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+  }
+
+  &:checked {
+    background: #fff;
+    &:before {
+      left: 25px;
+      background: #000;
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    background: #fff;
+    transition: 0.5s;
+  }
+`;
+const Label = styled.label.attrs({
+  for: "darkmodeSwitch",
+})`
+  margin-left: 5px;
+  @media (max-width: 992px) {
+  }
+`;
+
 export default function SigninScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -123,7 +177,7 @@ export default function SigninScreen() {
       callback: responseGoogle,
     });
     google.accounts.id.renderButton(document.getElementById("signindiv"), {
-      width: "250px",
+      width: "300px",
     });
   }, []);
 
@@ -147,12 +201,32 @@ export default function SigninScreen() {
       navigate(redirect);
     }
   }, [navigate, redirect, userInfo]);
+
+  const darkMode = (mode) => {
+    if (mode) {
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
+    } else {
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
+    }
+  };
+
   return (
     <Container className="small-container">
       <Helmet>
         <title>Sign In</title>
       </Helmet>
+
+      <SwitchCont>
+        <Switch
+          checked={mode === "pagebodydark"}
+          onChange={(e) => darkMode(e.target.checked)}
+        ></Switch>
+        <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
+      </SwitchCont>
       <h1 className="my-3">Sign In</h1>
+
       <Social>
         <SocialLogin id="" className="facebook">
           <FacebookImg src="/images/facebook.png" alt="facebook" />

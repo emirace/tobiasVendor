@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import { Helmet } from 'react-helmet-async';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Store } from '../Store';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import { getError } from '../utils';
-import jwt_decode from 'jwt-decode';
+import React, { useContext, useEffect, useState } from "react";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { Helmet } from "react-helmet-async";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Store } from "../Store";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import { getError } from "../utils";
+import jwt_decode from "jwt-decode";
 
 const SocialLogin = styled.button`
   border: 0;
@@ -29,6 +29,9 @@ const SocialLogin = styled.button`
   }
   &.google {
     background: #df4930;
+  }
+  @media (max-width: 992px) {
+    width: 300px;
   }
 `;
 const FacebookImg = styled.img.attrs((props) => ({
@@ -58,6 +61,9 @@ const Line = styled.div`
   height: 2px;
   background: var(--orange-color);
   z-index: 1;
+  @media (max-width: 992px) {
+    width: 300px;
+  }
 `;
 const Social = styled.div`
   display: flex;
@@ -74,14 +80,14 @@ const Orgroup = styled.div`
 export default function SignupScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  const redirectInUrl = new URLSearchParams(search).get("redirect");
+  const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [showForm, setShowForm] = useState(false);
 
@@ -92,43 +98,43 @@ export default function SignupScreen() {
     e.preventDefault();
     try {
       if (password !== confirmPassword) {
-        toast.error('Passwords do not match');
+        toast.error("Passwords do not match");
         return;
       }
-      const { data } = await axios.post('/api/users/signup', {
+      const { data } = await axios.post("/api/users/signup", {
         name,
         email,
         password,
         phone,
       });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      window.location.href = redirect || '/';
+      ctxDispatch({ type: "USER_SIGNIN", payload: data });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      window.location.href = redirect || "/";
     } catch (err) {
       toast.error(getError(err));
     }
   };
   async function responseGoogle(res) {
     const profile = jwt_decode(res.credential);
-    const { data } = await axios.post('/api/users/google-signup', {
+    const { data } = await axios.post("/api/users/google-signup", {
       name: profile.name,
       email: profile.email,
       image: profile.picture,
     });
     console.log(data);
-    ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    navigate(redirect || '/');
+    ctxDispatch({ type: "USER_SIGNIN", payload: data });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    navigate(redirect || "/");
   }
   useEffect(() => {
     /*global google*/
     google.accounts.id.initialize({
       client_id:
-        '359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com',
+        "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com",
       callback: responseGoogle,
     });
-    google.accounts.id.renderButton(document.getElementById('signindiv'), {
-      width: '500px',
+    google.accounts.id.renderButton(document.getElementById("signindiv"), {
+      width: "300px",
     });
   }, []);
 
@@ -160,7 +166,7 @@ export default function SignupScreen() {
           <Form.Label>Name</Form.Label>
           <Form.Control
             required
-            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+            className={mode === "pagebodydark" ? "hhf" : "color_black"}
             onClick={() => setShowForm(true)}
             onChange={(e) => setName(e.target.value)}
           />
@@ -171,7 +177,7 @@ export default function SignupScreen() {
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
                 required
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -179,7 +185,7 @@ export default function SignupScreen() {
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>Phone</Form.Label>
               <Form.Control
-                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
                 type="number"
                 required
                 onChange={(e) => setPhone(e.target.value)}
@@ -189,7 +195,7 @@ export default function SignupScreen() {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
                 required
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -198,7 +204,7 @@ export default function SignupScreen() {
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control
                 type="password"
-                className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
                 required
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -212,7 +218,7 @@ export default function SignupScreen() {
           </button>
         </div>
         <div className="mb-3">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to={`/signin?redirect=${redirect}`}>Sign-In</Link>
         </div>
       </Form>
