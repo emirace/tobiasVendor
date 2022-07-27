@@ -3,19 +3,19 @@ import {
   faCreditCard,
   faHashtag,
   faTruckFast,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import '../style/Footer.css';
-import Newletter from './Newletter';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../Store";
+import "../style/Footer.css";
+import Newletter from "./Newletter";
 
 const CopyRight = styled.div`
-  background: ${(props) => (props.back ? '#000' : '#fff')};
+  background: ${(props) => (props.back ? "#000" : "#fff")};
   display: flex;
   justify-content: center;
-  color: ${(props) => (props.back ? '#fff' : '#000')};
+  color: ${(props) => (props.back ? "#fff" : "#000")};
   height: 50px;
   align-items: center;
   & svg {
@@ -29,7 +29,7 @@ const CopyRight = styled.div`
 const SmDetail = styled.p`
   display: none;
   position: relative;
-  height: ${(props) => (props.show ? '120px' : 0)};
+  height: ${(props) => (props.show ? "120px" : 0)};
   overflow: hidden;
   transition: 0.5s;
   @media (max-width: 992px) {
@@ -43,12 +43,12 @@ const SmTitle = styled.div`
   position: relative;
   cursor: pointer;
   &::before {
-    content: ' ';
+    content: " ";
     width: 10px;
     height: 10px;
     border-bottom: 1px solid;
     border-left: 1px solid;
-    transform: rotate(${(props) => (!props.show ? '-45deg' : '135deg')})
+    transform: rotate(${(props) => (!props.show ? "-45deg" : "135deg")})
       translateY(-50%);
     position: absolute;
     top: 50%;
@@ -73,7 +73,7 @@ export default function Footer() {
   const { state } = useContext(Store);
   const { mode } = state;
   const backMode = (mode) => {
-    if (mode === 'pagebodydark') {
+    if (mode === "pagebodydark") {
       mode = false;
     } else {
       mode = true;
@@ -88,13 +88,13 @@ export default function Footer() {
 
   const toggleCollapse = (type) => {
     switch (type) {
-      case 'shipMethod1':
+      case "shipMethod1":
         setShippingMethod1(!shipMethod1);
         break;
-      case 'shipMethod2':
+      case "shipMethod2":
         setShippingMethod2(!shipMethod2);
         break;
-      case 'shipMethod3':
+      case "shipMethod3":
         setShippingMethod3(!shipMethod3);
         break;
       default:
@@ -111,7 +111,7 @@ export default function Footer() {
         ></img>
         <div className="bg_malon">
           <div className="container ">
-            <div className="row d-flex justify-content-between my-3">
+            <div className="row d-flex justify-content-between ">
               <div className="col-lg-3 col-md-6 col-sm-12">
                 <div className="single-method ">
                   <FontAwesomeIcon
@@ -120,7 +120,7 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod1}
-                    onClick={() => toggleCollapse('shipMethod1')}
+                    onClick={() => toggleCollapse("shipMethod1")}
                   >
                     <FontAwesomeIcon icon={faTruckFast} />
                     Free Shipping Method
@@ -146,7 +146,7 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod2}
-                    onClick={() => toggleCollapse('shipMethod2')}
+                    onClick={() => toggleCollapse("shipMethod2")}
                   >
                     <FontAwesomeIcon icon={faTruckFast} />
                     Free Shipping Method
@@ -172,7 +172,7 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod3}
-                    onClick={() => toggleCollapse('shipMethod3')}
+                    onClick={() => toggleCollapse("shipMethod3")}
                   >
                     <FontAwesomeIcon icon={faCreditCard} />
                     Easy Payment Method

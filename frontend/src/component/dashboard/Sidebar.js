@@ -125,7 +125,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/coupon">
               <ListItem
                 mode={mode}
-                className={current === "address" ? "active" : ""}
+                className={current === "coupon" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faGift} /> Coupon/Gift
               </ListItem>

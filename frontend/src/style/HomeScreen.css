@@ -70,13 +70,15 @@
 @media (max-width: 992px) {
   .downloadapp_section {
     flex-direction: column;
-    padding: 30px 20px;
+    padding: 10px 10px;
     margin: 0;
     height: 400px;
     overflow: hidden;
     border-bottom: 5px solid var(--malon-color);
   }
-
+  .downloadapp_left {
+    padding: 10px;
+  }
   .downloadapp_img {
     justify-content: start;
   }
@@ -92,12 +94,15 @@
   }
 
   .downloadapp_img img {
-    width: 80px;
+    width: 140px;
     margin-right: 10px;
   }
 
   .downloadapp_right img {
     width: 150px;
+  }
+  .spad {
+    padding: 10px 0;
   }
 }
 

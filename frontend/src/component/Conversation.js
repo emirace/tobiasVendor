@@ -10,6 +10,9 @@ const User = styled.div`
   display: flex;
   align-items: center;
   margin: 10px 0;
+  @media (max-width: 992px) {
+    padding: 10px;
+  }
   &.active {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};

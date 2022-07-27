@@ -100,7 +100,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "order":
       data = {
-        title: "ORDERS",
+        title: "SOLD ORDERS",
         isMoney: false,
         to: "/dashboard/orderlist",
         link: "view all orders",
@@ -155,7 +155,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "purchase":
       data = {
-        title: "PURCHASES",
+        title: "PURCHASE ORDERS",
         isMoney: false,
         to: "/dashboard/productlist",
         link: "View product list",

@@ -24,6 +24,8 @@ const Search = styled.div`
   align-items: center;
   background: var(--orange-color);
   margin: 15px 0;
+  border-radius: 0.2rem;
+  padding: 3px;
   color: #fff;
 `;
 const Searchcont = styled.div`

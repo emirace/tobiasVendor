@@ -29,13 +29,14 @@ const Container = styled.div`
     right: 0;
     left: 0;
     z-index: 8;
-    padding: 100px 30px 55px 30px;
+    padding: 100px 15px 55px 15px;
   }
 `;
 
 const MobileMenuItem = styled.div`
   border-bottom: 1px solid rgba(99, 91, 91, 0.2);
-  padding: 20px 0;
+  padding: 10px 10px;
+  border-radius: 0.2rem;
   & svg {
     margin-right: 10px;
   }

@@ -18,6 +18,9 @@ import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 const Container = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;

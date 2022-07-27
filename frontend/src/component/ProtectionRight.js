@@ -1,9 +1,9 @@
-import { faShield } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import Model from './Model';
+import { faKey, faShield } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../Store";
+import Model from "./Model";
 
 const Container = styled.div`
   margin: 5px;
@@ -13,9 +13,9 @@ const Container = styled.div`
   cursor: pointer;
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   align-items: center;
   & svg {
     font-size: 25px;
@@ -46,7 +46,7 @@ export default function ProtectionRight() {
   return (
     <div>
       <Container mode={mode} onClick={() => setShowModel(!showModel)}>
-        <FontAwesomeIcon icon={faShield} /> Buyer's & Seller's Protection !
+        <FontAwesomeIcon icon={faKey} /> Buyer's & Seller's Protection !
       </Container>
       <Model showModel={showModel} setShowModel={setShowModel}>
         <Protection>

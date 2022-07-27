@@ -51,6 +51,9 @@ const TabItem = styled.div`
   position: relative;
   text-transform: capitalize;
   min-width: 70px;
+  @media (max-width: 992px) {
+    min-width: 40px;
+  }
   &:hover {
     color: var(--orange-color);
   }

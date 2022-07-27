@@ -17,14 +17,25 @@ const Container = styled.div`
   border-radius: 0.2rem;
 `;
 const Title = styled.h3``;
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const Total = styled.div`
+  margin-left: 15px;
+  font-size: 18px;
+`;
 
-export default function Chart({ title, data, dataKey, grid }) {
+export default function Chart({ title, total, data, dataKey, grid }) {
   const { state } = useContext(Store);
   const { mode } = state;
   return (
     <Container mode={mode}>
       {console.log(data)}
-      <Title>{title}</Title>
+      <Row>
+        <Title>{title}</Title>
+        <Total>{total}</Total>
+      </Row>
       <ResponsiveContainer width="100%" aspect={5 / 1}>
         <LineChart data={data}>
           <XAxis dataKey={"name"} stroke="var(--orange-color)" />

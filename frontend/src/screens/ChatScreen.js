@@ -38,6 +38,9 @@ const ChatCont = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   margin: 20px;
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    margin: 5px;
+  }
 `;
 const Left = styled.div`
   flex: 1;
@@ -58,8 +61,13 @@ const Right = styled.div`
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   @media (max-width: 992px) {
+    margin: 5px;
+    padding: 10px;
     display: ${(props) => (props.showLeft ? "none" : "")};
   }
+`;
+const ChatCont2 = styled.div`
+  overflow-y: auto;
 `;
 
 const TopBar = styled.div`
@@ -614,7 +622,7 @@ export default function ChatScreen() {
         <Right mode={mode} showLeft={showLeft}>
           {currentTab === "messages" ? (
             currentChat ? (
-              <>
+              <ChatCont2>
                 <ChatArea>
                   {messages.map((m, index) => (
                     <div ref={scrollref} key={index}>
@@ -635,7 +643,7 @@ export default function ChatScreen() {
                   />
                   <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
                 </Message>
-              </>
+              </ChatCont2>
             ) : (
               <NoConversation>
                 Select a conversation to start a chat

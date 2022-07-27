@@ -172,14 +172,29 @@ export default function Home() {
   const [orderData, setOrderData] = useState(null);
   const [productData, setProductData] = useState(null);
   const [purchaseData, setPurchaseData] = useState(null);
-
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPurchase, setTotalPurchase] = useState(0);
   useEffect(() => {
     const fetchOrderChart = () => {
       if (orders) {
         console.log(orders);
+        let totalOrder = 0;
+        let totalSale = 0;
         const orderData1 = orders.dailyOrders.map((x) => {
-          return { name: `${x._id}`, order: x.orders, earning: x.sales };
+          totalOrder = totalOrder + Number(x.orders);
+          totalSale = totalSale + Number(x.sales);
+          return {
+            name: `${x._id}`,
+            order: x.orders,
+            earning: x.sales,
+            totalOrder,
+            totalSale,
+          };
         });
+        setTotalOrders(totalOrder);
+        setTotalSales(totalSale);
         setOrderData(orderData1);
         console.log("cht", orderData);
       }
@@ -190,11 +205,13 @@ export default function Home() {
   useEffect(() => {
     const fetchProductChart = () => {
       if (orders) {
-        console.log(orders);
+        let totalSale = 0;
         const productData1 = orders.dailyProducts.map((x) => {
+          totalSale = totalSale + Number(x.products);
           return { name: `${x._id}`, products: x.products };
         });
         setProductData(productData1);
+        setTotalProducts(totalSale);
       }
     };
     fetchProductChart();
@@ -203,10 +220,13 @@ export default function Home() {
   useEffect(() => {
     const fetchPurchaseChart = () => {
       if (orders) {
+        let totalSale = 0;
         const purchaseData = orders.dailyPurchase.map((x) => {
+          totalSale = totalSale + Number(x.orders);
           return { name: `${x._id}`, order: x.orders };
         });
         setPurchaseData(purchaseData);
+        setTotalPurchase(totalSale);
       }
     };
     fetchPurchaseChart();
@@ -290,10 +310,16 @@ export default function Home() {
           </Filter>
           <Row>
             <Col>
-              <Chart title="Earning" data={orderData} dataKey="earning" grid />
               <Chart
-                title="Orders"
-                yaxis="name"
+                title="Earning"
+                total={`$${totalSales}`}
+                data={orderData}
+                dataKey="earning"
+                grid
+              />
+              <Chart
+                title="Sold Orders"
+                total={totalOrders}
                 data={orderData}
                 dataKey="order"
                 grid
@@ -302,14 +328,16 @@ export default function Home() {
             <Col>
               <Chart
                 title="Product"
+                total={totalProducts}
                 data={productData}
                 dataKey="products"
                 grid
               />
               <Chart
-                title="Purchase"
+                title="Purchase Order"
                 data={purchaseData}
                 dataKey="order"
+                total={totalPurchase}
                 grid
               />
             </Col>

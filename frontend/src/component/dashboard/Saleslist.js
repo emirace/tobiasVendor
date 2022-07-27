@@ -129,6 +129,11 @@ const SearchInput = styled.input`
     props.mode === "pagebodydark"
       ? "var(--white-color)"
       : "var(--black-color)"};
+
+  background: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   &::placeholder {
     padding: 10px;
   }

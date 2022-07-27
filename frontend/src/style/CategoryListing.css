@@ -22,7 +22,7 @@
 .catelisting_container {
   position: relative;
   margin-right: 15px;
-  height: 300px;
+  height: 260px;
 }
 
 .categorylisting_title {
@@ -58,7 +58,7 @@
 }
 
 .CategoryListing_item::-webkit-scrollbar-track {
-  margin-top: 0.5em;
+  margin: 10px 0;
   border-radius: 100vw;
 }
 .CategoryListing_item::-webkit-scrollbar-thumb {
@@ -89,7 +89,7 @@
 
 .product-categorylisting::after {
   position: absolute;
-  content: '';
+  content: "";
   left: 10vw;
   bottom: -4px;
   height: 2px;
@@ -100,9 +100,13 @@
 @media (max-width: 992px) {
   .CategoryListing_section {
     flex-direction: column;
+    margin: 10px 0;
   }
   .product-title-Listing p {
     max-width: 400px;
+  }
+  .product-categorylisting {
+    margin-bottom: 10px;
   }
   .CategoryListing_item {
     margin-left: 20px;

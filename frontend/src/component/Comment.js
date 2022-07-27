@@ -1,11 +1,11 @@
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { format } from 'timeago.js';
-import { Store } from '../Store';
-import { getError } from '../utils';
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { format } from "timeago.js";
+import { Store } from "../Store";
+import { getError } from "../utils";
 
 const Container = styled.div`
   margin-top: 15px;
@@ -13,7 +13,7 @@ const Container = styled.div`
   padding: 20px;
   display: flex;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Image = styled.img`
   width: 50px;
@@ -79,7 +79,7 @@ const SubCont = styled.div`
   border-radius: 0.2rem;
   margin: 5px 0 5px 90px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Textarea = styled.textarea`
   margin: 10px 0 0 90px;
@@ -87,14 +87,14 @@ const Textarea = styled.textarea`
   padding: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
 
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
 
   &:focus-visible {
     outline: 1px solid var(--orange-color);
@@ -104,24 +104,24 @@ const Textarea = styled.textarea`
 `;
 const CommentImg = styled.img`
   margin-top: 5px;
-  height: 200px;
+  width: 200px;
 `;
 
 export default function Comment({ commentC }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [comment, setComment] = useState(commentC);
-  const [reply, setReply] = useState('');
+  const [reply, setReply] = useState("");
   const [replyArea, setReplyArea] = useState(false);
 
   const likeComment = async (id) => {
     if (comment.name === userInfo.name) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't like your comment",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -137,11 +137,11 @@ export default function Comment({ commentC }) {
         );
         setComment(data.comment);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Comment unliked',
+            message: "Comment unliked",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
       } catch (err) {
@@ -158,11 +158,11 @@ export default function Comment({ commentC }) {
         );
         setComment(data.comment);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Comment Liked',
+            message: "Comment Liked",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
       } catch (err) {
@@ -175,11 +175,11 @@ export default function Comment({ commentC }) {
     e.preventDefault();
     if (!reply) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Enter a reply',
+          message: "Enter a reply",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -195,7 +195,7 @@ export default function Comment({ commentC }) {
         }
       );
       setComment(data.comment);
-      setReply('');
+      setReply("");
     } catch (err) {
       console.log(getError(err));
     }
@@ -204,11 +204,11 @@ export default function Comment({ commentC }) {
   const likeReplyHandler = async (reply) => {
     if (reply.name === userInfo.name) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't like your reply",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -224,11 +224,11 @@ export default function Comment({ commentC }) {
         );
         setComment(data.comment);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Reply unliked',
+            message: "Reply unliked",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
       } catch (err) {
@@ -245,11 +245,11 @@ export default function Comment({ commentC }) {
         );
         setComment(data.comment);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Comment Liked',
+            message: "Comment Liked",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
       } catch (err) {
@@ -277,8 +277,8 @@ export default function Comment({ commentC }) {
               <FontAwesomeIcon
                 className={
                   userInfo && comment.likes.find((x) => x === userInfo._id)
-                    ? 'orange-color'
-                    : ''
+                    ? "orange-color"
+                    : ""
                 }
                 icon={faHeart}
                 onClick={() => likeComment(comment._id)}

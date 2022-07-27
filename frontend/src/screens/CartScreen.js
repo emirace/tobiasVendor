@@ -22,6 +22,8 @@ const CartCont = styled.div`
   gap: 20px;
   @media (max-width: 992px) {
     flex-direction: column;
+    margin: 5px;
+    gap: 5px;
   }
 `;
 const LeftCorner = styled.div`
@@ -52,6 +54,9 @@ const Bottom = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    padding: 10px;
+  }
 `;
 
 const SumCont = styled.div`
@@ -67,6 +72,9 @@ const Right = styled.div`
 `;
 const Item = styled.div`
   margin: 20px 10px;
+  @media (max-width: 992px) {
+    margin: 10px 0;
+  }
 `;
 
 const Summary = styled.div`
@@ -83,6 +91,12 @@ const CustomMessage = styled.div`
     &:hover {
       color: var(--malon-color);
     }
+  }
+`;
+const CartItemCont = styled.div`
+  display: none;
+  @media (max-width: 992px) {
+    display: flex;
   }
 `;
 
@@ -185,6 +199,7 @@ export default function CartScreen() {
         text: "Item added to Cart",
         showStatus: true,
         buttonText: "Checkout",
+        link: "/cart",
       },
     });
   };
@@ -202,7 +217,7 @@ export default function CartScreen() {
   };
 
   return (
-    <div className="m-4 ">
+    <div>
       <Helmet>
         <title>Shopping Cart</title>
       </Helmet>
@@ -221,7 +236,52 @@ export default function CartScreen() {
               <>
                 {cartItems.map((item) => (
                   <Item key={item._id}>
-                    <Row className="align-items-center justify-content-between">
+                    <CartItemCont>
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="img-fluid rounded img-thumbnail"
+                      ></img>
+                      <div
+                        className="cart_item_detail "
+                        style={{ justifyContent: "space-between" }}
+                      >
+                        <div>
+                          <Link to={`/product/${item.slug}`}>{item.name}</Link>
+
+                          <div> ${item.price}</div>
+                          <span>Size: {item.size}</span>
+                        </div>
+                        <div className="col-3 d-flex align-items-center">
+                          <Button
+                            variant="none"
+                            onClick={() =>
+                              updateCartHandler(item, item.quantity - 1)
+                            }
+                            disabled={item.quantity === 1}
+                          >
+                            <FontAwesomeIcon icon={faMinus} />
+                          </Button>{" "}
+                          <span>{item.quantity}</span>{" "}
+                          <Button
+                            variant="none"
+                            onClick={() =>
+                              updateCartHandler(item, item.quantity + 1)
+                            }
+                            disabled={item.quantity === item.countInStock}
+                          >
+                            <FontAwesomeIcon icon={faPlus} />
+                          </Button>
+                          <Button
+                            onClick={() => removeItemHandler(item)}
+                            variant="none"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </Button>
+                        </div>
+                      </div>
+                    </CartItemCont>
+                    <Row className="align-items-center d-none d-lg-flex justify-content-between">
                       <div className="col-5 d-flex  align-items-center">
                         <img
                           src={item.image}
@@ -286,7 +346,7 @@ export default function CartScreen() {
                         !existItem && (
                           <Item key={index}>
                             <Row className="align-items-center justify-content-between">
-                              <div className="col-5 d-flex  align-items-center">
+                              <div className="col-7 d-flex  align-items-center">
                                 <img
                                   src={product.image}
                                   alt={product.name}
@@ -300,7 +360,7 @@ export default function CartScreen() {
                                   <div> ${product.price}</div>
                                 </div>
                               </div>
-                              <div className="col-2">
+                              <div className="col-4">
                                 <Button
                                   onClick={() => addToCartHandler(product)}
                                   variant="none"
