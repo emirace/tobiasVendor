@@ -33,6 +33,9 @@ const SocialLogin = styled.button`
   margin: 15px;
   border-radius: 5px;
   font-weight: bold;
+  @media (max-width: 992px) {
+    width: 300px;
+  }
 
   &.facebook {
     background: #507cc0;
@@ -68,10 +71,16 @@ const Line = styled.div`
   height: 2px;
   background: var(--orange-color);
   z-index: 1;
+  @media (max-width: 992px) {
+    width: 300px;
+  }
 `;
 const Social = styled.div`
   display: flex;
   align-items: center;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const Orgroup = styled.div`
   width: 100%;

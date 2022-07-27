@@ -68,6 +68,7 @@ const Right = styled.div`
 `;
 const ChatCont2 = styled.div`
   overflow-y: auto;
+  height: calc(100%-100px);
 `;
 
 const TopBar = styled.div`
