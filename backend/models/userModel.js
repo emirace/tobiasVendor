@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import findOrCreate from 'mongoose-findorcreate';
+import mongoose from "mongoose";
+import findOrCreate from "mongoose-findorcreate";
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -14,17 +14,20 @@ const reviewSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
+    name: { type: String, unique: true },
+    username: { type: String, required: true, unique: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
     image: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String },
     isAdmin: { type: Boolean, default: false, required: true },
-    isSeller: { type: Boolean, default: true, required: true },
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
-    saved: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
-    sold: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    isSeller: { type: Boolean, default: false, required: true },
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    saved: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    sold: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     about: { type: String },
     dob: { type: Date },
     reviews: [reviewSchema],
@@ -46,5 +49,5 @@ const userSchema = new mongoose.Schema(
 );
 userSchema.plugin(findOrCreate);
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;

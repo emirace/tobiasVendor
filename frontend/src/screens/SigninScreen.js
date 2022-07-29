@@ -190,7 +190,8 @@ export default function SigninScreen() {
       });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
-      window.location.href = redirect || "/signin";
+      console.log(data);
+      // window.location.href = redirect || "/signin";
     } catch (err) {
       toast.error(getError(err));
     }

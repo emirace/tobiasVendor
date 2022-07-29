@@ -332,7 +332,14 @@ export default function ProductScreen() {
         }
       );
       dispatch({ type: "CREATE_SUCCESS" });
-      toast.success("REview submitted successfully");
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Review submitted successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
@@ -564,6 +571,32 @@ export default function ProductScreen() {
     setReportModel(!reportModel);
   };
 
+  const deleteReview = async (id) => {
+    try {
+      const { data } = await axios.delete(
+        `/api/products/${product._id}/reviews/${id}`,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      dispatch({ type: "CREATE_SUCCESS" });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Review deleted successfully",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      product.reviews = data.reviews;
+      product.numReviews = data.numReviews;
+      product.rating = data.rating;
+      dispatch({ type: "REFRESH_PRODUCT", payload: product });
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
+
   const conditionDetails = (item) => {
     if (item === "New with Tags") {
       return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it (include a photo of the tag). This product shows no alterations, no defects and comes with Original purchase tags.";
@@ -653,6 +686,7 @@ export default function ProductScreen() {
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>{" "}
                     <FontAwesomeIcon
+                      style={{ marginLeft: "10px" }}
                       icon={
                         review.like === "yes"
                           ? faThumbsUp
@@ -672,6 +706,14 @@ export default function ProductScreen() {
                     <Rating rating={review.rating} caption=" "></Rating>
                     <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
+                    {userInfo && userInfo.isAdmin && (
+                      <div
+                        style={{ color: "red" }}
+                        onClick={() => deleteReview(review._id)}
+                      >
+                        delete
+                      </div>
+                    )}
                   </ListGroup.Item>
                 ))}
               </ListGroup>
@@ -829,6 +871,10 @@ export default function ProductScreen() {
       default:
         break;
     }
+  };
+
+  const discount = () => {
+    return ((product.price - product.actualPrice) / product.price) * 100;
   };
 
   return loading ? (
@@ -1017,78 +1063,44 @@ export default function ProductScreen() {
           <div className="sp_price_detail">
             <div className="sp_actual_price">${product.actualPrice}</div>
             <div className="sp_discount_price">${product.price}</div>
-            <div className="sp_discount">
-              (
-              {(((product.price - product.actualPrice) / product.price) * 100)
-                .toString()
-                .substring(0, 5)}
-              % )
-            </div>
+            {discount() ? (
+              <div className="sp_discount">
+                ({discount().toString().substring(0, 5)}% )
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div className="">
             <div className="select_size_header">select size: {size} </div>
             <div className="flexSelect">
-              <input type="radio" name="size" value="s" hidden id="s-size" />
-              <label
-                for="size"
-                className={`sp_select_size_btn ${
-                  selectSize === "S" ? "sp_btn_checked" : ""
-                }  `}
-                onClick={() => sizeHandler("S")}
-              >
-                S
-              </label>
-              <input type="radio" name="size" value="m" hidden id="m-size" />
-              <label
-                for="size"
-                className={`sp_select_size_btn ${
-                  selectSize === "M" ? "sp_btn_checked" : ""
-                }  `}
-                onClick={() => sizeHandler("M")}
-              >
-                M
-              </label>
-              <input type="radio" name="size" value="l" hidden id="l-size" />
-              <label
-                for="size"
-                className={`sp_select_size_btn ${
-                  selectSize === "L" ? "sp_btn_checked" : ""
-                }  `}
-                onClick={() => sizeHandler("L")}
-              >
-                L
-              </label>
-              <input type="radio" name="size" value="xl" hidden id="xl-size" />
-              <label
-                for="size"
-                className={`sp_select_size_btn ${
-                  selectSize === "XL" ? "sp_btn_checked" : ""
-                }  `}
-                onClick={() => sizeHandler("XL")}
-              >
-                XL
-              </label>
-              <input
-                type="radio"
-                name="size"
-                value="xxl"
-                hidden
-                id="xxl-size"
-              />
-              <label
-                for="size"
-                className={`sp_select_size_btn ${
-                  selectSize === "XXL" ? "sp_btn_checked" : ""
-                }  `}
-                onClick={() => sizeHandler("XXL")}
-              >
-                XXL
-              </label>
+              {product.sizes.map((size) => (
+                <span key={size.size}>
+                  <input
+                    type="radio"
+                    name="size"
+                    value={size.size}
+                    hidden
+                    id={`${size.size}-size`}
+                  />
+                  <label
+                    htmlFor={`${size.size}-size`}
+                    className={`sp_select_size_btn ${
+                      selectSize === size.size ? "sp_btn_checked" : ""
+                    }  `}
+                    onClick={() => sizeHandler(size.size)}
+                  >
+                    {size.size}
+                  </label>
+                </span>
+              ))}
 
-              <FontAwesomeIcon
+              <span
+                style={{ textDecoration: "underline" }}
                 onClick={() => setSizechartModel(true)}
-                icon={faQuestionCircle}
-              />
+              >
+                size chart{" "}
+              </span>
 
               <ModelLogin
                 showModel={sizechartModel}
@@ -1525,13 +1537,13 @@ export default function ProductScreen() {
             className={displayTab === "comments" && "active"}
             onClick={() => setDisplayTab("comments")}
           >
-            Comments
+            Comments ({comments.length})
           </TabItem>
           <TabItem
             className={displayTab === "reviews" && "active"}
             onClick={() => setDisplayTab("reviews")}
           >
-            Reviews
+            Reviews ({product.reviews.length})
           </TabItem>
         </Tab>
         <div className="container">{switchTab(displayTab)}</div>

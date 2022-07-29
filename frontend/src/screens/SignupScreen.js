@@ -83,11 +83,13 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get("redirect");
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   const [showForm, setShowForm] = useState(false);
 
@@ -102,7 +104,9 @@ export default function SignupScreen() {
         return;
       }
       const { data } = await axios.post("/api/users/signup", {
-        name,
+        username,
+        firstName,
+        lastName,
         email,
         password,
         phone,
@@ -163,16 +167,32 @@ export default function SignupScreen() {
       </Social>
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="name">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>UserName</Form.Label>
           <Form.Control
             required
             className={mode === "pagebodydark" ? "hhf" : "color_black"}
             onClick={() => setShowForm(true)}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>
         {showForm && (
           <>
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control
+                required
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="name">
+              <Form.Label>Last Name</Form.Label>
+              <Form.Control
+                required
+                className={mode === "pagebodydark" ? "hhf" : "color_black"}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email</Form.Label>
               <Form.Control

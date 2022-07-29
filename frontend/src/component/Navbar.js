@@ -141,9 +141,7 @@ const MenuItemCart = styled.div`
     opacity: 1;
   }
 `;
-const ProfileImg = styled.img.attrs((props) => ({
-  src: props.src ? props.src : "/images/pimage.png",
-}))`
+const ProfileImg = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -350,7 +348,9 @@ const SList = styled.li`
 
 export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const modelRef = useRef();
-  setmodelRef1(modelRef.current);
+  useEffect(() => {
+    setmodelRef1(modelRef.current);
+  }, []);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;

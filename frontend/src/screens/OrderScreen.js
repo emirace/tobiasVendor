@@ -189,7 +189,7 @@ function reducer(state, action) {
 }
 
 export default function OrderScreen() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
   const [
     {
@@ -334,7 +334,14 @@ export default function OrderScreen() {
         }
       );
       dispatch({ type: "DELIVER_SUCCESS" });
-      toast.success("Order delivered");
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Delivery status updated",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
     } catch (err) {
       toast.error(getError(err));
       dispatch({ type: "DELIVER_FAIL" });

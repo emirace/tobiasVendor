@@ -118,7 +118,7 @@
 }
 
 .sp_select_size_btn {
-  border: 2px solid;
+  border: 2px solid var(--orange-color);
   border-radius: 50%;
   width: 35px;
   height: 35px;

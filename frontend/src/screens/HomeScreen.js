@@ -28,13 +28,13 @@ import { Store } from "../Store";
 
 const Seller = styled.div`
   display: flex;
-  margin: 0 10vw;
+  margin: 0 5vw;
   overflow-x: auto;
   scroll-behavior: smooth;
   &::-webkit-scrollbar {
     display: none;
   }
-  @media (max-height: 992px) {
+  @media (max-width: 992px) {
     margin: 0 5vw;
   }
 `;

@@ -132,7 +132,7 @@ const SellerLeft = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 0 15px;
-  margin-bottom: 35px;
+  margin-bottom: 10px;
 `;
 
 const Sold = styled.div`
@@ -449,7 +449,9 @@ export default function SellerScreen() {
                 )}
               </Link>
               <div className="seller_profile_status">online</div>
-              <div className="seller_profile_name">{user.name}</div>
+              <div className="seller_profile_name">
+                @{user.username || user.name}
+              </div>
               <div className="seller_profile_follow">
                 <div className="seller_profile_follower">
                   <div className="seller_profile_follow_num">

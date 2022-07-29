@@ -635,9 +635,6 @@ export default function SearchSceen() {
                     <option className={mode || ""} value="newest">
                       Newly Arrived
                     </option>
-                    <option className={mode || ""} value="">
-                      Just Shared
-                    </option>
                     <option className={mode || ""} value="lowest">
                       Price: Low to High
                     </option>

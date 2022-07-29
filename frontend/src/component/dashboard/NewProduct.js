@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import IconsTooltips from "../IconsTooltips";
 import ModelLogin from "../ModelLogin";
 import Condition from "../Condition";
+import CropImage from "../cropImage/CropImage";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -515,6 +516,8 @@ export default function NewProduct() {
   const [tag, setTag] = useState(null);
   const [deliveryOption, setDeliveryOption] = useState("");
   const [showConditionModal, setShowConditionModal] = useState(false);
+  const [showUploadingImage, setShowUploadingImage] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
 
   const navigate = useNavigate();
 
@@ -580,13 +583,14 @@ export default function NewProduct() {
   };
 
   const submitHandler = async (e) => {
+    setFormError("");
     e.preventDefault();
-    console.log("sizes", sizes);
     const form = e.currentTarget;
-    if (form.checkValidity() !== false) {
+    if (form.checkValidity() === false) {
       e.preventDefault();
       e.stopPropagation();
       setValidated(true);
+      console.log(form.checkValidity());
       setFormError("Fill all required field *");
     } else {
       setFormError("");
@@ -663,8 +667,7 @@ export default function NewProduct() {
   //     console.log('new', sizes);
   //   };
 
-  const uploadHandler = async (e, fileType) => {
-    const file = e.target.files[0];
+  const uploadHandler = async (file, fileType) => {
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -738,7 +741,6 @@ export default function NewProduct() {
             <Item>
               <Label>Product Name</Label>
               <TextInput
-                required
                 mode={mode}
                 type="text"
                 onChange={(e) => setName(e.target.value)}
@@ -1303,7 +1305,12 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   {image1 ? (
                     <BigImage src={image1} alt="product image" />
                   ) : (
-                    <AddImage htmlFor="image1">
+                    <AddImage
+                      onClick={() => {
+                        setCurrentImage("image1");
+                        setShowUploadingImage(true);
+                      }}
+                    >
                       {loadingUpload ? (
                         <LoadingBox></LoadingBox>
                       ) : (
@@ -1312,11 +1319,6 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                           <div>
                             Click to Browse <span>Image</span>
                           </div>
-                          <Upload
-                            type="file"
-                            id="image1"
-                            onChange={(e) => uploadHandler(e, "image1")}
-                          />
                         </>
                       )}
                     </AddImage>
@@ -1326,7 +1328,12 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   {image2 ? (
                     <BigImage src={image2} alt="product image" />
                   ) : (
-                    <AddImage htmlFor="image2">
+                    <AddImage
+                      onClick={() => {
+                        setCurrentImage("image2");
+                        setShowUploadingImage(true);
+                      }}
+                    >
                       {loadingUpload ? (
                         <LoadingBox></LoadingBox>
                       ) : (
@@ -1335,11 +1342,6 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                           <div>
                             Click to Browse <span>Image</span>
                           </div>
-                          <Upload
-                            type="file"
-                            id="image2"
-                            onChange={(e) => uploadHandler(e, "image2")}
-                          />
                         </>
                       )}
                     </AddImage>
@@ -1350,7 +1352,12 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                     {image3 ? (
                       <SmallImage src={image3} alt="product image" />
                     ) : (
-                      <AddImage htmlFor="image3">
+                      <AddImage
+                        onClick={() => {
+                          setCurrentImage("image3");
+                          setShowUploadingImage(true);
+                        }}
+                      >
                         {loadingUpload ? (
                           <LoadingBox></LoadingBox>
                         ) : (
@@ -1359,11 +1366,6 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                             <div>
                               Click to Browse <span>Image</span>
                             </div>
-                            <Upload
-                              type="file"
-                              id="image3"
-                              onChange={(e) => uploadHandler(e, "image3")}
-                            />
                           </>
                         )}
                       </AddImage>
@@ -1373,7 +1375,12 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                     {image4 ? (
                       <SmallImage src={image4} alt="product image" />
                     ) : (
-                      <AddImage htmlFor="image4">
+                      <AddImage
+                        onClick={() => {
+                          setCurrentImage("image4");
+                          setShowUploadingImage(true);
+                        }}
+                      >
                         {loadingUpload ? (
                           <LoadingBox></LoadingBox>
                         ) : (
@@ -1382,15 +1389,21 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                             <div>
                               Click to Browse <span>Image</span>
                             </div>
-                            <Upload
-                              type="file"
-                              id="image4"
-                              onChange={(e) => uploadHandler(e, "image4")}
-                            />
                           </>
                         )}
                       </AddImage>
                     )}
+
+                    <ModelLogin
+                      setShowModel={setShowUploadingImage}
+                      showModel={showUploadingImage}
+                    >
+                      <CropImage
+                        currentImage={currentImage}
+                        uploadHandler={uploadHandler}
+                        setShowModel={setShowUploadingImage}
+                      />
+                    </ModelLogin>
                   </SmallImageC>
                 </SmallImageRow>
               </ImageRow>
@@ -1588,7 +1601,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
               </Item>
 
               <Item>
-                <Label>Add Tags</Label>
+                <Label>Add Tags #</Label>
                 <TagCont>
                   <TagInputCont>
                     <TagInput

@@ -132,6 +132,55 @@ export default function Product(props) {
     }
   };
 
+  const saveItem = async () => {
+    if (!userInfo) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "login to save item",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (product.seller._id === userInfo._id) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't save your product",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.put(
+        `/api/products/${product._id}/save`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: data.message,
+          showStatus: true,
+          state1: data.status,
+        },
+      });
+      // dispatch({ type: 'REFRESH_PRODUCT', payload: data.user });
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
+
+  const discount = () => {
+    return ((product.price - product.actualPrice) / product.price) * 100;
+  };
+
   return (
     <div className="product-card1">
       {showNotification && (
@@ -144,7 +193,13 @@ export default function Product(props) {
       </Model>
       <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
-          <span className="discount-tag1 ">50% off</span>
+          {discount() ? (
+            <span className="discount-tag1 ">
+              {discount().toString().substring(0, 5)}% off
+            </span>
+          ) : (
+            ""
+          )}
           <img
             src={product.image}
             className="product-thumb1"
@@ -163,8 +218,8 @@ export default function Product(props) {
             </span>
           </li>
           <li>
-            <span onClick={() => addToCartHandler(product)}>
-              <i className="fa fa-shopping-bag"></i>
+            <span onClick={() => saveItem()}>
+              <i className="fa fa-bookmark"></i>
             </span>
           </li>
         </ul>

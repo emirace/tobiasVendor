@@ -80,7 +80,6 @@ const Item = styled.div`
 const Summary = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
 `;
 const CustomMessage = styled.div`
@@ -380,24 +379,24 @@ export default function CartScreen() {
         </LeftCorner>
         <RightCorner mode={mode}>
           <Summary>
-            {cartItems.map((c) => (
-              <SumCont>
-                <Left>
-                  <Right>{c.quantity} </Right>
-                  <Right>x </Right>
-                  <Right>${c.price}</Right>
-                </Left>
-                <Right>{" =  $" + c.quantity * c.price}</Right>
-              </SumCont>
-            ))}
             <div>
-              <h4>
+              {cartItems.map((c) => (
+                <SumCont>
+                  <Left>
+                    <Right>{c.quantity} </Right>
+                    <Right>x </Right>
+                    <Right>${c.price}</Right>
+                  </Left>
+                  <Right>{" =  $" + c.quantity * c.price}</Right>
+                </SumCont>
+              ))}
+              <h4 style={{ marginTop: "30px" }}>
                 Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)} items)
                 : ${cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </h4>
             </div>
             <div>
-              <div className="d-grid">
+              <div className="d-grid" style={{ marginTop: "30px" }}>
                 <button
                   type="button"
                   className="search-btn1"

@@ -11,7 +11,7 @@
 .center-item {
   position: relative;
   overflow: hidden;
-  margin-bottom: 50px;
+  margin-bottom: 10px;
 }
 
 .center-item .main-item {
@@ -130,8 +130,8 @@ a {
 }
 
 .spad {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 .property_gallery {
   padding: 0 10vw;
@@ -456,12 +456,12 @@ ls {
 .product1 {
   position: relative;
   overflow: hidden;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 .product-category1 {
-  padding: 0 10vw;
+  padding: 0 5vw;
   font-size: 50px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   text-transform: capitalize;
   position: relative;
 }
@@ -477,7 +477,7 @@ ls {
 }
 
 .product-container1 {
-  margin: 0 10vw;
+  margin: 0 5vw;
   display: flex;
   overflow-x: auto;
   overflow-y: hidden;

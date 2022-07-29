@@ -1,12 +1,12 @@
 .CategoryListing_section {
   display: flex;
-  margin: 50px 0;
+  margin: 10px 0;
 }
 
 .categorylisting_img {
   position: relative;
-  width: 250px;
-  height: 250px;
+  width: 240px;
+  height: 240px;
   background: white;
   border-radius: 5px;
 }
@@ -22,7 +22,7 @@
 .catelisting_container {
   position: relative;
   margin-right: 15px;
-  height: 260px;
+  height: 240px;
 }
 
 .categorylisting_title {
@@ -50,7 +50,7 @@
   display: flex;
   overflow-x: auto;
   flex: 3;
-  height: 320px;
+  height: 250px;
 }
 
 .CategoryListing_item::-webkit-scrollbar {
@@ -71,7 +71,6 @@
   flex: 2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .product-title-Listing p {

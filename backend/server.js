@@ -23,6 +23,7 @@ import brandRouter from "./routes/brandRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import recentViewRouter from "./routes/recentViewRoutes.js";
 import nonLoginRouter from "./routes/nonLoginRoutes.js";
+import couponRouter from "./routes/couponRoutes.js";
 
 dotenv.config();
 
@@ -69,6 +70,7 @@ app.use("/api/brands", brandRouter);
 app.use("/api/admins", adminRouter);
 app.use("/api/recentviews", recentViewRouter);
 app.use("/api/nonLogin", nonLoginRouter);
+app.use("/api/coupons", couponRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();

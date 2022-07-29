@@ -203,33 +203,38 @@ productRouter.post(
     }
   })
 );
-// productRouter.delete(
-//   "/:id/reviews",
-//   isAuth,
-//   isAdmin,
-//   expressAsyncHandler(async (req, res) => {
-//     const productId = req.params.id;
-//     const product = await Product.findById(productId);
-//     if (product) {
-//       product.reviews.push(review);
-//       product.numReviews = product.reviews.length;
-//       product.rating =
-//         product.reviews.reduce((a, c) => c.rating + a, 0) /
-//         product.reviews.length;
+productRouter.delete(
+  "/:id/reviews/:reviewId",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      const newReviewList = product.reviews.filter(
+        (x) => x._id.toString() !== req.params.reviewId
+      );
+      product.reviews = newReviewList;
+      console.log(product.reviews);
+      product.numReviews = product.reviews.length;
+      product.rating = product.reviews.length
+        ? product.reviews.reduce((a, c) => c.rating + a, 0) /
+          product.reviews.length
+        : 0;
 
-//       const updatedProduct = await product.save();
+      const updatedProduct = await product.save();
 
-//       res.status(201).send({
-//         message: "Review Created",
-//         review: updatedProduct.reviews[updatedProduct.reviews.length - 1],
-//         numReviews: product.numReviews,
-//         rating: product.rating,
-//       });
-//     } else {
-//       res.status(404).send({ message: "Product Not Found" });
-//     }
-//   })
-// );
+      res.status(201).send({
+        message: "Review Deleted",
+        reviews: updatedProduct.reviews,
+        numReviews: product.numReviews,
+        rating: product.rating,
+      });
+    } else {
+      res.status(404).send({ message: "Product Not Found" });
+    }
+  })
+);
 
 productRouter.put(
   "/:id/save",
@@ -327,7 +332,7 @@ productRouter.put(
   })
 );
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 
 // get all Product with pagination
 
@@ -456,7 +461,7 @@ productRouter.get(
         ? {
             $or: [
               {
-                name: {
+                username: {
                   $regex: searchQuery,
                   $options: "i",
                 },
@@ -493,6 +498,12 @@ productRouter.get(
               },
               {
                 material: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                tags: {
                   $regex: searchQuery,
                   $options: "i",
                 },

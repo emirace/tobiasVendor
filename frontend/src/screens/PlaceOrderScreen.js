@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
@@ -8,12 +8,14 @@ import { Helmet } from "react-helmet-async";
 import CheckoutSteps from "../component/CheckoutSteps";
 import { Store } from "../Store";
 import { Link, useNavigate } from "react-router-dom";
-import { getError } from "../utils";
+import { couponDiscount, getError } from "../utils";
 import { toast } from "react-toastify";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
 import styled from "styled-components";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const Container = styled.div`
   display: flex;
@@ -51,6 +53,40 @@ const Section = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 
+const CouponCont = styled.div`
+  border: 1px solid var(--malon-color);
+  height: 40px;
+  display: flex;
+  border-radius: 0.2rem;
+`;
+const Input = styled.input`
+  flex: 4;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  border: 0;
+  padding: 5px;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-1)" : "var(--light-ev1)"};
+  &:focus-visible {
+    outline: none;
+  }
+`;
+const Apply = styled.button`
+  flex: 1;
+  color: var(--malon-color);
+  background: none;
+  border: 1px solid var(--malon-color);
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+`;
+
+const Remove = styled.span`
+  & svg {
+    color: var(--red-color);
+    margin-left: 10px;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "CREATE_REQUEST":
@@ -85,6 +121,9 @@ export default function PlaceOrderScreen() {
       order: null,
     }
   );
+
+  const [code, setCode] = useState("");
+  const [coupon, setCoupon] = useState(null);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -218,6 +257,21 @@ export default function PlaceOrderScreen() {
   function onError(err) {
     toast.error(getError(err));
   }
+  const handleCoupon = async () => {
+    try {
+      const { data } = await axios.get(`/api/coupons/${code}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      console.log(data);
+      setCoupon(data[0]);
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
+  const removeCoupon = () => {
+    setCoupon(null);
+  };
+  const discount = coupon ? couponDiscount(coupon, cart.totalPrice) : 0;
 
   return (
     <Main mode={mode}>
@@ -229,7 +283,7 @@ export default function PlaceOrderScreen() {
         <LeftC>
           <Section mode={mode}>
             <Card.Body>
-              <Card.Title>Shipping</Card.Title>
+              <Card.Title>Delivery Address</Card.Title>
               <Card.Text>
                 {console.log(cart)}
                 <strong>Name: </strong>
@@ -321,6 +375,7 @@ export default function PlaceOrderScreen() {
                     <Col>${cart.shippingPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
+
                 <ListGroup.Item>
                   <Row>
                     <Col>Tax</Col>
@@ -329,9 +384,32 @@ export default function PlaceOrderScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Order Total</Col>
-                    <Col>${cart.totalPrice.toFixed(2)}</Col>
+                    <Col>
+                      Discount ({coupon ? coupon.code : ""})
+                      {coupon && (
+                        <Remove onClick={removeCoupon}>
+                          <FontAwesomeIcon icon={faTimes} />
+                        </Remove>
+                      )}
+                    </Col>
+                    <Col>- ${discount}</Col>
                   </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Order Total</Col>
+                    <Col>${(cart.totalPrice - discount).toFixed(2)}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <CouponCont>
+                    <Input
+                      mode={mode}
+                      onChange={(e) => setCode(e.target.value)}
+                      placeholder="Enter Coupon Code"
+                    />
+                    <Apply onClick={handleCoupon}>Apply</Apply>
+                  </CouponCont>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   {isPending ? (

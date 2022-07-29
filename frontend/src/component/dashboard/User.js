@@ -313,7 +313,8 @@ export default function User() {
 
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [phone, setPhone] = useState("");
@@ -376,11 +377,12 @@ export default function User() {
       }
       dispatch({ type: "UPDATE_REQUEST" });
 
-      await axios.put(
+      const { data } = await axios.put(
         id ? `/api/users/${user._id}` : `/api/users/profile`,
         {
           _id: user._id,
-          name,
+          firstName,
+          lastName,
           email,
           dob,
           phone,
@@ -398,6 +400,7 @@ export default function User() {
         }
       );
       dispatch({ type: "UPDATE_SUCCESS" });
+      ctxDispatch({ type: "USER_SIGNIN", payload: data });
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -459,7 +462,9 @@ export default function User() {
           <ShowTop>
             <Image src={user.image} alt="p" />
             <TopTitle>
-              <Name>{user.name}</Name>
+              <Name>
+                {user.name || user.firstName} {user.lastName}
+              </Name>
               <UserTitle>{user.isAdmin ? "Admin" : "Seller"}</UserTitle>
             </TopTitle>
             <Wallet mode={mode}>
@@ -471,7 +476,7 @@ export default function User() {
             <BottomTitle>Account Details</BottomTitle>
             <Info>
               <FontAwesomeIcon icon={faUser} />
-              <Username>@{user.name}</Username>
+              <Username>@{user.username || user.name}</Username>
             </Info>
             <Info>
               <FontAwesomeIcon icon={faCalendarDays} />
@@ -547,11 +552,20 @@ export default function User() {
           <Form onSubmit={submitHandler}>
             <Left>
               <Item>
-                <Label>Full Name</Label>
+                <Label>First Name</Label>
                 <TextInput
                   mode={mode}
-                  placeholder={user.name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder={user.firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </Item>
+
+              <Item>
+                <Label>Last Name</Label>
+                <TextInput
+                  mode={mode}
+                  placeholder={user.lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </Item>
               <Item>
