@@ -211,6 +211,23 @@ const prices = [
     value: "201-1000",
   },
 ];
+const deals = [
+  {
+    name: "On Sale Now",
+    id: 1,
+    value: "on-sale",
+  },
+  {
+    name: "Up to 50% Off",
+    id: 2,
+    value: "50",
+  },
+  {
+    name: "By Price",
+    id: 3,
+    value: "price",
+  },
+];
 
 const ratings = [
   {
@@ -279,6 +296,12 @@ export default function SearchSceen() {
   const color = sp.get("color") || "all";
   const brand = sp.get("brand") || "all";
   const size = sp.get("size") || "all";
+  const deal = sp.get("deal") || "all";
+  const shipping = sp.get("shipping") || "all";
+  const condition = sp.get("condition") || "all";
+  const availability = sp.get("availability") || "all";
+  const type = sp.get("type") || "all";
+  const pattern = sp.get("pattern") || "all";
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
@@ -342,7 +365,13 @@ export default function SearchSceen() {
     const filterColor = filter.color || color;
     const filterBrand = filter.brand || brand;
     const filterSize = filter.size || size;
-    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&color=${filterColor}&brand=${filterBrand}&size=${filterSize}`;
+    const filterDeal = filter.deal || deal;
+    const filterShipping = filter.shipping || shipping;
+    const filterCondition = filter.condition || condition;
+    const filterAvailability = filter.availability || availability;
+    const filterType = filter.type || type;
+    const filterPattern = filter.pattern || pattern;
+    return `/search?category=${filterCategory}&query=${filterQuery}&page=${filterPage}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&color=${filterColor}&brand=${filterBrand}&size=${filterSize}&deal=${filterDeal}&shipping=${filterShipping}&condition=${filterCondition}&availability=${filterAvailability}&type=${filterType}&pattern=${filterPattern}`;
   };
 
   const [filterSidebar, setFilterSidebar] = useState(false);
@@ -353,6 +382,12 @@ export default function SearchSceen() {
   const [colorClass, setColorClass] = useState(true);
   const [sizeClass, setSizeClass] = useState(true);
   const [brandClass, setBrandClass] = useState(true);
+  const [dealClass, setDealClass] = useState(true);
+  const [shippingClass, setShippingClass] = useState(true);
+  const [conditionClass, setConditionClass] = useState(true);
+  const [availabilityClass, setAvailabilityClass] = useState(true);
+  const [typeClass, setTypeClass] = useState(true);
+  const [patternClass, setPatternClass] = useState(true);
   const [brandInput, setBrandInput] = useState("");
   const toggleCollapse = (type) => {
     switch (type) {
@@ -373,6 +408,9 @@ export default function SearchSceen() {
         break;
       case "brand":
         setBrandClass(!brandClass);
+        break;
+      case "deal":
+        setDealClass(!dealClass);
         break;
 
       default:
@@ -486,6 +524,33 @@ export default function SearchSceen() {
                     <Link
                       className={p.value === price ? "text-bold" : ""}
                       to={getFilterUrl({ price: p.value })}
+                    >
+                      <ListItem mode={mode}>
+                        <FontAwesomeIcon icon={faCircleDot} />
+                        {p.name}
+                      </ListItem>
+                    </Link>
+                  </div>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("deals")}>Deals</Title>
+              <List className={dealClass ? "activate" : ""}>
+                <Link
+                  className={"all" === deal ? "text-bold" : ""}
+                  to={getFilterUrl({ deal: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {deals.map((p) => (
+                  <div key={p.id}>
+                    <Link
+                      className={p.value === deal ? "text-bold" : ""}
+                      to={getFilterUrl({ deal: p.value })}
                     >
                       <ListItem mode={mode}>
                         <FontAwesomeIcon icon={faCircleDot} />
@@ -634,6 +699,18 @@ export default function SearchSceen() {
                   >
                     <option className={mode || ""} value="newest">
                       Newly Arrived
+                    </option>
+                    <option className={mode || "shared"} value="">
+                      Just Shared
+                    </option>
+                    <option className={mode || "likes"} value="">
+                      Likes
+                    </option>
+                    <option className={mode || "prices"} value="">
+                      Recent Prices Drop
+                    </option>
+                    <option className={mode || "relevance"} value="">
+                      Relevance
                     </option>
                     <option className={mode || ""} value="lowest">
                       Price: Low to High

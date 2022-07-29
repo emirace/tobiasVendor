@@ -952,9 +952,10 @@ export default function ProductScreen() {
             }}
           />
         </div>
+        {}
         <div className="single_product_right">
           <div className="single_product_seller">
-            <img src={product.seller.image} alt={product.seller.name} />
+            <img src={product.seller.image} alt={product.seller.username} />
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
                 <Link to={`/seller/${product.seller._id}`}>
@@ -1096,7 +1097,7 @@ export default function ProductScreen() {
               ))}
 
               <span
-                style={{ textDecoration: "underline" }}
+                style={{ textDecoration: "underline", cursor: "pointer" }}
                 onClick={() => setSizechartModel(true)}
               >
                 size chart{" "}
