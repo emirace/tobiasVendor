@@ -16,6 +16,7 @@ import { faCircleDot, faTimes } from "@fortawesome/free-solid-svg-icons";
 import "../style/SearchScreen.css";
 import styled from "styled-components";
 import { Store } from "../Store";
+import SearchBox from "../component/SearchBox";
 
 const Container = styled.div`
   display: flex;
@@ -162,6 +163,14 @@ const Filter = styled.div`
   z-index: 9;
   padding: 5px 7px;
   color: white;
+`;
+
+const Searchcont = styled.div`
+  display: none;
+  margin-bottom: 15px;
+  @media (max-width: 992px) {
+    display: block;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -594,6 +603,9 @@ export default function SearchSceen() {
             <MessageBox variant="danger">{error}</MessageBox>
           ) : (
             <>
+              <Searchcont>
+                <SearchBox />
+              </Searchcont>
               <RowCont>
                 <div onClick={() => setShowFilter(true)}>Filters</div>
                 <Result>
@@ -621,7 +633,10 @@ export default function SearchSceen() {
                     }}
                   >
                     <option className={mode || ""} value="newest">
-                      Newest Arrivals
+                      Newly Arrived
+                    </option>
+                    <option className={mode || ""} value="">
+                      Just Shared
                     </option>
                     <option className={mode || ""} value="lowest">
                       Price: Low to High
