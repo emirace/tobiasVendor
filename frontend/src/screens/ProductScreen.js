@@ -952,7 +952,7 @@ export default function ProductScreen() {
             }}
           />
         </div>
-        {}
+        {console.log(product)}
         <div className="single_product_right">
           <div className="single_product_seller">
             <img src={product.seller.image} alt={product.seller.username} />
