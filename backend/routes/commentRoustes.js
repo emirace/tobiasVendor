@@ -1,16 +1,16 @@
-import express from 'express';
-import Product from '../models/productModel.js';
-import Comment from '../models/commentModel.js';
-import { isAuth } from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
+import express from "express";
+import Product from "../models/productModel.js";
+import Comment from "../models/commentModel.js";
+import { isAuth } from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import User from "../models/userModel.js";
 
 const commentRouter = express.Router();
 
 // post comment
 
 commentRouter.post(
-  '/:id',
+  "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
@@ -19,10 +19,10 @@ commentRouter.post(
     if (product) {
       const commentnow = new Comment({
         productId: product._id,
-        name: req.user.name,
+        name: req.user.username,
         comment: req.body.comment,
         userImage: user.image,
-        image: req.body.image ? req.body.image : '',
+        image: req.body.image ? req.body.image : "",
         replies: [],
         likes: [],
       });
@@ -30,7 +30,7 @@ commentRouter.post(
 
       res.status(201).send(newComment);
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
@@ -38,7 +38,7 @@ commentRouter.post(
 // get all comments
 
 commentRouter.get(
-  '/:id',
+  "/:id",
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const comments = await Comment.find({ productId });
@@ -49,7 +49,7 @@ commentRouter.get(
 // like a comment
 
 commentRouter.put(
-  '/:id/like',
+  "/:id/like",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const commentId = req.params.id;
@@ -68,12 +68,12 @@ commentRouter.put(
         const updatedComment = await comment.save();
         res
           .status(201)
-          .send({ message: 'Comment Liked', comment: updatedComment });
+          .send({ message: "Comment Liked", comment: updatedComment });
       } else {
-        res.status(404).send({ message: 'You must login to like comment' });
+        res.status(404).send({ message: "You must login to like comment" });
       }
     } else {
-      res.status(404).send({ message: 'Comment Not Found' });
+      res.status(404).send({ message: "Comment Not Found" });
     }
   })
 );
@@ -81,7 +81,7 @@ commentRouter.put(
 // Unlike comment
 
 commentRouter.put(
-  '/:id/unlike',
+  "/:id/unlike",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const commentId = req.params.id;
@@ -93,12 +93,12 @@ commentRouter.put(
         const updatedComment = await comment.save();
         res
           .status(201)
-          .send({ message: 'Comment UnLiked', comment: updatedComment });
+          .send({ message: "Comment UnLiked", comment: updatedComment });
       } else {
-        res.status(404).send({ message: 'You must login to like comment' });
+        res.status(404).send({ message: "You must login to like comment" });
       }
     } else {
-      res.status(404).send({ message: 'Comment Not Found' });
+      res.status(404).send({ message: "Comment Not Found" });
     }
   })
 );
@@ -106,7 +106,7 @@ commentRouter.put(
 // post reply
 
 commentRouter.post(
-  '/reply/:id',
+  "/reply/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const id = req.params.id;
@@ -114,18 +114,18 @@ commentRouter.post(
     const user = await User.findById(req.user._id);
     if (comment) {
       const reply = {
-        name: req.user.name,
+        name: req.user.username,
         comment: req.body.reply,
         userImage: user.image,
       };
       comment.replies.push(reply);
       const updateComment = await comment.save();
       res.status(201).send({
-        message: 'Reply Send',
+        message: "Reply Send",
         comment: updateComment,
       });
     } else {
-      res.status(404).send({ message: 'Comment Not Found' });
+      res.status(404).send({ message: "Comment Not Found" });
     }
   })
 );
@@ -133,7 +133,7 @@ commentRouter.post(
 // like a reply
 
 commentRouter.put(
-  '/reply/:id/:reply/like',
+  "/reply/:id/:reply/like",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const commentId = req.params.id;
@@ -151,9 +151,9 @@ commentRouter.put(
       }
       comment.replies[index].likes.push(req.user._id);
       const updatedComment = await comment.save();
-      res.status(201).send({ message: 'Reply Liked', comment: updatedComment });
+      res.status(201).send({ message: "Reply Liked", comment: updatedComment });
     } else {
-      res.status(404).send({ message: 'Comment Not Found' });
+      res.status(404).send({ message: "Comment Not Found" });
     }
   })
 );
@@ -161,7 +161,7 @@ commentRouter.put(
 // unlike comment
 
 commentRouter.put(
-  '/reply/:id/:reply/unlike',
+  "/reply/:id/:reply/unlike",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const commentId = req.params.id;
@@ -174,9 +174,9 @@ commentRouter.put(
 
       comment.replies[index].likes.pull(req.user._id);
       const updatedComment = await comment.save();
-      res.status(201).send({ message: 'Reply Liked', comment: updatedComment });
+      res.status(201).send({ message: "Reply Liked", comment: updatedComment });
     } else {
-      res.status(404).send({ message: 'Comment Not Found' });
+      res.status(404).send({ message: "Comment Not Found" });
     }
   })
 );

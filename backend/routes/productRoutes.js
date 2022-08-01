@@ -15,7 +15,7 @@ const productRouter = express.Router();
 // get all product
 
 productRouter.get("/", async (req, res) => {
-  const products = await Product.find();
+  const products = await Product.find().populate("seller", "_id username");
   res.send(products);
 });
 
@@ -97,10 +97,7 @@ productRouter.put(
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "seller._id"
-    );
+    const product = await Product.findById(productId).populate("seller", "_id");
     const slugName = slugify(req.body.name);
     const images = [req.body.image2, req.body.image3, req.body.image4];
     const countInStock = req.body.sizes.reduce(
@@ -215,7 +212,6 @@ productRouter.delete(
         (x) => x._id.toString() !== req.params.reviewId
       );
       product.reviews = newReviewList;
-      console.log(product.reviews);
       product.numReviews = product.reviews.length;
       product.rating = product.reviews.length
         ? product.reviews.reduce((a, c) => c.rating + a, 0) /
@@ -279,7 +275,10 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate("seller");
+    const product = await Product.findById(productId).populate(
+      "seller",
+      "username image sold"
+    );
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -308,7 +307,10 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate("seller");
+    const product = await Product.findById(productId).populate(
+      "seller",
+      "username image sold"
+    );
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -355,7 +357,6 @@ productRouter.get(
             },
           }
         : {};
-    console.log({ ...queryFilter });
 
     const products = await Product.find({ ...queryFilter })
       .skip(pageSize * (page - 1))
@@ -382,7 +383,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller })
-      .populate("seller", "seller.name seller.logo")
+      .populate("seller", "username")
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
@@ -403,7 +404,6 @@ productRouter.get(
     const searchQuery = query.q;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-    console.log(searchQuery, query);
 
     const queryFilter =
       searchQuery && searchQuery !== "all"
@@ -427,7 +427,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller, ...queryFilter })
-      .populate("seller", "seller.name seller.logo")
+      .populate("seller", "username image")
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
@@ -455,13 +455,12 @@ productRouter.get(
     const rating = query.rating || "";
     const order = query.order || "";
     const searchQuery = query.query || "";
-
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
-                username: {
+                name: {
                   $regex: searchQuery,
                   $options: "i",
                 },
@@ -545,6 +544,7 @@ productRouter.get(
         : order === "newest"
         ? { creatAt: -1 }
         : { _id: -1 };
+
     const products = await Product.find({
       ...queryFilter,
       ...categoryFilter,
@@ -564,7 +564,6 @@ productRouter.get(
       ...priceFilter,
       ...ratingFilter,
     });
-
     res.send({
       products,
       countProducts,
@@ -584,7 +583,8 @@ productRouter.get(
 
 productRouter.get("/slug/:slug", async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug }).populate(
-    "seller"
+    "seller",
+    "username image sold "
   );
   if (product) {
     res.send(product);
@@ -595,7 +595,7 @@ productRouter.get("/slug/:slug", async (req, res) => {
 productRouter.get("/:id", async (req, res) => {
   const product = await Product.findById(req.params.id).populate(
     "seller",
-    "seller.name"
+    "username"
   );
   if (product) {
     res.send(product);

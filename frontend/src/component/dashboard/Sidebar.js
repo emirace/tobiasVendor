@@ -78,20 +78,21 @@ export default function Sidebar({ current }) {
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
             </Link>
+
+            <Link to="/dashboard/productlist">
+              <ListItem
+                mode={mode}
+                className={current === "productlist" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faBasketShopping} /> My Products
+              </ListItem>
+            </Link>
             <Link to="/dashboard/orderlist">
               <ListItem
                 mode={mode}
                 className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Purchase Orders
-              </ListItem>
-            </Link>
-            <Link to="/dashboard/productlist">
-              <ListItem
-                mode={mode}
-                className={current === "productlist" ? "active" : ""}
-              >
-                <FontAwesomeIcon icon={faBasketShopping} /> Products
               </ListItem>
             </Link>
             <Link to="/dashboard/saleslist">

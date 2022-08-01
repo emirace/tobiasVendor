@@ -3,6 +3,7 @@ import {
   faMessage,
   faPaperPlane,
   faSearch,
+  faShield,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
@@ -38,6 +39,7 @@ const ChatCont = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   margin: 20px;
   border-radius: 0.2rem;
+  height: calc(100% - 192px);
   @media (max-width: 992px) {
     margin: 5px;
   }
@@ -68,7 +70,7 @@ const Right = styled.div`
 `;
 const ChatCont2 = styled.div`
   overflow-y: auto;
-  height: calc(100%-100px);
+  height: 100%;
 `;
 
 const TopBar = styled.div`
@@ -106,9 +108,11 @@ const Search = styled.input.attrs((props) => ({
 `;
 
 const ChatArea = styled.div`
-  margin-top: 20px;
-  height: 380px;
+  height: calc(100% - 130px);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -164,7 +168,7 @@ const NoConversation = styled.span`
 
 const Conserv = styled.div`
   overflow: auto;
-  height: 400px;
+  height: calc(100% - 50px);
   &::-webkit-scrollbar {
     display: none;
   }
@@ -204,6 +208,18 @@ const Back = styled.div`
   }
 `;
 
+const PrivacyInfo = styled.div`
+  display: flex;
+  height: 70px;
+  padding: 10px 50px;
+  align-items: center;
+  & svg {
+    color: grey;
+    font-size: 30px;
+    margin: 10px;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -237,14 +253,11 @@ export default function ChatScreen() {
   const { mode, userInfo } = state;
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const sellerId = sp.get("conversation");
-  const productId = sp.get("product");
+  const currentCon = sp.get("conversation");
   const [menu, setMymenu] = useState(false);
   const [currentChat, setCurrentChat] = useState("");
   const [currentReply, setCurrentReply] = useState("");
-  const [newMessage, setNewMessage] = useState(
-    productId && `(Product ${productId})`
-  );
+  const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState("");
   const [modelRef1, setmodelRef1] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
@@ -306,6 +319,7 @@ export default function ChatScreen() {
     }
   }, [arrivalReport]);
 
+  const [testing, setTesting] = useState("");
   useEffect(() => {
     if (
       arrivalMessage &&
@@ -318,8 +332,11 @@ export default function ChatScreen() {
           payload: [...messages, arrivalMessage.message],
         });
       } else {
-        alert("chat not in view");
+        alert(`chat not in view ${arrivalMessage.message}`);
+        setTesting("working");
       }
+    } else if (arrivalMessage) {
+      alert(`chat not in view ${arrivalMessage.message}`);
     }
   }, [arrivalMessage, currentChat]);
 
@@ -353,16 +370,17 @@ export default function ChatScreen() {
     const getReportConversation = async () => {
       try {
         dispatch({ type: "FETCH_REQUEST" });
-        const { data } = await axios.get(`/api/reportConversation`, {
+        const { data } = await axios.get(`/api/conversations/reports`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        setReportConversions(data.conversations);
+        console.log(data);
+        setReportConversions(data);
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: err });
         console.log(err);
       }
     };
-    getReportConversation();
+    if (userInfo.isAdmin) getReportConversation();
   }, [userInfo]);
 
   const [reports1, setReports1] = useState(false);
@@ -406,7 +424,7 @@ export default function ChatScreen() {
       const getCat = async () => {
         try {
           const { data } = await axios.get(
-            `/api/conversations/find/${userInfo._id}/${sellerId}`,
+            `/api/conversations/find/${currentCon}`,
             { headers: { Authorization: `Bearer ${userInfo.token}` } }
           );
           setCurrentChat(data);
@@ -519,10 +537,11 @@ export default function ChatScreen() {
             {reportConversions.length < 1
               ? "No Reports"
               : reportConversions.map((r, index) => (
-                  <div key={index} onClick={() => setCurrentReply(r.user)}>
-                    <ReportConversation
-                      currentReply={currentReply}
-                      userId={r.user}
+                  <div key={r._id} onClick={() => setCurrentChat(r._id)}>
+                    <Conversation
+                      conversation={r}
+                      status={isOnlineCon(r)}
+                      currentChat={currentChat._id}
                     />
                   </div>
                 ))}
@@ -624,6 +643,16 @@ export default function ChatScreen() {
           {currentTab === "messages" ? (
             currentChat ? (
               <ChatCont2>
+                <PrivacyInfo>
+                  <FontAwesomeIcon icon={faShield} />
+                  <div style={{ color: "grey", textAlign: "center" }}>
+                    Please leave all information that will help us resolve your
+                    query. Please include an order number if your report is
+                    related to an order you purchased from this seller, or you
+                    can go to your purchase history and report the related item
+                    directly from the report tab on the item page.
+                  </div>
+                </PrivacyInfo>
                 <ChatArea>
                   {messages.map((m, index) => (
                     <div ref={scrollref} key={index}>
@@ -650,38 +679,47 @@ export default function ChatScreen() {
                 Select a conversation to start a chat
               </NoConversation>
             )
-          ) : currentReply ? (
-            <>
-              <ChatArea>
-                {console.log("report", reports)}
-                {reports.map((m, index) => (
-                  <div ref={scrollref} key={index}>
-                    <Messages
-                      own={!m.admin}
-                      message={m}
-                      report={true}
-                      product={m.productName ? m.productName : false}
-                    />
+          ) : currentTab === "reports" ? (
+            currentChat ? (
+              <ChatCont2>
+                <PrivacyInfo>
+                  <FontAwesomeIcon icon={faShield} />
+                  <div style={{ color: "grey", textAlign: "center" }}>
+                    Please leave all information that will help us resolve your
+                    query. Please include an order number if your report is
+                    related to an order you purchased from this seller, or you
+                    can go to your purchase history and report the related item
+                    directly from the report tab on the item page.
                   </div>
-                ))}
-              </ChatArea>
-              <Message>
-                <TextInput
-                  mode={mode}
-                  placeholder="Write a message"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                />
-                <FontAwesomeIcon
-                  icon={faPaperPlane}
-                  onClick={handleSubmitReply}
-                />
-              </Message>
-            </>
+                </PrivacyInfo>
+                <ChatArea>
+                  {messages.map((m, index) => (
+                    <div ref={scrollref} key={index}>
+                      <Messages
+                        key={m._id}
+                        own={m.sender === userInfo._id}
+                        message={m}
+                      />
+                    </div>
+                  ))}
+                </ChatArea>
+                <Message>
+                  <TextInput
+                    mode={mode}
+                    placeholder="Write a message"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                  />
+                  <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
+                </Message>
+              </ChatCont2>
+            ) : (
+              <NoConversation>
+                Select a conversation to start a chat
+              </NoConversation>
+            )
           ) : (
-            <NoConversation>
-              Select a conversation to reply a report
-            </NoConversation>
+            ""
           )}
         </Right>
       </ChatCont>

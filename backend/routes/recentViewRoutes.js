@@ -12,12 +12,10 @@ recentViewRouter.put(
   expressAsyncHandler(async (req, res) => {
     const { productId } = req.params;
     const view = await RecentView.findOne({ productId: productId });
-    console.log(productId);
     if (view) {
       view.score = view.score + factor;
       view.numViews = view.numViews + 1;
       const saveview = await view.save();
-      console.log("old", saveview);
     } else {
       const newView = new RecentView({
         score: factor,
@@ -25,20 +23,13 @@ recentViewRouter.put(
         productId,
       });
       await newView.save();
-      console.log("new");
     }
     const views = await RecentView.find();
     if (views) {
       views.map(async (v) => {
-        console.log(
-          productId !== v.productId.toString(),
-          productId,
-          v.productId.toString()
-        );
         if (productId !== v.productId.toString()) {
           v.score = v.score * factor;
           const c = await v.save();
-          console.log("c", v, c);
         }
       });
     }

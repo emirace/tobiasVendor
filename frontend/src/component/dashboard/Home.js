@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
-import { getError } from "../../utils";
+import { getError, getMonday } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
 import Chart from "./Chart";
@@ -12,6 +12,8 @@ import WidgetLarge from "./WidgetLarge";
 import WidgetSmall from "./WidgetSmall";
 import WidgetSmallProduct from "./WidgetSmallProduct";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
 const today = moment().startOf("day");
 
@@ -56,20 +58,22 @@ const Col = styled.div`
 
 const Filter = styled.div`
   display: flex;
+  padding: 0 20px;
   justify-content: end;
   align-items: center;
 `;
 const Date = styled.div`
-  margin: 5px 10px;
+  margin: 5px 0 5px 10px;
 `;
 const DateInput = styled.input`
   background: none;
+  width: 100px;
   color: ${(props) =>
     props.mode === "pagebodydark"
       ? "var(--white-color)"
       : "var(--black-color)"};
   border: 0;
-  padding: 5px;
+  padding: 5px 0 5px 5px;
   border-radius: 0.2rem;
   color-scheme: ${(props) =>
     props.mode === "pagebodydark" ? "dark" : "light"};
@@ -81,10 +85,24 @@ const DateInput = styled.input`
 const Goto = styled.div`
   font-weight: 500;
   padding: 1px 8px;
+  cursor: pointer;
   border: 1px solid var(--malon-color);
   &:hover {
     background-color: var(--malon-color);
     color: white;
+  }
+`;
+
+const DateLabel = styled.label`
+  & svg {
+    font-size: 18px;
+    color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
+    &:hover {
+      color: var(--malon-color);
+    }
   }
 `;
 
@@ -118,7 +136,6 @@ export default function Home() {
   var now = new window.Date();
   const [from, setFrom] = useState("2022-04-24");
   const [to, setTo] = useState(now);
-  console.log(now);
 
   const [{ loading, orders, error, products }, dispatch] = useReducer(reducer, {
     loading: false,
@@ -141,7 +158,7 @@ export default function Home() {
         dispatch({ type: "ORDER_SUCCESS", payload: data });
         console.log("data", data);
       } catch (err) {
-        dispatch({ type: "ORDER_FAIL", payload: err });
+        dispatch({ type: "ORDER_FAIL", payload: getError(err) });
 
         console.log(getError(err));
       }
@@ -162,7 +179,7 @@ export default function Home() {
         );
         dispatch({ type: "PRODUCT_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: "ORDER_FAIL", payload: err });
+        dispatch({ type: "ORDER_FAIL", payload: getError(err) });
         console.log(getError(err));
       }
     };
@@ -231,6 +248,7 @@ export default function Home() {
     };
     fetchPurchaseChart();
   }, [orders]);
+  var firstDay = new window.Date(now.getFullYear(), now.getMonth(), 1);
 
   return (
     <Container>
@@ -288,13 +306,31 @@ export default function Home() {
             >
               Today
             </Goto>
+            <Goto
+              onClick={() => {
+                setFrom(getMonday(today));
+                setTo(moment(today).endOf("day").toDate());
+              }}
+            >
+              This Week
+            </Goto>
+            {console.log("firstday", firstDay)}
+            <Goto
+              onClick={() => {
+                setFrom(firstDay);
+                setTo(moment(today).endOf("day").toDate());
+              }}
+            >
+              This Month
+            </Goto>
             <Date>
-              From:{" "}
+              From:
               <DateInput
+                id="fromdate"
                 onChange={(e) => setFrom(e.target.value)}
                 mode={mode}
                 type="date"
-                value={from}
+                value={moment(from).format("YYYY-MM-DD").toString()}
               />
             </Date>
             <Date>
@@ -303,9 +339,8 @@ export default function Home() {
                 onChange={(e) => setTo(e.target.value)}
                 mode={mode}
                 type="date"
-                value={to}
+                value={moment(to).format("YYYY-MM-DD").toString()}
               />
-              {console.log(from)}
             </Date>
           </Filter>
           <Row>

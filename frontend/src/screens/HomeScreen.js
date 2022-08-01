@@ -96,10 +96,10 @@ export default function ProductsScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const result = await axios.get("/api/products");
+        const { data } = await axios.get("/api/products");
         dispatch({
           type: "FETCH_SUCCESS",
-          payload: result.data,
+          payload: data,
         });
 
         dispatch({ type: "FETCH_USERS_REQUEST" });
@@ -287,9 +287,9 @@ export default function ProductsScreen() {
             <i className="fa fa-angle-right"></i>
           </button>
           <div className="product-container1 scroll_snap">
-            {products.map((product, index) => (
+            {products.map((product) => (
               <div
-                key={index}
+                key={product._id}
                 className="smooth1"
                 // style={{
                 //   transform: sliderstyle,

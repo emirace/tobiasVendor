@@ -75,6 +75,7 @@ const Stock = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
+  margin-right: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -244,7 +245,7 @@ export default function OrderList() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Order List</Title>
+      <Title>Purchase Product History</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setOrdersQuery(e.target.value)}

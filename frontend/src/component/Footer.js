@@ -10,6 +10,9 @@ import styled from "styled-components";
 import { Store } from "../Store";
 import "../style/Footer.css";
 import Newletter from "./Newletter";
+import { ReactComponent as FacebookIcon } from "./../icons/Icons-19.svg";
+import { ReactComponent as WhatsappIcon } from "./../icons/Icons-22.svg";
+import { ReactComponent as InstagramIcon } from "./../icons/Icons-29.svg";
 
 const CopyRight = styled.div`
   background: ${(props) => (props.back ? "#000" : "#fff")};
@@ -231,12 +234,15 @@ export default function Footer() {
           </p>
           <div className="footer_social">
             <div className="footer_social_icon">
+              <FacebookIcon height={25} width={25} />
               <FontAwesomeIcon icon={faHashtag} />
             </div>
             <div className="footer_social_icon">
+              <WhatsappIcon height={25} width={25} />
               <FontAwesomeIcon icon={faHashtag} />
             </div>
             <div className="footer_social_icon">
+              <InstagramIcon height={25} width={25} />
               <FontAwesomeIcon icon={faHashtag} />
             </div>
           </div>

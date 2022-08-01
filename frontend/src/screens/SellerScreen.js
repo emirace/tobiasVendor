@@ -230,8 +230,15 @@ export default function SellerScreen() {
   }, [page, sellerId]);
 
   const toggleFollow = async () => {
-    if (user.name === userInfo.name) {
-      alert("you can't like your store");
+    if (user.username === userInfo.username) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "you can't follow yourself",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       return;
     }
 
@@ -239,7 +246,7 @@ export default function SellerScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "you can't follow yourself",
+          message: "Login to follow",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -256,6 +263,14 @@ export default function SellerScreen() {
           }
         );
         dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: `you unfollow ${data.username}`,
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
       } else {
         const { data } = await axios.put(
           `/api/users/follow/${sellerId}`,
@@ -265,6 +280,14 @@ export default function SellerScreen() {
           }
         );
         dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: `you follow ${data.username}`,
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
       }
     } catch (err) {
       toast.error(getError(err));
@@ -356,7 +379,7 @@ export default function SellerScreen() {
               <LoadingBox></LoadingBox>
             ) : error ? (
               <MessageBox variant="danger">{error}</MessageBox>
-            ) : products.length === 0 ? (
+            ) : user.likes.length === 0 ? (
               <MessageBox>No Product Found</MessageBox>
             ) : (
               user.likes.map((product) => (
@@ -374,11 +397,13 @@ export default function SellerScreen() {
               <LoadingBox></LoadingBox>
             ) : error ? (
               <MessageBox variant="danger">{error}</MessageBox>
-            ) : products.length === 0 ? (
+            ) : user.saved.length === 0 ? (
               <MessageBox>No Product Found</MessageBox>
             ) : (
               user.saved.map((product) => (
                 <ProductCont key={product._id}>
+                  {console.log(products)}
+                  {console.log(user)}
                   <Product product={product} />
                 </ProductCont>
               ))
@@ -391,33 +416,37 @@ export default function SellerScreen() {
     }
   };
 
-  const addConversation = async (id) => {
+  const addConversation = async (id, type) => {
     try {
       const { data } = await axios.post(
         `/api/conversations`,
-        { recieverId: id },
+        { recieverId: id, type: type },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      navigate(`/messages?conversation=${sellerId}`);
+      navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
       console.log(err, err.message);
     }
   };
 
-  const handlereport = async () => {
+  const handlereport = async (id) => {
     try {
-      await axios.post(
-        "/api/reportConversation",
-        {},
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
+      const { data } = await axios.post(
+        `/api/conversations/`,
+        { recieverId: id, type: "reportUser" },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
+      navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
-      console.log(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
-
-    setShowLoginModel(!showLoginModel);
   };
 
   return (
@@ -434,7 +463,7 @@ export default function SellerScreen() {
                 <img
                   src={user.image}
                   className="seller_profile_image"
-                  alt={user.name}
+                  alt={user.username}
                 />
                 <div className="seller_profile_badge">
                   <FontAwesomeIcon icon={faStar} />
@@ -449,9 +478,7 @@ export default function SellerScreen() {
                 )}
               </Link>
               <div className="seller_profile_status">online</div>
-              <div className="seller_profile_name">
-                @{user.username || user.name}
-              </div>
+              <div className="seller_profile_name">@{user.username}</div>
               <div className="seller_profile_follow">
                 <div className="seller_profile_follower">
                   <div className="seller_profile_follow_num">
@@ -484,7 +511,7 @@ export default function SellerScreen() {
                 <ReviewLists />
               </Model>
               <button
-                onClick={() => addConversation(user._id)}
+                onClick={() => addConversation(user._id, "user")}
                 type="buton"
                 className="profile_contact_btn"
               >
@@ -527,7 +554,7 @@ export default function SellerScreen() {
               </div>
             </SellerLeft>
             <button
-              onClick={handlereport}
+              onClick={() => handlereport(user._id)}
               type="buton"
               className="profile_report_btn"
             >

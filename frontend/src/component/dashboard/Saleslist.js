@@ -114,6 +114,7 @@ const ModelCont = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
+  margin-right: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -325,7 +326,7 @@ export default function Saleslist() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Sale List</Title>
+      <Title>Sold Order History</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}

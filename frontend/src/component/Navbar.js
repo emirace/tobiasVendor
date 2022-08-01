@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import { Store } from "../Store";
 import axios from "axios";
 import { getError } from "../utils";
+import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
+import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
 
 const Container = styled.div`
   width: 100%;
@@ -313,7 +315,7 @@ const ProfileMenu = styled.div`
   z-index: 9;
   padding: 15px;
   position: absolute;
-  left: -15px;
+  left: -60px;
   top: 50px;
   box-shadow: ${(props) =>
     props.mode === "pagebodylight "
@@ -344,6 +346,9 @@ const SList = styled.li`
     color: var(--orange-color);
     text-decoration: underline;
   }
+`;
+const LogoImage = styled.img`
+  width: 100%;
 `;
 
 export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
@@ -424,7 +429,9 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
       </Wrapper>
       <Wrapper2>
         <Logo>
-          <Link to="/">Repeddle</Link>
+          <Link to="/">
+            <LogoImage src="images/Repeddle-Black.gif" />
+          </Link>
         </Logo>
 
         <Search>
@@ -433,14 +440,13 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         <RightMenu>
           <MenuItem>
             <Link to="/messages">
-              <FontAwesomeIcon icon={faEnvelope} />
+              <MessageIcon height={25} width={25} />
               <IconsTooltips tips="Messages" />
             </Link>
           </MenuItem>
           <MenuItemCart>
             <Link to="/cart">
-              <FontAwesomeIcon icon={faShoppingCart} />
-
+              <CartIcon height={25} width={25} />
               <IconsTooltips tips="Cart" />
 
               {cart.cartItems.length > 0 && (
@@ -463,6 +469,15 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                   <ul>
                     <li>
                       <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
+                    </li>
+                    <li>
+                      <Link to="/dashboard/orderlist">Purchase Orders</Link>
+                    </li>
+                    <li>
+                      <Link to="/dashboard/saleslist">Sold Orders</Link>
+                    </li>
+                    <li>
+                      <Link to="/dashboard/productlist">My Products</Link>
                     </li>
                     <li>
                       <Link to="/dashboard">Dashboard</Link>

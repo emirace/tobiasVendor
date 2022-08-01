@@ -55,7 +55,6 @@ userRouter.put(
       if (req.body.password) {
         user.password = bcrypt.hashSync(req.body.password, 8);
       }
-      console.log(user);
       const updatedUser = await user.save();
       res.send({
         _id: updatedUser._id,
@@ -277,9 +276,9 @@ userRouter.put(
         res.send({
           _id: updatedUser._id,
           name: updatedUser.name,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          username: updatedUser.username,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
           email: updatedUser.email,
           image: updatedUser.image,
           about: updatedUser.about,
@@ -319,9 +318,9 @@ userRouter.put(
       res.send({
         _id: updatedUser._id,
         name: updatedUser.name,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        username: updatedUser.username,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
         email: updatedUser.email,
         image: updatedUser.image,
         about: updatedUser.about,
@@ -377,9 +376,7 @@ userRouter.get(
   "/profile/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.user._id);
     const user = await User.findById(req.user._id);
-    console.log(user);
     if (user) {
       res.send({
         _id: user._id,
@@ -438,9 +435,7 @@ userRouter.get(
   "/profile/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.user._id);
     const user = await User.findById(req.user._id);
-    console.log(user);
     if (user) {
       res.send({
         _id: user._id,

@@ -64,6 +64,7 @@ const Stock = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
+  margin-right: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -231,7 +232,7 @@ export default function ProductList() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Product List</Title>
+      <Title>My Products</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setProductsQuery(e.target.value)}

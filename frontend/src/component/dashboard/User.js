@@ -498,7 +498,7 @@ export default function User() {
             </Info>
             <Info>
               <FontAwesomeIcon icon={faMoneyBill} />
-              <Username>Account Detail</Username>
+              <Username>Bank Account Detail</Username>
               <AccButton onClick={() => setShowModel(!showModel)}>
                 <FontAwesomeIcon icon={faPlus} />
               </AccButton>

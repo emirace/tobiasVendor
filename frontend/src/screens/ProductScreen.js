@@ -144,6 +144,7 @@ const IconContainer = styled.div`
 
 const ReportButton = styled.div`
   margin: 10px;
+  cursor: pointer;
   color: var(--malon-color);
   text-align: right;
 `;
@@ -265,6 +266,17 @@ export default function ProductScreen() {
         type: "SHOW_TOAST",
         payload: {
           message: "Select Size",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (product.seller._id === userInfo._id) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't buy Your product",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -555,17 +567,23 @@ export default function ProductScreen() {
     }
   };
 
-  const handlereport = async () => {
+  const handlereport = async (id, id2) => {
     try {
-      await axios.post(
-        "/api/reportConversation",
-        {},
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
+      const { data } = await axios.post(
+        `/api/conversations/`,
+        { recieverId: id, productId: id2, type: "reportProduct" },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
+      navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
-      console.log(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
 
     setReportModel(!reportModel);
@@ -599,15 +617,15 @@ export default function ProductScreen() {
 
   const conditionDetails = (item) => {
     if (item === "New with Tags") {
-      return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it (include a photo of the tag). This product shows no alterations, no defects and comes with Original purchase tags.";
+      return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it. This product shows no alterations, no defects and comes with Original purchase tags.";
     } else if (item === "New with No Tags") {
       return "A preowned secondhand product that has never been worn or use but doesn’t have original purchase tags. This product should show no defects or alterations.";
     } else if (item === "Excellent Condition") {
-      return "A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Please kindly take clear picture of the slight usage signs to be visible on the product Image. Product must not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. ";
+      return "A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Product do not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. ";
     } else if (item === "Good Condition") {
-      return "A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected. Any slight defect must be mentioned and indicated in the product description and photo. ";
+      return "A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected.";
     } else if (item === "Fair Condition") {
-      return "A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are to be shown on product photos and mentioned in description.";
+      return "A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are shown on product photos and mentioned in description.";
     } else {
       return "No condition Selected";
     }
@@ -794,16 +812,15 @@ export default function ProductScreen() {
     }
   };
 
-  const addConversation = async (id) => {
+  const addConversation = async (id, id2) => {
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id },
+        { recieverId: id, productId: id2, type: "product" },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      navigate(
-        `/messages?conversation=${product.seller._id}&product=${product._id}`
-      );
+      console.log(data);
+      navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -952,14 +969,13 @@ export default function ProductScreen() {
             }}
           />
         </div>
-        {console.log(product)}
         <div className="single_product_right">
           <div className="single_product_seller">
             <img src={product.seller.image} alt={product.seller.username} />
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
                 <Link to={`/seller/${product.seller._id}`}>
-                  {product.seller.name}
+                  {product.seller.username}
                 </Link>
               </div>
               <div>Benin City, Nigeria</div>
@@ -1025,7 +1041,7 @@ export default function ProductScreen() {
             </ModelLogin>
             <IconContainer>
               <FontAwesomeIcon
-                onClick={() => addConversation(product.seller._id)}
+                onClick={() => addConversation(product.seller._id, product._id)}
                 icon={faMessage}
               />
               <IconsTooltips tips="Message Seller " />
@@ -1037,7 +1053,10 @@ export default function ProductScreen() {
               />
               <IconsTooltips className="tiptools" tips="Share " />
             </IconContainer>
-            <span className={share ? "active2" : ""}>
+            <span
+              onClick={() => setShare(!share)}
+              className={share ? "active2" : ""}
+            >
               <ShareButton url={window.location.href} />
             </span>
           </div>
@@ -1129,7 +1148,9 @@ export default function ProductScreen() {
               </button>
             </div>
             <div className="sp_more_detail">
-              <div className="sp_detail_title ">Overview</div>
+              <div style={{ textTransform: "uppercase", marginBottom: "5px" }}>
+                Overview
+              </div>
               <Overview>
                 <LeftOverview>
                   <Key>Price</Key>
@@ -1221,7 +1242,11 @@ export default function ProductScreen() {
               </div>
             </div>
             <ProtectionRight />
-            <ReportButton onClick={handlereport}>Report Item</ReportButton>
+            <ReportButton
+              onClick={() => handlereport(product.seller._id, product._id)}
+            >
+              Report Item
+            </ReportButton>
 
             <ModelLogin showModel={reportModel} setShowModel={setReportModel}>
               <Report

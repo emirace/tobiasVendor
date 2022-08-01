@@ -63,6 +63,7 @@ const Add = styled.div`
   margin-bottom: 30px;
   color: var(--malon-color);
   font-weight: 500;
+  cursor: pointer;
 `;
 const Option = styled.div`
   display: flex;
@@ -72,6 +73,7 @@ const Edit = styled.div`
   color: var(--malon-color);
   border: 2px solid var(--malon-color);
   padding: 2px 10px;
+  cursor: pointer;
 `;
 
 const reducer = (state, action) => {
@@ -171,6 +173,15 @@ export default function AddressBook() {
           type: "FETCH_ADDRESS_SUCCESS",
           payload: { ...addresses, data },
         });
+        setShowForm(false);
+        setRefresh(!refresh);
+        setName("");
+        setApartment("");
+        setCity("");
+        setCountry("");
+        setPostalCode("");
+        setStreet("");
+        setState1("");
       } catch (err) {
         console.log(getError(err));
       }
@@ -202,6 +213,7 @@ export default function AddressBook() {
           }
         );
         setShowEditForm(false);
+        setRefresh(!refresh);
       } catch (err) {
         console.log(getError(err));
       }
@@ -293,16 +305,12 @@ export default function AddressBook() {
                 <Form.Group as={Col} md="6" controlId="validationCustom01">
                   <Form.Label>Address Label</Form.Label>
                   <Form.Control
-                    required
                     onChange={(e) => setName(e.target.value)}
                     type="text"
                     defaultValue={name}
                     className={mode === "pagebodylight" ? "lightform" : ""}
-                    placeholder="e.g My Home"
+                    placeholder="e.g My Home, My Office"
                   />
-                  <Form.Control.Feedback type="invalid">
-                    Please provide an address label.
-                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="6" controlId="validationCustom02">
                   <Form.Label>Apartment</Form.Label>
