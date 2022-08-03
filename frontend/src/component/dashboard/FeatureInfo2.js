@@ -100,7 +100,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "order":
       data = {
-        title: "SOLD ORDERS",
+        title: "TOTAL SOLD ORDERS",
         isMoney: false,
         to: "/dashboard/orderlist",
         link: "view all orders",
@@ -118,7 +118,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "earning":
       data = {
-        title: "EARNINGS",
+        title: "TOTAL EARNINGS",
         isMoney: true,
         to: "/dashboard/earning",
         link: "view all net earning",
@@ -136,7 +136,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "product":
       data = {
-        title: "PRODUCTS",
+        title: "TOTAL PRODUCTS LISTED",
         isMoney: false,
         to: "/dashboard/productlist",
         link: "View product list",
@@ -155,7 +155,7 @@ export default function FeatureInfo({ type, number }) {
       break;
     case "purchase":
       data = {
-        title: "PURCHASE ORDERS",
+        title: "TOTAL PURCHASED ORDERS",
         isMoney: false,
         to: "/dashboard/productlist",
         link: "View product list",

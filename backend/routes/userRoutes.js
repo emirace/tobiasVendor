@@ -12,7 +12,7 @@ userRouter.get(
   "/top-sellers",
   expressAsyncHandler(async (req, res) => {
     const topSellers = await User.find({ isSeller: true })
-      .select("name image badge ")
+      .select("username image badge ")
       .sort({ rating: -1 })
       .limit(10);
 
@@ -39,9 +39,11 @@ userRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
+    const current = new Date();
     if (user) {
       user.about = req.body.about || user.about;
-      user.username = user.username;
+      user.username = req.body.username || user.username;
+      user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
       user.firstName = req.body.firstName || user.firstName;
       user.lastName = req.body.lastName || user.lastName;
       user.email = req.body.email || user.email;
@@ -85,6 +87,7 @@ userRouter.post(
           _id: user._id,
           name: user.name,
           username: user.username,
+          usernameUpdate: user.usernameUpdate,
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
@@ -108,6 +111,7 @@ userRouter.post(
       username: req.body.username,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      usernameUpdate: new Date(),
       email: req.body.email,
       phone: req.body.phone,
       image: "/images/pimage.png",
@@ -121,6 +125,7 @@ userRouter.post(
       name: user.name,
       username: user.username,
       firstName: user.firstName,
+      usernameUpdate: user.usernameUpdate,
       lastName: user.lastName,
       email: user.email,
       isSeller: user.isSeller,
@@ -230,6 +235,8 @@ userRouter.get(
       res.send({
         _id: user._id,
         name: user.name,
+        usernameUpdate: user.usernameUpdate,
+        activeUpdate: user.activeUpdate,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -380,10 +387,10 @@ userRouter.get(
     if (user) {
       res.send({
         _id: user._id,
-        name: user.name,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
+        usernameUpdate: user.usernameUpdate,
         email: user.email,
         image: user.image,
         about: user.about,
@@ -417,7 +424,6 @@ userRouter.get(
     const user = await User.findById(req.params.id);
     if (user) {
       res.send({
-        name: user.name,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -439,7 +445,6 @@ userRouter.get(
     if (user) {
       res.send({
         _id: user._id,
-        name: user.name,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -481,6 +486,7 @@ userRouter.put(
       user.lastName = req.body.lastName || user.lastName;
       user.email = req.body.email || user.email;
       user.dob = req.body.dob || user.dob;
+      user.activeUpdate = req.body.active === "" ? "" : new Date();
       user.phone = req.body.phone || user.phone;
       user.address = req.body.address || user.address;
       user.about = req.body.about || user.about;
@@ -491,7 +497,6 @@ userRouter.put(
       const updatedUser = await user.save();
       res.send({
         message: "User Updated",
-        name: user.name,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,

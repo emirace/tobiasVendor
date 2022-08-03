@@ -356,7 +356,7 @@ export default function OrderScreen() {
       <Helmet>
         <title>Order {orderId}</title>
       </Helmet>
-      <Header>Order Detail</Header>
+      <Header>Order Details</Header>
       <Container>
         <SumaryCont mode={mode}>
           <OrderId>Order number {orderId}</OrderId>
@@ -441,7 +441,7 @@ export default function OrderScreen() {
                       </MenuItem>
                       <MenuItem value="Dispatch">Dispatch</MenuItem>
                       <MenuItem value="In transit">In transit</MenuItem>
-                      <MenuItem value="Deliveed">Delivered</MenuItem>
+                      <MenuItem value="Delivered">Delivered</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -472,10 +472,10 @@ export default function OrderScreen() {
           <PaymentDliveryItem>
             <Heading>Payment</Heading>
             <SumaryContDetails mode={mode}>
-              <Name>Pay Method</Name>
+              <Name>Payment Method</Name>
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />
-              <Name>Pay Details</Name>
+              <Name>Payment Details</Name>
               <ItemNum>
                 Item Total:{"   "} <ItemPrice> ${order.totalPrice}</ItemPrice>
               </ItemNum>
@@ -487,7 +487,7 @@ export default function OrderScreen() {
             <Heading>Delivery</Heading>
             <SumaryContDetails mode={mode}>
               <Name>Deliver Option</Name>
-              <ItemNum>Home delivery</ItemNum>
+              <ItemNum>UPS</ItemNum>
               <hr />
               <Name>Deliver Address</Name>
               <ItemNum>

@@ -5,6 +5,22 @@ import { isAdmin, isAuth } from "../utils.js";
 
 const conversationRouter = express.Router();
 
+conversationRouter.get(
+  "/",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const conversations = await Conversation.find()
+      .populate("productId", "username image")
+      .populate("userId", "username image");
+    if (conversations) {
+      res.status(200).send(conversations);
+    } else {
+      res.status(200).send("no conversations found");
+    }
+  })
+);
+
 conversationRouter.post(
   "/",
   isAuth,

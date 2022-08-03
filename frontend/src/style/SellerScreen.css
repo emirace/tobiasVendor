@@ -84,12 +84,6 @@
   position: absolute;
   bottom: 7.5px;
   right: 7.5px;
-  background: var(--malon-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  color: white;
 }
 
 .seller_profile_name {

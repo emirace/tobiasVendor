@@ -101,7 +101,7 @@ export default function FeatureInfo({ type, number }) {
       data = {
         title: " TOTAL ORDERS",
         isMoney: false,
-        to: "/dashboard/orderlist",
+        to: "/admin/allOrderList/",
         link: "view all orders",
         icon: (
           <FontAwesomeIcon

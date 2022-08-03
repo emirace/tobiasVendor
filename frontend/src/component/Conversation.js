@@ -74,11 +74,11 @@ export default function Conversation({ conversation, status, currentChat }) {
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== userInfo._id);
-
+    console.log("friend", friendId);
     const getUser = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(`/api/users/seller/${friendId}`, {
+        const { data } = await axios.get(`/api/users/seller/${userInfo._id}`, {
           header: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUser(data);

@@ -31,8 +31,7 @@
 }
 
 body {
-  overflow-x: hidden;
-  font-size: 13px;
+  font-size: 14px;
 }
 :root {
   --malon-color: #8a1719;

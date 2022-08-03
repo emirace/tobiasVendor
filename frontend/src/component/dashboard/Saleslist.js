@@ -114,6 +114,7 @@ const ModelCont = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
+  margin-bottom: 10px;
   margin-right: 10px;
 `;
 
@@ -304,11 +305,6 @@ export default function Saleslist() {
             >
               Reject
             </Reject>
-
-            <FontAwesomeIcon
-              onClick={() => deleteHandler(params.row.id)}
-              icon={faTrash}
-            />
           </ActionSec>
         );
       },

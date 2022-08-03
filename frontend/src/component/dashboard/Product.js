@@ -623,7 +623,7 @@ export default function Product() {
             <InfoItem>
               <InfoKey>seller:</InfoKey>
               <InfoValue>
-                {product ? product.seller.seller.name : "loading..."}
+                {product ? product.seller.username : "loading..."}
               </InfoValue>
             </InfoItem>
             <InfoItem>

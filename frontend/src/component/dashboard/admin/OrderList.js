@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { Store } from "../../../Store";
+import { getError } from "../../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -45,6 +45,17 @@ const Edit = styled.button`
   margin-right: 10px;
 `;
 
+const Reject = styled.button`
+  border: none;
+  border-radius: 0.2rem;
+  padding: 5px 10px;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
+  color: var(--red-color);
+  cursor: pointer;
+  margin-right: 10px;
+`;
+
 const ActionSec = styled.div`
   & svg {
     color: var(--red-color);
@@ -64,7 +75,6 @@ const Stock = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
-  margin-bottom: 10px;
   margin-right: 10px;
 `;
 
@@ -112,8 +122,8 @@ const reducer = (state, action) => {
   }
 };
 
-export default function ProductList() {
-  const { state } = useContext(Store);
+export default function OrderListAdmin() {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
@@ -122,24 +132,16 @@ export default function ProductList() {
       products: [],
       error: "",
     });
-  const sellerMode = () => {
-    return userInfo.isAdmin ? false : true;
-  };
-  const isSellerMode = sellerMode();
-  const [productsQuery, setProductsQuery] = useState("all");
+  const [ordersQuery, setOrdersQuery] = useState("all");
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(
-          `/api/products/${isSellerMode ? "seller/search/" : "admin"}${
-            isSellerMode ? userInfo._id : ""
-          }?q=${productsQuery}`,
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        dispatch({ type: "USERS_SUCCESS", payload: data.products });
+        const { data } = await axios.get(`/api/orders/?q=${ordersQuery}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        console.log(data);
+        dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
         console.log(getError(err));
       }
@@ -149,68 +151,100 @@ export default function ProductList() {
     } else {
       fetchAllProduct();
     }
-  }, [successDelete, userInfo, productsQuery]);
+  }, [successDelete, userInfo, ordersQuery]);
 
-  const deleteHandler = async (product) => {
-    console.log("params", product);
-    if (window.confirm("Are you sure to delete?")) {
+  const deleteHandler = async (order) => {
+    if (window.confirm("Are you sure to delete")) {
       try {
         dispatch({ type: "DELETE_REQUEST" });
-        await axios.delete(`/api/products/${product}`, {
+        await axios.delete(`/api/orders/${order}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: "DELETE_SUCCESS" });
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Order deleted Successfully",
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
       } catch (err) {
         dispatch({ type: "DELETE_FAIL" });
+        console.log(getError(err));
       }
     }
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 250 },
     {
-      field: "product",
-      headerName: "Product",
+      field: "order",
+      headerName: "Order",
       width: 200,
       renderCell: (params) => {
         return (
           <Product>
-            <img src={params.row.image} alt="" />
-            <Link to={`/product/${params.row.slug}`}>{params.row.name}</Link>
+            <Link to={`/order/${params.row.id}`}>
+              <img src={params.row.image} alt="" />
+              {params.row.name}
+            </Link>
           </Product>
         );
       },
     },
-    { field: "stock", headerName: "Stock", width: 100 },
+    { field: "deliveryStatus", headerName: "Delivery Status", width: 150 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 200,
+      field: "payStatus",
+      headerName: "Payment Status",
+      width: 150,
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      width: 100,
+    },
+    {
+      field: "buyer",
+      headerName: "Buyer",
+      width: 100,
       renderCell: (params) => {
-        return params.row.stock ? (
-          <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
-        ) : (
-          <Stock className="empty">
-            {params.row.stock ? "In Stock" : "Out of Stock"}
-          </Stock>
+        return (
+          <Product>
+            <Link to={`/seller/${params.row.buyerId}`}>
+              @{params.row.buyer}
+            </Link>
+          </Product>
         );
       },
     },
     {
-      field: "price",
-      headerName: "Price",
-      width: 150,
+      field: "seller",
+      headerName: "Seller",
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <Product>
+            <Link to={`/seller/${params.row.sellerId}`}>
+              @{params.row.seller}
+            </Link>
+          </Product>
+        );
+      },
     },
     {
       field: "action",
       headerName: "Action",
-      width: 150,
+      width: 120,
       renderCell: (params) => {
         return (
           <ActionSec>
-            <Link to={`/dashboard/product/${params.row.id}`}>
-              <Edit mode={mode}>Edit</Edit>
+            <Link to={`/order/${params.row.id}`}>
+              <Edit mode={mode}>View</Edit>
             </Link>
+            {params.row.deliveryStatus === "Delivered" && (
+              <Reject mode={mode}>Return</Reject>
+            )}
             {userInfo.isAdmin && (
               <FontAwesomeIcon
                 onClick={() => deleteHandler(params.row.id)}
@@ -224,22 +258,27 @@ export default function ProductList() {
   ];
   const rows = products.map((p) => ({
     id: p._id,
-    name: p.name,
-    image: p.image,
-    stock: p.countInStock,
-    price: "$" + p.price,
-    slug: p.slug,
+    name: p.orderItems[0].name,
+    image: p.orderItems[0].image,
+    deliveryStatus: p.deliveryStatus,
+    payStatus: p.isPaid ? "Paid" : "Not Paid",
+    buyer: p.user ? p.user.username : "anonymous",
+    seller: p.seller ? p.seller.username : "anonymous",
+    amount: p.totalPrice,
+    sellerId: p.seller ? p.seller._id : "",
+    buyerId: p.user ? p.user._id : "",
   }));
 
   return (
     <ProductLists mode={mode}>
-      <Title>My Products</Title>
+      <Title>All Orders</Title>
       <SearchCont>
         <SearchInput
-          onChange={(e) => setProductsQuery(e.target.value)}
-          placeholder="Search "
+          onChange={(e) => setOrdersQuery(e.target.value)}
+          placeholder="Search by id"
         />
       </SearchCont>
+      {console.log(products)}
       <DataGrid
         sx={{
           width: "100%",

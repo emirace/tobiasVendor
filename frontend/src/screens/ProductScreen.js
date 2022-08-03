@@ -167,6 +167,17 @@ const Thumbs = styled.div`
   }
 `;
 
+const Taglist = styled.div`
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+`;
+const Tag = styled.div`
+  border: 1px solid;
+  padding: 0 10px;
+  border-radius: 10px;
+`;
+
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
@@ -338,7 +349,7 @@ export default function ProductScreen() {
       dispatch({ type: "CREATE_REQUEST" });
       const { data } = await axios.post(
         `/api/products/${product._id}/reviews`,
-        { rating, comment, name: userInfo.name, like },
+        { rating, comment, name: userInfo.username, like },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -726,7 +737,7 @@ export default function ProductScreen() {
                     <p>{review.comment}</p>
                     {userInfo && userInfo.isAdmin && (
                       <div
-                        style={{ color: "red" }}
+                        style={{ color: "red", cursor: "pointer" }}
                         onClick={() => deleteReview(review._id)}
                       >
                         delete
@@ -975,7 +986,7 @@ export default function ProductScreen() {
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
                 <Link to={`/seller/${product.seller._id}`}>
-                  {product.seller.username}
+                  @{product.seller.username}
                 </Link>
               </div>
               <div>Benin City, Nigeria</div>
@@ -1060,7 +1071,7 @@ export default function ProductScreen() {
               <ShareButton url={window.location.href} />
             </span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{}}>
             <div>
               <b>{product.likes.length} </b> Likes
             </div>
@@ -1091,6 +1102,14 @@ export default function ProductScreen() {
               ""
             )}
           </div>
+          <Taglist>
+            Tags:
+            {product.tags.map((t) => (
+              <Link to={`/search?query=${t}`}>
+                <Tag>{t}</Tag>
+              </Link>
+            ))}
+          </Taglist>
           <div className="">
             <div className="select_size_header">select size: {size} </div>
             <div className="flexSelect">

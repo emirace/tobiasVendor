@@ -12,8 +12,6 @@ import WidgetLarge from "./WidgetLarge";
 import WidgetSmall from "./WidgetSmall";
 import WidgetSmallProduct from "./WidgetSmallProduct";
 import moment from "moment";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
 const today = moment().startOf("day");
 
@@ -136,6 +134,7 @@ export default function Home() {
   var now = new window.Date();
   const [from, setFrom] = useState("2022-04-24");
   const [to, setTo] = useState(now);
+  const [value, setValue] = useState([null, null]);
 
   const [{ loading, orders, error, products }, dispatch] = useReducer(reducer, {
     loading: false,

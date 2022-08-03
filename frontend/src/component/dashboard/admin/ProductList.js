@@ -64,7 +64,6 @@ const Stock = styled.div`
 const SearchCont = styled.div`
   display: flex;
   justify-content: end;
-  margin-bottom: 10px;
   margin-right: 10px;
 `;
 
@@ -112,7 +111,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function ProductList() {
+export default function ProductListAdmin() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
 

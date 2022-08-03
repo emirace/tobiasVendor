@@ -1,16 +1,16 @@
-import { faEye } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Store } from '../../Store';
-import { getError } from '../../utils';
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../../Store";
+import { getError } from "../../utils";
 
 const Container = styled.div`
   flex: 1;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   padding: 20px;
   margin-right: 20px;
   border-radius: 0.2rem;
@@ -66,7 +66,7 @@ export default function WidgetSmallProduct({ products }) {
 
   return (
     <Container mode={mode}>
-      <Tittle>New Add Product</Tittle>
+      <Tittle>My New Added Product</Tittle>
       <List>
         {products &&
           products.map((u, index) => (

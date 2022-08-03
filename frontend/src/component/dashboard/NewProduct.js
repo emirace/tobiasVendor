@@ -39,7 +39,7 @@ const Title = styled.h1`
 `;
 const TitleDetails = styled.span`
   width: 70%;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.2;
   margin-bottom: 5px;
 `;
@@ -98,7 +98,7 @@ const TextInput = styled.input`
 `;
 const Label = styled.label`
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   & svg {
     margin-left: 10px;
@@ -361,7 +361,7 @@ const Tips = styled.span`
     position: absolute;
     border-radius: 0.5rem;
     left: 30px;
-    font-size: 10px;
+    font-size: 12px;
     z-index: 2;
     line-height: 1.2;
     font-weight: 400;
@@ -1105,12 +1105,11 @@ export default function NewProduct() {
                   onChange={(e) => setColor(e.target.value)}
                   displayEmpty
                 >
-                  <MenuItem value="Red">Red</MenuItem>
-                  <MenuItem value="Green">Green</MenuItem>
-                  <MenuItem value="Blue">Blue</MenuItem>
-                  <MenuItem value="Yellow">Yellow</MenuItem>
-                  <MenuItem value="Black">Black</MenuItem>
-                  <MenuItem value="White">White</MenuItem>
+                  {color1.map((c) => (
+                    <MenuItem key={c} value={c}>
+                      {c}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Item>
@@ -1195,7 +1194,17 @@ export default function NewProduct() {
               </SizeLeft>
               <SizeRight>
                 <Item>
-                  <Label>Shipping Location</Label>
+                  <Label>
+                    Shipping Location
+                    <Tips
+                      mode={mode}
+                      tips={`Please select if your product can be shipped anywhere around
+                      your country. If you're in Nigeria, Only select Nigeria. If
+                      you are selling in South Africa only select South Africa`}
+                    >
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Tips>
+                  </Label>
                   <FormControl
                     sx={{
                       margin: 0,
@@ -1231,12 +1240,6 @@ export default function NewProduct() {
                       <MenuItem value="South African">South African</MenuItem>
                     </Select>
                   </FormControl>
-
-                  <TitleDetails>
-                    Please select if your product can be shipped anywhere around
-                    your country. If you're in Nigeria, Only select Nigeria. If
-                    you are selling in South Africa only select South Africa
-                  </TitleDetails>
                 </Item>
               </SizeRight>
             </Sizes>

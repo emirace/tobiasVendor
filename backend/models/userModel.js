@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema(
     sold: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     about: { type: String },
     dob: { type: Date },
+    activeUpdate: { type: Date },
+    usernameUpdate: { type: Date },
     reviews: [reviewSchema],
     rating: { type: Number, default: 0 },
     wallet: { type: Number, default: 0 },

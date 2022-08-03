@@ -7,6 +7,7 @@ import {
   faChartColumn,
   faChartLine,
   faComment,
+  faEnvelope,
   faGift,
   faHome,
   faHouse,
@@ -154,7 +155,6 @@ export default function Sidebar({ current }) {
                   <FontAwesomeIcon icon={faUser} /> Users
                 </ListItem>
               </Link>
-
               <ListItem
                 mode={mode}
                 className={current === "report" ? "active" : ""}
@@ -170,6 +170,15 @@ export default function Sidebar({ current }) {
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>
               </Link>
+              {/* 
+              <Link to="/dashboard/messages">
+                <ListItem
+                  mode={mode}
+                  className={current === "messages" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faEnvelope} /> All Messages
+                </ListItem>
+              </Link> */}
             </List>
           </Menu>
         )}

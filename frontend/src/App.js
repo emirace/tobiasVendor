@@ -75,6 +75,8 @@ import ShopByOutfit from "./screens/ShopByOutfit";
 import CreateOutfitScreen from "./screens/CreateOutfitScreen";
 import CreateOutfitPicScreen from "./screens/CreateOutfitPicScreen";
 import InfoScreenNonLogin from "./screens/InfoScreenNonlogin";
+import OrderListAdmin from "./component/dashboard/admin/OrderList";
+
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
 
@@ -338,6 +340,14 @@ function App() {
                     element={
                       <AdminRoute>
                         <ProductEditScreen />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/allOrderList/"
+                    element={
+                      <AdminRoute>
+                        <OrderListAdmin />
                       </AdminRoute>
                     }
                   />

@@ -145,6 +145,13 @@ const Sold = styled.div`
   color: var(--orange-color);
 `;
 
+const Badge = styled.img`
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_USER_REQUEST":
@@ -466,7 +473,7 @@ export default function SellerScreen() {
                   alt={user.username}
                 />
                 <div className="seller_profile_badge">
-                  <FontAwesomeIcon icon={faStar} />
+                  <Badge src="https://res.cloudinary.com/emirace/image/upload/v1659499335/Icon_Verification-01_js5bx6.png" />
                 </div>
               </div>
               <Link to="/dashboard/user">

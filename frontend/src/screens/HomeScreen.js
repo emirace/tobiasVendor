@@ -42,6 +42,12 @@ const Imagediv = styled.div`
   position: relative;
 `;
 
+const Badge = styled.img`
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -392,16 +398,16 @@ export default function ProductsScreen() {
                           <Imagediv>
                             <img
                               src={seller.image}
-                              alt={seller.name}
+                              alt={seller.username}
                               className="carousel_profile_image"
                             ></img>
                             {seller.badge && (
                               <div className="seller_profile_badge">
-                                <FontAwesomeIcon icon={faStar} />
+                                <Badge src="https://res.cloudinary.com/emirace/image/upload/v1659499335/Icon_Verification--02_jkmhxc.png" />
                               </div>
                             )}
                           </Imagediv>
-                          <p className="">{seller.name}</p>
+                          <p className="">@{seller.username}</p>
                         </div>
                       </Link>
                     ))}

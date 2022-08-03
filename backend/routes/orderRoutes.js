@@ -16,7 +16,22 @@ orderRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find().populate("user", "name");
+    const { query } = req;
+    const searchQuery = query.q;
+
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            orderId: {
+              $regex: searchQuery,
+              $options: "i",
+            },
+          }
+        : {};
+
+    const orders = await Order.find({ ...queryFilter })
+      .populate("user", "username")
+      .populate("seller", "username");
     res.send(orders);
   })
 );

@@ -18,8 +18,9 @@ import Transactions from "../component/dashboard/Transactions";
 import Saleslist from "../component/dashboard/Saleslist";
 import AddressBook from "../component/dashboard/AddressBook";
 import Analytics from "../component/dashboard/admin/Analytics";
-import Earning from "../component/dashboard/Earning";
 import Coupon from "../component/dashboard/Coupon";
+import Earning from "../component/dashboard/admin/Earning";
+import AllMessages from "../component/dashboard/admin/AllMessages";
 
 const Container = styled.div`
   display: flex;
@@ -67,6 +68,8 @@ export default function DashboardNewScreen() {
         return <Earning />;
       case "coupon":
         return <Coupon />;
+      case "messages":
+        return <AllMessages />;
       default:
         break;
     }

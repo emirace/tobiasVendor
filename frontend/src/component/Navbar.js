@@ -430,7 +430,13 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
       <Wrapper2>
         <Logo>
           <Link to="/">
-            <LogoImage src="images/Repeddle-Black.gif" />
+            <LogoImage
+              src={
+                mode === "pagebodydark"
+                  ? "https://res.cloudinary.com/emirace/image/upload/v1659377710/Repeddle-White_pani6a.gif"
+                  : "https://res.cloudinary.com/emirace/image/upload/v1659377672/Repeddle-Black_eko2g5.gif"
+              }
+            />
           </Link>
         </Logo>
 

@@ -76,6 +76,7 @@ const SearchCont = styled.div`
   display: flex;
   justify-content: end;
   margin-right: 10px;
+  margin-bottom: 10px;
 `;
 
 const SearchInput = styled.input`
@@ -221,12 +222,6 @@ export default function OrderList() {
             </Link>
             {params.row.deliveryStatus === "Delivered" && (
               <Reject mode={mode}>Return</Reject>
-            )}
-            {userInfo.isAdmin && (
-              <FontAwesomeIcon
-                onClick={() => deleteHandler(params.row.id)}
-                icon={faTrash}
-              />
             )}
           </ActionSec>
         );

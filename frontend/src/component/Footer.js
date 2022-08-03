@@ -235,15 +235,12 @@ export default function Footer() {
           <div className="footer_social">
             <div className="footer_social_icon">
               <FacebookIcon height={25} width={25} />
-              <FontAwesomeIcon icon={faHashtag} />
             </div>
             <div className="footer_social_icon">
               <WhatsappIcon height={25} width={25} />
-              <FontAwesomeIcon icon={faHashtag} />
             </div>
             <div className="footer_social_icon">
               <InstagramIcon height={25} width={25} />
-              <FontAwesomeIcon icon={faHashtag} />
             </div>
           </div>
         </div>

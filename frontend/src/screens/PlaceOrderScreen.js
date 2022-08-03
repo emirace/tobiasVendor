@@ -276,9 +276,9 @@ export default function PlaceOrderScreen() {
   return (
     <Main mode={mode}>
       <Helmet>
-        <title>Preview Order</title>
+        <title>Order Preview</title>
       </Helmet>
-      <h1 className="my-3">Preview Order</h1>
+      <h1 className="my-3">Order Preview</h1>
       <Container>
         <LeftC>
           <Section mode={mode}>
@@ -286,7 +286,7 @@ export default function PlaceOrderScreen() {
               <Card.Title>Delivery Address</Card.Title>
               <Card.Text>
                 {console.log(cart)}
-                <strong>Name: </strong>
+                <strong>Address Name: </strong>
                 {cart.shippingAddress.fullName || cart.useraddress.fullName}
                 <br />
                 <strong>Address: </strong>
@@ -344,7 +344,7 @@ export default function PlaceOrderScreen() {
         <RightC>
           <Section mode={mode}>
             <Card.Body>
-              <Card.Title>Oeder Summary</Card.Title>
+              <Card.Title>Order Summary</Card.Title>
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <Row>

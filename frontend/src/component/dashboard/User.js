@@ -14,9 +14,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../Store";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, timeDifference } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import SmallModel from "../SmallModel";
+import moment from "moment";
 
 const Container = styled.div`
   flex: 4;
@@ -329,6 +330,7 @@ export default function User() {
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     try {
@@ -386,6 +388,7 @@ export default function User() {
           email,
           dob,
           phone,
+          username,
           address,
           image,
           active,
@@ -399,8 +402,10 @@ export default function User() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
+      if (!(id && userInfo.isAdmin)) {
+        ctxDispatch({ type: "USER_SIGNIN", payload: data });
+      }
       dispatch({ type: "UPDATE_SUCCESS" });
-      ctxDispatch({ type: "USER_SIGNIN", payload: data });
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -452,6 +457,10 @@ export default function User() {
     }
   };
 
+  const daydiff =
+    user.usernameUpdate &&
+    30 - timeDifference(new Date(user.usernameUpdate), new Date());
+
   return (
     <Container>
       <TitleCont>
@@ -476,7 +485,7 @@ export default function User() {
             <BottomTitle>Account Details</BottomTitle>
             <Info>
               <FontAwesomeIcon icon={faUser} />
-              <Username>@{user.username || user.name}</Username>
+              <Username>@{user.username}</Username>
             </Info>
             <Info>
               <FontAwesomeIcon icon={faCalendarDays} />
@@ -514,7 +523,6 @@ export default function User() {
                       onChange={(e) => setAccountName(e.target.value)}
                     />
                   </Item>
-                  {console.log(user)}
                   <Item>
                     <Label>Account Number</Label>
                     <TextInput
@@ -551,6 +559,24 @@ export default function User() {
           <UpdateTitle>Edit</UpdateTitle>
           <Form onSubmit={submitHandler}>
             <Left>
+              <Item>
+                <Label>Username</Label>
+                {daydiff && (
+                  <div
+                    style={{ fontSize: "12px", color: "var(--malon-color)" }}
+                  >
+                    updated {moment(user.usernameUpdate).fromNow()}, next update
+                    in {daydiff} days
+                  </div>
+                )}
+                {console.log("daydiff", daydiff)}
+                <TextInput
+                  mode={mode}
+                  disabled={daydiff}
+                  placeholder={user.username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Item>
               <Item>
                 <Label>First Name</Label>
                 <TextInput
@@ -631,6 +657,11 @@ export default function User() {
                 {id && userInfo.isAdmin ? (
                   <>
                     <Label>Active</Label>
+                    <div
+                      style={{ fontSize: "12px", color: "var(--malon-color)" }}
+                    >
+                      updated {moment(user.activeUpdate).fromNow()}
+                    </div>
                     <Gender mode={mode}>
                       <input
                         checked={

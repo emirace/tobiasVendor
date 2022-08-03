@@ -56,6 +56,7 @@ productRouter.post(
     const newProduct = new Product({
       name,
       seller: req.user._id,
+      sellerName: req.user.username,
       slug: slugName,
       image: image1,
       images: images ? images : [],
@@ -170,13 +171,13 @@ productRouter.post(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
-      if (product.reviews.find((x) => x.name === req.user.name)) {
+      if (product.reviews.find((x) => x.name === req.user.username)) {
         return res
           .status(400)
           .send({ message: "You already submitted a review" });
       }
       const review = {
-        name: req.user.name,
+        name: req.user.username,
         rating: Number(req.body.rating),
         comment: req.body.comment,
         like: req.body.like,
@@ -461,6 +462,12 @@ productRouter.get(
             $or: [
               {
                 name: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                sellerName: {
                   $regex: searchQuery,
                   $options: "i",
                 },
