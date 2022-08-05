@@ -196,6 +196,7 @@ export default function SellerScreen() {
   const [displayTab, setDisplayTab] = useState("all");
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);

@@ -76,6 +76,8 @@ import CreateOutfitScreen from "./screens/CreateOutfitScreen";
 import CreateOutfitPicScreen from "./screens/CreateOutfitPicScreen";
 import InfoScreenNonLogin from "./screens/InfoScreenNonlogin";
 import OrderListAdmin from "./component/dashboard/admin/OrderList";
+import ProductListAdmin from "./component/dashboard/admin/ProductList";
+import OutOfStock from "./component/dashboard/admin/OutOfStock";
 
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
@@ -348,6 +350,22 @@ function App() {
                     element={
                       <AdminRoute>
                         <OrderListAdmin />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/allProductList/"
+                    element={
+                      <AdminRoute>
+                        <ProductListAdmin />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/outofstock/"
+                    element={
+                      <AdminRoute>
+                        <OutOfStock />
                       </AdminRoute>
                     }
                   />

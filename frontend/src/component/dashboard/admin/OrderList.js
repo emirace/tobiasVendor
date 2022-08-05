@@ -37,12 +37,12 @@ const Product = styled.div`
 const Edit = styled.button`
   border: none;
   border-radius: 0.2rem;
-  padding: 5px 10px;
+  padding: 3px 6px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: 5px;
 `;
 
 const Reject = styled.button`
@@ -57,13 +57,8 @@ const Reject = styled.button`
 `;
 
 const ActionSec = styled.div`
-  & svg {
-    color: var(--red-color);
-    cursor: pointer;
-    &:hover {
-      font-size: 18px;
-    }
-  }
+  display: flex;
+  gap: 5px;
 `;
 const Stock = styled.div`
   color: var(--green-color);
@@ -125,7 +120,7 @@ const reducer = (state, action) => {
 export default function OrderListAdmin() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
-
+  const [refresh, setRefresh] = useState(false);
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
       loading: true,
@@ -151,7 +146,7 @@ export default function OrderListAdmin() {
     } else {
       fetchAllProduct();
     }
-  }, [successDelete, userInfo, ordersQuery]);
+  }, [successDelete, userInfo, ordersQuery, refresh]);
 
   const deleteHandler = async (order) => {
     if (window.confirm("Are you sure to delete")) {
@@ -176,6 +171,31 @@ export default function OrderListAdmin() {
     }
   };
 
+  async function deliverOrderHandler(deliveryStatus, order) {
+    try {
+      dispatch({ type: "DELIVER_REQUEST" });
+      await axios.put(
+        `/api/orders/${order}/deliver`,
+        { deliveryStatus },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      dispatch({ type: "DELIVER_SUCCESS" });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Delivery status updated",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      setRefresh(!refresh);
+    } catch (err) {
+      dispatch({ type: "DELIVER_FAIL" });
+    }
+  }
+
   const columns = [
     { field: "id", headerName: "ID", width: 250 },
     {
@@ -185,7 +205,7 @@ export default function OrderListAdmin() {
       renderCell: (params) => {
         return (
           <Product>
-            <Link to={`/order/${params.row.id}`}>
+            <Link to={`/product/${params.row.slug}`}>
               <img src={params.row.image} alt="" />
               {params.row.name}
             </Link>
@@ -242,15 +262,27 @@ export default function OrderListAdmin() {
             <Link to={`/order/${params.row.id}`}>
               <Edit mode={mode}>View</Edit>
             </Link>
+            <div
+              onClick={() =>
+                deliverOrderHandler(
+                  params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold",
+                  params.row.id
+                )
+              }
+            >
+              <Edit mode={mode}>
+                {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
+              </Edit>
+            </div>
             {params.row.deliveryStatus === "Delivered" && (
               <Reject mode={mode}>Return</Reject>
             )}
-            {userInfo.isAdmin && (
+            {/* {userInfo.isAdmin && (
               <FontAwesomeIcon
                 onClick={() => deleteHandler(params.row.id)}
                 icon={faTrash}
               />
-            )}
+            )} */}
           </ActionSec>
         );
       },
@@ -259,6 +291,7 @@ export default function OrderListAdmin() {
   const rows = products.map((p) => ({
     id: p._id,
     name: p.orderItems[0].name,
+    slug: p.orderItems[0].slug,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",

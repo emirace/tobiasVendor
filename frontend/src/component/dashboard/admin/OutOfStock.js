@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { Store } from "../../../Store";
+import { getError } from "../../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -111,7 +111,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function ProductList() {
+export default function OutOfStock() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -131,9 +131,7 @@ export default function ProductList() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/${isSellerMode ? "seller/search/" : "admin"}${
-            isSellerMode ? userInfo._id : ""
-          }?q=${productsQuery}`,
+          `/api/products/admin/outofstock?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -232,7 +230,7 @@ export default function ProductList() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>My Products</Title>
+      <Title>Out of stock Products</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setProductsQuery(e.target.value)}

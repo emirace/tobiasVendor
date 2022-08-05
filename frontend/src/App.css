@@ -22,16 +22,27 @@
   font-weight: 300;
   font-style: normal;
 }
+@font-face {
+  font-family: "ChronicleText";
+  src: url(../public/fonts/ChronicleText.otf) format("opentype");
+  font-style: normal;
+}
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "AbsentiaSans", sans-serif;
+  font-family: "ChronicleText", "AbsentiaSans", sans-serif;
 }
 
 body {
   font-size: 14px;
+}
+h2,
+h1,
+h3,
+h4 {
+  font-family: "Absentiasans";
 }
 :root {
   --malon-color: #8a1719;
@@ -67,10 +78,6 @@ body {
 #pagebodylight {
   background: var(--white-color);
   color: var(--black-color);
-}
-@media (max-width: 992px) {
-  .pagebodylight {
-  }
 }
 
 a,

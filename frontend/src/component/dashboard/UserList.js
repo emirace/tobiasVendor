@@ -138,8 +138,7 @@ export default function UserList() {
       renderCell: (params) => {
         return (
           <User>
-            <img src={params.row.image} alt="p" />
-            {params.row.username}
+            <img src={params.row.image} alt="p" />@{params.row.username}
           </User>
         );
       },
@@ -177,7 +176,7 @@ export default function UserList() {
 
   const rows = users.map((u) => ({
     id: u._id,
-    username: u.name,
+    username: u.username,
     image: u.image,
     email: u.email,
     status: "online",

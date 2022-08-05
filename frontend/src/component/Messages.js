@@ -41,21 +41,21 @@ const Reporting = styled.div`
 `;
 export default function Messages({ message, own, report, product }) {
   const [user, setUser] = useState();
-  useEffect(() => {
-    const fetchData = async () => {
-      if (report) {
-        try {
-          const { data: dataUser } = await axios.get(
-            `/api/users/seller/${message.reportedUser}`
-          );
-          setUser(dataUser);
-        } catch (err) {
-          console.log(getError(err));
-        }
-      }
-    };
-    fetchData();
-  }, [message, report]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (report) {
+  //       try {
+  //         const { data: dataUser } = await axios.get(
+  //           `/api/users/seller/${message.reportedUser}`
+  //         );
+  //         setUser(dataUser);
+  //       } catch (err) {
+  //         console.log(getError(err));
+  //       }
+  //     }
+  //   };
+  //   fetchData();
+  // }, [message, report]);
   return (
     <>
       {console.log("in msg", product)}
@@ -67,9 +67,9 @@ export default function Messages({ message, own, report, product }) {
               <TimeS>{format(message.createdAt)}</TimeS>
             </div>
           </SendChat>
-          {report && user && !message.admin && (
+          {/* {report && user && !message.admin && (
             <Reporting>Reporting: {product ? product : user.name}</Reporting>
-          )}
+          )} */}
         </>
       ) : (
         <RecievedChat>

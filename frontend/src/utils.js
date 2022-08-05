@@ -27,3 +27,65 @@ export function timeDifference(date1, date2) {
   var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
   return Math.floor(Difference_In_Days);
 }
+
+export function displayDeliveryStatus(status) {
+  if (status === "Delivered") {
+    return (
+      <div
+        style={{
+          background: "var(--green-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+  if (status === "reject") {
+    return (
+      <div
+        style={{
+          background: "var(--yellow-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+  if (status === "Hold") {
+    return (
+      <div
+        style={{
+          background: "var(--yellow-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "black",
+          textAlign: "center",
+        }}
+      >
+        {status}
+      </div>
+    );
+  } else {
+    return (
+      <div
+        style={{
+          background: "grey",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+}

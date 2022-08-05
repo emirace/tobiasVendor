@@ -170,7 +170,7 @@ export default function Sidebar({ current }) {
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>
               </Link>
-              {/* 
+
               <Link to="/dashboard/messages">
                 <ListItem
                   mode={mode}
@@ -178,7 +178,7 @@ export default function Sidebar({ current }) {
                 >
                   <FontAwesomeIcon icon={faEnvelope} /> All Messages
                 </ListItem>
-              </Link> */}
+              </Link>
             </List>
           </Menu>
         )}

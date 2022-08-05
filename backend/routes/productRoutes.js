@@ -373,6 +373,43 @@ productRouter.get(
   })
 );
 
+productRouter.get(
+  "/admin/outofstock",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const searchQuery = query.q;
+
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            name: {
+              $regex: searchQuery,
+              $options: "i",
+            },
+          }
+        : {};
+
+    const products = await Product.find({
+      ...queryFilter,
+      countInStock: { $lte: 0 },
+    })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countProducts = await Product.countDocuments();
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  })
+);
+
 // get all Product with pagination for a user
 
 productRouter.get(

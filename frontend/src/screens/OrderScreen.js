@@ -9,7 +9,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { Store } from "../Store";
-import { getError } from "../utils";
+import { displayDeliveryStatus, getError } from "../utils";
 import ListGroup from "react-bootstrap/ListGroup";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -147,6 +147,17 @@ const PaymentDliveryItem = styled.div`
   flex: 1;
   margin: 5px;
   height: 100%;
+`;
+
+const Received = styled.div`
+  cursor: pointer;
+  background: var(--orange-color);
+  color: var(--white-color);
+  padding: 3px 7px;
+  height: 30px;
+  &:hover {
+    background: var(--malon-color);
+  }
 `;
 
 function reducer(state, action) {
@@ -383,15 +394,26 @@ export default function OrderScreen() {
               }}
             >
               <div>
-                <StatusPending>{order.deliveryStatus}</StatusPending>
+                {displayDeliveryStatus(order.deliveryStatus)}
                 <Name>
                   On{" "}
                   {moment(order.deliveredAt).format("MMMM Do YYYY, h:mm:ss a")}
                 </Name>
               </div>
+              {userInfo &&
+                order.user === userInfo._id &&
+                order.deliveryStatus === "Delivered" && (
+                  <Received onClick={() => deliverOrderHandler("Recieved")}>
+                    Comfirm you have recieved order
+                  </Received>
+                )}
               {userInfo && order.seller === userInfo._id && (
                 <div>
                   <FormControl
+                    disabled={
+                      order.deliveryStatus === "Hold" ||
+                      order.deliveryStatus === "Received"
+                    }
                     sx={{
                       minWidth: "200px",
                       margin: 0,

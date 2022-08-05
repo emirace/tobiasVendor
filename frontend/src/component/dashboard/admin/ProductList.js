@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { Store } from "../../../Store";
+import { getError } from "../../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -131,9 +131,7 @@ export default function ProductListAdmin() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/${isSellerMode ? "seller/search/" : "admin"}${
-            isSellerMode ? userInfo._id : ""
-          }?q=${productsQuery}`,
+          `/api/products/admin?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -166,7 +164,7 @@ export default function ProductListAdmin() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 200 },
     {
       field: "product",
       headerName: "Product",
@@ -232,7 +230,7 @@ export default function ProductListAdmin() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>My Products</Title>
+      <Title>All Products</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setProductsQuery(e.target.value)}

@@ -173,7 +173,7 @@ export default function FeatureInfo({ type, number }) {
       data = {
         title: " TOTAL PRODUCTS",
         isMoney: false,
-        to: "/dashboard/productlist",
+        to: "/admin/allProductList/",
         link: "View product list",
         icon: (
           <FontAwesomeIcon

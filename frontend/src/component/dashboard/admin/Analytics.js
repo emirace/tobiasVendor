@@ -87,6 +87,7 @@ const ItemRow = styled.div`
 `;
 const ItemCont = styled.div`
   position: relative;
+  width: 180px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
@@ -118,12 +119,16 @@ const Text = styled.div`
   font-weight: bold;
 `;
 const Count = styled.div`
-  margin: 0 5px;
+  margin: 0 2px;
 `;
 const ItemName = styled.div`
   font-weight: bold;
   text-transform: capitalize;
   margin: 5px;
+  white-space: nowrap;
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const View = styled.button`
   display: flex;
@@ -157,7 +162,7 @@ const Actions = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 170px;
   margin: 5px;
 `;
 const NameCont = styled.div`
@@ -298,7 +303,6 @@ export default function Analytics() {
   }, [userInfo]);
   return (
     <Container>
-      {console.log(users2)}
       {error ? (
         error
       ) : !users2 ? (
@@ -376,7 +380,7 @@ export default function Analytics() {
       <Content mode={mode}>
         <NameCont>
           <Tittle>Recently Added Product</Tittle>
-          <Link to="/dashboard/productlist">See All</Link>
+          <Link to="admin/allProductList/">See All</Link>
         </NameCont>
         {error ? (
           error
@@ -413,7 +417,7 @@ export default function Analytics() {
       <Content mode={mode}>
         <NameCont>
           <Tittle>Out Of Stock Products</Tittle>
-          <Link to="/dashboard/productlist">See All</Link>
+          <Link to="/admin/outofstock">See All</Link>
         </NameCont>
         {error ? (
           error

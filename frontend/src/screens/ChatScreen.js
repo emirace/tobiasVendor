@@ -20,7 +20,7 @@ import { Store } from "../Store";
 import Conversation from "../component/Conversation";
 import Messages from "../component/Messages";
 import { io } from "socket.io-client";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getError } from "../utils";
 import ReportConversation from "../component/Report/ReportConversation";
 import Report from "../component/Report";
@@ -37,16 +37,16 @@ const ChatCont = styled.div`
   display: flex;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
-  margin: 20px;
+  margin: 10px 10px 0 10px;
   border-radius: 0.2rem;
-  height: calc(100% - 192px);
+  height: calc(100% - 172px);
   @media (max-width: 992px) {
     margin: 5px;
   }
 `;
 const Left = styled.div`
   flex: 1;
-  margin: 20px;
+  margin: 10px 20px 0 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
@@ -57,7 +57,7 @@ const Left = styled.div`
 `;
 const Right = styled.div`
   flex: 2;
-  margin: 20px;
+  margin: 10px 20px 0 20px;
   border-radius: 0.2rem;
   padding: 10px 30px;
   background: ${(props) =>
@@ -108,11 +108,8 @@ const Search = styled.input.attrs((props) => ({
 `;
 
 const ChatArea = styled.div`
-  height: calc(100% - 130px);
+  height: calc(100% - 210px);
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -168,7 +165,7 @@ const NoConversation = styled.span`
 
 const Conserv = styled.div`
   overflow: auto;
-  height: calc(100% - 50px);
+  height: calc(100% - 90px);
   &::-webkit-scrollbar {
     display: none;
   }
@@ -210,14 +207,36 @@ const Back = styled.div`
 
 const PrivacyInfo = styled.div`
   display: flex;
-  height: 70px;
-  padding: 10px 50px;
+  height: 50px;
+  padding: 5px 50px;
   align-items: center;
   & svg {
     color: grey;
     font-size: 30px;
-    margin: 10px;
+    margin: 5px;
   }
+`;
+
+const ProfileImg = styled.img.attrs((props) => ({
+  src: props.src,
+}))`
+  width: 40px;
+  height: 40px;
+  margin: 3px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  margin-right: 0 15px;
+`;
+const ProductImg = styled.img.attrs((props) => ({
+  src: props.src,
+}))`
+  width: 40px;
+  margin: 3px;
+  height: 40px;
+  object-fit: cover;
+  object-position: top;
+  margin-right: 0 15px;
 `;
 
 const reducer = (state, action) => {
@@ -264,6 +283,8 @@ export default function ChatScreen() {
   const socket = useRef();
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   const backMode = (mode) => {
     if (mode === "pagebodydark") {
@@ -283,6 +304,7 @@ export default function ChatScreen() {
       setMymenu(!menu);
     }
   };
+
   const [{ loading, error, conversations, messages }, dispatch] = useReducer(
     reducer,
     {
@@ -332,11 +354,9 @@ export default function ChatScreen() {
           payload: [...messages, arrivalMessage.message],
         });
       } else {
-        alert(`chat not in view ${arrivalMessage.message}`);
         setTesting("working");
       }
     } else if (arrivalMessage) {
-      alert(`chat not in view ${arrivalMessage.message}`);
     }
   }, [arrivalMessage, currentChat]);
 
@@ -363,7 +383,7 @@ export default function ChatScreen() {
       }
     };
     getConversation();
-  }, [userInfo]);
+  }, [userInfo, refresh]);
 
   const [reportConversions, setReportConversions] = useState([]);
   useEffect(() => {
@@ -464,10 +484,66 @@ export default function ChatScreen() {
         text: newMessage,
       });
       setNewMessage("");
+      setRefresh(!refresh);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const [user, setUser] = useState([]);
+  const [loadingx, setLoadingx] = useState(false);
+
+  useEffect(() => {
+    if (currentChat) {
+      const friendId = currentChat.members.find((m) => m !== userInfo._id);
+      const getUser = async () => {
+        try {
+          setLoadingx(true);
+          const { data } = await axios.get(`/api/users/seller/${friendId}`, {
+            header: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          setUser(data);
+          setLoadingx(false);
+        } catch (err) {
+          setLoadingx(false);
+          console.log(err);
+        }
+      };
+      if (friendId) {
+        getUser();
+      }
+    }
+  }, [currentChat, userInfo]);
+
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const getproduct = async () => {
+      try {
+        setLoadingx(true);
+        if (currentChat.productId) {
+          const { data } = await axios.get(
+            `/api/products/${currentChat.productId}`
+          );
+          setProduct(data);
+          setLoadingx(false);
+        } else if (currentChat.userId) {
+          console.log(currentChat.userId);
+          const { data } = await axios.get(
+            `/api/users/seller/${currentChat.userId}`,
+            {
+              header: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
+          setProduct(data);
+          setLoadingx(false);
+        }
+      } catch (err) {
+        setLoadingx(false);
+        console.log(getError(err));
+      }
+    };
+    getproduct();
+  }, [currentChat]);
 
   const isOnlineCon = (c) => {
     if (onlineUser.length > 0) {
@@ -537,8 +613,9 @@ export default function ChatScreen() {
             {reportConversions.length < 1
               ? "No Reports"
               : reportConversions.map((r, index) => (
-                  <div key={r._id} onClick={() => setCurrentChat(r._id)}>
+                  <div key={r._id} onClick={() => setCurrentChat(r)}>
                     <Conversation
+                      report
                       conversation={r}
                       status={isOnlineCon(r)}
                       currentChat={currentChat._id}
@@ -593,6 +670,13 @@ export default function ChatScreen() {
     }
   };
   const [showLeft, setShowLeft] = useState(true);
+  // let searchConversations=conversations
+  //   if(searchInput.length>0){
+  //     searchConversations=searchConversations.filter((i)=>{
+  //       return i
+  //     })
+  //   }
+
   return (
     <Container className={mode} onClick={closeModel}>
       <Navbar menu={menu} setmodelRef1={backgroundMode} />
@@ -606,7 +690,11 @@ export default function ChatScreen() {
           <TopBar>
             <div>
               <FontAwesomeIcon icon={faSearch} />
-              <Search placeholder="Search..." mode={mode} />
+              <Search
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search..."
+                mode={mode}
+              />
             </div>
             <div>
               <FontAwesomeIcon icon={faMessage} />
@@ -618,14 +706,20 @@ export default function ChatScreen() {
               <TabItem
                 className={currentTab === "messages" ? "active" : ""}
                 mode={mode}
-                onClick={() => setCurrentTab("messages")}
+                onClick={() => {
+                  setCurrentTab("messages");
+                  setCurrentChat("");
+                }}
               >
                 Messages
               </TabItem>
               <TabItem
                 mode={mode}
                 className={currentTab === "reports" ? "active" : ""}
-                onClick={() => setCurrentTab("reports")}
+                onClick={() => {
+                  setCurrentTab("reports");
+                  setCurrentChat("");
+                }}
               >
                 Reports
               </TabItem>
@@ -640,20 +734,74 @@ export default function ChatScreen() {
           )}
         </Left>
         <Right mode={mode} showLeft={showLeft}>
-          {currentTab === "messages" ? (
-            currentChat ? (
-              <ChatCont2>
-                <PrivacyInfo>
-                  <FontAwesomeIcon icon={faShield} />
-                  <div style={{ color: "grey", textAlign: "center" }}>
-                    Please leave all information that will help us resolve your
-                    query. Please include an order number if your report is
-                    related to an order you purchased from this seller, or you
-                    can go to your purchase history and report the related item
-                    directly from the report tab on the item page.
+          {currentChat ? (
+            <ChatCont2>
+              {!loadingx &&
+                (user._id ? (
+                  <Link
+                    to={`/seller/${user._id}`}
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ProfileImg src={user.image} />
+                      <div>{user.username}</div>
+                    </div>
+                  </Link>
+                ) : (
+                  ""
+                ))}
+              <PrivacyInfo>
+                <FontAwesomeIcon icon={faShield} />
+                <div
+                  style={{
+                    color: "grey",
+                    textAlign: "center",
+                    lineHeight: "13px",
+                  }}
+                >
+                  {currentTab === "messages"
+                    ? `
+                  Kind Reminder: To make sure you're covered by Repeddle Buyer's
+                  & Seller's Protection, all payments must be made using
+                  Repeddle's App and Website complete CHECKOUT system.`
+                    : `Please leave all information that will help us resolve your
+                  query. Please include an order number if your report is
+                  related to an order you purchased from this seller, or you
+                  can go to your purchase history and report the related item
+                  directly from the report tab on the item page.`}
+                </div>
+              </PrivacyInfo>
+              {currentChat.conversationType !== "user" && (
+                <Link
+                  to={
+                    currentChat.conversationType === "reportUser"
+                      ? `/seller/${product._id}`
+                      : `/product/${product.slug}`
+                  }
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    borderBottom: "1px solid grey",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <ProductImg src={product.image} />
+                    <div>{product.name}</div>
                   </div>
-                </PrivacyInfo>
-                <ChatArea>
+                </Link>
+              )}
+              <ChatArea>
+                <div
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
                   {messages.map((m, index) => (
                     <div ref={scrollref} key={index}>
                       <Messages
@@ -663,63 +811,22 @@ export default function ChatScreen() {
                       />
                     </div>
                   ))}
-                </ChatArea>
-                <Message>
-                  <TextInput
-                    mode={mode}
-                    placeholder="Write a message"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                  />
-                  <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
-                </Message>
-              </ChatCont2>
-            ) : (
-              <NoConversation>
-                Select a conversation to start a chat
-              </NoConversation>
-            )
-          ) : currentTab === "reports" ? (
-            currentChat ? (
-              <ChatCont2>
-                <PrivacyInfo>
-                  <FontAwesomeIcon icon={faShield} />
-                  <div style={{ color: "grey", textAlign: "center" }}>
-                    Please leave all information that will help us resolve your
-                    query. Please include an order number if your report is
-                    related to an order you purchased from this seller, or you
-                    can go to your purchase history and report the related item
-                    directly from the report tab on the item page.
-                  </div>
-                </PrivacyInfo>
-                <ChatArea>
-                  {messages.map((m, index) => (
-                    <div ref={scrollref} key={index}>
-                      <Messages
-                        key={m._id}
-                        own={m.sender === userInfo._id}
-                        message={m}
-                      />
-                    </div>
-                  ))}
-                </ChatArea>
-                <Message>
-                  <TextInput
-                    mode={mode}
-                    placeholder="Write a message"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                  />
-                  <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
-                </Message>
-              </ChatCont2>
-            ) : (
-              <NoConversation>
-                Select a conversation to start a chat
-              </NoConversation>
-            )
+                </div>
+              </ChatArea>
+              <Message>
+                <TextInput
+                  mode={mode}
+                  placeholder="Write a message"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                />
+                <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
+              </Message>
+            </ChatCont2>
           ) : (
-            ""
+            <NoConversation>
+              Select a conversation to start a chat
+            </NoConversation>
           )}
         </Right>
       </ChatCont>

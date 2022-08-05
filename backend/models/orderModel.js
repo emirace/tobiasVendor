@@ -38,7 +38,7 @@ const orderSchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
-    deliveryStatus: { type: String },
+    deliveryStatus: { type: String, default: "Pending" },
     status: { type: String },
     reason: { type: String },
     deliveredAt: { type: Date },

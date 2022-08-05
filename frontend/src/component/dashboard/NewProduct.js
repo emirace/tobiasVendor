@@ -18,6 +18,7 @@ import IconsTooltips from "../IconsTooltips";
 import ModelLogin from "../ModelLogin";
 import Condition from "../Condition";
 import CropImage from "../cropImage/CropImage";
+import FeeStructure from "../info/FeeStructure";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -357,7 +358,7 @@ const Tips = styled.span`
   position: relative;
   &:hover::after {
     content: "${(props) => props.tips}";
-    width: 200px;
+    width: 300px;
     position: absolute;
     border-radius: 0.5rem;
     left: 30px;
@@ -518,6 +519,7 @@ export default function NewProduct() {
   const [showConditionModal, setShowConditionModal] = useState(false);
   const [showUploadingImage, setShowUploadingImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
+  const [showComissionModal, setShowComissionModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -1158,15 +1160,17 @@ export default function NewProduct() {
                       onChange={(e) => sizeHandler(e.target.value)}
                       displayEmpty
                     >
+                      <MenuItem value="XS">XS</MenuItem>
                       <MenuItem value="S">S</MenuItem>
                       <MenuItem value="M">M</MenuItem>
                       <MenuItem value="L">L</MenuItem>
                       <MenuItem value="XL">XL</MenuItem>
-                      <MenuItem value="XXL">42</MenuItem>
-                      <MenuItem value="XXL">43</MenuItem>
-                      <MenuItem value="XXL">44</MenuItem>
-                      <MenuItem value="XXL">45</MenuItem>
-                      <MenuItem value="XXL">46</MenuItem>
+                      <MenuItem value="XXL">XXL</MenuItem>
+                      <MenuItem value="42">42</MenuItem>
+                      <MenuItem value="43">43</MenuItem>
+                      <MenuItem value="44">44</MenuItem>
+                      <MenuItem value="45">45</MenuItem>
+                      <MenuItem value="46">46</MenuItem>
                     </Select>
                   </FormControl>
                 </Item>
@@ -1295,10 +1299,20 @@ We encourage you to be as reasonable as possible, as over prized products are tu
               Repeddle commission fee until 3oth November 2022. To understand
               how our fee works after the grace period, please have a look at
               our fee structure{" "}
-              <span style={{ color: "red", textDecoration: "underline" }}>
+              <span
+                onClick={() => setShowComissionModal(true)}
+                style={{ color: "red", textDecoration: "underline" }}
+              >
                 here{" "}
               </span>
             </TitleDetails>
+
+            <ModelLogin
+              setShowModel={setShowComissionModal}
+              showModel={showComissionModal}
+            >
+              <FeeStructure />
+            </ModelLogin>
           </Left>
           <Right>
             <Top>

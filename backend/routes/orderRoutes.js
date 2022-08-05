@@ -349,7 +349,10 @@ orderRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-    if (order && order.seller.toString() === req.user._id) {
+    if (
+      order &&
+      (order.seller.toString() === req.user._id || req.user.isAdmin)
+    ) {
       order.deliveryStatus = req.body.deliveryStatus;
       order.deliveredAt = Date.now();
       await order.save();

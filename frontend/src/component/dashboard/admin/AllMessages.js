@@ -12,11 +12,12 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../../Store";
 import { getError } from "../../../utils";
-import Conversation from "../../Conversation";
 import Messages from "../../Messages";
+import Conversation from "./Conversation";
 
 const Container = styled.div`
   flex: 4;
@@ -106,7 +107,7 @@ const NoConversation = styled.span`
   text-align: center;
 `;
 const ChatArea = styled.div`
-  height: calc(100% - 130px);
+  height: calc(100% - 70px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -125,6 +126,28 @@ const PrivacyInfo = styled.div`
     font-size: 30px;
     margin: 10px;
   }
+`;
+
+const ProfileImg = styled.img.attrs((props) => ({
+  src: props.src,
+}))`
+  width: 40px;
+  height: 40px;
+  margin: 3px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+  margin-right: 0 15px;
+`;
+const ProductImg = styled.img.attrs((props) => ({
+  src: props.src,
+}))`
+  width: 40px;
+  margin: 3px;
+  height: 40px;
+  object-fit: cover;
+  object-position: top;
+  margin-right: 0 15px;
 `;
 
 const reducer = (state, action) => {
@@ -172,6 +195,7 @@ export default function AllMessages() {
         const { data } = await axios.get("/api/conversations", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
+        console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
@@ -180,6 +204,78 @@ export default function AllMessages() {
     };
     getConversation();
   }, []);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        dispatch({ type: "MSG_REQUEST" });
+        const { data } = await axios.get(`/api/messages/${currentChat._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: "MSG_SUCCESS", payload: data.messages });
+      } catch (err) {
+        dispatch({ type: "MSG_FAIL" });
+
+        console.log(err);
+      }
+    };
+    getMessages();
+  }, [currentChat, userInfo]);
+
+  const [user, setUser] = useState([]);
+  const [loadingx, setLoadingx] = useState(false);
+
+  useEffect(() => {
+    if (currentChat) {
+      const friendId = currentChat.members.find((m) => m !== userInfo._id);
+      const getUser = async () => {
+        try {
+          setLoadingx(true);
+          const { data } = await axios.get(`/api/users/seller/${friendId}`, {
+            header: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          setUser(data);
+          setLoadingx(false);
+        } catch (err) {
+          setLoadingx(false);
+          console.log(err);
+        }
+      };
+      if (friendId) {
+        getUser();
+      }
+    }
+  }, [currentChat, userInfo]);
+
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const getproduct = async () => {
+      try {
+        setLoadingx(true);
+        if (currentChat.productId) {
+          const { data } = await axios.get(
+            `/api/products/${currentChat.productId}`
+          );
+          setProduct(data);
+          setLoadingx(false);
+        } else if (currentChat.userId) {
+          console.log(currentChat.userId);
+          const { data } = await axios.get(
+            `/api/users/seller/${currentChat.userId}`,
+            {
+              header: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
+          setProduct(data);
+          setLoadingx(false);
+        }
+      } catch (err) {
+        setLoadingx(false);
+        console.log(getError(err));
+      }
+    };
+    getproduct();
+  }, [currentChat]);
 
   return (
     <Container mode={mode}>
@@ -215,26 +311,60 @@ export default function AllMessages() {
       <Right mode={mode}>
         {currentChat ? (
           <ChatCont2>
+            {!loadingx && (
+              <Link
+                to={`/seller/${user._id}`}
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                  paddingRight: "10px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <ProfileImg src={user.image} />
+                  <div>{user.username}</div>
+                </div>
+              </Link>
+            )}
             <PrivacyInfo>
               <FontAwesomeIcon icon={faShield} />
               <div style={{ color: "grey", textAlign: "center" }}>
-                Please leave all information that will help us resolve your
-                query. Please include an order number if your report is related
-                to an order you purchased from this seller, or you can go to
-                your purchase history and report the related item directly from
-                the report tab on the item page.
+                Kind Reminder: To make sure you're covered by Repeddle Buyer's &
+                Seller's Protection, all payments must be made using Repeddle's
+                App and Website complete CHECKOUT
               </div>
             </PrivacyInfo>
-            <ChatArea>
-              {messages.map((m, index) => (
-                <div ref={scrollref} key={index}>
-                  <Messages
-                    key={m._id}
-                    own={m.sender === userInfo._id}
-                    message={m}
-                  />
+            {currentChat.conversationType !== "user" && (
+              <Link
+                to={
+                  currentChat.conversationType === "reportUser"
+                    ? `/seller/${product._id}`
+                    : `/product/${product.slug}`
+                }
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  borderBottom: "1px solid grey",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <ProductImg src={product.image} />
+                  <div>{product.name}</div>
                 </div>
-              ))}
+              </Link>
+            )}
+            <ChatArea>
+              <div style={{ height: "100%" }}>
+                {messages.map((m, index) => (
+                  <div ref={scrollref} key={index}>
+                    <Messages
+                      key={m._id}
+                      own={m.sender === userInfo._id}
+                      message={m}
+                    />
+                  </div>
+                ))}
+              </div>
             </ChatArea>
           </ChatCont2>
         ) : (

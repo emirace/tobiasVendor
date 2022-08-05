@@ -334,11 +334,33 @@ export default function ProductScreen() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!comment || !rating || !like) {
+    if (!comment) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Please enter review and rating",
+          message: "Please enter review",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (!rating) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please select rating",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (!like) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Give review a thumb up or thumb down",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -590,14 +612,12 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: getError(err),
+          message: "Log in or Create account to send a message",
           showStatus: true,
           state1: "visible1 error",
         },
       });
     }
-
-    setReportModel(!reportModel);
   };
 
   const deleteReview = async (id) => {
@@ -765,19 +785,6 @@ export default function ProductScreen() {
                         <option value="5">5- Excelent</option>
                       </Form.Select>
                     </Form.Group>
-                    <Thumbs>
-                      <div>Like</div>
-                      <FontAwesomeIcon
-                        icon={faThumbsUp}
-                        onClick={() => setLike("yes")}
-                        color={like === "yes" ? "#eb9f40" : "grey"}
-                      />
-                      <FontAwesomeIcon
-                        icon={faThumbsDown}
-                        onClick={() => setLike("no")}
-                        color={like === "no" ? "#eb9f40" : "grey"}
-                      />
-                    </Thumbs>
                     <FloatingLabel
                       controlId="floatingTextarea"
                       lablel="Coments"
@@ -793,6 +800,20 @@ export default function ProductScreen() {
                         onChange={(e) => setComment(e.target.value)}
                       />
                     </FloatingLabel>
+                    <Thumbs>
+                      <div>Like</div>
+                      <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        onClick={() => setLike("yes")}
+                        color={like === "yes" ? "#eb9f40" : "grey"}
+                      />{" "}
+                      <div>Dislike</div>
+                      <FontAwesomeIcon
+                        icon={faThumbsDown}
+                        onClick={() => setLike("no")}
+                        color={like === "no" ? "#eb9f40" : "grey"}
+                      />
+                    </Thumbs>
                     <div className="my-3">
                       <button
                         className="search-btn1"
@@ -1075,7 +1096,7 @@ export default function ProductScreen() {
             <div>
               <b>{product.likes.length} </b> Likes
             </div>
-            <div>Created {format(product.createdAt)}</div>
+            <div>Listed {format(product.createdAt)}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center" }}>
             <div className="sp_name">{product.name}</div>

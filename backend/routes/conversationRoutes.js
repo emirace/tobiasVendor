@@ -10,9 +10,9 @@ conversationRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const conversations = await Conversation.find()
-      .populate("productId", "username image")
-      .populate("userId", "username image");
+    const conversations = await Conversation.find({
+      $or: [{ conversationType: "user" }, { conversationType: "product" }],
+    });
     if (conversations) {
       res.status(200).send(conversations);
     } else {
@@ -28,17 +28,31 @@ conversationRouter.post(
     if (req.user._id === req.body.recieverId) {
       throw { message: "you cannot message yourself" };
     }
-    const existConversation = await Conversation.findOne({
-      members: { $all: [req.user._id, req.body.recieverId] },
-      $or: [{ productId: req.body.productId }, { userId: req.body.productId }],
-      conversationType: req.body.type,
-    });
+    console.log(req.body);
+    const existConversation =
+      req.body.type === "reportUser" || req.body.type === "reportProduct"
+        ? await Conversation.findOne({
+            members: { $all: [req.user._id] },
+            $or: [
+              { productId: req.body.productId },
+              { userId: req.body.productId },
+            ],
+            conversationType: req.body.type,
+          })
+        : await Conversation.findOne({
+            members: { $all: [req.user._id, req.body.recieverId] },
+            $or: [
+              { productId: req.body.productId },
+              { userId: req.body.productId },
+            ],
+            conversationType: req.body.type,
+          });
     if (existConversation) {
-      console.log("b4", req.body);
+      existConversation.updatedAt = new Date();
+      await existConversation.save();
       res.status(200).send(existConversation);
       return;
     }
-    console.log("after", req.body);
 
     const newConversation =
       req.body.type === "product"
@@ -77,7 +91,7 @@ conversationRouter.get(
   expressAsyncHandler(async (req, res) => {
     const conversations = await Conversation.find({
       members: { $in: [req.user._id] },
-    }).sort({ createdAt: -1 });
+    }).sort({ updatedAt: -1 });
     if (conversations) {
       res
         .status(200)
@@ -107,7 +121,7 @@ conversationRouter.get(
   expressAsyncHandler(async (req, res) => {
     const report = await Conversation.find({
       conversationType: { $in: ["reportUser", "reportProduct"] },
-    });
+    }).sort({ updatedAt: -1 });
     if (report) {
       res.status(200).send(report);
     } else {
