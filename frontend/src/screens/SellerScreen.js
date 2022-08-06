@@ -307,14 +307,16 @@ export default function SellerScreen() {
       case "all":
         return (
           <>
-            <ProductCont>
-              <Link to="/dashboard/newproduct">
-                <AddProduct mode={mode}>
-                  <FontAwesomeIcon icon={faCirclePlus} />
-                  <span>Add Product</span>
-                </AddProduct>
-              </Link>
-            </ProductCont>
+            {userInfo && (
+              <ProductCont>
+                <Link to="/dashboard/newproduct">
+                  <AddProduct mode={mode}>
+                    <FontAwesomeIcon icon={faCirclePlus} />
+                    <span>Add Product</span>
+                  </AddProduct>
+                </Link>
+              </ProductCont>
+            )}
             {loading ? (
               <LoadingBox></LoadingBox>
             ) : error ? (

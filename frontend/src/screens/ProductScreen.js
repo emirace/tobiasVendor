@@ -460,7 +460,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "login to save item",
+          message: "Signin/Register to save an item",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -505,7 +505,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Login to like",
+          message: "Sign in / Register to like",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -845,6 +845,17 @@ export default function ProductScreen() {
   };
 
   const addConversation = async (id, id2) => {
+    if (!userInfo) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Signin/Register to start a conversation",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
@@ -857,7 +868,8 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: getError(err),
+          message:
+            "Encounter a problem starting a conversation, pls try again later",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -1010,6 +1022,7 @@ export default function ProductScreen() {
                   @{product.seller.username}
                 </Link>
               </div>
+              {console.log(product)}
               <div>Benin City, Nigeria</div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
@@ -1054,10 +1067,6 @@ export default function ProductScreen() {
                     : ""
                 }
                 onClick={() => {
-                  if (!userInfo) {
-                    setShowLoginModel(true);
-                    return;
-                  }
                   saveItem();
                 }}
                 icon={faBookmark}
