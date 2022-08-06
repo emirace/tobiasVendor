@@ -283,7 +283,7 @@ export default function ProductScreen() {
       });
       return;
     }
-    if (product.seller._id === userInfo._id) {
+    if (userInfo && product.seller._id === userInfo._id) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
