@@ -24,6 +24,8 @@ import adminRouter from "./routes/adminRoutes.js";
 import recentViewRouter from "./routes/recentViewRoutes.js";
 import nonLoginRouter from "./routes/nonLoginRoutes.js";
 import couponRouter from "./routes/couponRoutes.js";
+import accountRouter from "./routes/accountRoutes.js";
+import bestsellerRouter from "./routes/bestsellerRoutes.js";
 
 dotenv.config();
 
@@ -71,6 +73,8 @@ app.use("/api/admins", adminRouter);
 app.use("/api/recentviews", recentViewRouter);
 app.use("/api/nonLogin", nonLoginRouter);
 app.use("/api/coupons", couponRouter);
+app.use("/api/accounts", accountRouter);
+app.use("/api/bestsellers", bestsellerRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();

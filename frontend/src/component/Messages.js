@@ -63,7 +63,16 @@ export default function Messages({ message, own, report, product }) {
         <>
           <SendChat>
             <div>
-              <InlineS>{message.text}</InlineS>
+              <InlineS>
+                {message.image && (
+                  <img
+                    style={{ maxWidth: "150px", display: "block" }}
+                    src={message.image}
+                    alt="msg"
+                  />
+                )}
+                {message.text}
+              </InlineS>
               <TimeS>{format(message.createdAt)}</TimeS>
             </div>
           </SendChat>
@@ -74,6 +83,8 @@ export default function Messages({ message, own, report, product }) {
       ) : (
         <RecievedChat>
           <div>
+            {message.image && <img src={message.image} alt="msg" />}
+
             <InlineR>{message.text}</InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>
           </div>

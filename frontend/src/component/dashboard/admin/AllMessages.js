@@ -223,17 +223,20 @@ export default function AllMessages() {
   }, [currentChat, userInfo]);
 
   const [user, setUser] = useState([]);
+  const [user2, setUser2] = useState([]);
   const [loadingx, setLoadingx] = useState(false);
 
   useEffect(() => {
     if (currentChat) {
-      const friendId = currentChat.members.find((m) => m !== userInfo._id);
       const getUser = async () => {
         try {
           setLoadingx(true);
-          const { data } = await axios.get(`/api/users/seller/${friendId}`, {
-            header: { Authorization: `Bearer ${userInfo.token}` },
-          });
+          const { data } = await axios.get(
+            `/api/users/seller/${currentChat.members[0]}`,
+            {
+              header: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
           setUser(data);
           setLoadingx(false);
         } catch (err) {
@@ -241,9 +244,28 @@ export default function AllMessages() {
           console.log(err);
         }
       };
-      if (friendId) {
-        getUser();
-      }
+      getUser();
+    }
+  }, [currentChat, userInfo]);
+  useEffect(() => {
+    if (currentChat) {
+      const getUser = async () => {
+        try {
+          setLoadingx(true);
+          const { data } = await axios.get(
+            `/api/users/seller/${currentChat.members[1]}`,
+            {
+              header: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
+          setUser2(data);
+          setLoadingx(false);
+        } catch (err) {
+          setLoadingx(false);
+          console.log(err);
+        }
+      };
+      getUser();
     }
   }, [currentChat, userInfo]);
 
@@ -312,28 +334,35 @@ export default function AllMessages() {
         {currentChat ? (
           <ChatCont2>
             {!loadingx && (
-              <Link
-                to={`/seller/${user._id}`}
-                style={{
-                  display: "flex",
-                  justifyContent: "end",
-                  paddingRight: "10px",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <ProfileImg src={user.image} />
-                  <div>{user.username}</div>
-                </div>
-              </Link>
-            )}
-            <PrivacyInfo>
-              <FontAwesomeIcon icon={faShield} />
-              <div style={{ color: "grey", textAlign: "center" }}>
-                Kind Reminder: To make sure you're covered by Repeddle Buyer's &
-                Seller's Protection, all payments must be made using Repeddle's
-                App and Website complete CHECKOUT
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Link
+                  to={`/seller/${user2._id}`}
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <ProfileImg src={user2.image} />
+                    <div>{user2.username}</div>
+                  </div>
+                </Link>
+                <Link
+                  to={`/seller/${user._id}`}
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <ProfileImg src={user.image} />
+                    <div>{user.username}</div>
+                  </div>
+                </Link>
               </div>
-            </PrivacyInfo>
+            )}
             {currentChat.conversationType !== "user" && (
               <Link
                 to={
@@ -359,7 +388,7 @@ export default function AllMessages() {
                   <div ref={scrollref} key={index}>
                     <Messages
                       key={m._id}
-                      own={m.sender === userInfo._id}
+                      own={m.sender === user._id}
                       message={m}
                     />
                   </div>

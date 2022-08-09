@@ -377,6 +377,15 @@ export default function User() {
         });
         return;
       }
+      if (username.length > 0) {
+        if (
+          !window.confirm(
+            "Are you sure you want to update username, next change will be in 30days"
+          )
+        ) {
+          return;
+        }
+      }
       dispatch({ type: "UPDATE_REQUEST" });
 
       const { data } = await axios.put(

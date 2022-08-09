@@ -143,7 +143,7 @@ const Label = styled.label.attrs({
   }
 `;
 
-export default function SigninScreen() {
+export default function SigninToAddressScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const redirectInUrl = new URLSearchParams(search).get("redirect");
@@ -270,6 +270,12 @@ export default function SigninScreen() {
             {"  "}Create your account
           </Link>
         </div>
+
+        <ContinueButton>
+          <Link to="/delivery2">
+            Continue without Signing in <FontAwesomeIcon icon={faArrowRight} />
+          </Link>
+        </ContinueButton>
       </Form>
     </Container>
   );

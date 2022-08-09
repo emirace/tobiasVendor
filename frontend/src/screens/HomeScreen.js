@@ -109,7 +109,7 @@ export default function ProductsScreen() {
         });
 
         dispatch({ type: "FETCH_USERS_REQUEST" });
-        const { data: topSellers } = await axios.get("/api/users/top-sellers");
+        const { data: topSellers } = await axios.get("/api/bestsellers");
         console.log(topSellers);
         dispatch({
           type: "FETCH_USERS_SUCCESS",
@@ -128,9 +128,12 @@ export default function ProductsScreen() {
   }, []);
   const sliderHandler = (direction) => {
     if (direction === "left") {
-      setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
+      var slider = document.getElementById("slider");
+      slider.scrollBy(350, 0);
+      // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
-      setSliderIndex(sliderIndex < products.length - 5 ? sliderIndex + 1 : 0);
+      var slider = document.getElementById("slider");
+      slider.scrollBy(-350, 0);
     }
   };
   const sliderstyle = `translateX(${sliderIndex * -220}px)`;
@@ -292,15 +295,15 @@ export default function ProductsScreen() {
           <button onClick={() => sliderHandler("right")} className="next-btn1">
             <i className="fa fa-angle-right"></i>
           </button>
-          <div className="product-container1 scroll_snap">
+          <div
+            id="slider"
+            className="product-container1 scroll_snap"
+            // style={{
+            //   transform: sliderstyle,
+            // }}
+          >
             {products.map((product) => (
-              <div
-                key={product._id}
-                className="smooth1"
-                // style={{
-                //   transform: sliderstyle,
-                // }}
-              >
+              <div key={product._id} className="smooth1">
                 <Product product={product} />
               </div>
             ))}
@@ -389,16 +392,16 @@ export default function ProductsScreen() {
                   <MessageBox>No Seller Found</MessageBox>
                 )}
                 <Seller className="scroll_snap">
-                  {console.log(sellers.topSellers)}
-                  {sellers.topSellers &&
-                    sellers.topSellers.length > 0 &&
-                    sellers.topSellers.map((seller, index) => (
-                      <Link to={`/seller/${seller._id}`} key={index}>
+                  {console.log(sellers)}
+                  {sellers &&
+                    sellers.length > 0 &&
+                    sellers.map((seller, index) => (
+                      <Link to={`/seller/${seller.userId._id}`} key={index}>
                         <div className="carousel_item">
                           <Imagediv>
                             <img
-                              src={seller.image}
-                              alt={seller.username}
+                              src={seller.userId.image}
+                              alt={seller.userId.username}
                               className="carousel_profile_image"
                             ></img>
                             {seller.badge && (
@@ -407,7 +410,7 @@ export default function ProductsScreen() {
                               </div>
                             )}
                           </Imagediv>
-                          <p className="">@{seller.username}</p>
+                          <p className="">@{seller.userId.username}</p>
                         </div>
                       </Link>
                     ))}

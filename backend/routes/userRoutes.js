@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { generateToken, isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
+import Account from "../models/accountModel.js";
 
 const userRouter = express.Router();
 
@@ -120,6 +121,10 @@ userRouter.post(
       numReviews: 0,
     });
     const user = await newUser.save();
+    await Account.create({
+      userId: user.id,
+      balance: 0,
+    });
     res.send({
       _id: user._id,
       name: user.name,

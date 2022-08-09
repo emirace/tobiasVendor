@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +13,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../../../Store";
 import { getError } from "../../../utils";
+import { useReactToPrint } from "react-to-print";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -90,6 +97,28 @@ const SearchInput = styled.input`
     padding: 10px;
   }
 `;
+const Goto = styled.div`
+  font-weight: 500;
+  border-radius: 0.2rem;
+  padding: 1px 8px;
+  cursor: pointer;
+  border: 1px solid var(--malon-color);
+  &:hover {
+    background-color: var(--malon-color);
+    color: white;
+  }
+`;
+const Print = styled.div`
+  font-weight: 500;
+  color: white;
+  padding: 1px 8px;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  background: var(--orange-color);
+  &:hover {
+    background-color: var(--malon-color);
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -121,20 +150,28 @@ export default function OrderListAdmin() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [refresh, setRefresh] = useState(false);
+  const [sort, setSort] = useState("all");
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
       loading: true,
       products: [],
       error: "",
     });
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   const [ordersQuery, setOrdersQuery] = useState("all");
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/orders/?q=${ordersQuery}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/orders/?q=${ordersQuery}&sort=${sort}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         console.log(data);
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
@@ -146,7 +183,7 @@ export default function OrderListAdmin() {
     } else {
       fetchAllProduct();
     }
-  }, [successDelete, userInfo, ordersQuery, refresh]);
+  }, [successDelete, userInfo, ordersQuery, sort, refresh]);
 
   const deleteHandler = async (order) => {
     if (window.confirm("Are you sure to delete")) {
@@ -305,14 +342,27 @@ export default function OrderListAdmin() {
   return (
     <ProductLists mode={mode}>
       <Title>All Orders</Title>
+
       <SearchCont>
         <SearchInput
           onChange={(e) => setOrdersQuery(e.target.value)}
           placeholder="Search by id"
         />
       </SearchCont>
-      {console.log(products)}
+      <div style={{ display: "flex", gap: "20px" }}>
+        <Goto onClick={() => setSort("all")}>All</Goto>
+        <Goto onClick={() => setSort("Pending")}>Pending</Goto>
+        <Goto onClick={() => setSort("Progress")}>In Progress</Goto>
+        <Goto onClick={() => setSort("Delivered")}>Completed</Goto>
+        <Print onClick={handlePrint}>Print</Print>
+      </div>
+      <style type="text/css" media="print">
+        {"\
+  @page { size: landscape; }\
+"}
+      </style>
       <DataGrid
+        ref={componentRef}
         sx={{
           width: "100%",
           height: "650px",

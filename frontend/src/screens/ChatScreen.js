@@ -1,5 +1,6 @@
 import {
   faAngleLeft,
+  faImage,
   faMessage,
   faPaperPlane,
   faSearch,
@@ -24,6 +25,8 @@ import { Link, useLocation } from "react-router-dom";
 import { getError } from "../utils";
 import ReportConversation from "../component/Report/ReportConversation";
 import Report from "../component/Report";
+import ModelLogin from "../component/ModelLogin";
+import CropImage from "../component/cropImage/CropImage";
 
 const Container = styled.div`
   position: fixed;
@@ -257,6 +260,16 @@ const reducer = (state, action) => {
       };
     case "MSG_FAIL":
       return { ...state, loadingMessages: false, error: action.payload };
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true };
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: action.payload,
+      };
     default:
       return state;
   }
@@ -268,7 +281,7 @@ const ENDPOINT =
     : window.location.host;
 
 export default function ChatScreen() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -285,6 +298,8 @@ export default function ChatScreen() {
   const [reports, setReports] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [refresh, setRefresh] = useState(false);
+  const [image, setImage] = useState("");
+  const [showUploadingImage, setShowUploadingImage] = useState(false);
 
   const backMode = (mode) => {
     if (mode === "pagebodydark") {
@@ -305,15 +320,13 @@ export default function ChatScreen() {
     }
   };
 
-  const [{ loading, error, conversations, messages }, dispatch] = useReducer(
-    reducer,
-    {
+  const [{ loading, error, loadingUpload, conversations, messages }, dispatch] =
+    useReducer(reducer, {
       loading: true,
       error: "",
       conversations: [],
       messages: [],
-    }
-  );
+    });
 
   useEffect(() => {
     socket.current = io(ENDPOINT);
@@ -462,9 +475,21 @@ export default function ChatScreen() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!newMessage.length && !image.length) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Failed",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     const message = {
       text: newMessage,
       conversationId: currentChat._id,
+      image: image,
     };
     try {
       const { data } = await axios.post("api/messages", message, {
@@ -480,10 +505,12 @@ export default function ChatScreen() {
       socket.current.emit("sendMessage", {
         message: data.message,
         senderId: userInfo._id,
+        image: image,
         receiverId,
         text: newMessage,
       });
       setNewMessage("");
+      setImage("");
       setRefresh(!refresh);
     } catch (err) {
       console.log(err);
@@ -582,6 +609,45 @@ export default function ChatScreen() {
       console.log(err);
     }
   };
+
+  const uploadHandler = async (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      setImage(data.secure_url);
+      console.log(image);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Image Uploaded",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (err) {
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Failed uploading image",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      console.log(getError(err));
+    }
+  };
+
   const [currentTab, setCurrentTab] = useState("messages");
   const toggleTab = (tab) => {
     switch (tab) {
@@ -820,6 +886,75 @@ export default function ChatScreen() {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                 />
+                <FontAwesomeIcon
+                  onClick={() => setShowUploadingImage(true)}
+                  icon={faImage}
+                />
+
+                <ModelLogin
+                  setShowModel={setShowUploadingImage}
+                  showModel={showUploadingImage}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                      justifyContent: "space-between",
+                      padding: "30px",
+                    }}
+                  >
+                    {image ? (
+                      <div>
+                        <img
+                          src={image}
+                          style={{ height: "100%" }}
+                          alt="image"
+                        />
+                      </div>
+                    ) : (
+                      <label
+                        htmlFor="addimage"
+                        style={{
+                          display: "flex",
+                          height: "100%",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          style={{ fontSize: "200px" }}
+                          icon={faImage}
+                        />
+                        Add Image
+                      </label>
+                    )}
+                    <input
+                      type="file"
+                      id="addimage"
+                      style={{ display: "none" }}
+                      onChange={uploadHandler}
+                    />
+                    <Message>
+                      <TextInput
+                        mode={mode}
+                        placeholder="Write a message"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                      />
+
+                      <FontAwesomeIcon
+                        icon={faPaperPlane}
+                        onClick={(e) => {
+                          handleSubmit(e);
+                          setShowUploadingImage(false);
+                        }}
+                      />
+                    </Message>
+                  </div>
+                </ModelLogin>
+
                 <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
               </Message>
             </ChatCont2>

@@ -51,6 +51,7 @@ import ProtectionRight from "../component/ProtectionRight";
 import Report from "../component/Report";
 import { format } from "timeago.js";
 import Sizechart from "../component/Sizechart";
+import Product from "../component/Product";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -214,6 +215,47 @@ export default function ProductScreen() {
         if (data) {
           await axios.put(`/api/recentviews/${data._id}`);
         }
+        const factor = 0.9;
+        var views = JSON.parse(localStorage.getItem("recentlyView") || "[]");
+        console.log(views);
+        const existing = views.find((x) => x.productId === data._id);
+
+        console.log(!existing, "hello");
+        const newView = {
+          score: factor,
+          numViews: 1,
+          productId: data._id,
+          product: data,
+        };
+
+        const newViews = existing
+          ? views.map((item) =>
+              item.productId === existing.productId
+                ? {
+                    score: existing.score + factor,
+                    numViews: existing.numViews + 1,
+                    productId: existing.productId,
+                    product: existing.product,
+                  }
+                : item
+            )
+          : [...views, newView];
+        console.log("veiws:", views, "newViews:", newViews);
+        localStorage.setItem("recentlyView", JSON.stringify(newViews));
+        if (newViews) {
+          const newViews1 = newViews.map((v) =>
+            data._id !== v.productId
+              ? {
+                  score: v.score * factor,
+                  productId: v.productId,
+                  product: v.product,
+                  newViews: v.newViews,
+                }
+              : v
+          );
+          localStorage.setItem("recentlyView", JSON.stringify(newViews1));
+          console.log(newViews1);
+        }
       } catch (err) {
         console.log(getError(err));
       }
@@ -321,12 +363,14 @@ export default function ProductScreen() {
       },
     });
   };
-
   const sliderHandler = (direction) => {
     if (direction === "left") {
-      setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : 3);
+      var slider = document.getElementById("slider");
+      slider.scrollBy(350, 0);
+      // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
-      setSliderIndex(sliderIndex < 3 ? sliderIndex + 1 : 0);
+      var slider = document.getElementById("slider");
+      slider.scrollBy(-350, 0);
     }
   };
 
@@ -394,7 +438,14 @@ export default function ProductScreen() {
         top: reviewRef.current.offsetTop,
       });
     } catch (err) {
-      toast.error(getError(error));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       dispatch({ type: "CREATE_FAIL" });
     }
   };
@@ -1460,150 +1511,31 @@ export default function ProductScreen() {
           </section>
         </div>
       </section> */}
+
       <section className="product1">
         <div className="product-title">
-          <h2 className="product-category1">Related Products</h2>
+          <h2 className="product-category1">Recently Viewed</h2>
         </div>
-        <button className="pre-btn1">
-          <FontAwesomeIcon icon={faAngleLeft} />
+        <button onClick={() => sliderHandler("left")} className="pre-btn1">
+          <i className="fa fa-angle-left"></i>
         </button>
-        <button className="next-btn1">
-          <FontAwesomeIcon icon={faAngleRight} />
+        <button onClick={() => sliderHandler("right")} className="next-btn1">
+          <i className="fa fa-angle-right"></i>
         </button>
-        <div className="product-container1">
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card4.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card1.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card2.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card4.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card6.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card7.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
-          <div className="product-card1">
-            <div className="product-image1">
-              <span className="discount-tag1">50% off</span>
-              <img
-                src="/images/card8.png"
-                className="product-thumb1"
-                alt="product"
-              ></img>
-              <button className="card-btn1">add to whislist</button>
-            </div>
-            <div className="product-info1">
-              <h2 className="product-brand1">brand</h2>
-              <p className="product-short-desc1">
-                short line above the cloth...
-              </p>
-              <span className="price1">$120</span>
-              <span className="actual-price1">$150</span>
-            </div>
-          </div>
+        <div
+          id="slider"
+          className="product-container1 scroll_snap"
+          // style={{
+          //   transform: sliderstyle,
+          // }}
+        >
+          {JSON.parse(localStorage.getItem("recentlyView") || "[]").map(
+            (product) => (
+              <div key={product.productId} className="smooth1">
+                <Product product={product.product} />
+              </div>
+            )
+          )}
         </div>
       </section>
       <section>

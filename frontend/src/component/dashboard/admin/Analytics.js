@@ -191,6 +191,7 @@ export default function Analytics() {
   const [soldProducts, setSoldProducts] = useState();
   const [mostView, setMostView] = useState();
   const [error, setError] = useState();
+  const [bestseller, setBestseller] = useState();
 
   useEffect(() => {
     const fetchAllUser = async () => {
@@ -220,6 +221,20 @@ export default function Analytics() {
       }
     };
     fetchMostView();
+  }, []);
+  useEffect(() => {
+    const fetchBestSellers = async () => {
+      try {
+        const { data } = await axios.get("/api/bestsellers", {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setBestseller(data);
+      } catch (err) {
+        setError(getError(err));
+        console.log(getError(err));
+      }
+    };
+    fetchBestSellers();
   }, []);
 
   useEffect(() => {
@@ -359,6 +374,43 @@ export default function Analytics() {
                 <Count>
                   {moment(user.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
                 </Count>
+
+                <Actions>
+                  <Link to={`/seller/${user._id}`}>
+                    <View>
+                      <FontAwesomeIcon icon={faEye} /> View
+                    </View>
+                  </Link>
+                  <Link to={`/dashboard/user/${user._id}`}>
+                    <Edit>
+                      <FontAwesomeIcon icon={faPen} /> Edit
+                    </Edit>
+                  </Link>
+                </Actions>
+              </ItemCont>
+            ))}
+          </ItemRow>
+        )}
+      </Content>
+      <Content mode={mode}>
+        <NameCont>
+          <Tittle>Best Sellers</Tittle>
+          <Link to="/dashboard/userlist">See All</Link>
+        </NameCont>
+        {!bestseller ? (
+          <LoadingBox />
+        ) : (
+          <ItemRow>
+            {console.log(bestseller)}
+            {bestseller.map((user) => (
+              <ItemCont mode={mode}>
+                <ItemImage src={user.userId.image} alt="item" />
+
+                <ItemName>{user.userId.name}</ItemName>
+                <Count>
+                  {moment(user.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                </Count>
+                <Count>{user.userId.sold.length} sold</Count>
 
                 <Actions>
                   <Link to={`/seller/${user._id}`}>

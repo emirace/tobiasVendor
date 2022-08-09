@@ -13,6 +13,7 @@ messageRouter.post(
       conversationId: req.body.conversationId,
       sender: req.user._id,
       text: req.body.text,
+      image: req.body.image,
     });
     try {
       const savedmessage = await newmessage.save();

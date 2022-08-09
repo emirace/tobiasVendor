@@ -34,13 +34,16 @@ const initialState = {
     showStatus: false,
   },
   onlineUser: [],
+  recentlyViewed: localStorage.getItem("recentlyViewed")
+    ? JSON.parse(localStorage.getItem("recentlyViewed"))
+    : [],
 };
 function reducer(state, action) {
   switch (action.type) {
     case "CART_ADD_ITEM":
       //add to cart
-      console.log(action.payload);
       const newItem = action.payload;
+      console.log(newItem);
       const existItem = state.cart.cartItems.find(
         (item) => item._id === newItem._id
       );
@@ -144,6 +147,7 @@ function reducer(state, action) {
           showStatus: false,
         },
       };
+
     default:
       return state;
   }

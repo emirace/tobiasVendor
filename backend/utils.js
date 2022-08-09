@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import Account from "./models/accountModel.js";
+import Transaction from "./models/transactionModel.js";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -8,6 +10,7 @@ export const generateToken = (user) => {
       email: user.email,
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
+      active: user.active,
     },
     process.env.JWT_SECRET,
     {
@@ -87,3 +90,83 @@ export const slugify = (Text) => {
     .replace(/ /g, "-")
     .replace(/[^\w-]+/g, "");
 };
+
+import { v4 } from "uuid";
+
+export async function creditAccount({
+  amount,
+  accountId,
+  purpose,
+  reference = v4(),
+  metadata,
+}) {
+  const account = await Account.findById(accountId);
+
+  if (!account) {
+    return {
+      success: false,
+      error: "Account does not exist",
+    };
+  } else {
+    account.balance = Number(account.balance) + Number(amount);
+    account.save();
+  }
+
+  const transaction = new Transaction({
+    txnType: "credit",
+    purpose,
+    amount,
+    accountId,
+    reference,
+    metadata,
+    balanceBefore: Number(account.balance),
+    balanceAfter: Number(account.balance) + Number(amount),
+  });
+  await transaction.save();
+  return {
+    success: true,
+    message: "Credit successful",
+  };
+}
+
+export async function debitAccount({
+  amount,
+  accountId,
+  purpose,
+  reference = v4(),
+  metadata,
+}) {
+  const account = await Account.findById(accountId);
+
+  if (!account) {
+    return {
+      success: false,
+      error: "Account does not exist",
+    };
+  }
+  if (Number(account.balance) < amount) {
+    return {
+      success: false,
+      error: "Insufficient balance",
+    };
+  } else {
+    account.balance = Number(account.balance) - Number(amount);
+    account.save();
+  }
+  console.log(account.amount);
+
+  await Transaction.create({
+    txnType: "debit",
+    purpose,
+    amount,
+    accountId,
+    reference,
+    metadata,
+    balanceBefore: Number(account.balance),
+    balanceAfter: Number(account.balance) - Number(amount),
+  });
+  return {
+    success: true,
+    message: "Debit successful",
+  };
+}

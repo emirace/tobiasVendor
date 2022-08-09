@@ -492,7 +492,14 @@ productRouter.get(
     const size = query.size || "";
     const rating = query.rating || "";
     const order = query.order || "";
+    const condition = query.condition || "";
+    const deal = query.deal || "";
+    const shipping = query.shipping || "";
+    const availability = query.availability || "";
+    const type = query.type || "";
+    const pattern = query.pattern || "";
     const searchQuery = query.query || "";
+    console.log(query);
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
@@ -558,6 +565,14 @@ productRouter.get(
       category && category !== "all" ? { subCategory: category } : {};
     const brandFilter = brand && brand !== "all" ? { brand } : {};
     const colorFilter = color && color !== "all" ? { color } : {};
+    const dealFilter = deal && deal !== "all" ? { deal } : {};
+    const shippingFilter = shipping && shipping !== "all" ? { shipping } : {};
+    const availabilityFilter =
+      availability && availability !== "all" ? { availability } : {};
+    const typeFilter = type && type !== "all" ? { type } : {};
+    const patternFilter = pattern && pattern !== "all" ? { pattern } : {};
+    const conditionFilter =
+      condition && condition !== "all" ? { condition } : {};
     const sizeFilter = size && size !== "all" ? { "sizes.size": size } : {};
     const ratingFilter =
       rating && rating !== "all"
@@ -588,7 +603,6 @@ productRouter.get(
         : order === "newest"
         ? { creatAt: -1 }
         : { _id: -1 };
-
     const products = await Product.find({
       ...queryFilter,
       ...categoryFilter,
@@ -597,6 +611,12 @@ productRouter.get(
       ...brandFilter,
       ...sizeFilter,
       ...ratingFilter,
+      ...conditionFilter,
+      ...dealFilter,
+      ...typeFilter,
+      ...availabilityFilter,
+      ...shippingFilter,
+      ...patternFilter,
     })
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -607,6 +627,11 @@ productRouter.get(
       ...categoryFilter,
       ...priceFilter,
       ...ratingFilter,
+      ...colorFilter,
+      ...brandFilter,
+      ...sizeFilter,
+      ...ratingFilter,
+      ...conditionFilter,
     });
     res.send({
       products,

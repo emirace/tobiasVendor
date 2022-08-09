@@ -78,6 +78,7 @@ import InfoScreenNonLogin from "./screens/InfoScreenNonlogin";
 import OrderListAdmin from "./component/dashboard/admin/OrderList";
 import ProductListAdmin from "./component/dashboard/admin/ProductList";
 import OutOfStock from "./component/dashboard/admin/OutOfStock";
+import SigninToAddressScreen from "./screens/SigninToAddressScreen";
 
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
@@ -219,6 +220,10 @@ function App() {
                   />
                   <Route path="/search" element={<SearchSceen />} />
                   <Route path="/signin" element={<SigninScreen />} />
+                  <Route
+                    path="/continuesignin"
+                    element={<SigninToAddressScreen />}
+                  />
                   <Route path="/signup" element={<SignupScreen />} />
                   <Route path="/delivery" element={<InfoScreen />} />
                   <Route path="/delivery2" element={<InfoScreenNonLogin />} />

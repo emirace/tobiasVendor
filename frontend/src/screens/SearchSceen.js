@@ -23,7 +23,7 @@ const Container = styled.div`
   margin-top: 10px;
 `;
 const Left = styled.div`
-  flex: 2;
+  flex: 1;
   height: calc(100vh-168px);
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -41,9 +41,9 @@ const Left = styled.div`
   }
 `;
 const Right = styled.div`
-  flex: 6;
-  margin: 0 20px;
-  padding: 20px;
+  flex: 4;
+  margin: 0 10px;
+  padding: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -91,7 +91,7 @@ const List = styled.ul`
   }
 `;
 const ListItem = styled.li`
-  padding: 5px;
+  padding: 2px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -125,6 +125,7 @@ const Input = styled.input`
 
 const ProductListC = styled.div`
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
   margin-top: 10px;
 `;
@@ -144,12 +145,15 @@ const RowCont = styled.div`
 const Col = styled.div``;
 
 const Close = styled.div`
-  display: flex;
+  display: none;
   justify-content: end;
   margin: 5px;
   padding: 10px 20px;
   & svg {
     font-size: 15px;
+  }
+  @media (max-width: 992px) {
+    display: flex;
   }
 `;
 const Filter = styled.div`
@@ -280,6 +284,32 @@ const sizelist = [
   { id: 4, name: "XL" },
   { id: 5, name: "XXL" },
 ];
+
+const shippinglist = [
+  { id: 2, name: "Free" },
+  { id: 3, name: "Discount + Free" },
+];
+const conditionlist = [
+  { id: 2, name: "New with Tags" },
+  { id: 3, name: "New with No Tags" },
+];
+const typelist = [
+  { id: 2, name: "Re:Curated" },
+  { id: 3, name: "Bulk n Slot" },
+];
+const patternlist = [
+  { id: 2, name: "Abstract" },
+  { id: 3, name: "Argyle" },
+  { id: 3, name: "Camo" },
+];
+const availabilitylist = [
+  { id: 2, name: "In Someone's cart" },
+  { id: 3, name: "In Someone's wish-list" },
+  { id: 3, name: "Recently Added" },
+  { id: 3, name: "Dropping Soon" },
+  { id: 3, name: "Sold Items" },
+  { id: 3, name: "Trending" },
+];
 export default function SearchSceen() {
   const navigate = useNavigate();
   const { state } = useContext(Store);
@@ -315,7 +345,7 @@ export default function SearchSceen() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}`
+          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}&deal=${deal}&shipping=${shipping}&condition=${condition}&availability=${availability}&type=${type}&pattern=${pattern}`
         );
         console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
@@ -327,7 +357,23 @@ export default function SearchSceen() {
       }
     };
     fetchData();
-  }, [category, order, page, price, query, rating, brand, color, size]);
+  }, [
+    category,
+    order,
+    page,
+    price,
+    query,
+    rating,
+    brand,
+    color,
+    size,
+    deal,
+    shipping,
+    condition,
+    availability,
+    type,
+    pattern,
+  ]);
 
   const [categories, setCategories] = useState([]);
 
@@ -405,6 +451,21 @@ export default function SearchSceen() {
         break;
       case "size":
         setSizeClass(!sizeClass);
+        break;
+      case "shipping":
+        setShippingClass(!shippingClass);
+        break;
+      case "condition":
+        setConditionClass(!conditionClass);
+        break;
+      case "availability":
+        setAvailabilityClass(!availabilityClass);
+        break;
+      case "type":
+        setTypeClass(!typeClass);
+        break;
+      case "pattern":
+        setPatternClass(!patternClass);
         break;
       case "brand":
         setBrandClass(!brandClass);
@@ -659,6 +720,142 @@ export default function SearchSceen() {
                 </Color>
               </List>
             </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("shipping")}>Shipping</Title>
+              <List className={shippingClass ? "activate" : ""}>
+                <Link
+                  className={"all" === shipping ? "text-bold" : ""}
+                  to={getFilterUrl({ shipping: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All Product
+                  </ListItem>
+                </Link>
+                {shippinglist.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    className={c.name === shipping ? "text-bold" : ""}
+                    to={getFilterUrl({ shipping: c.name })}
+                  >
+                    <ListItem mode={mode}>
+                      <FontAwesomeIcon icon={faCircleDot} />
+                      {c.name}
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("condition")}>
+                Condition
+              </Title>
+              <List className={conditionClass ? "activate" : ""}>
+                <Link
+                  className={"all" === condition ? "text-bold" : ""}
+                  to={getFilterUrl({ condition: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All Condition
+                  </ListItem>
+                </Link>
+                {conditionlist.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    className={c.name === condition ? "text-bold" : ""}
+                    to={getFilterUrl({ condition: c.name })}
+                  >
+                    <ListItem mode={mode}>
+                      <FontAwesomeIcon icon={faCircleDot} />
+                      {c.name}
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("availability")}>
+                Availability
+              </Title>
+              <List className={availabilityClass ? "activate" : ""}>
+                <Link
+                  className={"all" === availability ? "text-bold" : ""}
+                  to={getFilterUrl({ availability: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {availabilitylist.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    className={c.name === availability ? "text-bold" : ""}
+                    to={getFilterUrl({ availability: c.name })}
+                  >
+                    <ListItem mode={mode}>
+                      <FontAwesomeIcon icon={faCircleDot} />
+                      {c.name}
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("type")}>Type</Title>
+              <List className={typeClass ? "activate" : ""}>
+                <Link
+                  className={"all" === type ? "text-bold" : ""}
+                  to={getFilterUrl({ type: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {typelist.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    className={c.name === type ? "text-bold" : ""}
+                    to={getFilterUrl({ type: c.name })}
+                  >
+                    <ListItem mode={mode}>
+                      <FontAwesomeIcon icon={faCircleDot} />
+                      {c.name}
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Menu>
+            <Menu>
+              <Title onClick={() => toggleCollapse("pattern")}>
+                Pattern & Printed
+              </Title>
+              <List className={patternClass ? "activate" : ""}>
+                <Link
+                  className={"all" === pattern ? "text-bold" : ""}
+                  to={getFilterUrl({ pattern: "all" })}
+                >
+                  <ListItem mode={mode}>
+                    <FontAwesomeIcon icon={faCircleDot} />
+                    All
+                  </ListItem>
+                </Link>
+                {patternlist.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    className={c.name === pattern ? "text-bold" : ""}
+                    to={getFilterUrl({ pattern: c.name })}
+                  >
+                    <ListItem mode={mode}>
+                      <FontAwesomeIcon icon={faCircleDot} />
+                      {c.name}
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Menu>
           </Wrapper>
         </Left>
         <Right mode={mode}>
@@ -729,7 +926,15 @@ export default function SearchSceen() {
               )}
               <ProductListC>
                 {products.map((product, index) => (
-                  <Product product={product} key={product._id}></Product>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Product product={product} key={product._id}></Product>
+                  </div>
                 ))}
               </ProductListC>
             </>

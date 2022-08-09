@@ -210,7 +210,7 @@ export default function CartScreen() {
       if (userInfo) {
         navigate("../delivery");
       } else {
-        navigate("../signin");
+        navigate("../continuesignin");
       }
     }
   };
@@ -326,6 +326,11 @@ export default function CartScreen() {
                     </Row>
                   </Item>
                 ))}
+                <MessageBox>
+                  <CustomMessage>
+                    <Link to={`/search`}>Continue Shopping</Link>
+                  </CustomMessage>
+                </MessageBox>
               </>
             )}
           </Top>

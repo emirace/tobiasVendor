@@ -429,6 +429,7 @@ const LinkTo = styled.span`
   margin-left: 10px;
   font-size: 11px;
   font-weight: 400;
+  cursor: pointer;
   &:hover {
     color: var(--orange-color);
   }
@@ -520,6 +521,7 @@ export default function NewProduct() {
   const [showUploadingImage, setShowUploadingImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
   const [showComissionModal, setShowComissionModal] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   const navigate = useNavigate();
 
@@ -574,14 +576,16 @@ export default function NewProduct() {
     setTempsize(sizenow);
   };
   const handleTags = (tag) => {
-    console.log(tags);
-    tags.push(tag);
-    setTag("");
+    if (tag.length > 0) {
+      tags.push(tag);
+      setTag("");
+    }
   };
   const removeTags = (tag) => {
-    tags.pop(tag);
+    console.log(tag);
     const newtags = tags.filter((data) => data != tag);
     tags = newtags;
+    setRefresh(!refresh);
   };
 
   const submitHandler = async (e) => {

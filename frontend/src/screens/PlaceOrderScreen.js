@@ -227,7 +227,6 @@ export default function PlaceOrderScreen() {
 
   const onApprove = async (data, actions) => {
     const order1 = await placeOrderHandler();
-    console.log(order1);
     if (order1) {
       return actions.order.capture().then(async function (details) {
         try {
@@ -240,13 +239,29 @@ export default function PlaceOrderScreen() {
               : {}
           );
           dispatch({ type: "PAY_SUCCESS", payload: data });
+          await axios.put(`api/bestsellers/${order1.order.seller}`);
           toast.success("Order is paid");
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Order is paid",
+              showStatus: true,
+              state1: "visible1 success",
+            },
+          });
           localStorage.removeItem("cartItems");
           ctxDispatch({ type: "CART_CLEAR" });
           navigate(`/order/${data.order._id}`);
         } catch (err) {
           dispatch({ type: "PAY_FAIL", payload: getError(err) });
-          toast.error(getError(err));
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Error processing order, try again later",
+              showStatus: true,
+              state1: "visible1 error",
+            },
+          });
         }
       });
     } else {

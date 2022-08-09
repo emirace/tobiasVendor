@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -15,6 +21,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import moment from "moment";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useReactToPrint } from "react-to-print";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
@@ -127,6 +134,9 @@ const StatusPending = styled.div`
 `;
 const ActionButton = styled.div`
   flex: 2;
+  @media print {
+    display: none;
+  }
 `;
 const DetailButton = styled.div`
   display: flex;
@@ -157,6 +167,25 @@ const Received = styled.div`
   height: 30px;
   &:hover {
     background: var(--malon-color);
+  }
+`;
+const Print = styled.div`
+  font-weight: 500;
+  color: white;
+  padding: 1px 8px;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  background: var(--orange-color);
+  &:hover {
+    background-color: var(--malon-color);
+  }
+  @media print {
+    display: none;
+  }
+`;
+const SetStatus = styled.div`
+  @media print {
+    display: none;
   }
 `;
 
@@ -224,6 +253,10 @@ export default function OrderScreen() {
   const params = useParams();
   const { id: orderId } = params;
   const navigate = useNavigate();
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -363,7 +396,7 @@ export default function OrderScreen() {
   ) : error ? (
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
-    <Main mode={mode}>
+    <Main mode={mode} ref={componentRef}>
       <Helmet>
         <title>Order {orderId}</title>
       </Helmet>
@@ -408,7 +441,7 @@ export default function OrderScreen() {
                   </Received>
                 )}
               {userInfo && order.seller === userInfo._id && (
-                <div>
+                <SetStatus>
                   <FormControl
                     disabled={
                       order.deliveryStatus === "Hold" ||
@@ -466,7 +499,7 @@ export default function OrderScreen() {
                       <MenuItem value="Delivered">Delivered</MenuItem>
                     </Select>
                   </FormControl>
-                </div>
+                </SetStatus>
               )}
             </div>
             <hr />
@@ -520,6 +553,9 @@ export default function OrderScreen() {
             </SumaryContDetails>
           </PaymentDliveryItem>
         </PaymentDlivery>
+        <div style={{ display: "flex" }}>
+          <Print onClick={handlePrint}>Print</Print>
+        </div>
       </Container>
 
       {/* <Row>

@@ -56,6 +56,7 @@ const Center = styled.div`
   justify-content: center;
   color: #fff;
   white-space: nowrap;
+
   @media (max-width: 992px) {
     animation: moving 25s infinite linear;
     @keyframes moving {
@@ -68,6 +69,21 @@ const Center = styled.div`
     }
   }
 `;
+const First = styled.div`
+  animation: first 10s infinite linear;
+  animation-delay: calc(0.5s * var(-i));
+  @keyframes first {
+    0% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0;
+    }
+  }
+`;
+const Second = styled.div``;
+const Third = styled.div``;
+
 const Right = styled.div`
   flex: 1;
   content: "";
@@ -226,7 +242,7 @@ const SellButton = styled.div`
   }
 `;
 
-const SubCategory = styled.ul.attrs({})`
+const SubCategory = styled.ul`
   position: absolute;
   box-shadow: ${(props) =>
     props.bg
@@ -422,6 +438,9 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
             <FontAwesomeIcon color="#F79A23" icon={faHeart} />
           </Love>
           Shopping with Us
+          <First style="--i:1">helo1</First>
+          <First style="--i:2">helo3</First>
+          <First style="--i:3">helo2</First>
         </Center>
         <Right>
           <Sell>Sell</Sell>
@@ -531,12 +550,12 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
           ))}
         <CategoryGroup>
           <Link to="/brand">
-            <CategoryItem>Shop by brand</CategoryItem>
+            <CategoryItem>SHOP BY BRAND</CategoryItem>
           </Link>
         </CategoryGroup>
         <CategoryGroup>
           <Link to="shopbyoutfit">
-            <CategoryItem>Shop by outfit</CategoryItem>
+            <CategoryItem>RE:CURATED</CategoryItem>
           </Link>
         </CategoryGroup>
       </Category>

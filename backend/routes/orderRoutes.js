@@ -18,6 +18,7 @@ orderRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q;
+    const sort = query.sort;
 
     const queryFilter =
       searchQuery && searchQuery !== "all"
@@ -28,8 +29,21 @@ orderRouter.get(
             },
           }
         : {};
-
-    const orders = await Order.find({ ...queryFilter })
+    const sortFilter =
+      sort && sort !== "all"
+        ? sort === "Progress"
+          ? {
+              $or: [
+                { deliveryStatus: "Dispatch" },
+                { deliveryStatus: "In transit" },
+                { deliveryStatus: "Not yet Dispatched" },
+              ],
+            }
+          : {
+              deliveryStatus: sort,
+            }
+        : {};
+    const orders = await Order.find({ ...queryFilter, ...sortFilter })
       .populate("user", "username")
       .populate("seller", "username");
     res.send(orders);
