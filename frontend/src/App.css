@@ -33,10 +33,11 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "ChronicleText", "AbsentiaSans", sans-serif;
+  font-weight: 500;
 }
 
 body {
-  font-size: 14px;
+  font-size: 15px;
 }
 h2,
 h1,

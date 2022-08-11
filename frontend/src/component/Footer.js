@@ -1,6 +1,8 @@
 import {
   faCopyright,
   faCreditCard,
+  faGlobe,
+  faHandshake,
   faHashtag,
   faTruckFast,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +15,7 @@ import Newletter from "./Newletter";
 import { ReactComponent as FacebookIcon } from "./../icons/Icons-19.svg";
 import { ReactComponent as WhatsappIcon } from "./../icons/Icons-22.svg";
 import { ReactComponent as InstagramIcon } from "./../icons/Icons-29.svg";
+import { Link } from "react-router-dom";
 
 const CopyRight = styled.div`
   background: ${(props) => (props.back ? "#000" : "#fff")};
@@ -72,6 +75,13 @@ const SmTitle = styled.div`
   }
 `;
 
+const LogoImage = styled.img`
+  width: 80%;
+`;
+const Logo = styled.div`
+  width: 100%;
+`;
+
 export default function Footer() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -126,18 +136,30 @@ export default function Footer() {
                     onClick={() => toggleCollapse("shipMethod1")}
                   >
                     <FontAwesomeIcon icon={faTruckFast} />
-                    Free Shipping Method
+                    Free Shipping with RE:BUNDLE
                   </SmTitle>
                   <SmDetail show={shipMethod1}>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    Get free shipping when you shop on Repeddle App or Website,
+                    using Re:Bundle. Discover{" "}
+                    <Link
+                      to="rebundle"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      how
+                    </Link>
                   </SmDetail>
-                  <h6 className="d-none d-lg-block">Free Shipping Method</h6>
+                  <h6 className="d-none d-lg-block">
+                    Free Shipping with RE:BUNDLE
+                  </h6>
                   <p className="d-none d-lg-block">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    Get free shipping when you shop on Repeddle App or Website,
+                    using Re:Bundle. Discover{" "}
+                    <Link
+                      to="rebundle"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      how
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -151,26 +173,38 @@ export default function Footer() {
                     show={shipMethod2}
                     onClick={() => toggleCollapse("shipMethod2")}
                   >
-                    <FontAwesomeIcon icon={faTruckFast} />
-                    Free Shipping Method
+                    <FontAwesomeIcon icon={faCreditCard} />
+                    Secure, Easy and Protected Payments
                   </SmTitle>
                   <SmDetail show={shipMethod2}>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    With every item you buy using the complete CHECKOUT on our
+                    App or Website, you are guaranteed 100% money back. Find out{" "}
+                    <Link
+                      to="protections"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      more
+                    </Link>
                   </SmDetail>
-                  <h6 className="d-none d-lg-block">Free Shipping Method</h6>
+                  <h6 className="d-none d-lg-block">
+                    Secure, Easy and Protected Payments
+                  </h6>
                   <p className="d-none d-lg-block">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    With every item you buy using the complete CHECKOUT on our
+                    App or Website, you are guaranteed 100% money back. Find out{" "}
+                    <Link
+                      to="protections"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      more
+                    </Link>
                   </p>
                 </div>
               </div>
               <div className="col-lg-3 col-md-6 col-sm-12">
                 <div className="single-method">
                   <FontAwesomeIcon
-                    icon={faCreditCard}
+                    icon={faHandshake}
                     className="d-none d-lg-block"
                   />
                   <SmTitle
@@ -178,18 +212,69 @@ export default function Footer() {
                     onClick={() => toggleCollapse("shipMethod3")}
                   >
                     <FontAwesomeIcon icon={faCreditCard} />
-                    Easy Payment Method
+                    Community Engagement
                   </SmTitle>
                   <SmDetail show={shipMethod3}>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    We are fostering a generation of conscious fashion
+                    consumption in Africa, and we can only achieve it together
+                    with our community. Using the in-built Chat/Message system,
+                    our community remain engaged about fashion sustainability,
+                    have access to easy communications tool, while participating
+                    in seamless fair trade.
                   </SmDetail>
-                  <h6 className="d-none d-lg-block">Easy Payment Method</h6>
+                  <h6 className="d-none d-lg-block">Community Engagement</h6>
                   <p className="d-none d-lg-block">
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s,
+                    We are fostering a generation of conscious fashion
+                    consumption in Africa, and we can only achieve it together
+                    with our community. Using the in-built Chat/Message system,
+                    our community remain engaged about fashion sustainability,
+                    have access to easy communications tool, while participating
+                    in seamless fair trade.
+                  </p>
+                </div>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-sm-12">
+                <div className="single-method">
+                  <FontAwesomeIcon
+                    icon={faGlobe}
+                    className="d-none d-lg-block"
+                  />
+                  <SmTitle
+                    show={shipMethod3}
+                    onClick={() => toggleCollapse("shipMethod3")}
+                  >
+                    <FontAwesomeIcon icon={faCreditCard} />
+                    Repeddle Sustainability Impact
+                  </SmTitle>
+                  <SmDetail show={shipMethod3}>
+                    Fashion industry is the second most intense water consuming
+                    and polluting industry in the world. With the help of our
+                    community, we can drastically reduce this impact in Africa
+                    and make our environment and planet, a more livable place.
+                    Learn{" "}
+                    <Link
+                      to="sustainable"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      more
+                    </Link>
+                  </SmDetail>
+                  <h6 className="d-none d-lg-block">
+                    Repeddle Sustainability Impact
+                  </h6>
+                  <p className="d-none d-lg-block">
+                    Fashion industry is the second most intense water consuming
+                    and polluting industry in the world. With the help of our
+                    community, we can drastically reduce this impact in Africa
+                    and make our environment and planet, a more livable place.
+                    Learn{" "}
+                    <Link
+                      to="sustainability"
+                      style={{ color: "var(--orange-color)" }}
+                    >
+                      how
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -225,12 +310,25 @@ export default function Footer() {
       </div>
       <div className="footer_container">
         <div className="footer_left">
-          <h1 className="footer_logo">REPEDDLE</h1>
+          <Logo>
+            <Link to="/">
+              <LogoImage
+                src={
+                  mode === "pagebodydark"
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1659377710/Repeddle-White_pani6a.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1659377672/Repeddle-Black_eko2g5.gif"
+                }
+              />
+            </Link>
+          </Logo>
           <p className="footer_desc">
-            The href attribute requires a valid value to be accessible. Provide
-            a valid, navigable address as the href value. If you cannot provide
-            a valid href, but still need the element to resemble a link, use a
-            button and change it with appropriate styles. Learn more
+            Africa’s leading social marketplace for Pre-loved fashion/Items,
+            Gen-Z, The Millennials, The Environment and Your Budget. By
+            fostering a creative generation of conscious fashion consumers to
+            better the planet and our environment, we approach solving Africa’s
+            fashion waste crisis, crafting our story of a sustainable circular
+            fashion in Africa, one garment at a time, one person at a time, and
+            one loving home at a time. Let’s peddle and thrift.
           </p>
           <div className="footer_social">
             <div className="footer_social_icon">
@@ -245,36 +343,71 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer_center">
-          <h3 className="footer_center_menu">Useful Links</h3>
-          <ul className="footer_center_list">
-            <li className="footer_center_listitem">
-              <a href="/#">Home</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Cart</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Men Fashion</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Women Fashion</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Accessories</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">My Account</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Order Tracking</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">wishlist</a>
-            </li>
-            <li className="footer_center_listitem">
-              <a href="/#">Terms</a>
-            </li>
-          </ul>
+          <div style={{ flex: 1 }}>
+            <h3 className="footer_center_menu">Our Company</h3>
+            <ul className="footer_center_list">
+              <li className="footer_center_listitem">
+                <Link to="/about">About Us</Link>
+              </li>
+              <li className="footer_center_listitem">
+                <Link to="/sustainability">Sustainability</Link>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Blog and News</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Re:Bundle</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Wholesale</a>
+              </li>
+            </ul>
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3 className="footer_center_menu">Categories</h3>
+
+            <ul className="footer_center_list">
+              <li className="footer_center_listitem">
+                <a href="/#">Women</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Men</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Kids</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Home</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">More</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Re:Curated</a>
+              </li>
+            </ul>
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3 className="footer_center_menu">Top Brand</h3>
+
+            <ul className="footer_center_list">
+              <li className="footer_center_listitem">
+                <a href="/#">Adidas</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Alexander Mcqueen</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Balanciaga</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Gucci</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Patagonia</a>
+              </li>
+            </ul>
+          </div>
         </div>
         <div className="footer_right">
           <h3 className="footer_center_menu">Contact</h3>
@@ -294,8 +427,16 @@ export default function Footer() {
           ></img>
         </div>
       </div>
+      <div style={{ margin: "5px 20vw", textAlign: "center" }}>
+        All third party logos and brand names appearing on our App, Websites or
+        any of our Platforms are independent trademarks of their respective
+        owners. Except otherwise mentioned, Repeddle has no affiliation,
+        endorsement or endorses any trademark displayed on it online or physical
+        platforms.
+      </div>
       <CopyRight back={footerMode}>
-        <FontAwesomeIcon icon={faCopyright} /> All right reserved
+        <FontAwesomeIcon icon={faCopyright} /> 2022 Repeddle. All Right
+        Reserved.
       </CopyRight>
     </>
   );

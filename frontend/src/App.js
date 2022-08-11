@@ -79,6 +79,12 @@ import OrderListAdmin from "./component/dashboard/admin/OrderList";
 import ProductListAdmin from "./component/dashboard/admin/ProductList";
 import OutOfStock from "./component/dashboard/admin/OutOfStock";
 import SigninToAddressScreen from "./screens/SigninToAddressScreen";
+import SellScreen from "./screens/SellScreen";
+import About from "./component/info/About";
+import SustainabilityImpact from "./component/info/SustainabilityImpact";
+import BuyersPro from "./component/info/BuyersPro";
+import Bundle from "./component/info/Bundle";
+import FashionImpact from "./component/info/FashionImpact";
 
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
@@ -214,11 +220,20 @@ function App() {
                   <Route path="/seller/:id" element={<SellerScreen />} />
                   <Route path="/myaccount" element={<SellerScreen />} />
                   <Route path="/cart" element={<CartScreen />} />
+                  <Route path="/about" element={<About />} />
+                  <Route
+                    path="/sustainability"
+                    element={<SustainabilityImpact />}
+                  />
+                  <Route path="/protections" element={<BuyersPro />} />
+                  <Route path="/rebundle" element={<Bundle />} />
+                  <Route path="/fashionImpact" element={<FashionImpact />} />
                   <Route
                     path="/categories"
                     element={<CategoryMobileScreen />}
                   />
                   <Route path="/search" element={<SearchSceen />} />
+                  <Route path="/sell" element={<SellScreen />} />
                   <Route path="/signin" element={<SigninScreen />} />
                   <Route
                     path="/continuesignin"

@@ -56,7 +56,6 @@ const Center = styled.div`
   justify-content: center;
   color: #fff;
   white-space: nowrap;
-
   @media (max-width: 992px) {
     animation: moving 25s infinite linear;
     @keyframes moving {
@@ -70,19 +69,90 @@ const Center = styled.div`
   }
 `;
 const First = styled.div`
-  animation: first 10s infinite linear;
-  animation-delay: calc(0.5s * var(-i));
+  animation: first 30s infinite linear;
+  display: flex;
+  justify-content: center;
   @keyframes first {
     0% {
+      width: 100%;
       opacity: 1;
     }
-    90% {
+    28% {
+      width: 100%;
+      opacity: 1;
+    }
+    33% {
+      width: 0;
+      opacity: 0;
+    }
+    99% {
+      width: 0;
       opacity: 0;
     }
   }
 `;
-const Second = styled.div``;
-const Third = styled.div``;
+const Second = styled.div`
+  animation: second 30s infinite linear;
+  display: flex;
+  justify-content: center;
+  @keyframes second {
+    0% {
+      opacity: 0;
+      width: 0;
+    }
+    28% {
+      opacity: 0;
+      width: 0;
+    }
+    33% {
+      width: 100%;
+      opacity: 1;
+    }
+    61% {
+      width: 100%;
+      opacity: 1;
+    }
+    66% {
+      width: 0;
+      opacity: 0;
+    }
+    100% {
+      width: 0;
+      opacity: 0;
+    }
+  }
+`;
+const Third = styled.div`
+  animation: third 30s infinite linear;
+  display: flex;
+  justify-content: center;
+  @keyframes third {
+    0% {
+      width: 0;
+      opacity: 0;
+    }
+    33% {
+      width: 0;
+      opacity: 0;
+    }
+    61% {
+      width: 0;
+      opacity: 0;
+    }
+    66% {
+      width: 100%;
+      opacity: 1;
+    }
+    95% {
+      width: 100%;
+      opacity: 1;
+    }
+    100% {
+      width: 0;
+      opacity: 0;
+    }
+  }
+`;
 
 const Right = styled.div`
   flex: 1;
@@ -108,11 +178,10 @@ const Sell = styled.div`
   }
 `;
 
-const Love = styled.div`
-  position: relative;
-  &:hover div {
-    display: block;
-  }
+const Underline = styled.div`
+  margin: 0 5px;
+  color: var(--malon-color);
+  text-decoration: underline;
 `;
 
 const Logo = styled.div`
@@ -433,17 +502,25 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
           </SwitchCont>
         </Left>
         <Center>
-          50% discount on Newly Registered User... You Will Love
-          <Love>
-            <FontAwesomeIcon color="#F79A23" icon={faHeart} />
-          </Love>
-          Shopping with Us
-          <First style="--i:1">helo1</First>
-          <First style="--i:2">helo3</First>
-          <First style="--i:3">helo2</First>
+          <First>
+            <Underline>
+              <Link to="signup">SIGN UP</Link>
+            </Underline>{" "}
+            , List All Item For Free{" "}
+          </First>
+          <Second>
+            No Selling Fees, Hurry, Start Selling, Limited Off!!{" "}
+            <Underline>DETAILS</Underline>
+          </Second>
+          <Third>
+            Easy on the App. Explore Repeddle on <Underline>IOS</Underline> and{" "}
+            <Underline>ANDRIOD</Underline>
+          </Third>
         </Center>
         <Right>
-          <Sell>Sell</Sell>
+          <Link to="/sell">
+            <Sell>Sell</Sell>
+          </Link>
         </Right>
       </Wrapper>
       <Wrapper2>

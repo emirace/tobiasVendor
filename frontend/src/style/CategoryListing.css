@@ -49,7 +49,7 @@
 .CategoryListing_item {
   display: flex;
   overflow-x: auto;
-  flex: 3;
+  flex: 4;
   height: 250px;
 }
 
@@ -80,9 +80,9 @@
 }
 
 .product-categorylisting {
-  padding: 0 5vw;
+  padding: 0 3vw 0 5vw;
   font-size: 50px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   text-transform: capitalize;
   position: relative;
 }

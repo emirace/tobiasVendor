@@ -358,10 +358,11 @@ const Tips = styled.span`
   position: relative;
   &:hover::after {
     content: "${(props) => props.tips}";
-    width: 300px;
+    width: 350px;
     position: absolute;
     border-radius: 0.5rem;
     left: 30px;
+    text-align: justify;
     font-size: 12px;
     z-index: 2;
     line-height: 1.2;

@@ -24,6 +24,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
+import Influencer from "../component/Influencer";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -46,6 +47,34 @@ const Badge = styled.img`
   width: 50px;
   height: 50px;
   object-fit: cover;
+`;
+
+const Section = styled.div`
+  margin: 10px 0;
+`;
+const Content = styled.div`
+  display: flex;
+  gap: 10px;
+  margin: 5px 5vw;
+`;
+const LeftSide = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+const Top = styled.div`
+  flex: 1;
+`;
+
+const DiscountText = styled.div`
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  height: 390px;
+  padding: 75px 90px 50px;
+  @media (max-width: 992px) {
+    padding: 30px !important;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -169,39 +198,47 @@ export default function ProductsScreen() {
             autoHeight={false}
             dots={true}
             smartSpeed={4000}
-            dot
             autoplay={true}
             margin={0}
             className="banner_slider owl-theme"
           >
             <div className="banner_item">
               <div className="banner_image">
-                <img src="/images/p11.jpg" alt="" />
+                <img
+                  src="https://res.cloudinary.com/emirace/image/upload/v1660163636/t7_mykwcy.webp"
+                  alt="img"
+                />
               </div>
               <div className="banner_text">
-                <span>The Big Collection</span>
-                <h1>The New Product</h1>
-                <a href="/#">shop Now</a>
+                <h1>
+                  AFRICA'S GEN-Z & MILLENNIALS MARKETPLACE FOR SECOND/PRE-LOVED
+                  FASHION COMMUNITY
+                </h1>
+                <Link to="/sell">join us</Link>
               </div>
             </div>
             <div className="banner_item">
               <div className="banner_image">
-                <img src="/images/t4.jpg" alt="" />
+                <img
+                  src="https://res.cloudinary.com/emirace/image/upload/v1660106380/greg-raines-rqFBIR6vQXg-unsplash_ww9hag.jpg"
+                  alt="img"
+                />
               </div>
               <div className="banner_text">
-                <span>The Big Collection</span>
-                <h1>The New Product</h1>
-                <a href="/#">shop Now</a>
+                <h1>BUY-SELL-CHAT-CASH OUT-REPEAT</h1>
+                <Link to="/search">shop Now</Link>
               </div>
             </div>
             <div className="banner_item">
               <div className="banner_image">
-                <img src="/images/t7.jpg" alt="" />
+                <img
+                  src="https://res.cloudinary.com/emirace/image/upload/v1660106376/chimi-davila-58FCfyUti_w-unsplash_ntlptl.jpg"
+                  alt="img"
+                />
               </div>
               <div className="banner_text">
-                <span>The Big Collection</span>
-                <h1>The New Product</h1>
-                <a href="/#">shop Now</a>
+                <h1>JOIN THE THRIFT TREASURE HUNT</h1>
+                <Link to="/search">Discover</Link>
               </div>
             </div>
           </OwlCarousel>
@@ -211,16 +248,36 @@ export default function ProductsScreen() {
           <div className="product-title-Listing">
             <h2 className="product-categorylisting">New Collection</h2>
             <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum dummy text of the printing and typesetting
-              industry. Lorem Ipsum
+              Discover new shops launching on our App and Website daily. Shop
+              Hot deals, New Arrivals New style drops from your favorite shops
+              and influencers
             </p>
           </div>
           <div className="CategoryListing_item scroll_snap">
-            <CategoryListing image="/images/card6.png" title="Smart Shirt" />
-            <CategoryListing image="/images/card11.png" title="Sport" />
-            <CategoryListing image="/images/men.png" title="Colorful" />
-            <CategoryListing image="/images/men.png" title="Colorful" />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106386/engin-akyurt-xbFtknoQG_Y-unsplash_wztucd.jpg"
+              title="STYLE UP"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106402/ruan-richard-rodrigues--MCGquf_4mU-unsplash_zqcr8q.jpg"
+              title="ACCESSORIZE"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106396/julian-hochgesang-sA5wcAu4CBA-unsplash_yd9qmf.jpg"
+              title="SNEAKER-HEAD FAMILY"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106404/stephen-audu-BkB5T-ZdK88-unsplash_zfy4et.jpg"
+              title="BAG AFFAIR"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106397/carmen-fu-4xb2LK36Mps-unsplash_wcrw3e.jpg"
+              title="GEN-Z KIDS"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106370/ahmed-carter-GP3-QpmTgPk-unsplash_mr2mfo.jpg"
+              title="LET'S GO PARTY"
+            />
           </div>
         </section>
         <section className="center-item">
@@ -230,7 +287,7 @@ export default function ProductsScreen() {
                 <Col className="">
                   <div className="main-item paddown padtop">
                     <img
-                      src="/images/men.png"
+                      src="https://res.cloudinary.com/emirace/image/upload/v1660106408/vonecia-carswell-D3HSYAUjVrM-unsplash_aihybs.jpg"
                       alt=""
                       className="img-fluid"
                     ></img>
@@ -243,7 +300,7 @@ export default function ProductsScreen() {
                 <Col className="">
                   <div className="main-item padtop">
                     <img
-                      src="/images/t4.jpg"
+                      src="https://res.cloudinary.com/emirace/image/upload/v1660106398/Screen_Shot_2022-07-15_at_9.05.37_PM_imcbgb.png"
                       alt=""
                       className="img-fluid"
                     ></img>
@@ -256,12 +313,18 @@ export default function ProductsScreen() {
               </Col>
               <Col md={7}>
                 <div className="main-item main-item-1 padtop">
-                  <img src="/images/t3.jpg" alt="" className="img-fluid"></img>
+                  <img
+                    src="https://res.cloudinary.com/emirace/image/upload/v1660106404/tamara-bellis-uN1m9Ca0aqo-unsplash_tnxehc.jpg"
+                    alt=""
+                    className="img-fluid"
+                  ></img>
                   <div className="main-item-text">
                     <h1>High Taste Women Wears</h1>
-                    <Link to="/category/Womens Wears">
-                      <button className="search-btn1">Shop Now</button>
-                    </Link>
+                    <div>
+                      <Link to="/category/Womens Wears">
+                        <button className="search-btn1">Shop Now</button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </Col>
@@ -270,18 +333,34 @@ export default function ProductsScreen() {
         </section>
         <section className="CategoryListing_section   ">
           <div className="product-title-Listing">
-            <h2 className="product-categorylisting">Brand</h2>
+            <h2 className="product-categorylisting">Brands</h2>
             <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum dummy text of the printing and typesetting
-              industry. Lorem Ipsum
+              Discoverbrands that tick the boxes, from names you love, price
+              that does not break the bank and environmental conscious brands
+              that you can pass on to generations. That is sustainability
             </p>
           </div>
           <div className="CategoryListing_item scroll_snap">
-            <CategoryListing image="/images/card6.png" title="Gucci" />
-            <CategoryListing image="/images/card11.png" title="fendi" />
-            <CategoryListing image="/images/men.png" title="bottega veneta" />
-            <CategoryListing image="/images/men.png" title="valentino" />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106388/Picture1_mmopbu.png"
+              title="PATAGONIA"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106395/lucas-hoang-O0e6Ka5vYSs-unsplash_vcee35.jpg"
+              title="GUCCI"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106406/tony-tran-VKVDdLGoilc-unsplash_symd1u.jpg"
+              title="BALANCIAGA"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106396/jakayla-toney-v0gHLhdQPCY-unsplash_uqcusm.jpg"
+              title="ADIDAS"
+            />
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1660106398/Screen_Shot_2022-07-16_at_1.44.27_PM_vk5crl.png"
+              title="ALEXANDER MCQUEEN"
+            />
           </div>
         </section>
 
@@ -314,9 +393,9 @@ export default function ProductsScreen() {
             <div className="downloadapp_left">
               <div className="downloadapp_section_text">
                 <h2 className="downloadapp_title">try it on mobile</h2>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum dummy text of the printing and typesetting
-                industry. Lorem Ipsum
+                Easy with just aclick away. Never miss amazing deals and hot
+                drops by getting real-time Notifications. Buy, Sell Chat,
+                Cash-out and Repeat. Anywhere, Anytime.
               </div>
               <div className="downloadapp_img">
                 <img src="/images/as.png" alt="playstore" />
@@ -334,21 +413,49 @@ export default function ProductsScreen() {
           </div>
         </AppSection>
 
+        <Section>
+          <div className="product-title">
+            <h2 className="product-category1">influencers Block</h2>
+          </div>
+          <Content>
+            <LeftSide>
+              <Top>
+                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+              </Top>
+              <Top>
+                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+              </Top>
+            </LeftSide>
+            <LeftSide>
+              <Top>
+                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+              </Top>
+              <Top>
+                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+              </Top>
+            </LeftSide>
+          </Content>
+        </Section>
+
         <section className="discount spad">
           <div className="container">
             <div className="row">
               <div className=" col-md-6 p-0">
                 <div className="discount_pic">
-                  <img src="/images/t3.jpg" alt="" className="img-fluid"></img>
+                  <img
+                    src="https://res.cloudinary.com/emirace/image/upload/v1660106394/mike-von-bWUOx0SaSAk-unsplash_pgx37c.jpg"
+                    alt=""
+                    className="img-fluid"
+                  ></img>
                 </div>
               </div>
               <div className=" col-md-6 p-0">
-                <div className="discount_text">
+                <DiscountText mode={mode} className="discount_text">
                   <div className="discount_text_title">
                     <span>Discount</span>
                     <h2>Season Sales </h2>
                     <h5>
-                      <span>Sale</span> 60% OFF
+                      <span>Sale Up To</span> 60% OFF
                     </h5>
                   </div>
                   <div className="discount_countdown">
@@ -372,7 +479,7 @@ export default function ProductsScreen() {
                   <a href="/" className="c">
                     Buy Now
                   </a>
-                </div>
+                </DiscountText>
               </div>
             </div>
           </div>
