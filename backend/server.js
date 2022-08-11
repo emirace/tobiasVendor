@@ -74,7 +74,7 @@ app.use("/api/recentviews", recentViewRouter);
 app.use("/api/nonLogin", nonLoginRouter);
 app.use("/api/coupons", couponRouter);
 app.use("/api/accounts", accountRouter);
-app.use("/api/bestsellers", bestsellerRouter);
+// app.use("/api/bestsellers", bestsellerRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();
