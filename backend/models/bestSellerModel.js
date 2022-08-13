@@ -15,5 +15,5 @@ const bestSellerSchema = new mongoose.Schema(
   }
 );
 
-const BestSeller = mongoose.model("bestSeller", bestSellerSchema);
+const BestSeller = mongoose.model("BestSeller", bestSellerSchema);
 export default BestSeller;
