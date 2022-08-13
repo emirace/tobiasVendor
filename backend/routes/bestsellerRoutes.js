@@ -1,7 +1,7 @@
 import express from "express";
-import { isAdmin, isAuth, isAuthOrNot } from "../utils.js";
+import { isAuthOrNot } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
-import BestSeller from "../models/BestSellerModel.js";
+import BestSeller from "../models/bestSellerModel.js";
 
 const bestsellerRouter = express.Router();
 
