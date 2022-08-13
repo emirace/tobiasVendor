@@ -319,10 +319,11 @@ a {
 }
 
 .banner_text h1 {
-  font-size: 50px;
+  font-size: 70px;
   background: none;
   margin-bottom: 1px;
-  line-height: 50px;
+  font-weight: bold;
+  line-height: 60px;
   color: #fff;
 }
 
@@ -379,7 +380,7 @@ a {
   height: 100%;
   width: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: bottom;
 }
 
 .small-button {
@@ -749,7 +750,8 @@ sm-product1 {
   left: 50%;
   top: -38px;
   height: 183px;
-  width: 200px;
+  transform: translateX(-10%);
+  width: 220px;
   background-color: #fff;
   z-index: -1;
   margin-left: -90px;
@@ -920,6 +922,19 @@ form .mb-3 a:hover,
 }
 
 @media (max-width: 992px) {
+  .banner_item .banner_image {
+    height: 300px;
+  }
+  .center-item .main-item-text {
+    left: 10px;
+  }
+  .center-item .main-item img {
+    object-position: left;
+    left: 10px;
+  }
+  .center-item .main-item-1 .main-item-text {
+    left: 10px;
+  }
   .product-card1 {
     width: 162px;
     height: 342px;

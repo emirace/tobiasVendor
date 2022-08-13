@@ -18,9 +18,14 @@ const Container = styled.div`
   margin: 0 10vw;
 `;
 const Header = styled.h1`
-  display: flex;
-  justify-content: center;
   font-weight: bold;
+  position: absolute;
+  max-width: 300px;
+  text-shadow: #000 1px 0 10px;
+  font-size: 80px;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
 `;
 const Header2 = styled.h2`
   display: flex;
@@ -31,6 +36,8 @@ const Header2 = styled.h2`
 const SubHeading = styled.h4`
   margin: 0 5px;
   font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 10px;
 `;
 const SubHeadingMalon = styled.h4`
   margin: 0 5px;
@@ -47,15 +54,31 @@ const Row = styled.div`
     gap: 10px;
   }
 `;
+
+const Sides = styled.div`
+  margin: 10px 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const SubHeadingOrange = styled.h4`
   margin: 0 5px;
   font-weight: bold;
   color: var(--orange-color);
 `;
 
+const ImageCont = styled.div`
+  position: relative;
+  width: 100%;
+  height: 70vh;
+`;
 const MainImage = styled.img`
   width: 100%;
   margin: 10px 0;
+  object-fit: cover;
+  height: 100%;
 `;
 
 const Step = styled.div`
@@ -65,7 +88,7 @@ const Step = styled.div`
   align-items: center;
   justify-content: start;
   height: 200px;
-  margin: 30px;
+  margin: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
@@ -136,26 +159,30 @@ const Input = styled.input`
 const RebatchImg = styled.img`
   margin: 20px 20px 20px 0;
   flex: 1;
-  width: 50%;
+  height: 500px;
 `;
 export default function SellScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
   return (
     <Container>
-      <Header>THE THRILL! START SELLING</Header>
       <Section>
-        <SubHeading>LET YOUR WARDROBE LIVE IN YOUR POCKET. ITS FAST</SubHeading>
+        <SubHeading style={{ fontSize: "30px" }}>
+          LET YOUR WARDROBE LIVE IN YOUR POCKET. ITS FAST
+        </SubHeading>
         <Row>
-          <SubHeadingMalon>CAN'T DO IT IN REAL LIFE?</SubHeadingMalon>
-          <SubHeadingOrange>DO IT ON REPEDDLE</SubHeadingOrange>
+          <SubHeadingMalon>"CAN'T DO IT IN REAL LIFE?</SubHeadingMalon>
+          <SubHeadingOrange>DO IT ON REPEDDLE"</SubHeadingOrange>
         </Row>
-        <MainImage
-          src="https://res.cloudinary.com/emirace/image/upload/v1660101682/tamara-bellis-HPvN6rs86F0-unsplash_xxx1k0.jpg"
-          alt="main Image"
-        />
+        <ImageCont>
+          <MainImage
+            src="https://res.cloudinary.com/emirace/image/upload/v1660101682/tamara-bellis-HPvN6rs86F0-unsplash_xxx1k0.jpg"
+            alt="main Image"
+          />
+          <Header>THE THRILL! START SELLING</Header>
+        </ImageCont>
       </Section>
-      <Section className="back" mode={mode}>
+      <Section mode={mode}>
         <Row>
           <SubHeading>
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -171,55 +198,59 @@ export default function SellScreen() {
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
         <Row style={{}}>
-          <Step mode={mode}>
-            <SubHeading>1. TAKE A PICS</SubHeading>
-            <Text>
-              Your wardrobe getting cluttered or Storage keeps pillig up? Don't
-              panic, we got you! Just take <b>nice</b> pics using a good source
-              of natural lighting. Always remember "Great quality pictures sale
-              fast"
-            </Text>
-          </Step>
-          <Step mode={mode}>
-            <SubHeading>2. LIST & SHARE</SubHeading>
-            <Text>
-              Listing is easier than you think. With <b>10,400 brand</b> names
-              to choose from our database, it's just a click away! List and
-              describe your item with all information buyer needs to know, set
-              your price and share to help buyers discover your listing.{" "}
-            </Text>
-          </Step>
-          <Step mode={mode}>
-            <SubHeading>3. CASH OUT</SubHeading>
-            <Text>
-              When your item is sold, ship your item with the prefered selected
-              delivery method, once the buyer receives your item, you cash out
-            </Text>
-          </Step>
+          <Sides>
+            <PhoneImg
+              src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
+              alt="imag"
+            />
+          </Sides>
+          <Sides>
+            <Step mode={mode} style={{ width: "350px" }}>
+              <SubHeading>1. TAKE A PICS</SubHeading>
+              <Text>
+                Your wardrobe getting cluttered or Storage keeps pillig up?
+                Don't panic, we got you! Just take <b>nice</b> pics using a good
+                source of natural lighting. Always remember "Great quality
+                pictures sale fast"
+              </Text>
+            </Step>
+            <Step mode={mode} style={{ width: "350px" }}>
+              <SubHeading>2. LIST & SHARE</SubHeading>
+              <Text>
+                Listing is easier than you think. With <b>10,400 brand</b> names
+                to choose from our database, it's just a click away! List and
+                describe your item with all information buyer needs to know, set
+                your price and share to help buyers discover your listing.{" "}
+              </Text>
+            </Step>
+            <Step mode={mode} style={{ width: "350px" }}>
+              <SubHeading>3. CASH OUT</SubHeading>
+              <Text>
+                When your item is sold, ship your item with the prefered
+                selected delivery method, once the buyer receives your item, you
+                cash out
+              </Text>
+            </Step>
+            <Button>
+              <Header2>SELL FOR FREE</Header2>
+            </Button>
+          </Sides>
         </Row>
-        <Header2>SELL FOR FREE</Header2>
+
+        <div>
+          <SubHeading>
+            THRIFT - BUY - SELL - CHAT - CASH OUT - REPEAT
+          </SubHeading>
+          <Row>
+            <FontAwesomeIcon icon={faCircle} />
+            <Header2 style={{ color: "var(--malon-color)" }}>ALL IN</Header2>
+            <Header2>ONE</Header2>
+            <Header2 style={{ color: "var(--orange-color)" }}>PLACE</Header2>
+            <FontAwesomeIcon icon={faCircle} />
+          </Row>
+        </div>
       </Section>
-      <Section>
-        <Row className="gap">
-          <PhoneImg
-            src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
-            alt="imag"
-          />
-          <div>
-            <SubHeading>
-              THRIFT - BUY - SELL - CHAT - CASH OUT - REPEAT
-            </SubHeading>
-            <Row>
-              <FontAwesomeIcon icon={faCircle} />
-              <Header2 style={{ color: "var(--malon-color)" }}>ALL IN</Header2>
-              <Header2>ONE</Header2>
-              <Header2 style={{ color: "var(--orange-color)" }}>PLACE</Header2>
-              <FontAwesomeIcon icon={faCircle} />
-            </Row>
-          </div>
-        </Row>
-      </Section>
-      <Section className="back" mode={mode}>
+      <Section className="back" mode={mode} style={{ padding: "30px" }}>
         <SubHeading>WHAT TO SELL?</SubHeading>
         <Text>
           FASHION - BEAUTY - FINE JEWLERY - HOME & ARTS - PET CARE & GROOMING -
@@ -256,29 +287,24 @@ export default function SellScreen() {
       <Section>
         <Header2>RE:BATCH</Header2>
         <div style={{ maxWidth: "100%" }}>
-          <Text style={{ textAlign: "left" }}>
-            Repeddle Batch is a consignment option that offers a personalized
-            service to our community members that wish to transfer their
-            pre-loved items to a new loving home but don’t like the admin.
-          </Text>
-          <Text style={{ textAlign: "left" }}>
-            Consigning your garment is part of the steps you take to reduce
-            fashion foot print on our environment. Serve our planet by recycling
-            garments instead of dumping them to landfills.
-          </Text>
-          <Text style={{ textAlign: "left" }}>
-            Repeddle BULK n SLOT offers opportunity to either retailers who are
-            clearing out a large amount of items as clearance or wholesalers who
-            are selling items in bulk or slots, also known as BALES. These
-            option gives you the benefit to list a minimum of ten items in a
-            bag/box and you can list as much items as you are able to deliver.
-          </Text>
           <Row>
             <RebatchImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660106381/derick-anies-hDJT_ERrB-w-unsplash_r196go.jpg"
               alt="img"
             />
             <div>
+              <Text style={{ textAlign: "left" }}>
+                Repeddle Batch is a consignment option that offers a
+                personalized service to our community members that wish to
+                transfer their pre-loved items to a new loving home but don’t
+                like the admin.
+              </Text>
+              <Text style={{ textAlign: "left" }}>
+                Consigning your garment is part of the steps you take to reduce
+                fashion foot print on our environment. Serve our planet by
+                recycling garments instead of dumping them to landfills.
+              </Text>
+              <div style={{ height: "30px" }} />
               <SubHeading style={{ fontSize: "18px" }}>
                 COMING SOON!!!
               </SubHeading>
@@ -372,7 +398,7 @@ export default function SellScreen() {
       <Section mode={mode}>
         <Header2>WHY SELL WITH REPEDDLE</Header2>
         <Row style={{ width: "90vw" }}>
-          <Step mode={mode} style={{ margin: "10px", height: "250px" }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>MAKE A CHANGE</SubHeading>
             <Text>
               We’re changing the way (secondhand) fashion is perceived in Africa
@@ -382,15 +408,17 @@ export default function SellScreen() {
               this great cause.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: "10px", height: "250px" }}>
-            <SubHeading>EASY SELLING & ORDER MANAGEMENT</SubHeading>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
+            <SubHeading style={{ textAlign: "center" }}>
+              EASY SELLING & ORDER MANAGEMENT
+            </SubHeading>
             <Text>
               Over 10,400 pre-installed popular designer brands to choose from,
               Automated selling and order management tools, Invoicing and sale
               analytics to make selling experience and engagement effortless.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: "10px", height: "250px" }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>EASY DELIVERY OPTIONS</SubHeading>
             <Text>
               Variety of delivery options to choose from. Base on your
@@ -398,7 +426,7 @@ export default function SellScreen() {
               option you would like to offer buyers. All within your control.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: "10px", height: "250px" }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>GROWING COMMUNINTY</SubHeading>
             <Text>
               Access to a vast community of open minded, yet environmentally

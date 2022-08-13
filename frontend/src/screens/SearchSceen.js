@@ -278,7 +278,8 @@ const color1 = [
   { name: "yellow", id: 23 },
 ];
 const sizelist = [
-  { id: 1, name: "S" },
+  { id: 1, name: "XS" },
+  { id: 0, name: "S" },
   { id: 2, name: "M" },
   { id: 3, name: "L" },
   { id: 4, name: "XL" },
@@ -297,19 +298,39 @@ const typelist = [
   { id: 2, name: "Re:Curated" },
   { id: 3, name: "Bulk n Slot" },
 ];
-const patternlist = [
-  { id: 2, name: "Abstract" },
-  { id: 3, name: "Argyle" },
-  { id: 3, name: "Camo" },
-];
 const availabilitylist = [
   { id: 2, name: "In Someone's cart" },
   { id: 3, name: "In Someone's wish-list" },
-  { id: 3, name: "Recently Added" },
-  { id: 3, name: "Dropping Soon" },
-  { id: 3, name: "Sold Items" },
-  { id: 3, name: "Trending" },
+  { id: 4, name: "Recently Added" },
+  { id: 5, name: "Dropping Soon" },
+  { id: 6, name: "Sold Items" },
+  { id: 7, name: "Trending" },
 ];
+
+const patternlist = [
+  { id: 1, name: "Acrylic" },
+  { id: 2, name: "Cashmere" },
+  { id: 3, name: "Cloth" },
+  { id: 4, name: "Cotton" },
+  { id: 5, name: "Exotic leathers" },
+  { id: 6, name: "Faux fur" },
+  { id: 7, name: "Fur" },
+  { id: 8, name: "Leather" },
+  { id: 9, name: "Linen" },
+  { id: 10, name: "Polyester" },
+  { id: 11, name: "Polyurethane" },
+  { id: 12, name: "Pony-style calfskin" },
+  { id: 13, name: "Suede" },
+  { id: 14, name: "Silk" },
+  { id: 15, name: "Rayon" },
+  { id: 16, name: "Synthetic" },
+  { id: 17, name: "Spandex" },
+  { id: 18, name: "Tweed" },
+  { id: 19, name: "Vegan leather" },
+  { id: 20, name: "Velvet" },
+  { id: 21, name: "Wool" },
+];
+
 export default function SearchSceen() {
   const navigate = useNavigate();
   const { state } = useContext(Store);

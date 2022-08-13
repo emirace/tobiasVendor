@@ -17,7 +17,7 @@ const Content = styled.div`
 export default function BuyersPro() {
   return (
     <Protection>
-      <Title> BUYER PROTECTION SYSTEM</Title>
+      <Title> BUYER PROTECTION</Title>
 
       <Content>
         With our Repeddle buyer’s protection, if you make a purchase COMPLETELY
@@ -34,7 +34,7 @@ export default function BuyersPro() {
         repeddle App or Website using the add to cart button and checkout.
       </Content>
 
-      <Title> SELLER PROTECTION SYSTEM </Title>
+      <Title> SELLER PROTECTION </Title>
       <Content>
         Seller’s don’t have to worry about not getting paid. After a successful
         sell of a product inside Repeddle’s App or website, the money is

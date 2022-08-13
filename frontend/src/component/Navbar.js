@@ -180,7 +180,7 @@ const Sell = styled.div`
 
 const Underline = styled.div`
   margin: 0 5px;
-  color: var(--malon-color);
+  color: var(--orange-color);
   text-decoration: underline;
 `;
 
@@ -631,7 +631,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
           </Link>
         </CategoryGroup>
         <CategoryGroup>
-          <Link to="shopbyoutfit">
+          <Link to="/recurated">
             <CategoryItem>RE:CURATED</CategoryItem>
           </Link>
         </CategoryGroup>

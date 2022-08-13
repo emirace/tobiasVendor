@@ -82,6 +82,15 @@ const Logo = styled.div`
   width: 100%;
 `;
 
+const Reserve = styled.div`
+  margin: 5px 20vw;
+  text-align: center;
+  @media (max-width: 992px) {
+    margin: 5px;
+    text-align: center;
+  }
+`;
+
 export default function Footer() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -166,7 +175,7 @@ export default function Footer() {
               <div className="col-lg-3 col-md-6 col-sm-12">
                 <div className="single-method">
                   <FontAwesomeIcon
-                    icon={faTruckFast}
+                    icon={faCreditCard}
                     className="d-none d-lg-block"
                   />
                   <SmTitle
@@ -330,6 +339,7 @@ export default function Footer() {
             fashion in Africa, one garment at a time, one person at a time, and
             one loving home at a time. Let’s peddle and thrift.
           </p>
+          <b>Connect with us</b>
           <div className="footer_social">
             <div className="footer_social_icon">
               <FacebookIcon height={25} width={25} />
@@ -343,6 +353,29 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer_center">
+          <div style={{ flex: 1 }}>
+            <h3 className="footer_center_menu">Customer Care</h3>
+            <ul className="footer_center_list">
+              <li className="footer_center_listitem">
+                <Link to="/about">Support Center</Link>
+              </li>
+              <li className="footer_center_listitem">
+                <Link to="/sustainability">FAQ</Link>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Returns</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Contact Us</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Privacy Policy</a>
+              </li>
+              <li className="footer_center_listitem">
+                <a href="/#">Terms of Use</a>
+              </li>
+            </ul>
+          </div>
           <div style={{ flex: 1 }}>
             <h3 className="footer_center_menu">Our Company</h3>
             <ul className="footer_center_list">
@@ -427,13 +460,13 @@ export default function Footer() {
           ></img>
         </div>
       </div>
-      <div style={{ margin: "5px 20vw", textAlign: "center" }}>
+      <Reserve>
         All third party logos and brand names appearing on our App, Websites or
         any of our Platforms are independent trademarks of their respective
         owners. Except otherwise mentioned, Repeddle has no affiliation,
         endorsement or endorses any trademark displayed on it online or physical
         platforms.
-      </div>
+      </Reserve>
       <CopyRight back={footerMode}>
         <FontAwesomeIcon icon={faCopyright} /> 2022 Repeddle. All Right
         Reserved.

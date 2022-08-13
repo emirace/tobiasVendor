@@ -4,6 +4,9 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { ReactComponent as Globe } from "./../../icons/Icons-10.svg";
+import { ReactComponent as House } from "./../../icons/Icons-25.svg";
+import { ReactComponent as Leaf } from "./../../icons/Icons-27.svg";
 
 const Container = styled.div`
   margin: 0 15vw;
@@ -25,6 +28,7 @@ const Header2 = styled.h2`
 const SubHeading = styled.h4`
   margin: 0 5px;
   font-weight: bold;
+  font-size: 20px;
 `;
 
 const Image = styled.img`
@@ -73,15 +77,11 @@ export default function About() {
         <title>About Us</title>
       </Helmet>
       <Header>OUR STORY</Header>
-      <div>
+      <div align="center">
         <b>INSPIRING A GENERATION:</b> Crafting our story of a sustainable
         circular fashion in Africa, one garment at a time, one person at a time,
         and one loving home at a time.
       </div>
-      <Image
-        src="https://res.cloudinary.com/emirace/image/upload/v1660192223/20220711_223429_0000_fpvzbl.png"
-        alt="img"
-      />
       <Image
         src="https://res.cloudinary.com/emirace/image/upload/v1660192223/20220711_223429_0000_fpvzbl.png"
         alt="img"
@@ -159,99 +159,113 @@ export default function About() {
         </Row>
       </Section>
       <Section>
-        <SubHeading>REUSE & SECONDHAND</SubHeading>
-        <SubHeading>POSITIVE IMPACT OF USING PRE-LOVED GARMENT</SubHeading>
-        <SubHeading>SECONDHAND = SECONDCHANCE</SubHeading>
-        <div>
-          By buying and selling secondhand item on Repeddle, you’re not only
-          reducing carbon footprint and saving the planet, but you are giving an
-          African Child a better hope for tomorrow. Learn more on our
-          sustainability take <Link to="/sustainability">here</Link>
-        </div>
-        <List>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            <b>98%</b> Chance of clothes ending up in landfills avoided.
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            2,700 L of water saved for one person to drink for 900 days.
-            “sustainablecampus.fsu.edu”
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            10% Co2 of global carbon emissions avoided.
-          </li>
-        </List>
+        <Row style={{ alignItems: "center" }}>
+          <div style={{ flex: "1" }}>
+            <House height={200} width={200} />
+          </div>
+          <div style={{ flex: "2" }}>
+            <SubHeading>REUSE & SECONDHAND</SubHeading>
+            <SubHeading>POSITIVE IMPACT OF USING PRE-LOVED GARMENT</SubHeading>
+            <SubHeading>SECONDHAND = SECONDCHANCE</SubHeading>
+            <div>
+              By buying and selling secondhand item on Repeddle, you’re not only
+              reducing carbon footprint and saving the planet, but you are
+              giving an African Child a better hope for tomorrow. Learn more on
+              our sustainability take <Link to="/sustainability">here</Link>
+            </div>
+            <List>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                <b>98%</b> Chance of clothes ending up in landfills avoided.
+              </li>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                2,700 L of water saved for one person to drink for 900 days.
+                “sustainablecampus.fsu.edu”
+              </li>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                10% Co2 of global carbon emissions avoided.
+              </li>
+            </List>
+          </div>
+        </Row>
         <Link to="/sell">
-          <SubHeading> GO PEDDLE</SubHeading>
+          <b> GO PEDDLE</b>
         </Link>
       </Section>
       <Section>
-        <SubHeading>
-          IT STARTS WITH LESS - MAKING IT BETTER FOR AFRICA +THE PLANET
-        </SubHeading>
-        <div>
-          By buying and selling secondhand item on Repeddle, you’re not only
-          reducing carbon footprint and saving the planet, but you are giving an
-          African Child a better hope for tomorrow. Learn more on our
-          sustainability take <Link to="/sustainability">here</Link>
-        </div>
-        <List>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            Think before you buy.
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            Buy second-hand clothing from thrift stores, local markets, your
-            family and friends or online like Repeddle.
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            Discourage throw away culture, repair your damaged clothes instead
-            of throwing them away. You can resale them on Repeddle App and
-            Website.{" "}
-          </li>
-        </List>
+        <Row style={{ alignItems: "center" }}>
+          <div style={{ flex: "1" }}>
+            <Globe height={200} width={200} />
+          </div>
+          <div style={{ flex: "2" }}>
+            <SubHeading>
+              IT STARTS WITH LESS - MAKING IT BETTER FOR AFRICA +THE PLANET
+            </SubHeading>
+            <div>
+              By buying and selling secondhand item on Repeddle, you’re not only
+              reducing carbon footprint and saving the planet, but you are
+              giving an African Child a better hope for tomorrow. Learn more on
+              our sustainability take <Link to="/sustainability">here</Link>
+            </div>
+            <List>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                Think before you buy.
+              </li>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                Buy second-hand clothing from thrift stores, local markets, your
+                family and friends or online like Repeddle.
+              </li>
+              <li>
+                <FontAwesomeIcon icon={faCircle} />
+                Discourage throw away culture, repair your damaged clothes
+                instead of throwing them away. You can resale them on Repeddle
+                App and Website.{" "}
+              </li>
+            </List>
+          </div>
+        </Row>
 
         <Link to="/sell">
-          <SubHeading>
-            THINK THE PLANET, THINK THE ENVIRONMENT, THINK REPEDDLE{" "}
-          </SubHeading>
+          <b>THINK THE PLANET, THINK THE ENVIRONMENT, THINK REPEDDLE </b>
         </Link>
       </Section>
 
       <Section>
-        <SubHeading>UPCYLE. RECYCLE. REUSE. RESELL</SubHeading>
-        <SubHeading>
-          MAKING SUSTAINABILITY MORE IMPACTFUL IN THREE EASY WAYS
-        </SubHeading>
-        <SubHeading>THE REPEDDLE VIP SHIELD</SubHeading>
-        <List>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            First, we advance the conversation of secondhand fashion as part of
-            the solution for sustainable fashion, address the footprint and
-            impact of fashion in Africa, our environment and the planet.
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            Second we strive to take fashion waste off our environment by
-            encouraging people to upcycle, recycle, rework, reuse and resell
-            fashion by making fashion affordable and sustainable to avoid waste,
-            landfills and carbon emission.
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
-            Third, we offer the best and quality rare finds to Africa’s Pre-love
-            fashion lovers and community on Repeddle, helping them to always
-            think secondhand first.
-          </li>
-        </List>
+        <Row style={{ alignItems: "center" }}>
+          <div style={{ flex: "1" }}>
+            <Leaf height={200} width={200} />
+          </div>
+          <div style={{ flex: "2" }}>
+            <SubHeading>UPCYLE. RECYCLE. REUSE. RESELL</SubHeading>
+            <SubHeading>
+              MAKING SUSTAINABILITY MORE IMPACTFUL IN THREE EASY WAYS
+            </SubHeading>
+            <SubHeading>THE REPEDDLE VIP SHIELD</SubHeading>
+            <li>
+              First, we advance the conversation of secondhand fashion as part
+              of the solution for sustainable fashion, address the footprint and
+              impact of fashion in Africa, our environment and the planet.
+            </li>
+            <li>
+              Second we strive to take fashion waste off our environment by
+              encouraging people to upcycle, recycle, rework, reuse and resell
+              fashion by making fashion affordable and sustainable to avoid
+              waste, landfills and carbon emission.
+            </li>
+            <li>
+              Third, we offer the best and quality rare finds to Africa’s
+              Pre-love fashion lovers and community on Repeddle, helping them to
+              always think secondhand first.
+            </li>
+          </div>
+        </Row>
 
         <Link to="/">
-          <SubHeading>REPEDDLE VIP SHIELD</SubHeading>
+          <b>REPEDDLE VIP SHIELD</b>
         </Link>
       </Section>
     </Container>

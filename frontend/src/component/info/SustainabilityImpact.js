@@ -1,4 +1,9 @@
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircle,
+  faShirt,
+  faTreeCity,
+  faTruckRampBox,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Helmet } from "react-helmet-async";
@@ -14,12 +19,16 @@ const Container = styled.div`
 const List = styled.ul`
   & svg {
     font-size: 8px;
-    margin: 5px;
+    margin: 8px;
   }
   & li {
     display: flex;
-    align-items: center;
   }
+`;
+const SubHeading = styled.h4`
+  margin: 0 5px;
+  font-weight: bold;
+  font-size: 20px;
 `;
 const Section = styled.section`
   display: flex;
@@ -33,6 +42,34 @@ const Section = styled.section`
     border-radius: 0.2rem;
   }
 `;
+const Row = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  &.gap {
+    gap: 10px;
+  }
+`;
+const Orange = styled.span`
+  color: var(--orange-color);
+`;
+
+const Malon = styled.span`
+  color: var(--malon-color);
+`;
+
+const Cont = styled.div`
+  padding: 20px;
+`;
+const ContText = styled.div`
+  text-align: center;
+  & svg {
+    margin: 10px;
+  }
+`;
+const ContImage = styled.div``;
 
 export default function SustainabilityImpact() {
   return (
@@ -64,7 +101,14 @@ export default function SustainabilityImpact() {
           Below are some facts to look at, just to give few insights on why we
           need to take this very seriously.
         </div>
-        <h3 style={{ color: "var(--malon-color)", fontWeight: "bold" }}>
+      </Section>
+      <Section>
+        <h3
+          style={{
+            color: "var(--malon-color)",
+            fontWeight: "bold",
+          }}
+        >
           WHAT YOU MAY NEED TO KNOW! “THE PROBLEM”{" "}
         </h3>
         <div style={{ textAlign: "left" }}>
@@ -125,6 +169,267 @@ export default function SustainabilityImpact() {
             emission.
           </li>
         </List>
+        <Row style={{ justifyContent: "space-around" }}>
+          <Cont>
+            <ContText>
+              <div>The equivalent of</div>
+              <div
+                style={{
+                  color: "var(--malon-color)",
+                  fontSize: "17px",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                }}
+              >
+                1 garbage truck
+              </div>
+              <div>of textiles is wasted</div>
+              <div
+                style={{
+                  color: "var(--malon-color)",
+                  fontSize: "17px",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                }}
+              >
+                every
+              </div>
+              <FontAwesomeIcon size="3x" icon={faTruckRampBox} />
+            </ContText>
+            <ContImage />
+          </Cont>
+          <Cont>
+            <ContText>
+              <div>5.2%</div>
+              <div
+                style={{
+                  color: "var(--malon-color)",
+                  fontSize: "17px",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                }}
+              >
+                of the waste
+              </div>
+              <div>in our landfills are textiles</div>
+              <FontAwesomeIcon size="3x" icon={faTreeCity} />
+            </ContText>
+            <ContImage />
+          </Cont>
+          <Cont>
+            <ContText>
+              <div>3 years</div>
+              <div
+                style={{
+                  color: "var(--malon-color)",
+                  fontSize: "17px",
+                  fontWeight: "bold",
+                  fontStyle: "italic",
+                }}
+              >
+                is the average lifetime
+              </div>
+              <div>of a garment today</div>
+              <FontAwesomeIcon size="3x" icon={faShirt} />
+            </ContText>
+            <ContImage />
+          </Cont>
+        </Row>
+      </Section>
+      <Section>
+        <SubHeading>
+          <Orange>Less</Orange> is <Malon>more</Malon>
+        </SubHeading>
+
+        <SubHeading>MAKING IT BETTER FOR AFRICA</SubHeading>
+        <SubHeading>+THE PLANET+</SubHeading>
+        <SubHeading>CAN’T DO IT IN REAL LIFE? DO IT ON REPEDDLE!!</SubHeading>
+      </Section>
+      <Section>
+        <Orange>
+          <SubHeading>WHAT WE CAN DO!</SubHeading>
+        </Orange>
+        <p>
+          <Orange>
+            <b>THE SOLLUTION:</b>
+          </Orange>{" "}
+          We hope this enlightens you and helps you rethink consciously on how
+          we use fashion. The first route to go from here is to promote circular
+          economy by upcycling, recycling and reworking clothes, rather than the
+          linear way of extraction, consumption and waste. Part of our
+          suggestion to help solve these highlighted problems are:THE SOLLUTION:
+          We hope this enlightens you and helps you rethink consciously on how
+          we use fashion. The first route to go from here is to promote circular
+          economy by upcycling, recycling and reworking clothes, rather than the
+          linear way of extraction, consumption and waste. Part of our
+          suggestion to help solve these highlighted problems are:
+        </p>
+        <List>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Think before you buy.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Buy second-hand clothing from thrift stores, local markets, your
+            family and friends “or online store like Repeddle”.{" "}
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Repair your damaged clothes instead of throwing them away. You can
+            resale them on Repeddle App and Website.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Buy high-quality clothing that you can keep and wear for a long
+            time.{" "}
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Shopping second hand clothing is an income generation engine that
+            supports social cause and small businesses.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Support carbon-neutral and only buy from fair trade clothing brands.{" "}
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Buy clothing from your local designers and manufacturers to minimize
+            shipping and transport emissions.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Wash your clothes in cold water, and try to air-dry them instead of
+            using an electric dryer.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Avoid throw away, instead; Upcycle, Recycle, Reuse and Resell.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Shopping more mindfully and buying pre-loved second hand is one of
+            the best ways we can reduce fashion footprint on the environment.
+          </li>
+        </List>
+        <p>Source:(terrapass.com)</p>
+        <p>
+          By doing the above, you are contributing to sustainable fashion rather
+          than waste, water, environmental pollution and carbon emission.
+        </p>
+      </Section>
+      <Section>
+        <SubHeading>UPCYCLE</SubHeading>
+      </Section>
+      <Section>
+        <SubHeading>RECYCLE</SubHeading>
+      </Section>
+      <Section>
+        <SubHeading>REUSE & RESELL</SubHeading>
+      </Section>
+      <Section>
+        <SubHeading>
+          HOW REPEDDLE IS MAKING SUSTAINABILITY MORE IMPACTFUL.
+        </SubHeading>
+        <Orange>
+          <SubHeading style={{ fontSize: "18px" }}>
+            *REPEDDLE VIP SHIELD*
+          </SubHeading>
+        </Orange>
+        <p>
+          <Orange>
+            <b>OUR APPROACH:</b>
+          </Orange>{" "}
+          We are powering a new generation of conscious fashion thinkers in{" "}
+          <b>AFRICA</b> by creating a unique platform our generation will find
+          very useful, keeping their creative minds and spirit alive, turning
+          their creativity as an income stream for them, while doing right by
+          our planet and environment, making sustainable living by selling and
+          thrifting secondhand fashion.
+        </p>
+        <p>
+          {" "}
+          To support the business growth and reward the effort of our thrift
+          community that buy and sell using our platforms, we have created a{" "}
+          <Orange>
+            <b>REPEDDLE VIP SHIELD</b>
+          </Orange>{" "}
+          for them to showcase on their profile. Our VIP shield can only be
+          earned when you become (<b>TOP SELLER</b>) an active user.{" "}
+        </p>
+        <p>
+          <b>Did you know?</b> By extending the life of a piece of clothing by
+          extra 9-months, you are reducing its waste, water and carbon footprint
+          by up-to 30%. These means; by Reselling, Upcycling or thrifting a
+          garment, you are prolonging a textile lifespan, giving it chance to
+          live longer while reducing textile carbon footprint on the planet and
+          saving our environment. We hope these will minimize the emergency of
+          global environmental crisis we and the planet is currently faced.
+        </p>
+        <SubHeading>HOW WE MEASURE TOP SELLER QUALIFICATION</SubHeading> For you
+        to qualify to become a TOP SELLER and earn a VIP shield, you must meet
+        the following 5 simple criterial:{" "}
+        <List>
+          <li>
+            1. Actively participating in the circular economy by buying and
+            selling secondhand items on Repeddle including sharing experiences,
+            items and listing on your social media earns you a VIP Shield.
+          </li>
+          <li> 2. Make a minimum of 10 sales out of your listings</li>
+          <li>
+            3. You should have at least, a minimum of eight 4.5+ stars out of
+            ten users rating who have purchased directly from your shop using
+            Repeddle App or Website.
+          </li>
+          <li> 4. Have an average delivery of less than 3 days.</li>
+          <li>
+            5. Your customer review should reflect at least eight positive
+            reviews out of ten users who have purchased directly from your shop
+            using Repeddle App or Website.
+          </li>
+        </List>
+      </Section>
+      <Section>
+        <SubHeading>BENEFIT FOR EARNING A VIP SHIELD</SubHeading>
+        <List>
+          <li>
+            <FontAwesomeIcon icon={faCircle} />
+            Profiles with VIP shield display will get priority visibility on our
+            App and website including social media platforms.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} /> Getting priority visibility
+            means you get boosted display of your contents and profile across
+            all our Platforms, Articles and Mentions. This translate to more
+            items/profile views, engagements and selling. More sale means more
+            earnings.
+          </li>
+          <li>
+            <FontAwesomeIcon icon={faCircle} /> If your earning remains
+            positively higher than other sellers, you can then become our
+            ambassador after due processes checks. Our aim is to convert many of
+            our platform users to community influencers and ambassadors. Our
+            influencers and ambassador may have access to benefits, including
+            incentives.
+          </li>
+        </List>
+        <div style={{ height: "15px" }} />
+        <p>
+          <Orange>
+            <b>WE NEED EACH OTHER</b>
+          </Orange>{" "}
+          This is a journey we are on. With you, we can achieve more for Africa
+          and make our environment a better, cleaner planet to live.
+        </p>{" "}
+        <p style={{ textAlign: "left" }}>
+          <Orange>
+            <b>JOIN US TODAY!</b>
+          </Orange>{" "}
+          Together, we can make SUSTAINABLE IMPACT and change the way people
+          think and use fashion one person at a time. This is the best gift we
+          can give our generation, our planet and our future unborn.
+        </p>
       </Section>
     </Container>
   );

@@ -40,7 +40,7 @@ const Title = styled.h1`
 `;
 const TitleDetails = styled.span`
   width: 70%;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.2;
   margin-bottom: 5px;
 `;
@@ -789,6 +789,7 @@ export default function NewProduct() {
                     "aria-label": "Without label",
                   }}
                 >
+                  <MenuItem value="">-- select --</MenuItem>
                   {categories.length > 0 &&
                     categories.map((cat) => (
                       <MenuItem value={cat.name}>{cat.name}</MenuItem>
@@ -834,6 +835,7 @@ export default function NewProduct() {
                         "aria-label": "Without label",
                       }}
                     >
+                      <MenuItem value="">-- select --</MenuItem>
                       {categories.length > 0 &&
                         categories.map(
                           (cat) =>
@@ -880,6 +882,7 @@ export default function NewProduct() {
                       onChange={(e) => setSubCategory(e.target.value)}
                       displayEmpty
                     >
+                      <MenuItem value="">-- select --</MenuItem>
                       {categories.length > 0 &&
                         categories.map(
                           (cat) =>
@@ -949,6 +952,7 @@ export default function NewProduct() {
                   onChange={(e) => setCondition(e.target.value)}
                   displayEmpty
                 >
+                  <MenuItem value="">-- select --</MenuItem>
                   <MenuItem value="New with Tags">New with Tags</MenuItem>
                   <MenuItem value="New with No Tags">New with No Tags</MenuItem>
                   <MenuItem value="Excellent Condition">
@@ -961,7 +965,7 @@ export default function NewProduct() {
             </Item>
             <Item>
               <Label>
-                Materail/Fabric
+                Material/Fabric
                 <Tips
                   mode={mode}
                   tips={`How do I know what the primary material of the product is?
@@ -1005,6 +1009,7 @@ export default function NewProduct() {
                   onChange={(e) => setMaterial(e.target.value)}
                   displayEmpty
                 >
+                  <MenuItem value="">-- select --</MenuItem>
                   <MenuItem value="Acrylic">Acrylic</MenuItem>
                   <MenuItem value="Cashmere">Cashmere</MenuItem>
                   <MenuItem value="Cloth">Cloth</MenuItem>
@@ -1112,6 +1117,7 @@ export default function NewProduct() {
                   onChange={(e) => setColor(e.target.value)}
                   displayEmpty
                 >
+                  <MenuItem value="">-- select --</MenuItem>
                   {color1.map((c) => (
                     <MenuItem key={c} value={c}>
                       {c}
@@ -1165,6 +1171,7 @@ export default function NewProduct() {
                       onChange={(e) => sizeHandler(e.target.value)}
                       displayEmpty
                     >
+                      <MenuItem value="">-- select --</MenuItem>
                       <MenuItem value="XS">XS</MenuItem>
                       <MenuItem value="S">S</MenuItem>
                       <MenuItem value="M">M</MenuItem>
@@ -1306,7 +1313,11 @@ We encourage you to be as reasonable as possible, as over prized products are tu
               our fee structure{" "}
               <span
                 onClick={() => setShowComissionModal(true)}
-                style={{ color: "red", textDecoration: "underline" }}
+                style={{
+                  color: "red",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
               >
                 here{" "}
               </span>
@@ -1520,7 +1531,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 />
               </Item>
               <Item>
-                <Label>Key Features</Label>
+                <Label>Key Features: Pattern & Printed</Label>
                 <FormControl
                   sx={{
                     margin: 0,
@@ -1552,6 +1563,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                     onChange={(e) => setFeature(e.target.value)}
                     displayEmpty
                   >
+                    <MenuItem value="">-- select --</MenuItem>
                     <MenuItem value="Abstract">Abstract</MenuItem>
                     <MenuItem value="Argyle">Argyle</MenuItem>
                     <MenuItem value="Camo">Camo</MenuItem>

@@ -261,6 +261,8 @@ export default function Categories() {
 
       setName("");
       subCategories = [];
+      setCurrentCat("");
+      setCurrentCatItem("");
       setrefresh(!refresh);
     } catch (err) {
       console.log(getError(err));

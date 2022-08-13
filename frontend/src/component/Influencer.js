@@ -28,13 +28,23 @@ const Username = styled.div`
 const ProductList = styled.div`
   margin: 10px 0;
   display: flex;
-  gap: 10px;
+  gap: 20px;
+  @media (max-width: 992px) {
+    overflow-x: auto;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const Product = styled.div``;
 const ProductImg = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
+  @media (max-width: 992px) {
+    width: 150px;
+    height: 150px;
+  }
 `;
 const PDetail = styled.div`
   display: flex;

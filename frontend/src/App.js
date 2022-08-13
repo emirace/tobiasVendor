@@ -337,7 +337,7 @@ function App() {
                   />
 
                   <Route path="/brand" element={<BrandScreen />} />
-                  <Route path="/shopbyoutfit" element={<ShopByOutfit />} />
+                  <Route path="/recurated" element={<ShopByOutfit />} />
 
                   {/* Admin Routes */}
 

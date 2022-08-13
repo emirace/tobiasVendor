@@ -492,13 +492,13 @@ export default function SellerScreen() {
               <div className="seller_profile_follow">
                 <div className="seller_profile_follower">
                   <div className="seller_profile_follow_num">
-                    {user.followers.length}
+                    {user.followers && user.followers.length}
                   </div>
                   <div className="">Followers</div>
                 </div>
                 <div className="seller_profile_follower">
                   <div className="seller_profile_follow_num">
-                    {user.following.length}
+                    {user.following && user.following.length}
                   </div>
                   <div className="">Following</div>
                 </div>
@@ -508,7 +508,9 @@ export default function SellerScreen() {
                     onClick={toggleFollow}
                     className="seller_follow_btn"
                   >
-                    {userInfo && user.followers.find((x) => x === userInfo._id)
+                    {userInfo &&
+                    user.followers &&
+                    user.followers.find((x) => x === userInfo._id)
                       ? "Unfollow"
                       : "Follow"}
                   </button>
@@ -532,7 +534,9 @@ export default function SellerScreen() {
                   <div>
                     <FontAwesomeIcon icon={faTag} /> Sold
                   </div>
-                  <div className="seller_single_right">{user.sold.length}</div>
+                  <div className="seller_single_right">
+                    {user.sold && user.sold.length}
+                  </div>
                 </div>
 
                 <div className="seller_single_detail">
@@ -540,7 +544,7 @@ export default function SellerScreen() {
                     <FontAwesomeIcon icon={faUser} /> Member since
                   </div>
                   <div className="seller_single_right">
-                    {user.createdAt.substring(0, 10)}
+                    {user.createdAt && user.createdAt.substring(0, 10)}
                   </div>
                 </div>
                 <div className="seller_single_detail">
