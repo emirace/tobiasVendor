@@ -433,6 +433,7 @@ export default function OrderScreen() {
             <Return
               orderItems={order.orderItems}
               deliveryMethod={order.deliveryMethod}
+              setShowReturn={setShowReturn}
             />
           </ModelLogin>
         </div>
@@ -561,7 +562,7 @@ export default function OrderScreen() {
             <Heading>Delivery</Heading>
             <SumaryContDetails mode={mode}>
               <Name>Deliver Option</Name>
-              <ItemNum>UPS</ItemNum>
+              <ItemNum>{order.deliveryMethod.trg}</ItemNum>
               <hr />
               <Name>Deliver Address</Name>
               <ItemNum>
