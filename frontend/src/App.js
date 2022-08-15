@@ -85,6 +85,8 @@ import SustainabilityImpact from "./component/info/SustainabilityImpact";
 import BuyersPro from "./component/info/BuyersPro";
 import Bundle from "./component/info/Bundle";
 import FashionImpact from "./component/info/FashionImpact";
+import NewProduct from "./component/dashboard/NewProduct";
+import DeliveryOptionScreen from "./screens/DeliveryOptionScreen";
 
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
@@ -326,10 +328,16 @@ function App() {
                   <Route path="/home" element={<ProductsScreen />} />
 
                   <Route path="/dashboard" element={<DashboardNewScreen />} />
+
+                  <Route
+                    path="/deliveryoption"
+                    element={<DeliveryOptionScreen />}
+                  />
                   <Route
                     path="/dashboard/:tab"
                     element={<DashboardNewScreen />}
                   />
+                  <Route path="/newproduct" element={<NewProduct />} />
 
                   <Route
                     path="/category/:name"

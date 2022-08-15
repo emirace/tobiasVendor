@@ -309,7 +309,7 @@ export default function SellerScreen() {
           <>
             {userInfo && (
               <ProductCont>
-                <Link to="/dashboard/newproduct">
+                <Link to="/newproduct">
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     <span>Add Product</span>

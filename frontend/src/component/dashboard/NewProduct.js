@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Store } from "../../Store";
 import {
+  faCheck,
   faImage,
   faQuestionCircle,
   faTimes,
@@ -19,6 +20,8 @@ import ModelLogin from "../ModelLogin";
 import Condition from "../Condition";
 import CropImage from "../cropImage/CropImage";
 import FeeStructure from "../info/FeeStructure";
+import { Helmet } from "react-helmet-async";
+import DeliveryOption from "./DeliveryOption";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -40,7 +43,7 @@ const Title = styled.h1`
 `;
 const TitleDetails = styled.span`
   width: 70%;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.2;
   margin-bottom: 5px;
 `;
@@ -99,7 +102,6 @@ const TextInput = styled.input`
 `;
 const Label = styled.label`
   margin-bottom: 10px;
-  font-size: 15px;
   font-weight: 600;
   & svg {
     margin-left: 10px;
@@ -363,11 +365,11 @@ const Tips = styled.span`
     border-radius: 0.5rem;
     left: 30px;
     text-align: justify;
-    font-size: 12px;
+    font-size: 14px;
     z-index: 2;
     line-height: 1.2;
     font-weight: 400;
-    padding: 5px;
+    padding: 10px;
     background: ${(props) =>
       props.mode === "pagebodydark"
         ? "var(--white-color)"
@@ -432,6 +434,15 @@ const LinkTo = styled.span`
   font-weight: 400;
   cursor: pointer;
   &:hover {
+    color: var(--orange-color);
+  }
+`;
+
+const Deliv = styled.div`
+  display: flex;
+  align-items: center;
+  & svg {
+    margin-right: 10px;
     color: var(--orange-color);
   }
 `;
@@ -517,12 +528,22 @@ export default function NewProduct() {
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState("");
   const [tag, setTag] = useState(null);
-  const [deliveryOption, setDeliveryOption] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState([
+    { name: "Pick up from Seller", value: 1 },
+  ]);
   const [showConditionModal, setShowConditionModal] = useState(false);
   const [showUploadingImage, setShowUploadingImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
   const [showComissionModal, setShowComissionModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [showDelivery, setShowDelivery] = useState(false);
+
+  const [paxi, setPaxi] = useState(true);
+  const [pudo, setPudo] = useState(false);
+  const [postnet, setPostnet] = useState(false);
+  const [aramex, setAramex] = useState(false);
+  const [pickup, setPickup] = useState(true);
+  const [bundle, setBundle] = useState(false);
 
   const navigate = useNavigate();
 
@@ -733,6 +754,9 @@ export default function NewProduct() {
 
   return (
     <NewProductC mode={mode}>
+      <Helmet>
+        <title>New Product</title>
+      </Helmet>
       <TitleCont>
         <Title>NewProduct</Title>
         <TitleDetails>
@@ -1038,7 +1062,7 @@ export default function NewProduct() {
             </Item>
             <Item>
               <Label>Brands</Label>
-              {brand}
+
               <TextInput
                 mode={mode}
                 type="text"
@@ -1597,41 +1621,40 @@ We encourage you to be as reasonable as possible, as over prized products are tu
               </Item>
               <Item>
                 <Label>Delivery Option</Label>
-                <FormControl
-                  sx={{
-                    margin: 0,
-                    borderRadius: "0.2rem",
-                    border: `1px solid ${
-                      mode === "pagebodydark"
-                        ? "var(--dark-ev4)"
-                        : "var(--light-ev4)"
-                    }`,
-                    "& .MuiOutlinedInput-root": {
-                      color: `${
-                        mode === "pagebodydark"
-                          ? "var(--white-color)"
-                          : "var(--black-color)"
-                      }`,
-                      "&:hover": {
-                        outline: "none",
-                        border: 0,
-                      },
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "0 !important",
-                    },
-                  }}
-                  size="small"
+                {deliveryOption.map((d) => (
+                  <Deliv key={d.name}>
+                    <FontAwesomeIcon icon={faCheck} />
+                    {d.name}
+                  </Deliv>
+                ))}
+                <div
+                  style={{ color: "var(--orange-color)", textAlign: "center" }}
+                  onClick={() => setShowDelivery(true)}
                 >
-                  <Select
-                    value={deliveryOption}
-                    onChange={(e) => setDeliveryOption(e.target.value)}
-                    displayEmpty
-                  >
-                    <MenuItem value="1">Delivery Option 1</MenuItem>
-                    <MenuItem value="2">Delivery Option 2</MenuItem>
-                  </Select>
-                </FormControl>
+                  Add delivery option
+                </div>
+                <ModelLogin
+                  setShowModel={setShowDelivery}
+                  showModel={showDelivery}
+                >
+                  <DeliveryOption
+                    paxi={paxi}
+                    setPaxi={setPaxi}
+                    pudo={pudo}
+                    setPudo={setPudo}
+                    aramex={aramex}
+                    setAramex={setAramex}
+                    postnet={postnet}
+                    setPostnet={setPostnet}
+                    pickup={pickup}
+                    setPickup={setPickup}
+                    bundle={bundle}
+                    setBundle={setBundle}
+                    setDeliveryOption={setDeliveryOption}
+                    deliveryOption={deliveryOption}
+                  />
+                  {console.log(deliveryOption)}
+                </ModelLogin>
               </Item>
 
               <Item>

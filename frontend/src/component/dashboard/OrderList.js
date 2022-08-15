@@ -220,9 +220,6 @@ export default function OrderList() {
             <Link to={`/order/${params.row.id}`}>
               <Edit mode={mode}>View</Edit>
             </Link>
-            {params.row.deliveryStatus === "Delivered" && (
-              <Reject mode={mode}>Return</Reject>
-            )}
           </ActionSec>
         );
       },

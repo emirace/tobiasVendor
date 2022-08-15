@@ -49,6 +49,7 @@ productRouter.post(
       material,
       color,
       luxuryImage,
+      deliveryOption,
     } = req.body;
     const slugName = slugify(name);
     const images = [image2, image3, image4];
@@ -72,6 +73,7 @@ productRouter.post(
       specification,
       condition,
       sizes: sizes,
+      deliveryOption,
       keyFeatures: feature ? feature : "",
       rating: 0,
       numReviews: 0,

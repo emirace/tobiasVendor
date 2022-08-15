@@ -144,8 +144,7 @@ export default function ProductsScreen() {
         });
 
         dispatch({ type: "FETCH_USERS_REQUEST" });
-        const { data: topSellers } = await axios.get("/api/users/bestsellers");
-        console.log(topSellers);
+        const { data: topSellers } = await axios.get("/api/bestsellers");
         dispatch({
           type: "FETCH_USERS_SUCCESS",
           payload: topSellers,

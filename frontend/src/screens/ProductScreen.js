@@ -928,60 +928,14 @@ export default function ProductScreen() {
     }
   };
 
-  const sizeHandler = (item) => {
-    switch (item) {
-      case "S":
-        const current = product.sizes.filter((s) => s.size === "S");
-        if (current.length > 0) {
-          setSize(`Small ( ${current[0].value} left)`);
-          setSelectSize("S");
-        } else {
-          setSize("Out of stock");
-          setSelectSize("");
-        }
-        break;
-      case "M":
-        const current1 = product.sizes.filter((s) => s.size === "M");
-        if (current1.length > 0) {
-          setSize(`Medium ( ${current1[0].value} left)`);
-          setSelectSize("M");
-        } else {
-          setSize("Out of stock");
-          setSelectSize("");
-        }
-        break;
-      case "L":
-        const current2 = product.sizes.filter((s) => s.size === "L");
-        if (current2.length > 0) {
-          setSize(`Large ( ${current2[0].value} left)`);
-          setSelectSize("L");
-        } else {
-          setSize("Out of stock");
-          setSelectSize("");
-        }
-        break;
-      case "XL":
-        const current3 = product.sizes.filter((s) => s.size === "XL");
-        if (current3.length > 0) {
-          setSize(`XL ( ${current3[0].value} left)`);
-          setSelectSize("XL");
-        } else {
-          setSize("Out of stock");
-          setSelectSize("");
-        }
-        break;
-      case "XXL":
-        const current4 = product.sizes.filter((s) => s.size === "XXL");
-        if (current4.length > 0) {
-          setSize(`XXL ( ${current4[0].value} left)`);
-          setSelectSize("XXL");
-        } else {
-          setSize("Out of stock");
-          setSelectSize("");
-        }
-        break;
-      default:
-        break;
+  const sizeHandler = (item, item2) => {
+    const current = product.sizes.filter((s) => s.size === item);
+    if (current.length > 0) {
+      setSize(`${item2} ( ${current[0].value} left)`);
+      setSelectSize(item);
+    } else {
+      setSize("Out of stock");
+      setSelectSize("");
     }
   };
 
@@ -1196,20 +1150,13 @@ export default function ProductScreen() {
             <div className="flexSelect">
               {product.sizes.map((size) => (
                 <span key={size.size}>
-                  <input
-                    type="radio"
-                    name="size"
-                    value={size.size}
-                    hidden
-                    id={`${size.size}-size`}
-                  />
                   <label
-                    htmlFor={`${size.size}-size`}
                     className={`sp_select_size_btn ${
                       selectSize === size.size ? "sp_btn_checked" : ""
                     }  `}
-                    onClick={() => sizeHandler(size.size)}
+                    onClick={() => sizeHandler(size.size, size.name)}
                   >
+                    {console.log("k")}
                     {size.size}
                   </label>
                 </span>

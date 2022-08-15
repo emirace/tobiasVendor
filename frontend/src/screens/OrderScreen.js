@@ -22,6 +22,8 @@ import styled from "styled-components";
 import moment from "moment";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
+import ModelLogin from "../component/ModelLogin";
+import Return from "../component/Return";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
@@ -257,7 +259,7 @@ export default function OrderScreen() {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
-
+  const [showReturn, setShowReturn] = useState(false);
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
   function createOrder(data, actions) {
@@ -403,7 +405,8 @@ export default function OrderScreen() {
       <Header>Order Details</Header>
       <Container>
         <SumaryCont mode={mode}>
-          <OrderId>Order number {orderId}</OrderId>
+          <OrderId>Order number {orderId}</OrderId>''
+          {console.log(order)}
           <ItemNum>
             {order.orderItems.length} Item
             {order.orderItems.length > 1 ? "s" : ""}
@@ -414,9 +417,25 @@ export default function OrderScreen() {
           </Date>
           <Price>Total: ${order.totalPrice}</Price>
         </SumaryCont>
-
-        <Heading>Items in your order</Heading>
-
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginRight: "20px",
+          }}
+        >
+          <Heading>Items in your order</Heading>
+          <div onClick={() => setShowReturn(true)}>
+            <b>Return item</b>
+          </div>
+          <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
+            <Return
+              orderItems={order.orderItems}
+              deliveryMethod={order.deliveryMethod}
+            />
+          </ModelLogin>
+        </div>
         {order.orderItems.map((orderitem) => (
           <SumaryContDetails mode={mode}>
             <div

@@ -168,6 +168,7 @@ export default function PlaceOrderScreen() {
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
+          deliveryMethod: cart.deliveryMethod,
         },
         userInfo
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
@@ -194,6 +195,7 @@ export default function PlaceOrderScreen() {
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
+          deliveryMethod: cart.deliveryMethod,
         },
         userInfo
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
@@ -300,7 +302,6 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Delivery Address</Card.Title>
               <Card.Text>
-                {console.log(cart)}
                 <strong>Address Name: </strong>
                 {cart.shippingAddress.fullName || cart.useraddress.fullName}
                 <br />
@@ -309,6 +310,11 @@ export default function PlaceOrderScreen() {
                 , {cart.shippingAddress.city}, {cart.shippingAddress.state},{" "}
                 {cart.shippingAddress.postalCode},{" "}
                 {cart.shippingAddress.country}
+                <strong>Delivery Method: </strong>
+                {cart.deliveryMethod.trg}
+                <br />
+                <strong>Pick up point: </strong>
+                {cart.deliveryMethod.point.shortName}
               </Card.Text>
               <Link className="simple_link" to="/shipping">
                 Edit
