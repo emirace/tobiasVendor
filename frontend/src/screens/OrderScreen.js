@@ -563,6 +563,8 @@ export default function OrderScreen() {
             <SumaryContDetails mode={mode}>
               <Name>Deliver Option</Name>
               <ItemNum>{order.deliveryMethod.trg}</ItemNum>
+              <ItemNum>{order.deliveryMethod.point.nodeCode}</ItemNum>
+              <ItemNum>{order.deliveryMethod.point.shortName}</ItemNum>
               <hr />
               <Name>Deliver Address</Name>
               <ItemNum>

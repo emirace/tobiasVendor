@@ -4,9 +4,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormControl, MenuItem, Select } from "@mui/material";
-import React, { useContext, useState } from "react";
+import axios from "axios";
+import React, { useContext, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../Store";
+import { getError } from "../utils";
 
 const Container = styled.div`
   padding: 30px;
@@ -79,12 +81,72 @@ const Form = styled.div`
   flex-direction: column;
   align-items: flex-start;
 `;
-export default function Return({ orderItems, deliveryMethod }) {
-  const { state } = useContext(Store);
-  const { mode } = state;
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true };
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
+      return { ...state, loadingUpload: false };
+
+    default:
+      return state;
+  }
+};
+export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { mode, userInfo } = state;
+
+  const [{ loadingUpload }, dispatch] = useReducer(reducer, {
+    product: null,
+    loading: true,
+    error: "",
+    comments: [],
+  });
   const [tab, setTab] = useState("items");
   const [current, setCurrent] = useState("");
   const [resolution, setResolution] = useState("");
+  const [image, setImage] = useState("");
+  const handleReturn = () => {
+    setShowReturn(false);
+  };
+  const uploadImageHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      setImage(data.secure_url);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Image Uploaded",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (err) {
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Failed uploading image",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      console.log(getError(err));
+    }
+  };
   const displayTab = (tab) => {
     switch (tab) {
       case "items":
@@ -312,7 +374,7 @@ export default function Return({ orderItems, deliveryMethod }) {
                   <FontAwesomeIcon icon={faCamera} /> Upload Image
                 </Label>
               </InputCont>
-              <Button>Submit</Button>
+              <Button onClick={handleReturn}>Submit</Button>
             </Form>
           </Content>
         );
