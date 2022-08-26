@@ -2,13 +2,12 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import { Helmet } from "react-helmet-async";
 import CheckoutSteps from "../component/CheckoutSteps";
 import { Store } from "../Store";
 import { Link, useNavigate } from "react-router-dom";
-import { couponDiscount, getError } from "../utils";
+import { calcPrice, couponDiscount, getError } from "../utils";
 import { toast } from "react-toastify";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
@@ -16,6 +15,9 @@ import styled from "styled-components";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import FlutterWave from "../component/FlutterWave";
+import WalletModel from "../component/wallet/WalletModel";
+import PayFund from "../component/wallet/PayFund";
 
 const Container = styled.div`
   display: flex;
@@ -25,6 +27,7 @@ const Container = styled.div`
   }
 `;
 const Main = styled.div`
+  margin: 20px;
   padding: 20px 5vw 0 5vw;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -86,7 +89,29 @@ const Remove = styled.span`
     margin-left: 10px;
   }
 `;
+const Button = styled.div`
+  cursor: pointer;
+  color: var(--white-color);
+  background: var(--malon-color);
+  width: 100%;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.2rem;
+  height: 40px;
+`;
 
+const RowData = styled.div`
+  margin-left: 10px;
+  display: flex;
+`;
+const ColTitle = styled.div`
+  flex: 1;
+`;
+const ColValue = styled.div`
+  flex: 5;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "CREATE_REQUEST":
@@ -124,16 +149,11 @@ export default function PlaceOrderScreen() {
 
   const [code, setCode] = useState("");
   const [coupon, setCoupon] = useState(null);
+  const [showModel, setShowModel] = useState(false);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
-  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
-  cart.itemsPrice = round2(
-    cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
-  );
-  cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
-  cart.taxPrice = round2(0.15 * cart.itemsPrice);
-  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+  calcPrice(cart);
 
   useEffect(() => {
     const loadPaypalScript = async () => {
@@ -174,7 +194,6 @@ export default function PlaceOrderScreen() {
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
           : {}
       );
-      console.log("");
       dispatch({ type: "CREATE_SUCCESS", payload: data });
       return data;
     } catch (err) {
@@ -184,26 +203,15 @@ export default function PlaceOrderScreen() {
   };
   const saveOrderHandler = async () => {
     try {
-      dispatch({ type: "CREATE_REQUEST" });
-      const { data } = await axios.post(
-        "/api/orders",
-        {
-          orderItems: cart.cartItems,
-          shippingAddress: cart.shippingAddress,
-          paymentMethod: cart.paymentMethod,
-          itemsPrice: cart.itemsPrice,
-          shippingPrice: cart.shippingPrice,
-          taxPrice: cart.taxPrice,
-          totalPrice: cart.totalPrice,
-          deliveryMethod: cart.deliveryMethod,
+      const data = await placeOrderHandler();
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order saved",
+          showStatus: true,
+          state1: "visible1 success",
         },
-        userInfo
-          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-          : {}
-      );
-      console.log("");
-      dispatch({ type: "CREATE_SUCCESS", payload: data });
-      toast.success("Order is saved");
+      });
       localStorage.removeItem("cartItems");
       ctxDispatch({ type: "CART_CLEAR" });
       navigate(`/order/${data.order._id}`);
@@ -227,45 +235,84 @@ export default function PlaceOrderScreen() {
       });
   }
 
-  const onApprove = async (data, actions) => {
+  const WalletSuccess = async (response) => {
     const order1 = await placeOrderHandler();
     if (order1) {
-      return actions.order.capture().then(async function (details) {
-        try {
-          dispatch({ type: "PAY_REQUEST" });
-          const { data } = await axios.put(
-            `/api/orders/${order1.order._id}/pay`,
-            details,
-            userInfo
-              ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-              : {}
-          );
-          dispatch({ type: "PAY_SUCCESS", payload: data });
-          await axios.put(`api/bestsellers/${order1.order.seller}`);
-          toast.success("Order is paid");
-          ctxDispatch({
-            type: "SHOW_TOAST",
-            payload: {
-              message: "Order is paid",
-              showStatus: true,
-              state1: "visible1 success",
-            },
-          });
-          localStorage.removeItem("cartItems");
-          ctxDispatch({ type: "CART_CLEAR" });
-          navigate(`/order/${data.order._id}`);
-        } catch (err) {
-          dispatch({ type: "PAY_FAIL", payload: getError(err) });
-          ctxDispatch({
-            type: "SHOW_TOAST",
-            payload: {
-              message: "Error processing order, try again later",
-              showStatus: true,
-              state1: "visible1 error",
-            },
-          });
-        }
-      });
+      try {
+        dispatch({ type: "PAY_REQUEST" });
+        const { data } = await axios.put(
+          `/api/orders/${order1.order._id}/pay`,
+          response,
+          userInfo
+            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+            : {}
+        );
+        dispatch({ type: "PAY_SUCCESS", payload: data });
+        await axios.put(`api/bestsellers/${order1.order.seller}`);
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Order is paid",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+        localStorage.removeItem("cartItems");
+        ctxDispatch({ type: "CART_CLEAR" });
+        navigate(`/order/${data.order._id}`);
+      } catch (err) {
+        dispatch({ type: "PAY_FAIL", payload: getError(err) });
+        console.log(err, getError(err));
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: `${getError(err)}`,
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+      }
+    } else {
+      toast.error("no order found");
+    }
+  };
+  const onApprove = async (response) => {
+    const order1 = await placeOrderHandler();
+    if (order1) {
+      try {
+        dispatch({ type: "PAY_REQUEST" });
+        const { data } = await axios.put(
+          `/api/orders/${order1.order._id}/pay`,
+          response,
+          userInfo
+            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
+            : {}
+        );
+        dispatch({ type: "PAY_SUCCESS", payload: data });
+        await axios.put(`api/bestsellers/${order1.order.seller}`);
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Order is paid",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+        localStorage.removeItem("cartItems");
+        ctxDispatch({ type: "CART_CLEAR" });
+        navigate(`/order/${data.order._id}`);
+      } catch (err) {
+        dispatch({ type: "PAY_FAIL", payload: getError(err) });
+        console.log(err, getError(err));
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: `${getError(err)}`,
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+      }
     } else {
       toast.error("no order found");
     }
@@ -292,6 +339,7 @@ export default function PlaceOrderScreen() {
 
   return (
     <Main mode={mode}>
+      {console.log(cart)}
       <Helmet>
         <title>Order Preview</title>
       </Helmet>
@@ -302,19 +350,22 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Delivery Address</Card.Title>
               <Card.Text>
-                <strong>Address Name: </strong>
-                {cart.shippingAddress.fullName || cart.useraddress.fullName}
-                <br />
-                <strong>Address: </strong>
-                {cart.shippingAddress.apartment}, {cart.shippingAddress.address}
-                , {cart.shippingAddress.city}, {cart.shippingAddress.state},{" "}
-                {cart.shippingAddress.postalCode},{" "}
-                {cart.shippingAddress.country}
-                <strong>Delivery Method: </strong>
-                {cart.deliveryMethod.trg}
-                <br />
-                <strong>Pick up point: </strong>
-                {cart.deliveryMethod.point.shortName}
+                <RowData>
+                  <ColTitle>Address Name:</ColTitle>
+                  <ColValue>
+                    {cart.shippingAddress.fullName || cart.useraddress.fullName}
+                  </ColValue>
+                </RowData>
+                <RowData>
+                  <ColTitle>Address:</ColTitle>
+                  <ColValue>
+                    {cart.shippingAddress.apartment}{" "}
+                    {cart.shippingAddress.address}, {cart.shippingAddress.city},{" "}
+                    {cart.shippingAddress.state},{" "}
+                    {cart.shippingAddress.postalCode},{" "}
+                    {cart.shippingAddress.country}
+                  </ColValue>
+                </RowData>
               </Card.Text>
               <Link className="simple_link" to="/shipping">
                 Edit
@@ -325,8 +376,10 @@ export default function PlaceOrderScreen() {
             <Card.Body>
               <Card.Title>Payment</Card.Title>
               <Card.Text>
-                <strong>Method: </strong>
-                {cart.paymentMethod}
+                <RowData>
+                  <ColTitle>Method</ColTitle>
+                  <ColValue>{cart.paymentMethod}</ColValue>
+                </RowData>
               </Card.Text>
               <Link className="simple_link" to="/payment">
                 Edit
@@ -340,19 +393,45 @@ export default function PlaceOrderScreen() {
                 {cart.cartItems.map((item) => (
                   <ListGroup.Item key={item._id}>
                     <Row className="align-items-center">
-                      <div className="col-6">
+                      <div
+                        style={{
+                          marginBottom: "10px",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                        className="col-6"
+                      >
                         <img
                           src={item.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
                         ></img>{" "}
-                        <Link to={`/product/${item.slug}`}>{item.name}</Link>
+                        <div
+                          style={{
+                            marginLeft: "20px",
+                          }}
+                        >
+                          <div>
+                            <Link to={`/product/${item.slug}`}>
+                              {item.name}
+                            </Link>
+                          </div>
+                          <div> ${item.price}</div>
+                          <div>Size: {item.selectSize}</div>
+                        </div>
                       </div>
                       <div className="col-3">
                         <span>{item.quantity}</span>
                       </div>
                       <div className="col-3">${item.price}</div>
                     </Row>
+                    {console.log(item)}
+                    <div style={{ fontSize: "13px" }}>
+                      Delivery Method: {item.deliverySelect.trg}
+                    </div>
+                    <div style={{ fontSize: "13px" }}>
+                      Pick up point: {item.deliverySelect.meta.shortName}
+                    </div>
                   </ListGroup.Item>
                 ))}
               </ListGroup>
@@ -383,11 +462,13 @@ export default function PlaceOrderScreen() {
                           </SumCont>
                         </>
                       ))}
-                      <SumCont>
-                        <Left>Total</Left>
-                        <Right>${cart.itemsPrice.toFixed(2)}</Right>
-                      </SumCont>
                     </div>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Subtotal</Col>
+                    <Col>${cart.itemsPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -418,8 +499,12 @@ export default function PlaceOrderScreen() {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Order Total</Col>
-                    <Col>${(cart.totalPrice - discount).toFixed(2)}</Col>
+                    <Col>
+                      <b>Order Total</b>
+                    </Col>
+                    <Col>
+                      <b>${(cart.totalPrice - discount).toFixed(2)}</b>
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -433,7 +518,7 @@ export default function PlaceOrderScreen() {
                   </CouponCont>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {isPending ? (
+                  {/* {isPending ? (
                     <LoadingBox />
                   ) : (
                     <div>
@@ -443,20 +528,53 @@ export default function PlaceOrderScreen() {
                         onError={onError}
                       ></PayPalButtons>
                     </div>
+                  )} */}
+
+                  {loadingPay ? (
+                    <LoadingBox />
+                  ) : cart.paymentMethod === "Wallet" ? (
+                    <Button
+                      style={{ background: "var(--orange-color)" }}
+                      onClick={() => setShowModel(true)}
+                    >
+                      Proceed to Payment
+                    </Button>
+                  ) : cart.paymentMethod === "Credit/Debit card" ? (
+                    <FlutterWave
+                      amount={cart.totalPrice}
+                      currency="NGN"
+                      user={
+                        userInfo
+                          ? userInfo
+                          : {
+                              email: cart.shippingAddress.email,
+                              name: cart.shippingAddress.fullName,
+                              phone: cart.shippingAddress.phone,
+                            }
+                      }
+                      onApprove={onApprove}
+                    />
+                  ) : (
+                    ""
                   )}
-                  {loadingPay && <LoadingBox></LoadingBox>}
                 </ListGroup.Item>
 
+                <WalletModel showModel={showModel} setShowModel={setShowModel}>
+                  <PayFund
+                    onApprove={WalletSuccess}
+                    setShowModel={setShowModel}
+                    amount={cart.totalPrice}
+                  />
+                </WalletModel>
                 <ListGroup.Item>
                   <div className="d-grid">
-                    <button
-                      className="search-btn1"
+                    <Button
                       type="button"
                       onClick={saveOrderHandler}
                       disabled={cart.cartItems.length === 0}
                     >
-                      Save Order
-                    </button>
+                      Save for later
+                    </Button>
                     {loading && <LoadingBox></LoadingBox>}
                   </div>
                 </ListGroup.Item>

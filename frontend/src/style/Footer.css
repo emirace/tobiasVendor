@@ -123,6 +123,7 @@
   flex-direction: column;
 }
 .wave_img {
+  width: 100%;
   margin-top: -1px;
 }
 

@@ -15,7 +15,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { Store } from "../Store";
-import { displayDeliveryStatus, getError } from "../utils";
+import { displayDeliveryStatus, getError, timeDifference } from "../utils";
 import ListGroup from "react-bootstrap/ListGroup";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -177,6 +177,7 @@ const Print = styled.div`
   padding: 1px 8px;
   border-radius: 0.2rem;
   cursor: pointer;
+  height: 30px;
   background: var(--orange-color);
   &:hover {
     background-color: var(--malon-color);
@@ -261,7 +262,7 @@ export default function OrderScreen() {
   });
   const [showReturn, setShowReturn] = useState(false);
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-
+  const [isSeller, setIsSeller] = useState(false);
   function createOrder(data, actions) {
     return actions.order
       .create({
@@ -319,6 +320,11 @@ export default function OrderScreen() {
             : {}
         );
         dispatch({ type: "FETCH_SUCCESS", payload: data });
+        if (userInfo) {
+          if (data.seller.filter((x) => x === userInfo._id)) {
+            setIsSeller(true);
+          }
+        }
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
@@ -393,6 +399,11 @@ export default function OrderScreen() {
       dispatch({ type: "DELIVER_FAIL" });
     }
   }
+
+  const daydiff =
+    order.createdAt &&
+    3 - timeDifference(new window.Date(order.createdAt), new window.Date());
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -402,11 +413,14 @@ export default function OrderScreen() {
       <Helmet>
         <title>Order {orderId}</title>
       </Helmet>
-      <Header>Order Details</Header>
+      <div style={{ display: "flex" }}>
+        <Header>Order Details</Header>
+        <Print onClick={handlePrint}>Print</Print>
+      </div>
       <Container>
         <SumaryCont mode={mode}>
-          <OrderId>Order number {orderId}</OrderId>''
-          {console.log(order)}
+          <OrderId>Order number {orderId}</OrderId>
+
           <ItemNum>
             {order.orderItems.length} Item
             {order.orderItems.length > 1 ? "s" : ""}
@@ -426,123 +440,267 @@ export default function OrderScreen() {
           }}
         >
           <Heading>Items in your order</Heading>
-          <div onClick={() => setShowReturn(true)}>
-            <b>Return item</b>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowReturn(true)}
+          >
+            <b>Log a return</b>
+            <div style={{ color: "red" }}>{daydiff} days left</div>
           </div>
           <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
             <Return
               orderItems={order.orderItems}
               deliveryMethod={order.deliveryMethod}
               setShowReturn={setShowReturn}
+              orderId={orderId}
             />
           </ModelLogin>
         </div>
-        {order.orderItems.map((orderitem) => (
-          <SumaryContDetails mode={mode}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
-              }}
-            >
-              <div>
-                {displayDeliveryStatus(order.deliveryStatus)}
-                <Name>
-                  On{" "}
-                  {moment(order.deliveredAt).format("MMMM Do YYYY, h:mm:ss a")}
-                </Name>
-              </div>
-              {userInfo &&
-                order.user === userInfo._id &&
-                order.deliveryStatus === "Delivered" && (
-                  <Received onClick={() => deliverOrderHandler("Recieved")}>
-                    Comfirm you have recieved order
-                  </Received>
-                )}
-              {userInfo && order.seller === userInfo._id && (
-                <SetStatus>
-                  <FormControl
-                    disabled={
-                      order.deliveryStatus === "Hold" ||
-                      order.deliveryStatus === "Received"
-                    }
-                    sx={{
-                      minWidth: "200px",
-                      margin: 0,
-                      borderRadius: "0.2rem",
-                      border: `1px solid ${
-                        mode === "pagebodydark"
-                          ? "var(--dark-ev4)"
-                          : "var(--light-ev4)"
-                      }`,
-                      "& .MuiOutlinedInput-root": {
-                        color: `${
-                          mode === "pagebodydark"
-                            ? "var(--white-color)"
-                            : "var(--black-color)"
-                        }`,
-                        "&:hover": {
-                          outline: "none",
-                          border: 0,
-                        },
-                      },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "0 !important",
-                      },
-                    }}
-                    size="small"
-                  >
-                    <InputLabel
-                      sx={{
-                        color: `${
-                          mode === "pagebodydark"
-                            ? "var(--white-color)"
-                            : "var(--black-color)"
-                        }`,
-                      }}
-                      id="deliveryStatus"
-                    >
-                      Set delivery Status
-                    </InputLabel>
+        {order.orderItems.map((orderitem) =>
+          isSeller ? (
+            orderitem.product.seller === userInfo._id && (
+              <SumaryContDetails mode={mode}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <div>
+                    {displayDeliveryStatus(order.deliveryStatus)}
+                    <Name>
+                      On{" "}
+                      {moment(order.deliveredAt).format(
+                        "MMMM Do YYYY, h:mm:ss a"
+                      )}
+                    </Name>
+                  </div>
+                  {userInfo &&
+                    order.user === userInfo._id &&
+                    order.deliveryStatus === "Delivered" && (
+                      <Received onClick={() => deliverOrderHandler("Recieved")}>
+                        Comfirm you have recieved order
+                      </Received>
+                    )}
+                  {userInfo && order.seller === userInfo._id && (
+                    <SetStatus>
+                      <FormControl
+                        disabled={
+                          order.deliveryStatus === "Hold" ||
+                          order.deliveryStatus === "Received"
+                        }
+                        sx={{
+                          minWidth: "200px",
+                          margin: 0,
+                          borderRadius: "0.2rem",
+                          border: `1px solid ${
+                            mode === "pagebodydark"
+                              ? "var(--dark-ev4)"
+                              : "var(--light-ev4)"
+                          }`,
+                          "& .MuiOutlinedInput-root": {
+                            color: `${
+                              mode === "pagebodydark"
+                                ? "var(--white-color)"
+                                : "var(--black-color)"
+                            }`,
+                            "&:hover": {
+                              outline: "none",
+                              border: 0,
+                            },
+                          },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "0 !important",
+                          },
+                        }}
+                        size="small"
+                      >
+                        <InputLabel
+                          sx={{
+                            color: `${
+                              mode === "pagebodydark"
+                                ? "var(--white-color)"
+                                : "var(--black-color)"
+                            }`,
+                          }}
+                          id="deliveryStatus"
+                        >
+                          Set delivery Status
+                        </InputLabel>
 
-                    <Select
-                      onChange={(e) => deliverOrderHandler(e.target.value)}
-                      displayEmpty
-                      id="deliveryStatus"
+                        <Select
+                          onChange={(e) => deliverOrderHandler(e.target.value)}
+                          displayEmpty
+                          id="deliveryStatus"
+                        >
+                          <MenuItem value="Not yet Dispatched">
+                            Not yet Dispatched
+                          </MenuItem>
+                          <MenuItem value="Dispatch">Dispatch</MenuItem>
+                          <MenuItem value="In transit">In transit</MenuItem>
+                          <MenuItem value="Delivered">Delivered</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </SetStatus>
+                  )}
+                </div>
+                <hr />
+                <DetailButton>
+                  <OrderItem>
+                    <Image src={orderitem.image} alt={orderitem.name} />
+                    <Details1>
+                      <Name>{orderitem.name}</Name>
+                      <Quantity>QTY: {orderitem.quantity}</Quantity>
+                      <ItemPrice>$ {orderitem.price}</ItemPrice>
+                    </Details1>
+                  </OrderItem>
+                  <ActionButton>
+                    <button className="btn btn-primary w-100">
+                      <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
+                    </button>
+                    <button className="btn btn-outline-primary w-100 mt-2">
+                      See Delivery history
+                    </button>
+                  </ActionButton>
+                </DetailButton>
+              </SumaryContDetails>
+            )
+          ) : (
+            <SumaryContDetails mode={mode}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <div>
+                  {displayDeliveryStatus(order.deliveryStatus)}
+                  <Name>
+                    On{" "}
+                    {moment(order.deliveredAt).format(
+                      "MMMM Do YYYY, h:mm:ss a"
+                    )}
+                  </Name>
+                </div>
+                {userInfo &&
+                  order.user === userInfo._id &&
+                  order.deliveryStatus === "Delivered" && (
+                    <Received onClick={() => deliverOrderHandler("Recieved")}>
+                      Comfirm you have recieved order
+                    </Received>
+                  )}
+                {userInfo && order.seller === userInfo._id && (
+                  <SetStatus>
+                    <FormControl
+                      disabled={
+                        order.deliveryStatus === "Hold" ||
+                        order.deliveryStatus === "Received"
+                      }
+                      sx={{
+                        minWidth: "200px",
+                        margin: 0,
+                        borderRadius: "0.2rem",
+                        border: `1px solid ${
+                          mode === "pagebodydark"
+                            ? "var(--dark-ev4)"
+                            : "var(--light-ev4)"
+                        }`,
+                        "& .MuiOutlinedInput-root": {
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                          "&:hover": {
+                            outline: "none",
+                            border: 0,
+                          },
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "0 !important",
+                        },
+                      }}
+                      size="small"
                     >
-                      <MenuItem value="Not yet Dispatched">
-                        Not yet Dispatched
-                      </MenuItem>
-                      <MenuItem value="Dispatch">Dispatch</MenuItem>
-                      <MenuItem value="In transit">In transit</MenuItem>
-                      <MenuItem value="Delivered">Delivered</MenuItem>
-                    </Select>
-                  </FormControl>
-                </SetStatus>
-              )}
-            </div>
-            <hr />
-            <DetailButton>
-              <OrderItem>
-                <Image src={orderitem.image} alt={orderitem.name} />
-                <Details1>
-                  <Name>{orderitem.name}</Name>
-                  <Quantity>QTY: {orderitem.quantity}</Quantity>
-                  <ItemPrice>$ {orderitem.price}</ItemPrice>
-                </Details1>
-              </OrderItem>
-              <ActionButton>
-                <button className="btn btn-primary w-100">
-                  <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
-                </button>
-                <button className="btn btn-outline-primary w-100 mt-2">
+                      <InputLabel
+                        sx={{
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                        }}
+                        id="deliveryStatus"
+                      >
+                        Set delivery Status
+                      </InputLabel>
+
+                      <Select
+                        onChange={(e) => deliverOrderHandler(e.target.value)}
+                        displayEmpty
+                        id="deliveryStatus"
+                      >
+                        <MenuItem value="Not yet Dispatched">
+                          Not yet Dispatched
+                        </MenuItem>
+                        <MenuItem value="Dispatch">Dispatch</MenuItem>
+                        <MenuItem value="In transit">In transit</MenuItem>
+                        <MenuItem value="Delivered">Delivered</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </SetStatus>
+                )}
+              </div>
+              <hr />
+              <DetailButton>
+                <OrderItem>
+                  <Image src={orderitem.image} alt={orderitem.name} />
+                  <Details1>
+                    <Name>{orderitem.name}</Name>
+                    <Quantity>QTY: {orderitem.quantity}</Quantity>
+                    <Quantity>Size: {orderitem.selectSize}</Quantity>
+                    <ItemPrice>$ {orderitem.price}</ItemPrice>
+                  </Details1>
+                </OrderItem>
+                <ActionButton>
+                  <button className="btn btn-primary w-100">
+                    <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
+                  </button>
+                </ActionButton>
+              </DetailButton>
+              <div>
+                Delivery Method:{" "}
+                <span style={{ marginLeft: "20px" }}>
+                  {orderitem.deliverySelect.trg} + $
+                  {orderitem.deliverySelect.value}
+                </span>
+                <span
+                  style={{
+                    marginLeft: "20px",
+                    color: "var(--orange-color)",
+                    pointer: "cursor",
+                  }}
+                >
                   See Delivery history
-                </button>
-              </ActionButton>
-            </DetailButton>
-          </SumaryContDetails>
-        ))}
+                </span>
+              </div>
+              <div>
+                Pick up point:{" "}
+                <span style={{ marginLeft: "20px" }}>
+                  {orderitem.deliverySelect.meta.shortName}
+                </span>
+              </div>
+              <div>
+                Phone:{" "}
+                <span style={{ marginLeft: "20px" }}>
+                  {orderitem.deliverySelect.phone}
+                </span>
+              </div>
+            </SumaryContDetails>
+          )
+        )}
         <PaymentDlivery>
           <PaymentDliveryItem>
             <Heading>Payment</Heading>
@@ -561,11 +719,6 @@ export default function OrderScreen() {
           <PaymentDliveryItem>
             <Heading>Delivery</Heading>
             <SumaryContDetails mode={mode}>
-              <Name>Deliver Option</Name>
-              <ItemNum>{order.deliveryMethod.trg}</ItemNum>
-              <ItemNum>{order.deliveryMethod.point.nodeCode}</ItemNum>
-              <ItemNum>{order.deliveryMethod.point.shortName}</ItemNum>
-              <hr />
               <Name>Deliver Address</Name>
               <ItemNum>
                 {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
@@ -575,9 +728,6 @@ export default function OrderScreen() {
             </SumaryContDetails>
           </PaymentDliveryItem>
         </PaymentDlivery>
-        <div style={{ display: "flex" }}>
-          <Print onClick={handlePrint}>Print</Print>
-        </div>
       </Container>
 
       {/* <Row>

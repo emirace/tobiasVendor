@@ -35,6 +35,7 @@ const Container = styled.div`
 `;
 const Wrapper = styled.div`
   padding: 20px;
+  border-radius: 0.2rem;
 `;
 const Menu = styled.div`
   margin-bottom: 10px;
@@ -50,9 +51,11 @@ const ListItem = styled.li`
   cursor: pointer;
   display: flex;
   align-items: center;
-  border-radius: 0.2rem;
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
   &.active,
   &:hover {
+    border-left: 2px solid var(--orange-color);
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
   }
@@ -109,7 +112,8 @@ export default function Sidebar({ current }) {
                 mode={mode}
                 className={current === "transactions" ? "active" : ""}
               >
-                <FontAwesomeIcon icon={faMoneyBillTransfer} /> Transactions
+                <FontAwesomeIcon icon={faMoneyBillTransfer} />
+                My Wallet
               </ListItem>
             </Link>
           </List>
@@ -177,6 +181,15 @@ export default function Sidebar({ current }) {
                   className={current === "messages" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faEnvelope} /> All Messages
+                </ListItem>
+              </Link>
+              <Link to="/dashboard/returns">
+                <ListItem
+                  mode={mode}
+                  className={current === "returns" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  Returns
                 </ListItem>
               </Link>
             </List>

@@ -1,7 +1,5 @@
 import "./App.css";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import ProductsScreen from "./screens/ProductsScreen";
-import ProductScreen from "./screens/ProductScreen";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,37 +17,25 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Badge from "react-bootstrap/Badge";
 import Container from "react-bootstrap/Container";
 import { LinkContainer } from "react-router-bootstrap";
-import { useContext, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { Store } from "./Store";
-import CartScreen from "./screens/CartScreen";
-import SigninScreen from "./screens/SigninScreen";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ShippingAddressScreen from "./screens/ShippingAddressScreen";
-import SignupScreen from "./screens/SignupScreen";
-import PaymentMethodScreen from "./screens/PaymentMethodScreen";
-import PlaceOrderScreen from "./screens/PlaceOrderScreen";
-import OrderScreen from "./screens/OrderScreen";
-import OrderHistoryScreen from "./screens/OrderHistoryScreen";
-import ProfileScreen from "./screens/ProfileScreen";
 import Button from "react-bootstrap/Button";
-import { getError } from "./utils";
+import { baseURL, getError } from "./utils";
 import axios from "axios";
 import SearchBox from "./component/SearchBox";
-import SearchSceen from "./screens/SearchSceen";
+import Footer from "./component/Footer";
 import DashboardScreen from "./screens/DashboardScreen";
-import HomeScreen from "./screens/HomeScreen";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Footer from "./component/Footer";
 import ProductListScreen from "./screens/ProductListScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
-import CategoryMobileScreen from "./screens/CategoryMobileScreen";
 import UserListScreen from "./screens/UserListScreen";
 import MyAccountScreen from "./screens/MyAccountScreen";
 import UserEditScreen from "./screens/UserEditScreen";
-import SellerScreen from "./screens/SellerScreen";
+
 import ProductCreateScreen from "./screens/ProductCreateScreen";
 import StickyNav from "./component/StickyNav";
 import styled from "styled-components";
@@ -62,32 +48,69 @@ import {
   SellerRoute,
 } from "./component/ProtectedRoute";
 import ScrollToTop from "./component/ScrollToTop";
-import ChatScreen from "./screens/ChatScreen";
-import InfoScreen from "./screens/InfoScreen";
-import MobileProfileScreen from "./screens/MobileProfileScreen";
 import Notification from "./component/Notification";
 import ToastNotification from "./component/ToastNotification";
-import DashboardNewScreen from "./screens/DashboardNewScreen";
-import CategorypageScreen from "./screens/CategorypageScreen";
-import BrandScreen from "./screens/BrandScreen";
 import { io } from "socket.io-client";
-import ShopByOutfit from "./screens/ShopByOutfit";
-import CreateOutfitScreen from "./screens/CreateOutfitScreen";
-import CreateOutfitPicScreen from "./screens/CreateOutfitPicScreen";
-import InfoScreenNonLogin from "./screens/InfoScreenNonlogin";
 import OrderListAdmin from "./component/dashboard/admin/OrderList";
 import ProductListAdmin from "./component/dashboard/admin/ProductList";
 import OutOfStock from "./component/dashboard/admin/OutOfStock";
-import SigninToAddressScreen from "./screens/SigninToAddressScreen";
-import SellScreen from "./screens/SellScreen";
-import About from "./component/info/About";
-import SustainabilityImpact from "./component/info/SustainabilityImpact";
-import BuyersPro from "./component/info/BuyersPro";
-import Bundle from "./component/info/Bundle";
-import FashionImpact from "./component/info/FashionImpact";
-import NewProduct from "./component/dashboard/NewProduct";
-import DeliveryOptionScreen from "./screens/DeliveryOptionScreen";
 
+import Bundle from "./component/info/Bundle";
+import useGeoLocation from "./hooks/useGeoLocation";
+import LoadingPage from "./component/LoadingPage";
+
+const ProductScreen = lazy(() => import("./screens/ProductScreen"));
+const CategoryMobileScreen = lazy(() =>
+  import("./screens/CategoryMobileScreen")
+);
+
+const SellerScreen = lazy(() => import("./screens/SellerScreen"));
+const FashionImpact = lazy(() => import("./component/info/FashionImpact"));
+
+const CartScreen = lazy(() => import("./screens/CartScreen"));
+
+const About = lazy(() => import("./component/info/About"));
+
+const NewProduct = lazy(() => import("./component/dashboard/NewProduct"));
+const SustainabilityImpact = lazy(() =>
+  import("./component/info/SustainabilityImpact")
+);
+
+const BuyersPro = lazy(() => import("./component/info/BuyersPro"));
+
+const SellScreen = lazy(() => import("./screens/SellScreen"));
+
+const SigninScreen = lazy(() => import("./screens/SigninScreen"));
+const SigninToAddressScreen = lazy(() =>
+  import("./screens/SigninToAddressScreen")
+);
+const SignupScreen = lazy(() => import("./screens/SignupScreen"));
+const InfoScreen = lazy(() => import("./screens/InfoScreen"));
+const InfoScreenNonLogin = lazy(() => import("./screens/InfoScreenNonlogin"));
+const CreateOutfitScreen = lazy(() => import("./screens/CreateOutfitScreen"));
+
+const CreateOutfitPicScreen = lazy(() =>
+  import("./screens/CreateOutfitPicScreen")
+);
+const ChatScreen = lazy(() => import("./screens/ChatScreen"));
+const MobileProfileScreen = lazy(() => import("./screens/MobileProfileScreen"));
+const ShippingAddressScreen = lazy(() =>
+  import("./screens/ShippingAddressScreen")
+);
+const PaymentMethodScreen = lazy(() => import("./screens/PaymentMethodScreen"));
+const PlaceOrderScreen = lazy(() => import("./screens/PlaceOrderScreen"));
+const OrderScreen = lazy(() => import("./screens/OrderScreen"));
+const DashboardNewScreen = lazy(() => import("./screens/DashboardNewScreen"));
+const HomeScreen = lazy(() => import("./screens/HomeScreen"));
+const ProductsScreen = lazy(() => import("./screens/ProductsScreen"));
+const DeliveryOptionScreen = lazy(() =>
+  import("./screens/DeliveryOptionScreen")
+);
+const CategorypageScreen = lazy(() => import("./screens/CategorypageScreen"));
+const BrandScreen = lazy(() => import("./screens/BrandScreen"));
+const ShopByOutfit = lazy(() => import("./screens/ShopByOutfit"));
+const SearchSceen = lazy(() => import("./screens/SearchSceen"));
+const ReturnPage = lazy(() => import("./component/dashboard/admin/ReturnPage"));
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
 
@@ -147,7 +170,6 @@ const Label = styled.label.attrs({
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
-
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("userInfo");
@@ -214,246 +236,248 @@ function App() {
                 />
               </NavCont>
             </header>
-
             <main>
               <div className="p-0 container-fluid">
-                <Routes>
-                  <Route path="/product/:slug" element={<ProductScreen />} />
-                  <Route path="/seller/:id" element={<SellerScreen />} />
-                  <Route path="/myaccount" element={<SellerScreen />} />
-                  <Route path="/cart" element={<CartScreen />} />
-                  <Route path="/about" element={<About />} />
-                  <Route
-                    path="/sustainability"
-                    element={<SustainabilityImpact />}
-                  />
-                  <Route path="/protections" element={<BuyersPro />} />
-                  <Route path="/rebundle" element={<Bundle />} />
-                  <Route path="/fashionImpact" element={<FashionImpact />} />
-                  <Route
-                    path="/categories"
-                    element={<CategoryMobileScreen />}
-                  />
-                  <Route path="/search" element={<SearchSceen />} />
-                  <Route path="/sell" element={<SellScreen />} />
-                  <Route path="/signin" element={<SigninScreen />} />
-                  <Route
-                    path="/continuesignin"
-                    element={<SigninToAddressScreen />}
-                  />
-                  <Route path="/signup" element={<SignupScreen />} />
-                  <Route path="/delivery" element={<InfoScreen />} />
-                  <Route path="/delivery2" element={<InfoScreenNonLogin />} />
-                  <Route path="/outfits" element={<CreateOutfitScreen />} />
-                  <Route
-                    path="/createoutfits"
-                    element={<CreateOutfitPicScreen />}
-                  />
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <ProfileScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/messages"
-                    element={
-                      <ProtectedRoute>
-                        <ChatScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/account"
-                    element={
-                      <ProtectedRoute>
-                        <MyAccountScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/profilmenu"
-                    element={
-                      <ProtectedRoute>
-                        <MobileProfileScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/shipping"
-                    element={
-                      <CartNotEmpty>
-                        <ShippingAddressScreen />
-                      </CartNotEmpty>
-                    }
-                  />
-                  <Route
-                    path="/payment"
-                    element={
-                      <CartNotEmpty>
-                        <PaymentMethodScreen />
-                      </CartNotEmpty>
-                    }
-                  />
-                  <Route
-                    path="/placeorder"
-                    element={
-                      <CartNotEmpty>
-                        <IsPaymentMethod>
-                          <PlaceOrderScreen />
-                        </IsPaymentMethod>
-                      </CartNotEmpty>
-                    }
-                  />
-                  <Route path="/order/:id" element={<OrderScreen />} />
-                  <Route
-                    path="/orderhistory"
-                    element={
-                      <ProtectedRoute>
-                        <OrderHistoryScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/dashboard/:tab/:id"
-                    element={
-                      <ProtectedRoute>
-                        <DashboardNewScreen />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route path="/" element={<HomeScreen />} />
-                  <Route path="/home" element={<ProductsScreen />} />
+                <Suspense fallback={<LoadingPage />}>
+                  <Routes>
+                    <Route path="/product/:slug" element={<ProductScreen />} />
+                    <Route path="/seller/:id" element={<SellerScreen />} />
+                    <Route path="/myaccount" element={<SellerScreen />} />
+                    <Route path="/cart" element={<CartScreen />} />
+                    <Route path="/about" element={<About />} />
+                    <Route
+                      path="/sustainability"
+                      element={<SustainabilityImpact />}
+                    />
+                    <Route path="/protections" element={<BuyersPro />} />
+                    <Route path="/rebundle" element={<Bundle />} />
+                    <Route path="/fashionImpact" element={<FashionImpact />} />
+                    <Route
+                      path="/categories"
+                      element={<CategoryMobileScreen />}
+                    />
+                    <Route path="/search" element={<SearchSceen />} />
+                    <Route path="/sell" element={<SellScreen />} />
+                    <Route path="/signin" element={<SigninScreen />} />
+                    <Route
+                      path="/continuesignin"
+                      element={<SigninToAddressScreen />}
+                    />
+                    <Route path="/signup" element={<SignupScreen />} />
+                    <Route path="/delivery" element={<InfoScreen />} />
+                    <Route path="/delivery2" element={<InfoScreenNonLogin />} />
+                    <Route path="/outfits" element={<CreateOutfitScreen />} />
+                    <Route
+                      path="/createoutfits"
+                      element={<CreateOutfitPicScreen />}
+                    />
 
-                  <Route path="/dashboard" element={<DashboardNewScreen />} />
+                    <Route
+                      path="/messages"
+                      element={
+                        <ProtectedRoute>
+                          <ChatScreen />
+                        </ProtectedRoute>
+                      }
+                    />
+                    {/* <Route
+                      path="/account"
+                      element={
+                        <ProtectedRoute>
+                          <MyAccountScreen />
+                        </ProtectedRoute>
+                      } 
+                    />*/}
+                    <Route
+                      path="/profilmenu"
+                      element={
+                        <ProtectedRoute>
+                          <MobileProfileScreen />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/shipping"
+                      element={
+                        <CartNotEmpty>
+                          <ShippingAddressScreen />
+                        </CartNotEmpty>
+                      }
+                    />
+                    <Route
+                      path="/payment"
+                      element={
+                        <CartNotEmpty>
+                          <PaymentMethodScreen />
+                        </CartNotEmpty>
+                      }
+                    />
+                    <Route
+                      path="/placeorder"
+                      element={
+                        <CartNotEmpty>
+                          <IsPaymentMethod>
+                            <PlaceOrderScreen />
+                          </IsPaymentMethod>
+                        </CartNotEmpty>
+                      }
+                    />
+                    <Route path="/order/:id" element={<OrderScreen />} />
+                    {/* <Route
+                      path="/orderhistory"
+                      element={
+                        <ProtectedRoute>
+                          <OrderHistoryScreen />
+                        </ProtectedRoute>
+                      }
+                    /> */}
+                    <Route
+                      path="/dashboard/:tab/:id"
+                      element={
+                        <ProtectedRoute>
+                          <DashboardNewScreen />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route path="/" element={<HomeScreen />} />
+                    <Route path="/home" element={<ProductsScreen />} />
 
-                  <Route
-                    path="/deliveryoption"
-                    element={<DeliveryOptionScreen />}
-                  />
-                  <Route
-                    path="/dashboard/:tab"
-                    element={<DashboardNewScreen />}
-                  />
-                  <Route path="/newproduct" element={<NewProduct />} />
+                    <Route path="/dashboard" element={<DashboardNewScreen />} />
 
-                  <Route
-                    path="/category/:name"
-                    element={<CategorypageScreen />}
-                  />
+                    <Route
+                      path="/deliveryoption"
+                      element={<DeliveryOptionScreen />}
+                    />
+                    <Route
+                      path="/dashboard/:tab"
+                      element={<DashboardNewScreen />}
+                    />
+                    <Route path="/newproduct" element={<NewProduct />} />
 
-                  <Route path="/brand" element={<BrandScreen />} />
-                  <Route path="/recurated" element={<ShopByOutfit />} />
+                    <Route
+                      path="/category/:name"
+                      element={<CategorypageScreen />}
+                    />
 
-                  {/* Admin Routes */}
+                    <Route path="/brand" element={<BrandScreen />} />
+                    <Route path="/recurated" element={<ShopByOutfit />} />
 
-                  <Route
-                    path="/admin/dashboard"
-                    element={
-                      <AdminRoute>
-                        <DashboardScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/product"
-                    element={
-                      <AdminRoute>
-                        <ProductListScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/product/:id"
-                    element={
-                      <AdminRoute>
-                        <ProductEditScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/allOrderList/"
-                    element={
-                      <AdminRoute>
-                        <OrderListAdmin />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/allProductList/"
-                    element={
-                      <AdminRoute>
-                        <ProductListAdmin />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/outofstock/"
-                    element={
-                      <AdminRoute>
-                        <OutOfStock />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/order"
-                    element={
-                      <AdminRoute>
-                        <OrderListScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/user"
-                    element={
-                      <AdminRoute>
-                        <UserListScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin/user/:id"
-                    element={
-                      <AdminRoute>
-                        <UserEditScreen />
-                      </AdminRoute>
-                    }
-                  />
-                  <Route
-                    path="/seller/product"
-                    element={
-                      <SellerRoute>
-                        <ProductListScreen />
-                      </SellerRoute>
-                    }
-                  />
-                  <Route
-                    path="/seller/product/:id"
-                    element={
-                      <SellerRoute>
-                        <ProductEditScreen />
-                      </SellerRoute>
-                    }
-                  />
-                  <Route
-                    path="/seller/order"
-                    element={
-                      <SellerRoute>
-                        <OrderListScreen />
-                      </SellerRoute>
-                    }
-                  />
-                  <Route
-                    path="/createproduct"
-                    element={
-                      <SellerRoute>
-                        <ProductCreateScreen />
-                      </SellerRoute>
-                    }
-                  />
-                </Routes>
+                    {/* Admin Routes */}
+
+                    {/* <Route
+                      path="/admin/dashboard"
+                      element={
+                        <AdminRoute>
+                          <DashboardScreen />
+                        </AdminRoute>
+                      }
+                    /> */}
+                    <Route
+                      path="/return/:id"
+                      element={
+                        <AdminRoute>
+                          <ReturnPage />
+                        </AdminRoute>
+                      }
+                    />
+                    {/* <Route
+                      path="/admin/product"
+                      element={
+                        <AdminRoute>
+                          <ProductListScreen />
+                        </AdminRoute>
+                      }
+                    /> */}
+                    {/* <Route
+                      path="/admin/product/:id"
+                      element={
+                        <AdminRoute>
+                          <ProductEditScreen />
+                        </AdminRoute>
+                      }
+                    /> */}
+                    {/* <Route
+                      path="/admin/allOrderList/"
+                      element={
+                        <AdminRoute>
+                          <OrderListAdmin />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/allProductList/"
+                      element={
+                        <AdminRoute>
+                          <ProductListAdmin />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/outofstock/"
+                      element={
+                        <AdminRoute>
+                          <OutOfStock />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/order"
+                      element={
+                        <AdminRoute>
+                          <OrderListScreen />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/user"
+                      element={
+                        <AdminRoute>
+                          <UserListScreen />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/admin/user/:id"
+                      element={
+                        <AdminRoute>
+                          <UserEditScreen />
+                        </AdminRoute>
+                      }
+                    />
+                    <Route
+                      path="/seller/product"
+                      element={
+                        <SellerRoute>
+                          <ProductListScreen />
+                        </SellerRoute>
+                      }
+                    />
+                    <Route
+                      path="/seller/product/:id"
+                      element={
+                        <SellerRoute>
+                          <ProductEditScreen />
+                        </SellerRoute>
+                      }
+                    />
+                    <Route
+                      path="/seller/order"
+                      element={
+                        <SellerRoute>
+                          <OrderListScreen />
+                        </SellerRoute>
+                      }
+                    />
+                    <Route
+                      path="/createproduct"
+                      element={
+                        <SellerRoute>
+                          <ProductCreateScreen />
+                        </SellerRoute>
+                      }
+                    /> */}
+                  </Routes>
+                </Suspense>
               </div>
             </main>
             <Footer />

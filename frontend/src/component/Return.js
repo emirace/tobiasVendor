@@ -9,6 +9,8 @@ import React, { useContext, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../Store";
 import { getError } from "../utils";
+import LoadingBox from "./LoadingBox";
+import MessageBox from "./MessageBox";
 
 const Container = styled.div`
   padding: 30px;
@@ -66,6 +68,26 @@ const InputCont = styled.div`
 const Label = styled.div`
   font-size: 14px;
 `;
+const Label1 = styled.label`
+  font-size: 14px;
+`;
+const TextArea = styled.textarea`
+  height: 100px;
+  border-radius: 0.2rem;
+  background: none;
+  width: 100%;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  padding: 10px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
+`;
 const Button = styled.div`
   padding: 3px 7px;
   color: var(--white-color);
@@ -91,15 +113,27 @@ const reducer = (state, action) => {
     case "UPLOAD_FAIL":
       return { ...state, loadingUpload: false };
 
+    case "RETURN_REQUEST":
+      return { ...state, loading: true };
+    case "RETURN_SUCCESS":
+      return { ...state, loading: false, errorUpload: "" };
+    case "RETURN_FAIL":
+      return { ...state, loading: false };
+
     default:
       return state;
   }
 };
-export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
+export default function Return({
+  orderItems,
+  orderId,
+  deliveryMethod,
+  setShowReturn,
+}) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
-  const [{ loadingUpload }, dispatch] = useReducer(reducer, {
+  const [{ loadingUpload, loading }, dispatch] = useReducer(reducer, {
     product: null,
     loading: true,
     error: "",
@@ -109,8 +143,67 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
   const [current, setCurrent] = useState("");
   const [resolution, setResolution] = useState("");
   const [image, setImage] = useState("");
-  const handleReturn = () => {
-    setShowReturn(false);
+  const [description, setDescription] = useState("");
+  const [sending, setSending] = useState("");
+  const [refund, setRefund] = useState("");
+  const [reason, setReason] = useState("");
+  const [error, setError] = useState("");
+
+  const handleReturn = async () => {
+    if (!reason.length) {
+      setError("Please select a reason for return");
+      return;
+    }
+    if (!sending.length) {
+      setError("Please select a method of sending");
+      return;
+    }
+    if (!refund.length) {
+      setError("Please select a method of refund");
+      return;
+    }
+
+    dispatch({ type: "RETURN_REQUEST" });
+    try {
+      await axios.post(
+        "/api/returns",
+        {
+          orderId,
+          productId: current._id,
+          resolution,
+          sending,
+          refund,
+          reason,
+          others: description,
+          image,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      dispatch({ type: "RETURN_SUCCESS" });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Return logged successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      setImage("");
+      setShowReturn(false);
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Fail sending report, pls try again",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
   };
   const uploadImageHandler = async (e) => {
     const file = e.target.files[0];
@@ -152,7 +245,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
       case "items":
         return (
           <Content>
-            <h4>Select Return Item</h4>
+            <h4>Select a Product to Return</h4>
             {orderItems.map((orderitem) => (
               <>
                 <ItemCont
@@ -193,6 +286,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
               setTab("items")
             )}
             <Form>
+              {error && <MessageBox variant="danger">{error}</MessageBox>}
               <InputCont>
                 <Label>Preferred Resolution Method</Label>
 
@@ -266,7 +360,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
                   size="small"
                 >
                   <Select
-                    onChange={(e) => setResolution(e.target.value)}
+                    onChange={(e) => setReason(e.target.value)}
                     displayEmpty
                     id="deliveryStatus"
                   >
@@ -277,7 +371,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
                       Product condition is significantly not as described
                     </MenuItem>
                     <MenuItem value="The product is totally defective or completely demaged.">
-                      In transit
+                      The product is totally defective or completely damage
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -313,7 +407,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
                   size="small"
                 >
                   <Select
-                    onChange={(e) => setResolution(e.target.value)}
+                    onChange={(e) => setSending(e.target.value)}
                     displayEmpty
                     id="deliveryStatus"
                   >
@@ -356,7 +450,7 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
                   size="small"
                 >
                   <Select
-                    onChange={(e) => setResolution(e.target.value)}
+                    onChange={(e) => setRefund(e.target.value)}
                     displayEmpty
                     id="deliveryStatus"
                   >
@@ -370,9 +464,28 @@ export default function Return({ orderItems, deliveryMethod, setShowReturn }) {
                 </FormControl>
               </InputCont>
               <InputCont>
-                <Label>
+                <Label>Other Information</Label>
+                <TextArea
+                  mode={mode}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </InputCont>
+              <InputCont>
+                <Label1 htmlFor="return">
                   <FontAwesomeIcon icon={faCamera} /> Upload Image
-                </Label>
+                </Label1>
+                {loadingUpload && <LoadingBox />}
+                {image.length === 0 && (
+                  <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+                    Image Uploaded
+                  </span>
+                )}
+                <input
+                  type="file"
+                  id="return"
+                  style={{ display: "none" }}
+                  onChange={uploadImageHandler}
+                />
               </InputCont>
               <Button onClick={handleReturn}>Submit</Button>
             </Form>

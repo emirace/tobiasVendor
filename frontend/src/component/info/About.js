@@ -51,9 +51,6 @@ const Section = styled.section`
 const Row = styled.div`
   display: flex;
 `;
-const SmallImg = styled.div`
-  width: 300px;
-`;
 const Image2 = styled.img`
   width: 50%;
   padding: 5px;
@@ -83,7 +80,7 @@ export default function About() {
         and one loving home at a time.
       </div>
       <Image
-        src="https://res.cloudinary.com/emirace/image/upload/v1660192223/20220711_223429_0000_fpvzbl.png"
+        src="https://res.cloudinary.com/emirace/image/upload/v1661221990/20220711_223429_0000_qkboad.webp"
         alt="img"
       />
       <Section>
@@ -102,11 +99,11 @@ export default function About() {
       <Section>
         <SubHeading>REPEDDLE EXPLAINED: (THE M.G.H.)</SubHeading>
         <Row>
-          <SmallImg
-            src="https://res.cloudinary.com/emirace/image/upload/v1660106384/cytonn-photography-n95VMLxqM2I-unsplash_mdqay8.jpg"
+          <Image2
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221991/cytonn-photography-n95VMLxqM2I-unsplash_zjvrqp.webp"
             alt="img"
           />
-          <SmallImg
+          <Image2
             src="https://res.cloudinary.com/emirace/image/upload/v1657405562/yne3ejukoc1glryhx7zk.png"
             alt="img"
           />
@@ -149,11 +146,11 @@ export default function About() {
         <SubHeading>DOWNLOAD OUR APP</SubHeading>
         <Row>
           <Image2
-            src="https://res.cloudinary.com/emirace/image/upload/v1660106368/andhika-soreng-XuJ9qu47S2c-unsplash_zet7ow.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221990/andhika-soreng-XuJ9qu47S2c-unsplash_po2ujf.webp"
             alt="img"
           />
           <Image2
-            src="https://res.cloudinary.com/emirace/image/upload/v1660106376/blubel-TL5JFCvITp4-unsplash_wuc6rd.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221991/blubel-TL5JFCvITp4-unsplash_q3ygsq.webp"
             alt="img"
           />
         </Row>

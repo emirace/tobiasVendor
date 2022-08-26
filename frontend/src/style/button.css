@@ -40,8 +40,8 @@
 
 .center-item .main-item-1 .main-item-text {
   position: absolute;
-  left: 50px;
-  max-width: 50%;
+  left: 30px;
+  max-width: 40%;
   background: none;
   margin-bottom: 15px;
 }
@@ -722,7 +722,7 @@ sm-product1 {
 
 .discount_text {
   background-color: #f4f4f4;
-  height: 390px;
+  height: 100%;
   padding: 75px 90px 50px;
 }
 

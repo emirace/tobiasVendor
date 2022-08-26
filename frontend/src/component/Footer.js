@@ -16,6 +16,8 @@ import { ReactComponent as FacebookIcon } from "./../icons/Icons-19.svg";
 import { ReactComponent as WhatsappIcon } from "./../icons/Icons-22.svg";
 import { ReactComponent as InstagramIcon } from "./../icons/Icons-29.svg";
 import { Link } from "react-router-dom";
+import { ReactComponent as Phone } from "./../icons/Icons-02.svg";
+import { ReactComponent as Mail } from "./../icons/Icons-04.svg";
 
 const CopyRight = styled.div`
   background: ${(props) => (props.back ? "#000" : "#fff")};
@@ -389,7 +391,7 @@ export default function Footer() {
                 <a href="/#">Blog and News</a>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Re:Bundle</a>
+                <Link to="/rebundle">Re:Bundle</Link>
               </li>
               <li className="footer_center_listitem">
                 <a href="/#">Wholesale</a>
@@ -445,13 +447,12 @@ export default function Footer() {
         <div className="footer_right">
           <h3 className="footer_center_menu">Contact</h3>
           <div className="footer_contacts">
-            <i className="fa fa-home"></i> 123 Creson, Califanion, USA
+            <Phone height={25} width={25} />{" "}
+            <span style={{ paddingLeft: "10px" }}>+1 234 56 78</span>
           </div>
           <div className="footer_contacts">
-            <i className="fa fa-phone"></i> +1 234 56 78
-          </div>
-          <div className="footer_contacts">
-            <i className="fa fa-envelope"></i> support@repeddle.com
+            <Mail height={25} width={25} />
+            <span style={{ paddingLeft: "10px" }}> support@repeddle.com</span>
           </div>
           <img
             src="https://i.ibb.co/Qfvn4z6/payment.png"

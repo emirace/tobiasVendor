@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import styled from 'styled-components';
-import { Store } from '../../Store';
+import React, { useContext } from "react";
+import styled from "styled-components";
+import { Store } from "../../Store";
 
 const Container = styled.div`
   flex: 2;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   padding: 20px;
   border-radius: 0.2rem;
 `;
@@ -51,17 +51,17 @@ const Button = styled.button`
   border-radius: 0.2rem;
   &.Approved {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? '#112014' : '#d6f5dc'};
+      props.mode === "pagebodydark" ? "#112014" : "#d6f5dc"};
     color: var(--green-color);
   }
   &.Declined {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? '#211111' : '#f8d6d6'};
+      props.mode === "pagebodydark" ? "#211111" : "#f8d6d6"};
     color: var(--red-color);
   }
   &.Pending {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
     color: var(--orange-color);
   }
 `;
@@ -71,7 +71,11 @@ export default function WidgetLarge() {
   const { mode } = state;
 
   const actionButton = (type) => {
-    return <Button className={type}>{type}</Button>;
+    return (
+      <Button mode={mode} className={type}>
+        {type}
+      </Button>
+    );
   };
 
   return (
@@ -91,7 +95,7 @@ export default function WidgetLarge() {
           </User>
           <Date>2 June 2022</Date>
           <Amount>$334.56</Amount>
-          <Status>{actionButton('Approved')}</Status>
+          <Status>{actionButton("Approved")}</Status>
         </Tr>
         <Tr>
           <User>
@@ -100,7 +104,7 @@ export default function WidgetLarge() {
           </User>
           <Date>2 June 2022</Date>
           <Amount>$334.56</Amount>
-          <Status>{actionButton('Pending')}</Status>
+          <Status>{actionButton("Pending")}</Status>
         </Tr>
         <Tr>
           <User>
@@ -109,7 +113,7 @@ export default function WidgetLarge() {
           </User>
           <Date>2 June 2022</Date>
           <Amount>$334.56</Amount>
-          <Status>{actionButton('Declined')}</Status>
+          <Status>{actionButton("Declined")}</Status>
         </Tr>
         <Tr>
           <User>
@@ -118,7 +122,7 @@ export default function WidgetLarge() {
           </User>
           <Date>2 June 2022</Date>
           <Amount>$334.56</Amount>
-          <Status>{actionButton('Approved')}</Status>
+          <Status>{actionButton("Approved")}</Status>
         </Tr>
       </Table>
     </Container>

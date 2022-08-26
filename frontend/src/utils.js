@@ -89,3 +89,32 @@ export function displayDeliveryStatus(status) {
     );
   }
 }
+export const baseURL = () => {
+  const add = "https://repeddle.com:5000";
+  console.log(window.location.hostname);
+  return add;
+};
+
+export const checkDeliverySelect = (cart) => {
+  var success = true;
+  cart.cartItems.map((x) => {
+    if (!x.deliverySelect) {
+      success = false;
+    }
+  });
+  return success;
+};
+
+export const calcPrice = (cart) => {
+  const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
+  cart.itemsPrice = round2(
+    cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+  );
+  cart.shippingPrice = checkDeliverySelect(cart)
+    ? round2(
+        cart.cartItems.reduce((a, c) => a + Number(c.deliverySelect.value), 0)
+      )
+    : 0;
+  cart.taxPrice = round2(0);
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+};

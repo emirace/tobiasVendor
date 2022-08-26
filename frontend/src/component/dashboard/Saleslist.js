@@ -325,6 +325,7 @@ export default function Saleslist() {
       <Title>Sold Order History</Title>
       <SearchCont>
         <SearchInput
+          mode={mode}
           onChange={(e) => setSalesQurrey(e.target.value)}
           placeholder="Search by id"
         />

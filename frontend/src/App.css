@@ -994,3 +994,17 @@ select.select_input_box {
 
 .MuiPaper-root {
 }
+.list-group-item {
+  background: none;
+  color: inherit;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

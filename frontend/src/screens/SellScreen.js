@@ -25,6 +25,7 @@ const Header = styled.h1`
   font-size: 80px;
   top: 50%;
   left: 10%;
+  color: white;
   transform: translateY(-50%);
 `;
 const Header2 = styled.h2`
@@ -176,7 +177,7 @@ export default function SellScreen() {
         </Row>
         <ImageCont>
           <MainImage
-            src="https://res.cloudinary.com/emirace/image/upload/v1660101682/tamara-bellis-HPvN6rs86F0-unsplash_xxx1k0.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221993/tamara-bellis-HPvN6rs86F0-unsplash_q78awc.webp"
             alt="main Image"
           />
           <Header>THE THRILL! START SELLING</Header>
@@ -263,23 +264,23 @@ export default function SellScreen() {
         <Button>Start Selling</Button>
         <Row className="gap">
           <Imagesqr
-            src="https://res.cloudinary.com/emirace/image/upload/v1660109775/james-ree-ZmeFtu11Hpc-unsplash_mwt5xp.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221989/james-ree-ZmeFtu11Hpc-unsplash_xzwcxb.webp"
             alt="img"
           />
           <Imagesqr
-            src="https://res.cloudinary.com/emirace/image/upload/v1660109774/Screen_Shot_2022-08-06_at_2.16.31_PM_hyotfb.png"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221989/Screen_Shot_2022-08-06_at_2.16.31_PM_obdxfj.webp"
             alt="img"
           />
           <Imagesqr
-            src="https://res.cloudinary.com/emirace/image/upload/v1660109804/john-torcasio-TJrkkhdB39E-unsplash_h7uh9y.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221989/john-torcasio-TJrkkhdB39E-unsplash_gjmphx.webp"
             alt="img"
           />
           <Imagesqr
-            src="https://res.cloudinary.com/emirace/image/upload/v1660109783/arno-senoner-ZT16YkAYueo-unsplash_paebl8.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221989/arno-senoner-ZT16YkAYueo-unsplash_mhdyxh.webp"
             alt="img"
           />
           <Imagesqr
-            src="https://res.cloudinary.com/emirace/image/upload/v1660109780/aditya-chinchure-jMh1p7EiV8Q-unsplash_itxtcy.jpg"
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221989/aditya-chinchure-jMh1p7EiV8Q-unsplash_1_dqffwg.webp"
             alt="img"
           />
         </Row>
@@ -289,7 +290,7 @@ export default function SellScreen() {
         <div style={{ maxWidth: "100%" }}>
           <Row>
             <RebatchImg
-              src="https://res.cloudinary.com/emirace/image/upload/v1660106381/derick-anies-hDJT_ERrB-w-unsplash_r196go.jpg"
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221991/derick-anies-hDJT_ERrB-w-unsplash_tty8rb.webp"
               alt="img"
             />
             <div>
@@ -331,8 +332,8 @@ export default function SellScreen() {
           style={{ width: "100%" }}
           src={
             mode === "pagebodylight"
-              ? "https://res.cloudinary.com/emirace/image/upload/v1660128407/For_Dark_Theme_yeyaca.png"
-              : "https://res.cloudinary.com/emirace/image/upload/v1660128410/For_Light_Theme_nivosx.png"
+              ? "https://res.cloudinary.com/emirace/image/upload/v1661221987/For_Dark_Theme_1_dmcdl9.webp"
+              : "https://res.cloudinary.com/emirace/image/upload/v1661221986/For_Light_Theme_1_wilk83.webp"
           }
           alt="image"
         />

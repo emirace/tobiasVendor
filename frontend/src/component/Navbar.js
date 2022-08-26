@@ -11,7 +11,7 @@ import SearchBox from "./SearchBox";
 import { Link } from "react-router-dom";
 import { Store } from "../Store";
 import axios from "axios";
-import { getError } from "../utils";
+import { baseURL, getError } from "../utils";
 import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
 import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
 
@@ -186,9 +186,7 @@ const Underline = styled.div`
 
 const Logo = styled.div`
   flex: 1;
-  font-size: 40px;
-  font-weight: bold;
-  text-transform: uppercase;
+  padding-right: 20px;
 `;
 const Search = styled.div`
   flex: 3;
@@ -450,9 +448,11 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   useEffect(() => {
     try {
       const fetchCategories = async () => {
-        const { data } = await axios.get("/api/categories");
+        const { data } = await axios.get(`/api/categories`);
         setCategories(data);
+        console.log("categori", data);
       };
+      console.log(baseURL());
       fetchCategories();
     } catch (err) {
       console.log(getError(err));
@@ -529,8 +529,8 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
             <LogoImage
               src={
                 mode === "pagebodydark"
-                  ? "https://res.cloudinary.com/emirace/image/upload/v1659377710/Repeddle-White_pani6a.gif"
-                  : "https://res.cloudinary.com/emirace/image/upload/v1659377672/Repeddle-Black_eko2g5.gif"
+                  ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
+                  : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif"
               }
             />
           </Link>
@@ -597,6 +597,7 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         </RightMenu>
       </Wrapper2>
       <Category>
+        {console.log(categories)}
         {categories.length > 0 &&
           categories.map((c) => (
             <CategoryGroup>

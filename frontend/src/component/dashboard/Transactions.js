@@ -3,136 +3,125 @@ import {
   faMoneyBillTransfer,
   faPlus,
   faReceipt,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react';
-import styled from 'styled-components';
-import { Store } from '../../Store';
-import WidgetLarge from './WidgetLarge';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../../Store";
+import { getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
+import AddFund from "../wallet/AddFund";
+import WalletModel from "../wallet/WalletModel";
+import WidgetLarge from "./WidgetLarge";
 const Container = styled.div`
   flex: 4;
   margin-left: 20px;
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
   }
 `;
 const BannerImage = styled.div`
-  background: var(--orange-color);
-  height: 200px;
-
-  display: flex;
-  justify-content: center;
-
-  padding: 20px;
-  position: relative;
-`;
-const Text = styled.div`
-  font-weight: 600;
-  font-size: 35px;
-`;
-const Content = styled.div`
-  margin-top: 150px;
-  display: flex;
-  justify-content: center;
-`;
-const Detail = styled.div`
-  padding: 20px;
-  position: absolute;
-  left: 50%;
-  width: 80%;
-  border-radius: 0.2rem;
-  bottom: -150px;
-  transform: translateX(-50%);
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
-`;
-const Top = styled.div`
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
+  border-radius: 0.5rem;
   display: flex;
-  justify-content: space-around;
-  font-size: 20px;
-  font-weight: 300;
-`;
-const Left = styled.div``;
-const DateTop = styled.div``;
-const DateBottom = styled.div``;
-const Right = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: end;
+  align-items: center;
+  padding: 20px;
+  justify-content: space-between;
 `;
 const Balance = styled.div`
   font-weight: bold;
+  font-size: 50px;
+  color: var(--orange-color);
+  font-family: "Absentiasans";
 `;
 const Currency = styled.div`
   font-size: 15px;
 `;
-const Bottom = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin: 20px 120px 10px 120px;
-`;
 const Action = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   border-radius: 0.2rem;
-  padding: 8px;
+  padding: 10px 30px;
   cursor: pointer;
+  font-weight: bold;
+  background-color: var(--orange-color);
+  color: white;
   & svg {
-    font-size: 45px;
-    margin-bottom: 10px;
+    margin-right: 10px;
   }
   &:hover {
-    background-color: var(--orange-color);
-    color: white;
   }
 `;
 const TextSmall = styled.div`
-  font-size: 20px;
-  font-weight: 300;
+  font-weight: bold;
+  color: var(--orange-color);
 `;
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_REQUEST":
+      return { ...state, loading: true };
+    case "FETCH_SUCCESS":
+      return { ...state, loading: false, balance: action.payload };
+    case "FETCH_FAIL":
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
 export default function Transactions() {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+
+  const [{ loading, error, balance }, dispatch] = useReducer(reducer, {
+    loading: true,
+    error: "",
+    balance: 0,
+  });
+  const [refresh, setRefresh] = useState(false);
+  useEffect(() => {
+    try {
+      dispatch({ type: "FETCH_REQUEST" });
+      const getBalance = async () => {
+        const { data } = await axios.get("/api/accounts/balance", {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: "FETCH_SUCCESS", payload: data.balance });
+      };
+      getBalance();
+    } catch (err) {
+      console.log(getError(err));
+      dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+    }
+  }, [userInfo, refresh]);
+
+  const [showModel, setShowModel] = useState(false);
   return (
     <Container mode={mode}>
-      <BannerImage>
-        <Text>Wallet</Text>
-        <Detail mode={mode}>
-          <Top>
-            <Left>
-              <DateTop>Monday</DateTop>
-              <DateBottom>23 Sep 2022</DateBottom>
-            </Left>
-            <Right>
-              <Balance>$30</Balance>
-              <Currency>Repeddle Balance</Currency>
-            </Right>
-          </Top>
-          <Bottom>
-            <Action>
-              <FontAwesomeIcon icon={faCirclePlus} />
-              <TextSmall>Top Up</TextSmall>
-            </Action>
-            <Action>
-              <FontAwesomeIcon icon={faReceipt} />
-              <TextSmall>Withdral</TextSmall>
-            </Action>
-            <Action>
-              <FontAwesomeIcon icon={faMoneyBillTransfer} />
-              <TextSmall>Transfer</TextSmall>
-            </Action>
-          </Bottom>
-        </Detail>
+      <BannerImage mode={mode}>
+        <div>
+          <Balance>{loading ? <LoadingBox /> : "$" + balance}</Balance>
+          <TextSmall>Current Repeddle Wallet Balance</TextSmall>
+        </div>
+        <Action onClick={() => setShowModel(true)}>
+          <FontAwesomeIcon icon={faPlus} />
+          Add Money to Wallet
+        </Action>
       </BannerImage>
-      <Content>
-        <WidgetLarge />
-      </Content>
+      <WalletModel showModel={showModel} setShowModel={setShowModel}>
+        <AddFund
+          setShowModel={setShowModel}
+          setRefresh={setRefresh}
+          refresh={refresh}
+        />
+      </WalletModel>
+      <WidgetLarge />
     </Container>
   );
 }

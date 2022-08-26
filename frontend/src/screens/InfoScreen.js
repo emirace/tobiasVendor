@@ -219,7 +219,6 @@ export default function InfoScreen() {
       console.log(useraddress);
       ctxDispatch({ type: "SAVE_USER_ADDRESS", payload: useraddress });
       ctxDispatch({ type: "SAVE_SHIPPING_ADDRESS", payload: useraddress });
-      localStorage.setItem("useraddress", JSON.stringify(useraddress));
       localStorage.setItem("shippingAddress", JSON.stringify(useraddress));
       navigate("../payment");
     } else {

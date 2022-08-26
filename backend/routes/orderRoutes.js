@@ -7,6 +7,16 @@ import Product from "../models/productModel.js";
 import mongoose from "mongoose";
 import moment from "moment";
 
+import dotenv from "dotenv";
+import Flutterwave from "flutterwave-node-v3";
+import Transaction from "../models/transactionModel.js";
+
+dotenv.config();
+const flw = new Flutterwave(
+  process.env.FLW_PUBLIC_KEY,
+  process.env.FLW_SECRET_KEY
+);
+
 const today = moment().startOf("day");
 
 const orderRouter = express.Router();
@@ -69,10 +79,11 @@ orderRouter.get(
 
     const seller = req.params.id;
 
-    const orders = await Order.find({ seller, ...queryFilter }).populate(
-      "user",
-      "name"
-    );
+    const orders = await Order.find({
+      seller: { $in: [seller] },
+      ...queryFilter,
+      isPaid: true,
+    }).populate("user", "name");
     res.send(orders);
   })
 );
@@ -81,8 +92,12 @@ orderRouter.post(
   "/",
   isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
+    var seller = [];
+    req.body.orderItems.map((i) => {
+      seller = [...new Set([...seller, i.seller])];
+    });
     const newOrder = new Order({
-      seller: req.body.orderItems[0].seller,
+      seller,
       orderItems: req.body.orderItems.map((x) => ({ ...x, product: x._id })),
       shippingAddress: req.body.shippingAddress,
       deliveryMethod: req.body.deliveryMethod,
@@ -339,7 +354,7 @@ orderRouter.get(
 
     const orders = await Order.find({ user: req.user._id, ...queryFilter })
       .populate("user", "name")
-      .limit(10);
+      .limit(searchQuery && searchQuery !== "all" ? 10 : "");
     res.send(orders);
   })
 );
@@ -397,35 +412,55 @@ orderRouter.put(
 orderRouter.put(
   "/:id/pay",
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
-    const products = [];
-    order.orderItems.map((i) => products.push(i._id));
-    const records = await Product.find({
-      _id: { $in: products },
-    });
-    records.map(async (p) => {
-      p.sold = true;
-      const seller = await User.findById(p.seller);
-      console.log("seller 1", seller);
-      seller.sold.push(p._id);
-      await seller.save();
-      console.log("seller 2", seller);
-      await p.save();
-    });
-
-    if (order) {
-      order.isPaid = true;
-      order.paidAt = Date.now();
-      order.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time: req.body.update_time,
-        email_address: req.body.email_address,
-      };
-      const updateOrder = await order.save();
-      res.send({ message: "Order Paid", order: updateOrder });
+    const { transaction_id } = req.body;
+    const { method } = req.body;
+    var response;
+    if (method === "wallet") {
+      const transaction = await Transaction.find({
+        "metadata.transaction_id": transaction_id,
+      });
+      if (transaction) {
+        response = { data: { status: "successful" } };
+      } else {
+        response = { data: { status: "failed" } };
+      }
     } else {
-      res.status(404).send({ message: "Order Not Found" });
+      response = await flw.Transaction.verify({ id: transaction_id });
+    }
+    console.log(response);
+    if (response.data.status === "successful") {
+      const order = await Order.findById(req.params.id);
+      const products = [];
+      order.orderItems.map((i) => products.push(i._id));
+      const records = await Product.find({
+        _id: { $in: products },
+      });
+      records.map(async (p) => {
+        p.sold = true;
+        const seller = await User.findById(p.seller);
+        console.log("seller 1", seller);
+        seller.sold.push(p._id);
+        await seller.save();
+        console.log("seller 2", seller);
+        await p.save();
+      });
+
+      if (order) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+        order.paymentResult = {
+          id: req.body.id,
+          status: req.body.status,
+          update_time: req.body.update_time,
+          email_address: req.body.email_address,
+        };
+        const updateOrder = await order.save();
+        res.send({ message: "Order Paid", order: updateOrder });
+      } else {
+        res.status(404).send({ message: "Order Not Found" });
+      }
+    } else {
+      res.send("error making payment");
     }
   })
 );

@@ -1,16 +1,17 @@
-import express from 'express';
-import Category from '../models/categoryModel.js';
-import { isAdmin, isAuth } from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
+import express from "express";
+import Category from "../models/categoryModel.js";
+import { isAdmin, isAuth } from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
 
 const categoryRouter = express.Router();
 
 // get all categories
 
 categoryRouter.get(
-  '/',
+  "/",
   expressAsyncHandler(async (req, res) => {
     const categories = await Category.find();
+    console.log("helo");
     res.send(categories);
   })
 );
@@ -18,7 +19,7 @@ categoryRouter.get(
 // add a category
 
 categoryRouter.post(
-  '/',
+  "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -28,14 +29,14 @@ categoryRouter.post(
     });
 
     await category.save();
-    res.status(201).send('Category added');
+    res.status(201).send("Category added");
   })
 );
 
 // update a category
 
 categoryRouter.put(
-  '/',
+  "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -48,7 +49,7 @@ categoryRouter.put(
       const newCategory = await category.save();
       res.status(201).send(newCategory);
     } else {
-      res.status(404).send('Category not found');
+      res.status(404).send("Category not found");
     }
   })
 );
@@ -56,16 +57,16 @@ categoryRouter.put(
 // delete a category
 
 categoryRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const category = await Category.findById(req.params.id);
     if (category) {
       await category.remove();
-      res.send('Category deleted');
+      res.send("Category deleted");
     } else {
-      res.status(404).send('Category not found');
+      res.status(404).send("Category not found");
     }
   })
 );
@@ -73,13 +74,13 @@ categoryRouter.delete(
 // get a category
 
 categoryRouter.get(
-  '/:id',
+  "/:id",
   expressAsyncHandler(async (req, res) => {
     const category = await Category.findById(req.params.id);
     if (category) {
       res.status(201).send(category);
     } else {
-      res.status(404).send('Category not found');
+      res.status(404).send("Category not found");
     }
   })
 );

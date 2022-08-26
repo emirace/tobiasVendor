@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useReducer } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { getError } from "../utils";
+import { baseURL, getError } from "../utils";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
 
@@ -149,19 +149,23 @@ export default function Influencer({ sellerId }) {
         </Details>
       </User>
       <ProductList>
-        {products.slice(0, 3).map((product) => (
-          <Product>
-            <ProductImg src={product.image} alt="img" />
-            <PDetail>
-              <Price>${product.actualPrice}</Price>
-              <Sizes>
-                {product.sizes.map((size) => (
-                  <Size>{size.name}</Size>
-                ))}
-              </Sizes>
-            </PDetail>
-          </Product>
-        ))}
+        {products.length > 0 ? (
+          products.slice(0, 3).map((product) => (
+            <Product>
+              <ProductImg src={product.image} alt="img" />
+              <PDetail>
+                <Price>${product.actualPrice}</Price>
+                <Sizes>
+                  {product.sizes.map((size) => (
+                    <Size>{size.name}</Size>
+                  ))}
+                </Sizes>
+              </PDetail>
+            </Product>
+          ))
+        ) : (
+          <div>Loading...</div>
+        )}
       </ProductList>
     </Container>
   );

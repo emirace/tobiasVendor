@@ -85,6 +85,7 @@ const SearchInput = styled.input`
   padding: 15px;
   border: 1px solid var(--malon-color);
   border-radius: 5px;
+  background: none;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
@@ -240,6 +241,7 @@ export default function OrderList() {
       <Title>Purchase Product History</Title>
       <SearchCont>
         <SearchInput
+          mode={mode}
           onChange={(e) => setOrdersQuery(e.target.value)}
           placeholder="Search by id"
         />

@@ -1,46 +1,83 @@
 import express from "express";
-import { creditAccount, debitAccount, isAdmin, isAuth } from "../utils.js";
+import {
+  creditAccount,
+  debitAccount,
+  isAdmin,
+  isAuth,
+  isAuthOrNot,
+} from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
 import { v4 } from "uuid";
 import Account from "../models/accountModel.js";
+import axios from "axios";
+import dotenv from "dotenv";
+import Flutterwave from "flutterwave-node-v3";
+import User from "../models/userModel.js";
 
+dotenv.config();
+const flw = new Flutterwave(
+  process.env.FLW_PUBLIC_KEY,
+  process.env.FLW_SECRET_KEY
+);
 const accountRouter = express.Router();
+
+accountRouter.get(
+  "/balance",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const account = await Account.findOne({ userId: req.user._id });
+    console.log(account);
+    if (account) {
+      console.log("hello");
+      res.status(200).send({ balance: account.balance });
+    } else {
+      res.status(404).send("account not found");
+    }
+  })
+);
 
 accountRouter.post(
   "/deposit",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const account = await Account.findOne({ userId: req.user._id });
-    const accountId = account._id;
-    const { amount } = req.body;
-    if (accountId && amount > 0) {
-      try {
-        const creditResult = await creditAccount({
-          accountId,
-          amount,
-          purpose: "deposit",
-        });
+    const { transaction_id } = req.body;
 
-        if (!creditResult.success) {
-          throw creditResult;
+    const response = await flw.Transaction.verify({ id: transaction_id });
+
+    if (response.data.status === "successful") {
+      const account = await Account.findOne({ userId: req.user._id });
+      const accountId = account._id;
+      const { amount } = req.body;
+      if (accountId && amount > 0) {
+        try {
+          const creditResult = await creditAccount({
+            accountId,
+            amount,
+            purpose: "deposit",
+          });
+
+          if (!creditResult.success) {
+            throw creditResult;
+          }
+          res.status(200).send({
+            success: true,
+            message: "deposit successful",
+          });
+        } catch (error) {
+          res.status(500).send({
+            success: false,
+            error: error,
+          });
         }
-
-        res.status(200).send({
-          success: true,
-          message: "deposit successful",
-        });
-      } catch (error) {
+      } else {
         res.status(500).send({
           success: false,
-          error: error,
+          error: "enter valid credentials",
         });
       }
     } else {
-      res.status(500).send({
-        success: false,
-        error: "enter valid credentials",
-      });
+      res.send("error making payment");
     }
   })
 );
@@ -87,42 +124,51 @@ accountRouter.post(
   "/transfer",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const senderId = Account.findOne({ userId: req.user._id });
-    const recipientId = Account.findOne({ userId: req.body.recipient });
+    const senderId = await Account.findOne({ userId: req.user._id });
+    const admin = await User.findOne({
+      email: "emmanuelakwuba57@gmail.com",
+      isAdmin: true,
+    });
+    console.log(admin);
+    const recipientId = await Account.findOne({ userId: admin._id });
     const { amount } = req.body;
+    const transaction_id = v4();
+
     if (senderId && recipientId && amount > 0) {
       try {
         const purpose = "transfer";
 
         const debitResult = await debitAccount({
           amount,
-          accountId: senderId,
+          accountId: senderId._id,
           purpose,
           metadata: {
-            recipientId,
+            recipientId: recipientId._id,
+            transaction_id,
           },
         });
         if (debitResult.success) {
           await creditAccount({
             amount,
-            accountId: recipientId,
+            accountId: recipientId._id,
             purpose,
             metadata: {
-              senderId,
+              senderId: senderId._id,
             },
           });
         } else {
-          return res.status(500).send({ debitResult, k: "lll" });
+          throw debitResult;
         }
 
         res.status(200).send({
           success: true,
           message: "transfer successful",
+          transaction_id,
         });
       } catch (error) {
         res.status(500).send({
           success: false,
-          error: "network error",
+          error: error,
         });
       }
     } else {

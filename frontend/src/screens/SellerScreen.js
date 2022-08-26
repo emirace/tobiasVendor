@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import Rating from "../component/Rating";
-import { getError } from "../utils";
+import { baseURL, getError } from "../utils";
 import "../style/SellerScreen.css";
 import Product from "../component/Product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -147,9 +147,7 @@ const Sold = styled.div`
 
 const Badge = styled.img`
   width: 40px;
-  height: 40px;
   object-fit: cover;
-  border-radius: 50%;
 `;
 
 const reducer = (state, action) => {
@@ -281,7 +279,7 @@ export default function SellerScreen() {
         });
       } else {
         const { data } = await axios.put(
-          `/api/users/follow/${sellerId}`,
+          `${baseURL}/api/users/follow/${sellerId}`,
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -476,7 +474,7 @@ export default function SellerScreen() {
                   alt={user.username}
                 />
                 <div className="seller_profile_badge">
-                  <Badge src="https://res.cloudinary.com/emirace/image/upload/v1659499335/Icon_Verification-01_js5bx6.png" />
+                  <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
                 </div>
               </div>
               <Link to="/dashboard/user">

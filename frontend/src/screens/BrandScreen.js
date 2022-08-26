@@ -10766,6 +10766,7 @@ export default function BrandScreen() {
       console.log(getError(err));
     }
   };
+
   return (
     <Container>
       <Title>Brands</Title>
@@ -10790,6 +10791,7 @@ export default function BrandScreen() {
             ))}
         </SearchContainer>
       </Search>
+
       {/* <Content>
         {alphabet.map((x, i) => (
           <div key={i}>

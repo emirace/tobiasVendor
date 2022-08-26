@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -52,6 +53,12 @@ const Row = styled.div`
     gap: 10px;
   }
 `;
+const Col = styled.div`
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+`;
 const Orange = styled.span`
   color: var(--orange-color);
 `;
@@ -70,6 +77,10 @@ const ContText = styled.div`
   }
 `;
 const ContImage = styled.div``;
+
+const Image = styled.img`
+  height: 600px;
+`;
 
 export default function SustainabilityImpact() {
   return (
@@ -196,7 +207,6 @@ export default function SustainabilityImpact() {
               </div>
               <FontAwesomeIcon size="3x" icon={faTruckRampBox} />
             </ContText>
-            <ContImage />
           </Cont>
           <Cont>
             <ContText>
@@ -214,7 +224,6 @@ export default function SustainabilityImpact() {
               <div>in our landfills are textiles</div>
               <FontAwesomeIcon size="3x" icon={faTreeCity} />
             </ContText>
-            <ContImage />
           </Cont>
           <Cont>
             <ContText>
@@ -232,15 +241,24 @@ export default function SustainabilityImpact() {
               <div>of a garment today</div>
               <FontAwesomeIcon size="3x" icon={faShirt} />
             </ContText>
-            <ContImage />
           </Cont>
         </Row>
       </Section>
       <Section>
         <SubHeading>
-          <Orange>Less</Orange> is <Malon>more</Malon>
+          <Orange>
+            <b>Less</b>
+          </Orange>{" "}
+          is{" "}
+          <Malon>
+            <b>more</b>
+          </Malon>
         </SubHeading>
-
+        <Image
+          style={{ height: "800px" }}
+          src="https://res.cloudinary.com/emirace/image/upload/v1661221992/cherie-birkner-J6MJPuJiDPo-unsplash_cclo31.webp"
+          alt="img"
+        />
         <SubHeading>MAKING IT BETTER FOR AFRICA</SubHeading>
         <SubHeading>+THE PLANET+</SubHeading>
         <SubHeading>CAN’T DO IT IN REAL LIFE? DO IT ON REPEDDLE!!</SubHeading>
@@ -321,12 +339,45 @@ export default function SustainabilityImpact() {
       </Section>
       <Section>
         <SubHeading>UPCYCLE</SubHeading>
+        <Row style={{ justifyContent: "space-around" }}>
+          <Col>
+            <Image
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221988/utopia-by-cho-LRqBE1z5kfE-unsplash_hnfa5j.webp"
+              alt="img"
+            />
+          </Col>
+          <Col>
+            <Image
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221989/utopia-by-cho-SZzAEl8fpGQ-unsplash_i0cgwy.webp"
+              alt="img"
+            />
+          </Col>
+        </Row>
       </Section>
       <Section>
         <SubHeading>RECYCLE</SubHeading>
+        <Row style={{ justifyContent: "space-around" }}>
+          <Col>
+            <Image
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221992/ravin-rau-eNOlrYUx5ZQ-unsplash_aeg1i9.webp"
+              alt="img"
+            />
+          </Col>
+          <Col>
+            <Image
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221992/utopia-by-cho-lSGhDJK_XKc-unsplash_l29iy2.webp"
+              alt="img"
+            />
+          </Col>
+        </Row>
       </Section>
       <Section>
         <SubHeading>REUSE & RESELL</SubHeading>
+        <Image
+          style={{ height: "800px" }}
+          src="https://res.cloudinary.com/emirace/image/upload/v1661221988/utopia-by-cho-rgC0lhKbr5o-unsplash_2_sckict.webp"
+          alt="img"
+        />
       </Section>
       <Section>
         <SubHeading>
@@ -430,6 +481,13 @@ export default function SustainabilityImpact() {
           think and use fashion one person at a time. This is the best gift we
           can give our generation, our planet and our future unborn.
         </p>
+      </Section>
+      <Section>
+        <Link to="/sell">
+          <b>
+            SPREAD THE WORD. START SELLING. ADD MORE ITEMS TO KEEP EARNING TODAY
+          </b>
+        </Link>
       </Section>
     </Container>
   );

@@ -19,7 +19,7 @@ const initialState = {
       ? localStorage.getItem("paymentMethod")
       : "",
     deliveryMethod: localStorage.getItem("deliveryMethod")
-      ? localStorage.getItem("deliveryMethod")
+      ? JSON.parse(localStorage.getItem("deliveryMethod"))
       : "",
     shippingAddress: localStorage.getItem("shippingAddress")
       ? JSON.parse(localStorage.getItem("shippingAddress"))

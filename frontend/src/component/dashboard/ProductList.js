@@ -71,6 +71,7 @@ const SearchCont = styled.div`
 const SearchInput = styled.input`
   width: 40%;
   height: 45px;
+  background: none;
   padding: 15px;
   border: 1px solid var(--malon-color);
   border-radius: 5px;
@@ -236,6 +237,7 @@ export default function ProductList() {
       <Title>My Products</Title>
       <SearchCont>
         <SearchInput
+          mode={mode}
           onChange={(e) => setProductsQuery(e.target.value)}
           placeholder="Search "
         />

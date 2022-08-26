@@ -25,6 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
 import Influencer from "../component/Influencer";
+import { baseURL } from "../utils";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -137,14 +138,15 @@ export default function ProductsScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get("/api/products");
+        const { data } = await axios.get(`/api/products`);
+        console.log(data);
         dispatch({
           type: "FETCH_SUCCESS",
           payload: data,
         });
 
         dispatch({ type: "FETCH_USERS_REQUEST" });
-        const { data: topSellers } = await axios.get("/api/bestsellers");
+        const { data: topSellers } = await axios.get(`/api/bestsellers`);
         dispatch({
           type: "FETCH_USERS_SUCCESS",
           payload: topSellers,
@@ -163,11 +165,11 @@ export default function ProductsScreen() {
   const sliderHandler = (direction) => {
     if (direction === "left") {
       var slider = document.getElementById("slider");
-      slider.scrollBy(350, 0);
+      slider.scrollBy(-350, 0);
       // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
       var slider = document.getElementById("slider");
-      slider.scrollBy(-350, 0);
+      slider.scrollBy(350, 0);
     }
   };
   const sliderstyle = `translateX(${sliderIndex * -220}px)`;
@@ -202,17 +204,16 @@ export default function ProductsScreen() {
             loop
             autoHeight={false}
             dots={true}
-            smartSpeed={4000}
+            autoplayTimeout={5000}
+            autoplaySpeed={3000}
             autoplay={true}
             margin={0}
+            autoplayHoverPause={true}
             className="banner_slider owl-theme"
           >
             <div className="banner_item">
               <div className="banner_image">
-                <img
-                  src="https://res.cloudinary.com/emirace/image/upload/v1660396789/juan-ordonez-CSmt40R6a6M-unsplash_cyyy78.jpg"
-                  alt="img"
-                />
+                <img src="/images/ezgif.com-gif-maker.webp" alt="img" />
               </div>
               <div className="banner_text">
                 <h1>
@@ -225,7 +226,7 @@ export default function ProductsScreen() {
             <div className="banner_item">
               <div className="banner_image">
                 <img
-                  src="https://res.cloudinary.com/emirace/image/upload/v1660396238/greg-raines-rqFBIR6vQXg-unsplash_d743fi.jpg"
+                  src="/images/greg-raines-rqFBIR6vQXg-unsplash.webp"
                   alt="img"
                 />
               </div>
@@ -237,7 +238,7 @@ export default function ProductsScreen() {
             <div className="banner_item">
               <div className="banner_image">
                 <img
-                  src="https://res.cloudinary.com/emirace/image/upload/v1660396263/chimi-davila-58FCfyUti_w-unsplash_snrm4b.jpg"
+                  src="/images/chimi-davila-58FCfyUti_w-unsplash.webp"
                   alt="img"
                 />
               </div>
@@ -260,34 +261,34 @@ export default function ProductsScreen() {
           </div>
           <div className="CategoryListing_item scroll_snap">
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396235/engin-akyurt-xbFtknoQG_Y-unsplash_p9bwpy.jpg"
+              image="/images/engin-akyurt-xbFtknoQG_Y-unsplash.webp"
               title="STYLE UP"
               link="/recurated"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396246/ruan-richard-rodrigues--MCGquf_4mU-unsplash_dnjoz4.jpg"
+              image="/images/ruan-richard-rodrigues--MCGquf_4mU-unsplash.webp"
               bottom={true}
               title="ACCESSORIZE"
               link="/accessorize"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396246/julian-hochgesang-sA5wcAu4CBA-unsplash_x1iafo.jpg"
+              image="/images/julian-hochgesang-sA5wcAu4CBA-unsplash.webp"
               title="SNEAKER-HEAD"
               link="/shoes"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396226/stephen-audu-BkB5T-ZdK88-unsplash_pru6u5.jpg"
+              image="/images/stephen-audu-BkB5T-ZdK88-unsplash.webp"
               title="BAG AFFAIR"
               bottom={true}
               link="/search?categories=bag"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396238/carmen-fu-4xb2LK36Mps-unsplash_nmvqqv.jpg"
+              image="/images/carmen-fu-4xb2LK36Mps-unsplash.webp"
               title="GEN-Z KIDS"
               link="/search?categories=kids"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396220/ahmed-carter-GP3-QpmTgPk-unsplash_au2w1h.jpg"
+              image="/images/ahmed-carter-GP3-QpmTgPk-unsplash.webp"
               title="LET'S GO PARTY"
               bottom={true}
               link="/search"
@@ -301,7 +302,7 @@ export default function ProductsScreen() {
                 <Col className="">
                   <div className="main-item paddown padtop">
                     <img
-                      src="https://res.cloudinary.com/emirace/image/upload/v1660396235/vonecia-carswell-D3HSYAUjVrM-unsplash_uqe3jf.jpg"
+                      src="/images/vonecia-carswell-D3HSYAUjVrM-unsplash.webp"
                       alt=""
                       className="img-fluid"
                     ></img>
@@ -314,7 +315,7 @@ export default function ProductsScreen() {
                 <Col className="">
                   <div className="main-item padtop">
                     <img
-                      src="https://res.cloudinary.com/emirace/image/upload/v1660396247/Screen_Shot_2022-07-15_at_9.05.37_PM_xktcjb.png"
+                      src="/images/For-kids.webp"
                       alt=""
                       className="img-fluid"
                     ></img>
@@ -328,7 +329,7 @@ export default function ProductsScreen() {
               <Col md={7}>
                 <div className="main-item main-item-1 padtop">
                   <img
-                    src="https://res.cloudinary.com/emirace/image/upload/v1660396224/tamara-bellis-uN1m9Ca0aqo-unsplash_p68erp.jpg"
+                    src="/images/tamara-bellis-uN1m9Ca0aqo-unsplash.webp"
                     alt=""
                     className="img-fluid"
                   ></img>
@@ -356,30 +357,30 @@ export default function ProductsScreen() {
           </div>
           <div className="CategoryListing_item scroll_snap">
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396244/Picture1_zzxknl.png"
+              image="/images/Picture1.webp"
               title="PATAGONIA"
               link="/search?brand=patagonia"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660106395/lucas-hoang-O0e6Ka5vYSs-unsplash_vcee35.jpg"
+              image="/images/lucas-hoang-O0e6Ka5vYSs-unsplash.webp"
               bottom
               title="GUCCI"
               link="/search?brand=gucci"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396227/tony-tran-VKVDdLGoilc-unsplash_urlsfo.jpg"
+              image="/images/tony-tran-VKVDdLGoilc-unsplash.webp"
               title="BALANCIAGA"
               bottom
               link="/search?brand=balanciaga"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396243/jakayla-toney-v0gHLhdQPCY-unsplash_v5yzxp.jpg"
+              image="/images/jakayla-toney-v0gHLhdQPCY-unsplash.webp"
               title="ADIDAS"
               link="/search?brand=adidas"
             />
             <CategoryListing
-              image="https://res.cloudinary.com/emirace/image/upload/v1660396221/Screen_Shot_2022-07-16_at_1.44.27_PM_hdulcv.png"
-              title="ALEXANDER MCQUEEN"
+              image="/images/A.mcqueen.webp"
+              title="A. MCQUEEN"
               link="/search?brand=alexander%20mcqueen"
             />
           </div>
@@ -441,18 +442,18 @@ export default function ProductsScreen() {
           <Content>
             <LeftSide>
               <Top>
-                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
               </Top>
               <Top>
-                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
               </Top>
             </LeftSide>
             <LeftSide>
               <Top>
-                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
               </Top>
               <Top>
-                <Influencer sellerId={"62e39251f6ad8a23c2e9c55d"} />
+                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
               </Top>
             </LeftSide>
           </Content>
@@ -464,7 +465,7 @@ export default function ProductsScreen() {
               <div className=" col-md-6 p-0">
                 <div className="discount_pic">
                   <img
-                    src="https://res.cloudinary.com/emirace/image/upload/v1660396243/mike-von-bWUOx0SaSAk-unsplash_hqjaa1.jpg"
+                    src="/images/mike-von-bWUOx0SaSAk-unsplash.webp"
                     alt=""
                     className="img-fluid"
                   ></img>
@@ -519,8 +520,9 @@ export default function ProductsScreen() {
                 {sellers.length === 0 && (
                   <MessageBox>No Seller Found</MessageBox>
                 )}
+                {console.log("seller", sellers)}
                 <Seller className="scroll_snap">
-                  {console.log(sellers)}
+                  {console.log(sellers, products)}
                   {sellers &&
                     sellers.length > 0 &&
                     sellers.map((seller, index) => (
@@ -534,7 +536,7 @@ export default function ProductsScreen() {
                             ></img>
                             {seller.badge && (
                               <div className="seller_profile_badge">
-                                <Badge src="https://res.cloudinary.com/emirace/image/upload/v1659499335/Icon_Verification--02_jkmhxc.png" />
+                                <Badge src="/images/Icons-28_hfzerc.png" />
                               </div>
                             )}
                           </Imagediv>

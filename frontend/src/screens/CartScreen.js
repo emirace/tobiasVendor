@@ -14,15 +14,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import { getError } from "../utils";
+import { calcPrice, checkDeliverySelect, getError } from "../utils";
+import ModelLogin from "../component/ModelLogin";
+import DeliveryOptionScreen from "./DeliveryOptionScreen";
 
+const Container = styled.div`
+  margin: 20px;
+  @media (max-width: 992px) {
+    margin: 5px;
+  }
+`;
 const CartCont = styled.div`
   display: flex;
-  margin: 20px;
   gap: 20px;
   @media (max-width: 992px) {
     flex-direction: column;
-    margin: 5px;
     gap: 5px;
   }
 `;
@@ -36,17 +42,12 @@ const LeftCorner = styled.div`
 const RightCorner = styled.div`
   flex: 1;
   border-radius: 0.2rem;
-  padding: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 
 const Top = styled.div`
-  padding: 20px;
-  border-radius: 0.2rem;
   margin: 0 0 20px 0;
-  background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Bottom = styled.div`
   padding: 20px;
@@ -61,7 +62,6 @@ const Bottom = styled.div`
 
 const SumCont = styled.div`
   display: flex;
-  margin-bottom: 20px;
 `;
 const Left = styled.div`
   display: flex;
@@ -71,7 +71,12 @@ const Right = styled.div`
   flex: 1;
 `;
 const Item = styled.div`
-  margin: 20px 10px;
+  margin: 0 10px 20px 10px;
+  padding: 20px;
+  border-radius: 0.2rem;
+
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin: 10px 0;
   }
@@ -94,8 +99,33 @@ const CustomMessage = styled.div`
 `;
 const CartItemCont = styled.div`
   display: none;
-  @media (max-width: 992px) {
+  @media (max-width: 768px) {
     display: flex;
+  }
+`;
+
+const UserCont = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+const UserImg = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+const UserName = styled.div`
+  font-weight: bold;
+  margin: 0 20px;
+`;
+
+const SelectDelivery = styled.div`
+  margin-left: 20px;
+  color: var(--orange-color);
+  font-size: 15px;
+  &:hover {
+    color: var(--malon-color);
   }
 `;
 
@@ -120,16 +150,17 @@ const reducer = (state, action) => {
 export default function CartScreen() {
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {
-    cart: { cartItems },
-    userInfo,
-    mode,
-  } = state;
+  const { cart, userInfo, mode } = state;
   const [{ loadingUser, error, user }, dispatch] = useReducer(reducer, {
     loadingUser: true,
     error: "",
     user: {},
   });
+
+  const [deliveryOption, setDeliveryOption] = useState(null);
+  const [showModel, setShowModel] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  calcPrice(cart);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -144,7 +175,9 @@ export default function CartScreen() {
         console.log(err);
       }
     };
-    fetchData();
+    if (userInfo) {
+      fetchData();
+    }
   }, [userInfo]);
   const updateCartHandler = async (item, quantity) => {
     const { data } = await axios.get(`/api/products/${item._id}`);
@@ -159,8 +192,6 @@ export default function CartScreen() {
       });
       return;
     }
-    console.log("item", item);
-    console.log("quan", quantity);
     //
     ctxDispatch({
       type: "CART_ADD_ITEM",
@@ -173,7 +204,7 @@ export default function CartScreen() {
   };
 
   const addToCartHandler = async (item) => {
-    const existItem = cartItems.find((x) => x._id === item._id);
+    const existItem = cart.cartItems.find((x) => x._id === item._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
@@ -204,7 +235,18 @@ export default function CartScreen() {
   };
 
   const checkoutHandler = () => {
-    if (cartItems.length === 0) {
+    if (!checkDeliverySelect(cart)) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Select delivery method",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (cart.cartItems.length === 0) {
       toast.error("cart is empty");
     } else {
       if (userInfo) {
@@ -220,36 +262,93 @@ export default function CartScreen() {
       <Helmet>
         <title>Shopping Cart</title>
       </Helmet>
+      <Container>
+        <h1>Shopping Cart</h1>
+        <CartCont>
+          <LeftCorner>
+            {console.log(cart)}
+            <Top mode={mode}>
+              {cart.cartItems.length === 0 ? (
+                <MessageBox>
+                  <CustomMessage>
+                    Cart is empty. <Link to={`/`}>Go Shopping</Link>
+                  </CustomMessage>
+                </MessageBox>
+              ) : (
+                <>
+                  {cart.cartItems.map((item) => (
+                    <Item key={item._id} mode={mode}>
+                      <UserCont>
+                        <UserImg src={item.seller.image} alt="img" />
+                        <UserName>
+                          <Link to={`/seller/${item.seller._id}`}>
+                            {item.sellerName}
+                          </Link>
+                        </UserName>
+                      </UserCont>
+                      <hr />
+                      <CartItemCont>
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="img-fluid rounded img-thumbnail"
+                        ></img>
+                        <div
+                          className="cart_item_detail "
+                          style={{ justifyContent: "space-between" }}
+                        >
+                          <div>
+                            <Link to={`/product/${item.slug}`}>
+                              {item.name}
+                            </Link>
 
-      <CartCont>
-        <LeftCorner>
-          <Top mode={mode}>
-            <h1>Shopping Cart</h1>
-            {cartItems.length === 0 ? (
-              <MessageBox>
-                <CustomMessage>
-                  Cart is empty. <Link to={`/`}>Go Shopping</Link>
-                </CustomMessage>
-              </MessageBox>
-            ) : (
-              <>
-                {cartItems.map((item) => (
-                  <Item key={item._id}>
-                    <CartItemCont>
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="img-fluid rounded img-thumbnail"
-                      ></img>
-                      <div
-                        className="cart_item_detail "
-                        style={{ justifyContent: "space-between" }}
-                      >
-                        <div>
-                          <Link to={`/product/${item.slug}`}>{item.name}</Link>
+                            <div> ${item.price}</div>
+                            <span>Size: {item.selectSize}</span>
+                          </div>
+                          <div className="col-3 d-flex align-items-center">
+                            <Button
+                              variant="none"
+                              onClick={() =>
+                                updateCartHandler(item, item.quantity - 1)
+                              }
+                              disabled={item.quantity === 1}
+                            >
+                              <FontAwesomeIcon icon={faMinus} />
+                            </Button>{" "}
+                            <span>{item.quantity}</span>{" "}
+                            <Button
+                              variant="none"
+                              onClick={() =>
+                                updateCartHandler(item, item.quantity + 1)
+                              }
+                              disabled={item.quantity === item.countInStock}
+                            >
+                              <FontAwesomeIcon icon={faPlus} />
+                            </Button>
+                            <Button
+                              onClick={() => removeItemHandler(item)}
+                              variant="none"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </Button>
+                          </div>
+                        </div>
+                      </CartItemCont>
+                      <Row className="align-items-center d-none d-md-flex justify-content-between">
+                        <div className="col-5 d-flex  align-items-center">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="img-fluid rounded img-thumbnail"
+                          ></img>{" "}
+                          <div className="cart_item_detail">
+                            <Link to={`/product/${item.slug}`}>
+                              {item.name}
+                            </Link>
 
-                          <div> ${item.price}</div>
-                          <span>Size: {item.size}</span>
+                            <div> ${item.price}</div>
+                            <span>Size: {item.selectSize}</span>
+                          </div>
                         </div>
                         <div className="col-3 d-flex align-items-center">
                           <Button
@@ -271,6 +370,8 @@ export default function CartScreen() {
                           >
                             <FontAwesomeIcon icon={faPlus} />
                           </Button>
+                        </div>
+                        <div className="col-2">
                           <Button
                             onClick={() => removeItemHandler(item)}
                             variant="none"
@@ -278,129 +379,168 @@ export default function CartScreen() {
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </div>
-                      </div>
-                    </CartItemCont>
-                    <Row className="align-items-center d-none d-lg-flex justify-content-between">
-                      <div className="col-5 d-flex  align-items-center">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="img-fluid rounded img-thumbnail"
-                        ></img>{" "}
-                        <div className="cart_item_detail">
-                          <Link to={`/product/${item.slug}`}>{item.name}</Link>
-
-                          <div> ${item.price}</div>
-                          <span>Size: {item.size}</span>
+                      </Row>
+                      <div style={{ marginTop: "20px", display: "flex" }}>
+                        <div>
+                          Delivery:{" "}
+                          {item.deliverySelect ? (
+                            <span style={{ marginLeft: "20px" }}>
+                              {item.deliverySelect.trg} + $
+                              {item.deliverySelect.value}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                      </div>
-                      <div className="col-3 d-flex align-items-center">
-                        <Button
-                          variant="none"
-                          onClick={() =>
-                            updateCartHandler(item, item.quantity - 1)
-                          }
-                          disabled={item.quantity === 1}
+                        <SelectDelivery
+                          onClick={() => {
+                            setCurrentItem(item);
+                            setShowModel(true);
+                          }}
                         >
-                          <FontAwesomeIcon icon={faMinus} />
-                        </Button>{" "}
-                        <span>{item.quantity}</span>{" "}
-                        <Button
-                          variant="none"
-                          onClick={() =>
-                            updateCartHandler(item, item.quantity + 1)
-                          }
-                          disabled={item.quantity === item.countInStock}
-                        >
-                          <FontAwesomeIcon icon={faPlus} />
-                        </Button>
+                          {!item.deliverySelect
+                            ? "Select delivery option"
+                            : "Change"}
+                        </SelectDelivery>
                       </div>
-                      <div className="col-2">
-                        <Button
-                          onClick={() => removeItemHandler(item)}
-                          variant="none"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </Button>
-                      </div>
-                    </Row>
-                  </Item>
-                ))}
-                <MessageBox>
-                  <CustomMessage>
-                    <Link to={`/search`}>Continue Shopping</Link>
-                  </CustomMessage>
-                </MessageBox>
-              </>
-            )}
-          </Top>
-          {userInfo && (
-            <Bottom mode={mode}>
-              <h1>Save Item</h1>
-              {user.saved && user.saved.length === 0 ? (
-                <MessageBox>No save item</MessageBox>
-              ) : (
-                <>
-                  {user.saved &&
-                    user.saved.map((product, index) => {
-                      const existItem = cartItems.find(
-                        (x) => x._id === product._id
-                      );
-                      return (
-                        !existItem && (
-                          <Item key={index}>
-                            <Row className="align-items-center justify-content-between">
-                              <div className="col-7 d-flex  align-items-center">
-                                <img
-                                  src={product.image}
-                                  alt={product.name}
-                                  className="img-fluid rounded img-thumbnail"
-                                ></img>{" "}
-                                <div className="cart_item_detail">
-                                  <Link to={`/product/${product.slug}`}>
-                                    {product.name}
-                                  </Link>
-
-                                  <div> ${product.price}</div>
-                                </div>
-                              </div>
-                              <div className="col-4">
-                                <Button
-                                  onClick={() => addToCartHandler(product)}
-                                  variant="none"
-                                >
-                                  Add to Cart
-                                </Button>
-                              </div>
-                            </Row>
-                          </Item>
-                        )
-                      );
-                    })}
+                    </Item>
+                  ))}
+                  <MessageBox>
+                    <CustomMessage>
+                      <Link to={`/search`}>Continue Shopping</Link>
+                    </CustomMessage>
+                  </MessageBox>
                 </>
               )}
-            </Bottom>
-          )}
-        </LeftCorner>
-        <RightCorner mode={mode}>
-          <Summary>
-            <div>
-              {cartItems.map((c) => (
-                <SumCont>
-                  <Left>
-                    <Right>{c.quantity} </Right>
-                    <Right>x </Right>
-                    <Right>${c.price}</Right>
-                  </Left>
-                  <Right>{" =  $" + c.quantity * c.price}</Right>
-                </SumCont>
-              ))}
+
+              <ModelLogin setShowModel={setShowModel} showModel={showModel}>
+                <DeliveryOptionScreen
+                  setShowModel={setShowModel}
+                  item={currentItem}
+                />
+              </ModelLogin>
+            </Top>
+            {userInfo && (
+              <Bottom mode={mode}>
+                <h1>Save Item</h1>
+                {user.saved && user.saved.length === 0 ? (
+                  <MessageBox>No save item</MessageBox>
+                ) : (
+                  <>
+                    {user.saved &&
+                      user.saved.map((product, index) => {
+                        const existItem = cart.cartItems.find(
+                          (x) => x._id === product._id
+                        );
+                        return (
+                          !existItem && (
+                            <Item key={index}>
+                              <Row className="align-items-center justify-content-between">
+                                <div className="col-7 d-flex  align-items-center">
+                                  <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="img-fluid rounded img-thumbnail"
+                                  ></img>{" "}
+                                  <div className="cart_item_detail">
+                                    <Link to={`/product/${product.slug}`}>
+                                      {product.name}
+                                    </Link>
+
+                                    <div> ${product.price}</div>
+                                  </div>
+                                </div>
+                                <div className="col-4">
+                                  <Button
+                                    onClick={() => addToCartHandler(product)}
+                                    variant="none"
+                                  >
+                                    Add to Cart
+                                  </Button>
+                                </div>
+                              </Row>
+                            </Item>
+                          )
+                        );
+                      })}
+                  </>
+                )}
+              </Bottom>
+            )}
+          </LeftCorner>
+          <RightCorner mode={mode}>
+            <Card.Body>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <Row>
+                    <div className="col-3">Items</div>
+                    <div className="col-9">
+                      {cart.cartItems.map((c) => (
+                        <>
+                          <SumCont>
+                            <Left>
+                              <Right>{c.quantity} </Right>
+                              <Right>x </Right>
+                              <Right>${c.price}</Right>
+                            </Left>
+                            <Right>{" =  $" + c.quantity * c.price}</Right>
+                          </SumCont>
+                        </>
+                      ))}
+                    </div>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>SubTotal</Col>
+                    <Col>
+                      $
+                      {cart.cartItems.reduce(
+                        (a, c) => a + c.price * c.quantity,
+                        0
+                      )}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Shipping</Col>
+                    <Col>${cart.shippingPrice.toFixed(2)}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>
+                      <b>Total</b>
+                    </Col>
+                    <Col>
+                      <b>${cart.totalPrice.toFixed(2)}</b>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <div className="d-grid" style={{ marginTop: "30px" }}>
+                    <button
+                      type="button"
+                      className="search-btn1"
+                      onClick={checkoutHandler}
+                      variant="primary"
+                    >
+                      Proceed to Checkout
+                    </button>
+                  </div>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card.Body>
+            <Summary>
+              {/* <div>
               <h4 style={{ marginTop: "30px" }}>
-                Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)} items)
-                : ${cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
+                Subtotal ({cart.cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
+                items) : $
+                {cart.cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </h4>
-            </div>
-            <div>
+            </div> */}
+              {/* <div>
               <div className="d-grid" style={{ marginTop: "30px" }}>
                 <button
                   type="button"
@@ -411,10 +551,11 @@ export default function CartScreen() {
                   Proceed to Checkout
                 </button>
               </div>
-            </div>
-          </Summary>
-        </RightCorner>
-      </CartCont>
+            </div> */}
+            </Summary>
+          </RightCorner>
+        </CartCont>
+      </Container>
     </div>
   );
 }

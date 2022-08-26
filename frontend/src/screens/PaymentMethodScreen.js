@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -10,18 +11,31 @@ export default function PaymentMethodScreen() {
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
+    userInfo,
     cart: { shippingAddress, paymentMethod },
   } = state;
   const [paymentMethodName, setPaymentMethod] = useState(
-    paymentMethod || "PayPal"
+    paymentMethod || "Credit/Debit card"
   );
-  useEffect(() => {}, [shippingAddress, navigate]);
   const submitHandler = (e) => {
     e.preventDefault();
     ctxDispatch({ type: "SAVE_PAYMENT_METHOD", payload: paymentMethodName });
     localStorage.setItem("paymentMethod", paymentMethodName);
-    navigate("/deliveryoption");
+    navigate("/placeorder");
   };
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    const getBalance = async () => {
+      if (userInfo) {
+        const { data } = await axios.get("/api/accounts/balance", {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        setBalance(data.balance);
+      }
+    };
+    getBalance();
+  }, [userInfo]);
+
   return (
     <div className="container">
       <Helmet>
@@ -32,28 +46,19 @@ export default function PaymentMethodScreen() {
         <div className="mb-3">
           <Form.Check
             type="radio"
-            id="PayPal"
-            label="PaPpal"
-            value="PayPal"
-            checked={paymentMethodName === "PayPal"}
+            id="Credit/Debit card"
+            label="Credit/Debit card"
+            value="Credit/Debit card"
+            checked={paymentMethodName === "Credit/Debit card"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
         </div>
         <div className="mb-3">
           <Form.Check
-            type="radio"
-            id="Stripe"
-            label="Stripe"
-            value="Stripe"
-            checked={paymentMethodName === "Stripe"}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <Form.Check
+            disabled={balance <= 0}
             type="radio"
             id="Wallet"
-            label="Wallet"
+            label={`Wallet ($${balance})`}
             value="Wallet"
             checked={paymentMethodName === "Wallet"}
             onChange={(e) => setPaymentMethod(e.target.value)}
