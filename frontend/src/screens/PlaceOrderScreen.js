@@ -182,13 +182,11 @@ export default function PlaceOrderScreen() {
         "/api/orders",
         {
           orderItems: cart.cartItems,
-          shippingAddress: cart.shippingAddress,
           paymentMethod: cart.paymentMethod,
           itemsPrice: cart.itemsPrice,
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
-          deliveryMethod: cart.deliveryMethod,
         },
         userInfo
           ? { headers: { authorization: `Bearer ${userInfo.token}` } }
@@ -289,7 +287,9 @@ export default function PlaceOrderScreen() {
             : {}
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
-        await axios.put(`api/bestsellers/${order1.order.seller}`);
+        order1.order.seller.map(async (seller) => {
+          await axios.put(`api/bestsellers/${seller}`);
+        });
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -339,53 +339,12 @@ export default function PlaceOrderScreen() {
 
   return (
     <Main mode={mode}>
-      {console.log(cart)}
       <Helmet>
         <title>Order Preview</title>
       </Helmet>
       <h1 className="my-3">Order Preview</h1>
       <Container>
         <LeftC>
-          <Section mode={mode}>
-            <Card.Body>
-              <Card.Title>Delivery Address</Card.Title>
-              <Card.Text>
-                <RowData>
-                  <ColTitle>Address Name:</ColTitle>
-                  <ColValue>
-                    {cart.shippingAddress.fullName || cart.useraddress.fullName}
-                  </ColValue>
-                </RowData>
-                <RowData>
-                  <ColTitle>Address:</ColTitle>
-                  <ColValue>
-                    {cart.shippingAddress.apartment}{" "}
-                    {cart.shippingAddress.address}, {cart.shippingAddress.city},{" "}
-                    {cart.shippingAddress.state},{" "}
-                    {cart.shippingAddress.postalCode},{" "}
-                    {cart.shippingAddress.country}
-                  </ColValue>
-                </RowData>
-              </Card.Text>
-              <Link className="simple_link" to="/shipping">
-                Edit
-              </Link>
-            </Card.Body>
-          </Section>
-          <Section mode={mode}>
-            <Card.Body>
-              <Card.Title>Payment</Card.Title>
-              <Card.Text>
-                <RowData>
-                  <ColTitle>Method</ColTitle>
-                  <ColValue>{cart.paymentMethod}</ColValue>
-                </RowData>
-              </Card.Text>
-              <Link className="simple_link" to="/payment">
-                Edit
-              </Link>
-            </Card.Body>
-          </Section>
           <Section mode={mode}>
             <Card.Body>
               <Card.Title>Items</Card.Title>
@@ -416,7 +375,7 @@ export default function PlaceOrderScreen() {
                               {item.name}
                             </Link>
                           </div>
-                          <div> ${item.price}</div>
+                          <div> ${item.actualPrice}</div>
                           <div>Size: {item.selectSize}</div>
                         </div>
                       </div>
@@ -425,17 +384,62 @@ export default function PlaceOrderScreen() {
                       </div>
                       <div className="col-3">${item.price}</div>
                     </Row>
-                    {console.log(item)}
-                    <div style={{ fontSize: "13px" }}>
-                      Delivery Method: {item.deliverySelect.trg}
-                    </div>
-                    <div style={{ fontSize: "13px" }}>
-                      Pick up point: {item.deliverySelect.meta.shortName}
-                    </div>
+                    {Object.entries(item.deliverySelect).map(([key, value]) => (
+                      <div
+                        style={{
+                          display: "flex",
+                          textTransform: "capitalize",
+                          fontSize: "13px",
+                        }}
+                      >
+                        <div style={{ flex: "1" }}>{key}:</div>
+                        <div style={{ flex: "5" }}>{value}</div>
+                      </div>
+                    ))}
                   </ListGroup.Item>
                 ))}
               </ListGroup>
               <Link className="simple_link" to="/cart">
+                Edit
+              </Link>
+            </Card.Body>
+          </Section>
+          {/* <Section mode={mode}>
+            <Card.Body>
+              <Card.Title>Delivery Address</Card.Title>
+               <Card.Text>
+                <RowData>
+                  <ColTitle>Address Name:</ColTitle>
+                  <ColValue>
+                    {cart.shippingAddress.fullName || cart.useraddress.fullName}
+                  </ColValue>
+                </RowData>
+                <RowData>
+                  <ColTitle>Address:</ColTitle>
+                  <ColValue>
+                    {cart.shippingAddress.apartment}{" "}
+                    {cart.shippingAddress.address}, {cart.shippingAddress.city},{" "}
+                    {cart.shippingAddress.state},{" "}
+                    {cart.shippingAddress.postalCode},{" "}
+                    {cart.shippingAddress.country}
+                  </ColValue>
+                </RowData>
+              </Card.Text> 
+              <Link className="simple_link" to="/shipping">
+                Edit
+              </Link>
+            </Card.Body>
+          </Section> */}
+          <Section mode={mode}>
+            <Card.Body>
+              <Card.Title>Payment</Card.Title>
+              <Card.Text>
+                <RowData>
+                  <ColTitle>Method</ColTitle>
+                  <ColValue>{cart.paymentMethod}</ColValue>
+                </RowData>
+              </Card.Text>
+              <Link className="simple_link" to="/payment">
                 Edit
               </Link>
             </Card.Body>

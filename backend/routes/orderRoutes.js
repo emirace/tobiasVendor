@@ -54,6 +54,7 @@ orderRouter.get(
             }
         : {};
     const orders = await Order.find({ ...queryFilter, ...sortFilter })
+      .sort({ createdAt: -1 })
       .populate("user", "username")
       .populate("seller", "username");
     res.send(orders);
@@ -83,7 +84,9 @@ orderRouter.get(
       seller: { $in: [seller] },
       ...queryFilter,
       isPaid: true,
-    }).populate("user", "name");
+    })
+      .sort({ createdAt: -1 })
+      .populate("user", "name");
     res.send(orders);
   })
 );
@@ -99,7 +102,6 @@ orderRouter.post(
     const newOrder = new Order({
       seller,
       orderItems: req.body.orderItems.map((x) => ({ ...x, product: x._id })),
-      shippingAddress: req.body.shippingAddress,
       deliveryMethod: req.body.deliveryMethod,
       paymentMethod: req.body.paymentMethod,
       itemsPrice: req.body.itemsPrice,
@@ -353,6 +355,7 @@ orderRouter.get(
     console.log({ ...queryFilter });
 
     const orders = await Order.find({ user: req.user._id, ...queryFilter })
+      .sort({ createdAt: -1 })
       .populate("user", "name")
       .limit(searchQuery && searchQuery !== "all" ? 10 : "");
     res.send(orders);
@@ -379,10 +382,7 @@ orderRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
-    if (
-      order &&
-      (order.seller.toString() === req.user._id || req.user.isAdmin)
-    ) {
+    if (order) {
       order.deliveryStatus = req.body.deliveryStatus;
       order.deliveredAt = Date.now();
       await order.save();

@@ -29,7 +29,6 @@ accountRouter.get(
     const account = await Account.findOne({ userId: req.user._id });
     console.log(account);
     if (account) {
-      console.log("hello");
       res.status(200).send({ balance: account.balance });
     } else {
       res.status(404).send("account not found");
@@ -55,6 +54,7 @@ accountRouter.post(
             accountId,
             amount,
             purpose: "deposit",
+            metadata: { purpose: req.body.purpose },
           });
 
           if (!creditResult.success) {
@@ -124,9 +124,10 @@ accountRouter.post(
   "/transfer",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.user);
     const senderId = await Account.findOne({ userId: req.user._id });
     const admin = await User.findOne({
-      email: "emmanuelakwuba57@gmail.com",
+      email: "admin@example.com",
       isAdmin: true,
     });
     console.log(admin);
@@ -145,6 +146,7 @@ accountRouter.post(
           metadata: {
             recipientId: recipientId._id,
             transaction_id,
+            purpose: req.body.purpose,
           },
         });
         if (debitResult.success) {
@@ -154,6 +156,7 @@ accountRouter.post(
             purpose,
             metadata: {
               senderId: senderId._id,
+              purpose: req.body.purpose,
             },
           });
         } else {

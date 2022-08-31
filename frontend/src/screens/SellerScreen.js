@@ -77,8 +77,7 @@ const Content = styled.div`
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
-  width: 100%;
-  height: 100%;
+  flex: 1;
   flex-wrap: wrap;
   @media (max-width: 992px) {
     padding: 0;
@@ -86,10 +85,10 @@ const Content = styled.div`
 `;
 const ProductCont = styled.div`
   position: relative;
-  width: 214px;
-  height: 450px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
   margin: 10px;
-  overflow: hidden;
   @media (max-width: 992px) {
     width: 162px;
     height: 342px;
@@ -307,7 +306,7 @@ export default function SellerScreen() {
           <>
             {userInfo && (
               <ProductCont>
-                <Link to="/newproduct">
+                <Link to="/newproduct" style={{ width: "100%" }}>
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     <span>Add Product</span>

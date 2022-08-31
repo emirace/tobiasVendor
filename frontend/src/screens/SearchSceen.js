@@ -954,7 +954,7 @@ export default function SearchSceen() {
                       justifyContent: "center",
                     }}
                   >
-                    <Product product={product} key={product._id}></Product>
+                    <Product product={product}></Product>
                   </div>
                 ))}
               </ProductListC>

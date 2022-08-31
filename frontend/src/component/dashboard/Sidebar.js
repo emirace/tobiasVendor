@@ -121,14 +121,14 @@ export default function Sidebar({ current }) {
         <Menu>
           <Title>Quick Menu</Title>
           <List>
-            <Link to="/dashboard/address">
+            {/* <Link to="/dashboard/address">
               <ListItem
                 mode={mode}
                 className={current === "address" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faHome} /> Address Book
               </ListItem>
-            </Link>
+            </Link> */}
             <Link to="/dashboard/coupon">
               <ListItem
                 mode={mode}

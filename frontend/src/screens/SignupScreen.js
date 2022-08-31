@@ -10,18 +10,19 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import { getError } from "../utils";
 import jwt_decode from "jwt-decode";
+import Input from "../component/Input";
 
 const SocialLogin = styled.button`
   border: 0;
   color: white;
   display: flex;
-  width: 400px;
   justify-content: center;
   cursor: pointer;
   align-items: center;
   padding: 8px;
   margin: 15px;
   border-radius: 5px;
+  width: 100%;
   font-weight: bold;
 
   &.facebook {
@@ -69,6 +70,7 @@ const Social = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 `;
 const Orgroup = styled.div`
   width: 100%;
@@ -83,33 +85,32 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get("redirect");
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [input, setInput] = useState({
+    username: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    phone: "",
+    confirmPassword: "",
+  });
+
+  const [error, setError] = useState("");
 
   const [showForm, setShowForm] = useState(false);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const submitHandler = async () => {
     try {
-      if (password !== confirmPassword) {
-        toast.error("Passwords do not match");
-        return;
-      }
       const { data } = await axios.post("/api/users/signup", {
-        username,
-        firstName,
-        lastName,
-        email,
-        password,
-        phone,
+        username: input.username,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        password: input.password,
+        phone: input.phone,
       });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
@@ -118,29 +119,6 @@ export default function SignupScreen() {
       toast.error(getError(err));
     }
   };
-  async function responseGoogle(res) {
-    const profile = jwt_decode(res.credential);
-    const { data } = await axios.post("/api/users/google-signup", {
-      name: profile.name,
-      email: profile.email,
-      image: profile.picture,
-    });
-    console.log(data);
-    ctxDispatch({ type: "USER_SIGNIN", payload: data });
-    localStorage.setItem("userInfo", JSON.stringify(data));
-    navigate(redirect || "/");
-  }
-  useEffect(() => {
-    /*global google*/
-    google.accounts.id.initialize({
-      client_id:
-        "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com",
-      callback: responseGoogle,
-    });
-    google.accounts.id.renderButton(document.getElementById("signindiv"), {
-      width: "300px",
-    });
-  }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -148,6 +126,78 @@ export default function SignupScreen() {
     }
   }, [navigate, redirect, userInfo]);
 
+  const handleOnChange = (text, input) => {
+    setInput((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setError((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+  const validate = (e) => {
+    e.preventDefault();
+    let valid = true;
+    if (!input.username) {
+      handleError("Please enter your username", "username");
+      valid = false;
+    }
+    if (!input.firstName) {
+      handleError("Please enter your firstname", "firstName");
+      valid = false;
+    }
+    if (!input.lastName) {
+      handleError("Please enter your lastname", "lastName");
+      valid = false;
+    }
+    if (!input.phone) {
+      handleError("Please enter your phone number", "phone");
+      valid = false;
+    }
+    if (!input.confirmPassword) {
+      handleError("Please confirm your password", "confirmPassword");
+      valid = false;
+    } else if (input.password !== input.confirmPassword) {
+      handleError("Passwords do not match", "confirmPassword");
+      valid = false;
+    }
+    if (!input.email) {
+      handleError("Please enter an email", "email");
+      valid = false;
+    } else if (
+      !input.email
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+    ) {
+      valid = false;
+      handleError("Please input a valid email", "email");
+    }
+    if (!input.password) {
+      handleError("Please enter password", "password");
+      valid = false;
+    } else if (input.password.length < 6) {
+      valid = false;
+      handleError("Your password must be at least 6 characters", "password");
+    } else if (input.password.search(/[a-z]/i) < 0) {
+      handleError(
+        "Password must contain at least 1 lowercase alphabetical character",
+        "password"
+      );
+      valid = false;
+    } else if (input.password.search(/[A-Z]/) < 0) {
+      handleError(
+        "Password must contain at least 1 uppercase alphabetical character",
+        "password"
+      );
+      valid = false;
+    } else if (input.password.search(/[0-9]/) < 0) {
+      handleError("Password must contain at least 1 digit", "password");
+      valid = false;
+    }
+
+    if (valid) {
+      submitHandler();
+    }
+  };
   return (
     <Container className="small-container">
       <Helmet>
@@ -159,74 +209,95 @@ export default function SignupScreen() {
           <FacebookImg src="/images/facebook.png" alt="facebook" />
           Facebook
         </SocialLogin>
-        <div id="signindiv"></div>
+        <SocialLogin id="" className="google">
+          <FacebookImg src="/images/google.png" alt="google" />
+          Google
+        </SocialLogin>
         <Orgroup>
           <Or className={mode}>or</Or>
           <Line />
         </Orgroup>
       </Social>
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-3" controlId="name">
+      <Form onSubmit={validate}>
+        <Form.Group
+          className="mb-3"
+          controlId="name"
+          onClick={() => setShowForm(true)}
+        >
           <Form.Label>UserName</Form.Label>
-          <Form.Control
-            required
-            className={mode === "pagebodydark" ? "hhf" : "color_black"}
-            onClick={() => setShowForm(true)}
-            onChange={(e) => setUsername(e.target.value)}
+          <Input
+            error={error.username}
+            onFocus={() => {
+              handleError(null, "username");
+            }}
+            onChange={(e) => handleOnChange(e.target.value, "username")}
           />
         </Form.Group>
         {showForm && (
           <>
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>First Name</Form.Label>
-              <Form.Control
-                required
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
-                onChange={(e) => setFirstName(e.target.value)}
+              <Input
+                error={error.firstName}
+                onFocus={() => {
+                  handleError(null, "firstName");
+                }}
+                onChange={(e) => handleOnChange(e.target.value, "firstName")}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                required
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
-                onChange={(e) => setLastName(e.target.value)}
+              <Input
+                error={error.lastName}
+                onFocus={() => {
+                  handleError(null, "lastName");
+                }}
+                onChange={(e) => handleOnChange(e.target.value, "lastName")}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
-                required
-                onChange={(e) => setEmail(e.target.value)}
+              <Input
+                error={error.email}
+                onFocus={() => {
+                  handleError(null, "email");
+                }}
+                onChange={(e) => handleOnChange(e.target.value, "email")}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>Phone</Form.Label>
-              <Form.Control
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
+              <Input
+                error={error.phone}
+                onFocus={() => {
+                  handleError(null, "phone");
+                }}
+                onChange={(e) => handleOnChange(e.target.value, "phone")}
                 type="number"
-                required
-                onChange={(e) => setPhone(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="password">
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
-                required
-                onChange={(e) => setPassword(e.target.value)}
+              <Input
+                error={error.password}
+                onFocus={() => {
+                  handleError(null, "password");
+                }}
+                onChange={(e) => handleOnChange(e.target.value, "password")}
+                password
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="confirmPassword">
               <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                className={mode === "pagebodydark" ? "hhf" : "color_black"}
-                required
-                onChange={(e) => setConfirmPassword(e.target.value)}
+              <Input
+                error={error.confirmPassword}
+                onFocus={() => {
+                  handleError(null, "confirmPassword");
+                }}
+                onChange={(e) =>
+                  handleOnChange(e.target.value, "confirmPassword")
+                }
+                password
               />
             </Form.Group>
           </>

@@ -241,7 +241,14 @@ export default function DeliveryOption({
                 id="Large"
               />
             </Plan>
-            <Link to="/">How PAXI works</Link>
+            <a
+              className="link"
+              href="https://www.paxi.co.za/send"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How PAXI works
+            </a>
           </Plans>
         )}
       </OptionCont>
@@ -337,7 +344,14 @@ export default function DeliveryOption({
                 id="Large"
               />
             </Plan>
-            <Link to="/">How PUDO works</Link>
+            <a
+              className="link"
+              href="https://www.pudo.co.za/how-it-works.php"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How PUDO works
+            </a>
           </Plans>
         )}
       </OptionCont>
@@ -391,7 +405,14 @@ export default function DeliveryOption({
                 id="standard"
               />
             </Plan>
-            <Link to="/">How Postnet works</Link>
+            <a
+              className="link"
+              href="https://www.postnet.co.za/domestic-postnet2postnet"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How Postnet works
+            </a>
           </Plans>
         )}
       </OptionCont>
@@ -430,7 +451,7 @@ export default function DeliveryOption({
               <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
               <Radio
                 type="radio"
-                name="PostNet-to-PostNet"
+                name="Aramex Store-to-Door"
                 onChange={(e) => handleChange(e.target)}
                 id="free"
                 value={0}
@@ -440,13 +461,20 @@ export default function DeliveryOption({
               <PlanName>Standard parcel (350x450 mm) + R 99.99</PlanName>
               <Radio
                 type="radio"
-                name="PostNet-to-PostNet"
+                name="Aramex Store-to-Door"
                 onChange={(e) => handleChange(e.target)}
                 value={99.99}
                 id="standard"
               />
             </Plan>
-            <Link to="/">How Aramex works</Link>
+            <a
+              className="link"
+              href="https://www.youtube.com/watch?v=VlUQTF064y8"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How Aramex works
+            </a>
           </Plans>
         )}
       </OptionCont>
@@ -461,7 +489,7 @@ export default function DeliveryOption({
             checked={pickup}
             onChange={(e) => {
               setPickup(e.target.checked);
-              handleChange({ name: "Pick up from Seller", value: "1" });
+              handleChange({ name: "Pick up from Seller", value: "0" });
               if (!e.target.checked) {
                 setDeliveryOption(
                   deliveryOption.filter((x) => x.name !== "Pick up from Seller")
@@ -493,7 +521,9 @@ export default function DeliveryOption({
         </Option>
         <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
         <Plans>
-          <Link to="/">More on bundling</Link>
+          <Link to="/rebundle" target="_blank">
+            More on bundling
+          </Link>
         </Plans>
       </OptionCont>
     </Container>

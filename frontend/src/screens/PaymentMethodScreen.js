@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../component/CheckoutSteps";
 import { Store } from "../Store";
 
@@ -12,7 +12,7 @@ export default function PaymentMethodScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     userInfo,
-    cart: { shippingAddress, paymentMethod },
+    cart: { shippingAddress, paymentMethod, totalPrice },
   } = state;
   const [paymentMethodName, setPaymentMethod] = useState(
     paymentMethod || "Credit/Debit card"
@@ -55,14 +55,20 @@ export default function PaymentMethodScreen() {
         </div>
         <div className="mb-3">
           <Form.Check
-            disabled={balance <= 0}
+            disabled={balance <= totalPrice}
             type="radio"
             id="Wallet"
-            label={`Wallet ($${balance})`}
+            label={`Wallet ($${balance.toFixed(2)})`}
             value="Wallet"
             checked={paymentMethodName === "Wallet"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
+          {balance <= totalPrice && (
+            <div style={{ color: "red", fontSize: "13px" }}>
+              Insufficiant balance{" "}
+              <Link to="/dashboard/wallet">Fund Wallet Now</Link>
+            </div>
+          )}
         </div>
         <div className="mb-3">
           <button className="search-btn1" type="submit">

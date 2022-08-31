@@ -1,4 +1,16 @@
 import "./App.css";
+import "./style/button.css";
+import "./style/Cart.css";
+import "./style/CategoryListing.css";
+import "./style/Footer.css";
+import "./style/HomeScreen.css";
+import "./style/Newsletter.css";
+import "./style/ProductScreen.css";
+import "./style/SearchScreen.css";
+import "./style/SellerScreen.css";
+import "./style/StickyNav.css";
+import "./style/ToastNotification.css";
+
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -58,6 +70,8 @@ import OutOfStock from "./component/dashboard/admin/OutOfStock";
 import Bundle from "./component/info/Bundle";
 import useGeoLocation from "./hooks/useGeoLocation";
 import LoadingPage from "./component/LoadingPage";
+import ForgetScreen from "./screens/ForgetScreen";
+import ResetScreen from "./screens/ResetScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -259,6 +273,8 @@ function App() {
                     <Route path="/search" element={<SearchSceen />} />
                     <Route path="/sell" element={<SellScreen />} />
                     <Route path="/signin" element={<SigninScreen />} />
+                    <Route path="/forgetpassword" element={<ForgetScreen />} />
+                    <Route path="/resetpassword" element={<ResetScreen />} />
                     <Route
                       path="/continuesignin"
                       element={<SigninToAddressScreen />}
@@ -396,7 +412,7 @@ function App() {
                         </AdminRoute>
                       }
                     /> */}
-                    {/* <Route
+                    <Route
                       path="/admin/allOrderList/"
                       element={
                         <AdminRoute>
@@ -404,6 +420,7 @@ function App() {
                         </AdminRoute>
                       }
                     />
+
                     <Route
                       path="/admin/allProductList/"
                       element={
@@ -412,6 +429,7 @@ function App() {
                         </AdminRoute>
                       }
                     />
+
                     <Route
                       path="/admin/outofstock/"
                       element={
@@ -420,6 +438,7 @@ function App() {
                         </AdminRoute>
                       }
                     />
+                    {/*
                     <Route
                       path="/admin/order"
                       element={

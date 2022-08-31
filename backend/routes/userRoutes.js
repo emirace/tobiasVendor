@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { generateToken, isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
+import crypto from "crypto";
 
 const userRouter = express.Router();
 
@@ -137,6 +138,70 @@ userRouter.post(
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });
+  })
+);
+
+userRouter.post(
+  "/forgetpassword",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const resetToken = crypto.randomBytes(20).toString("hex");
+      user.resetPasswordToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+      user.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
+      await user.save();
+      const resetUrl = `http://localhost:3000/${resetToken}`;
+      const message = `
+<h1> You have requested a password reset</h1>
+<p>Please go to this link to rest your password</p>
+<a href=${resetUrl} clicktracking=off>${resetUrl}
+`;
+      try {
+        res.status(200).send({ message: "Email sent", resetUrl });
+      } catch (error) {
+        user.resetPasswordExpire = undefined;
+        user.resetPasswordToken = undefined;
+        await user.save();
+        res
+          .status(500)
+          .send({ success: false, message: "Encounter problem sending email" });
+      }
+    } else {
+      res
+        .status(404)
+        .send({ success: false, message: "Encounter problem sending email" });
+    }
+  })
+);
+
+userRouter.post(
+  "/resetpassword/:resetToken",
+  expressAsyncHandler(async (req, res) => {
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: {
+        $gt: Date.now(),
+      },
+    });
+    if (user) {
+      user.password = bcrypt.hashSync(req.body.password);
+      user.resetPasswordExpire = undefined;
+      user.resetPasswordToken = undefined;
+      await user.save();
+      res
+        .status(201)
+        .send({ success: true, message: "Password Reset Success" });
+    } else {
+      res.status(400).send("Invalid Reset Token");
+    }
   })
 );
 

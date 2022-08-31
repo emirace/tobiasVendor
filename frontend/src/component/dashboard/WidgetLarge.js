@@ -1,6 +1,10 @@
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useReducer } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
+import { getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
+import moment from "moment";
 
 const Container = styled.div`
   flex: 2;
@@ -19,13 +23,15 @@ const Table = styled.table`
 `;
 const Th = styled.th`
   text-align: left;
-  padding: 20px 0;
+  padding: 10px 0;
+  font-weight: bold;
 `;
 const Tr = styled.tr``;
 const User = styled.td`
   display: flex;
+  text-transform: capitalize;
   align-items: center;
-  padding: 20px 0;
+  margin: 10px 0;
 `;
 const Img = styled.img.attrs((props) => ({
   src: props.src,
@@ -49,7 +55,7 @@ const Button = styled.button`
   padding: 5px 7px;
   border: 0;
   border-radius: 0.2rem;
-  &.Approved {
+  &.Done {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "#112014" : "#d6f5dc"};
     color: var(--green-color);
@@ -66,9 +72,48 @@ const Button = styled.button`
   }
 `;
 
-export default function WidgetLarge() {
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "TRANS_REQUEST":
+      return { ...state, loadingTrans: true };
+    case "TRANS_SUCCESS":
+      return { ...state, loadingTrans: false, transactions: action.payload };
+    case "TRANS_FAIL":
+      return { ...state, loadingTrans: false, errorTrans: action.payload };
+    default:
+      return state;
+  }
+};
+
+export default function WidgetLarge({ refresh }) {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
+
+  const [{ loadingTrans, error, transactions }, dispatch] = useReducer(
+    reducer,
+    {
+      loadingTrans: true,
+      error: "",
+      transactions: null,
+    }
+  );
+
+  useEffect(() => {
+    try {
+      const getTrans = async () => {
+        dispatch({ type: "TRANS_REQUEST" });
+        const { data } = await axios.get("/api/transactions/user", {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: "TRANS_SUCCESS", payload: data });
+        console.log(data);
+      };
+      getTrans();
+    } catch (err) {
+      console.log(getError(err));
+      dispatch({ type: "TRANS_FAIL", payload: getError(err) });
+    }
+  }, []);
 
   const actionButton = (type) => {
     return (
@@ -78,52 +123,28 @@ export default function WidgetLarge() {
     );
   };
 
-  return (
+  return loadingTrans ? (
+    <LoadingBox />
+  ) : (
     <Container mode={mode}>
       <Tittle>Latest transactions</Tittle>
       <Table>
         <Tr>
-          <Th>User</Th>
+          <Th>Purpose</Th>
           <Th>Date</Th>
+          <Th>Type</Th>
           <Th>Amount</Th>
           <Th>Status</Th>
         </Tr>
-        <Tr>
-          <User>
-            <Img src="/images/pimage.png"></Img>
-            <Name>Susan Alex</Name>
-          </User>
-          <Date>2 June 2022</Date>
-          <Amount>$334.56</Amount>
-          <Status>{actionButton("Approved")}</Status>
-        </Tr>
-        <Tr>
-          <User>
-            <Img src="/images/pimage.png"></Img>
-            <Name>Susan Alex</Name>
-          </User>
-          <Date>2 June 2022</Date>
-          <Amount>$334.56</Amount>
-          <Status>{actionButton("Pending")}</Status>
-        </Tr>
-        <Tr>
-          <User>
-            <Img src="/images/pimage.png"></Img>
-            <Name>Susan Alex</Name>
-          </User>
-          <Date>2 June 2022</Date>
-          <Amount>$334.56</Amount>
-          <Status>{actionButton("Declined")}</Status>
-        </Tr>
-        <Tr>
-          <User>
-            <Img src="/images/pimage.png"></Img>
-            <Name>Susan Alex</Name>
-          </User>
-          <Date>2 June 2022</Date>
-          <Amount>$334.56</Amount>
-          <Status>{actionButton("Approved")}</Status>
-        </Tr>
+        {transactions.map((t) => (
+          <Tr>
+            <User>{t.metadata ? t.metadata.purpose : ""}</User>
+            <Date>{moment(t.createdAt).format("MMMM Do YYYY, h:mm:ss a")}</Date>
+            <Amount>{t.txnType}</Amount>
+            <Amount>${t.amount}</Amount>
+            <Status>{actionButton("Done")}</Status>
+          </Tr>
+        ))}
       </Table>
     </Container>
   );

@@ -1,12 +1,14 @@
 import { faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
 import { getError } from "../../utils";
 import axios from "axios";
+import LoadingBox from "../LoadingBox";
+import MessageBox from "../MessageBox";
 const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Container = styled.div`
@@ -20,7 +22,7 @@ const Input = styled.input`
   width: 40%;
   height: 45px;
   padding: 15px;
-  margin: 25px 0;
+  margin: 25px 0 0 0;
   width: 100%;
   background: none;
   border: 1px solid var(--malon-color);
@@ -67,7 +69,7 @@ const reducer = (state, action) => {
     case "FETCH_REQUEST":
       return { ...state, loading: true };
     case "FETCH_SUCCESS":
-      return { ...state, loading: false, message: action.payload };
+      return { ...state, loading: false, user: action.payload };
     case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
     default:
@@ -75,76 +77,81 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AddFund({ setShowModel, setRefresh, refresh }) {
+export default function Withdraw({
+  setShowModel,
+  setRefresh,
+  refresh,
+  balance,
+}) {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
-  const [{ loading, error, message }, dispatch] = useReducer(reducer, {
+  const [{ loading, error, user }, dispatch] = useReducer(reducer, {
     loading: true,
     error: "",
     balance: 0,
+    user: null,
   });
   const [amount, setAmount] = useState("");
-  const config = {
-    public_key: BASE_KEY,
-    tx_ref: v4(),
-    amount,
-    currency: "NGN",
-    payment_options: "card,mobilemoney,ussd",
-    customer: {
-      email: userInfo.email,
-      phonenumber: userInfo.phone,
-      name: `${userInfo.firstName} ${userInfo.lastName}`,
-    },
-    customizations: {
-      title: "Repeddle",
-      description: "Funding Repeddle Wallet",
-      logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
-    },
-  };
-
-  const handleFlutterPayment = useFlutterwave(config);
-  const onApprove = async (response) => {
-    dispatch({ type: "FETCH_REQUEST" });
-    try {
-      const { data } = await axios.post(
-        "/api/accounts/deposit",
-        { ...response, purpose: "funding" },
-        {
+  useEffect(() => {
+    const getUser = async () => {
+      dispatch({ type: "FETCH_REQUEST" });
+      try {
+        const { data } = await axios.get("/api/users/profile/user", {
           headers: { authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      dispatch({ type: "FETCH_FAIL", payload: data.message });
-      setShowModel(false);
-      setRefresh(!refresh);
-    } catch (err) {
-      dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+        });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
+      } catch (err) {
+        console.log(getError(err));
+        dispatch({ type: "FETCH_FAIL", payload: err });
+      }
+    };
+    getUser();
+  }, []);
+  const handleWithdraw = () => {
+    if (amount > balance) {
+      dispatch({
+        type: "FETCH_FAIL",
+        payload: "Enter amount less than current balance",
+      });
+    } else {
     }
   };
-  return (
+  return loading ? (
+    <LoadingBox />
+  ) : !user.accountName ? (
+    "Update Account Details to request for withdraw"
+  ) : (
     <Container>
       <FontAwesomeIcon size="4x" color="var(--orange-color)" icon={faWallet} />
-      <Text>Add Money to your Wallet</Text>
+      {console.log(user)}
+      <Text>To {user.accountName}</Text>
+      <div style={{ color: "grey", textTransform: "uppercase" }}>
+        {user.bankName} ({user.accountNumber})
+      </div>
+      {error && <MessageBox variant="danger">{error}</MessageBox>}
       <Input
         type="number"
         mode={mode}
         value={amount}
-        placeholder="Enter Amount to be Added in Wallet"
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <Button
-        onClick={() => {
-          handleFlutterPayment({
-            callback: async (response) => {
-              console.log(response);
-              onApprove(response);
-              closePaymentModal(); // this will close the modal programmatically
-            },
-            onClose: () => {},
-          });
+        placeholder="Enter Amount to Withdraw"
+        onChange={(e) => {
+          setAmount(e.target.value);
+          dispatch({ type: "FETCH_FAIL", payload: "" });
         }}
+      />
+      <div
+        style={{
+          color: "var(--orange-color)",
+          fontWeight: "bold",
+          marginBottom: "25px",
+          marginLeft: "auto",
+          fontWeight: "13px",
+        }}
+        onClick={() => setAmount(balance.toFixed(2))}
       >
-        Continue
-      </Button>
+        All
+      </div>
+      <Button onClick={handleWithdraw}>Withdraw</Button>
     </Container>
   );
 }

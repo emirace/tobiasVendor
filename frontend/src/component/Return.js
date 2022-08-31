@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import axios from "axios";
 import React, { useContext, useReducer, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
 import { getError } from "../utils";
@@ -103,7 +104,14 @@ const Form = styled.div`
   flex-direction: column;
   align-items: flex-start;
 `;
-
+const SelectOpt = styled.div`
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  margin: 20px;
+  padding: 10px;
+  border-radius: 0.2rem;
+  cursor: pointer;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPLOAD_REQUEST":
@@ -128,6 +136,7 @@ export default function Return({
   orderItems,
   orderId,
   deliveryMethod,
+  deliverOrderHandler,
   setShowReturn,
 }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -139,6 +148,9 @@ export default function Return({
     error: "",
     comments: [],
   });
+
+  const navigate = useNavigate();
+
   const [tab, setTab] = useState("items");
   const [current, setCurrent] = useState("");
   const [resolution, setResolution] = useState("");
@@ -184,6 +196,7 @@ export default function Return({
         }
       );
       dispatch({ type: "RETURN_SUCCESS" });
+      deliverOrderHandler("Returned");
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -240,6 +253,40 @@ export default function Return({
       console.log(getError(err));
     }
   };
+
+  const addConversation = async (id, id2) => {
+    if (!userInfo) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Signin/Register to start a conversation",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.post(
+        `/api/conversations/`,
+        { recieverId: id, productId: id2, type: "product" },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
+      );
+      console.log(data);
+      navigate(`/messages?conversation=${data._id}`);
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message:
+            "Encounter a problem starting a conversation, pls try again later",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
   const displayTab = (tab) => {
     switch (tab) {
       case "items":
@@ -251,7 +298,7 @@ export default function Return({
                 <ItemCont
                   key={orderitem._id}
                   onClick={() => {
-                    setTab("form");
+                    setTab("option");
                     setCurrent(orderitem);
                   }}
                 >
@@ -268,6 +315,35 @@ export default function Return({
                 <hr />
               </>
             ))}
+          </Content>
+        );
+      case "option":
+        return (
+          <Content>
+            {current ? (
+              <OrderItem>
+                <Image src={current.image} alt={current.name} />
+                <Details1>
+                  <Name>{current.name}</Name>
+                  <Quantity>QTY: {current.quantity}</Quantity>
+                  <ItemPrice>$ {current.price}</ItemPrice>
+                </Details1>
+              </OrderItem>
+            ) : (
+              setTab("items")
+            )}
+            <h4>Preferred Resolution Method</h4>
+            <div style={{ width: "40%" }}>
+              <Link to={`/newproduct?id=${current.slug}`}>
+                <SelectOpt>Re-list and sell my product</SelectOpt>
+              </Link>
+              <SelectOpt
+                onClick={() => addConversation(current.seller._id, current._id)}
+              >
+                Message seller
+              </SelectOpt>
+              <SelectOpt onClick={() => setTab("form")}>Return form</SelectOpt>
+            </div>
           </Content>
         );
       case "form":
@@ -287,48 +363,6 @@ export default function Return({
             )}
             <Form>
               {error && <MessageBox variant="danger">{error}</MessageBox>}
-              <InputCont>
-                <Label>Preferred Resolution Method</Label>
-
-                <FormControl
-                  sx={{
-                    width: "100%",
-                    margin: 0,
-                    borderRadius: "0.2rem",
-                    border: `1px solid ${
-                      mode === "pagebodydark"
-                        ? "var(--dark-ev4)"
-                        : "var(--light-ev4)"
-                    }`,
-                    "& .MuiOutlinedInput-root": {
-                      color: `${
-                        mode === "pagebodydark"
-                          ? "var(--white-color)"
-                          : "var(--black-color)"
-                      }`,
-                      "&:hover": {
-                        outline: "none",
-                        border: 0,
-                      },
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "0 !important",
-                    },
-                  }}
-                  size="small"
-                >
-                  <Select
-                    onChange={(e) => setResolution(e.target.value)}
-                    displayEmpty
-                    id="deliveryStatus"
-                  >
-                    <MenuItem value="Re-list and sell my product">
-                      Re-list and sell my product
-                    </MenuItem>
-                    <MenuItem value="Message seller">Message seller</MenuItem>
-                  </Select>
-                </FormControl>
-              </InputCont>
               <InputCont>
                 <Label>Reasons for Return</Label>
 
@@ -411,7 +445,8 @@ export default function Return({
                     displayEmpty
                     id="deliveryStatus"
                   >
-                    {current.product.deliveryOption.map((p) => (
+                    {console.log(current)}
+                    {current.deliveryOption.map((p) => (
                       <MenuItem key={p.name} value={p.name}>
                         {p.name}
                       </MenuItem>
@@ -475,7 +510,7 @@ export default function Return({
                   <FontAwesomeIcon icon={faCamera} /> Upload Image
                 </Label1>
                 {loadingUpload && <LoadingBox />}
-                {image.length === 0 && (
+                {image.length !== 0 && (
                   <span style={{ marginLeft: "10px", fontSize: "14px" }}>
                     Image Uploaded
                   </span>

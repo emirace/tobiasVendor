@@ -43,6 +43,8 @@ const userSchema = new mongoose.Schema(
     numReviews: { type: Number, default: 0 },
     badge: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: String },
   },
   {
     timestamps: true,

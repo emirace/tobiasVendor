@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import { Helmet } from 'react-helmet-async';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Store } from '../Store';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import jwt_decode from 'jwt-decode';
-import styled from 'styled-components';
+import React, { useContext, useEffect, useState } from "react";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { Helmet } from "react-helmet-async";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Store } from "../Store";
+import { toast } from "react-toastify";
+import { getError } from "../utils";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import jwt_decode from "jwt-decode";
+import styled from "styled-components";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -84,11 +84,11 @@ const Orgroup = styled.div`
 export default function Signin() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  const redirectInUrl = new URLSearchParams(search).get("redirect");
+  const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
@@ -97,38 +97,38 @@ export default function Signin() {
     const profile = jwt_decode(res.credential);
     console.log(res);
     console.log(profile);
-    const { data } = await axios.post('/api/users/google-signin', {
+    const { data } = await axios.post("/api/users/google-signin", {
       name: profile.name,
       email: profile.email,
       image: profile.picture,
     });
     console.log(data);
-    ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    navigate(redirect || '/');
+    ctxDispatch({ type: "USER_SIGNIN", payload: data });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    navigate(redirect || "/");
   }
-  useEffect(() => {
-    /*global google*/
-    google.accounts.id.initialize({
-      client_id:
-        '359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com',
-      callback: responseGoogle,
-    });
-    google.accounts.id.renderButton(document.getElementById('signindiv'), {
-      width: '500px',
-    });
-  }, []);
+  // useEffect(() => {
+  //   /*global google*/
+  //   google.accounts.id.initialize({
+  //     client_id:
+  //       "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com",
+  //     callback: responseGoogle,
+  //   });
+  //   google.accounts.id.renderButton(document.getElementById("signindiv"), {
+  //     width: "500px",
+  //   });
+  // }, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('/api/users/signin', {
+      const { data } = await axios.post("/api/users/signin", {
         email,
         password,
       });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      window.location.href = redirect || '/signin';
+      ctxDispatch({ type: "USER_SIGNIN", payload: data });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      window.location.href = redirect || "/signin";
     } catch (err) {
       toast.error(getError(err));
     }
@@ -150,7 +150,10 @@ export default function Signin() {
           <FacebookImg src="/images/facebook.png" alt="facebook" />
           Facebook
         </SocialLogin>
-        <div id="signindiv"></div>
+        <SocialLogin id="" className="google">
+          <FacebookImg src="/images/google.png" alt="google" />
+          Facebook
+        </SocialLogin>
         <Orgroup>
           <Or className={mode}>or</Or>
           <Line />
@@ -162,7 +165,7 @@ export default function Signin() {
           <Form.Control
             type="email"
             required
-            className={mode === 'pagebodydark' ? 'hhf' : 'color_black'}
+            className={mode === "pagebodydark" ? "hhf" : "color_black"}
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
@@ -180,10 +183,10 @@ export default function Signin() {
           </button>
         </div>
         <div className="mb-3">
-          New customer?{'  '}
+          New customer?{"  "}
           <Link to={`/signup?redirect=${redirect}`}>
-            {' '}
-            {'  '}Create your account
+            {" "}
+            {"  "}Create your account
           </Link>
         </div>
 

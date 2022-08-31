@@ -108,11 +108,11 @@ export const checkDeliverySelect = (cart) => {
 export const calcPrice = (cart) => {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cart.itemsPrice = round2(
-    cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+    cart.cartItems.reduce((a, c) => a + c.quantity * c.actualPrice, 0)
   );
   cart.shippingPrice = checkDeliverySelect(cart)
     ? round2(
-        cart.cartItems.reduce((a, c) => a + Number(c.deliverySelect.value), 0)
+        cart.cartItems.reduce((a, c) => a + Number(c.deliverySelect.cost), 0)
       )
     : 0;
   cart.taxPrice = round2(0);

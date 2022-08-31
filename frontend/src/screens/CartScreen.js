@@ -247,10 +247,17 @@ export default function CartScreen() {
       return;
     }
     if (cart.cartItems.length === 0) {
-      toast.error("cart is empty");
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Cart is empty",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     } else {
       if (userInfo) {
-        navigate("../delivery");
+        navigate("../payment");
       } else {
         navigate("../continuesignin");
       }
@@ -302,7 +309,7 @@ export default function CartScreen() {
                               {item.name}
                             </Link>
 
-                            <div> ${item.price}</div>
+                            <div> ${item.actualPrice}</div>
                             <span>Size: {item.selectSize}</span>
                           </div>
                           <div className="col-3 d-flex align-items-center">
@@ -346,7 +353,7 @@ export default function CartScreen() {
                               {item.name}
                             </Link>
 
-                            <div> ${item.price}</div>
+                            <div> ${item.actualPrice}</div>
                             <span>Size: {item.selectSize}</span>
                           </div>
                         </div>
@@ -385,8 +392,8 @@ export default function CartScreen() {
                           Delivery:{" "}
                           {item.deliverySelect ? (
                             <span style={{ marginLeft: "20px" }}>
-                              {item.deliverySelect.trg} + $
-                              {item.deliverySelect.value}
+                              {item.deliverySelect.deliveryOption} + $
+                              {item.deliverySelect.cost}
                             </span>
                           ) : (
                             ""

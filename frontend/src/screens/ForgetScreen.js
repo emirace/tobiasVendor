@@ -152,7 +152,7 @@ const ForgetPassword = styled.div`
   }
 `;
 
-export default function SigninScreen() {
+export default function ForgetScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const redirectInUrl = new URLSearchParams(search).get("redirect");
@@ -160,7 +160,6 @@ export default function SigninScreen() {
 
   const [input, setInput] = useState({
     email: "",
-    password: "",
   });
   const [error, setError] = useState("");
 
@@ -169,14 +168,12 @@ export default function SigninScreen() {
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post("/api/users/signin", {
+      const { data } = await axios.post("/api/users/forgetpassword", {
         email: input.email,
-        password: input.password,
       });
-      ctxDispatch({ type: "USER_SIGNIN", payload: data });
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      console.log(data);
-      window.location.href = redirect || "/signin";
+      if (data.success) {
+        window.location.href = redirect || "/signin";
+      }
     } catch (err) {
       toast.error(getError(err));
     }
@@ -197,10 +194,6 @@ export default function SigninScreen() {
     ) {
       valid = false;
       handleError("Please enter a valid email", "email");
-    }
-    if (!input.password) {
-      handleError("Please enter password", "password");
-      valid = false;
     }
 
     if (valid) {
@@ -234,35 +227,14 @@ export default function SigninScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Sign In</title>
+        <title>Forget Password</title>
       </Helmet>
-      {console.log(input)}
-      <SwitchCont>
-        <Switch
-          checked={mode === "pagebodydark"}
-          onChange={(e) => darkMode(e.target.checked)}
-        ></Switch>
-        <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
-      </SwitchCont>
-      <h1 className="my-3">Sign In</h1>
 
-      <Social>
-        <SocialLogin id="" className="facebook">
-          <FacebookImg src="/images/facebook.png" alt="facebook" />
-          Facebook
-        </SocialLogin>
-        <SocialLogin id="" className="google">
-          <FacebookImg src="/images/google.png" alt="google" />
-          Google
-        </SocialLogin>
-      </Social>
-      <Orgroup>
-        <Or className={mode}>or</Or>
-        <Line />
-      </Orgroup>
+      <h3 className="my-3">Forget Password</h3>
+
       <Form onSubmit={validate}>
         <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Enter Recovery Email</Form.Label>
           <Input
             error={error.email}
             onFocus={() => {
@@ -271,31 +243,14 @@ export default function SigninScreen() {
             onChange={(e) => handleOnChange(e.target.value, "email")}
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Input
-            password
-            error={error.password}
-            onFocus={() => {
-              handleError(null, "password");
-            }}
-            onChange={(e) => handleOnChange(e.target.value, "password")}
-          />
-          <ForgetPassword>
-            <Link to="/forgetpassword">Forget Password</Link>
-          </ForgetPassword>
-        </Form.Group>
         <div className="mb-3">
           <button type="submit" className="search-btn1">
-            Sign In
+            Reset Password
           </button>
         </div>
         <div className="mb-3">
-          New customer?{"  "}
-          <Link to={`/signup?redirect=${redirect}`}>
-            {" "}
-            {"  "}Create your account
-          </Link>
+          Have an account?{"  "}
+          <Link to={`/signin?redirect=${redirect}`}> {"  "}Sign in</Link>
         </div>
       </Form>
     </Container>

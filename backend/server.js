@@ -27,6 +27,7 @@ import couponRouter from "./routes/couponRoutes.js";
 import accountRouter from "./routes/accountRoutes.js";
 import bestsellerRouter from "./routes/bestsellerRoutes.js";
 import returnRouter from "./routes/returnRoutes.js";
+import transactionRouter from "./routes/transactionRoutes.js";
 
 dotenv.config();
 
@@ -92,6 +93,7 @@ app.use("/api/coupons", couponRouter);
 app.use("/api/returns", returnRouter);
 app.use("/api/accounts", accountRouter);
 app.use("/api/bestsellers", bestsellerRouter);
+app.use("/api/transactions", transactionRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 
 const __dirname = path.resolve();

@@ -208,6 +208,7 @@ export default function ProductScreen() {
       error: "",
       comments: [],
     });
+
   useEffect(() => {
     const viewItem = async () => {
       try {

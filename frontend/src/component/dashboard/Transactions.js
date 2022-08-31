@@ -13,6 +13,7 @@ import { getError } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import AddFund from "../wallet/AddFund";
 import WalletModel from "../wallet/WalletModel";
+import Withdraw from "../wallet/Withdraw";
 import WidgetLarge from "./WidgetLarge";
 const Container = styled.div`
   flex: 4;
@@ -85,6 +86,7 @@ export default function Transactions() {
     balance: 0,
   });
   const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     try {
       dispatch({ type: "FETCH_REQUEST" });
@@ -102,17 +104,30 @@ export default function Transactions() {
   }, [userInfo, refresh]);
 
   const [showModel, setShowModel] = useState(false);
+  const [withdrawShowModel, setWithdrawShowModel] = useState(false);
   return (
     <Container mode={mode}>
       <BannerImage mode={mode}>
         <div>
-          <Balance>{loading ? <LoadingBox /> : "$" + balance}</Balance>
+          {loading ? (
+            <LoadingBox />
+          ) : (
+            <Balance>{"$" + balance.toFixed(2)}</Balance>
+          )}
           <TextSmall>Current Repeddle Wallet Balance</TextSmall>
         </div>
-        <Action onClick={() => setShowModel(true)}>
-          <FontAwesomeIcon icon={faPlus} />
-          Add Money to Wallet
-        </Action>
+        <div>
+          <Action onClick={() => setShowModel(true)}>
+            <FontAwesomeIcon icon={faPlus} />
+            Add Money to Wallet
+          </Action>
+          <TextSmall
+            style={{ cursor: "pointer" }}
+            onClick={() => setWithdrawShowModel(true)}
+          >
+            Request a Withdrawal
+          </TextSmall>
+        </div>
       </BannerImage>
       <WalletModel showModel={showModel} setShowModel={setShowModel}>
         <AddFund
@@ -121,7 +136,18 @@ export default function Transactions() {
           refresh={refresh}
         />
       </WalletModel>
-      <WidgetLarge />
+      <WalletModel
+        showModel={withdrawShowModel}
+        setShowModel={setWithdrawShowModel}
+      >
+        <Withdraw
+          setShowModel={setShowModel}
+          setRefresh={setRefresh}
+          refresh={refresh}
+          balance={balance}
+        />
+      </WalletModel>
+      <WidgetLarge refresh={refresh} />
     </Container>
   );
 }

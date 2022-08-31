@@ -24,14 +24,8 @@ addressRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const address = new Address({
-      name: req.body.name,
-      country: req.body.country,
-      street: req.body.street,
-      apartment: req.body.apartment,
-      city: req.body.city,
-      state: req.body.state,
       userId: req.user._id,
-      zipcode: req.body.zipcode,
+      meta: req.body.meta,
     });
 
     const newAddress = await address.save();
@@ -41,21 +35,14 @@ addressRouter.post(
 
 // update a address
 
-addressRouter.put(
+addressRouter.post(
   "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const address = await Address.findById(req.params.id);
     if (address.userId !== req.user._id) {
       if (address) {
-        address.name = req.body.name;
-        address.country = req.body.country;
-        address.street = req.body.street;
-        address.apartment = req.body.apartment;
-        address.city = req.body.city;
-        address.state = req.body.state;
-        address.userId = address.userId;
-        address.zipcode = req.body.zipcode;
+        address.meta = req.body.meta;
         const newaddress = await address.save();
         res.status(200).send(newaddress);
       } else {

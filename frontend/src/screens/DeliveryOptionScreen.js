@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import { Store } from "../Store";
 import styled from "styled-components";
+import axios from "axios";
+import { getError } from "../utils";
 
 const Container = styled.div`
   margin: 30px;
@@ -36,6 +38,12 @@ const OptionCont = styled.div`
   margin: 10px 0;
 `;
 const Plans = styled.div`
+  border-radius: 0.2rem;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  margin: 5px;
+  padding: 10px;
   & a.link {
     color: var(--orange-color);
     font-size: 14px;
@@ -47,13 +55,13 @@ const Plans = styled.div`
 const Plan = styled.div`
   display: flex;
   align-items: center;
-  margin: 10px 0;
+  margin: 15px 0;
   justify-content: space-between;
 `;
 
 const Input = styled.input`
   border: none;
-  width: 250px;
+  width: 100%;
   height: 30px;
   border-bottom: 1px solid
     ${(props) =>
@@ -73,23 +81,37 @@ const Input = styled.input`
   }
 `;
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_ADDRESS_REQUEST":
+      return { ...state, loadingAddress: true };
+    case "FETCH_ADDRESS_SUCCESS":
+      return {
+        ...state,
+        loadingAddress: false,
+        addresses: action.payload,
+        error: "",
+      };
+
+    case "FETCH_ADDRESS_FAILED":
+      return { ...state, loadingAddress: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export default function DeliveryOptionScreen({ setShowModel, item }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },
     mode,
+    userInfo,
   } = state;
   const [deliveryOption, setDeliveryOption] = useState("");
   const [showMap, setShowMap] = useState(false);
-  const [paxiValue, setPaxiValue] = useState("");
-  const [phone, setPhone] = useState("");
-  const [province, setProvince] = useState("");
-  const [locker, setLocker] = useState("");
   const [meta, setMeta] = useState("");
   const [value, setValue] = useState("");
-
-  const [union, setUnion] = useState([]);
-  const navigate = useNavigate();
+  const [update, setUpdate] = useState(false);
 
   // useEffect(() => {
   //   if (cartItems.length) {
@@ -102,15 +124,57 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   //   console.log("union", union);
   // }, [cartItems]);
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    const deliverySelect = {
-      trg: deliveryOption,
-      phone: phone,
-      meta: meta,
-      value: value,
+  const [{ loadingAddress, error, addresses }, dispatch] = useReducer(reducer, {
+    loadingAddress: true,
+    error: "",
+    addresses: null,
+  });
+
+  useEffect(() => {
+    dispatch({ type: "FETCH_ADDRESS_REQUEST" });
+    const getAddress = async () => {
+      try {
+        const { data } = await axios.get(`/api/addresses/${userInfo._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        dispatch({ type: "FETCH_ADDRESS_SUCCESS", payload: data });
+      } catch (err) {
+        dispatch({ type: "FETCH_ADDRESS_FAILED" });
+        console.log(getError(err));
+      }
     };
-    console.log(deliverySelect);
+    getAddress();
+  }, []);
+  const [selected, setSelected] = useState("");
+  useEffect(() => {
+    console.log(addresses);
+    if (addresses && addresses.length > 0) {
+      addresses.map((d) => {
+        if (d.meta.deliveryOption === deliveryOption) {
+          setMeta(d.meta);
+          setUpdate(true);
+          setSelected(d._id);
+        } else {
+          setUpdate(false);
+        }
+      });
+    }
+  }, [deliveryOption]);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const deliverySelect = { deliveryOption, cost: value, ...meta };
+    if (userInfo) {
+      await axios.post(
+        update ? `/api/addresses/${selected}` : "/api/addresses",
+        {
+          meta: { deliveryOption, cost: value, ...meta },
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+    }
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: {
@@ -131,9 +195,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     ) {
       var point = message.data.point;
       /* Modify the code below for your application */
-      setMeta(point);
-      console.log(message.data);
-      setPaxiValue(point.shortName);
+      setMeta({ ...meta, ...point });
       setShowMap(false);
       /* Add additional logic below (eg: closing modal) */
     }
@@ -168,6 +230,11 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     value={x.name}
                     checked={deliveryOption === x.name}
                     onChange={(e) => {
+                      setMeta({
+                        ...meta,
+                        deliveryOption: e.target.value,
+                        cost: x.value,
+                      });
                       setDeliveryOption(e.target.value);
                       setValue(x.value);
                       setMeta("");
@@ -185,7 +252,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           type="text"
                           onClick={() => setShowMap(true)}
                           placeholder="Choose the closest pick up point"
-                          defaultValue={paxiValue}
+                          defaultValue={meta.shortName}
                         />
                       </Plan>
                       {showMap && (
@@ -200,9 +267,11 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       <Plan>
                         <Input
                           type="text"
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
                           placeholder="Phone number"
-                          value={phone}
+                          value={meta.phone}
                         />
                       </Plan>
 
@@ -249,9 +318,11 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       <Plan>
                         <Input
                           type="text"
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
                           placeholder="Phone"
-                          value={phone}
+                          value={meta.phone}
                         />
                       </Plan>
                       <a
@@ -301,19 +372,24 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           mode={mode}
                           type="text"
                           onChange={(e) =>
-                            setMeta({ ...meta, shortName: e.target.value })
+                            setMeta({
+                              ...meta,
+                              pickUp: e.target.value,
+                            })
                           }
                           placeholder="Pick Up Locker"
-                          value={meta.shortName}
+                          value={meta.pickUp}
                         />
                       </Plan>
                       <Plan>
                         <Input
                           mode={mode}
                           type="text"
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
                           placeholder="Phone"
-                          value={phone}
+                          value={meta.phone}
                         />
                       </Plan>
                       <a
@@ -323,6 +399,117 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         rel="noopener noreferrer"
                       >
                         How PostNet works
+                      </a>
+                    </Plans>
+                  ) : deliveryOption === "Aramex Store-to-Door" ? (
+                    <Plans>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, name: e.target.value })
+                          }
+                          placeholder="Name"
+                          value={meta.name}
+                        />
+                      </Plan>
+
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
+                          placeholder="Phone"
+                          value={meta.phone}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, email: e.target.value })
+                          }
+                          placeholder="E-mail"
+                          value={meta.email}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, company: e.target.value })
+                          }
+                          placeholder="Company name (if applicable)"
+                          value={meta.company}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, address: e.target.value })
+                          }
+                          placeholder="Address (P.O. box not accepted"
+                          value={meta.address}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, suburb: e.target.value })
+                          }
+                          placeholder="Suburb"
+                          value={meta.suburb}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, city: e.target.value })
+                          }
+                          placeholder="City/Town"
+                          value={meta.city}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, postalcode: e.target.value })
+                          }
+                          placeholder="Postal Code"
+                          value={meta.postalcode}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, province: e.target.value })
+                          }
+                          placeholder="Province"
+                          value={meta.province}
+                        />
+                      </Plan>
+                      <a
+                        className="link"
+                        href="https://www.youtube.com/watch?v=VlUQTF064y8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        How Aramex works
                       </a>
                     </Plans>
                   ) : (

@@ -152,54 +152,83 @@ const ForgetPassword = styled.div`
   }
 `;
 
-export default function SigninScreen() {
+export default function ResetScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const redirectInUrl = new URLSearchParams(search).get("redirect");
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
   const [input, setInput] = useState({
-    email: "",
     password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState("");
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post("/api/users/signin", {
-        email: input.email,
+      const { data } = await axios.post("/api/users/resetpassword", {
         password: input.password,
       });
-      ctxDispatch({ type: "USER_SIGNIN", payload: data });
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      console.log(data);
-      window.location.href = redirect || "/signin";
+      if (data.success) {
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: data.message,
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+        window.location.href = redirect || "/signin";
+      }
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
-
   const validate = (e) => {
     e.preventDefault();
     let valid = true;
-    if (!input.email) {
-      handleError("Please enter an email", "email");
+
+    if (!input.password) {
+      handleError("Please enter password", "password");
       valid = false;
-    } else if (
-      !input.email
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-    ) {
-      valid = false;
-      handleError("Please enter a valid email", "email");
     }
     if (!input.password) {
       handleError("Please enter password", "password");
+      valid = false;
+    } else if (input.password.length < 6) {
+      valid = false;
+      handleError("Your password must be at least 6 characters", "password");
+    } else if (input.password.search(/[a-z]/i) < 0) {
+      handleError(
+        "Password must contain at least 1 lowercase alphabetical character",
+        "password"
+      );
+      valid = false;
+    } else if (input.password.search(/[A-Z]/) < 0) {
+      handleError(
+        "Password must contain at least 1 uppercase alphabetical character",
+        "password"
+      );
+      valid = false;
+    } else if (input.password.search(/[0-9]/) < 0) {
+      handleError("Password must contain at least 1 digit", "password");
+      valid = false;
+    }
+
+    if (!input.confirmPassword) {
+      handleError("Please confirm your password", "confirmPassword");
+      valid = false;
+    } else if (input.password !== input.confirmPassword) {
+      handleError("Passwords do not match", "confirmPassword");
       valid = false;
     }
 
@@ -234,43 +263,12 @@ export default function SigninScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Sign In</title>
+        <title>Reset Password</title>
       </Helmet>
-      {console.log(input)}
-      <SwitchCont>
-        <Switch
-          checked={mode === "pagebodydark"}
-          onChange={(e) => darkMode(e.target.checked)}
-        ></Switch>
-        <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
-      </SwitchCont>
-      <h1 className="my-3">Sign In</h1>
 
-      <Social>
-        <SocialLogin id="" className="facebook">
-          <FacebookImg src="/images/facebook.png" alt="facebook" />
-          Facebook
-        </SocialLogin>
-        <SocialLogin id="" className="google">
-          <FacebookImg src="/images/google.png" alt="google" />
-          Google
-        </SocialLogin>
-      </Social>
-      <Orgroup>
-        <Or className={mode}>or</Or>
-        <Line />
-      </Orgroup>
+      <h3 className="my-3">Reset Password</h3>
+
       <Form onSubmit={validate}>
-        <Form.Group className="mb-3" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Input
-            error={error.email}
-            onFocus={() => {
-              handleError(null, "email");
-            }}
-            onChange={(e) => handleOnChange(e.target.value, "email")}
-          />
-        </Form.Group>
         <Form.Group className="mb-3" controlId="password">
           <Form.Label>Password</Form.Label>
           <Input
@@ -281,21 +279,22 @@ export default function SigninScreen() {
             }}
             onChange={(e) => handleOnChange(e.target.value, "password")}
           />
-          <ForgetPassword>
-            <Link to="/forgetpassword">Forget Password</Link>
-          </ForgetPassword>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="confirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Input
+            password
+            error={error.confirmPassword}
+            onFocus={() => {
+              handleError(null, "confirmPassword");
+            }}
+            onChange={(e) => handleOnChange(e.target.value, "confirmPassword")}
+          />
         </Form.Group>
         <div className="mb-3">
           <button type="submit" className="search-btn1">
-            Sign In
+            Reset Password
           </button>
-        </div>
-        <div className="mb-3">
-          New customer?{"  "}
-          <Link to={`/signup?redirect=${redirect}`}>
-            {" "}
-            {"  "}Create your account
-          </Link>
         </div>
       </Form>
     </Container>

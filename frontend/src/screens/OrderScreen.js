@@ -101,7 +101,7 @@ const Image = styled.img`
   height: 130px;
 `;
 const Details1 = styled.div`
-  padding: 20px;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -319,12 +319,13 @@ export default function OrderScreen() {
               }
             : {}
         );
-        dispatch({ type: "FETCH_SUCCESS", payload: data });
         if (userInfo) {
-          if (data.seller.filter((x) => x === userInfo._id)) {
+          const existSell = data.seller.filter((x) => x === userInfo._id);
+          if (existSell.length) {
             setIsSeller(true);
           }
         }
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
@@ -404,6 +405,8 @@ export default function OrderScreen() {
     order.createdAt &&
     3 - timeDifference(new window.Date(order.createdAt), new window.Date());
 
+  var itemsPrice = 0;
+  var shippingPrice = 0;
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -412,6 +415,7 @@ export default function OrderScreen() {
     <Main mode={mode} ref={componentRef}>
       <Helmet>
         <title>Order {orderId}</title>
+        {console.log(order)}
       </Helmet>
       <div style={{ display: "flex" }}>
         <Header>Order Details</Header>
@@ -440,15 +444,18 @@ export default function OrderScreen() {
           }}
         >
           <Heading>Items in your order</Heading>
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => setShowReturn(true)}
-          >
-            <b>Log a return</b>
-            <div style={{ color: "red" }}>{daydiff} days left</div>
-          </div>
+          {!isSeller && (
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowReturn(true)}
+            >
+              <b>Log a return</b>
+              <div style={{ color: "red" }}>{daydiff} days left</div>
+            </div>
+          )}
           <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
             <Return
+              deliverOrderHandler={deliverOrderHandler}
               orderItems={order.orderItems}
               deliveryMethod={order.deliveryMethod}
               setShowReturn={setShowReturn}
@@ -456,9 +463,10 @@ export default function OrderScreen() {
             />
           </ModelLogin>
         </div>
+        {console.log(isSeller)}
         {order.orderItems.map((orderitem) =>
           isSeller ? (
-            orderitem.product.seller === userInfo._id && (
+            orderitem.seller._id === userInfo._id && (
               <SumaryContDetails mode={mode}>
                 <div
                   style={{
@@ -467,6 +475,12 @@ export default function OrderScreen() {
                     width: "100%",
                   }}
                 >
+                  {(itemsPrice = itemsPrice + orderitem.actualPrice)}
+                  {
+                    (shippingPrice =
+                      shippingPrice + Number(orderitem.deliverySelect.cost))
+                  }
+                  {console.log(itemsPrice, "price", shippingPrice)}
                   <div>
                     {displayDeliveryStatus(order.deliveryStatus)}
                     <Name>
@@ -552,18 +566,29 @@ export default function OrderScreen() {
                     <Details1>
                       <Name>{orderitem.name}</Name>
                       <Quantity>QTY: {orderitem.quantity}</Quantity>
-                      <ItemPrice>$ {orderitem.price}</ItemPrice>
+                      <ItemPrice>$ {orderitem.actualPrice}</ItemPrice>
                     </Details1>
                   </OrderItem>
                   <ActionButton>
                     <button className="btn btn-primary w-100">
                       <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                     </button>
-                    <button className="btn btn-outline-primary w-100 mt-2">
-                      See Delivery history
-                    </button>
                   </ActionButton>
                 </DetailButton>
+                {Object.entries(orderitem.deliverySelect).map(
+                  ([key, value]) => (
+                    <div
+                      style={{
+                        display: "flex",
+                        textTransform: "capitalize",
+                        fontSize: "13px",
+                      }}
+                    >
+                      <div style={{ flex: "1" }}>{key}:</div>
+                      <div style={{ flex: "5" }}>{value}</div>
+                    </div>
+                  )
+                )}
               </SumaryContDetails>
             )
           ) : (
@@ -661,7 +686,7 @@ export default function OrderScreen() {
                     <Name>{orderitem.name}</Name>
                     <Quantity>QTY: {orderitem.quantity}</Quantity>
                     <Quantity>Size: {orderitem.selectSize}</Quantity>
-                    <ItemPrice>$ {orderitem.price}</ItemPrice>
+                    <ItemPrice>$ {orderitem.actualPrice}</ItemPrice>
                   </Details1>
                 </OrderItem>
                 <ActionButton>
@@ -670,34 +695,18 @@ export default function OrderScreen() {
                   </button>
                 </ActionButton>
               </DetailButton>
-              <div>
-                Delivery Method:{" "}
-                <span style={{ marginLeft: "20px" }}>
-                  {orderitem.deliverySelect.trg} + $
-                  {orderitem.deliverySelect.value}
-                </span>
-                <span
+              {Object.entries(orderitem.deliverySelect).map(([key, value]) => (
+                <div
                   style={{
-                    marginLeft: "20px",
-                    color: "var(--orange-color)",
-                    pointer: "cursor",
+                    display: "flex",
+                    textTransform: "capitalize",
+                    fontSize: "13px",
                   }}
                 >
-                  See Delivery history
-                </span>
-              </div>
-              <div>
-                Pick up point:{" "}
-                <span style={{ marginLeft: "20px" }}>
-                  {orderitem.deliverySelect.meta.shortName}
-                </span>
-              </div>
-              <div>
-                Phone:{" "}
-                <span style={{ marginLeft: "20px" }}>
-                  {orderitem.deliverySelect.phone}
-                </span>
-              </div>
+                  <div style={{ flex: "1" }}>{key}:</div>
+                  <div style={{ flex: "5" }}>{value}</div>
+                </div>
+              ))}
             </SumaryContDetails>
           )
         )}
@@ -710,13 +719,20 @@ export default function OrderScreen() {
               <hr />
               <Name>Payment Details</Name>
               <ItemNum>
-                Item Total:{"   "} <ItemPrice> ${order.totalPrice}</ItemPrice>
+                Item Total:{"   "} ${isSeller ? itemsPrice : order.itemsPrice}
               </ItemNum>
-              <ItemNum>Shipping Fee: ${0}</ItemNum>
-              <ItemNum>Total: ${order.totalPrice}</ItemNum>
+              <ItemNum>
+                Shipping Fee: ${isSeller ? shippingPrice : order.shippingPrice}
+              </ItemNum>
+              <ItemNum>
+                Total:{" "}
+                <ItemPrice>
+                  ${isSeller ? itemsPrice + shippingPrice : order.totalPrice}
+                </ItemPrice>
+              </ItemNum>
             </SumaryContDetails>
           </PaymentDliveryItem>
-          <PaymentDliveryItem>
+          {/* <PaymentDliveryItem>
             <Heading>Delivery</Heading>
             <SumaryContDetails mode={mode}>
               <Name>Deliver Address</Name>
@@ -726,7 +742,7 @@ export default function OrderScreen() {
                 {order.shippingAddress.country}
               </ItemNum>
             </SumaryContDetails>
-          </PaymentDliveryItem>
+          </PaymentDliveryItem> */}
         </PaymentDlivery>
       </Container>
 

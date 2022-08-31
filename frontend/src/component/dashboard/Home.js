@@ -277,6 +277,7 @@ export default function Home() {
                     : 0
                 }
               />
+              {console.log(userInfo)}
               <FeatureInfo2
                 type="product"
                 number={

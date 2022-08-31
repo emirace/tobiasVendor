@@ -112,6 +112,10 @@ export default function AddressBook() {
   const [selected, setSelected] = useState(null);
   const [refresh, setRefresh] = useState(false);
 
+  const [deliveryOption, setDeliveryOption] = useState("");
+  const [value, setValue] = useState("");
+  const [meta, setMeta] = useState("");
+
   const [{ loadingAddress, error, addresses }, dispatch] = useReducer(reducer, {
     loadingAddress: true,
     error: "",
@@ -143,26 +147,11 @@ export default function AddressBook() {
       event.preventDefault();
       event.stopPropagation();
     } else {
-      const useraddress = {
-        name,
-        zipcode: postalCode,
-        street: street,
-        city,
-        state: state1,
-        country,
-        apartment,
-      };
       try {
         const { data } = await axios.post(
           "/api/addresses",
           {
-            name,
-            zipcode: postalCode,
-            street: street,
-            city,
-            state: state1,
-            country,
-            apartment,
+            meta: { deliveryOption, cost: value, ...meta },
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -175,13 +164,7 @@ export default function AddressBook() {
         });
         setShowForm(false);
         setRefresh(!refresh);
-        setName("");
-        setApartment("");
-        setCity("");
-        setCountry("");
-        setPostalCode("");
-        setStreet("");
-        setState1("");
+        setMeta({});
       } catch (err) {
         console.log(getError(err));
       }
@@ -200,13 +183,7 @@ export default function AddressBook() {
         const { data } = await axios.put(
           `/api/addresses/${selected}`,
           {
-            name,
-            zipcode: postalCode,
-            street: street,
-            city,
-            state: state1,
-            country,
-            apartment,
+            meta: { deliveryOption, cost: value, ...meta },
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -257,14 +234,11 @@ export default function AddressBook() {
           <MessageBox>{error}</MessageBox>
         ) : addresses.length ? (
           addresses.map((address, index) => (
-            <Manual key={index} mode={mode}>
+            <Manual key={address._id} mode={mode}>
               <Option>
                 <FontAwesomeIcon icon={faHouse} />
-                <Name>{address.name}</Name>
-                <Full>
-                  {address.apartment}, {address.street}, {address.city},{" "}
-                  {address.state}, {address.country}{" "}
-                </Full>
+                <Name>{address.meta.deliveryOption}</Name>
+                <Full></Full>
               </Option>
               <div style={{ display: "flex", gap: "20px" }}>
                 <Edit

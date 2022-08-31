@@ -14,7 +14,7 @@ import Select from "@mui/material/Select";
 import axios from "axios";
 import { getError } from "../../utils";
 import LoadingBox from "../LoadingBox";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import IconsTooltips from "../IconsTooltips";
 import ModelLogin from "../ModelLogin";
 import Condition from "../Condition";
@@ -25,7 +25,7 @@ import DeliveryOption from "./DeliveryOption";
 
 const NewProductC = styled.div`
   flex: 4;
-  margin: 0 20px;
+  margin: 10px 10vw;
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
@@ -503,6 +503,9 @@ export default function NewProduct() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const productId = sp.get("id");
   const [name, setName] = useState("");
   const [product, setProduct] = useState("");
   const [category, setCategory] = useState("");
@@ -558,6 +561,42 @@ export default function NewProduct() {
   );
 
   const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (productId) {
+        try {
+          const { data } = await axios.get(`/api/products/slug/${productId}`);
+          console.log(data);
+          setName(data.name);
+          setProduct(data.product);
+          setCategory(data.category);
+          setSubCategory(data.subCategory);
+          setMaterial(data.material);
+          setBrand(data.brand);
+          setColor(data.color);
+          setLuxury(data.luxury);
+          setVintage(data.vintage);
+          setLocation(data.shippingLocation);
+          setDescription(data.description);
+          setSpecification(data.specification);
+          setFeature(data.keyFeatures);
+          setImage1(data.image);
+          setImage2(data.images[0]);
+          setImage3(data.images[1]);
+          setImage4(data.images[2]);
+          setPrice(data.actualPrice);
+          setDiscount(data.discount);
+          setCondition(data.condition);
+          sizes = data.sizes;
+          tags = data.tags;
+        } catch (err) {
+          console.log(getError(err));
+        }
+      }
+    };
+    fetchProduct();
+  }, []);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -773,6 +812,7 @@ export default function NewProduct() {
               <Label>Product Name</Label>
               <TextInput
                 mode={mode}
+                value={name}
                 type="text"
                 onChange={(e) => setName(e.target.value)}
               />
@@ -1220,6 +1260,7 @@ export default function NewProduct() {
                       <SizeInput
                         placeholder="qty"
                         mode={mode}
+                        value={s.value}
                         onChange={(e) =>
                           smallSizeHandler(s.size, e.target.value)
                         }
@@ -1301,6 +1342,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 <TextInput
                   mode={mode}
                   type="number"
+                  value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </Item>
@@ -1539,6 +1581,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 <Label>Description</Label>
                 <TextArea
                   mode={mode}
+                  value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </Item>
@@ -1551,6 +1594,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 </TitleDetails>
                 <TextArea
                   mode={mode}
+                  value={specification}
                   onChange={(e) => setSpecification(e.target.value)}
                 />
               </Item>

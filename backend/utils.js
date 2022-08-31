@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import Account from "./models/accountModel.js";
 import Transaction from "./models/transactionModel.js";
+import nodemailer from "nodemailer";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -20,6 +21,7 @@ export const generateToken = (user) => {
 };
 
 export const isAuth = (req, res, next) => {
+  console.log(req.headers);
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
@@ -83,6 +85,31 @@ export const isSocialAuth = (req, res, next) => {
   } else {
     res.status(401).send({ message: "User not authorize" });
   }
+};
+
+export const sendEmail = (options) => {
+  const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const mailOption = {
+    from: process.env.EMAIL_PASSWORD,
+    to: options.to,
+    subject: options.subject,
+    html: options.text,
+  };
+
+  transporter.sendMail(mailOption, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  });
 };
 
 export const slugify = (Text) => {
