@@ -12,7 +12,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { getError, region } from "../../../utils";
 import { useReactToPrint } from "react-to-print";
 
 const ProductLists = styled.div`
@@ -167,7 +167,7 @@ export default function OrderListAdmin() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/orders/?q=${ordersQuery}&sort=${sort}`,
+          `/api/orders/${region()}/admin?q=${ordersQuery}&sort=${sort}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -333,7 +333,11 @@ export default function OrderListAdmin() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     buyer: p.user ? p.user.username : "anonymous",
-    seller: p.seller ? p.seller.username : "anonymous",
+    seller: p.seller
+      ? p.seller.length > 1
+        ? "multi-seller"
+        : p.seller[0].username
+      : "anonymous",
     amount: p.totalPrice,
     sellerId: p.seller ? p.seller._id : "",
     buyerId: p.user ? p.user._id : "",

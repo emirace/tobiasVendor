@@ -106,6 +106,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     cart: { cartItems },
     mode,
     userInfo,
+    currency,
   } = state;
   const [deliveryOption, setDeliveryOption] = useState("");
   const [showMap, setShowMap] = useState(false);
@@ -163,6 +164,8 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    console.log("value", value);
+    console.log("meta", meta);
     const deliverySelect = { deliveryOption, cost: value, ...meta };
     if (userInfo) {
       await axios.post(
@@ -175,6 +178,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         }
       );
     }
+    console.log("dtgjjjhgg", deliverySelect);
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: {
@@ -241,7 +245,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     }}
                   />
                   <Label htmlFor={x.name}>
-                    {x.name} {x.value === 1 ? "" : `+ $${x.value}`}
+                    {x.name} {x.value === 1 ? "" : `+ ${currency}${x.value}`}
                   </Label>
                 </Option>
                 {deliveryOption === x.name ? (

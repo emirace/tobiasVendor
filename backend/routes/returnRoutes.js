@@ -8,11 +8,12 @@ const returnRouter = express.Router();
 // get all returns
 
 returnRouter.get(
-  "/",
+  "/:region",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const returns = await Return.find()
+    const { region } = req.params;
+    const returns = await Return.find({ region })
       .populate("productId")
       .populate({
         path: "orderId",
@@ -26,9 +27,10 @@ returnRouter.get(
 // add a returned
 
 returnRouter.post(
-  "/",
+  "/:region",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     console.log(req.body);
     const returned = new Return({
       orderId: req.body.orderId,
@@ -38,9 +40,9 @@ returnRouter.post(
       sending: req.body.sending,
       refund: req.body.refund,
       image: req.body.image,
+      region,
       others: req.body.others,
     });
-    console.log(returned);
     const newReturn = await returned.save();
     res.status(201).send(newReturn);
   })

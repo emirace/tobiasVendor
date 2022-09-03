@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema(
     active: { type: Boolean, default: true },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: String },
+    region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {
     timestamps: true,

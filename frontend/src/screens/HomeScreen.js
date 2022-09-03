@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
 import Influencer from "../component/Influencer";
-import { baseURL } from "../utils";
+import { baseURL, region } from "../utils";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -138,7 +138,7 @@ export default function ProductsScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get(`/api/products`);
+        const { data } = await axios.get(`/api/products/${region()}`);
         console.log(data);
         dispatch({
           type: "FETCH_SUCCESS",
@@ -146,7 +146,9 @@ export default function ProductsScreen() {
         });
 
         dispatch({ type: "FETCH_USERS_REQUEST" });
-        const { data: topSellers } = await axios.get(`/api/bestsellers`);
+        const { data: topSellers } = await axios.get(
+          `/api/bestsellers/${region()}`
+        );
         dispatch({
           type: "FETCH_USERS_SUCCESS",
           payload: topSellers,
@@ -403,11 +405,13 @@ export default function ProductsScreen() {
             //   transform: sliderstyle,
             // }}
           >
-            {products.map((product) => (
-              <div key={product._id} className="smooth1">
-                <Product product={product} />
-              </div>
-            ))}
+            {products.length > 0
+              ? products.map((product) => (
+                  <div key={product._id} className="smooth1">
+                    <Product product={product} />
+                  </div>
+                ))
+              : "No Product Found"}
           </div>
         </section>
         <AppSection mode={mode}>

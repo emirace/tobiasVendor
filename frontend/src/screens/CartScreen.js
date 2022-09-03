@@ -150,7 +150,7 @@ const reducer = (state, action) => {
 export default function CartScreen() {
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode } = state;
+  const { cart, userInfo, mode, currency } = state;
   const [{ loadingUser, error, user }, dispatch] = useReducer(reducer, {
     loadingUser: true,
     error: "",
@@ -353,7 +353,11 @@ export default function CartScreen() {
                               {item.name}
                             </Link>
 
-                            <div> ${item.actualPrice}</div>
+                            <div>
+                              {" "}
+                              {item.currency}
+                              {item.actualPrice}
+                            </div>
                             <span>Size: {item.selectSize}</span>
                           </div>
                         </div>
@@ -392,7 +396,7 @@ export default function CartScreen() {
                           Delivery:{" "}
                           {item.deliverySelect ? (
                             <span style={{ marginLeft: "20px" }}>
-                              {item.deliverySelect.deliveryOption} + $
+                              {item.deliverySelect.deliveryOption} + {currency}
                               {item.deliverySelect.cost}
                             </span>
                           ) : (
@@ -488,9 +492,14 @@ export default function CartScreen() {
                             <Left>
                               <Right>{c.quantity} </Right>
                               <Right>x </Right>
-                              <Right>${c.price}</Right>
+                              <Right>
+                                {currency}
+                                {c.price}
+                              </Right>
                             </Left>
-                            <Right>{" =  $" + c.quantity * c.price}</Right>
+                            <Right>
+                              {` =  ${currency}` + c.quantity * c.price}
+                            </Right>
                           </SumCont>
                         </>
                       ))}
@@ -501,7 +510,7 @@ export default function CartScreen() {
                   <Row>
                     <Col>SubTotal</Col>
                     <Col>
-                      $
+                      {currency}
                       {cart.cartItems.reduce(
                         (a, c) => a + c.price * c.quantity,
                         0
@@ -512,7 +521,10 @@ export default function CartScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Shipping</Col>
-                    <Col>${cart.shippingPrice.toFixed(2)}</Col>
+                    <Col>
+                      {currency}
+                      {cart.shippingPrice.toFixed(2)}
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -521,7 +533,10 @@ export default function CartScreen() {
                       <b>Total</b>
                     </Col>
                     <Col>
-                      <b>${cart.totalPrice.toFixed(2)}</b>
+                      <b>
+                        {currency}
+                        {cart.totalPrice.toFixed(2)}
+                      </b>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -543,7 +558,7 @@ export default function CartScreen() {
               {/* <div>
               <h4 style={{ marginTop: "30px" }}>
                 Subtotal ({cart.cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
-                items) : $
+                items) : {currency}
                 {cart.cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
               </h4>
             </div> */}

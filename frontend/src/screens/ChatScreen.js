@@ -20,13 +20,13 @@ import Navbar from "../component/Navbar";
 import { Store } from "../Store";
 import Conversation from "../component/Conversation";
 import Messages from "../component/Messages";
-import { io } from "socket.io-client";
 import { Link, useLocation } from "react-router-dom";
 import { getError } from "../utils";
 import ReportConversation from "../component/Report/ReportConversation";
 import Report from "../component/Report";
 import ModelLogin from "../component/ModelLogin";
 import CropImage from "../component/cropImage/CropImage";
+import { socket } from "../App";
 
 const Container = styled.div`
   position: fixed;
@@ -275,11 +275,6 @@ const reducer = (state, action) => {
   }
 };
 
-const ENDPOINT =
-  window.location.host.indexOf("localhost") >= 0
-    ? "ws://127.0.0.1:5000"
-    : window.location.host;
-
 export default function ChatScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
@@ -293,7 +288,6 @@ export default function ChatScreen() {
   const [arrivalMessage, setArrivalMessage] = useState("");
   const [modelRef1, setmodelRef1] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
-  const socket = useRef();
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -329,9 +323,7 @@ export default function ChatScreen() {
     });
 
   useEffect(() => {
-    socket.current = io(ENDPOINT);
-    socket.current.emit("onlogin", userInfo);
-    socket.current.on("getMessage", (data) => {
+    socket.on("getMessage", (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -343,7 +335,7 @@ export default function ChatScreen() {
   const [arrivalReport, setArrivalReport] = useState();
 
   useEffect(() => {
-    socket.current.on("getReport", (data) => {
+    socket.on("getReport", (data) => {
       setArrivalReport(data.report);
     });
   }, []);
@@ -374,7 +366,7 @@ export default function ChatScreen() {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.on("getUsers", (users) => {
+    socket.on("getUsers", (users) => {
       setOnlineUser(users);
     });
   }, [userInfo]);
@@ -502,12 +494,17 @@ export default function ChatScreen() {
       const receiverId = currentChat.members.find(
         (member) => member !== userInfo._id
       );
-      socket.current.emit("sendMessage", {
+      socket.emit("sendMessage", {
         message: data.message,
         senderId: userInfo._id,
         image: image,
         receiverId,
         text: newMessage,
+      });
+      socket.emit("post_data", {
+        userId: receiverId,
+        itemId: currentChat._id,
+        notifyType: "message",
       });
       setNewMessage("");
       setImage("");
@@ -661,6 +658,7 @@ export default function ChatScreen() {
                     onClick={() => {
                       setShowLeft(false);
                       setCurrentChat(c);
+                      socket.emit("remove_notifications", c._id);
                     }}
                     key={index}
                   >
@@ -711,7 +709,7 @@ export default function ChatScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      socket.current.emit("sendReport", {
+      socket.emit("sendReport", {
         report: data.savedReport,
       });
 
@@ -726,7 +724,7 @@ export default function ChatScreen() {
       // console.log('newreport', newreports);
       // setReports1(data.savedReport);
 
-      // socket.current.emit('sendReport', {
+      // socket.emit('sendReport', {
       //   report: data.savedReport,
       // });
 

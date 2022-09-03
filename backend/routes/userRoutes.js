@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import { generateToken, isAdmin, isAuth } from "../utils.js";
+import { generateToken, isAdmin, isAuth, sendEmail } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
 import crypto from "crypto";
@@ -11,9 +11,10 @@ const userRouter = express.Router();
 // get all seller, which is all users now
 
 userRouter.get(
-  "/top-sellers",
+  "/:region/top-sellers",
   expressAsyncHandler(async (req, res) => {
-    const topSellers = await User.find({ isSeller: true })
+    const { region } = req.params;
+    const topSellers = await User.find({ isSeller: true, region })
       .select("username image badge ")
       .sort({ rating: -1 })
       .limit(10);
@@ -27,11 +28,12 @@ userRouter.get(
 // get all users admin
 
 userRouter.get(
-  "/",
+  "/:region",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const users = await User.find().sort({ createdAt: -1 });
+    const { region } = req.params;
+    const users = await User.find({ region }).sort({ createdAt: -1 });
     res.send(users);
   })
 );
@@ -92,6 +94,7 @@ userRouter.post(
           usernameUpdate: user.usernameUpdate,
           firstName: user.firstName,
           lastName: user.lastName,
+          region: user.region,
           email: user.email,
           isSeller: user.isSeller,
           isAdmin: user.isAdmin,
@@ -107,8 +110,9 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/signup",
+  "/:region/signup",
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const newUser = new User({
       username: req.body.username,
       firstName: req.body.firstName,
@@ -119,17 +123,20 @@ userRouter.post(
       image: "/images/pimage.png",
       password: bcrypt.hashSync(req.body.password),
       rating: 0,
+      region,
       numReviews: 0,
     });
     const user = await newUser.save();
     await Account.create({
       userId: user.id,
       balance: 0,
+      currency: region === "ZAR" ? "R " : "N ",
     });
     res.send({
       _id: user._id,
       name: user.name,
       username: user.username,
+      region: user.region,
       firstName: user.firstName,
       usernameUpdate: user.usernameUpdate,
       lastName: user.lastName,
@@ -142,8 +149,9 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/forgetpassword",
+  "/:url/forgetpassword",
   expressAsyncHandler(async (req, res) => {
+    const { url } = req.params;
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       const resetToken = crypto.randomBytes(20).toString("hex");
@@ -153,21 +161,30 @@ userRouter.post(
         .digest("hex");
       user.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
       await user.save();
-      const resetUrl = `http://localhost:3000/${resetToken}`;
+      const resetUrl = `https://${url}/resetpassword/${resetToken}`;
       const message = `
 <h1> You have requested a password reset</h1>
-<p>Please go to this link to rest your password</p>
+<p>Please go to this link to reset your password</p>
 <a href=${resetUrl} clicktracking=off>${resetUrl}
 `;
       try {
-        res.status(200).send({ message: "Email sent", resetUrl });
+        // sendEmail({
+        //   to: user.email,
+        //   text: message,
+        //   subject: "Password Reset",
+        // });
+
+        res
+          .status(200)
+          .send({ success: true, message: "Email sent", resetUrl });
       } catch (error) {
         user.resetPasswordExpire = undefined;
         user.resetPasswordToken = undefined;
         await user.save();
-        res
-          .status(500)
-          .send({ success: false, message: "Encounter problem sending email" });
+        res.status(500).send({
+          success: false,
+          message: " hello Encounter problem sending email",
+        });
       }
     } else {
       res

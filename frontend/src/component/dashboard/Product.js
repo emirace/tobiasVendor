@@ -371,7 +371,7 @@ let sizes = [];
 
 export default function Product() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
   const params = useParams();
   const { id } = params;
   const [product, setProduct] = useState("");
@@ -623,6 +623,7 @@ export default function Product() {
             <InfoItem>
               <InfoKey>seller:</InfoKey>
               <InfoValue>
+                {console.log("pro", product)}
                 {product ? product.seller.username : "loading..."}
               </InfoValue>
             </InfoItem>
@@ -885,8 +886,14 @@ export default function Product() {
                 </Discount>
               </Item>
               <PriceDisplay>
-                <Offer>${discount || price}</Offer>
-                <Actual>${price}</Actual>
+                <Offer>
+                  {currency}
+                  {discount || price}
+                </Offer>
+                <Actual>
+                  {currency}
+                  {price}
+                </Actual>
               </PriceDisplay>
             </Price>
             <Item>

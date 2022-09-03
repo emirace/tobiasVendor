@@ -75,7 +75,12 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AddFund({ setShowModel, setRefresh, refresh }) {
+export default function AddFund({
+  setShowModel,
+  setRefresh,
+  refresh,
+  currency,
+}) {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
   const [{ loading, error, message }, dispatch] = useReducer(reducer, {
@@ -88,7 +93,7 @@ export default function AddFund({ setShowModel, setRefresh, refresh }) {
     public_key: BASE_KEY,
     tx_ref: v4(),
     amount,
-    currency: "NGN",
+    currency: currency === "N " ? "NGN" : "ZAR",
     payment_options: "card,mobilemoney,ussd",
     customer: {
       email: userInfo.email,

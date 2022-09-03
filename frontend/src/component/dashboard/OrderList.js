@@ -7,6 +7,8 @@ import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError } from "../../utils";
+import { Badge } from "../Navbar";
+import { socket } from "../../App";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -19,6 +21,7 @@ const Title = styled.h1`
   padding: 20px 20px 0 20px;
 `;
 const Product = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   & img {
@@ -126,7 +129,7 @@ const reducer = (state, action) => {
 
 export default function OrderList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, notifications, currency } = state;
 
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
@@ -190,6 +193,8 @@ export default function OrderList() {
             <Link to={`/order/${params.row.id}`}>
               <img src={params.row.image} alt="" />
               {params.row.name}
+              {notifications.filter((x) => x.itemId === params.row.id).length >
+                0 && <Badge style={{ marginRight: "10px" }}></Badge>}
             </Link>
           </Product>
         );
@@ -219,7 +224,14 @@ export default function OrderList() {
         return (
           <ActionSec>
             <Link to={`/order/${params.row.id}`}>
-              <Edit mode={mode}>View</Edit>
+              <Edit
+                mode={mode}
+                onClick={() => {
+                  socket.emit("remove_notifications", params.row.id);
+                }}
+              >
+                View
+              </Edit>
             </Link>
           </ActionSec>
         );
@@ -233,7 +245,7 @@ export default function OrderList() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
-    amount: p.totalPrice,
+    amount: `${currency}${p.totalPrice}`,
   }));
 
   return (

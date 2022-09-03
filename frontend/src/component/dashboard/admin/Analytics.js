@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { getError, region } from "../../../utils";
 import moment from "moment";
 import LoadingBox from "../../LoadingBox";
 import WidgetSmall from "../WidgetSmall";
@@ -196,7 +196,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchAllUser = async () => {
       try {
-        const { data } = await axios.get("/api/users", {
+        const { data } = await axios.get(`/api/users/${region()}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUsers(data);
@@ -211,7 +211,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchMostView = async () => {
       try {
-        const { data } = await axios.get("/api/recentviews", {
+        const { data } = await axios.get(`/api/recentviews/${region()}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setMostView(data);
@@ -225,7 +225,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const { data } = await axios.get("/api/bestsellers", {
+        const { data } = await axios.get(`/api/bestsellers/${region()}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setBestseller(data);
@@ -240,7 +240,7 @@ export default function Analytics() {
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
-        const { data } = await axios.get("/api/admins/products", {
+        const { data } = await axios.get(`/api/admins/${region()}/products`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setProducts(data);
@@ -255,9 +255,12 @@ export default function Analytics() {
   useEffect(() => {
     const OutOfStock = async () => {
       try {
-        const { data } = await axios.get("/api/admins/soldproducts", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/admins/${region()}/soldproducts`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         setSoldProducts(data);
       } catch (err) {
         setError(getError(err));
@@ -271,7 +274,7 @@ export default function Analytics() {
     const fetchAllUsers = async () => {
       if (userInfo.isAdmin) {
         try {
-          const { data } = await axios.get("/api/orders/summary", {
+          const { data } = await axios.get(`/api/orders/${region()}/summary`, {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           });
           setUsers2(data);

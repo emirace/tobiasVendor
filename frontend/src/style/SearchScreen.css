@@ -8,7 +8,7 @@
 }
 
 .seaarch_cate_heading::before {
-  content: ' ';
+  content: " ";
   width: 10px;
   height: 10px;
   border-bottom: 1px solid;
@@ -20,7 +20,7 @@
 }
 
 .search_cate_container.active .seaarch_cate_heading::before {
-  content: '';
+  content: "";
   transform: rotate(135deg);
 }
 
@@ -62,7 +62,7 @@
 }
 
 .filter_btn::before {
-  content: ' ';
+  content: " ";
   width: 5px;
   height: 5px;
   border-bottom: 1px solid;
@@ -88,7 +88,7 @@
 }
 
 .search_sortBy {
-  max-width: 100px;
+  max-width: 200px;
   background: inherit;
   color: inherit;
 }

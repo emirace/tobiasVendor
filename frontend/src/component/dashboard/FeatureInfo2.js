@@ -76,7 +76,7 @@ const Percentage = styled.div`
 
 export default function FeatureInfo({ type, number }) {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, currency } = state;
   let data;
 
   switch (type) {
@@ -183,7 +183,7 @@ export default function FeatureInfo({ type, number }) {
         <Left>
           <Title>{data.title}</Title>
           <Counter>
-            {data.isMoney && "$"} {number}
+            {data.isMoney && currency} {number}
           </Counter>
         </Left>
         <Right>

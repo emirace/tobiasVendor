@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError } from "../../utils";
 import ModelLogin from "../ModelLogin";
+import { Badge } from "../Navbar";
+import { socket } from "../../App";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -169,7 +171,7 @@ const reducer = (state, action) => {
 
 export default function Saleslist() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, notifications, currency } = state;
 
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
@@ -182,6 +184,7 @@ export default function Saleslist() {
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
+  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
@@ -264,6 +267,8 @@ export default function Saleslist() {
             <Link to={`/order/${params.row.id}`}>
               <img src={params.row.image} alt="" />
               {params.row.name}
+              {notifications.filter((x) => x.itemId === params.row.id).length >
+                0 && <Badge style={{ marginRight: "10px" }}></Badge>}
             </Link>
           </Product>
         );
@@ -293,12 +298,20 @@ export default function Saleslist() {
         return (
           <ActionSec>
             <Link to={`/order/${params.row.id}`}>
-              <Edit mode={mode}>View</Edit>
+              <Edit
+                mode={mode}
+                onClick={() => {
+                  socket.emit("remove_notifications", params.row.id);
+                }}
+              >
+                View
+              </Edit>
             </Link>
 
             <Reject
               onClick={() => {
                 setShowModel(true);
+                socket.emit("remove_notifications", params.row.id);
                 setCurrentId(params.row.id);
               }}
               mode={mode}
@@ -317,7 +330,7 @@ export default function Saleslist() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
-    amount: p.totalPrice,
+    amount: `${currency}${p.totalPrice}`,
   }));
 
   return (

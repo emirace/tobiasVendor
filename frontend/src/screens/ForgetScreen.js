@@ -168,14 +168,18 @@ export default function ForgetScreen() {
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post("/api/users/forgetpassword", {
-        email: input.email,
-      });
+      const { data } = await axios.post(
+        `/api/users/${window.location.host}/forgetpassword`,
+        {
+          email: input.email,
+        }
+      );
+      console.log(data);
       if (data.success) {
-        window.location.href = redirect || "/signin";
       }
     } catch (err) {
       toast.error(getError(err));
+      console.log(err);
     }
   };
 
@@ -236,6 +240,7 @@ export default function ForgetScreen() {
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Enter Recovery Email</Form.Label>
           <Input
+            type="email"
             error={error.email}
             onFocus={() => {
               handleError(null, "email");

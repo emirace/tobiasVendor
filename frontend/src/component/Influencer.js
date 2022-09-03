@@ -154,7 +154,10 @@ export default function Influencer({ sellerId }) {
             <Product>
               <ProductImg src={product.image} alt="img" />
               <PDetail>
-                <Price>${product.actualPrice}</Price>
+                <Price>
+                  {product.current}
+                  {product.actualPrice}
+                </Price>
                 <Sizes>
                   {product.sizes.map((size) => (
                     <Size>{size.name}</Size>

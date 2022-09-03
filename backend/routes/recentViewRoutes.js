@@ -7,10 +7,10 @@ const recentViewRouter = express.Router();
 
 const factor = 0.9;
 recentViewRouter.put(
-  "/:productId",
+  "/:region/:productId",
   isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
-    const { productId } = req.params;
+    const { productId, region } = req.params;
     const view = await RecentView.findOne({ productId: productId });
     if (view) {
       view.score = view.score + factor;
@@ -21,6 +21,7 @@ recentViewRouter.put(
         score: factor,
         numViews: 1,
         productId,
+        region,
       });
       await newView.save();
     }
@@ -38,9 +39,10 @@ recentViewRouter.put(
 );
 
 recentViewRouter.get(
-  "/",
+  "/:region",
   expressAsyncHandler(async (req, res) => {
-    const views = await RecentView.find()
+    const { region } = req.params;
+    const views = await RecentView.find({ region })
       .populate("productId", "name image slug ")
       .sort({ score: -1 });
     res.status(201).send(views);

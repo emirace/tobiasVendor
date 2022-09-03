@@ -9,6 +9,7 @@ const returnSchema = new mongoose.Schema(
     refund: { type: String, required: true },
     image: { type: String },
     others: { type: String },
+    region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {
     timestamps: true,

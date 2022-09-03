@@ -80,7 +80,7 @@ export default function Home() {
     const fetchAllUsers = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get("/api/orders/summary", {
+        const { data } = await axios.get(`/api/orders/${region()}/summary`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: "USERS_SUCCESS", payload: data });

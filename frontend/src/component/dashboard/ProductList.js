@@ -6,7 +6,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -133,13 +133,12 @@ export default function ProductList() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/${isSellerMode ? "seller/search/" : "admin"}${
-            isSellerMode ? userInfo._id : ""
-          }?q=${productsQuery}`,
+          `/api/products/seller/search/${userInfo._id}?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
+        console.log("data", data);
         dispatch({ type: "USERS_SUCCESS", payload: data.products });
       } catch (err) {
         console.log(getError(err));
@@ -223,12 +222,15 @@ export default function ProductList() {
       },
     },
   ];
+  {
+    console.log(products);
+  }
   const rows = products.map((p) => ({
     id: p._id,
     name: p.name,
     image: p.image,
     stock: p.countInStock,
-    price: "$" + p.price,
+    price: `${p.currency}${p.actualPrice}`,
     slug: p.slug,
   }));
 

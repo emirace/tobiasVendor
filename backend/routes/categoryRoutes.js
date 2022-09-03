@@ -11,7 +11,6 @@ categoryRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
     const categories = await Category.find();
-    console.log("helo");
     res.send(categories);
   })
 );

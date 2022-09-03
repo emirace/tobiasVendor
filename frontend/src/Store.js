@@ -40,6 +40,12 @@ const initialState = {
   recentlyViewed: localStorage.getItem("recentlyViewed")
     ? JSON.parse(localStorage.getItem("recentlyViewed"))
     : [],
+  notifications: [],
+  currency:
+    window.location.hostname === "www.repeddle.com" ||
+    window.location.hostname === "repeddle.com"
+      ? "N "
+      : "R ",
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -157,6 +163,11 @@ function reducer(state, action) {
           state1: "",
           showStatus: false,
         },
+      };
+    case "UPDATE_NOTIFICATIONS":
+      return {
+        ...state,
+        notifications: action.payload,
       };
 
     default:

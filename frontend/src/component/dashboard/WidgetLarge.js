@@ -87,7 +87,7 @@ const reducer = (state, action) => {
 
 export default function WidgetLarge({ refresh }) {
   const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const [{ loadingTrans, error, transactions }, dispatch] = useReducer(
     reducer,
@@ -141,7 +141,10 @@ export default function WidgetLarge({ refresh }) {
             <User>{t.metadata ? t.metadata.purpose : ""}</User>
             <Date>{moment(t.createdAt).format("MMMM Do YYYY, h:mm:ss a")}</Date>
             <Amount>{t.txnType}</Amount>
-            <Amount>${t.amount}</Amount>
+            <Amount>
+              {currency}
+              {t.amount}
+            </Amount>
             <Status>{actionButton("Done")}</Status>
           </Tr>
         ))}

@@ -6,7 +6,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { getError, region } from "../../../utils";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -131,7 +131,7 @@ export default function ProductListAdmin() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/admin?q=${productsQuery}`,
+          `/api/products/${region()}/admin?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }

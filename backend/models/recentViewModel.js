@@ -9,6 +9,7 @@ const recentViewSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
+    region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {
     timestamps: true,

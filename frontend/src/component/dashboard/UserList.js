@@ -6,7 +6,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 
 const Container = styled.div`
   flex: 4;
@@ -91,9 +91,12 @@ export default function UserList() {
     const fetchAllUser = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/users?q=${userQuery}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/users/${region()}?q=${userQuery}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
         console.log(getError(err));

@@ -89,9 +89,13 @@ export function displayDeliveryStatus(status) {
     );
   }
 }
-export const baseURL = () => {
-  const add = "https://repeddle.com:5000";
-  console.log(window.location.hostname);
+export const region = () => {
+  const add =
+    window.location.hostname === "www.repeddle.com" ||
+    window.location.hostname === "repeddle.com"
+      ? "NGN"
+      : "ZAR";
+  console.log(window.location.hostname, "region", add);
   return add;
 };
 

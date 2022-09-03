@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
-import { getError, getMonday } from "../../utils";
+import { getError, getMonday, region } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
 import Chart from "./Chart";
@@ -130,7 +130,7 @@ const reducer = (state, action) => {
 
 export default function Home() {
   const { state } = useContext(Store);
-  const { userInfo, mode } = state;
+  const { userInfo, mode, currency } = state;
   var now = new window.Date();
   const [from, setFrom] = useState("2022-04-24");
   const [to, setTo] = useState(now);
@@ -176,6 +176,7 @@ export default function Home() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
+        console.log(data);
         dispatch({ type: "PRODUCT_SUCCESS", payload: data });
       } catch (err) {
         dispatch({ type: "ORDER_FAIL", payload: getError(err) });
@@ -259,6 +260,7 @@ export default function Home() {
         <>
           <WidgetsCont mode={mode}>
             <h3>Today</h3>
+            {console.log("orders", orders)}
             <Widgets>
               <FeatureInfo2
                 type="earning"
@@ -347,7 +349,7 @@ export default function Home() {
             <Col>
               <Chart
                 title="Earning"
-                total={`$${totalSales}`}
+                total={`${currency}${totalSales}`}
                 data={orderData}
                 dataKey="earning"
                 grid

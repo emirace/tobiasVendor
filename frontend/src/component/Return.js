@@ -9,7 +9,7 @@ import React, { useContext, useReducer, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
 
@@ -178,7 +178,7 @@ export default function Return({
     dispatch({ type: "RETURN_REQUEST" });
     try {
       await axios.post(
-        "/api/returns",
+        `/api/returns/${region()}`,
         {
           orderId,
           productId: current._id,

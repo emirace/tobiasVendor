@@ -29,7 +29,7 @@ accountRouter.get(
     const account = await Account.findOne({ userId: req.user._id });
     console.log(account);
     if (account) {
-      res.status(200).send({ balance: account.balance });
+      res.status(200).send(account);
     } else {
       res.status(404).send("account not found");
     }
@@ -170,8 +170,7 @@ accountRouter.post(
         });
       } catch (error) {
         res.status(500).send({
-          success: false,
-          error: error,
+          message: error.error,
         });
       }
     } else {

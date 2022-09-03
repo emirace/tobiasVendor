@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Helmet } from "react-helmet-async";
@@ -366,7 +366,7 @@ export default function SearchSceen() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}&deal=${deal}&shipping=${shipping}&condition=${condition}&availability=${availability}&type=${type}&pattern=${pattern}`
+          `/api/products/${region()}/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}&deal=${deal}&shipping=${shipping}&condition=${condition}&availability=${availability}&type=${type}&pattern=${pattern}`
         );
         console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
@@ -951,7 +951,7 @@ export default function SearchSceen() {
                     style={{
                       flex: 1,
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "start",
                     }}
                   >
                     <Product product={product}></Product>

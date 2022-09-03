@@ -19,7 +19,7 @@ import Rating from "../component/Rating";
 import { Helmet } from "react-helmet-async";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import { Store } from "../Store";
 import "../style/product.css";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
@@ -214,7 +214,7 @@ export default function ProductScreen() {
       try {
         const { data } = await axios.get(`/api/products/slug/${slug}`);
         if (data) {
-          await axios.put(`/api/recentviews/${data._id}`);
+          await axios.put(`/api/recentviews/${region()}/${data._id}`);
         }
         const factor = 0.9;
         var views = JSON.parse(localStorage.getItem("recentlyView") || "[]");
@@ -438,6 +438,9 @@ export default function ProductScreen() {
         behavior: "smooth",
         top: reviewRef.current.offsetTop,
       });
+      setRAting("");
+      setComment("");
+      setLike("");
     } catch (err) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -1128,8 +1131,14 @@ export default function ProductScreen() {
             </div>
           </div>
           <div className="sp_price_detail">
-            <div className="sp_actual_price">${product.actualPrice}</div>
-            <div className="sp_discount_price">${product.price}</div>
+            <div className="sp_actual_price">
+              {product.currenncy}
+              {product.actualPrice}
+            </div>
+            <div className="sp_discount_price">
+              {product.currenncy}
+              {product.price}
+            </div>
             {discount() ? (
               <div className="sp_discount">
                 ({discount().toString().substring(0, 5)}% )

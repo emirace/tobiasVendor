@@ -83,7 +83,7 @@ export default function Transactions() {
   const [{ loading, error, balance }, dispatch] = useReducer(reducer, {
     loading: true,
     error: "",
-    balance: 0,
+    balance: {},
   });
   const [refresh, setRefresh] = useState(false);
 
@@ -94,7 +94,7 @@ export default function Transactions() {
         const { data } = await axios.get("/api/accounts/balance", {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: "FETCH_SUCCESS", payload: data.balance });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       };
       getBalance();
     } catch (err) {
@@ -112,7 +112,10 @@ export default function Transactions() {
           {loading ? (
             <LoadingBox />
           ) : (
-            <Balance>{"$" + balance.toFixed(2)}</Balance>
+            <Balance>
+              {console.log(balance)}
+              {`${balance.currency}` + balance.balance.toFixed(2)}
+            </Balance>
           )}
           <TextSmall>Current Repeddle Wallet Balance</TextSmall>
         </div>
@@ -134,6 +137,7 @@ export default function Transactions() {
           setShowModel={setShowModel}
           setRefresh={setRefresh}
           refresh={refresh}
+          currency={balance.currency}
         />
       </WalletModel>
       <WalletModel

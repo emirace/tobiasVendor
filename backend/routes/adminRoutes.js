@@ -7,11 +7,12 @@ import Product from "../models/productModel.js";
 const adminRouter = express.Router();
 
 adminRouter.get(
-  "/products",
+  "/:region/products",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find()
+    const { region } = req.params;
+    const products = await Product.find({ region })
       .populate("seller", "seller._id")
       .sort({ createdAt: -1 });
 
@@ -20,11 +21,12 @@ adminRouter.get(
 );
 
 adminRouter.get(
-  "/soldproducts",
+  "/:region/soldproducts",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find({ countInStock: 0 })
+    const { region } = req.params;
+    const products = await Product.find({ countInStock: 0, region })
       .populate("seller", "seller._id")
       .sort({ updatedAt: -1 });
 

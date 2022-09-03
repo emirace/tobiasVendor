@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Toast from 'react-bootstrap/Toast';
-import styled from 'styled-components';
-import { Store } from '../Store';
+import React, { useContext, useEffect, useState } from "react";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Toast from "react-bootstrap/Toast";
+import styled from "styled-components";
+import { Store } from "../Store";
 
 const ToastCont = styled.div`
   position: fixed;
@@ -42,7 +42,7 @@ export default function ToastNotification() {
   const { toast } = state;
 
   function closeHandler() {
-    ctxDispatch({ type: 'REMOVE_TOAST' });
+    ctxDispatch({ type: "REMOVE_TOAST" });
   }
   return (
     <ToastCont className={toast.state1}>

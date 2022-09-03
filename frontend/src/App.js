@@ -9,7 +9,6 @@ import "./style/ProductScreen.css";
 import "./style/SearchScreen.css";
 import "./style/SellerScreen.css";
 import "./style/StickyNav.css";
-import "./style/ToastNotification.css";
 
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -181,9 +180,16 @@ const Label = styled.label.attrs({
   }
 `;
 
+const ENDPOINT =
+  window.location.host.indexOf("localhost") >= 0
+    ? "ws://127.0.0.1:5000"
+    : window.location.host;
+
+export const socket = io(ENDPOINT);
+
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode } = state;
+  const { cart, userInfo, mode, notifications } = state;
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("userInfo");
@@ -192,6 +198,36 @@ function App() {
     localStorage.removeItem("paymentMethod");
     window.location.href = "/signin";
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      socket.emit("onlogin", userInfo);
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
+    console.log(userInfo);
+    if (userInfo) {
+      socket.emit("initial_data", { userId: userInfo._id });
+      socket.on("get_data", getData);
+      socket.on("change_data", changeData);
+      return () => {
+        socket.off("get_data");
+        socket.off("change_data");
+      };
+    }
+  }, [userInfo]);
+  const getData = (notification) => {
+    console.log("notification", notification);
+    ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
+  };
+  const changeData = () => {
+    if (userInfo) {
+      socket.emit("initial_data", { userId: userInfo._id });
+    }
+  };
+
+  console.log("updated noti", notifications);
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);

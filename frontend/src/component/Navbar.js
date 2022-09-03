@@ -11,9 +11,10 @@ import SearchBox from "./SearchBox";
 import { Link } from "react-router-dom";
 import { Store } from "../Store";
 import axios from "axios";
-import { baseURL, getError } from "../utils";
+import { getError } from "../utils";
 import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
 import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
+import { socket } from "../App";
 
 const Container = styled.div`
   width: 100%;
@@ -278,7 +279,7 @@ const SubCategoryItemS = styled.li`
     text-decoration: underline;
   }
 `;
-const Badge = styled.span`
+export const Badge = styled.span`
   width: 12px;
   height: 12px;
   display: flex;
@@ -409,7 +410,11 @@ const ProfileMenu = styled.div`
   & ul li {
     white-space: nowrap;
     cursor: pointer;
-    margin-bottom: 10px;
+    padding: 5px 5px;
+  }
+  & ul li:hover {
+    background: ${(props) =>
+      props.mode === "pagebodylight " ? "var(--light-ev2)" : "var(--dark-ev2)"};
   }
 `;
 const ProfileCont = styled.div`
@@ -434,6 +439,10 @@ const LogoImage = styled.img`
   width: 100%;
 `;
 
+const Li = styled.li`
+  position: relative;
+`;
+
 export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   const modelRef = useRef();
   useEffect(() => {
@@ -441,9 +450,27 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
   }, []);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode } = state;
+  const { cart, userInfo, mode, notifications } = state;
 
   const [categories, setCategories] = useState([]);
+
+  const messageNotification = notifications.filter(
+    (x) => x.notifyType === "message"
+  );
+  const purchaseNotification = notifications.filter(
+    (x) => x.notifyType === "purchase"
+  );
+  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const productNotification = notifications.filter(
+    (x) => x.notifyType === "product"
+  );
+  const allNotification = [
+    ...new Set([
+      ...purchaseNotification,
+      ...soldNotification,
+      ...productNotification,
+    ]),
+  ];
 
   useEffect(() => {
     try {
@@ -452,7 +479,6 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         setCategories(data);
         console.log("categori", data);
       };
-      console.log(baseURL());
       fetchCategories();
     } catch (err) {
       console.log(getError(err));
@@ -543,6 +569,11 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
             <Link to="/messages">
               <MessageIcon height={25} width={25} />
               <IconsTooltips tips="Messages" />
+              {messageNotification.length > 0 && (
+                <Badge>
+                  <span>{messageNotification.length}</span>
+                </Badge>
+              )}
             </Link>
           </MenuItem>
           <MenuItemCart>
@@ -565,24 +596,61 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                 ref={modelRef}
                 onClick={() => setMymenu(!menu)}
               />
+              {allNotification.length > 0 && (
+                <Badge>
+                  <span>{allNotification.length}</span>
+                </Badge>
+              )}
               {menu && (
                 <ProfileMenu mode={mode} className={mode}>
                   <ul>
-                    <li>
+                    <Li>
                       <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
-                    </li>
-                    <li>
+
+                      {/* {messageNotification.length > 0 && (
+                        <Badge>
+                          <span>{messageNotification.length}</span>
+                        </Badge>
+                      )} */}
+                    </Li>
+                    <Li>
                       <Link to="/dashboard/orderlist">Purchase Orders</Link>
-                    </li>
-                    <li>
+
+                      {purchaseNotification.length > 0 && (
+                        <Badge>
+                          <span>{purchaseNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+                    <Li>
                       <Link to="/dashboard/saleslist">Sold Orders</Link>
-                    </li>
-                    <li>
+                      {console.log("sold", soldNotification)}
+
+                      {soldNotification.length > 0 && (
+                        <Badge>
+                          <span>{soldNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+                    <Li>
                       <Link to="/dashboard/productlist">My Products</Link>
-                    </li>
-                    <li>
+                      {console.log("product", productNotification)}
+
+                      {productNotification.length > 0 && (
+                        <Badge>
+                          <span>{productNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+                    <Li>
                       <Link to="/dashboard">Dashboard</Link>
-                    </li>
+
+                      {allNotification.length > 0 && (
+                        <Badge>
+                          <span>{allNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
                     <li onClick={() => signoutHandler()}>Log Out</li>
                   </ul>
                 </ProfileMenu>
@@ -596,7 +664,6 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
         </RightMenu>
       </Wrapper2>
       <Category>
-        {console.log(categories)}
         {categories.length > 0 &&
           categories.map((c) => (
             <CategoryGroup>

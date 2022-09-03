@@ -12,6 +12,7 @@ export default function PaymentMethodScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     userInfo,
+    currency,
     cart: { shippingAddress, paymentMethod, totalPrice },
   } = state;
   const [paymentMethodName, setPaymentMethod] = useState(
@@ -58,7 +59,7 @@ export default function PaymentMethodScreen() {
             disabled={balance <= totalPrice}
             type="radio"
             id="Wallet"
-            label={`Wallet ($${balance.toFixed(2)})`}
+            label={`Wallet (${currency}${balance.toFixed(2)})`}
             value="Wallet"
             checked={paymentMethodName === "Wallet"}
             onChange={(e) => setPaymentMethod(e.target.value)}

@@ -14,16 +14,21 @@ const productRouter = express.Router();
 
 // get all product
 
-productRouter.get("/", async (req, res) => {
-  const products = await Product.find().populate("seller", "_id username");
+productRouter.get("/:region", async (req, res) => {
+  const { region } = req.params;
+  const products = await Product.find({ region }).populate(
+    "seller",
+    "_id username"
+  );
   res.send(products);
 });
 
 productRouter.post(
-  "/",
+  "/:region",
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const {
       name,
       image1,
@@ -44,6 +49,7 @@ productRouter.post(
       sizes: sizes,
       condition,
       feature,
+      currency,
       luxury,
       vintage,
       material,
@@ -51,6 +57,7 @@ productRouter.post(
       luxuryImage,
       deliveryOption,
     } = req.body;
+    console.log(currency);
     const slugName = slugify(name);
     const images = [image2, image3, image4];
     const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
@@ -66,6 +73,7 @@ productRouter.post(
       price,
       actualPrice: discount,
       product,
+      currency,
       category,
       subCategory,
       shippingLocation: location,
@@ -88,6 +96,7 @@ productRouter.post(
       material,
       color,
       luxuryImage,
+      region,
     });
     const createdProduct = await newProduct.save();
     res.send({ message: "Product Created", createdProduct });
@@ -145,8 +154,8 @@ productRouter.put(
         throw { message: "Product Not Found" };
       }
     } else {
-      res.status(404).send({ message: "can't edit someelse product" });
-      throw { message: "you cannot message yourself" };
+      res.status(404).send({ message: "You can't edit someelse product" });
+      throw { message: "You can't edit someelse product" };
     }
   })
 );
@@ -173,11 +182,17 @@ productRouter.post(
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
+      if (product.seller.toString() === req.user._id) {
+        return res
+          .status(400)
+          .send({ message: "You can't review your product" });
+      }
       if (product.reviews.find((x) => x.name === req.user.username)) {
         return res
           .status(400)
           .send({ message: "You already submitted a review" });
       }
+
       const review = {
         name: req.user.username,
         rating: Number(req.body.rating),
@@ -203,6 +218,7 @@ productRouter.post(
     }
   })
 );
+
 productRouter.delete(
   "/:id/reviews/:reviewId",
   isAuth,
@@ -337,15 +353,16 @@ productRouter.put(
   })
 );
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 20;
 
 // get all Product with pagination
 
 productRouter.get(
-  "/admin",
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -361,11 +378,12 @@ productRouter.get(
           }
         : {};
 
-    const products = await Product.find({ ...queryFilter })
+    const products = await Product.find({ ...queryFilter, region })
       .skip(pageSize * (page - 1))
+      .sort({ createdAt: -1 })
       .limit(pageSize);
 
-    const countProducts = await Product.countDocuments();
+    const countProducts = await Product.countDocuments({ region });
     res.send({
       products,
       countProducts,
@@ -376,10 +394,11 @@ productRouter.get(
 );
 
 productRouter.get(
-  "/admin/outofstock",
+  "/:region/admin/outofstock",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const { query } = req;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
@@ -398,11 +417,12 @@ productRouter.get(
     const products = await Product.find({
       ...queryFilter,
       countInStock: { $lte: 0 },
+      region,
     })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
-    const countProducts = await Product.countDocuments();
+    const countProducts = await Product.countDocuments({ region });
     res.send({
       products,
       countProducts,
@@ -468,6 +488,7 @@ productRouter.get(
     const seller = req.params.id;
     const products = await Product.find({ seller, ...queryFilter })
       .populate("seller", "username image")
+      .sort({ createdAt: -1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
@@ -482,8 +503,9 @@ productRouter.get(
 );
 
 productRouter.get(
-  "/search",
+  "/:region/search",
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
@@ -619,6 +641,7 @@ productRouter.get(
       ...availabilityFilter,
       ...shippingFilter,
       ...patternFilter,
+      region,
     })
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -634,6 +657,7 @@ productRouter.get(
       ...sizeFilter,
       ...ratingFilter,
       ...conditionFilter,
+      region,
     });
     res.send({
       products,

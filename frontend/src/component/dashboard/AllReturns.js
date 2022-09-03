@@ -6,7 +6,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import ModelLogin from "../ModelLogin";
 
 const ProductLists = styled.div`
@@ -186,9 +186,12 @@ export default function AllReturns() {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/returns?q=${salesQurrey}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/returns/${region()}?q=${salesQurrey}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         console.log(data);
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {

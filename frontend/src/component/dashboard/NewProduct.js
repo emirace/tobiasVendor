@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import { useLocation, useNavigate } from "react-router-dom";
 import IconsTooltips from "../IconsTooltips";
@@ -501,7 +501,7 @@ const color1 = [
 ];
 export default function NewProduct() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -665,7 +665,7 @@ export default function NewProduct() {
       try {
         dispatch({ type: "CREATE_REQUEST" });
         await axios.post(
-          "/api/products",
+          `/api/products/${region()}`,
           {
             name,
             image1,
@@ -687,6 +687,7 @@ export default function NewProduct() {
             sizes: sizes,
             condition,
             feature,
+            currency,
             luxury,
             vintage,
             material,
@@ -1364,8 +1365,14 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 </Discount>
               </Item>
               <PriceDisplay>
-                <Offer>${discount || price}</Offer>
-                <Actual>${price}</Actual>
+                <Offer>
+                  {currency}
+                  {discount || price}
+                </Offer>
+                <Actual>
+                  {currency}
+                  {price}
+                </Actual>
               </PriceDisplay>
             </Price>
             <TitleDetails>

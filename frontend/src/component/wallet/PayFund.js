@@ -91,7 +91,7 @@ const reducer = (state, action) => {
 
 export default function PayFund({ setShowModel, amount, onApprove }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
   const [{ loading, error, message }, dispatch] = useReducer(reducer, {
     loading: false,
     error: "",
@@ -108,6 +108,7 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
+
       if (!data.success) {
         ctxDispatch({
           type: "SHOW_TOAST",
@@ -119,7 +120,6 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
         });
         return;
       }
-      dispatch({ type: "FETCH_FAIL", payload: data.message });
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -131,13 +131,15 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
       onApprove({ transaction_id: data.transaction_id, method: "wallet" });
       setShowModel(false);
     } catch (err) {
+      console.log(err);
+
       dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: "visible1 success",
+          state1: "visible1 error",
         },
       });
     }
@@ -159,7 +161,10 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
         />
         <Text>Make payment from your Repeddle Wallet</Text>
         {error && <MessageBox variant="danger">{error}</MessageBox>}
-        <Amount>${amount}</Amount>
+        <Amount>
+          {currency}
+          {amount}
+        </Amount>
         {loading ? (
           <LoadingBox />
         ) : (

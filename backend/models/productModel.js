@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     sellerName: { type: String },
-    seller: { type: mongoose.Schema.Types.ObjectID, ref: "User" },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     slug: { type: String, required: true, unique: true },
     image: { type: String, required: true },
     images: [String],
@@ -39,6 +39,11 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     actualPrice: { type: Number },
     rating: { type: Number, required: true },
+    currency: {
+      type: String,
+      enum: ["N ", "R "],
+      required: true,
+    },
     numReviews: { type: Number, required: true },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reviews: [reviewSchema],
@@ -54,6 +59,7 @@ const productSchema = new mongoose.Schema(
       sesrialNumber: { type: String },
     },
     countInStock: { type: Number, required: true },
+    region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {
     timestamps: true,

@@ -4,7 +4,6 @@ import http from "http";
 import { Server } from "socket.io";
 import path from "path";
 import dotenv from "dotenv";
-import seedRouter from "./routes/seedRoutes.js";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
@@ -28,6 +27,7 @@ import accountRouter from "./routes/accountRoutes.js";
 import bestsellerRouter from "./routes/bestsellerRoutes.js";
 import returnRouter from "./routes/returnRoutes.js";
 import transactionRouter from "./routes/transactionRoutes.js";
+import Notification from "./models/notificationModel.js";
 
 dotenv.config();
 
@@ -75,7 +75,6 @@ app.get("/api/keys/paypal", (req, res) => {
 });
 
 app.use("/api/upload", uploadRouter);
-app.use("/api/seed", seedRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
@@ -114,15 +113,16 @@ const io = new Server(httpServer, {
     origin: ["http://localhost:3000"],
   },
 });
+
 let users = [];
 
 io.on("connection", (socket) => {
-  console.log("user connected");
+  console.log("user connected", socket.id);
   socket.on("disconnect", () => {
     const user = users.find((x) => x.socketId === socket.id);
     if (user) {
       users = users.filter((user) => user.socketId !== socket.id);
-      console.log("offline", user.name);
+      console.log("offline", user.username);
       const admin = users.find((x) => x.isAdmin);
       if (admin) {
         io.to(admin.socketId).emit("updatedUser", user);
@@ -148,8 +148,8 @@ io.on("connection", (socket) => {
     if (updatedUser.isAdmin) {
       io.to(updatedUser.socketId).emit("listUsers", users);
     }
+    console.log("login", updatedUser.username);
     io.emit("getUsers", users);
-    console.log("online", user.name, updatedUser.socketId);
   });
   socket.on("onUserSelected", (user) => {
     const admin = users.find((x) => x.isAdmin);
@@ -180,19 +180,13 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("sendMessage", ({ message, senderId, receiverId, text }) => {
-    console.log("send msg");
-
     const user = users.find((x) => x._id === receiverId);
     if (user) {
-      console.log(user.name, user.socketId);
-
       io.to(user.socketId).emit("getMessage", {
         senderId,
         text,
         message,
       });
-    } else {
-      console.log("user", users);
     }
   });
 
@@ -200,20 +194,48 @@ io.on("connection", (socket) => {
     const user = users.find((x) => x._id === report.user);
     const admin = users.find((x) => x.isAdmin);
     if (user && report.admin) {
-      console.log("hellog useeeeeeer", report);
       io.to(user.socketId).emit("getReport", {
         report,
       });
     } else {
-      console.log("hellog admin", admin, users);
       if (admin) {
-        console.log("hellog admin is on");
-
         io.to(admin.socketId).emit("getReport", {
           report,
         });
       }
     }
+  });
+
+  // Returning the initial unread notification
+  socket.on("initial_data", async ({ userId }) => {
+    const notification = await Notification.find({
+      userId,
+    });
+    const user = users.find((x) => x._id === userId);
+    if (user) {
+      io.to(user.socketId).emit("get_data", notification);
+    }
+  });
+
+  // Add notifications
+  socket.on("post_data", async (body) => {
+    const { userId, notifyType, itemId } = body;
+    const notification = new Notification({ userId, notifyType, itemId });
+    await notification.save();
+    io.sockets.emit("change_data");
+  });
+
+  // mark as read
+  socket.on("remove_notifications", async (id) => {
+    const notifications = await Notification.find({ itemId: id });
+
+    notifications.forEach(async (notification) => {
+      await notification.delete();
+    });
+
+    // await Notification.create(notifications)
+
+    io.sockets.emit("change_data");
   });
 });
 

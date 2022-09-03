@@ -8,7 +8,7 @@ import axios from "axios";
 import { Store } from "../Store";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import jwt_decode from "jwt-decode";
 import Input from "../component/Input";
 
@@ -104,7 +104,7 @@ export default function SignupScreen() {
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post("/api/users/signup", {
+      const { data } = await axios.post(`/api/users/${region()}/signup`, {
         username: input.username,
         firstName: input.firstName,
         lastName: input.lastName,

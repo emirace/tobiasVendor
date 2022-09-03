@@ -22,10 +22,11 @@ const today = moment().startOf("day");
 const orderRouter = express.Router();
 
 orderRouter.get(
-  "/",
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const { query } = req;
     const searchQuery = query.q;
     const sort = query.sort;
@@ -53,7 +54,7 @@ orderRouter.get(
               deliveryStatus: sort,
             }
         : {};
-    const orders = await Order.find({ ...queryFilter, ...sortFilter })
+    const orders = await Order.find({ ...queryFilter, ...sortFilter, region })
       .sort({ createdAt: -1 })
       .populate("user", "username")
       .populate("seller", "username");
@@ -92,9 +93,10 @@ orderRouter.get(
 );
 
 orderRouter.post(
-  "/",
+  "/:region",
   isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     var seller = [];
     req.body.orderItems.map((i) => {
       seller = [...new Set([...seller, i.seller])];
@@ -109,6 +111,7 @@ orderRouter.post(
       taxPrice: req.body.taxPrice,
       totalPrice: req.body.totalPrice,
       user: req.user ? req.user._id : null,
+      region,
     });
     const order = await newOrder.save();
     order.orderId = order._id.toString();
@@ -118,11 +121,13 @@ orderRouter.post(
 );
 
 orderRouter.get(
-  "/summary",
+  "/:region/summary",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const orders = await Order.aggregate([
+      { $match: { region } },
       {
         $group: {
           _id: null,
@@ -132,6 +137,7 @@ orderRouter.get(
       },
     ]);
     const users = await User.aggregate([
+      { $match: { region } },
       {
         $group: {
           _id: null,
@@ -140,6 +146,7 @@ orderRouter.get(
       },
     ]);
     const products = await Product.aggregate([
+      { $match: { region } },
       {
         $group: {
           _id: null,
@@ -148,6 +155,7 @@ orderRouter.get(
       },
     ]);
     const dailyOrders = await Order.aggregate([
+      { $match: { region } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -158,6 +166,7 @@ orderRouter.get(
       { $sort: { _id: 1 } },
     ]);
     const productCategories = await Product.aggregate([
+      { $match: { region } },
       {
         $group: {
           _id: "$category",
@@ -410,8 +419,9 @@ orderRouter.put(
 );
 
 orderRouter.put(
-  "/:id/pay",
+  "/:region/:id/pay",
   expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
     const { transaction_id } = req.body;
     const { method } = req.body;
     var response;
@@ -425,7 +435,11 @@ orderRouter.put(
         response = { data: { status: "failed" } };
       }
     } else {
-      response = await flw.Transaction.verify({ id: transaction_id });
+      if (region === "N ") {
+        response = await flw.Transaction.verify({ id: transaction_id });
+      } else {
+        response = await flw.Transaction.verify({ id: transaction_id });
+      }
     }
     console.log(response);
     if (response.data.status === "successful") {

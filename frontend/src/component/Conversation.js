@@ -5,14 +5,15 @@ import { Store } from "../Store";
 import { getError } from "../utils";
 import LoadingBox from "./LoadingBox";
 import moment from "moment";
+import { Badge } from "./Navbar";
 
 const User = styled.div`
   position: relative;
   cursor: pointer;
-  padding: 10px 25px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  margin: 10px 0;
+  margin: 10px 5px;
   @media (max-width: 992px) {
     padding: 10px;
   }
@@ -50,11 +51,9 @@ const LastMsg = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-const Badge = styled.div`
+const Badge1 = styled.div`
   width: 10px;
-  position: absolute;
-  right: 10px;
-  top: 30%;
+  margin-left: 10px;
   height: 10px;
   border-radius: 50%;
   background: green;
@@ -72,10 +71,12 @@ export default function Conversation({
   report,
 }) {
   const { state } = useContext(Store);
-  const { userInfo, mode } = state;
+  const { userInfo, mode, notifications } = state;
   const [user, setUser] = useState([]);
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const count = notifications.filter((x) => x.itemId === conversation._id);
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== userInfo._id);
@@ -168,13 +169,17 @@ export default function Conversation({
             conversation.conversationType === "reportUser" ? (
               <div style={{ color: "red" }}>Report</div>
             ) : (
-              user.username
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <>{user.username}</>
+                {status && <Badge1 />}
+              </div>
             )}
           </Name>
           <LastMsg>
             {message.message && message.messages.length > 0
               ? message.messages[message.messages.length - 1].text
-              : "No messages"}
+              : "No messages"}{" "}
+            {count.length > 0 && <Badge>{count.length}</Badge>}
           </LastMsg>
 
           <div style={{ color: "grey" }}>
@@ -184,7 +189,6 @@ export default function Conversation({
         {(conversation.productId || conversation.userId) && (
           <ProductImage src={product.image} />
         )}
-        {status && <Badge />}
       </User>
     </>
   );

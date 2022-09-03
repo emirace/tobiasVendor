@@ -19,6 +19,7 @@ import {
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Store } from "../../Store";
+import { Badge } from "../Navbar";
 
 const Container = styled.div`
   flex: 1;
@@ -47,6 +48,7 @@ const List = styled.ul`
   padding: 5px;
 `;
 const ListItem = styled.li`
+  position: relative;
   padding: 5px;
   cursor: pointer;
   display: flex;
@@ -67,7 +69,18 @@ const ListItem = styled.li`
 
 export default function Sidebar({ current }) {
   const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, notifications } = state;
+
+  const messageNotification = notifications.filter(
+    (x) => x.notifyType === "message"
+  );
+  const purchaseNotification = notifications.filter(
+    (x) => x.notifyType === "purchase"
+  );
+  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const productNotification = notifications.filter(
+    (x) => x.notifyType === "product"
+  );
   return (
     <Container mode={mode}>
       <Wrapper>
@@ -89,6 +102,11 @@ export default function Sidebar({ current }) {
                 className={current === "productlist" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faBasketShopping} /> My Products
+                {productNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{productNotification.length}</span>
+                  </Badge>
+                )}
               </ListItem>
             </Link>
             <Link to="/dashboard/orderlist">
@@ -97,6 +115,11 @@ export default function Sidebar({ current }) {
                 className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Purchase Orders
+                {purchaseNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{purchaseNotification.length}</span>
+                  </Badge>
+                )}
               </ListItem>
             </Link>
             <Link to="/dashboard/saleslist">
@@ -105,6 +128,11 @@ export default function Sidebar({ current }) {
                 className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Sold Orders
+                {soldNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{soldNotification.length}</span>
+                  </Badge>
+                )}
               </ListItem>
             </Link>
             <Link to="/dashboard/wallet">
@@ -204,6 +232,11 @@ export default function Sidebar({ current }) {
                 mode={mode}
               >
                 <FontAwesomeIcon icon={faMessage} /> Messages
+                {messageNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{messageNotification.length}</span>
+                  </Badge>
+                )}
               </ListItem>
             </Link>
             <ListItem

@@ -236,7 +236,6 @@ export default function SigninScreen() {
       <Helmet>
         <title>Sign In</title>
       </Helmet>
-      {console.log(input)}
       <SwitchCont>
         <Switch
           checked={mode === "pagebodydark"}

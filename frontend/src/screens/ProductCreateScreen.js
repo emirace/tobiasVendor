@@ -1,29 +1,29 @@
-import axios from 'axios';
-import React, { useContext, useReducer, useState } from 'react';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { getError } from '../utils';
-import { Store } from '../Store';
-import Row from 'react-bootstrap/Row';
-import Alert from 'react-bootstrap/Alert';
-import LoadingBox from '../component/LoadingBox';
+import axios from "axios";
+import React, { useContext, useReducer, useState } from "react";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getError, region } from "../utils";
+import { Store } from "../Store";
+import Row from "react-bootstrap/Row";
+import Alert from "react-bootstrap/Alert";
+import LoadingBox from "../component/LoadingBox";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loading: true };
-    case 'CREATE_SUCCESS':
-      return { ...state, loading: false, error: '' };
-    case 'CREATE_FAIL':
+    case "CREATE_SUCCESS":
+      return { ...state, loading: false, error: "" };
+    case "CREATE_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'UPLOAD_REQUEST':
+    case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
@@ -31,22 +31,22 @@ const reducer = (state, action) => {
   }
 };
 export default function ProductCreateScreen() {
-  const [name, setName] = useState('');
-  const [image, setImage] = useState('');
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
   const [images, setImages] = useState([]);
-  const [video, setVideo] = useState('');
-  const [category, setCategory] = useState('');
-  const [description, setDescription] = useState('');
-  const [brand, setBrand] = useState('');
-  const [actualPrice, setActualPrice] = useState('');
-  const [price, setPrice] = useState('');
-  const [shippingLocation, setShippingLocation] = useState('');
-  const [specification, setSpecification] = useState('');
-  const [size, setSize] = useState('');
-  const [condition, setCondition] = useState('');
+  const [video, setVideo] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [brand, setBrand] = useState("");
+  const [actualPrice, setActualPrice] = useState("");
+  const [price, setPrice] = useState("");
+  const [shippingLocation, setShippingLocation] = useState("");
+  const [specification, setSpecification] = useState("");
+  const [size, setSize] = useState("");
+  const [condition, setCondition] = useState("");
   const [keyFeatures, setKeyFeatures] = useState([]);
-  const [overview, setOverview] = useState('');
-  const [countInStock, setCountInStock] = useState('');
+  const [overview, setOverview] = useState("");
+  const [countInStock, setCountInStock] = useState("");
   const [validated, setValidated] = useState(false);
 
   const { state } = useContext(Store);
@@ -58,9 +58,9 @@ export default function ProductCreateScreen() {
     reducer,
     {
       loading: false,
-      error: '',
+      error: "",
       loadingUpload: false,
-      errorUpload: '',
+      errorUpload: "",
     }
   );
 
@@ -73,9 +73,9 @@ export default function ProductCreateScreen() {
       setValidated(true);
     } else {
       try {
-        dispatch({ type: 'CREATE_REQUEST' });
+        dispatch({ type: "CREATE_REQUEST" });
         await axios.post(
-          '/api/products',
+          `/api/products${region()}`,
           {
             name,
             image,
@@ -98,12 +98,12 @@ export default function ProductCreateScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        toast.success('product created successfully');
-        dispatch({ type: 'CREATE_SUCCESS' });
+        toast.success("product created successfully");
+        dispatch({ type: "CREATE_SUCCESS" });
         navigate(`/seller/product`);
       } catch (error) {
         toast.error(getError(error));
-        dispatch({ type: 'CREATE_FAIL' });
+        dispatch({ type: "CREATE_FAIL" });
       }
     }
   };
@@ -111,26 +111,26 @@ export default function ProductCreateScreen() {
   const uploadFileHandler = async (e, fileType) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-      if (fileType === 'images') {
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      if (fileType === "images") {
         setImages([...images, data.secure_url]);
-      } else if (fileType === 'image') {
+      } else if (fileType === "image") {
         setImage(data.secure_url);
       } else {
         setVideo(data.secure_url);
       }
-      toast.success('Image uploaded successfully, click Update to apply It');
+      toast.success("Image uploaded successfully, click Update to apply It");
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       toast.error(getError(err));
     }
   };
@@ -162,9 +162,9 @@ export default function ProductCreateScreen() {
           <Form.Control
             required
             type="file"
-            onChange={(e) => uploadFileHandler(e, 'image')}
+            onChange={(e) => uploadFileHandler(e, "image")}
           />
-          {loadingUpload ? <LoadingBox></LoadingBox> : ''}
+          {loadingUpload ? <LoadingBox></LoadingBox> : ""}
           <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
           <Form.Control.Feedback type="invalid">
             Upload main product image!
@@ -174,9 +174,9 @@ export default function ProductCreateScreen() {
           <Form.Label>Upload Additional Images</Form.Label>
           <Form.Control
             type="file"
-            onChange={(e) => uploadFileHandler(e, 'images')}
+            onChange={(e) => uploadFileHandler(e, "images")}
           />
-          {loadingUpload ? <LoadingBox></LoadingBox> : ''}
+          {loadingUpload ? <LoadingBox></LoadingBox> : ""}
         </Form.Group>
         {/* <Form.Group as={Col} className="mb-3" controlId="video">
           <Form.Label>Upload Video !optional</Form.Label>
@@ -343,7 +343,7 @@ export default function ProductCreateScreen() {
           <button type="submit" className="search-btn1 mb-3">
             Submit form
           </button>
-          {loading ? <LoadingBox></LoadingBox> : ''}
+          {loading ? <LoadingBox></LoadingBox> : ""}
         </div>
       </Form>
     </div>

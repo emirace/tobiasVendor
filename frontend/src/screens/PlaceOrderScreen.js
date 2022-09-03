@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet-async";
 import CheckoutSteps from "../component/CheckoutSteps";
 import { Store } from "../Store";
 import { Link, useNavigate } from "react-router-dom";
-import { calcPrice, couponDiscount, getError } from "../utils";
+import { calcPrice, couponDiscount, getError, region } from "../utils";
 import { toast } from "react-toastify";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
@@ -18,6 +18,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import FlutterWave from "../component/FlutterWave";
 import WalletModel from "../component/wallet/WalletModel";
 import PayFund from "../component/wallet/PayFund";
+import { socket } from "../App";
 
 const Container = styled.div`
   display: flex;
@@ -136,7 +137,7 @@ const reducer = (state, action) => {
 
 export default function PlaceOrderScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode } = state;
+  const { cart, userInfo, mode, currency } = state;
   const navigate = useNavigate();
   const [{ loading, loadingPay, order, successPay }, dispatch] = useReducer(
     reducer,
@@ -179,7 +180,7 @@ export default function PlaceOrderScreen() {
     try {
       dispatch({ type: "CREATE_REQUEST" });
       const { data } = await axios.post(
-        "/api/orders",
+        `/api/orders/${region()}`,
         {
           orderItems: cart.cartItems,
           paymentMethod: cart.paymentMethod,
@@ -239,14 +240,14 @@ export default function PlaceOrderScreen() {
       try {
         dispatch({ type: "PAY_REQUEST" });
         const { data } = await axios.put(
-          `/api/orders/${order1.order._id}/pay`,
+          `/api/orders/${region()}/${order1.order._id}/pay`,
           response,
           userInfo
             ? { headers: { authorization: `Bearer ${userInfo.token}` } }
             : {}
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
-        await axios.put(`api/bestsellers/${order1.order.seller}`);
+        await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -257,6 +258,12 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
+
+        socket.emit("post_data", {
+          userId: order1.order.seller,
+          itemId: order1.order._id,
+          notifyType: "sold",
+        });
         navigate(`/order/${data.order._id}`);
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: getError(err) });
@@ -280,7 +287,7 @@ export default function PlaceOrderScreen() {
       try {
         dispatch({ type: "PAY_REQUEST" });
         const { data } = await axios.put(
-          `/api/orders/${order1.order._id}/pay`,
+          `/api/orders/${region()}/${order1.order._id}/pay`,
           response,
           userInfo
             ? { headers: { authorization: `Bearer ${userInfo.token}` } }
@@ -288,7 +295,7 @@ export default function PlaceOrderScreen() {
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
         order1.order.seller.map(async (seller) => {
-          await axios.put(`api/bestsellers/${seller}`);
+          await axios.put(`api/bestsellers/${region()}/${seller}`);
         });
         ctxDispatch({
           type: "SHOW_TOAST",
@@ -300,6 +307,12 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
+
+        socket.emit("post_data", {
+          userId: order1.order.seller,
+          itemId: order1.order._id,
+          notifyType: "sold",
+        });
         navigate(`/order/${data.order._id}`);
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: getError(err) });
@@ -375,14 +388,20 @@ export default function PlaceOrderScreen() {
                               {item.name}
                             </Link>
                           </div>
-                          <div> ${item.actualPrice}</div>
+                          <div>
+                            {item.currency}
+                            {item.actualPrice}
+                          </div>
                           <div>Size: {item.selectSize}</div>
                         </div>
                       </div>
                       <div className="col-3">
                         <span>{item.quantity}</span>
                       </div>
-                      <div className="col-3">${item.price}</div>
+                      <div className="col-3">
+                        {currency}
+                        {item.price}
+                      </div>
                     </Row>
                     {Object.entries(item.deliverySelect).map(([key, value]) => (
                       <div
@@ -460,9 +479,14 @@ export default function PlaceOrderScreen() {
                             <Left>
                               <Right>{c.quantity} </Right>
                               <Right>x </Right>
-                              <Right>${c.price}</Right>
+                              <Right>
+                                {currency}
+                                {c.price}
+                              </Right>
                             </Left>
-                            <Right>{" =  $" + c.quantity * c.price}</Right>
+                            <Right>
+                              {` =  ${currency}` + c.quantity * c.price}
+                            </Right>
                           </SumCont>
                         </>
                       ))}
@@ -472,20 +496,29 @@ export default function PlaceOrderScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>Subtotal</Col>
-                    <Col>${cart.itemsPrice.toFixed(2)}</Col>
+                    <Col>
+                      {currency}
+                      {cart.itemsPrice.toFixed(2)}
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
                     <Col>Shipping</Col>
-                    <Col>${cart.shippingPrice.toFixed(2)}</Col>
+                    <Col>
+                      {currency}
+                      {cart.shippingPrice.toFixed(2)}
+                    </Col>
                   </Row>
                 </ListGroup.Item>
 
                 <ListGroup.Item>
                   <Row>
                     <Col>Tax</Col>
-                    <Col>${cart.taxPrice.toFixed(2)}</Col>
+                    <Col>
+                      {currency}
+                      {cart.taxPrice.toFixed(2)}
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -498,7 +531,10 @@ export default function PlaceOrderScreen() {
                         </Remove>
                       )}
                     </Col>
-                    <Col>- ${discount}</Col>
+                    <Col>
+                      - {currency}
+                      {discount}
+                    </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -507,7 +543,10 @@ export default function PlaceOrderScreen() {
                       <b>Order Total</b>
                     </Col>
                     <Col>
-                      <b>${(cart.totalPrice - discount).toFixed(2)}</b>
+                      <b>
+                        {currency}
+                        {(cart.totalPrice - discount).toFixed(2)}
+                      </b>
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -546,7 +585,7 @@ export default function PlaceOrderScreen() {
                   ) : cart.paymentMethod === "Credit/Debit card" ? (
                     <FlutterWave
                       amount={cart.totalPrice}
-                      currency="NGN"
+                      currency={currency === "N " ? "NGN" : "ZAR"}
                       user={
                         userInfo
                           ? userInfo

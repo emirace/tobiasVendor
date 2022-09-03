@@ -21,7 +21,6 @@ export const generateToken = (user) => {
 };
 
 export const isAuth = (req, res, next) => {
-  console.log(req.headers);
   const authorization = req.headers.authorization;
   if (authorization) {
     const token = authorization.slice(7, authorization.length);
@@ -89,15 +88,17 @@ export const isSocialAuth = (req, res, next) => {
 
 export const sendEmail = (options) => {
   const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
+    host: "smtpout.secureserver.net",
+    port: 80,
+
     auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
+      user: "tobias@repeddle.com",
+      pass: "3W2CK-6p-X']Q_i",
     },
   });
 
   const mailOption = {
-    from: process.env.EMAIL_PASSWORD,
+    from: "support@repeddle.com",
     to: options.to,
     subject: options.subject,
     html: options.text,

@@ -7,10 +7,10 @@ const bestsellerRouter = express.Router();
 
 const factor = 0.9;
 bestsellerRouter.put(
-  "/:userId",
+  "/:region/:userId",
   isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
-    const { userId } = req.params;
+    const { userId, region } = req.params;
     const view = await BestSeller.findOne({ userId: userId });
     if (view) {
       view.score = view.score + factor;
@@ -21,6 +21,7 @@ bestsellerRouter.put(
         score: factor,
         numViews: 1,
         userId,
+        region,
       });
       await newView.save();
     }
@@ -38,9 +39,10 @@ bestsellerRouter.put(
 );
 
 bestsellerRouter.get(
-  "/",
+  "/:region",
   expressAsyncHandler(async (req, res) => {
-    const views = await BestSeller.find()
+    const { region } = req.params;
+    const views = await BestSeller.find({ region })
       .populate("userId", "name image sold username ")
       .sort({ score: -1 });
     res.status(201).send(views);

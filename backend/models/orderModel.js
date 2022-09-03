@@ -24,6 +24,7 @@ const orderSchema = new mongoose.Schema(
     reason: { type: String },
     deliveredAt: { type: Date },
     orderId: { type: String },
+    region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {
     timestamps: true,

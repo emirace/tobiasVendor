@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import Rating from "../component/Rating";
-import { baseURL, getError } from "../utils";
+import { getError } from "../utils";
 import "../style/SellerScreen.css";
 import Product from "../component/Product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,7 +29,7 @@ import ModelLogin from "../component/ModelLogin";
 import Report from "../component/Report";
 
 const Right = styled.div`
-  flex: 3;
+  flex: 7;
   margin: 0 15px;
   @media (max-width: 992px) {
     margin: 0;
@@ -78,6 +78,7 @@ const Content = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
   flex: 1;
+  height: 100%;
   flex-wrap: wrap;
   @media (max-width: 992px) {
     padding: 0;
@@ -87,7 +88,7 @@ const ProductCont = styled.div`
   position: relative;
   display: flex;
   flex: 1;
-  justify-content: center;
+  justify-content: start;
   margin: 10px;
   @media (max-width: 992px) {
     width: 162px;
@@ -103,12 +104,12 @@ const ReviewsClick = styled.div`
 const AddProduct = styled.div`
   display: flex;
   border-radius: 0.2rem;
+  width: 240px;
+  height: 500px;
   cursor: pointer;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   &:hover {
@@ -278,7 +279,7 @@ export default function SellerScreen() {
         });
       } else {
         const { data } = await axios.put(
-          `${baseURL}/api/users/follow/${sellerId}`,
+          `/api/users/follow/${sellerId}`,
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -365,14 +366,16 @@ export default function SellerScreen() {
                 (product) =>
                   product.sold && (
                     <ProductCont key={product._id}>
-                      <Product product={product} />
-                      {product.sold && (
-                        <Link to={`/product/${product.slug}`}>
-                          <div className="overlay">
-                            <Sold>SOLD</Sold>
-                          </div>
-                        </Link>
-                      )}
+                      <div style={{ position: "absolute" }}>
+                        <Product product={product} />
+                        {product.sold && (
+                          <Link to={`/product/${product.slug}`}>
+                            <div className="overlay">
+                              <Sold>SOLD</Sold>
+                            </div>
+                          </Link>
+                        )}
+                      </div>
                     </ProductCont>
                   )
               )

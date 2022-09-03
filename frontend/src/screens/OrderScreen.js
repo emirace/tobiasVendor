@@ -233,7 +233,7 @@ function reducer(state, action) {
 
 export default function OrderScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo, mode } = state;
+  const { userInfo, mode, currency } = state;
   const [
     {
       loading,
@@ -433,7 +433,10 @@ export default function OrderScreen() {
             Placed on{" "}
             {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
           </Date>
-          <Price>Total: ${order.totalPrice}</Price>
+          <Price>
+            Total: {currency}
+            {order.totalPrice}
+          </Price>
         </SumaryCont>
         <div
           style={{
@@ -463,7 +466,6 @@ export default function OrderScreen() {
             />
           </ModelLogin>
         </div>
-        {console.log(isSeller)}
         {order.orderItems.map((orderitem) =>
           isSeller ? (
             orderitem.seller._id === userInfo._id && (
@@ -475,12 +477,13 @@ export default function OrderScreen() {
                     width: "100%",
                   }}
                 >
-                  {(itemsPrice = itemsPrice + orderitem.actualPrice)}
-                  {
-                    (shippingPrice =
-                      shippingPrice + Number(orderitem.deliverySelect.cost))
-                  }
-                  {console.log(itemsPrice, "price", shippingPrice)}
+                  <div style={{ display: "none" }}>
+                    {(itemsPrice = itemsPrice + orderitem.actualPrice)}
+                    {
+                      (shippingPrice =
+                        shippingPrice + Number(orderitem.deliverySelect.cost))
+                    }
+                  </div>
                   <div>
                     {displayDeliveryStatus(order.deliveryStatus)}
                     <Name>
@@ -497,12 +500,13 @@ export default function OrderScreen() {
                         Comfirm you have recieved order
                       </Received>
                     )}
-                  {userInfo && order.seller === userInfo._id && (
+                  {userInfo && order && (
                     <SetStatus>
                       <FormControl
                         disabled={
                           order.deliveryStatus === "Hold" ||
-                          order.deliveryStatus === "Received"
+                          order.deliveryStatus === "Received" ||
+                          order.deliveryStatus === "Returned"
                         }
                         sx={{
                           minWidth: "200px",
@@ -566,7 +570,10 @@ export default function OrderScreen() {
                     <Details1>
                       <Name>{orderitem.name}</Name>
                       <Quantity>QTY: {orderitem.quantity}</Quantity>
-                      <ItemPrice>$ {orderitem.actualPrice}</ItemPrice>
+                      <ItemPrice>
+                        {orderitem.currency}
+                        {orderitem.actualPrice}
+                      </ItemPrice>
                     </Details1>
                   </OrderItem>
                   <ActionButton>
@@ -686,7 +693,10 @@ export default function OrderScreen() {
                     <Name>{orderitem.name}</Name>
                     <Quantity>QTY: {orderitem.quantity}</Quantity>
                     <Quantity>Size: {orderitem.selectSize}</Quantity>
-                    <ItemPrice>$ {orderitem.actualPrice}</ItemPrice>
+                    <ItemPrice>
+                      {orderitem.currency}
+                      {orderitem.actualPrice}
+                    </ItemPrice>
                   </Details1>
                 </OrderItem>
                 <ActionButton>
@@ -719,15 +729,18 @@ export default function OrderScreen() {
               <hr />
               <Name>Payment Details</Name>
               <ItemNum>
-                Item Total:{"   "} ${isSeller ? itemsPrice : order.itemsPrice}
+                Item Total:{"   "} {currency}
+                {isSeller ? itemsPrice : order.itemsPrice}
               </ItemNum>
               <ItemNum>
-                Shipping Fee: ${isSeller ? shippingPrice : order.shippingPrice}
+                Shipping Fee: {currency}
+                {isSeller ? shippingPrice : order.shippingPrice}
               </ItemNum>
               <ItemNum>
                 Total:{" "}
                 <ItemPrice>
-                  ${isSeller ? itemsPrice + shippingPrice : order.totalPrice}
+                  {currency}
+                  {isSeller ? itemsPrice + shippingPrice : order.totalPrice}
                 </ItemPrice>
               </ItemNum>
             </SumaryContDetails>
