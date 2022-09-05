@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -13,5 +13,9 @@ const Container = styled.div`
 `;
 
 export default function EmailConfirmationScreen() {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = "unset");
+  }, []);
   return <Container>EmailConfirmationScreen</Container>;
 }

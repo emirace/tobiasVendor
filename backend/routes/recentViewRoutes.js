@@ -12,11 +12,14 @@ recentViewRouter.put(
   expressAsyncHandler(async (req, res) => {
     const { productId, region } = req.params;
     const view = await RecentView.findOne({ productId: productId });
+    console.log(region);
     if (view) {
+      console.log(region, "2");
       view.score = view.score + factor;
       view.numViews = view.numViews + 1;
       const saveview = await view.save();
     } else {
+      console.log(region, "3");
       const newView = new RecentView({
         score: factor,
         numViews: 1,

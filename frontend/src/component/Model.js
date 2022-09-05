@@ -56,6 +56,7 @@ export default function Model({ showModel, setShowModel, children }) {
       setShowModel(false);
     }
   };
+
   return (
     <>
       {showModel && (

@@ -1,6 +1,6 @@
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ReviewLists from "../screens/ReviewLists";
 import { Store } from "../Store";
@@ -60,6 +60,18 @@ export default function ModelLogin({ showModel, setShowModel, children }) {
       setShowModel(false);
     }
   };
+
+  useEffect(() => {
+    if (showModel) {
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = "15px";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
+    };
+  }, [showModel]);
+
   return (
     <>
       {showModel && (

@@ -59,6 +59,7 @@ export default function WalletModel({ showModel, setShowModel, children }) {
       setShowModel(false);
     }
   };
+
   return (
     <>
       {showModel && (

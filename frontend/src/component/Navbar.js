@@ -14,6 +14,7 @@ import axios from "axios";
 import { getError } from "../utils";
 import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
 import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
+import { ReactComponent as Notification } from "./../icons/Icons-11.svg";
 import { socket } from "../App";
 
 const Container = styled.div`
@@ -443,7 +444,48 @@ const Li = styled.li`
   position: relative;
 `;
 
-export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
+const NotificationMenu = styled.div`
+  width: 270px;
+  position: absolute;
+  z-index: 9;
+  padding: 10px;
+  border-radius: 0.2rem;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
+`;
+const Title = styled.div`
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+const NotItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  position: relative;
+`;
+const NotImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+`;
+const NotDetail = styled.div`
+  font-size: 14px;
+  margin-left: 5px;
+`;
+const NotText = styled.div``;
+const Time = styled.div`
+  color: var(--orange-color);
+`;
+
+export default function Navbar({
+  menu,
+  setMymenu,
+  setmodelRef1,
+  showNotification,
+  setShowNotification,
+}) {
   const modelRef = useRef();
   useEffect(() => {
     setmodelRef1(modelRef.current);
@@ -575,6 +617,40 @@ export default function Navbar({ menu, setMymenu, setmodelRef1 }) {
                 </Badge>
               )}
             </Link>
+          </MenuItem>
+          <MenuItem onClick={() => setShowNotification(!showNotification)}>
+            <Notification height={25} width={25} />
+            <IconsTooltips tips="Notifications" />
+            {messageNotification.length > 0 && (
+              <Badge>
+                <span>{messageNotification.length}</span>
+              </Badge>
+            )}
+            {showNotification && (
+              <NotificationMenu>
+                <Title>Notifications</Title>
+                <NotItem>
+                  <NotImage src={userInfo.image} alt="img" />
+                  <NotDetail>
+                    <NotText>John Doe liked your product</NotText>
+                    <Time>a week ago</Time>
+                  </NotDetail>
+                  <Badge
+                    style={{ top: "50%", transform: "translateY(-50%)" }}
+                  />
+                </NotItem>
+                <NotItem>
+                  <NotImage src={userInfo.image} alt="img" />
+                  <NotDetail>
+                    <NotText>John Doe liked your product</NotText>
+                    <Time>a week ago</Time>
+                  </NotDetail>
+                  <Badge
+                    style={{ top: "50%", transform: "translateY(-50%)" }}
+                  />
+                </NotItem>
+              </NotificationMenu>
+            )}
           </MenuItem>
           <MenuItemCart>
             <Link to="/cart">

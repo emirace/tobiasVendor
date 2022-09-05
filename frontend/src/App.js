@@ -278,6 +278,7 @@ function App() {
 
   const [modelRef1, setmodelRef1] = useState();
   const [menu, setMymenu] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const closeModel = (e) => {
     if (modelRef1 !== e.target) {
@@ -306,6 +307,8 @@ function App() {
                 <NavCont>
                   <Navbar
                     menu={menu}
+                    setShowNotification={setShowNotification}
+                    showNotification={showNotification}
                     setMymenu={setMymenu}
                     setmodelRef1={changeRef}
                   />
