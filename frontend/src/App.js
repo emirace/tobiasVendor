@@ -10,7 +10,7 @@ import "./style/SearchScreen.css";
 import "./style/SellerScreen.css";
 import "./style/StickyNav.css";
 
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,7 +33,7 @@ import { Store } from "./Store";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "react-bootstrap/Button";
-import { baseURL, getError } from "./utils";
+import { baseURL, getError, region } from "./utils";
 import axios from "axios";
 import SearchBox from "./component/SearchBox";
 import Footer from "./component/Footer";
@@ -71,6 +71,8 @@ import useGeoLocation from "./hooks/useGeoLocation";
 import LoadingPage from "./component/LoadingPage";
 import ForgetScreen from "./screens/ForgetScreen";
 import ResetScreen from "./screens/ResetScreen";
+import VerifyEmailScreen from "./screens/VerifyEmailScreen";
+import EmailConfirmationScreen from "./screens/successPage/EmailConfirmationScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -198,6 +200,27 @@ function App() {
     localStorage.removeItem("paymentMethod");
     window.location.href = "/signin";
   };
+  const [loading, setLoading] = useState(false);
+
+  // useEffect(() => {
+  //   const checkLoacation = async () => {
+  //     const { data } = await axios.get("/api/nonLogin/location");
+  //     if (data.data === "South African") {
+  //       if (region() === "ZAR") {
+  //         setLoading(false);
+  //       } else {
+  //         window.location.replace("https://repeddle.co.za");
+  //       }
+  //     } else {
+  //       if (region() === "ZAR") {
+  //         window.location.replace("https://repeddle.com");
+  //       }
+  //       setLoading(false);
+  //     }
+  //     console.log(data, "checkLocation", region());
+  //   };
+  //   checkLoacation();
+  // }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -206,7 +229,6 @@ function App() {
   }, [userInfo]);
 
   useEffect(() => {
-    console.log(userInfo);
     if (userInfo) {
       socket.emit("initial_data", { userId: userInfo._id });
       socket.on("get_data", getData);
@@ -273,66 +295,97 @@ function App() {
       <GoogleOAuthProvider clientId="359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com">
         <ScrollToTop>
           <ToastContainer position="top-center" limit={1} />
-          <div className={mode || ""} onClick={closeModel}>
-            <Notification />
-            <ToastNotification />
-            <StickyNav />
-            <header style={{ background: "inherit" }}>
-              <NavCont>
-                <Navbar
-                  menu={menu}
-                  setMymenu={setMymenu}
-                  setmodelRef1={changeRef}
-                />
-              </NavCont>
-            </header>
-            <main>
-              <div className="p-0 container-fluid">
-                <Suspense fallback={<LoadingPage />}>
-                  <Routes>
-                    <Route path="/product/:slug" element={<ProductScreen />} />
-                    <Route path="/seller/:id" element={<SellerScreen />} />
-                    <Route path="/myaccount" element={<SellerScreen />} />
-                    <Route path="/cart" element={<CartScreen />} />
-                    <Route path="/about" element={<About />} />
-                    <Route
-                      path="/sustainability"
-                      element={<SustainabilityImpact />}
-                    />
-                    <Route path="/protections" element={<BuyersPro />} />
-                    <Route path="/rebundle" element={<Bundle />} />
-                    <Route path="/fashionImpact" element={<FashionImpact />} />
-                    <Route
-                      path="/categories"
-                      element={<CategoryMobileScreen />}
-                    />
-                    <Route path="/search" element={<SearchSceen />} />
-                    <Route path="/sell" element={<SellScreen />} />
-                    <Route path="/signin" element={<SigninScreen />} />
-                    <Route path="/forgetpassword" element={<ForgetScreen />} />
-                    <Route path="/resetpassword" element={<ResetScreen />} />
-                    <Route
-                      path="/continuesignin"
-                      element={<SigninToAddressScreen />}
-                    />
-                    <Route path="/signup" element={<SignupScreen />} />
-                    <Route path="/delivery" element={<InfoScreen />} />
-                    <Route path="/delivery2" element={<InfoScreenNonLogin />} />
-                    <Route path="/outfits" element={<CreateOutfitScreen />} />
-                    <Route
-                      path="/createoutfits"
-                      element={<CreateOutfitPicScreen />}
-                    />
+          {loading ? (
+            <LoadingPage />
+          ) : (
+            <div className={mode || ""} onClick={closeModel}>
+              <Notification />
+              <ToastNotification />
+              <StickyNav />
+              <header style={{ background: "inherit" }}>
+                <NavCont>
+                  <Navbar
+                    menu={menu}
+                    setMymenu={setMymenu}
+                    setmodelRef1={changeRef}
+                  />
+                </NavCont>
+              </header>
+              <main>
+                <div className="p-0 container-fluid">
+                  <Suspense fallback={<LoadingPage />}>
+                    <Routes>
+                      <Route
+                        path="/product/:slug"
+                        element={<ProductScreen />}
+                      />
+                      <Route path="/seller/:id" element={<SellerScreen />} />
+                      <Route path="/myaccount" element={<SellerScreen />} />
+                      <Route path="/cart" element={<CartScreen />} />
+                      <Route path="/about" element={<About />} />
+                      <Route
+                        path="/emailsent"
+                        element={<EmailConfirmationScreen />}
+                      />
+                      <Route
+                        path="/sustainability"
+                        element={<SustainabilityImpact />}
+                      />
+                      <Route path="/protections" element={<BuyersPro />} />
+                      <Route path="/rebundle" element={<Bundle />} />
+                      <Route
+                        path="/fashionImpact"
+                        element={<FashionImpact />}
+                      />
+                      <Route
+                        path="/categories"
+                        element={<CategoryMobileScreen />}
+                      />
+                      <Route path="/search" element={<SearchSceen />} />
+                      <Route path="/sell" element={<SellScreen />} />
+                      <Route path="/signin" element={<SigninScreen />} />
+                      <Route
+                        path="/forgetpassword"
+                        element={<ForgetScreen />}
+                      />
+                      <Route
+                        path="/resetpassword/:token"
+                        element={<ResetScreen />}
+                      />
+                      <Route
+                        path="/continuesignin"
+                        element={<SigninToAddressScreen />}
+                      />
+                      <Route path="/signup" element={<SignupScreen />} />
+                      <Route path="/delivery" element={<InfoScreen />} />
+                      <Route
+                        path="/delivery2"
+                        element={<InfoScreenNonLogin />}
+                      />
+                      <Route path="/outfits" element={<CreateOutfitScreen />} />
+                      <Route
+                        path="/createoutfits"
+                        element={<CreateOutfitPicScreen />}
+                      />
 
-                    <Route
-                      path="/messages"
-                      element={
-                        <ProtectedRoute>
-                          <ChatScreen />
-                        </ProtectedRoute>
-                      }
-                    />
-                    {/* <Route
+                      <Route
+                        path="/messages"
+                        element={
+                          <ProtectedRoute>
+                            <ChatScreen />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      <Route
+                        path="/verifyemail"
+                        element={
+                          <ProtectedRoute>
+                            <VerifyEmailScreen />
+                          </ProtectedRoute>
+                        }
+                      />
+                      {/* <Route
                       path="/account"
                       element={
                         <ProtectedRoute>
@@ -340,42 +393,42 @@ function App() {
                         </ProtectedRoute>
                       } 
                     />*/}
-                    <Route
-                      path="/profilmenu"
-                      element={
-                        <ProtectedRoute>
-                          <MobileProfileScreen />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/shipping"
-                      element={
-                        <CartNotEmpty>
-                          <ShippingAddressScreen />
-                        </CartNotEmpty>
-                      }
-                    />
-                    <Route
-                      path="/payment"
-                      element={
-                        <CartNotEmpty>
-                          <PaymentMethodScreen />
-                        </CartNotEmpty>
-                      }
-                    />
-                    <Route
-                      path="/placeorder"
-                      element={
-                        <CartNotEmpty>
-                          <IsPaymentMethod>
-                            <PlaceOrderScreen />
-                          </IsPaymentMethod>
-                        </CartNotEmpty>
-                      }
-                    />
-                    <Route path="/order/:id" element={<OrderScreen />} />
-                    {/* <Route
+                      <Route
+                        path="/profilmenu"
+                        element={
+                          <ProtectedRoute>
+                            <MobileProfileScreen />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/shipping"
+                        element={
+                          <CartNotEmpty>
+                            <ShippingAddressScreen />
+                          </CartNotEmpty>
+                        }
+                      />
+                      <Route
+                        path="/payment"
+                        element={
+                          <CartNotEmpty>
+                            <PaymentMethodScreen />
+                          </CartNotEmpty>
+                        }
+                      />
+                      <Route
+                        path="/placeorder"
+                        element={
+                          <CartNotEmpty>
+                            <IsPaymentMethod>
+                              <PlaceOrderScreen />
+                            </IsPaymentMethod>
+                          </CartNotEmpty>
+                        }
+                      />
+                      <Route path="/order/:id" element={<OrderScreen />} />
+                      {/* <Route
                       path="/orderhistory"
                       element={
                         <ProtectedRoute>
@@ -383,40 +436,43 @@ function App() {
                         </ProtectedRoute>
                       }
                     /> */}
-                    <Route
-                      path="/dashboard/:tab/:id"
-                      element={
-                        <ProtectedRoute>
-                          <DashboardNewScreen />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="/" element={<HomeScreen />} />
-                    <Route path="/home" element={<ProductsScreen />} />
+                      <Route
+                        path="/dashboard/:tab/:id"
+                        element={
+                          <ProtectedRoute>
+                            <DashboardNewScreen />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="/" element={<HomeScreen />} />
+                      <Route path="/home" element={<ProductsScreen />} />
 
-                    <Route path="/dashboard" element={<DashboardNewScreen />} />
+                      <Route
+                        path="/dashboard"
+                        element={<DashboardNewScreen />}
+                      />
 
-                    <Route
-                      path="/deliveryoption"
-                      element={<DeliveryOptionScreen />}
-                    />
-                    <Route
-                      path="/dashboard/:tab"
-                      element={<DashboardNewScreen />}
-                    />
-                    <Route path="/newproduct" element={<NewProduct />} />
+                      <Route
+                        path="/deliveryoption"
+                        element={<DeliveryOptionScreen />}
+                      />
+                      <Route
+                        path="/dashboard/:tab"
+                        element={<DashboardNewScreen />}
+                      />
+                      <Route path="/newproduct" element={<NewProduct />} />
 
-                    <Route
-                      path="/category/:name"
-                      element={<CategorypageScreen />}
-                    />
+                      <Route
+                        path="/category/:name"
+                        element={<CategorypageScreen />}
+                      />
 
-                    <Route path="/brand" element={<BrandScreen />} />
-                    <Route path="/recurated" element={<ShopByOutfit />} />
+                      <Route path="/brand" element={<BrandScreen />} />
+                      <Route path="/recurated" element={<ShopByOutfit />} />
 
-                    {/* Admin Routes */}
+                      {/* Admin Routes */}
 
-                    {/* <Route
+                      {/* <Route
                       path="/admin/dashboard"
                       element={
                         <AdminRoute>
@@ -424,15 +480,15 @@ function App() {
                         </AdminRoute>
                       }
                     /> */}
-                    <Route
-                      path="/return/:id"
-                      element={
-                        <AdminRoute>
-                          <ReturnPage />
-                        </AdminRoute>
-                      }
-                    />
-                    {/* <Route
+                      <Route
+                        path="/return/:id"
+                        element={
+                          <AdminRoute>
+                            <ReturnPage />
+                          </AdminRoute>
+                        }
+                      />
+                      {/* <Route
                       path="/admin/product"
                       element={
                         <AdminRoute>
@@ -440,7 +496,7 @@ function App() {
                         </AdminRoute>
                       }
                     /> */}
-                    {/* <Route
+                      {/* <Route
                       path="/admin/product/:id"
                       element={
                         <AdminRoute>
@@ -448,33 +504,33 @@ function App() {
                         </AdminRoute>
                       }
                     /> */}
-                    <Route
-                      path="/admin/allOrderList/"
-                      element={
-                        <AdminRoute>
-                          <OrderListAdmin />
-                        </AdminRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/allOrderList/"
+                        element={
+                          <AdminRoute>
+                            <OrderListAdmin />
+                          </AdminRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/allProductList/"
-                      element={
-                        <AdminRoute>
-                          <ProductListAdmin />
-                        </AdminRoute>
-                      }
-                    />
+                      <Route
+                        path="/admin/allProductList/"
+                        element={
+                          <AdminRoute>
+                            <ProductListAdmin />
+                          </AdminRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/admin/outofstock/"
-                      element={
-                        <AdminRoute>
-                          <OutOfStock />
-                        </AdminRoute>
-                      }
-                    />
-                    {/*
+                      <Route
+                        path="/admin/outofstock/"
+                        element={
+                          <AdminRoute>
+                            <OutOfStock />
+                          </AdminRoute>
+                        }
+                      />
+                      {/*
                     <Route
                       path="/admin/order"
                       element={
@@ -531,12 +587,12 @@ function App() {
                         </SellerRoute>
                       }
                     /> */}
-                  </Routes>
-                </Suspense>
-              </div>
-            </main>
-            <Footer />
-            {/* <footer>
+                    </Routes>
+                  </Suspense>
+                </div>
+              </main>
+              <Footer />
+              {/* <footer>
           <div className="footer-content1">
             <div className="brand-logo1">REPEDDLE</div>
             <div className="footer-ul-container1">
@@ -693,8 +749,9 @@ function App() {
             Conpany, Best apeal fashion market place
           </p>
         </footer> */}
-            {/* </div> */}
-          </div>
+              {/* </div> */}
+            </div>
+          )}
         </ScrollToTop>
       </GoogleOAuthProvider>
     </BrowserRouter>

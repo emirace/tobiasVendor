@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { DataGrid } from "@mui/x-data-grid";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import moment from "moment";
 import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -187,12 +188,11 @@ export default function AllReturns() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/returns/${region()}?q=${salesQurrey}`,
+          `/api/returns/${region()}/admin?q=${salesQurrey}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        console.log(data);
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
         console.log(getError(err));
@@ -299,7 +299,7 @@ export default function AllReturns() {
     {
       field: "date",
       headerName: "Date",
-      width: 100,
+      width: 150,
     },
     {
       field: "action",
@@ -308,7 +308,7 @@ export default function AllReturns() {
       renderCell: (params) => {
         return (
           <ActionSec>
-            <Link to={`/return/${params.row.id}`}>
+            <Link to={`/return/${params.row.id}?orderId=${params.row.orderId}`}>
               <Edit mode={mode}>View</Edit>
             </Link>
           </ActionSec>
@@ -321,7 +321,7 @@ export default function AllReturns() {
     name: p.productId.name,
     image: p.productId.image,
     slug: p.productId.slug,
-    date: p.createdAt,
+    date: moment(p.createdAt).format("MM DD, h:mm a"),
     orderId: p.orderId._id,
     user: p.orderId.user.username,
   }));

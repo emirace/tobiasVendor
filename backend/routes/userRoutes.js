@@ -1,10 +1,18 @@
 import express from "express";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import { generateToken, isAdmin, isAuth, sendEmail } from "../utils.js";
+import {
+  generateOTP,
+  generateToken,
+  isAdmin,
+  isAuth,
+  sendEmail,
+} from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
 import crypto from "crypto";
+import VerificationToken from "../models/verificationTokenModel.js";
+import { plainEmailTemp } from "../utils/mailTemplete.js";
 
 const userRouter = express.Router();
 
@@ -22,19 +30,6 @@ userRouter.get(
     res.send({
       topSellers,
     });
-  })
-);
-
-// get all users admin
-
-userRouter.get(
-  "/:region",
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { region } = req.params;
-    const users = await User.find({ region }).sort({ createdAt: -1 });
-    res.send(users);
   })
 );
 
@@ -82,9 +77,10 @@ userRouter.put(
 );
 
 userRouter.post(
-  "/signin",
+  "/:region/signin",
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
+    const { region } = req.params;
+    const user = await User.findOne({ email: req.body.email, region });
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
@@ -126,7 +122,26 @@ userRouter.post(
       region,
       numReviews: 0,
     });
+
+    const OTP = generateOTP();
+
+    const newVerificationToken = new VerificationToken({
+      owner: newUser._id,
+      token: OTP,
+    });
+    const verificationToken = await newVerificationToken.save();
     const user = await newUser.save();
+    const message = `
+    <h1> Welcome to Repeddle</h1>
+    <p>Please Verify Your Email To Continue. Your Verification code id</p>
+<h3>${OTP}</h3>
+    `;
+
+    sendEmail({
+      to: newUser.email,
+      subject: "Verify your email account",
+      text: message,
+    });
     await Account.create({
       userId: user.id,
       balance: 0,
@@ -145,6 +160,49 @@ userRouter.post(
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });
+  })
+);
+
+userRouter.post(
+  "/verifyemail",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { otp } = req.body;
+    const userId = req.user._id;
+    if (!userId || !otp.trim())
+      return res.status(500).send({ message: "Invalid user or token" });
+
+    const user = await User.findById(userId);
+    if (user) {
+      if (user.isVerifiedEmail)
+        return res
+          .status(500)
+          .send({ message: "This user is already verified" });
+
+      const token = await VerificationToken.findOne({ owner: user._id });
+      if (!token) return res.status(500).send({ message: "User not found " });
+
+      const isMatched = await token.compareToken(otp);
+      if (!isMatched)
+        return res
+          .status(500)
+          .send({ message: "Please, provide a valid token" });
+
+      user.isVerifiedEmail = true;
+      await VerificationToken.findByIdAndDelete(token._id);
+      await user.save();
+      sendEmail({
+        to: user.email,
+        subject: "Email Verified Successfully",
+        text: plainEmailTemp(
+          "Email Varified Successfully",
+          "Thanks for connecting with us"
+        ),
+      });
+      res.status(200).send({ message: "Your email is verified" });
+    } else {
+      res.status(404).send({ message: "User not Found" });
+    }
   })
 );
 
@@ -168,11 +226,11 @@ userRouter.post(
 <a href=${resetUrl} clicktracking=off>${resetUrl}
 `;
       try {
-        // sendEmail({
-        //   to: user.email,
-        //   text: message,
-        //   subject: "Password Reset",
-        // });
+        sendEmail({
+          to: user.email,
+          text: message,
+          subject: "Password Reset",
+        });
 
         res
           .status(200)
@@ -217,7 +275,7 @@ userRouter.post(
         .status(201)
         .send({ success: true, message: "Password Reset Success" });
     } else {
-      res.status(400).send("Invalid Reset Token");
+      res.status(400).send({ message: "Invalid Reset Token" });
     }
   })
 );
@@ -504,6 +562,19 @@ userRouter.get(
     }
   })
 );
+// get all users admin
+
+// userRouter.get(
+//   "/:region",
+//   isAuth,
+//   isAdmin,
+//   expressAsyncHandler(async (req, res) => {
+//     const { region } = req.params;
+//     const users = await User.find({ region }).sort({ createdAt: -1 });
+//     res.send(users);
+//   })
+// );
+
 userRouter.get(
   "/:id",
   isAuth,

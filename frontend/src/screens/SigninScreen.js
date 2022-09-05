@@ -7,7 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../Store";
 import { toast } from "react-toastify";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import jwt_decode from "jwt-decode";
@@ -169,7 +169,7 @@ export default function SigninScreen() {
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post("/api/users/signin", {
+      const { data } = await axios.post(`/api/users/${region()}/signin`, {
         email: input.email,
         password: input.password,
       });

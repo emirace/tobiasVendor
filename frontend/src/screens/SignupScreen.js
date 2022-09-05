@@ -114,7 +114,7 @@ export default function SignupScreen() {
       });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
-      window.location.href = redirect || "/";
+      navigate(`/verifyemail?redirect=${redirect}`);
     } catch (err) {
       toast.error(getError(err));
     }

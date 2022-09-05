@@ -87,18 +87,26 @@ export const isSocialAuth = (req, res, next) => {
 };
 
 export const sendEmail = (options) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
-    port: 80,
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtpout.secureserver.net",
+  //   port: 80,
 
+  //   auth: {
+  //     user: "tobias@repeddle.com",
+  //     pass: "3W2CK-6p-X']Q_i",
+  //   },
+  // });
+  var transporter = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
     auth: {
-      user: "tobias@repeddle.com",
-      pass: "3W2CK-6p-X']Q_i",
+      user: "aeef4e04706b4f",
+      pass: "1239ac3ae8cd9a",
     },
   });
 
   const mailOption = {
-    from: "support@repeddle.com",
+    from: "support@test.com",
     to: options.to,
     subject: options.subject,
     html: options.text,
@@ -198,3 +206,12 @@ export async function debitAccount({
     message: "Debit successful",
   };
 }
+
+export const generateOTP = () => {
+  let otp = "";
+  for (let i = 0; i <= 5; i++) {
+    const randVal = Math.round(Math.random() * 9);
+    otp = otp + randVal;
+  }
+  return otp;
+};

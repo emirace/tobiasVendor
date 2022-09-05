@@ -8,7 +8,7 @@ const returnRouter = express.Router();
 // get all returns
 
 returnRouter.get(
-  "/:region",
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -72,6 +72,7 @@ returnRouter.delete(
 returnRouter.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {
+    console.log("hello");
     const returned = await Return.findById(req.params.id);
     if (returned) {
       res.status(201).send(returned);

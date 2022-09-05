@@ -452,7 +452,6 @@ orderRouter.put(
       records.map(async (p) => {
         p.sold = true;
         const seller = await User.findById(p.seller);
-        console.log("seller 1", seller);
         seller.sold.push(p._id);
         await seller.save();
         console.log("seller 2", seller);

@@ -56,7 +56,7 @@ export default function PaymentMethodScreen() {
         </div>
         <div className="mb-3">
           <Form.Check
-            disabled={balance <= totalPrice}
+            disabled={balance === 0 || balance <= totalPrice}
             type="radio"
             id="Wallet"
             label={`Wallet (${currency}${balance.toFixed(2)})`}

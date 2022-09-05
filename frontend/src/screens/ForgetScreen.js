@@ -176,10 +176,17 @@ export default function ForgetScreen() {
       );
       console.log(data);
       if (data.success) {
+        navigate("/emailsent");
       }
     } catch (err) {
-      toast.error(getError(err));
-      console.log(err);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -240,7 +247,6 @@ export default function ForgetScreen() {
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Enter Recovery Email</Form.Label>
           <Input
-            type="email"
             error={error.email}
             onFocus={() => {
               handleError(null, "email");

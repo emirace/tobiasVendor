@@ -3,12 +3,12 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Helmet } from "react-helmet-async";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../Store";
 import { toast } from "react-toastify";
 import { getError } from "../utils";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import jwt_decode from "jwt-decode";
 import styled from "styled-components";
@@ -152,36 +152,40 @@ const ForgetPassword = styled.div`
   }
 `;
 
-export default function ResetScreen() {
+export default function VerifyEmailScreen() {
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const redirectInUrl = new URLSearchParams(search).get("redirect");
+  const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const params = useParams();
-  const { token } = params;
-  console.log(token);
   const [input, setInput] = useState({
-    password: "",
-    confirmPassword: "",
+    number: "",
   });
   const [error, setError] = useState("");
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post(`/api/users/resetpassword/${token}`, {
-        password: input.password,
+      const { data } = await axios.post(
+        `/api/users/verifyemail`,
+        {
+          otp: input.number,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Email Verified Successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
       });
-      if (data.success) {
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: data.message,
-            showStatus: true,
-            state1: "visible1 success",
-          },
-        });
-        navigate("/signin");
-      }
+      window.location.href = redirect || "/";
     } catch (err) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -191,44 +195,15 @@ export default function ResetScreen() {
           state1: "visible1 error",
         },
       });
+      console.log(err);
     }
   };
+
   const validate = (e) => {
     e.preventDefault();
     let valid = true;
-
-    if (!input.password) {
-      handleError("Please enter password", "password");
-      valid = false;
-    }
-    if (!input.password) {
-      handleError("Please enter password", "password");
-      valid = false;
-    } else if (input.password.length < 6) {
-      valid = false;
-      handleError("Your password must be at least 6 characters", "password");
-    } else if (input.password.search(/[a-z]/i) < 0) {
-      handleError(
-        "Password must contain at least 1 lowercase alphabetical character",
-        "password"
-      );
-      valid = false;
-    } else if (input.password.search(/[A-Z]/) < 0) {
-      handleError(
-        "Password must contain at least 1 uppercase alphabetical character",
-        "password"
-      );
-      valid = false;
-    } else if (input.password.search(/[0-9]/) < 0) {
-      handleError("Password must contain at least 1 digit", "password");
-      valid = false;
-    }
-
-    if (!input.confirmPassword) {
-      handleError("Please confirm your password", "confirmPassword");
-      valid = false;
-    } else if (input.password !== input.confirmPassword) {
-      handleError("Passwords do not match", "confirmPassword");
+    if (!input.number || input.number.length < 6) {
+      handleError("Enter a six digit code", "number");
       valid = false;
     }
 
@@ -236,12 +211,6 @@ export default function ResetScreen() {
       submitHandler();
     }
   };
-
-  useEffect(() => {
-    if (userInfo) {
-      navigate("/");
-    }
-  }, [navigate, userInfo]);
 
   const darkMode = (mode) => {
     if (mode) {
@@ -263,38 +232,35 @@ export default function ResetScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Reset Password</title>
+        <title>Verify email</title>
       </Helmet>
 
-      <h3 className="my-3">Reset Password</h3>
+      <h3 className="my-3">Verify Your Email Address</h3>
+      <p>
+        We emailed you a six digit code at {userInfo.email}. Enter the code
+        below to confirm your email
+      </p>
 
       <Form onSubmit={validate}>
-        <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
+        <Form.Group className="mb-3" controlId="number">
           <Input
-            password
-            error={error.password}
+            type="number"
+            error={error.number}
             onFocus={() => {
-              handleError(null, "password");
+              handleError(null, "number");
             }}
-            onChange={(e) => handleOnChange(e.target.value, "password")}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Input
-            password
-            error={error.confirmPassword}
-            onFocus={() => {
-              handleError(null, "confirmPassword");
-            }}
-            onChange={(e) => handleOnChange(e.target.value, "confirmPassword")}
+            onChange={(e) => handleOnChange(e.target.value, "number")}
           />
         </Form.Group>
         <div className="mb-3">
           <button type="submit" className="search-btn1">
-            Reset Password
+            <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faCheck} />{" "}
+            Verfy
           </button>
+        </div>
+        <div className="mb-3">
+          Didn't received verification code
+          <Link to={`/verifiedemail`}> {"  "}Send again</Link>
         </div>
       </Form>
     </Container>

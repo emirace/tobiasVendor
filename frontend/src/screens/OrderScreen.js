@@ -623,67 +623,6 @@ export default function OrderScreen() {
                       Comfirm you have recieved order
                     </Received>
                   )}
-                {userInfo && order.seller === userInfo._id && (
-                  <SetStatus>
-                    <FormControl
-                      disabled={
-                        order.deliveryStatus === "Hold" ||
-                        order.deliveryStatus === "Received"
-                      }
-                      sx={{
-                        minWidth: "200px",
-                        margin: 0,
-                        borderRadius: "0.2rem",
-                        border: `1px solid ${
-                          mode === "pagebodydark"
-                            ? "var(--dark-ev4)"
-                            : "var(--light-ev4)"
-                        }`,
-                        "& .MuiOutlinedInput-root": {
-                          color: `${
-                            mode === "pagebodydark"
-                              ? "var(--white-color)"
-                              : "var(--black-color)"
-                          }`,
-                          "&:hover": {
-                            outline: "none",
-                            border: 0,
-                          },
-                        },
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "0 !important",
-                        },
-                      }}
-                      size="small"
-                    >
-                      <InputLabel
-                        sx={{
-                          color: `${
-                            mode === "pagebodydark"
-                              ? "var(--white-color)"
-                              : "var(--black-color)"
-                          }`,
-                        }}
-                        id="deliveryStatus"
-                      >
-                        Set delivery Status
-                      </InputLabel>
-
-                      <Select
-                        onChange={(e) => deliverOrderHandler(e.target.value)}
-                        displayEmpty
-                        id="deliveryStatus"
-                      >
-                        <MenuItem value="Not yet Dispatched">
-                          Not yet Dispatched
-                        </MenuItem>
-                        <MenuItem value="Dispatch">Dispatch</MenuItem>
-                        <MenuItem value="In transit">In transit</MenuItem>
-                        <MenuItem value="Delivered">Delivered</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </SetStatus>
-                )}
               </div>
               <hr />
               <DetailButton>
