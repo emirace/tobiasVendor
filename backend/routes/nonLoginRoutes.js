@@ -43,7 +43,8 @@ nonLoginRouter.post(
 nonLoginRouter.get(
   "/location",
   expressAsyncHandler(async (req, res) => {
-    const data = req.headers["cloudfront-viewer-country-name"];
+    console.log(req.headers);
+    const data = req.headers["cloudfront-viewer-country"];
     res.status(200).send(data);
   })
 );

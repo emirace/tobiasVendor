@@ -200,27 +200,32 @@ function App() {
     localStorage.removeItem("paymentMethod");
     window.location.href = "/signin";
   };
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const checkLoacation = async () => {
-  //     const { data } = await axios.get("/api/nonLogin/location");
-  //     if (data.data === "South African") {
-  //       if (region() === "ZAR") {
-  //         setLoading(false);
-  //       } else {
-  //         window.location.replace("https://repeddle.co.za");
-  //       }
-  //     } else {
-  //       if (region() === "ZAR") {
-  //         window.location.replace("https://repeddle.com");
-  //       }
-  //       setLoading(false);
-  //     }
-  //     console.log(data, "checkLocation", region());
-  //   };
-  //   checkLoacation();
-  // }, []);
+  useEffect(() => {
+    const checkLoacation = async () => {
+      if (userInfo && userInfo.isAdmin) {
+        setLoading(false);
+      } else {
+        const { data } = await axios.get("/api/nonLogin/location");
+        console.log("locationdate", data);
+        if (data === "ZA") {
+          if (region() === "ZAR") {
+            setLoading(false);
+          } else {
+            window.location.replace("https://repeddle.co.za");
+          }
+        } else {
+          if (region() === "ZAR") {
+            window.location.replace("https://repeddle.com");
+          }
+          setLoading(false);
+        }
+        console.log(data, "checkLocation", region());
+      }
+    };
+    checkLoacation();
+  }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -277,6 +282,7 @@ function App() {
   };
 
   const [modelRef1, setmodelRef1] = useState();
+  const [modelRef2, setmodelRef2] = useState();
   const [menu, setMymenu] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
 
@@ -286,9 +292,17 @@ function App() {
     } else {
       setMymenu(!menu);
     }
+    if (modelRef2 !== e.target) {
+      setShowNotification(false);
+    } else {
+      setShowNotification(!menu);
+    }
   };
   const changeRef = (res) => {
     setmodelRef1(res);
+  };
+  const changeRef2 = (res) => {
+    setmodelRef2(res);
   };
 
   return (
@@ -311,6 +325,7 @@ function App() {
                     showNotification={showNotification}
                     setMymenu={setMymenu}
                     setmodelRef1={changeRef}
+                    setmodelRef2={changeRef2}
                   />
                 </NavCont>
               </header>
@@ -486,9 +501,9 @@ function App() {
                       <Route
                         path="/return/:id"
                         element={
-                          <AdminRoute>
+                          <ProtectedRoute>
                             <ReturnPage />
-                          </AdminRoute>
+                          </ProtectedRoute>
                         }
                       />
                       {/* <Route

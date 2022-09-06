@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useReducer } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { socket } from "../../../App";
 import { Store } from "../../../Store";
 import { getError } from "../../../utils";
 import LoadingBox from "../../LoadingBox";
@@ -140,6 +141,14 @@ export default function ReturnPage() {
           state1: "visible1 success",
         },
       });
+      socket.emit("post_data", {
+        userId: orderId,
+        itemId: orderId,
+        notifyType: "delivery",
+        msg: `Your order is ${deliveryStatus} `,
+        link: `/order/${orderId}`,
+        userImage: "/images/pimage.png",
+      });
     } catch (err) {
       console.log(getError(err));
       dispatch({ type: "DELIVER_FAIL" });
@@ -149,7 +158,7 @@ export default function ReturnPage() {
   return loading ? (
     <LoadingBox />
   ) : (
-    <Container>
+    <Container mode={mode}>
       <Title>Return</Title>
       <SumaryContDetails mode={mode}>
         <Name>Preferred Resolution Method</Name>
@@ -169,18 +178,25 @@ export default function ReturnPage() {
         <hr />
         <Name>Image</Name>
         <ItemNum>
-          <img src={returned.image} style={{ maxWidth: "50%" }} alt="img" />
+          {returned.image && (
+            <img src={returned.image} style={{ maxWidth: "50%" }} alt="img" />
+          )}
         </ItemNum>
-
-        <Button onClick={() => deliverOrderHandler("Return Approve")}>
-          Approve
-        </Button>
-        <Button
-          className="decline"
-          onClick={() => deliverOrderHandler("Return Decline")}
-        >
-          Decline
-        </Button>
+        {userInfo.isAdmin ? (
+          <>
+            <Button onClick={() => deliverOrderHandler("Return Approve")}>
+              Approve
+            </Button>
+            <Button
+              className="decline"
+              onClick={() => deliverOrderHandler("Return Decline")}
+            >
+              Decline
+            </Button>
+          </>
+        ) : (
+          <p style={{ color: "red" }}>Waiting Admin Approver/Decline</p>
+        )}
       </SumaryContDetails>
     </Container>
   );

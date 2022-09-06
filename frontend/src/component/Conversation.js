@@ -76,7 +76,9 @@ export default function Conversation({
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const count = notifications.filter((x) => x.itemId === conversation._id);
+  const count = notifications.filter(
+    (x) => x.itemId === conversation._id && x.read === false
+  );
 
   useEffect(() => {
     const friendId = conversation.members.find((m) => m !== userInfo._id);

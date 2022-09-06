@@ -6,6 +6,9 @@ const notificationSchema = new mongoose.Schema(
     read: { type: Boolean, default: false },
     notifyType: { type: String, required: true },
     itemId: { type: String, required: true },
+    userImage: { type: String },
+    msg: { type: String },
+    link: { type: String },
   },
   {
     timestamps: true,

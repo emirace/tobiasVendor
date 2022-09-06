@@ -52,6 +52,7 @@ import Report from "../component/Report";
 import { format } from "timeago.js";
 import Sizechart from "../component/Sizechart";
 import Product from "../component/Product";
+import { socket } from "../App";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -438,6 +439,15 @@ export default function ProductScreen() {
         behavior: "smooth",
         top: reviewRef.current.offsetTop,
       });
+
+      socket.emit("post_data", {
+        userId: product.seller._id,
+        itemId: product._id,
+        notifyType: "review",
+        msg: `${userInfo.username} gave your product a review`,
+        link: `/product/${product.slug}`,
+        userImage: userInfo.image,
+      });
       setRAting("");
       setComment("");
       setLike("");
@@ -483,6 +493,15 @@ export default function ProductScreen() {
       window.scrollTo({
         behavior: "smooth",
         top: reviewRef.current.offsetTop,
+      });
+
+      socket.emit("post_data", {
+        userId: product.seller._id,
+        itemId: product._id,
+        notifyType: "comment",
+        msg: `${userInfo.username} commened on your product`,
+        link: `/product/${product.slug}`,
+        userImage: userInfo.image,
       });
     } catch (err) {
       console.log(err);
@@ -596,6 +615,15 @@ export default function ProductScreen() {
             state1: "visible1 error",
           },
         });
+
+        socket.emit("post_data", {
+          userId: data.product.seller._id,
+          itemId: data.product._id,
+          notifyType: "like",
+          msg: `${userInfo.username} unliked your product`,
+          link: `/product/${data.product.slug}`,
+          userImage: userInfo.image,
+        });
       } else {
         const { data } = await axios.put(
           `/api/products/${product._id}/likes`,
@@ -612,6 +640,15 @@ export default function ProductScreen() {
             showStatus: true,
             state1: "visible1 success",
           },
+        });
+
+        socket.emit("post_data", {
+          userId: data.product.seller._id,
+          itemId: data.product._id,
+          notifyType: "like",
+          msg: `${userInfo.username} liked your product`,
+          link: `/product/${data.product.slug}`,
+          userImage: userInfo.image,
         });
       }
     } catch (err) {

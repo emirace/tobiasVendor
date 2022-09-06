@@ -27,6 +27,7 @@ import Model from "../component/Model";
 import ReviewLists from "./ReviewLists";
 import ModelLogin from "../component/ModelLogin";
 import Report from "../component/Report";
+import { socket } from "../App";
 
 const Right = styled.div`
   flex: 7;
@@ -277,6 +278,15 @@ export default function SellerScreen() {
             state1: "visible1 error",
           },
         });
+
+        socket.emit("post_data", {
+          userId: sellerId,
+          itemId: sellerId,
+          notifyType: "follow",
+          msg: `${userInfo.username} unfollowed you`,
+          link: `/seller/${userInfo._id}`,
+          userImage: userInfo.image,
+        });
       } else {
         const { data } = await axios.put(
           `/api/users/follow/${sellerId}`,
@@ -293,6 +303,14 @@ export default function SellerScreen() {
             showStatus: true,
             state1: "visible1 success",
           },
+        });
+        socket.emit("post_data", {
+          userId: sellerId,
+          itemId: sellerId,
+          notifyType: "follow",
+          msg: `${userInfo.username} started following you`,
+          link: `/seller/${userInfo._id}`,
+          userImage: userInfo.image,
         });
       }
     } catch (err) {

@@ -282,11 +282,13 @@ export default function ChatScreen() {
   const sp = new URLSearchParams(search);
   const currentCon = sp.get("conversation");
   const [menu, setMymenu] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const [currentChat, setCurrentChat] = useState("");
   const [currentReply, setCurrentReply] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [arrivalMessage, setArrivalMessage] = useState("");
   const [modelRef1, setmodelRef1] = useState();
+  const [modelRef2, setmodelRef2] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
@@ -306,11 +308,20 @@ export default function ChatScreen() {
   const backgroundMode = (mode1) => {
     setmodelRef1(mode1);
   };
+  const changeRef2 = (res) => {
+    setmodelRef2(res);
+  };
   const closeModel = (e) => {
+    console.log(e.target, modelRef2);
     if (modelRef1 !== e.target) {
       setMymenu(false);
     } else {
       setMymenu(!menu);
+    }
+    if (modelRef2 !== e.target) {
+      setShowNotification(false);
+    } else {
+      setShowNotification(!menu);
     }
   };
 
@@ -505,6 +516,9 @@ export default function ChatScreen() {
         userId: receiverId,
         itemId: currentChat._id,
         notifyType: "message",
+        msg: `${userInfo.username} sent you a message`,
+        link: `/messages?conversation=${currentChat._id}`,
+        userImage: userInfo.image,
       });
       setNewMessage("");
       setImage("");
@@ -743,7 +757,14 @@ export default function ChatScreen() {
 
   return (
     <Container className={mode} onClick={closeModel}>
-      <Navbar menu={menu} setmodelRef1={backgroundMode} />
+      <Navbar
+        menu={menu}
+        setmodelRef1={backgroundMode}
+        showNotification={showNotification}
+        setShowNotification={setShowNotification}
+        setMymenu={setMymenu}
+        setmodelRef2={changeRef2}
+      />
       {!showLeft && (
         <Back mode={mode} onClick={() => setShowLeft(true)}>
           <FontAwesomeIcon icon={faAngleLeft} />

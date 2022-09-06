@@ -209,6 +209,7 @@ userRouter.post(
 userRouter.post(
   "/:url/forgetpassword",
   expressAsyncHandler(async (req, res) => {
+    console.log("working");
     const { url } = req.params;
     const user = await User.findOne({ email: req.body.email });
     if (user) {

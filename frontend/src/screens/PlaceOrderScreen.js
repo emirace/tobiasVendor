@@ -258,11 +258,17 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
-
-        socket.emit("post_data", {
-          userId: order1.order.seller,
-          itemId: order1.order._id,
-          notifyType: "sold",
+        order1.order.seller.map((s) => {
+          socket.emit("post_data", {
+            userId: order1.order.seller,
+            itemId: order1.order._id,
+            notifyType: "sold",
+            msg: `${
+              userInfo ? userInfo.username : "Guest user"
+            } ordered your product`,
+            link: `/order/${order1.order._id}`,
+            userImage: userInfo ? userInfo.image : "/images/pimage.png",
+          });
         });
         navigate(`/order/${data.order._id}`);
       } catch (err) {
@@ -307,12 +313,17 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
-
         socket.emit("post_data", {
           userId: order1.order.seller,
           itemId: order1.order._id,
           notifyType: "sold",
+          msg: `${
+            userInfo ? userInfo.username : "Guest user"
+          } ordered your product`,
+          link: `/order/${order1.order._id}`,
+          userImage: userInfo ? userInfo.image : "/images/pimage.png",
         });
+
         navigate(`/order/${data.order._id}`);
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: getError(err) });

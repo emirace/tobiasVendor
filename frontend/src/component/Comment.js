@@ -286,7 +286,7 @@ export default function Comment({ commentC }) {
             </Action>
           </div>
           <div>
-            <CommentImg src={comment.image} alt="d" />
+            {comment.image && <CommentImg src={comment.image} alt="d" />}
           </div>
         </Content>
       </Container>

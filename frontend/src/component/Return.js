@@ -8,6 +8,7 @@ import axios from "axios";
 import React, { useContext, useReducer, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { socket } from "../App";
 import { Store } from "../Store";
 import { getError, region } from "../utils";
 import LoadingBox from "./LoadingBox";
@@ -177,7 +178,7 @@ export default function Return({
 
     dispatch({ type: "RETURN_REQUEST" });
     try {
-      await axios.post(
+      const { data } = await axios.post(
         `/api/returns/${region()}`,
         {
           orderId,
@@ -204,6 +205,14 @@ export default function Return({
           showStatus: true,
           state1: "visible1 success",
         },
+      });
+      socket.emit("post_data", {
+        userId: current.seller,
+        itemId: current._id,
+        notifyType: "return",
+        msg: `${userInfo.username} request a return`,
+        link: `/return/${data._id}?orderId=${orderId}`,
+        userImage: userInfo.image,
       });
       setImage("");
       setShowReturn(false);
@@ -335,14 +344,17 @@ export default function Return({
             <h4>Preferred Resolution Method</h4>
             <div style={{ width: "40%" }}>
               <Link to={`/newproduct?id=${current.slug}`}>
-                <SelectOpt>Re-list and sell my product</SelectOpt>
+                <SelectOpt mode={mode}>Re-list and sell my product</SelectOpt>
               </Link>
               <SelectOpt
+                mode={mode}
                 onClick={() => addConversation(current.seller._id, current._id)}
               >
                 Message seller
               </SelectOpt>
-              <SelectOpt onClick={() => setTab("form")}>Return form</SelectOpt>
+              <SelectOpt mode={mode} onClick={() => setTab("form")}>
+                Return form
+              </SelectOpt>
             </div>
           </Content>
         );

@@ -40,6 +40,7 @@ const Product = styled.div``;
 const ProductImg = styled.img`
   width: 180px;
   height: 180px;
+  border-radius: 0.2rem;
   object-fit: cover;
   @media (max-width: 992px) {
     width: 150px;

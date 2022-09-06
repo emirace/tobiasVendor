@@ -24,6 +24,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useReactToPrint } from "react-to-print";
 import ModelLogin from "../component/ModelLogin";
 import Return from "../component/Return";
+import { socket } from "../App";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
@@ -395,8 +396,23 @@ export default function OrderScreen() {
           state1: "visible1 success",
         },
       });
+      socket.emit("post_data", {
+        userId: order.user,
+        itemId: order._id,
+        notifyType: "delivery",
+        msg: `Your order is ${deliveryStatus} `,
+        link: `/order/${order._id}`,
+        userImage: "/images/pimage.png",
+      });
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Network error",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       dispatch({ type: "DELIVER_FAIL" });
     }
   }

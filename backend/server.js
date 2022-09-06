@@ -205,21 +205,28 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Returning the initial unread notification
+  // Returning the initial  notification
   socket.on("initial_data", async ({ userId }) => {
-    const notification = await Notification.find({
+    const notifications = await Notification.find({
       userId,
-    });
+    }).sort({ createdAt: -1 });
     const user = users.find((x) => x._id === userId);
     if (user) {
-      io.to(user.socketId).emit("get_data", notification);
+      io.to(user.socketId).emit("get_data", notifications);
     }
   });
 
   // Add notifications
   socket.on("post_data", async (body) => {
-    const { userId, notifyType, itemId } = body;
-    const notification = new Notification({ userId, notifyType, itemId });
+    const { userId, notifyType, userImage, itemId, msg, link } = body;
+    const notification = new Notification({
+      userId,
+      notifyType,
+      itemId,
+      msg,
+      link,
+      userImage,
+    });
     await notification.save();
     io.sockets.emit("change_data");
   });
@@ -229,8 +236,22 @@ io.on("connection", (socket) => {
     const notifications = await Notification.find({ itemId: id });
 
     notifications.forEach(async (notification) => {
-      await notification.delete();
+      notification.read = true;
+      await notification.save();
     });
+
+    // await Notification.create(notifications)
+
+    io.sockets.emit("change_data");
+  });
+  // mark as read
+  socket.on("remove_id_notifications", async (id) => {
+    const notification = await Notification.findById(id);
+
+    if (notification) {
+      notification.read = true;
+      await notification.save();
+    }
 
     // await Notification.create(notifications)
 

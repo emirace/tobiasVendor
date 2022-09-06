@@ -16,6 +16,7 @@ import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
 import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
 import { ReactComponent as Notification } from "./../icons/Icons-11.svg";
 import { socket } from "../App";
+import moment from "moment";
 
 const Container = styled.div`
   width: 100%;
@@ -205,7 +206,7 @@ const RightMenu = styled.div`
 
 const MenuItem = styled.div`
   font-size: 20px;
-  margin-left: 20px;
+  margin: 0 10px;
   position: relative;
   @media (max-width: 992px) {
     display: none;
@@ -219,7 +220,7 @@ const MenuItem = styled.div`
 `;
 const MenuItemCart = styled.div`
   font-size: 20px;
-  margin-left: 20px;
+  padding: 0 10px;
   position: relative;
   &:hover {
     color: var(--orange-color);
@@ -413,10 +414,10 @@ const ProfileMenu = styled.div`
     cursor: pointer;
     padding: 5px 5px;
   }
-  & ul li:hover {
+  /* & ul li:hover {
     background: ${(props) =>
-      props.mode === "pagebodylight " ? "var(--light-ev2)" : "var(--dark-ev2)"};
-  }
+    props.mode === "pagebodylight " ? "var(--light-ev2)" : "var(--dark-ev2)"};
+  } */
 `;
 const ProfileCont = styled.div`
   position: relative;
@@ -446,6 +447,8 @@ const Li = styled.li`
 
 const NotificationMenu = styled.div`
   width: 270px;
+  max-height: 70vh;
+  overflow: auto;
   position: absolute;
   z-index: 9;
   padding: 10px;
@@ -454,16 +457,27 @@ const NotificationMenu = styled.div`
   left: 50%;
   transform: translateX(-50%);
   background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
+
+  box-shadow: ${(props) =>
+    props.mode === "pagebodylight "
+      ? "0 5px 16px rgba(0, 0, 0, 0.2)"
+      : "0 5px 16px rgba(225, 225, 225, 0.2)"};
 `;
 const Title = styled.div`
   font-weight: bold;
   margin-bottom: 10px;
+  color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
 `;
 const NotItem = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 5px;
   position: relative;
+  padding: 3px;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  }
 `;
 const NotImage = styled.img`
   width: 50px;
@@ -474,7 +488,9 @@ const NotDetail = styled.div`
   font-size: 14px;
   margin-left: 5px;
 `;
-const NotText = styled.div``;
+const NotText = styled.div`
+  color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
+`;
 const Time = styled.div`
   color: var(--orange-color);
 `;
@@ -483,12 +499,15 @@ export default function Navbar({
   menu,
   setMymenu,
   setmodelRef1,
+  setmodelRef2,
   showNotification,
   setShowNotification,
 }) {
   const modelRef = useRef();
+  const modelRef2 = useRef();
   useEffect(() => {
     setmodelRef1(modelRef.current);
+    setmodelRef2(modelRef2.current);
   }, []);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -497,22 +516,18 @@ export default function Navbar({
   const [categories, setCategories] = useState([]);
 
   const messageNotification = notifications.filter(
-    (x) => x.notifyType === "message"
+    (x) => x.notifyType === "message" && x.read === false
   );
   const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === "purchase"
+    (x) => x.notifyType === "purchase" && x.read === false
   );
-  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const soldNotification = notifications.filter(
+    (x) => x.notifyType === "sold" && x.read === false
+  );
   const productNotification = notifications.filter(
-    (x) => x.notifyType === "product"
+    (x) => x.notifyType === "product" && x.read === false
   );
-  const allNotification = [
-    ...new Set([
-      ...purchaseNotification,
-      ...soldNotification,
-      ...productNotification,
-    ]),
-  ];
+  const allNotification = notifications.filter((x) => x.read === false);
 
   useEffect(() => {
     try {
@@ -618,37 +633,52 @@ export default function Navbar({
               )}
             </Link>
           </MenuItem>
-          <MenuItem onClick={() => setShowNotification(!showNotification)}>
-            <Notification height={25} width={25} />
+          <MenuItem>
+            <img
+              src="/images/Icons-11.png"
+              height={25}
+              ref={modelRef2}
+              width={25}
+              onClick={() => setShowNotification(!showNotification)}
+            />
             <IconsTooltips tips="Notifications" />
-            {messageNotification.length > 0 && (
+            {allNotification.length > 0 && (
               <Badge>
-                <span>{messageNotification.length}</span>
+                <span>{allNotification.length}</span>
               </Badge>
             )}
             {showNotification && (
-              <NotificationMenu>
-                <Title>Notifications</Title>
-                <NotItem>
-                  <NotImage src={userInfo.image} alt="img" />
-                  <NotDetail>
-                    <NotText>John Doe liked your product</NotText>
-                    <Time>a week ago</Time>
-                  </NotDetail>
-                  <Badge
-                    style={{ top: "50%", transform: "translateY(-50%)" }}
-                  />
-                </NotItem>
-                <NotItem>
-                  <NotImage src={userInfo.image} alt="img" />
-                  <NotDetail>
-                    <NotText>John Doe liked your product</NotText>
-                    <Time>a week ago</Time>
-                  </NotDetail>
-                  <Badge
-                    style={{ top: "50%", transform: "translateY(-50%)" }}
-                  />
-                </NotItem>
+              <NotificationMenu mode={mode}>
+                <Title mode={mode}>Notifications</Title>
+                {notifications.length < 0 ? (
+                  <b>No Notification</b>
+                ) : (
+                  notifications.map((not) => (
+                    <Link to={not.link}>
+                      <NotItem
+                        mode={mode}
+                        key={not._id}
+                        onClick={() => {
+                          socket.emit("remove_id_notifications", not._id);
+                        }}
+                      >
+                        <NotImage src={not.userImage} alt="img" />
+                        <NotDetail>
+                          <NotText mode={mode}>{not.msg}</NotText>
+                          <Time>{moment(not.createdAt).fromNow()}</Time>
+                        </NotDetail>
+                        {!not.read && (
+                          <Badge
+                            style={{
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                            }}
+                          />
+                        )}
+                      </NotItem>
+                    </Link>
+                  ))
+                )}
               </NotificationMenu>
             )}
           </MenuItem>
@@ -672,11 +702,6 @@ export default function Navbar({
                 ref={modelRef}
                 onClick={() => setMymenu(!menu)}
               />
-              {allNotification.length > 0 && (
-                <Badge>
-                  <span>{allNotification.length}</span>
-                </Badge>
-              )}
               {menu && (
                 <ProfileMenu mode={mode} className={mode}>
                   <ul>
@@ -720,12 +745,6 @@ export default function Navbar({
                     </Li>
                     <Li>
                       <Link to="/dashboard">Dashboard</Link>
-
-                      {allNotification.length > 0 && (
-                        <Badge>
-                          <span>{allNotification.length}</span>
-                        </Badge>
-                      )}
                     </Li>
                     <li onClick={() => signoutHandler()}>Log Out</li>
                   </ul>
