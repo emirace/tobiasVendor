@@ -335,7 +335,7 @@ export default function Analytics() {
           <FeatureInfo
             type="order"
             number={
-              users2.orders && userInfo.isAdmin
+              users2.orders.length > 0 && userInfo.isAdmin
                 ? users2.orders[0].numOrders
                 : users2.length
             }
@@ -343,7 +343,7 @@ export default function Analytics() {
           <FeatureInfo
             type="product"
             number={
-              users2.orders && userInfo.isAdmin
+              users2.orders.length > 0 && userInfo.isAdmin
                 ? users2.products[0].numProducts
                 : products
                 ? products.products.length
@@ -353,7 +353,7 @@ export default function Analytics() {
           <FeatureInfo
             type="earning"
             number={
-              users2.orders && userInfo.isAdmin
+              users2.orders.length > 0 && userInfo.isAdmin
                 ? users2.orders[0].numSales
                 : "565"
             }

@@ -94,7 +94,7 @@ orderRouter.get(
 
 orderRouter.post(
   "/:region",
-  isAuthOrNot,
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     var seller = [];
@@ -110,7 +110,7 @@ orderRouter.post(
       shippingPrice: req.body.shippingPrice,
       taxPrice: req.body.taxPrice,
       totalPrice: req.body.totalPrice,
-      user: req.user ? req.user._id : null,
+      user: req.user._id,
       region,
     });
     const order = await newOrder.save();
@@ -420,6 +420,7 @@ orderRouter.put(
 
 orderRouter.put(
   "/:region/:id/pay",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const { transaction_id } = req.body;

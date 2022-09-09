@@ -80,7 +80,7 @@ userRouter.post(
   "/:region/signin",
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const user = await User.findOne({ email: req.body.email, region });
+    const user = await User.findOne({ email: req.body.email });
     if (user) {
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
@@ -95,7 +95,7 @@ userRouter.post(
           isSeller: user.isSeller,
           isAdmin: user.isAdmin,
           image: user.image,
-
+          isVerifiedEmail: user.isVerifiedEmail,
           token: generateToken(user),
         });
         return;
@@ -277,6 +277,44 @@ userRouter.post(
         .send({ success: true, message: "Password Reset Success" });
     } else {
       res.status(400).send({ message: "Invalid Reset Token" });
+    }
+  })
+);
+
+userRouter.get(
+  "/sendverifyemail",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      if (user.isVerifiedEmail)
+        return res
+          .status(500)
+          .send({ message: "This user is already verified" });
+
+      const token = await VerificationToken.findOne({ owner: user._id });
+      if (token) {
+        await token.remove();
+      }
+      const OTP = generateOTP();
+
+      const newVerificationToken = new VerificationToken({
+        owner: user._id,
+        token: OTP,
+      });
+      const verificationToken = await newVerificationToken.save();
+      const message = `
+    <h1> Welcome to Repeddle</h1>
+    <p>Please Verify Your Email To Continue. Your Verification code id</p>
+<h3>${OTP}</h3>
+    `;
+      console.log(OTP);
+      sendEmail({
+        to: user.email,
+        subject: "Verify your email account",
+        text: message,
+      });
+      res.status(200).send({ message: "Email sent" });
     }
   })
 );
@@ -565,16 +603,16 @@ userRouter.get(
 );
 // get all users admin
 
-// userRouter.get(
-//   "/:region",
-//   isAuth,
-//   isAdmin,
-//   expressAsyncHandler(async (req, res) => {
-//     const { region } = req.params;
-//     const users = await User.find({ region }).sort({ createdAt: -1 });
-//     res.send(users);
-//   })
-// );
+userRouter.get(
+  "/:region",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
+    const users = await User.find({ region }).sort({ createdAt: -1 });
+    res.send(users);
+  })
+);
 
 userRouter.get(
   "/:id",

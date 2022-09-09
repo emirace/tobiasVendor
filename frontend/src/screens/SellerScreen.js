@@ -325,7 +325,10 @@ export default function SellerScreen() {
           <>
             {userInfo && (
               <ProductCont>
-                <Link to="/newproduct" style={{ width: "100%" }}>
+                <Link
+                  to={userInfo.isSeller ? "newproduct" : "/sell"}
+                  style={{ width: "100%" }}
+                >
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     <span>Add Product</span>

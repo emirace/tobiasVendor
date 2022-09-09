@@ -10,7 +10,14 @@ import "./style/SearchScreen.css";
 import "./style/SellerScreen.css";
 import "./style/StickyNav.css";
 
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -198,26 +205,35 @@ function App() {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
-    window.location.href = "/signin";
   };
+  const redirectInUrl = new URLSearchParams(window.location.search).get(
+    "redirect"
+  );
+  const redirect = redirectInUrl ? redirectInUrl : "/";
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLoacation = async () => {
-      if (userInfo && userInfo.isAdmin) {
+      console.log("userInfo", userInfo);
+      if (!userInfo || userInfo.isAdmin) {
+        console.log("admin");
         setLoading(false);
       } else {
+        console.log("user");
         const { data } = await axios.get("/api/nonLogin/location");
         console.log("locationdate", data);
         if (data === "ZA") {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
-            window.location.replace("https://repeddle.co.za");
+            signoutHandler();
+            window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
-            window.location.replace("https://repeddle.com");
+            signoutHandler();
+            window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);
         }
@@ -225,7 +241,7 @@ function App() {
       }
     };
     checkLoacation();
-  }, []);
+  }, [userInfo]);
 
   useEffect(() => {
     if (userInfo) {
@@ -253,6 +269,22 @@ function App() {
       socket.emit("initial_data", { userId: userInfo._id });
     }
   };
+
+  useEffect(() => {
+    const getCartItems = async () => {
+      if (userInfo) {
+        const { data } = await axios.get("/api/cartItems", {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        console.log("databaseCart1", data);
+        const items = data.map((x) => x.item);
+        console.log("databaseCart2", items);
+
+        ctxDispatch({ type: "UPDATE_CART", payload: items });
+      }
+    };
+    getCartItems();
+  }, [userInfo]);
 
   console.log("updated noti", notifications);
 
@@ -430,19 +462,23 @@ function App() {
                       <Route
                         path="/payment"
                         element={
-                          <CartNotEmpty>
-                            <PaymentMethodScreen />
-                          </CartNotEmpty>
+                          <ProtectedRoute>
+                            <CartNotEmpty>
+                              <PaymentMethodScreen />
+                            </CartNotEmpty>
+                          </ProtectedRoute>
                         }
                       />
                       <Route
                         path="/placeorder"
                         element={
-                          <CartNotEmpty>
-                            <IsPaymentMethod>
-                              <PlaceOrderScreen />
-                            </IsPaymentMethod>
-                          </CartNotEmpty>
+                          <ProtectedRoute>
+                            <CartNotEmpty>
+                              <IsPaymentMethod>
+                                <PlaceOrderScreen />
+                              </IsPaymentMethod>
+                            </CartNotEmpty>
+                          </ProtectedRoute>
                         }
                       />
                       <Route path="/order/:id" element={<OrderScreen />} />

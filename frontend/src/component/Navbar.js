@@ -495,6 +495,14 @@ const Time = styled.div`
   color: var(--orange-color);
 `;
 
+export const signoutHandler = () => {
+  localStorage.removeItem("userInfo");
+  localStorage.removeItem("cartItems");
+  localStorage.removeItem("shippingAddress");
+  localStorage.removeItem("useraddress");
+  localStorage.removeItem("paymentMethod");
+  window.location.href = "/signin";
+};
 export default function Navbar({
   menu,
   setMymenu,
@@ -560,15 +568,6 @@ export default function Navbar({
       ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
       localStorage.setItem("mode", "pagebodylight");
     }
-  };
-
-  const signoutHandler = () => {
-    localStorage.removeItem("userInfo");
-    localStorage.removeItem("cartItems");
-    localStorage.removeItem("shippingAddress");
-    localStorage.removeItem("useraddress");
-    localStorage.removeItem("paymentMethod");
-    window.location.href = "/signin";
   };
 
   return (

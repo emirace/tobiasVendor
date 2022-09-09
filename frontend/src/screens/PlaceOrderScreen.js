@@ -189,9 +189,7 @@ export default function PlaceOrderScreen() {
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
         },
-        userInfo
-          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-          : {}
+        { headers: { authorization: `Bearer ${userInfo.token}` } }
       );
       dispatch({ type: "CREATE_SUCCESS", payload: data });
       return data;
@@ -242,9 +240,7 @@ export default function PlaceOrderScreen() {
         const { data } = await axios.put(
           `/api/orders/${region()}/${order1.order._id}/pay`,
           response,
-          userInfo
-            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-            : {}
+          { headers: { authorization: `Bearer ${userInfo.token}` } }
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
         await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
@@ -263,11 +259,9 @@ export default function PlaceOrderScreen() {
             userId: order1.order.seller,
             itemId: order1.order._id,
             notifyType: "sold",
-            msg: `${
-              userInfo ? userInfo.username : "Guest user"
-            } ordered your product`,
+            msg: `${userInfo.username} ordered your product`,
             link: `/order/${order1.order._id}`,
-            userImage: userInfo ? userInfo.image : "/images/pimage.png",
+            userImage: userInfo.image,
           });
         });
         navigate(`/order/${data.order._id}`);
@@ -295,9 +289,7 @@ export default function PlaceOrderScreen() {
         const { data } = await axios.put(
           `/api/orders/${region()}/${order1.order._id}/pay`,
           response,
-          userInfo
-            ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-            : {}
+          { headers: { authorization: `Bearer ${userInfo.token}` } }
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
         order1.order.seller.map(async (seller) => {
@@ -313,15 +305,20 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
+        if (userInfo) {
+          await axios.delete(`/api/cartItems/`, {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          });
+        }
         socket.emit("post_data", {
           userId: order1.order.seller,
           itemId: order1.order._id,
           notifyType: "sold",
-          msg: `${
-            userInfo ? userInfo.username : "Guest user"
-          } ordered your product`,
+          msg: `${userInfo.username} ordered your product`,
           link: `/order/${order1.order._id}`,
-          userImage: userInfo ? userInfo.image : "/images/pimage.png",
+          userImage: userInfo.image,
         });
 
         navigate(`/order/${data.order._id}`);

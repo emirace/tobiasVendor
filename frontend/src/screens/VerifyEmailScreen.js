@@ -228,6 +228,23 @@ export default function VerifyEmailScreen() {
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
+  const resendEmail = async () => {
+    try {
+      const { data } = await axios.get(`/api/users/sendverifyemail`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Email sent Successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Container className="small-container">
@@ -260,7 +277,13 @@ export default function VerifyEmailScreen() {
         </div>
         <div className="mb-3">
           Didn't received verification code
-          <Link to={`/verifiedemail`}> {"  "}Send again</Link>
+          <span
+            style={{ cursor: "pointer", color: "var(--orange-color)" }}
+            onClick={resendEmail}
+          >
+            {" "}
+            {"  "}Send again
+          </span>
         </div>
       </Form>
     </Container>

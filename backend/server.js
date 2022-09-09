@@ -28,6 +28,7 @@ import bestsellerRouter from "./routes/bestsellerRoutes.js";
 import returnRouter from "./routes/returnRoutes.js";
 import transactionRouter from "./routes/transactionRoutes.js";
 import Notification from "./models/notificationModel.js";
+import cartItemRouter from "./routes/cartRoutes.js";
 
 dotenv.config();
 
@@ -91,6 +92,7 @@ app.use("/api/coupons", couponRouter);
 app.use("/api/returns", returnRouter);
 app.use("/api/accounts", accountRouter);
 app.use("/api/bestsellers", bestsellerRouter);
+app.use("/api/cartItems", cartItemRouter);
 app.use("/api/transactions", transactionRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 

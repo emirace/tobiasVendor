@@ -193,6 +193,8 @@ export default function AllReturns() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
+        console.log("kell", data);
+
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
         console.log(getError(err));
@@ -316,15 +318,17 @@ export default function AllReturns() {
       },
     },
   ];
-  const rows = products.map((p) => ({
-    id: p._id,
-    name: p.productId.name,
-    image: p.productId.image,
-    slug: p.productId.slug,
-    date: moment(p.createdAt).format("MM DD, h:mm a"),
-    orderId: p.orderId._id,
-    user: p.orderId.user.username,
-  }));
+  const rows =
+    products.length > 0 &&
+    products.map((p) => ({
+      id: p._id,
+      name: p.productId.name,
+      image: p.productId.image,
+      slug: p.productId.slug,
+      date: moment(p.createdAt).format("MM DD, h:mm a"),
+      orderId: p.orderId._id,
+      user: p.orderId.user.username,
+    }));
 
   return (
     <ProductLists mode={mode}>

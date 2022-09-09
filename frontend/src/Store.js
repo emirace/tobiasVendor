@@ -12,9 +12,7 @@ const initialState = {
     ? localStorage.getItem("useraddress")
     : null,
   cart: {
-    cartItems: localStorage.getItem("cartItems")
-      ? JSON.parse(localStorage.getItem("cartItems"))
-      : [],
+    cartItems: [],
     paymentMethod: localStorage.getItem("paymentMethod")
       ? localStorage.getItem("paymentMethod")
       : "",
@@ -49,6 +47,9 @@ const initialState = {
 };
 function reducer(state, action) {
   switch (action.type) {
+    case "UPDATE_CART":
+      console.log("databaseCart", action.payload);
+      return { ...state, cart: { ...state.cart, cartItems: action.payload } };
     case "CART_ADD_ITEM":
       //add to cart
       const newItem = action.payload;
@@ -61,7 +62,8 @@ function reducer(state, action) {
             item._id === existItem._id ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+      // localStorage.setItem("cartItems", JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     //   return {
     //     ...state,
@@ -174,7 +176,6 @@ function reducer(state, action) {
       return state;
   }
 }
-
 export function StoreProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };

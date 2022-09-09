@@ -176,7 +176,11 @@ export default function SigninScreen() {
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
       console.log(data);
-      window.location.href = redirect || "/signin";
+      if (data.isVerifiedEmail) {
+        window.location.href = `${redirect}?redirect=${redirect}`;
+      } else {
+        window.location.href = `/verifyemail`;
+      }
     } catch (err) {
       toast.error(getError(err));
     }

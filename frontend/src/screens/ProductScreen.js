@@ -350,7 +350,17 @@ export default function ProductScreen() {
       });
       return;
     }
-
+    if (userInfo) {
+      await axios.post(
+        "/api/cartItems",
+        { ...product, quantity, selectSize },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+    }
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: { ...product, quantity, selectSize },
@@ -1169,7 +1179,7 @@ export default function ProductScreen() {
           </div>
           <div className="sp_price_detail">
             <div className="sp_actual_price">
-              {product.currenncy}
+              {product.currency}
               {product.actualPrice}
             </div>
             <div className="sp_discount_price">

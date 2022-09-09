@@ -49,6 +49,6 @@ export function IsPaymentMethod({ children }) {
     cart: { paymentMethod },
   } = state;
 
-  !paymentMethod && toast.error("Enter Payment Method");
+  !paymentMethod && toast.error("Select Payment Method");
   return paymentMethod ? children : <Navigate to="/payment" />;
 }

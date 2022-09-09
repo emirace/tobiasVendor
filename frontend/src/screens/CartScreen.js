@@ -199,7 +199,14 @@ export default function CartScreen() {
     });
   };
 
-  const removeItemHandler = (item) => {
+  const removeItemHandler = async (item) => {
+    if (userInfo) {
+      await axios.delete(`/api/cartItems/${item._id}`, {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+    }
     ctxDispatch({ type: "CART_REMOVE_ITEM", payload: item });
   };
 
@@ -218,7 +225,17 @@ export default function CartScreen() {
       });
       return;
     }
-
+    if (userInfo) {
+      await axios.post(
+        "/api/cartItems",
+        { ...item, quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+    }
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: { ...item, quantity },
@@ -235,6 +252,18 @@ export default function CartScreen() {
   };
 
   const checkoutHandler = () => {
+    if (!userInfo) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Login to continue",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      navigate("/signin?redirect=cart");
+      return;
+    }
     if (!checkDeliverySelect(cart)) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -256,10 +285,10 @@ export default function CartScreen() {
         },
       });
     } else {
-      if (userInfo) {
+      if (userInfo.isVerifiedEmail) {
         navigate("../payment");
       } else {
-        navigate("../continuesignin");
+        navigate("../verifyemail");
       }
     }
   };
@@ -512,7 +541,7 @@ export default function CartScreen() {
                     <Col>
                       {currency}
                       {cart.cartItems.reduce(
-                        (a, c) => a + c.price * c.quantity,
+                        (a, c) => a + c.actualPrice * c.quantity,
                         0
                       )}
                     </Col>

@@ -14,6 +14,7 @@ returnRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const returns = await Return.find({ region })
+      .sort({ createdAt: -1 })
       .populate("productId")
       .populate({
         path: "orderId",
