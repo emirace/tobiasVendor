@@ -27,7 +27,6 @@ accountRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const account = await Account.findOne({ userId: req.user._id });
-    console.log(account);
     if (account) {
       res.status(200).send(account);
     } else {
@@ -124,13 +123,11 @@ accountRouter.post(
   "/transfer",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.user);
     const senderId = await Account.findOne({ userId: req.user._id });
     const admin = await User.findOne({
       email: "admin@example.com",
       isAdmin: true,
     });
-    console.log(admin);
     const recipientId = await Account.findOne({ userId: admin._id });
     const { amount } = req.body;
     const transaction_id = v4();

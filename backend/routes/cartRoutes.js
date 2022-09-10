@@ -12,7 +12,6 @@ cartItemRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const cartItems = await CartItem.find({ userId: req.user._id });
-    console.log(cartItems, "heeeeee");
     res.send(cartItems);
   })
 );
@@ -66,7 +65,6 @@ cartItemRouter.delete(
   "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.params.id);
     const cartItem = await CartItem.findOne({ "item._id": req.params.id });
     if (cartItem) {
       await cartItem.remove();
@@ -83,7 +81,6 @@ cartItemRouter.delete(
   "/",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.params.id);
     const cartItem = await CartItem.deleteMany({ userId: req.user._id });
     res.status(200).send({ message: "Cart cleared" });
   })

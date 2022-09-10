@@ -57,7 +57,6 @@ productRouter.post(
       luxuryImage,
       deliveryOption,
     } = req.body;
-    console.log(currency);
     const slugName = slugify(name);
     const images = [image2, image3, image4];
     const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
@@ -523,7 +522,6 @@ productRouter.get(
     const type = query.type || "";
     const pattern = query.pattern || "";
     const searchQuery = query.query || "";
-    console.log(query);
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {

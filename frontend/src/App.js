@@ -221,18 +221,20 @@ function App() {
         setLoading(false);
       } else {
         console.log("user");
-        const { data } = await axios.get("/api/nonLogin/location");
+        const { data } = await axios.get("/api/locations");
         console.log("locationdate", data);
         if (data === "ZA") {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
             signoutHandler();
+            //alert("redirevting to za");
             window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
             signoutHandler();
+            //alert("redirevting to com");
             window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);

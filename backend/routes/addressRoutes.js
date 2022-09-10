@@ -60,7 +60,6 @@ addressRouter.delete(
   "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.params.id);
     const address = await Address.findById(req.params.id);
     if (address) {
       await address.remove();

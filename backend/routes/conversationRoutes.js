@@ -28,7 +28,6 @@ conversationRouter.post(
     if (req.user._id === req.body.recieverId) {
       throw { message: "you cannot message yourself" };
     }
-    console.log(req.body);
     const existConversation =
       req.body.type === "reportUser" || req.body.type === "reportProduct"
         ? await Conversation.findOne({
