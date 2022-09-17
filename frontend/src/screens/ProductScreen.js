@@ -6,7 +6,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import ReactImageMagnify from "react-image-magnify";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
@@ -53,6 +52,7 @@ import { format } from "timeago.js";
 import Sizechart from "../component/Sizechart";
 import Product from "../component/Product";
 import { socket } from "../App";
+import MagnifyImage from "../component/MagnifyImage";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -271,6 +271,8 @@ export default function ProductScreen() {
       try {
         const result = await axios.get(`/api/products/slug/${slug}`);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+
+        console.log(result);
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
@@ -292,6 +294,7 @@ export default function ProductScreen() {
   }, [product]);
   const [refresh, setRefresh] = useState(true);
   const [user, setUser] = useState({});
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -509,7 +512,7 @@ export default function ProductScreen() {
         userId: product.seller._id,
         itemId: product._id,
         notifyType: "comment",
-        msg: `${userInfo.username} commened on your product`,
+        msg: `${userInfo.username} commented on your product`,
         link: `/product/${product.slug}`,
         userImage: userInfo.image,
       });
@@ -764,6 +767,30 @@ export default function ProductScreen() {
     }
   };
 
+  const handleShare = () => {
+    if (userInfo) {
+      try {
+        axios.put(
+          `/api/products/${product._id}/shares`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        socket.emit("post_data", {
+          userId: product.seller._id,
+          itemId: product._id,
+          notifyType: "share",
+          msg: `${userInfo.username} shared your product`,
+          link: `/product/${product.slug}`,
+          userImage: userInfo.image,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   const switchTab = (tab) => {
     switch (tab) {
       case "comments":
@@ -777,7 +804,11 @@ export default function ProductScreen() {
               </div>
               {comments.length > 0 &&
                 comments.map((comment) => (
-                  <Comment key={comment._id} commentC={comment} />
+                  <Comment
+                    key={comment._id}
+                    product={slug}
+                    commentC={comment}
+                  />
                 ))}
               <div className="my-3">
                 {userInfo ? (
@@ -1005,35 +1036,38 @@ export default function ProductScreen() {
       </Helmet>
       <div className="single_product_container">
         <div className="single_product_left">
-          {[product.image, ...product.images].map((x, index) => (
-            <div
-              key={index}
-              className="single_product_multi_image"
-              onClick={() => setSelectedImage(x)}
-            >
-              <img
-                src={x}
-                alt=""
-                className={selectedImage === x ? "active1" : ""}
-              />
-            </div>
-          ))}
+          {[product.image, ...product.images].map(
+            (x, index) =>
+              x && (
+                <div
+                  key={index}
+                  className="single_product_multi_image"
+                  onClick={() => setSelectedImage(x)}
+                >
+                  <img
+                    src={x}
+                    alt=""
+                    className={selectedImage === x ? "active1" : ""}
+                  />
+                </div>
+              )
+          )}
         </div>
         <div className=" col-sm-12 col-md-6 d-block d-md-none">
           <div className=" row justify-content-center">
             <div className="moblie-slider">
-              {/* <div
-                onClick={() => sliderHandler('left')}
+              <div
+                onClick={() => sliderHandler("left")}
                 className="mobile-image-arrow-left"
               >
                 <FontAwesomeIcon icon={faAngleLeft} />
               </div>
               <div
-                onClick={() => sliderHandler('right')}
+                onClick={() => sliderHandler("right")}
                 className="mobile-image-arrow-right"
               >
                 <FontAwesomeIcon icon={faAngleRight} />
-              </div> */}
+              </div>
               <div className="mobile-image scroll_snap">
                 <img
                   style={{ transform: sliderstyle }}
@@ -1052,23 +1086,11 @@ export default function ProductScreen() {
             </div>
           </div>
         </div>
+
         <div className="single_product_center">
-          <ReactImageMagnify
-            imageClassName="single_main_image"
-            {...{
-              smallImage: {
-                alt: `${product.name}`,
-                isFluidWidth: true,
-                src: selectedImage || `${product.image}`,
-              },
-              largeImage: {
-                src: selectedImage || `${product.image}`,
-                width: 1018,
-                height: 1244,
-              },
-            }}
-          />
+          <MagnifyImage imgsrc={selectedImage || product.image} zoom={3} />
         </div>
+
         <div className="single_product_right">
           <div className="single_product_seller">
             <img src={product.seller.image} alt={product.seller.username} />
@@ -1145,7 +1167,10 @@ export default function ProductScreen() {
             </IconContainer>
             <IconContainer>
               <FontAwesomeIcon
-                onClick={() => setShare(!share)}
+                onClick={() => {
+                  setShare(!share);
+                  handleShare();
+                }}
                 icon={faShareNodes}
               />
               <IconsTooltips className="tiptools" tips="Share " />
@@ -1225,6 +1250,7 @@ export default function ProductScreen() {
               >
                 size chart{" "}
               </span>
+              {console.log("hello")}
 
               <ModelLogin
                 showModel={sizechartModel}
@@ -1271,6 +1297,7 @@ export default function ProductScreen() {
                   <Value>{product.subCategory || "nal"}</Value>
                   <Value>{product.color || "nal"}</Value>
                   <Value>{product.size || "nal"}</Value>
+                  {console.log("hello")}
                 </RightOverview>
               </Overview>
               <div
@@ -1308,6 +1335,7 @@ export default function ProductScreen() {
                   shipping ? "active" : ""
                 } sp_detail_section_f`}
               >
+                {console.log("hello")}
                 <div
                   className="sp_detail_title "
                   onClick={() => toggleCollapse("shipping")}
@@ -1361,160 +1389,6 @@ export default function ProductScreen() {
           </div>
         </div>
       </div>
-      {/* <section className="product-details1 row">
-        <div className=" col-sm-12 col-md-6 d-none d-md-block">
-          <div className=" row justify-content-center">
-            <ReactImageMagnify
-              imageClassName="small-img"
-              {...{
-                smallImage: {
-                  alt: `${product.name}`,
-                  isFluidWidth: true,
-                  src: selectedImage || `${product.image}`,
-                },
-                largeImage: {
-                  src: selectedImage || `${product.image}`,
-                  width: 679,
-                  height: 829,
-                },
-              }}
-            />
-          </div>
-          <div className="product-images1 row mt-3">
-            {[product.image, ...product.images].map((x) => (
-              <div className="col-3" onClick={() => setSelectedImage(x)}>
-                <img
-                  src={x}
-                  alt=""
-                  className={selectedImage === x ? 'active1' : ''}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className=" col-sm-12 col-md-6 d-block d-md-none">
-          <div className=" row justify-content-center">
-            <div className="moblie-slider">
-              <div
-                onClick={() => sliderHandler('left')}
-                className="mobile-image-arrow-left"
-              >
-                <i class="fa fa-angle-left"></i>
-              </div>
-              <div
-                onClick={() => sliderHandler('right')}
-                className="mobile-image-arrow-right"
-              >
-                <i class="fa fa-angle-right"></i>
-              </div>
-              <div className="mobile-image">
-                <img
-                  style={{ transform: sliderstyle }}
-                  src={product.image}
-                  alt="product"
-                ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
-                <img
-                  style={{ transform: sliderstyle }}
-                  src="/images/p1.jpg"
-                  alt="product"
-                ></img>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="detailsm1 col-sm-12 col-md-6">
-          <div className="seller_section">
-            <ul className="card card-body">
-              <li>
-                <div className="profile_row">
-                  <div>
-                    <img
-                      src={product.seller.seller.logo}
-                      className="profile_image"
-                      alt={product.seller.seller.name}
-                    ></img>
-                  </div>
-                  <div className="profile_name">
-                    <h3>{product.seller.seller.name}</h3>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <Rating
-                  rating={product.seller.seller.rating}
-                  caption={''}
-                  numReviews={product.seller.seller.numReviews}
-                ></Rating>
-              </li>
-              <li className="profile_icon_group">
-                <a
-                  className="profile_icon"
-                  href={`mailto:${product.seller.email}`}
-                >
-                  <FontAwesomeIcon icon={faMessage} />
-                </a>
-                <div className="profile_icon">
-                  <FontAwesomeIcon icon={faHeart} />
-                </div>
-              </li>
-              <li>{product.seller.seller.description}</li>
-            </ul>
-          </div>
-          <div className="select-size">
-            <h2 className="product-brand1">{product.name} </h2>
-            <i className="fa fa-heart ml-2px"></i> 147
-          </div>
-          <p className="product-short-desc2">Gucci</p>
-          <span className="product-price1">${product.price}</span>
-          <span className="product-actual-price1">${product.price * 2}</span>
-          <span className="product-discount1">( 50% off )</span>
-
-          <div className="select-size">
-            <p className="product-sub-heading1">select size: </p>
-            <input type="radio" name="size" value="s" hidden id="s-size" />
-            <label for="size" className="size-radio-btn1 checked">
-              s
-            </label>
-            <input type="radio" name="size" value="m" hidden id="m-size" />
-            <label for="size" className="size-radio-btn1">
-              m
-            </label>
-            <input type="radio" name="size" value="l" hidden id="l-size" />
-            <label for="size" className="size-radio-btn1">
-              l
-            </label>
-            <input type="radio" name="size" value="xl" hidden id="xl-size" />
-            <label for="size" className="size-radio-btn1">
-              xl
-            </label>
-            <input type="radio" name="size" value="xxl" hidden id="xxl-size" />
-            <label for="size" className="size-radio-btn1">
-              xxl
-            </label>
-          </div>
-          <div className="row">
-            <button className="btn1 col-md-6 col-12 cart-btn1 ml-1">
-              add to cart
-            </button>
-            &nbsp;
-            <button className="btn1 col-md-6 col-12 ">wishlist</button>
-          </div>
-          <section className="detail-desc1">
-            <h2 className="heading1">description</h2>
-            <p className="desc1">{product.description}</p>
-          </section>
-        </div>
-      </section> */}
 
       <section className="product1">
         <div className="product-title">
@@ -1542,6 +1416,7 @@ export default function ProductScreen() {
           )}
         </div>
       </section>
+
       <section>
         <Tab>
           <TabItem
@@ -1559,62 +1434,6 @@ export default function ProductScreen() {
         </Tab>
         <div className="container">{switchTab(displayTab)}</div>
       </section>
-      {/* <Row>
-        <Col md={6}>
-          <img className="img-large" src={product.image} alt={product.name} />
-        </Col>
-        <Col md={3}>
-          <ListGroup variant="flush">
-            <ListGroup.Item>
-              <Helmet>
-                <title>{product.name}</title>
-              </Helmet>
-              <h1>{product.name}</h1>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Rating rating={product.rating} numReviews={product.numReviews} />
-            </ListGroup.Item>
-            <ListGroup.Item>Price : ${product.price}</ListGroup.Item>
-            <ListGroup.Item>
-              Description:
-              <p>{product.description}</p>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-        <Col md={3}>
-          <Card>
-            <Card.Body>
-              <ListGroup variant="flush">
-                <ListGroup.Item>
-                  <Row>
-                    <Col>Price:</Col>
-                    <Col>${product.price}</Col>
-                  </Row>
-                  <Row>
-                    <Col>Status:</Col>
-                    <Col>
-                      {product.countInStock > 0 ? (
-                        <Badge bg="success">In Stock</Badge>
-                      ) : (
-                        <Badge bg="danger">Unavailable</Badge>
-                      )}
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                {product.countInStock > 0 && (
-                  <ListGroup.Item>
-                    <div className="d-grid">
-                      <Button onClick={addToCartHandler} variant="primary">
-                        Add to Cart
-                      </Button>
-                    </div>
-                  </ListGroup.Item>
-                )}
-              </ListGroup>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row> */}
     </div>
   );
 }

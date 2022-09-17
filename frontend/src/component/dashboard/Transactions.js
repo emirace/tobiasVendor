@@ -122,13 +122,13 @@ export default function Transactions() {
         <div>
           <Action onClick={() => setShowModel(true)}>
             <FontAwesomeIcon icon={faPlus} />
-            Add Money to Wallet
+            Fund my Wallet
           </Action>
           <TextSmall
             style={{ cursor: "pointer" }}
             onClick={() => setWithdrawShowModel(true)}
           >
-            Request a Withdrawal
+            Request Payout
           </TextSmall>
         </div>
       </BannerImage>

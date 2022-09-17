@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
+    social_id: { type: String },
     lastName: { type: String, required: true },
     image: { type: String },
     email: { type: String, required: true, unique: true },

@@ -320,6 +320,33 @@ productRouter.put(
     }
   })
 );
+
+productRouter.put(
+  "/:id/shares",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log("hello");
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      const exist = product.shares.filter(
+        (x) => x._id.toString() === req.user._id
+      );
+      if (!exist) {
+        product.shares.push(req.user._id);
+        await product.save();
+        res.status(200).send({
+          message: "Product Shared",
+        });
+      } else {
+        res.status(500).send({ message: "Already shared product" });
+      }
+    } else {
+      res.status(404).send({ message: "Product Not Found" });
+    }
+  })
+);
+
 productRouter.put(
   "/:id/unlikes",
   isAuth,
@@ -583,16 +610,23 @@ productRouter.get(
             ],
           }
         : {};
+
+    const availabilityFilter =
+      availability && availability === "Sold Items" ? { sold: true } : {};
     const categoryFilter =
       category && category !== "all" ? { subCategory: category } : {};
     const brandFilter = brand && brand !== "all" ? { brand } : {};
     const colorFilter = color && color !== "all" ? { color } : {};
-    const dealFilter = deal && deal !== "all" ? { deal } : {};
+    const dealFilter =
+      deal && deal === "all"
+        ? {}
+        : deal === "On Sale Now"
+        ? { countInStock: { $gt: 0 } }
+        : {};
     const shippingFilter = shipping && shipping !== "all" ? { shipping } : {};
-    const availabilityFilter =
-      availability && availability !== "all" ? { availability } : {};
     const typeFilter = type && type !== "all" ? { type } : {};
-    const patternFilter = pattern && pattern !== "all" ? { pattern } : {};
+    const patternFilter =
+      pattern && pattern !== "all" ? { material: pattern } : {};
     const conditionFilter =
       condition && condition !== "all" ? { condition } : {};
     const sizeFilter = size && size !== "all" ? { "sizes.size": size } : {};
@@ -624,6 +658,10 @@ productRouter.get(
         ? { raing: -1 }
         : order === "newest"
         ? { creatAt: -1 }
+        : order === "likes"
+        ? { likes: -1 }
+        : order === "relevance"
+        ? { updatedAt: -1 }
         : { _id: -1 };
     const products = await Product.find({
       ...queryFilter,

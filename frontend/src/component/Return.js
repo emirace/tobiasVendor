@@ -210,7 +210,7 @@ export default function Return({
         userId: current.seller,
         itemId: current._id,
         notifyType: "return",
-        msg: `${userInfo.username} request a return`,
+        msg: `${userInfo.username} requested a return`,
         link: `/return/${data._id}?orderId=${orderId}`,
         userImage: userInfo.image,
       });

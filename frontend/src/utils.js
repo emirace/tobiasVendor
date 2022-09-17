@@ -122,3 +122,5 @@ export const calcPrice = (cart) => {
   cart.taxPrice = round2(0);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 };
+export const GOOGLE_CLIENT_ID =
+  "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";

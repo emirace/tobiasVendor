@@ -80,6 +80,8 @@ import ForgetScreen from "./screens/ForgetScreen";
 import ResetScreen from "./screens/ResetScreen";
 import VerifyEmailScreen from "./screens/VerifyEmailScreen";
 import EmailConfirmationScreen from "./screens/successPage/EmailConfirmationScreen";
+import initFacebookSdk from "./hooks/initFacebookSdk";
+import VerifyAccountScreen from "./screens/VerifyAccountScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -195,6 +197,7 @@ const ENDPOINT =
     : window.location.host;
 
 export const socket = io(ENDPOINT);
+initFacebookSdk().then(App);
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -217,25 +220,23 @@ function App() {
     const checkLoacation = async () => {
       console.log("userInfo", userInfo);
       if (!userInfo || userInfo.isAdmin) {
-        console.log("admin");
         setLoading(false);
       } else {
-        console.log("user");
         const { data } = await axios.get("/api/locations");
         console.log("locationdate", data);
         if (data === "ZA") {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
-            signoutHandler();
-            //alert("redirevting to za");
-            window.location.replace(`https://repeddle.co.za/${redirect}`);
+            //signoutHandler();
+            alert("redirevting to za");
+            //window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
-            signoutHandler();
-            //alert("redirevting to com");
-            window.location.replace(`https://repeddle.com/${redirect}`);
+            //signoutHandler();
+            alert("redirevting to com");
+            // window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);
         }
@@ -425,6 +426,15 @@ function App() {
                         element={
                           <ProtectedRoute>
                             <ChatScreen />
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      <Route
+                        path="/verifyaccount"
+                        element={
+                          <ProtectedRoute>
+                            <VerifyAccountScreen />
                           </ProtectedRoute>
                         }
                       />

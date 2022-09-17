@@ -167,11 +167,11 @@ export default function ProductsScreen() {
   const sliderHandler = (direction) => {
     if (direction === "left") {
       var slider = document.getElementById("slider");
-      slider.scrollBy(-350, 0);
+      slider.scrollBy(-200, 0);
       // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
       var slider = document.getElementById("slider");
-      slider.scrollBy(350, 0);
+      slider.scrollBy(200, 0);
     }
   };
   const sliderstyle = `translateX(${sliderIndex * -220}px)`;

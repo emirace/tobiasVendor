@@ -17,6 +17,7 @@ import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
 import { ReactComponent as Notification } from "./../icons/Icons-11.svg";
 import { socket } from "../App";
 import moment from "moment";
+import { logout } from "../hooks/initFacebookSdk";
 
 const Container = styled.div`
   width: 100%;
@@ -31,7 +32,6 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: #000;
-  overflow: auto;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -55,10 +55,11 @@ const Left = styled.div`
 `;
 const Center = styled.div`
   flex: 2;
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
   color: #fff;
-  white-space: nowrap;
+  overflow-x: hidden;
+  /* white-space: nowrap;
   @media (max-width: 992px) {
     animation: moving 25s infinite linear;
     @keyframes moving {
@@ -69,30 +70,64 @@ const Center = styled.div`
         transform: translateX(-100%);
       }
     }
+  } */
+`;
+
+const SliderCont = styled.div`
+  display: flex;
+  position: relative;
+  top: 0;
+  right: 0;
+  animation: slideh linear 30s infinite;
+  @keyframes slideh {
+    /* (D0) THE IDEA - USE KEYFRAMES TO SHIFT SLIDES *
+    0% {
+      right: 0;
+    }
+    33% {
+      right: 100%;
+    }
+    66% {
+      right: 200%;
+    }
+    100% {
+      right: 0;
+    }
+
+    /* (D1) BUT THE ABOVE WILL SHIFT NON-STOP */
+    /* SO WE ADD PAUSES BETWEEN EACH SLIDE */
+    0% {
+      right: 0;
+    }
+    30% {
+      right: 0;
+    }
+    33% {
+      right: 100%;
+    }
+    63% {
+      right: 100%;
+    }
+    66% {
+      right: 200%;
+    }
+    97% {
+      right: 200%;
+    }
+    100% {
+      right: 0;
+    }
+  }
+  &:hover {
+    animation-play-state: paused;
   }
 `;
 const First = styled.div`
-  animation: first 30s infinite linear;
   display: flex;
+  width: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
   justify-content: center;
-  @keyframes first {
-    0% {
-      width: 100%;
-      opacity: 1;
-    }
-    28% {
-      width: 100%;
-      opacity: 1;
-    }
-    33% {
-      width: 0;
-      opacity: 0;
-    }
-    99% {
-      width: 0;
-      opacity: 0;
-    }
-  }
 `;
 const Second = styled.div`
   animation: second 30s infinite linear;
@@ -124,6 +159,9 @@ const Second = styled.div`
       opacity: 0;
     }
   }
+  &:hover {
+    animation-play-state: paused;
+  }
 `;
 const Third = styled.div`
   animation: third 30s infinite linear;
@@ -154,6 +192,9 @@ const Third = styled.div`
       width: 0;
       opacity: 0;
     }
+  }
+  &:hover {
+    animation-play-state: paused;
   }
 `;
 
@@ -495,7 +536,33 @@ const Time = styled.div`
   color: var(--orange-color);
 `;
 
+const Tips = styled.span`
+  position: relative;
+  &:hover::after {
+    content: "${(props) => props.tips}";
+    width: 350px;
+    position: absolute;
+    border-radius: 0.5rem;
+    left: 30px;
+    text-align: justify;
+    font-size: 14px;
+    z-index: 2;
+    line-height: 1.2;
+    font-weight: 400;
+    padding: 10px;
+    background: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
+    color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+  }
+`;
+
 export const signoutHandler = () => {
+  logout();
   localStorage.removeItem("userInfo");
   localStorage.removeItem("cartItems");
   localStorage.removeItem("shippingAddress");
@@ -583,20 +650,29 @@ export default function Navbar({
           </SwitchCont>
         </Left>
         <Center>
-          <First>
-            <Underline>
-              <Link to="signup">SIGN UP</Link>
-            </Underline>{" "}
-            , List All Item For Free{" "}
-          </First>
-          <Second>
-            No Selling Fees, Hurry, Start Selling, Limited Off!!{" "}
-            <Underline>DETAILS</Underline>
-          </Second>
-          <Third>
-            Easy on the App. Explore Repeddle on <Underline>IOS</Underline> and{" "}
-            <Underline>ANDRIOD</Underline>
-          </Third>
+          <SliderCont>
+            <First>
+              <Underline>
+                <Link to="signup">SIGN UP</Link>
+              </Underline>
+              , List All Item For Free{" "}
+            </First>
+            <First>
+              No Selling Fees, Hurry, Start Selling, Limited Off!!{" "}
+              <Underline>
+                <Tips
+                  mode={mode}
+                  tips={`Sell more than 10,400 brand names you love. To give you unmatched user experiencd and support the growth of your business as part of our thrift secondhand community, you will not be charge REPEDDLE SELLER'S COMMISSION FEE until after 30th November 2022`}
+                >
+                  DETAILS
+                </Tips>
+              </Underline>
+            </First>
+            <First>
+              Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{" "}
+              and <Underline>ANDRIOD</Underline>
+            </First>
+          </SliderCont>
         </Center>
         <Right>
           <Link to="/sell">

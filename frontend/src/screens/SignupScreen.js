@@ -8,22 +8,27 @@ import axios from "axios";
 import { Store } from "../Store";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { getError, region } from "../utils";
+import { getError, GOOGLE_CLIENT_ID, region } from "../utils";
 import jwt_decode from "jwt-decode";
 import Input from "../component/Input";
+import LoadingPage from "../component/LoadingPage";
 
 const SocialLogin = styled.button`
   border: 0;
   color: white;
   display: flex;
+  width: 400px;
   justify-content: center;
   cursor: pointer;
   align-items: center;
   padding: 8px;
   margin: 15px;
   border-radius: 5px;
-  width: 100%;
-  font-weight: bold;
+  font-family: "Google Sans", arial, sans-serif;
+  font-size: 14px;
+  @media (max-width: 992px) {
+    width: 300px;
+  }
 
   &.facebook {
     background: #507cc0;
@@ -31,10 +36,8 @@ const SocialLogin = styled.button`
   &.google {
     background: #df4930;
   }
-  @media (max-width: 992px) {
-    width: 300px;
-  }
 `;
+
 const FacebookImg = styled.img.attrs((props) => ({
   src: props.src,
   alt: props.alt,
@@ -85,6 +88,33 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get("redirect");
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
+  const [loading, setLoading] = useState(true);
+  const [redirectLoc, setRedirectLoc] = useState(false);
+
+  useEffect(() => {
+    const redirectLoc = async () => {
+      const { data } = await axios.get("/api/locations");
+      console.log("locationdate signup", data);
+      if (data === "ZA") {
+        if (region() === "ZAR") {
+          setLoading(false);
+        } else {
+          //alert("redirevting to za");
+          setRedirectLoc(true);
+          window.location.replace(`https://repeddle.co.za/signup/${redirect}`);
+        }
+      } else {
+        if (region() === "ZAR") {
+          //alert("redirevting to com");
+          setRedirectLoc(true);
+          window.location.replace(`https://repeddle.com/signup/${redirect}`);
+        }
+        setLoading(false);
+      }
+    };
+    redirectLoc();
+  }, []);
+
   const [input, setInput] = useState({
     username: "",
     firstName: "",
@@ -102,6 +132,61 @@ export default function SignupScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
+  useEffect(() => {
+    /* global google*/
+    console.log("google", google);
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCallbackResponse,
+    });
+  }, []);
+  useEffect(() => {
+    if (!loading) {
+      google.accounts.id.renderButton(document.getElementById("signInDiv1"), {
+        theme: "dark",
+        size: "large",
+        width: 400,
+        logo_alignment: "center",
+      });
+    }
+  }, [loading]);
+
+  const handleCallbackResponse = async (response) => {
+    console.log("Encoded JWT ID token: " + response.credential);
+    var userObject = jwt_decode(response.credential);
+    console.log(userObject);
+    const { data } = await axios.post(`/api/users/${region()}/google`, {
+      tokenId: response.credential,
+    });
+    console.log(data);
+    ctxDispatch({ type: "USER_SIGNIN", payload: data });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    window.location.href = `${redirect}?redirect=${redirect}`;
+  };
+
+  const handleFbLogin = async () => {
+    window.FB.login(
+      function (response) {
+        console.log(response.authResponse);
+        apiAuthenticate(response.authResponse.accessToken);
+      },
+      { scope: "public_profile,email", return_scopes: true }
+    );
+  };
+
+  async function apiAuthenticate(accessToken) {
+    // authenticate with the api using a facebook access token,
+    // on success the api returns an account object with a JWT auth token
+    const response = await axios.post(`/api/users/${region()}/facebook`, {
+      accessToken,
+    });
+    const account = response.data;
+    console.log(account);
+    //signin here
+    ctxDispatch({ type: "USER_SIGNIN", payload: account });
+    localStorage.setItem("userInfo", JSON.stringify(account));
+    window.location.href = `${redirect}?redirect=${redirect}`;
+  }
   const submitHandler = async () => {
     try {
       const { data } = await axios.post(`/api/users/${region()}/signup`, {
@@ -198,21 +283,20 @@ export default function SignupScreen() {
       submitHandler();
     }
   };
-  return (
+  return loading || redirectLoc ? (
+    <LoadingPage />
+  ) : (
     <Container className="small-container">
       <Helmet>
         <title>Sign Up</title>
       </Helmet>
       <h1 className="my-3">Sign Up</h1>
       <Social>
-        <SocialLogin id="" className="facebook">
+        <SocialLogin onClick={handleFbLogin} id="" className="facebook">
           <FacebookImg src="/images/facebook.png" alt="facebook" />
-          Facebook
+          Sign up with Facebook
         </SocialLogin>
-        <SocialLogin id="" className="google">
-          <FacebookImg src="/images/google.png" alt="google" />
-          Google
-        </SocialLogin>
+        <div id="signInDiv1"></div>
         <Orgroup>
           <Or className={mode}>or</Or>
           <Line />

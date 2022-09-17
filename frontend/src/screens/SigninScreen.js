@@ -7,12 +7,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../Store";
 import { toast } from "react-toastify";
-import { getError, region } from "../utils";
+import { getError, GOOGLE_CLIENT_ID, region } from "../utils";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import jwt_decode from "jwt-decode";
 import styled from "styled-components";
 import Input from "../component/Input";
+import OAuth2Login from "react-simple-oauth2-login";
+import { login, logout } from "../hooks/initFacebookSdk";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -33,7 +35,8 @@ const SocialLogin = styled.button`
   padding: 8px;
   margin: 15px;
   border-radius: 5px;
-  font-weight: bold;
+  font-family: "Google Sans", arial, sans-serif;
+  font-size: 14px;
   @media (max-width: 992px) {
     width: 300px;
   }
@@ -78,6 +81,7 @@ const Line = styled.div`
 `;
 const Social = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   @media (max-width: 992px) {
     flex-direction: column;
@@ -167,6 +171,56 @@ export default function SigninScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
+  const handleCallbackResponse = async (response) => {
+    console.log("Encoded JWT ID token: " + response.credential);
+    var userObject = jwt_decode(response.credential);
+    console.log(userObject);
+    const { data } = await axios.post(`/api/users/${region()}/google`, {
+      tokenId: response.credential,
+    });
+    console.log(data);
+    ctxDispatch({ type: "USER_SIGNIN", payload: data });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    window.location.href = `${redirect}?redirect=${redirect}`;
+  };
+  useEffect(() => {
+    /* global google*/
+    console.log("google", google);
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleCallbackResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+      theme: "dark",
+      size: "large",
+      width: 400,
+      logo_alignment: "center",
+    });
+  }, []);
+
+  const handleFbLogin = async () => {
+    window.FB.login(
+      function (response) {
+        console.log(response.authResponse);
+        apiAuthenticate(response.authResponse.accessToken);
+      },
+      { scope: "public_profile,email", return_scopes: true }
+    );
+  };
+
+  async function apiAuthenticate(accessToken) {
+    // authenticate with the api using a facebook access token,
+    // on success the api returns an account object with a JWT auth token
+    const response = await axios.post(`/api/users/${region()}/facebook`, {
+      accessToken,
+    });
+    const account = response.data;
+    console.log(account);
+    //signin here
+    ctxDispatch({ type: "USER_SIGNIN", payload: account });
+    localStorage.setItem("userInfo", JSON.stringify(account));
+    window.location.href = `${redirect}?redirect=${redirect}`;
+  }
   const submitHandler = async () => {
     try {
       const { data } = await axios.post(`/api/users/${region()}/signin`, {
@@ -250,15 +304,13 @@ export default function SigninScreen() {
       <h1 className="my-3">Sign In</h1>
 
       <Social>
-        <SocialLogin id="" className="facebook">
+        <SocialLogin onClick={handleFbLogin} id="" className="facebook">
           <FacebookImg src="/images/facebook.png" alt="facebook" />
-          Facebook
+          Sign in with Facebook
         </SocialLogin>
-        <SocialLogin id="" className="google">
-          <FacebookImg src="/images/google.png" alt="google" />
-          Google
-        </SocialLogin>
+        <div id="signInDiv"></div>
       </Social>
+
       <Orgroup>
         <Or className={mode}>or</Or>
         <Line />

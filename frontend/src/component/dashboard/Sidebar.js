@@ -217,7 +217,16 @@ export default function Sidebar({ current }) {
                   className={current === "returns" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faEnvelope} />
-                  Returns
+                  Return Querries
+                </ListItem>
+              </Link>
+              <Link to="/dashboard/logreturns">
+                <ListItem
+                  mode={mode}
+                  className={current === "logreturns" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  All Logged Returns
                 </ListItem>
               </Link>
             </List>

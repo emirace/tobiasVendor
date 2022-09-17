@@ -256,7 +256,7 @@ export default function PlaceOrderScreen() {
         ctxDispatch({ type: "CART_CLEAR" });
         order1.order.seller.map((s) => {
           socket.emit("post_data", {
-            userId: order1.order.seller,
+            userId: s,
             itemId: order1.order._id,
             notifyType: "sold",
             msg: `${userInfo.username} ordered your product`,
@@ -312,13 +312,15 @@ export default function PlaceOrderScreen() {
             },
           });
         }
-        socket.emit("post_data", {
-          userId: order1.order.seller,
-          itemId: order1.order._id,
-          notifyType: "sold",
-          msg: `${userInfo.username} ordered your product`,
-          link: `/order/${order1.order._id}`,
-          userImage: userInfo.image,
+        order1.order.seller.map((s) => {
+          socket.emit("post_data", {
+            userId: s,
+            itemId: order1.order._id,
+            notifyType: "sold",
+            msg: `${userInfo.username} ordered your product`,
+            link: `/order/${order1.order._id}`,
+            userImage: userInfo.image,
+          });
         });
 
         navigate(`/order/${data.order._id}`);

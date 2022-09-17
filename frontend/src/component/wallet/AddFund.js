@@ -94,6 +94,7 @@ export default function AddFund({
     tx_ref: v4(),
     amount,
     currency: currency === "N " ? "NGN" : "ZAR",
+    //currency: "ZAR",
     payment_options: "card,mobilemoney,ussd",
     customer: {
       email: userInfo.email,
@@ -127,8 +128,9 @@ export default function AddFund({
   };
   return (
     <Container>
+      {console.log(BASE_KEY)}
       <FontAwesomeIcon size="4x" color="var(--orange-color)" icon={faWallet} />
-      <Text>Add Money to your Wallet</Text>
+      <Text>Fund your Wallet</Text>
       <Input
         type="number"
         mode={mode}

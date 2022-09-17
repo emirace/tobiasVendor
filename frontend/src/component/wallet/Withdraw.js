@@ -146,6 +146,7 @@ export default function Withdraw({
           marginBottom: "25px",
           marginLeft: "auto",
           fontWeight: "13px",
+          cursor: "pointer",
         }}
         onClick={() => setAmount(balance.balance.toFixed(2))}
       >

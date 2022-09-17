@@ -22,6 +22,7 @@ commentRouter.post(
         name: req.user.username,
         comment: req.body.comment,
         userImage: user.image,
+        writerId: req.user._id,
         image: req.body.image ? req.body.image : "",
         replies: [],
         likes: [],

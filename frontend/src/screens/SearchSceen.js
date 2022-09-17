@@ -58,6 +58,9 @@ const Wrapper = styled.div`
 `;
 const Menu = styled.div`
   margin-bottom: 10px;
+  & .text-bold {
+    color: var(--orange-color);
+  }
 `;
 const Title = styled.h3`
   font-size: 14px;
@@ -226,11 +229,6 @@ const deals = [
     id: 2,
     value: "50",
   },
-  {
-    name: "By Price",
-    id: 3,
-    value: "price",
-  },
 ];
 
 const ratings = [
@@ -254,19 +252,19 @@ const ratings = [
 
 const color1 = [
   { name: "red", id: 1 },
-  { name: "anthracite", id: 2 },
+  { name: "#383e42", id: 2 },
   { name: "beige", id: 3 },
   { name: "black", id: 4 },
   { name: "blue", id: 5 },
   { name: "brown", id: 6 },
-  { name: "burgubdy", id: 7 },
-  { name: "camel", id: 8 },
-  { name: "ecru", id: 9 },
+  { name: "#800020", id: 7 },
+  { name: "#c19a6b", id: 8 },
+  { name: "#C2B280", id: 9 },
   { name: "gold", id: 10 },
   { name: "green", id: 11 },
   { name: "grey", id: 12 },
   { name: "khaki", id: 13 },
-  { name: "metallic", id: 14 },
+  { name: "#aaa9ad", id: 14 },
   { name: "multiculour", id: 15 },
   { name: "navy", id: 16 },
   { name: "orange", id: 17 },
@@ -617,7 +615,12 @@ export default function SearchSceen() {
               </List>
             </Menu>
             <Menu>
-              <Title onClick={() => toggleCollapse("deals")}>Deals</Title>
+              <Title
+                className={dealClass ? "activate" : ""}
+                onClick={() => toggleCollapse("deal")}
+              >
+                Deals
+              </Title>
               <List className={dealClass ? "activate" : ""}>
                 <Link
                   className={"all" === deal ? "text-bold" : ""}
@@ -895,8 +898,9 @@ export default function SearchSceen() {
                   {countProducts === 0 ? "No" : countProducts} Results
                   {query !== "all" && " : " + query}
                   {category !== "all" && " : " + category}
-                  {price !== "all" && " : Price " + price}
-                  {rating !== "all" && " : Rating" + rating + " & up"}
+                  {price !== "all" && "  Price: " + price}
+                  {brand !== "all" && "  Brand: " + brand}
+                  {rating !== "all" && "  Rating:" + rating + " & up"}
                   {query !== "all" ||
                   category !== "all" ||
                   rating !== "all" ||
@@ -918,16 +922,16 @@ export default function SearchSceen() {
                     <option className={mode || ""} value="newest">
                       Newly Arrived
                     </option>
-                    <option className={mode || "shared"} value="">
+                    <option className={mode || ""} value="shared">
                       Just Shared
                     </option>
-                    <option className={mode || "likes"} value="">
+                    <option className={mode || ""} value="likes">
                       Likes
                     </option>
-                    <option className={mode || "prices"} value="">
+                    {/* <option className={mode || ""} value="prices">
                       Recent Prices Drop
-                    </option>
-                    <option className={mode || "relevance"} value="">
+                    </option> */}
+                    <option className={mode || ""} value="relevance">
                       Relevance
                     </option>
                     <option className={mode || ""} value="lowest">

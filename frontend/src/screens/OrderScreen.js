@@ -571,7 +571,7 @@ export default function OrderScreen() {
                           <MenuItem value="Not yet Dispatched">
                             Not yet Dispatched
                           </MenuItem>
-                          <MenuItem value="Dispatch">Dispatch</MenuItem>
+                          <MenuItem value="Dispatch">Dispatched</MenuItem>
                           <MenuItem value="In transit">In transit</MenuItem>
                           <MenuItem value="Delivered">Delivered</MenuItem>
                         </Select>

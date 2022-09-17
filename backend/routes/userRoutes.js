@@ -12,7 +12,11 @@ import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
 import crypto from "crypto";
 import VerificationToken from "../models/verificationTokenModel.js";
+import dotenv from "dotenv";
 import { plainEmailTemp } from "../utils/mailTemplete.js";
+import { OAuth2Client } from "google-auth-library";
+import axios from "axios";
+dotenv.config();
 
 const userRouter = express.Router();
 
@@ -82,6 +86,8 @@ userRouter.post(
     const { region } = req.params;
     const user = await User.findOne({ email: req.body.email });
     if (user) {
+      if (!user.password)
+        return res.status(500).send({ message: "Invalid email or password" });
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
@@ -113,7 +119,6 @@ userRouter.post(
       username: req.body.username,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      usernameUpdate: new Date(),
       email: req.body.email,
       phone: req.body.phone,
       image: "/images/pimage.png",
@@ -157,6 +162,7 @@ userRouter.post(
       lastName: user.lastName,
       email: user.email,
       isSeller: user.isSeller,
+      isVerifiedEmail: user.isVerifiedEmail,
       isAdmin: user.isAdmin,
       token: generateToken(user),
     });
@@ -320,55 +326,119 @@ userRouter.get(
 );
 
 userRouter.post(
-  "/google-signin",
+  "/:region/google",
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      res.send({
-        _id: user._id,
-        name: user.name,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isSeller: user.isSeller,
-        isAdmin: user.isAdmin,
-        image: user.image,
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-        token: generateToken(user),
+    const ticket = await client.verifyIdToken({
+      idToken: req.body.tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const response = ticket.getPayload();
+
+    if (
+      response.iss !== "accounts.google.com" &&
+      response.aud !== process.env.GOOGLE_CLIENT_ID
+    )
+      return res.status(400).json({ status: "error", error: "Bad Request" });
+
+    const user = {
+      email: response.email,
+      image: response.picture,
+      social_id: response.sub,
+      firstName: response.given_name,
+      lastName: response.family_name,
+      isVerifiedEmail: true,
+      username: `${response.given_name}_${generateOTP()}`,
+      region: req.params.region,
+    };
+    let result = await User.findOne({
+      $or: [{ email: user.email, social_id: user.social_id }],
+    });
+
+    if (!result) result = await User.create(user);
+    const account = await Account.findOne({ userId: result._id });
+    if (!account)
+      await Account.create({
+        userId: result._id,
+        balance: 0,
+        currency: req.params.region === "ZAR" ? "R " : "N ",
       });
-      return;
-    }
-    res.status(401).send({ message: "Invalid email or password" });
+
+    const token = generateToken(result);
+    const data = {
+      token,
+      _id: result._id,
+      name: result.name,
+      username: result.username,
+      region: result.region,
+      firstName: result.firstName,
+      usernameUpdate: result.usernameUpdate,
+      lastName: result.lastName,
+      email: result.email,
+      isSeller: result.isSeller,
+      isAdmin: result.isAdmin,
+      isVerifiedEmail: result.isVerifiedEmail,
+      image: result.image,
+    };
+
+    res.status(200).send(data);
   })
 );
 
 userRouter.post(
-  "/google-signup",
+  "/:region/facebook",
   expressAsyncHandler(async (req, res) => {
-    const newUser = new User({
-      username: req.body.username,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      image: req.body.image,
-      password: null,
-      rating: 0,
-      numReviews: 0,
+    console.log("accessToken", req.body.accessToken);
+
+    const { data } = await axios.get(
+      `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
+    );
+    if (data.error)
+      return res.status(400).json({ status: "error", error: "Bad Request" });
+
+    const user = {
+      email: data.email,
+      image: data.picture.data.url,
+      social_id: data.id,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      isVerifiedEmail: true,
+      username: `${data.short_name}_${generateOTP()}`,
+      region: req.params.region,
+    };
+    let result = await User.findOne({
+      $or: [{ email: user.email, social_id: user.social_id }],
     });
-    const user = await newUser.save();
-    res.send({
-      _id: user._id,
-      name: user.name,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      isSeller: user.isSeller,
-      isAdmin: user.isAdmin,
-      image: user.image,
-      token: generateToken(user),
-    });
+
+    if (!result) result = await User.create(user);
+    const account = await Account.findOne({ userId: result._id });
+    if (!account)
+      await Account.create({
+        userId: result._id,
+        balance: 0,
+        currency: req.params.region === "ZAR" ? "R " : "N ",
+      });
+
+    const token = generateToken(result);
+    const data1 = {
+      token,
+      _id: result._id,
+      name: result.name,
+      username: result.username,
+      region: result.region,
+      firstName: result.firstName,
+      usernameUpdate: result.usernameUpdate,
+      lastName: result.lastName,
+      email: result.email,
+      isSeller: result.isSeller,
+      isVerifiedEmail: result.isVerifiedEmail,
+      isAdmin: result.isAdmin,
+      image: result.image,
+    };
+
+    res.status(200).send(data1);
   })
 );
 
@@ -567,6 +637,7 @@ userRouter.get(
   "/profile/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.user);
     const user = await User.findById(req.user._id);
     if (user) {
       res.send({

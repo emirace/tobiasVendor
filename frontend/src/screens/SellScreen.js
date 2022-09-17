@@ -232,9 +232,11 @@ export default function SellScreen() {
                 cash out
               </Text>
             </Step>
-            <Button>
-              <Header2>SELL FOR FREE</Header2>
-            </Button>
+            <Link to="/newproduct">
+              <Button>
+                <Header2>SELL FOR FREE</Header2>
+              </Button>
+            </Link>
           </Sides>
         </Row>
 
@@ -261,7 +263,10 @@ export default function SellScreen() {
           We accept all your pre-loved precious Items, our communitu are
           constantly looking for,willing to love, and give a warm home.{" "}
         </Text>
-        <Button>Start Selling</Button>
+
+        <Link to="/newproduct">
+          <Button>Start Selling</Button>
+        </Link>
         <Row className="gap">
           <Imagesqr
             src="https://res.cloudinary.com/emirace/image/upload/v1661221989/james-ree-ZmeFtu11Hpc-unsplash_xzwcxb.webp"

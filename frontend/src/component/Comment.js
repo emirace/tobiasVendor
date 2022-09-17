@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { format } from "timeago.js";
+import { socket } from "../App";
 import { Store } from "../Store";
 import { getError } from "../utils";
 
@@ -107,7 +108,7 @@ const CommentImg = styled.img`
   width: 200px;
 `;
 
-export default function Comment({ commentC }) {
+export default function Comment({ commentC, product }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [comment, setComment] = useState(commentC);
@@ -144,6 +145,14 @@ export default function Comment({ commentC }) {
             state1: "visible1 error",
           },
         });
+        socket.emit("post_data", {
+          userId: data.comment.writerId,
+          itemId: data.comment._id,
+          notifyType: "likecomment",
+          msg: `${userInfo.username} unlike  your comment`,
+          link: `/product/${product}`,
+          userImage: userInfo.image,
+        });
       } catch (err) {
         console.log(getError(err));
       }
@@ -164,6 +173,15 @@ export default function Comment({ commentC }) {
             showStatus: true,
             state1: "visible1 success",
           },
+        });
+
+        socket.emit("post_data", {
+          userId: data.comment.writerId,
+          itemId: data.comment._id,
+          notifyType: "likecomment",
+          msg: `${userInfo.username} like  your comment`,
+          link: `/product/${product}`,
+          userImage: userInfo.image,
         });
       } catch (err) {
         console.log(getError(err));
