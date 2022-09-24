@@ -10,6 +10,7 @@ import { getError } from "../../utils";
 import ModelLogin from "../ModelLogin";
 import { Badge } from "../Navbar";
 import { socket } from "../../App";
+import moment from "moment";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -256,7 +257,7 @@ export default function Saleslist() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 150 },
+    { field: "id", headerName: "ID", width: 120 },
     {
       field: "order",
       headerName: "Order",
@@ -274,21 +275,26 @@ export default function Saleslist() {
         );
       },
     },
-    { field: "deliveryStatus", headerName: "Delivery Status", width: 150 },
+    { field: "deliveryStatus", headerName: "Delivery Status", width: 120 },
     {
       field: "payStatus",
       headerName: "Payment Status",
-      width: 150,
+      width: 120,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 120,
     },
     {
       field: "amount",
       headerName: "Amount",
-      width: 100,
+      width: 90,
     },
     {
       field: "user",
       headerName: "Buyer",
-      width: 100,
+      width: 80,
     },
     {
       field: "action",
@@ -328,6 +334,7 @@ export default function Saleslist() {
     name: p.orderItems[0].name,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
+    date: moment(p.createdAt).format("MM DD, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
     amount: `${currency}${p.totalPrice}`,

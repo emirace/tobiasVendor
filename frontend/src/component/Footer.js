@@ -371,7 +371,7 @@ export default function Footer() {
                 <a href="/#">Contact Us</a>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Privacy Policy</a>
+                <Link to="/privacypolicy">Privacy Policy</Link>
               </li>
               <li className="footer_center_listitem">
                 <a href="/#">Terms of Use</a>

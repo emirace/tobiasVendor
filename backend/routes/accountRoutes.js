@@ -42,6 +42,7 @@ accountRouter.post(
     const { transaction_id } = req.body;
 
     const response = await flw.Transaction.verify({ id: transaction_id });
+    console.log(response);
 
     if (response.data.status === "successful") {
       const account = await Account.findOne({ userId: req.user._id });

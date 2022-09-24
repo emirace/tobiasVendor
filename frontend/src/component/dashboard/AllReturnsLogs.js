@@ -168,7 +168,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AllReturns() {
+export default function AllReturnsLogs() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -332,7 +332,7 @@ export default function AllReturns() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Return Querries</Title>
+      <Title>All Logged Returns</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}

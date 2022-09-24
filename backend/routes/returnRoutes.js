@@ -2,6 +2,7 @@ import express from "express";
 import { isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Return from "../models/returnModel.js";
+import Product from "../models/productModel.js";
 
 const returnRouter = express.Router();
 
@@ -25,6 +26,24 @@ returnRouter.get(
   })
 );
 
+// get returns for a user
+returnRouter.get(
+  "/user",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log("user returns");
+    const returns = await Return.find({ sellerId: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate("productId")
+      .populate({
+        path: "orderId",
+        select: "user",
+        populate: [{ path: "user", select: "username" }],
+      });
+    res.send(returns);
+  })
+);
+
 // add a returned
 
 returnRouter.post(
@@ -32,10 +51,11 @@ returnRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    console.log(req.body);
+    const product = await Product.findById(req.body.productId);
     const returned = new Return({
       orderId: req.body.orderId,
       productId: req.body.productId,
+      sellerId: product.seller,
       reason: req.body.reason,
       resolution: req.body.resolution,
       sending: req.body.sending,
@@ -49,7 +69,67 @@ returnRouter.post(
   })
 );
 
-// update a returned
+// update a returned by admin
+returnRouter.put(
+  "/admin/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const returned = await Return.findById(req.params.id)
+      .populate({
+        path: "orderId",
+        select: "user",
+        populate: {
+          path: "user",
+          select: "image",
+        },
+      })
+      .populate({
+        path: "productId",
+        select: "seller",
+        populate: { path: "seller", select: "image" },
+      });
+    if (returned) {
+      returned.adminReason = req.body.adminReason;
+      returned.status = req.body.status;
+      const newReturn = await returned.save();
+      res.status(200).send(newReturn);
+    } else {
+      res.status(404).send("returned not found");
+    }
+  })
+);
+returnRouter.put(
+  "/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const returned = await Return.findById(req.params.id)
+      .populate({
+        path: "orderId",
+        select: "user",
+        populate: {
+          path: "user",
+          select: "image",
+        },
+      })
+      .populate({
+        path: "productId",
+        select: "seller",
+        populate: { path: "seller", select: "image" },
+      });
+    if (returned) {
+      const product = await Product.findById(returned.productId);
+      console.log(product.seller.toString(), req.user._id);
+      if (product.seller.toString() === req.user._id) {
+        returned.returnDelivery = req.body.meta;
+        const newReturn = await returned.save();
+        res.status(200).send(newReturn);
+      }
+    } else {
+      res.status(404).send("returned not found");
+    }
+  })
+);
 
 // delete a returned
 
@@ -73,8 +153,20 @@ returnRouter.delete(
 returnRouter.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {
-    console.log("hello");
-    const returned = await Return.findById(req.params.id);
+    const returned = await Return.findById(req.params.id)
+      .populate({
+        path: "orderId",
+        select: "user",
+        populate: {
+          path: "user",
+          select: "image",
+        },
+      })
+      .populate({
+        path: "productId",
+        select: "seller",
+        populate: { path: "seller", select: "image" },
+      });
     if (returned) {
       res.status(201).send(returned);
     } else {

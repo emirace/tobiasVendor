@@ -94,6 +94,7 @@ const FashionImpact = lazy(() => import("./component/info/FashionImpact"));
 const CartScreen = lazy(() => import("./screens/CartScreen"));
 
 const About = lazy(() => import("./component/info/About"));
+const PolicyScreen = lazy(() => import("./screens/PolicyScreen"));
 
 const NewProduct = lazy(() => import("./component/dashboard/NewProduct"));
 const SustainabilityImpact = lazy(() =>
@@ -228,15 +229,15 @@ function App() {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
-            //signoutHandler();
-            alert("redirevting to za");
-            //window.location.replace(`https://repeddle.co.za/${redirect}`);
+            signoutHandler();
+            //alert("redirevting to za");
+            window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
-            //signoutHandler();
-            alert("redirevting to com");
-            // window.location.replace(`https://repeddle.com/${redirect}`);
+            signoutHandler();
+            //alert("redirevting to com");
+            window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);
         }
@@ -376,6 +377,7 @@ function App() {
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />
+                      <Route path="/privacypolicy" element={<PolicyScreen />} />
                       <Route
                         path="/emailsent"
                         element={<EmailConfirmationScreen />}

@@ -9,6 +9,7 @@ import axios from "axios";
 import { getError } from "../../utils";
 import { Badge } from "../Navbar";
 import { socket } from "../../App";
+import moment from "moment";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -200,11 +201,16 @@ export default function OrderList() {
         );
       },
     },
-    { field: "deliveryStatus", headerName: "Delivery Status", width: 150 },
+    { field: "deliveryStatus", headerName: "Delivery Status", width: 120 },
     {
       field: "payStatus",
       headerName: "Payment Status",
-      width: 150,
+      width: 120,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 120,
     },
     {
       field: "amount",
@@ -245,6 +251,7 @@ export default function OrderList() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
+    date: moment(p.createdAt).format("MM DD, h:mm a"),
     amount: `${currency}${p.totalPrice}`,
   }));
 

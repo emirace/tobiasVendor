@@ -145,7 +145,7 @@ export default function Transactions() {
         setShowModel={setWithdrawShowModel}
       >
         <Withdraw
-          setShowModel={setShowModel}
+          setShowModel={setWithdrawShowModel}
           setRefresh={setRefresh}
           refresh={refresh}
           balance={balance}

@@ -7,6 +7,7 @@ import { Store } from "../../Store";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
+import moment from "moment";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -197,6 +198,11 @@ export default function ProductList() {
       },
     },
     {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+    },
+    {
       field: "price",
       headerName: "Price",
       width: 150,
@@ -229,6 +235,7 @@ export default function ProductList() {
     id: p._id,
     name: p.name,
     image: p.image,
+    date: moment(p.createdAt).format("MM DD, h:mm a"),
     stock: p.countInStock,
     price: `${p.currency}${p.actualPrice}`,
     slug: p.slug,

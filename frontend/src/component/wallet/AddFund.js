@@ -95,6 +95,7 @@ export default function AddFund({
     amount,
     currency: currency === "N " ? "NGN" : "ZAR",
     //currency: "ZAR",
+    //country: "ZAR",
     payment_options: "card,mobilemoney,ussd",
     customer: {
       email: userInfo.email,

@@ -83,7 +83,7 @@ export default function Withdraw({
   refresh,
   balance,
 }) {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [{ loading, error, user }, dispatch] = useReducer(reducer, {
     loading: true,
@@ -107,13 +107,46 @@ export default function Withdraw({
     };
     getUser();
   }, []);
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     if (amount > balance) {
       dispatch({
         type: "FETCH_FAIL",
         payload: "Enter amount less than current balance",
       });
     } else {
+      try {
+        const { data } = await axios.post(
+          "/api/accounts/transfer",
+          { amount, purpose: "Withdrawal Request" },
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+
+        if (!data.success) {
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: data.message,
+              showStatus: true,
+              state1: "visible1 success",
+            },
+          });
+          return;
+        }
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Withdrawal request sent successfully",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+        setShowModel(false);
+        setRefresh(!refresh);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   return loading ? (

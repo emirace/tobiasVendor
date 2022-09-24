@@ -167,7 +167,7 @@ export default function Return({
       setError("Please select a reason for return");
       return;
     }
-    if (!sending.length) {
+    if (!sending) {
       setError("Please select a method of sending");
       return;
     }
@@ -458,11 +458,10 @@ export default function Return({
                     id="deliveryStatus"
                   >
                     {console.log(current)}
-                    {current.deliveryOption.map((p) => (
-                      <MenuItem key={p.name} value={p.name}>
-                        {p.name}
-                      </MenuItem>
-                    ))}
+
+                    <MenuItem value={current.deliverySelect}>
+                      {current.deliverySelect.deliveryOption}
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </InputCont>
@@ -517,6 +516,7 @@ export default function Return({
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </InputCont>
+              {console.log("current", current)}
               <InputCont>
                 <Label1 htmlFor="return">
                   <FontAwesomeIcon icon={faCamera} /> Upload Image

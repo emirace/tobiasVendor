@@ -22,6 +22,8 @@ import Coupon from "../component/dashboard/Coupon";
 import Earning from "../component/dashboard/admin/Earning";
 import AllMessages from "../component/dashboard/admin/AllMessages";
 import AllReturns from "../component/dashboard/AllReturns";
+import MyReturns from "../component/dashboard/MyReturns";
+import AllReturnsLogs from "../component/dashboard/AllReturnsLogs";
 
 const Container = styled.div`
   display: flex;
@@ -71,8 +73,12 @@ export default function DashboardNewScreen() {
         return <Coupon />;
       case "messages":
         return <AllMessages />;
-      case "returns":
+      case "allreturns":
         return <AllReturns />;
+      case "returns":
+        return <MyReturns />;
+      case "logreturns":
+        return <AllReturnsLogs />;
       default:
         break;
     }

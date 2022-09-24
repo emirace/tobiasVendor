@@ -14,7 +14,7 @@ const productRouter = express.Router();
 
 // get all product
 
-productRouter.get("/:region", async (req, res) => {
+productRouter.get("/:region/all", async (req, res) => {
   const { region } = req.params;
   const products = await Product.find({ region }).populate(
     "seller",
@@ -325,21 +325,25 @@ productRouter.put(
   "/:id/shares",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log("hello");
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate(
+      "seller",
+      "username image sold"
+    );
     if (product) {
       const exist = product.shares.filter(
         (x) => x._id.toString() === req.user._id
       );
-      if (!exist) {
+      console.log("exist", exist.length, exist === [], [], "[]");
+      if (exist.length > 0) {
+        res.status(500).send({ message: "Already shared product" });
+      } else {
         product.shares.push(req.user._id);
-        await product.save();
+        const updatedProduct = await product.save();
         res.status(200).send({
           message: "Product Shared",
+          product: updatedProduct,
         });
-      } else {
-        res.status(500).send({ message: "Already shared product" });
       }
     } else {
       res.status(404).send({ message: "Product Not Found" });
@@ -724,6 +728,7 @@ productRouter.get("/slug/:slug", async (req, res) => {
   }
 });
 productRouter.get("/:id", async (req, res) => {
+  console.log("checking");
   const product = await Product.findById(req.params.id).populate(
     "seller",
     "username"

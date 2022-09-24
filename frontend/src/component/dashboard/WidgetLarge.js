@@ -113,7 +113,7 @@ export default function WidgetLarge({ refresh }) {
       console.log(getError(err));
       dispatch({ type: "TRANS_FAIL", payload: getError(err) });
     }
-  }, []);
+  }, [refresh]);
 
   const actionButton = (type) => {
     return (

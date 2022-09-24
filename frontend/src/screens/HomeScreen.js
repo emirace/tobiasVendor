@@ -138,7 +138,7 @@ export default function ProductsScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get(`/api/products/${region()}`);
+        const { data } = await axios.get(`/api/products/${region()}/all`);
         console.log(data);
         dispatch({
           type: "FETCH_SUCCESS",

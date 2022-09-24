@@ -767,24 +767,27 @@ export default function ProductScreen() {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (userInfo) {
       try {
-        axios.put(
+        const { data } = await axios.put(
           `/api/products/${product._id}/shares`,
           {},
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        socket.emit("post_data", {
-          userId: product.seller._id,
-          itemId: product._id,
-          notifyType: "share",
-          msg: `${userInfo.username} shared your product`,
-          link: `/product/${product.slug}`,
-          userImage: userInfo.image,
-        });
+        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
+        if (data.product) {
+          socket.emit("post_data", {
+            userId: product.seller._id,
+            itemId: product._id,
+            notifyType: "share",
+            msg: `${userInfo.username} shared your product`,
+            link: `/product/${product.slug}`,
+            userImage: userInfo.image,
+          });
+        }
       } catch (err) {
         console.log(err);
       }
@@ -1182,12 +1185,16 @@ export default function ProductScreen() {
               <ShareButton url={window.location.href} />
             </span>
           </div>
-          <div style={{}}>
-            <div>
+          <div style={{ display: "flex" }}>
+            <div style={{ marginRight: "100px" }}>
               <b>{product.likes.length} </b> Likes
             </div>
-            <div>Listed {format(product.createdAt)}</div>
+            <div>
+              <b>{product.shares.length} </b> Shares
+            </div>
           </div>
+          <div>Listed {format(product.createdAt)}</div>
+
           <div style={{ display: "flex", alignItems: "center" }}>
             <div className="sp_name">{product.name}</div>
             <div

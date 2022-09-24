@@ -168,7 +168,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AllReturns() {
+export default function MyReturns() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -184,15 +184,12 @@ export default function AllReturns() {
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
   useEffect(() => {
-    const fetchAllProduct = async () => {
+    const fetchReturns = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(
-          `/api/returns/${region()}/admin?q=${salesQurrey}`,
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
+        const { data } = await axios.get(`/api/returns/user?q=${salesQurrey}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         console.log("kell", data);
 
         dispatch({ type: "USERS_SUCCESS", payload: data });
@@ -203,7 +200,7 @@ export default function AllReturns() {
     if (successDelete) {
       dispatch({ type: "DELETE_RESET" });
     } else {
-      fetchAllProduct();
+      fetchReturns();
     }
   }, [successDelete, userInfo, salesQurrey]);
 
@@ -332,7 +329,7 @@ export default function AllReturns() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>Return Querries</Title>
+      <Title>My Returns</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}

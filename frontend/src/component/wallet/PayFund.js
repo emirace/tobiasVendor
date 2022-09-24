@@ -123,7 +123,7 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: data.message,
+          message: "Payment Successful",
           showStatus: true,
           state1: "visible1 success",
         },

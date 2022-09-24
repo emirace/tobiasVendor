@@ -396,14 +396,17 @@ export default function OrderScreen() {
           state1: "visible1 success",
         },
       });
-      socket.emit("post_data", {
-        userId: order.user,
-        itemId: order._id,
-        notifyType: "delivery",
-        msg: `Your order is ${deliveryStatus} `,
-        link: `/order/${order._id}`,
-        userImage: "/images/pimage.png",
-      });
+      if (deliveryStatus !== "Recieved" || deliveryStatus !== "Returned") {
+        socket.emit("post_data", {
+          userId: order.user,
+          itemId: order._id,
+          notifyType: "delivery",
+          msg: `Your order is ${deliveryStatus} `,
+          link: `/order/${order._id}`,
+          userImage: "/images/pimage.png",
+        });
+      } else {
+      }
     } catch (err) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -484,7 +487,7 @@ export default function OrderScreen() {
         </div>
         {order.orderItems.map((orderitem) =>
           isSeller ? (
-            orderitem.seller._id === userInfo._id && (
+            orderitem.seller === userInfo._id && (
               <SumaryContDetails mode={mode}>
                 <div
                   style={{

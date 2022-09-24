@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRotateLeft,
   faBasketShopping,
   faBell,
   faChartBar,
@@ -71,16 +72,20 @@ export default function Sidebar({ current }) {
   const { state } = useContext(Store);
   const { mode, userInfo, notifications } = state;
 
-  const messageNotification = notifications.filter(
-    (x) => x.notifyType === "message"
-  );
-  const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === "purchase"
-  );
-  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
-  const productNotification = notifications.filter(
-    (x) => x.notifyType === "product"
-  );
+  const messageNotification = [];
+  //notifications.filter(
+  //(x) => x.notifyType === "message"
+  //);
+  const purchaseNotification = [];
+  //notifications.filter(
+  //(x) => x.notifyType === "purchase"
+  //);
+  const soldNotification = [];
+  //notifications.filter((x) => x.notifyType === "sold");
+  const productNotification = [];
+  // notifications.filter(
+  // (x) => x.notifyType === "product"
+  //);
   return (
     <Container mode={mode}>
       <Wrapper>
@@ -128,6 +133,20 @@ export default function Sidebar({ current }) {
                 className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Sold Orders
+                {soldNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{soldNotification.length}</span>
+                  </Badge>
+                )}
+              </ListItem>
+            </Link>
+
+            <Link to="/dashboard/returns">
+              <ListItem
+                mode={mode}
+                className={current === "returns" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faArrowRotateLeft} /> Returns
                 {soldNotification.length > 0 && (
                   <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{soldNotification.length}</span>
@@ -211,12 +230,12 @@ export default function Sidebar({ current }) {
                   <FontAwesomeIcon icon={faEnvelope} /> All Messages
                 </ListItem>
               </Link>
-              <Link to="/dashboard/returns">
+              <Link to="/dashboard/allreturns">
                 <ListItem
                   mode={mode}
-                  className={current === "returns" ? "active" : ""}
+                  className={current === "allreturns" ? "active" : ""}
                 >
-                  <FontAwesomeIcon icon={faEnvelope} />
+                  <FontAwesomeIcon icon={faArrowRotateLeft} />
                   Return Querries
                 </ListItem>
               </Link>
@@ -225,7 +244,7 @@ export default function Sidebar({ current }) {
                   mode={mode}
                   className={current === "logreturns" ? "active" : ""}
                 >
-                  <FontAwesomeIcon icon={faEnvelope} />
+                  <FontAwesomeIcon icon={faArrowRotateLeft} />
                   All Logged Returns
                 </ListItem>
               </Link>

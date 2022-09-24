@@ -254,6 +254,13 @@ export default function PlaceOrderScreen() {
         });
         localStorage.removeItem("cartItems");
         ctxDispatch({ type: "CART_CLEAR" });
+        if (userInfo) {
+          await axios.delete(`/api/cartItems/`, {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          });
+        }
         order1.order.seller.map((s) => {
           socket.emit("post_data", {
             userId: s,
