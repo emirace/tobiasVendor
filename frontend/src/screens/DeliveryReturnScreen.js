@@ -170,30 +170,74 @@ export default function DeliveryReturnScreen({
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("value", value);
-    console.log("meta", meta);
-    const deliverySelect = { deliveryOption, cost: value, ...meta };
-    if (userInfo) {
-      const { data } = await axios.put(
-        `/api/returns/${returned._id}`,
-        {
-          meta: deliverySelect,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
+    try {
+      if (!returned.comfirmDelivery) {
+        const { data } = await axios.post(
+          "/api/accounts/transfer",
+          {
+            amount: returned.sending.cost,
+            purpose: "Return delivery fee",
+          },
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+
+        if (!data.success) {
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Fund your wallet to complete return",
+              showStatus: true,
+              state1: "visible1 error",
+            },
+          });
+          return;
+        } else {
+          await axios.put(
+            `/api/returns/${returned._id}/transaction`,
+            {
+              transaction_id: data.transaction_id || null,
+            },
+            {
+              headers: { authorization: `Bearer ${userInfo.token}` },
+            }
+          );
         }
-      );
-      rtdispatch({ type: "GET_SUCCESS", payload: data });
-      socket.emit("post_data", {
-        userId: returned.orderId.user._id,
-        itemId: returned._id,
-        notifyType: "return",
-        msg: `Return Address Updated`,
-        link: `/return/${returned._id}`,
-        userImage: returned.productId.seller.image,
+      }
+      const deliverySelect = { deliveryOption, cost: value, ...meta };
+      if (userInfo) {
+        const { data } = await axios.put(
+          `/api/returns/${returned._id}`,
+          {
+            meta: deliverySelect,
+            comfirmDelivery: returned.comfirmDelivery,
+          },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        rtdispatch({ type: "GET_SUCCESS", payload: data });
+        socket.emit("post_data", {
+          userId: returned.orderId.user._id,
+          itemId: returned._id,
+          notifyType: "return",
+          msg: `Return Address Updated`,
+          link: `/return/${returned._id}`,
+          userImage: returned.productId.seller.image,
+        });
+      }
+      setShowModel(false);
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
       });
     }
-    setShowModel(false);
   };
 
   function receiveMessage(message) {

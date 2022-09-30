@@ -3,6 +3,7 @@ import { isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Return from "../models/returnModel.js";
 import Product from "../models/productModel.js";
+import Transaction from "../models/transactionModel.js";
 
 const returnRouter = express.Router();
 
@@ -19,7 +20,7 @@ returnRouter.get(
       .populate("productId")
       .populate({
         path: "orderId",
-        select: "user",
+        select: "user orderItems",
         populate: [{ path: "user", select: "username" }],
       });
     res.send(returns);
@@ -37,7 +38,7 @@ returnRouter.get(
       .populate("productId")
       .populate({
         path: "orderId",
-        select: "user",
+        select: "user orderItems",
         populate: [{ path: "user", select: "username" }],
       });
     res.send(returns);
@@ -78,7 +79,7 @@ returnRouter.put(
     const returned = await Return.findById(req.params.id)
       .populate({
         path: "orderId",
-        select: "user",
+        select: "user orderItems",
         populate: {
           path: "user",
           select: "image",
@@ -92,6 +93,7 @@ returnRouter.put(
     if (returned) {
       returned.adminReason = req.body.adminReason;
       returned.status = req.body.status;
+      returned.comfirmDelivery = req.body.transaction_id;
       const newReturn = await returned.save();
       res.status(200).send(newReturn);
     } else {
@@ -106,7 +108,46 @@ returnRouter.put(
     const returned = await Return.findById(req.params.id)
       .populate({
         path: "orderId",
-        select: "user",
+        select: "user orderItems",
+        populate: {
+          path: "user",
+          select: "image",
+        },
+      })
+      .populate({
+        path: "productId",
+        select: "seller",
+        populate: { path: "seller", select: "image" },
+      });
+    const transaction = await Transaction.find({
+      "metadata.transaction_id": req.body.comfirmDelivery,
+    });
+    if (transaction) {
+      if (returned) {
+        const product = await Product.findById(returned.productId);
+        console.log(product.seller.toString(), req.user._id);
+        if (product.seller.toString() === req.user._id) {
+          returned.returnDelivery = req.body.meta;
+          const newReturn = await returned.save();
+          res.status(200).send(newReturn);
+        }
+      } else {
+        res.status(404).send("returned not found");
+      }
+    } else {
+      res.status(500).send("Fund your wallet to complete return");
+    }
+  })
+);
+
+returnRouter.put(
+  "/:id/transaction",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const returned = await Return.findById(req.params.id)
+      .populate({
+        path: "orderId",
+        select: "user orderItems",
         populate: {
           path: "user",
           select: "image",
@@ -119,9 +160,8 @@ returnRouter.put(
       });
     if (returned) {
       const product = await Product.findById(returned.productId);
-      console.log(product.seller.toString(), req.user._id);
       if (product.seller.toString() === req.user._id) {
-        returned.returnDelivery = req.body.meta;
+        returned.comfirmDelivery = req.body.transaction_id;
         const newReturn = await returned.save();
         res.status(200).send(newReturn);
       }
@@ -156,7 +196,7 @@ returnRouter.get(
     const returned = await Return.findById(req.params.id)
       .populate({
         path: "orderId",
-        select: "user",
+        select: "user orderItems",
         populate: {
           path: "user",
           select: "image",

@@ -12,6 +12,7 @@ const returnSchema = new mongoose.Schema(
     others: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
     adminReason: { type: String },
+    comfirmDelivery: { type: String, default: null },
     status: {
       type: String,
       enum: ["Approve", "Decline", "Pending"],

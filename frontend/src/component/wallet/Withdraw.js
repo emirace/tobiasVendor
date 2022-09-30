@@ -108,7 +108,8 @@ export default function Withdraw({
     getUser();
   }, []);
   const handleWithdraw = async () => {
-    if (amount > balance) {
+    if (amount > balance.balance) {
+      console.log("hello2", error);
       dispatch({
         type: "FETCH_FAIL",
         payload: "Enter amount less than current balance",

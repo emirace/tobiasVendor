@@ -717,7 +717,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Log in or Create account to send a message",
+          message: getError(err),
           showStatus: true,
           state1: "visible1 error",
         },

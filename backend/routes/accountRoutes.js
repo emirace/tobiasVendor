@@ -85,16 +85,22 @@ accountRouter.post(
 accountRouter.post(
   "/withdraw",
   isAuth,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const account = await Account.findOne({ userId: req.user._id });
+    const account = await Account.findOne({ userId: req.body.userId });
     const accountId = account._id;
     const { amount } = req.body;
+    const transaction_id = v4();
     if (accountId && amount > 0) {
       try {
         const creditResult = await debitAccount({
           accountId,
           amount,
           purpose: "withdrawal",
+          metadata: {
+            transaction_id,
+            purpose: req.body.purpose,
+          },
         });
 
         if (!creditResult.success) {
@@ -104,6 +110,7 @@ accountRouter.post(
         res.status(200).send({
           success: true,
           message: "withdrawal successful",
+          transaction_id,
         });
       } catch (error) {
         res.status(500).send({

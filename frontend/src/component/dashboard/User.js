@@ -363,6 +363,21 @@ export default function User() {
     }
   }, [id, userInfo]);
 
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    try {
+      const getBalance = async () => {
+        const { data } = await axios.get("/api/accounts/balance", {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        });
+        setBalance(data);
+      };
+      getBalance();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo]);
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -487,7 +502,10 @@ export default function User() {
             </TopTitle>
             <Wallet mode={mode}>
               <Wbalance>Wallet Balance</Wbalance>
-              <Wamount>$30</Wamount>
+              <Wamount>
+                {balance.currency}
+                {balance.balance}
+              </Wamount>
             </Wallet>
           </ShowTop>
           <ShowBottom>

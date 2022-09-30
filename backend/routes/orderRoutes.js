@@ -103,7 +103,13 @@ orderRouter.post(
     });
     const newOrder = new Order({
       seller,
-      orderItems: req.body.orderItems.map((x) => ({ ...x, product: x._id })),
+      orderItems: req.body.orderItems.map((x) => ({
+        ...x,
+        product: x._id,
+        deliveryStatus: "Pending",
+        deliveredAt: Date.now(),
+      })),
+      deliveryStatus: "Pending",
       deliveryMethod: req.body.deliveryMethod,
       paymentMethod: req.body.paymentMethod,
       itemsPrice: req.body.itemsPrice,
@@ -387,13 +393,23 @@ orderRouter.get(
 );
 
 orderRouter.put(
-  "/:id/deliver",
+  "/:id/deliver/:productId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
+      order.orderItems = order.orderItems.map((x) => {
+        if (x._id === req.params.productId) {
+          return {
+            ...x,
+            deliveryStatus: req.body.deliveryStatus,
+            deliveredAt: Date.now(),
+          };
+        } else {
+          return x;
+        }
+      });
       order.deliveryStatus = req.body.deliveryStatus;
-      order.deliveredAt = Date.now();
       await order.save();
       res.send({ message: "Order Delivery Status changed" });
     } else {

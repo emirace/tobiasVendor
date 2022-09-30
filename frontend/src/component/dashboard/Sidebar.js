@@ -14,6 +14,7 @@ import {
   faHouse,
   faListCheck,
   faMessage,
+  faMoneyBill,
   faMoneyBillTransfer,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -246,6 +247,16 @@ export default function Sidebar({ current }) {
                 >
                   <FontAwesomeIcon icon={faArrowRotateLeft} />
                   All Logged Returns
+                </ListItem>
+              </Link>
+
+              <Link to="/dashboard/payments">
+                <ListItem
+                  mode={mode}
+                  className={current === "payments" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faMoneyBill} />
+                  Payments
                 </ListItem>
               </Link>
             </List>

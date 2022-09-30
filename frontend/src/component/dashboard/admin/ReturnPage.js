@@ -5,8 +5,10 @@ import styled from "styled-components";
 import { socket } from "../../../App";
 import DeliveryReturnScreen from "../../../screens/DeliveryReturnScreen";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { deliveryNumber, getError } from "../../../utils";
+import DeliveryHistory from "../../DeliveryHistory";
 import LoadingBox from "../../LoadingBox";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ModelLogin from "../../ModelLogin";
 
 const Container = styled.div`
@@ -65,6 +67,12 @@ const Button = styled.button`
   &.decline {
     background: var(--malon-color);
   }
+`;
+
+const SetStatus = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
 `;
 
 const reducer = (state, action) => {
@@ -126,11 +134,11 @@ export default function ReturnPage() {
     getReturn();
   }, []);
 
-  async function deliverOrderHandler(deliveryStatus) {
+  async function deliverOrderHandler(deliveryStatus, productId) {
     try {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
-        `/api/orders/${returned.orderId._id}/deliver`,
+        `/api/orders/${returned.orderId._id}/deliver/${productId}`,
         { deliveryStatus },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -193,21 +201,45 @@ export default function ReturnPage() {
         );
         console.log(data);
         dispatch({ type: "GET_SUCCESS", payload: data });
-        deliverOrderHandler("Return Decline");
+        deliverOrderHandler("Return Declined", returned.productId._id);
       } catch (error) {}
     } else {
       try {
+        const { data: withdrawData } = await axios.post(
+          "/api/accounts/withdrawal",
+          {
+            amount: returned.sending.cost,
+            purpose: "Return delivery fee",
+            userId: returned.productId.seller._id,
+          },
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        if (!withdrawData.success) {
+          socket.emit("post_data", {
+            userId: returned.productId.seller._id,
+            itemId: returned.orderId._id,
+            notifyType: "return",
+            msg: `Fund your wallet to complete return`,
+            link: `/dashboard/wallet`,
+            userImage:
+              "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",
+          });
+        }
+
         const { data } = await axios.put(
           `/api/returns/admin/${returnId}`,
           {
             status: "Approve",
+            transaction_id: withdrawData.transaction_id || null,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
         dispatch({ type: "GET_SUCCESS", payload: data });
-        deliverOrderHandler("Return Approve");
+        deliverOrderHandler("Return Approved", returned.productId._id);
       } catch (error) {}
     }
   };
@@ -304,6 +336,150 @@ export default function ReturnPage() {
               <div>Waiting Seller's delivery address</div>
             )}
           </>
+        )}
+        {returned.orderId.orderItems.map(
+          (orderitem) =>
+            orderitem._id === returned.productId._id && (
+              <>
+                <SetStatus>
+                  {returned.productId.seller._id === userInfo._id ? (
+                    <FormControl
+                      sx={{
+                        minWidth: "220px",
+                        margin: 0,
+                        borderRadius: "0.2rem",
+                        border: `1px solid ${
+                          mode === "pagebodydark"
+                            ? "var(--dark-ev4)"
+                            : "var(--light-ev4)"
+                        }`,
+                        "& .MuiOutlinedInput-root": {
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                          "&:hover": {
+                            outline: "none",
+                            border: 0,
+                          },
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "0 !important",
+                        },
+                      }}
+                      size="small"
+                    >
+                      <InputLabel
+                        sx={{
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                        }}
+                        id="deliveryStatus"
+                      >
+                        Update Delivery Status
+                      </InputLabel>
+
+                      <Select
+                        onChange={(e) =>
+                          deliverOrderHandler(
+                            e.target.value,
+                            returned.productId._id
+                          )
+                        }
+                        displayEmpty
+                        id="deliveryStatus"
+                      >
+                        <MenuItem
+                          disabled={
+                            deliveryNumber(orderitem.deliveryStatus) < 10
+                          }
+                          value="Return Received"
+                        >
+                          Return Received
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <FormControl
+                      sx={{
+                        minWidth: "220px",
+                        margin: 0,
+                        borderRadius: "0.2rem",
+                        border: `1px solid ${
+                          mode === "pagebodydark"
+                            ? "var(--dark-ev4)"
+                            : "var(--light-ev4)"
+                        }`,
+                        "& .MuiOutlinedInput-root": {
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                          "&:hover": {
+                            outline: "none",
+                            border: 0,
+                          },
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "0 !important",
+                        },
+                      }}
+                      size="small"
+                    >
+                      <InputLabel
+                        sx={{
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                        }}
+                        id="deliveryStatus"
+                      >
+                        Update Delivery Status
+                      </InputLabel>
+
+                      <Select
+                        onChange={(e) =>
+                          deliverOrderHandler(
+                            e.target.value,
+                            returned.productId._id
+                          )
+                        }
+                        displayEmpty
+                        id="deliveryStatus"
+                      >
+                        <MenuItem
+                          disabled={
+                            deliveryNumber(orderitem.deliveryStatus) > 9
+                          }
+                          value="Return Dispatched"
+                        >
+                          Return Dispatched
+                        </MenuItem>
+
+                        <MenuItem
+                          disabled={
+                            deliveryNumber(orderitem.deliveryStatus) > 10
+                          }
+                          value="Return Delivered"
+                        >
+                          Return Delivered
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                </SetStatus>
+                <DeliveryHistory
+                  status={deliveryNumber(orderitem.deliveryStatus)}
+                />
+              </>
+            )
         )}
       </SumaryContDetails>
       <ModelLogin setShowModel={setShowModel} showModel={showModel}>

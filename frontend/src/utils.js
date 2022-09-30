@@ -38,6 +38,7 @@ export function displayDeliveryStatus(status) {
           borderRadius: "0.25rem",
           color: "white",
           textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -53,6 +54,7 @@ export function displayDeliveryStatus(status) {
           borderRadius: "0.25rem",
           color: "white",
           textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -68,6 +70,7 @@ export function displayDeliveryStatus(status) {
           borderRadius: "0.25rem",
           color: "black",
           textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -82,6 +85,7 @@ export function displayDeliveryStatus(status) {
           borderRadius: "0.25rem",
           color: "white",
           textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -124,3 +128,33 @@ export const calcPrice = (cart) => {
 };
 export const GOOGLE_CLIENT_ID =
   "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";
+
+export const deliveryNumber = (status) => {
+  switch (status) {
+    case "Not yet Dispatched":
+      return 1;
+    case "Dispatched":
+      return 2;
+    case "In transit":
+      return 3;
+    case "Delivered":
+      return 4;
+    case "Received":
+      return 5;
+    case "Returned":
+      return 6;
+    case "Return Approved":
+      return 7;
+    case "Return Declined":
+      return 8;
+    case "Return Dispatched":
+      return 9;
+    case "Return Delivered":
+      return 10;
+    case "Return Received":
+      return 11;
+
+    default:
+      return 0;
+  }
+};

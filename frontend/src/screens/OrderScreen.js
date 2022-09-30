@@ -15,7 +15,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { Store } from "../Store";
-import { displayDeliveryStatus, getError, timeDifference } from "../utils";
+import {
+  deliveryNumber,
+  displayDeliveryStatus,
+  getError,
+  timeDifference,
+} from "../utils";
 import ListGroup from "react-bootstrap/ListGroup";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -25,6 +30,9 @@ import { useReactToPrint } from "react-to-print";
 import ModelLogin from "../component/ModelLogin";
 import Return from "../component/Return";
 import { socket } from "../App";
+import Model from "../component/Model";
+import DeliveryHistory from "../component/DeliveryHistory";
+import { faCommentsDollar } from "@fortawesome/free-solid-svg-icons";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
@@ -264,6 +272,8 @@ export default function OrderScreen() {
   const [showReturn, setShowReturn] = useState(false);
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
   const [isSeller, setIsSeller] = useState(false);
+  const [showDeliveryHistory, setShowDeliveryHistory] = useState(false);
+  const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0);
   function createOrder(data, actions) {
     return actions.order
       .create({
@@ -377,11 +387,11 @@ export default function OrderScreen() {
     successDeliver,
   ]);
 
-  async function deliverOrderHandler(deliveryStatus) {
+  async function deliverOrderHandler(deliveryStatus, productId) {
     try {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
-        `/api/orders/${order._id}/deliver`,
+        `/api/orders/${order._id}/deliver/${productId}`,
         { deliveryStatus },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -452,10 +462,10 @@ export default function OrderScreen() {
             Placed on{" "}
             {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
           </Date>
-          <Price>
+          {/* <Price>
             Total: {currency}
             {order.totalPrice}
-          </Price>
+          </Price> */}
         </SumaryCont>
         <div
           style={{
@@ -466,7 +476,7 @@ export default function OrderScreen() {
           }}
         >
           <Heading>Items in your order</Heading>
-          {!isSeller && (
+          {!isSeller && daydiff > 0 && (
             <div
               style={{ cursor: "pointer" }}
               onClick={() => setShowReturn(true)}
@@ -487,7 +497,7 @@ export default function OrderScreen() {
         </div>
         {order.orderItems.map((orderitem) =>
           isSeller ? (
-            orderitem.seller === userInfo._id && (
+            orderitem.seller._id === userInfo._id && (
               <SumaryContDetails mode={mode}>
                 <div
                   style={{
@@ -504,18 +514,57 @@ export default function OrderScreen() {
                     }
                   </div>
                   <div>
-                    {displayDeliveryStatus(order.deliveryStatus)}
+                    <div style={{ display: "flex", textAlign: "center" }}>
+                      {displayDeliveryStatus(orderitem.deliveryStatus)}
+                      <div
+                        style={{
+                          color: "var(--malon-color)",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          marginLeft: "15px",
+                        }}
+                        onClick={() => {
+                          setShowDeliveryHistory(true);
+                          setCurrentDeliveryHistory(
+                            deliveryNumber(orderitem.deliveryStatus)
+                          );
+                        }}
+                      >
+                        See delivery history
+                      </div>
+                    </div>
                     <Name>
                       On{" "}
-                      {moment(order.deliveredAt).format(
+                      {moment(orderitem.deliveredAt).format(
                         "MMMM Do YYYY, h:mm:ss a"
                       )}
                     </Name>
                   </div>
+                  <ModelLogin
+                    showModel={showDeliveryHistory}
+                    setShowModel={setShowDeliveryHistory}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        pading: "20px",
+                        height: "100%",
+                      }}
+                    >
+                      <DeliveryHistory status={currentDeliveryHistory} />
+                    </div>
+                  </ModelLogin>
+
                   {userInfo &&
                     order.user === userInfo._id &&
-                    order.deliveryStatus === "Delivered" && (
-                      <Received onClick={() => deliverOrderHandler("Recieved")}>
+                    orderitem.deliveryStatus === "Delivered" && (
+                      <Received
+                        onClick={() =>
+                          deliverOrderHandler("Recieved", orderitem._id)
+                        }
+                      >
                         Comfirm you have recieved order
                       </Received>
                     )}
@@ -528,7 +577,7 @@ export default function OrderScreen() {
                           order.deliveryStatus === "Returned"
                         }
                         sx={{
-                          minWidth: "200px",
+                          minWidth: "220px",
                           margin: 0,
                           borderRadius: "0.2rem",
                           border: `1px solid ${
@@ -563,20 +612,48 @@ export default function OrderScreen() {
                           }}
                           id="deliveryStatus"
                         >
-                          Set delivery Status
+                          Update Delivery Status
                         </InputLabel>
 
                         <Select
-                          onChange={(e) => deliverOrderHandler(e.target.value)}
+                          onChange={(e) =>
+                            deliverOrderHandler(e.target.value, orderitem._id)
+                          }
                           displayEmpty
                           id="deliveryStatus"
                         >
-                          <MenuItem value="Not yet Dispatched">
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) > 0
+                            }
+                            value="Not yet Dispatched"
+                          >
                             Not yet Dispatched
                           </MenuItem>
-                          <MenuItem value="Dispatch">Dispatched</MenuItem>
-                          <MenuItem value="In transit">In transit</MenuItem>
-                          <MenuItem value="Delivered">Delivered</MenuItem>
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) > 1
+                            }
+                            value="Dispatched"
+                          >
+                            Dispatched
+                          </MenuItem>
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) > 2
+                            }
+                            value="In transit"
+                          >
+                            In transit
+                          </MenuItem>
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) > 3
+                            }
+                            value="Delivered"
+                          >
+                            Delivered
+                          </MenuItem>
                         </Select>
                       </FormControl>
                     </SetStatus>
@@ -627,18 +704,35 @@ export default function OrderScreen() {
                 }}
               >
                 <div>
-                  {displayDeliveryStatus(order.deliveryStatus)}
+                  <div style={{ display: "flex", textAlign: "center" }}>
+                    {displayDeliveryStatus(orderitem.deliveryStatus)}
+                    <div
+                      style={{
+                        color: "var(--malon-color)",
+                        cursor: "pointer",
+                        textAlign: "center",
+                        marginLeft: "15px",
+                      }}
+                      onClick={() => setShowDeliveryHistory(true)}
+                    >
+                      See delivery history
+                    </div>
+                  </div>
                   <Name>
                     On{" "}
-                    {moment(order.deliveredAt).format(
+                    {moment(orderitem.deliveredAt).format(
                       "MMMM Do YYYY, h:mm:ss a"
                     )}
                   </Name>
                 </div>
                 {userInfo &&
                   order.user === userInfo._id &&
-                  order.deliveryStatus === "Delivered" && (
-                    <Received onClick={() => deliverOrderHandler("Recieved")}>
+                  orderitem.deliveryStatus === "Delivered" && (
+                    <Received
+                      onClick={() =>
+                        deliverOrderHandler("Recieved", orderitem._id)
+                      }
+                    >
                       Comfirm you have recieved order
                     </Received>
                   )}
