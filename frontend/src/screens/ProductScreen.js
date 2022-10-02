@@ -103,6 +103,12 @@ const Key = styled.div`
   font-weight: 500;
 `;
 const Value = styled.div``;
+const Sustain = styled.div`
+  margin: 20px 0;
+`;
+const SustainHeader = styled.div`
+  text-transform: uppercase;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -767,33 +773,6 @@ export default function ProductScreen() {
     }
   };
 
-  const handleShare = async () => {
-    if (userInfo) {
-      try {
-        const { data } = await axios.put(
-          `/api/products/${product._id}/shares`,
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
-        if (data.product) {
-          socket.emit("post_data", {
-            userId: product.seller._id,
-            itemId: product._id,
-            notifyType: "share",
-            msg: `${userInfo.username} shared your product`,
-            link: `/product/${product.slug}`,
-            userImage: userInfo.image,
-          });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
   const switchTab = (tab) => {
     switch (tab) {
       case "comments":
@@ -869,7 +848,7 @@ export default function ProductScreen() {
               <ListGroup>
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>{" "}
+                    <strong>{review.name.username}</strong>{" "}
                     <FontAwesomeIcon
                       style={{ marginLeft: "10px" }}
                       icon={
@@ -1111,9 +1090,9 @@ export default function ProductScreen() {
                   numReviews={product.seller.numReviews}
                 />
               </ReviewsClick>
-              <Model showModel={showModel} setShowModel={setShowModel}>
-                <ReviewLists />
-              </Model>
+              <ModelLogin showModel={showModel} setShowModel={setShowModel}>
+                <ReviewLists reviews={product.reviews} />
+              </ModelLogin>
             </div>
           </div>
           <div className="single_product_sold_status">
@@ -1172,7 +1151,6 @@ export default function ProductScreen() {
               <FontAwesomeIcon
                 onClick={() => {
                   setShare(!share);
-                  handleShare();
                 }}
                 icon={faShareNodes}
               />
@@ -1182,7 +1160,11 @@ export default function ProductScreen() {
               onClick={() => setShare(!share)}
               className={share ? "active2" : ""}
             >
-              <ShareButton url={window.location.href} />
+              <ShareButton
+                url={window.location.href}
+                product={product}
+                dispatch={dispatch}
+              />
             </span>
           </div>
           <div style={{ display: "flex" }}>
@@ -1381,6 +1363,9 @@ export default function ProductScreen() {
               </div>
             </div>
             <ProtectionRight />
+            <Sustain mode={mode}>
+              <SustainHeader style={{}}>Sustainability Impact</SustainHeader>
+            </Sustain>
             <ReportButton
               onClick={() => handlereport(product.seller._id, product._id)}
             >

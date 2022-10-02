@@ -87,7 +87,7 @@ returnRouter.put(
       })
       .populate({
         path: "productId",
-        select: "seller",
+        select: "seller actualPrice",
         populate: { path: "seller", select: "image" },
       });
     if (returned) {
@@ -116,7 +116,7 @@ returnRouter.put(
       })
       .populate({
         path: "productId",
-        select: "seller",
+        select: "seller actualPrice",
         populate: { path: "seller", select: "image" },
       });
     const transaction = await Transaction.find({
@@ -155,7 +155,7 @@ returnRouter.put(
       })
       .populate({
         path: "productId",
-        select: "seller",
+        select: "seller actualPrice",
         populate: { path: "seller", select: "image" },
       });
     if (returned) {
@@ -204,7 +204,7 @@ returnRouter.get(
       })
       .populate({
         path: "productId",
-        select: "seller",
+        select: "seller actualPrice",
         populate: { path: "seller", select: "image" },
       });
     if (returned) {

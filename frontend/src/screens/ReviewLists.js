@@ -1,9 +1,9 @@
-import styled from 'styled-components';
-import React, { useContext, useState } from 'react';
-import { Store } from '../Store';
-import { Link } from 'react-router-dom';
-import Rating from '../component/Rating';
-import ListGroup from 'react-bootstrap/ListGroup';
+import styled from "styled-components";
+import React, { useContext, useState } from "react";
+import { Store } from "../Store";
+import { Link } from "react-router-dom";
+import Rating from "../component/Rating";
+import ListGroup from "react-bootstrap/ListGroup";
 
 const Container = styled.div`
   height: 100%;
@@ -31,7 +31,7 @@ const TabItem = styled.div`
     color: var(--orange-color);
     font-weight: bold;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -56,74 +56,40 @@ const Scrollable = styled.div`
   }
 `;
 
-export default function ReviewLists() {
+export default function ReviewLists({ reviews }) {
   const { state } = useContext(Store);
   const { mode } = state;
 
-  const [displayTab, setDisplayTab] = useState('sold');
+  const [displayTab, setDisplayTab] = useState("sold");
 
   const tabSwitch = (tab) => {
     switch (tab) {
-      case 'sold':
+      case "sold":
         return (
           <ReviewCont>
-            <div className="single_product_seller m-4">
-              <img
-                src="/images/card2.png"
-                alt="review"
-                id="single_product_seller_sq"
-              />
-              <ListGroupI>
-                <strong>@admin</strong>
-                <p>
-                  <Rating rating={3} caption=" "></Rating>
-                </p>
+            {reviews.map((review) => (
+              <div className="single_product_seller m-4">
+                <img
+                  src="/images/card2.png"
+                  alt="review"
+                  id="single_product_seller_sq"
+                />
+                <ListGroupI>
+                  <strong>@{review.name.user}</strong>
+                  <p>
+                    <Rating rating={review.rating} caption=" "></Rating>
+                  </p>
 
-                <p>amazing dress ! thank u</p>
-                <p>
-                  <small>1 days ago</small>
-                </p>
-              </ListGroupI>
-            </div>
-            <div className="single_product_seller m-4">
-              <img
-                src="/images/card2.png"
-                alt="review"
-                id="single_product_seller_sq"
-              />
-              <ListGroupI>
-                <strong>@admin</strong>
-                <p>
-                  <Rating rating={3} caption=" "></Rating>
-                </p>
-
-                <p>amazing dress ! thank u</p>
-                <p>
-                  <small>1 days ago</small>
-                </p>
-              </ListGroupI>
-            </div>
-            <div className="single_product_seller m-4">
-              <img
-                src="/images/card2.png"
-                alt="review"
-                id="single_product_seller_sq"
-              />
-              <ListGroupI>
-                <strong>@admin</strong>
-                <p>
-                  <Rating rating={3} caption=" "></Rating>
-                </p>
-
-                <p>amazing dress ! thank u</p>
-                <p>
-                  <small>1 days ago</small>
-                </p>
-              </ListGroupI>
-            </div>
+                  <p>{review.comment}</p>
+                  <p>
+                    <small>1 days ago</small>
+                  </p>
+                </ListGroupI>
+              </div>
+            ))}
           </ReviewCont>
         );
-      case 'purchase':
+      case "purchase":
         return <>purchase reviwws</>;
       default:
         return <></>;
@@ -134,14 +100,14 @@ export default function ReviewLists() {
     <Container>
       <Tab>
         <TabItem
-          className={displayTab === 'sold' && 'active'}
-          onClick={() => setDisplayTab('sold')}
+          className={displayTab === "sold" && "active"}
+          onClick={() => setDisplayTab("sold")}
         >
           Sold
         </TabItem>
         <TabItem
-          className={displayTab === 'purchase' && 'active'}
-          onClick={() => setDisplayTab('purchase')}
+          className={displayTab === "purchase" && "active"}
+          onClick={() => setDisplayTab("purchase")}
         >
           Purchase
         </TabItem>

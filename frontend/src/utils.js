@@ -144,9 +144,9 @@ export const deliveryNumber = (status) => {
     case "Returned":
       return 6;
     case "Return Approved":
-      return 7;
-    case "Return Declined":
       return 8;
+    case "Return Declined":
+      return 7;
     case "Return Dispatched":
       return 9;
     case "Return Delivered":

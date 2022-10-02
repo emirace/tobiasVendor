@@ -9,6 +9,7 @@ import { getError } from "../../utils";
 import axios from "axios";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
+import { socket } from "../../App";
 const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Container = styled.div`
@@ -135,6 +136,35 @@ export default function Withdraw({
           });
           return;
         }
+        const { data: paymentData } = await axios.post(
+          "/api/payments",
+          {
+            userId: userInfo._id,
+            amount,
+            meta: {
+              Type: "Withdrawal Request",
+              from: "Wallet",
+              to: "Account",
+              currency: balance.currency,
+              detail: {
+                accountName: user.accountName,
+                bankName: user.bankName,
+                accountNumber: user.accountNumber,
+              },
+            },
+          },
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        socket.emit("post_data", {
+          userId: userInfo._id,
+          itemId: paymentData._id,
+          notifyType: "payment",
+          msg: `Withdrawl request`,
+          link: `/payment/${paymentData._id}`,
+          userImage: userInfo.image,
+        });
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {

@@ -38,46 +38,42 @@ accountRouter.get(
 accountRouter.post(
   "/deposit",
   isAuth,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const { transaction_id } = req.body;
+    const account = await Account.findOne({ userId: req.body.userId });
+    const accountId = account._id;
+    const { amount } = req.body;
+    const transaction_id = v4();
+    if (accountId && amount > 0) {
+      try {
+        const creditResult = await creditAccount({
+          accountId,
+          amount,
+          purpose: "deposit",
+          metadata: {
+            transaction_id,
+            purpose: req.body.purpose,
+          },
+        });
 
-    const response = await flw.Transaction.verify({ id: transaction_id });
-    console.log(response);
-
-    if (response.data.status === "successful") {
-      const account = await Account.findOne({ userId: req.user._id });
-      const accountId = account._id;
-      const { amount } = req.body;
-      if (accountId && amount > 0) {
-        try {
-          const creditResult = await creditAccount({
-            accountId,
-            amount,
-            purpose: "deposit",
-            metadata: { purpose: req.body.purpose },
-          });
-
-          if (!creditResult.success) {
-            throw creditResult;
-          }
-          res.status(200).send({
-            success: true,
-            message: "deposit successful",
-          });
-        } catch (error) {
-          res.status(500).send({
-            success: false,
-            error: error,
-          });
+        if (!creditResult.success) {
+          throw creditResult;
         }
-      } else {
+        res.status(200).send({
+          success: true,
+          message: "deposit successful",
+        });
+      } catch (error) {
         res.status(500).send({
           success: false,
-          error: "enter valid credentials",
+          error: error,
         });
       }
     } else {
-      res.send("error making payment");
+      res.status(500).send({
+        success: false,
+        error: "enter valid credentials",
+      });
     }
   })
 );
@@ -87,7 +83,16 @@ accountRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const account = await Account.findOne({ userId: req.body.userId });
+    var account;
+    if (req.body.userId === "Admin") {
+      const admin = await User.findOne({
+        email: "admin@example.com",
+        isAdmin: true,
+      });
+      account = await Account.findOne({ userId: admin._id });
+    } else {
+      account = await Account.findOne({ userId: req.body.userId });
+    }
     const accountId = account._id;
     const { amount } = req.body;
     const transaction_id = v4();

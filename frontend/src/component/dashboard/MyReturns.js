@@ -194,6 +194,7 @@ export default function MyReturns() {
 
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
+        dispatch({ type: "USERS_FAIL" });
         console.log(getError(err));
       }
     };

@@ -259,6 +259,15 @@ export default function Sidebar({ current }) {
                   Payments
                 </ListItem>
               </Link>
+              <Link to="/dashboard/transactionlist">
+                <ListItem
+                  mode={mode}
+                  className={current === "transactionlist" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faMoneyBill} />
+                  All Transactions
+                </ListItem>
+              </Link>
             </List>
           </Menu>
         )}

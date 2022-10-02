@@ -13,7 +13,7 @@ transactionRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const transactions = await Transaction.find();
+    const transactions = await Transaction.find().sort({ createdAt: -1 });
     res.send(transactions);
   })
 );

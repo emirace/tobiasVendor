@@ -430,6 +430,32 @@ export default function OrderScreen() {
     }
   }
 
+  const paymentRequest = async (seller, cost, itemCurrency, sellerImage) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: seller,
+        amount: cost,
+        meta: {
+          Type: "Order Completed",
+          from: "Wallet",
+          to: "Wallet",
+          currency: itemCurrency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: paymentData._id,
+      notifyType: "payment",
+      msg: `Order Completed`,
+      link: `/payment/${paymentData._id}`,
+      userImage: sellerImage,
+    });
+  };
   const daydiff =
     order.createdAt &&
     3 - timeDifference(new window.Date(order.createdAt), new window.Date());
@@ -530,6 +556,11 @@ export default function OrderScreen() {
                           );
                         }}
                       >
+                        {console.log(
+                          "deliverynumber",
+                          orderitem.deliveryStatus,
+                          deliveryNumber(orderitem.deliveryStatus)
+                        )}
                         See delivery history
                       </div>
                     </div>
@@ -540,29 +571,12 @@ export default function OrderScreen() {
                       )}
                     </Name>
                   </div>
-                  <ModelLogin
-                    showModel={showDeliveryHistory}
-                    setShowModel={setShowDeliveryHistory}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        pading: "20px",
-                        height: "100%",
-                      }}
-                    >
-                      <DeliveryHistory status={currentDeliveryHistory} />
-                    </div>
-                  </ModelLogin>
-
                   {userInfo &&
                     order.user === userInfo._id &&
                     orderitem.deliveryStatus === "Delivered" && (
                       <Received
                         onClick={() =>
-                          deliverOrderHandler("Recieved", orderitem._id)
+                          deliverOrderHandler("Received", orderitem._id)
                         }
                       >
                         Comfirm you have recieved order
@@ -713,7 +727,12 @@ export default function OrderScreen() {
                         textAlign: "center",
                         marginLeft: "15px",
                       }}
-                      onClick={() => setShowDeliveryHistory(true)}
+                      onClick={() => {
+                        setShowDeliveryHistory(true);
+                        setCurrentDeliveryHistory(
+                          deliveryNumber(orderitem.deliveryStatus)
+                        );
+                      }}
                     >
                       See delivery history
                     </div>
@@ -729,9 +748,15 @@ export default function OrderScreen() {
                   order.user === userInfo._id &&
                   orderitem.deliveryStatus === "Delivered" && (
                     <Received
-                      onClick={() =>
-                        deliverOrderHandler("Recieved", orderitem._id)
-                      }
+                      onClick={() => {
+                        deliverOrderHandler("Recieved", orderitem._id);
+                        paymentRequest(
+                          orderitem.seller._id,
+                          orderitem.actualPrice,
+                          orderitem.currency,
+                          orderitem.seller.image
+                        );
+                      }}
                     >
                       Comfirm you have recieved order
                     </Received>
@@ -772,6 +797,22 @@ export default function OrderScreen() {
             </SumaryContDetails>
           )
         )}
+        <ModelLogin
+          showModel={showDeliveryHistory}
+          setShowModel={setShowDeliveryHistory}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pading: "20px",
+              height: "100%",
+            }}
+          >
+            <DeliveryHistory status={currentDeliveryHistory} />
+          </div>
+        </ModelLogin>
         <PaymentDlivery>
           <PaymentDliveryItem>
             <Heading>Payment</Heading>

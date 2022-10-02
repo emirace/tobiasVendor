@@ -134,6 +134,33 @@ export default function ReturnPage() {
     getReturn();
   }, []);
 
+  const paymentRequest = async (seller, cost, itemCurrency) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: returned.orderId.user._id,
+        amount: returned.productId.actualPrice,
+        meta: {
+          Type: "Return Completed",
+          from: "Wallet",
+          to: "Wallet",
+          currency: returned.productId.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: paymentData._id,
+      notifyType: "payment",
+      msg: `Return Completed`,
+      link: `/payment/${paymentData._id}`,
+      userImage: returned.orderId.user.image,
+    });
+  };
+
   async function deliverOrderHandler(deliveryStatus, productId) {
     try {
       dispatch({ type: "DELIVER_REQUEST" });
@@ -206,7 +233,7 @@ export default function ReturnPage() {
     } else {
       try {
         const { data: withdrawData } = await axios.post(
-          "/api/accounts/withdrawal",
+          "/api/accounts/withdraw",
           {
             amount: returned.sending.cost,
             purpose: "Return delivery fee",
@@ -333,7 +360,9 @@ export default function ReturnPage() {
                 Add Return Delivery Address
               </Button>
             ) : (
-              <div>Waiting Seller's delivery address</div>
+              <div style={{ color: "var(--red-color)" }}>
+                Waiting Seller's delivery address
+              </div>
             )}
           </>
         )}
@@ -384,18 +413,19 @@ export default function ReturnPage() {
                       </InputLabel>
 
                       <Select
-                        onChange={(e) =>
+                        onChange={(e) => {
                           deliverOrderHandler(
                             e.target.value,
                             returned.productId._id
-                          )
-                        }
+                          );
+                          paymentRequest();
+                        }}
                         displayEmpty
                         id="deliveryStatus"
                       >
                         <MenuItem
                           disabled={
-                            deliveryNumber(orderitem.deliveryStatus) < 10
+                            deliveryNumber(orderitem.deliveryStatus) !== 10
                           }
                           value="Return Received"
                         >
@@ -456,7 +486,7 @@ export default function ReturnPage() {
                       >
                         <MenuItem
                           disabled={
-                            deliveryNumber(orderitem.deliveryStatus) > 9
+                            deliveryNumber(orderitem.deliveryStatus) < 8
                           }
                           value="Return Dispatched"
                         >
@@ -465,7 +495,7 @@ export default function ReturnPage() {
 
                         <MenuItem
                           disabled={
-                            deliveryNumber(orderitem.deliveryStatus) > 10
+                            deliveryNumber(orderitem.deliveryStatus) < 9
                           }
                           value="Return Delivered"
                         >

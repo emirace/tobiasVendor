@@ -82,6 +82,8 @@ import VerifyEmailScreen from "./screens/VerifyEmailScreen";
 import EmailConfirmationScreen from "./screens/successPage/EmailConfirmationScreen";
 import initFacebookSdk from "./hooks/initFacebookSdk";
 import VerifyAccountScreen from "./screens/VerifyAccountScreen";
+import PaymentScreen from "./screens/PaymentScreen";
+import TransactionScreen from "./screens/TransactionScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -580,12 +582,28 @@ function App() {
                           </AdminRoute>
                         }
                       />
+                      <Route
+                        path="/payment/:id"
+                        element={
+                          <AdminRoute>
+                            <PaymentScreen />
+                          </AdminRoute>
+                        }
+                      />
 
                       <Route
                         path="/admin/allProductList/"
                         element={
                           <AdminRoute>
                             <ProductListAdmin />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/transaction/:id"
+                        element={
+                          <AdminRoute>
+                            <TransactionScreen />
                           </AdminRoute>
                         }
                       />

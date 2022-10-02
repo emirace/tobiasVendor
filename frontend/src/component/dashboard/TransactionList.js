@@ -149,7 +149,7 @@ const reducer = (state, action) => {
     case "USERS_SUCCESS":
       return {
         ...state,
-        payments: action.payload,
+        transactions: action.payload,
         loading: false,
       };
     case "USERS_FAIL":
@@ -168,26 +168,28 @@ const reducer = (state, action) => {
   }
 };
 
-export default function Payments() {
+export default function TransactionList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
-  const [{ loading, payments, error, loadingDelete, successDelete }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      payments: [],
-      error: "",
-    });
+  const [
+    { loading, transactions, error, loadingDelete, successDelete },
+    dispatch,
+  ] = useReducer(reducer, {
+    loading: true,
+    transactions: [],
+    error: "",
+  });
 
   const [showModel, setShowModel] = useState(false);
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
   useEffect(() => {
-    const fetchReturns = async () => {
+    const fetchTransactions = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/payments?q=${salesQurrey}`, {
+        const { data } = await axios.get(`/api/transactions?q=${salesQurrey}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
 
@@ -197,7 +199,7 @@ export default function Payments() {
         console.log(getError(err));
       }
     };
-    fetchReturns();
+    fetchTransactions();
   }, [userInfo, salesQurrey]);
 
   const deleteHandler = async (order) => {
@@ -251,17 +253,32 @@ export default function Payments() {
   const columns = [
     { field: "id", headerName: "ID", width: 200 },
 
+    // {
+    //   field: "user",
+    //   headerName: "User",
+    //   width: 100,
+    //   renderCell: (params) => {
+    //     return (
+    //       <Product>
+    //         <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
+    //       </Product>
+    //     );
+    //   },
+    // },
     {
-      field: "user",
-      headerName: "User",
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
-          </Product>
-        );
-      },
+      field: "purpose",
+      headerName: "Purpose",
+      width: 150,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+    },
+    {
+      field: "type",
+      headerName: "Type",
+      width: 150,
     },
     {
       field: "amount",
@@ -274,23 +291,13 @@ export default function Payments() {
       width: 150,
     },
     {
-      field: "type",
-      headerName: "Type",
-      width: 150,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
       field: "action",
       headerName: "Action",
       width: 150,
       renderCell: (params) => {
         return (
           <ActionSec>
-            <Link to={`/payment/${params.row.id}`}>
+            <Link to={`/transaction/${params.row.id}`}>
               <Edit mode={mode}>View</Edit>
             </Link>
           </ActionSec>
@@ -298,21 +305,22 @@ export default function Payments() {
       },
     },
   ];
-  console.log(payments);
+  console.log(transactions);
   const rows =
-    payments.length > 0 &&
-    payments.map((p) => ({
+    transactions.length > 0 &&
+    transactions.map((p) => ({
       id: p._id,
       date: moment(p.createdAt).format("MM DD, h:mm a"),
-      user: p.userId.username,
-      status: p.status,
+      // user: p.userId.username,
+      status: "Done",
+      purpose: p.metadata.purpose,
       amount: p.amount,
-      type: p.meta.Type,
+      type: p.txnType,
     }));
 
   return (
     <ProductLists mode={mode}>
-      <Title>Payments</Title>
+      <Title>Transactions</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}

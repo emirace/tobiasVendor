@@ -28,7 +28,6 @@ const Th = styled.th`
 `;
 const Tr = styled.tr``;
 const User = styled.td`
-  display: flex;
   text-transform: capitalize;
   align-items: center;
   margin: 10px 0;
@@ -130,6 +129,7 @@ export default function WidgetLarge({ refresh }) {
       <Tittle>Latest transactions</Tittle>
       <Table>
         <Tr>
+          <Th>Id</Th>
           <Th>Purpose</Th>
           <Th>Date</Th>
           <Th>Type</Th>
@@ -138,6 +138,7 @@ export default function WidgetLarge({ refresh }) {
         </Tr>
         {transactions.map((t) => (
           <Tr>
+            <User>{t._id}</User>
             <User>{t.metadata ? t.metadata.purpose : ""}</User>
             <Date>{moment(t.createdAt).format("MMMM Do YYYY, h:mm:ss a")}</Date>
             <Amount>{t.txnType}</Amount>

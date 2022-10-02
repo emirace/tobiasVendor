@@ -212,7 +212,7 @@ export default function SignupScreen() {
   }, [navigate, redirect, userInfo]);
 
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text }));
+    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
   };
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));

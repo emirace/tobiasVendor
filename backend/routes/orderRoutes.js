@@ -77,7 +77,6 @@ orderRouter.get(
             },
           }
         : {};
-    console.log({ ...queryFilter });
 
     const seller = req.params.id;
 
@@ -367,7 +366,6 @@ orderRouter.get(
             },
           }
         : {};
-    console.log({ ...queryFilter });
 
     const orders = await Order.find({ user: req.user._id, ...queryFilter })
       .sort({ createdAt: -1 })
@@ -458,7 +456,6 @@ orderRouter.put(
         response = await flw.Transaction.verify({ id: transaction_id });
       }
     }
-    console.log(response);
     if (response.data.status === "successful") {
       const order = await Order.findById(req.params.id);
       const products = [];
@@ -468,10 +465,15 @@ orderRouter.put(
       });
       records.map(async (p) => {
         p.sold = true;
+        p.countInStock =
+          p.countInStock -
+          order.orderItems.map((x) => {
+            if (p._id.toString() === x._id) return x.quantity;
+          });
+
         const seller = await User.findById(p.seller);
         seller.sold.push(p._id);
         await seller.save();
-        console.log("seller 2", seller);
         await p.save();
       });
 

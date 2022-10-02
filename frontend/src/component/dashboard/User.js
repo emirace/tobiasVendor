@@ -504,7 +504,7 @@ export default function User() {
               <Wbalance>Wallet Balance</Wbalance>
               <Wamount>
                 {balance.currency}
-                {balance.balance}
+                {balance.balance.toFixed(2)}
               </Wamount>
             </Wallet>
           </ShowTop>

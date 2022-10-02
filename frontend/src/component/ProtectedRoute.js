@@ -25,7 +25,6 @@ export function CartNotEmpty({ children }) {
   const { state } = useContext(Store);
   const { cart } = state;
   const { cartItems } = cart;
-  cartItems.length < 1 && toast.error("Cart is empty");
   return cartItems.length > 0 ? children : <Navigate to="/cart" />;
 }
 

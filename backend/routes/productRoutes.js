@@ -179,7 +179,10 @@ productRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate(
+      "reviews.username",
+      "usernsme image"
+    );
     if (product) {
       if (product.seller.toString() === req.user._id) {
         return res
@@ -193,11 +196,12 @@ productRouter.post(
       }
 
       const review = {
-        name: req.user.username,
+        name: req.user._id,
         rating: Number(req.body.rating),
         comment: req.body.comment,
         like: req.body.like,
       };
+      console.log(review);
       product.reviews.push(review);
       product.numReviews = product.reviews.length;
       product.rating =
@@ -717,10 +721,9 @@ productRouter.get(
 );
 
 productRouter.get("/slug/:slug", async (req, res) => {
-  const product = await Product.findOne({ slug: req.params.slug }).populate(
-    "seller",
-    "username image sold rating numReviews "
-  );
+  const product = await Product.findOne({ slug: req.params.slug })
+    .populate("seller", "username image sold rating numReviews ")
+    .populate("reviews.name", "username image");
   if (product) {
     res.send(product);
   } else {

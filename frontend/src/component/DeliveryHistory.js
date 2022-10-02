@@ -51,6 +51,7 @@ const Line = styled.div`
 export default function ({ status }) {
   return (
     <Container>
+      {console.log(status)}
       <Content>
         {status < 6 ? (
           <>
@@ -103,25 +104,34 @@ export default function ({ status }) {
               </Box>
               <Text>Returned</Text>
             </BoxCont>
-
             <Line className={status >= 6 ? "active" : ""} />
-            <Line className={status >= 7 ? "active" : ""} />
-            <BoxCont>
-              <Box className={status >= 7 ? "active" : ""}>
-                <FontAwesomeIcon color="white" icon={faCheck} />
-              </Box>
-              <Text>Return Approved</Text>
-            </BoxCont>
-            <Line className={status >= 7 ? "active" : ""} />
-            <Line className={status >= 8 ? "active" : ""} />
-            <BoxCont>
-              <Box className={status >= 8 ? "active" : ""}>
-                <FontAwesomeIcon color="white" icon={faCheck} />
-              </Box>
-              <Text>Return Declined</Text>
-            </BoxCont>
+            {status > 7 ? (
+              <>
+                <Line className={status >= 8 ? "active" : ""} />
+                <BoxCont>
+                  <Box className={status >= 8 ? "active" : ""}>
+                    <FontAwesomeIcon color="white" icon={faCheck} />
+                  </Box>
+                  <Text>Return Approved</Text>
+                </BoxCont>
+                <Line className={status >= 8 ? "active" : ""} />
+              </>
+            ) : (
+              <>
+                <Line className={status >= 7 ? "active" : ""} />
+                <BoxCont>
+                  <Box
+                    className={status >= 7 ? "active" : ""}
+                    style={{ background: status >= 7 && "red" }}
+                  >
+                    <FontAwesomeIcon color="white" icon={faCheck} />
+                  </Box>
+                  <Text>Return Declined</Text>
+                </BoxCont>
 
-            <Line className={status >= 8 ? "active" : ""} />
+                <Line />
+              </>
+            )}
             <Line className={status >= 9 ? "active" : ""} />
             <BoxCont>
               <Box className={status >= 9 ? "active" : ""}>

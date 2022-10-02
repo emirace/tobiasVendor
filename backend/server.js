@@ -30,6 +30,7 @@ import transactionRouter from "./routes/transactionRoutes.js";
 import Notification from "./models/notificationModel.js";
 import cartItemRouter from "./routes/cartRoutes.js";
 import locationRouter from "./routes/locationRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 
 dotenv.config();
 
@@ -97,6 +98,7 @@ app.use("/api/bestsellers", bestsellerRouter);
 app.use("/api/cartItems", cartItemRouter);
 app.use("/api/transactions", transactionRouter);
 app.use("/api/reportConversation", reportConversionRouter);
+app.use("/api/payments", paymentRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));

@@ -112,8 +112,8 @@ export default function MagnifyImage({ imgsrc, zoom }) {
 
   const leaving = () => {
     console.log(previewRef.current);
-    previewRef.current.style.display = "none";
-    glass.remove();
+    // previewRef.current.style.display = "none";
+    // glass.remove();
   };
   const enter = () => {
     console.log(previewRef.current);
