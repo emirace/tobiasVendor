@@ -36,7 +36,7 @@ const Content = styled.div``;
 const Manual = styled.div`
   margin: 20px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px;
   border-radius: 0.2rem;
@@ -53,7 +53,9 @@ const Name = styled.div`
   color: var(--orange-color);
   text-transform: capitalize;
 `;
-const Full = styled.div``;
+const Full = styled.div`
+  display: flex;
+`;
 const FormContainer = styled.div`
   padding: 20px;
 `;
@@ -225,7 +227,7 @@ export default function AddressBook() {
   return (
     <Container mode={mode}>
       <TitleCont>
-        <Title>NewProduct AddressBook</Title>
+        <Title> AddressBook</Title>
       </TitleCont>
       <Content>
         {loadingAddress ? (
@@ -238,9 +240,22 @@ export default function AddressBook() {
               <Option>
                 <FontAwesomeIcon icon={faHouse} />
                 <Name>{address.meta.deliveryOption}</Name>
-                <Full></Full>
               </Option>
-              <div style={{ display: "flex", gap: "20px" }}>
+              {Object.entries(address.meta).map(([key, value]) => (
+                <Full>
+                  <div
+                    style={{
+                      flex: "1",
+                      textTransform: "capitalize",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {key}:
+                  </div>
+                  <div style={{ flex: "5" }}>{value}</div>
+                </Full>
+              ))}
+              {/* <div style={{ display: "flex", gap: "20px" }}>
                 <Edit
                   onClick={() => {
                     setShowEditForm(true);
@@ -257,7 +272,7 @@ export default function AddressBook() {
                 >
                   Delete
                 </Edit>
-              </div>
+              </div> */}
             </Manual>
           ))
         ) : (
@@ -265,7 +280,7 @@ export default function AddressBook() {
             You have not added a shipping address, add one now.
           </MessageBox>
         )}
-        <Add onClick={() => setShowForm(true)}>Add New Shipping Address</Add>
+        {/* <Add onClick={() => setShowForm(true)}>Add New Shipping Address</Add> */}
         <ModelLogin showModel={showForm} setShowModel={setShowForm}>
           <FormContainer>
             <h3>Add Address</h3>

@@ -4,6 +4,7 @@ import { Store } from "../Store";
 import { Link } from "react-router-dom";
 import Rating from "../component/Rating";
 import ListGroup from "react-bootstrap/ListGroup";
+import { ReviewCont } from "../component/ReviewCont";
 
 const Container = styled.div`
   height: 100%;
@@ -42,11 +43,8 @@ const TabItem = styled.div`
   }
 `;
 
-const ReviewCont = styled.div`
+const ReviewCont1 = styled.div`
   margin-top: 5px;
-`;
-const ListGroupI = styled.div`
-  margin-left: 10px;
 `;
 const Scrollable = styled.div`
   height: 500px;
@@ -66,28 +64,11 @@ export default function ReviewLists({ reviews }) {
     switch (tab) {
       case "sold":
         return (
-          <ReviewCont>
+          <ReviewCont1>
             {reviews.map((review) => (
-              <div className="single_product_seller m-4">
-                <img
-                  src="/images/card2.png"
-                  alt="review"
-                  id="single_product_seller_sq"
-                />
-                <ListGroupI>
-                  <strong>@{review.name.user}</strong>
-                  <p>
-                    <Rating rating={review.rating} caption=" "></Rating>
-                  </p>
-
-                  <p>{review.comment}</p>
-                  <p>
-                    <small>1 days ago</small>
-                  </p>
-                </ListGroupI>
-              </div>
+              <ReviewCont review={review} />
             ))}
-          </ReviewCont>
+          </ReviewCont1>
         );
       case "purchase":
         return <>purchase reviwws</>;

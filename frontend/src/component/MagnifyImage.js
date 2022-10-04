@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Main = styled.div`
@@ -23,7 +23,6 @@ const Main = styled.div`
 const Preview = styled.div`
   position: absolute;
   right: -300px;
-  display: none;
   top: 0;
   height: 300px;
   width: 300px;
@@ -32,104 +31,90 @@ const Preview = styled.div`
 `;
 
 export default function MagnifyImage({ imgsrc, zoom }) {
+  const [[x, y], setXY] = useState([0, 0]);
+  const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
+  const [showMagnifier, setShowMagnifier] = useState(false);
+  
   const imgRef = useRef();
   const previewRef = useRef();
+  const glassRef = useRef();
 
-  //function moveMagnifier(e) {}
+  const magnifierHeight=100
+  const magnifieWidth=100
+  const zoomLevel = 3
 
-  function getCursorPos(e, img) {
-    var a,
-      x = 0,
-      y = 0;
-    e = e || window.event;
-    /* Get the x and y positions of the image: */
-    a = img.getBoundingClientRect();
-    /* Calculate the cursor's x and y coordinates, relative to the image: */
-    x = e.pageX - a.left;
-    y = e.pageY - a.top;
-    /* Consider any page scrolling: */
-    x = x - window.pageXOffset;
-    y = y - window.pageYOffset;
-    return { x: x, y: y };
-  }
+ 
 
-  // img.addEventListener("mouseleave", () => {
-  //   preview.style.backgroundImage = "none";
-  //   glass.remove();
-  // });
-
-  /* Create magnifier glass: */
-  var glass = document.createElement("DIV");
-  glass.setAttribute("class", "img-magnifier-glass");
-
-  const text = (e) => {
-    var img = imgRef.current;
-    var preview = previewRef.current;
-
-    /* Set background properties for the magnifier glass: */
-    previewRef.current.style.display = "block";
-    preview.style.backgroundImage = "url('" + img.src + "')";
-    preview.style.backgroundRepeat = "no-repeat";
-    preview.style.backgroundSize =
-      img.width * zoom + "px " + img.height * zoom + "px";
-    /* Insert magnifier glass: */
-    img.parentElement.insertBefore(glass, img);
-
-    var w = glass.offsetWidth / 2;
-    var h = glass.offsetHeight / 2;
-    var pos, x, y;
-    /* Prevent any other actions that may occur when moving over the image */
-    e.preventDefault();
-    /* Get the cursor's x and y positions: */
-    pos = getCursorPos(e, img);
-    x = pos.x;
-    y = pos.y;
-    /* Prevent the magnifier glass from being positioned outside the image: */
-    if (x > img.width - w) {
-      x = img.width - w;
-    }
-    if (x < 0 + w) {
-      x = 0 + w;
-    }
-    if (y > img.height - h) {
-      y = img.height - h;
-    }
-    if (y < 0 + h) {
-      y = 0 + h;
-    }
-    /* Set the position of the magnifier glass: */
-    glass.style.display = "block";
-    glass.style.left = x - w + "px";
-    glass.style.top = y - h + "px";
-    /* Display what the magnifier glass "sees": */
-    preview.style.backgroundPosition =
-      "-" +
-      (x * zoom - preview.offsetWidth / 2) +
-      "px -" +
-      (y * zoom - preview.offsetHeight / 2) +
-      "px";
-  };
-
-  const leaving = () => {
-    console.log(previewRef.current);
-    // previewRef.current.style.display = "none";
-    // glass.remove();
-  };
-  const enter = () => {
-    console.log(previewRef.current);
-  };
-
-  return (
-    <Main className="main">
-      <img
-        ref={imgRef}
-        onMouseEnter={enter}
-        onMouseMove={(e) => text(e)}
-        onMouseLeave={leaving}
-        src={imgsrc}
-        id="gfg-img"
-      />
-      <Preview ref={previewRef} className="zoom-preview"></Preview>
-    </Main>
+  return (<>
+      <div
+        style={{
+          position: "relative",
+          height: '100%',
+          width: '100%'
+        }}
+      >
+        <img
+          src={imgsrc}
+          style={{  width: '100%' }}
+          onMouseEnter={(e) => {
+            // update image size and turn-on magnifier
+            const elem = e.currentTarget;
+            const { width, height } = elem.getBoundingClientRect();
+            setSize([width, height]);
+            setShowMagnifier(true);
+          }}
+          onMouseMove={(e) => {
+            // update cursor position
+            const elem = e.currentTarget;
+            const { top, left } = elem.getBoundingClientRect();
+  
+            // calculate cursor position on the image
+            const x = e.pageX - left - window.pageXOffset;
+            const y = e.pageY - top - window.pageYOffset;
+            setXY([x, y]);
+          }}
+          onMouseLeave={() => {
+            // close magnifier
+            setShowMagnifier(false);
+          }}
+          alt={"img"}
+        />
+  
+        <div
+          style={{
+            display: showMagnifier ? "" : "none",
+            position: "absolute",
+  
+            // prevent maginier blocks the mousemove event of img
+            pointerEvents: "none",
+            // set size of magnifier
+            height: `${magnifierHeight}px`,
+            width: `${magnifieWidth}px`,
+            // move element center to cursor pos
+            top: `${y - magnifierHeight / 2}px`,
+            left: `${x - magnifieWidth / 2}px`,
+            opacity: "1", // reduce opacity so you can verify position
+            border: "1px solid lightgray",
+          }}
+        ></div>
+      <Preview style={{
+            display: showMagnifier ? "" : "none",
+            position: "absolute",
+            border: "1px solid lightgray",
+            backgroundColor: "white",
+            backgroundImage: `url('${imgsrc}')`,
+            backgroundRepeat: "no-repeat",
+  
+            //calculate zoomed image size
+            backgroundSize: `${imgWidth * zoomLevel}px ${
+              imgHeight * zoomLevel
+            }px`,
+            //calculete position of zoomed image.
+            backgroundPositionX: `${-x * zoomLevel + magnifieWidth / 2}px`,
+            backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`
+            
+            }} 
+            ></Preview>
+      </div></>
   );
 }

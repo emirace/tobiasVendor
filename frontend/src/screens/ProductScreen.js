@@ -28,6 +28,7 @@ import {
   faAngleLeft,
   faAngleRight,
   faBookmark,
+  faCirclePlay,
   faFaceSmile,
   faHeart,
   faMessage,
@@ -848,7 +849,7 @@ export default function ProductScreen() {
               <ListGroup>
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name.username}</strong>{" "}
+                    <strong>{review.name}</strong>{" "}
                     <FontAwesomeIcon
                       style={{ marginLeft: "10px" }}
                       icon={
@@ -1034,6 +1035,25 @@ export default function ProductScreen() {
                 </div>
               )
           )}
+          {product.video && (
+            <div
+              className="single_product_multi_image"
+              onClick={() => setSelectedImage("video")}
+            >
+              <div
+                style={{
+                  backgroundImage: `url('${product.image}')`,
+                  width: "100%",
+                  height: "60px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <FontAwesomeIcon icon={faCirclePlay} />
+              </div>
+            </div>
+          )}
         </div>
         <div className=" col-sm-12 col-md-6 d-block d-md-none">
           <div className=" row justify-content-center">
@@ -1070,7 +1090,13 @@ export default function ProductScreen() {
         </div>
 
         <div className="single_product_center">
-          <MagnifyImage imgsrc={selectedImage || product.image} zoom={3} />
+          {selectedImage === "video" ? (
+            <video width="100%" controls muted autoplay>
+              <source src={product.video} type="video/mp4" />
+            </video>
+          ) : (
+            <MagnifyImage imgsrc={selectedImage || product.image} zoom={3} />
+          )}
         </div>
 
         <div className="single_product_right">
@@ -1087,7 +1113,7 @@ export default function ProductScreen() {
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
                   rating={product.seller.rating}
-                  numReviews={product.seller.numReviews}
+                  numReviews={product.numReviews}
                 />
               </ReviewsClick>
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>

@@ -7,6 +7,7 @@ import {
   faImage,
   faQuestionCircle,
   faTimes,
+  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -460,9 +461,19 @@ const reducer = (state, action) => {
     case "UPLOAD_SUCCESS":
       return { ...state, loadingUpload: false, errorUpload: "" };
     case "UPLOAD_FAIL":
+    case "VIDEO_REQUEST":
+      return { ...state, loadingVideo: true };
+    case "VIDEO_SUCCESS":
       return {
         ...state,
-        loadingUpload: false,
+        loadingVideo: false,
+        video: action.payload,
+        errorUpload: "",
+      };
+    case "VIDEO_FAIL":
+      return {
+        ...state,
+        loadingVideo: false,
         errorUpload: action.payload,
       };
 
@@ -550,15 +561,16 @@ export default function NewProduct() {
 
   const navigate = useNavigate();
 
-  const [{ loading, error, loadingUpload, errorUpload }, dispatch] = useReducer(
-    reducer,
-    {
-      loading: false,
-      error: "",
-      loadingUpload: false,
-      errorUpload: "",
-    }
-  );
+  const [
+    { loading, error, loadingVideo, video, loadingUpload, errorUpload },
+    dispatch,
+  ] = useReducer(reducer, {
+    loading: false,
+    error: "",
+    loadingUpload: false,
+    errorUpload: "",
+    video: null,
+  });
 
   const [categories, setCategories] = useState([]);
   useEffect(() => {
@@ -672,7 +684,7 @@ export default function NewProduct() {
             image2,
             image3,
             image4,
-            // video,
+            video,
             product,
             subCategory,
             category,
@@ -735,9 +747,43 @@ export default function NewProduct() {
   //     console.log('new', sizes);
   //   };
 
+  const videouploadHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+
+    try {
+      dispatch({ type: "VIDEO_REQUEST" });
+      const { data } = await axios.post(
+        "/api/upload/video/upload",
+        bodyFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      console.log(data);
+      dispatch({ type: "VIDEO_SUCCESS", payload: data.secure_url });
+
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Video Uploaded",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (error) {
+      dispatch({ type: "VIDEO_REQUEST" });
+    }
+  };
+
   const uploadHandler = async (file, fileType) => {
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
+    console.log("bodyFormData", bodyFormData, file);
     try {
       dispatch({ type: "UPLOAD_REQUEST" });
       const { data } = await axios.post("/api/upload", bodyFormData, {
@@ -1518,6 +1564,32 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                 Add clear and quality images.Ensure ypu follow the image uplaod
                 rules.
               </TitleDetails>
+              <input
+                type="file"
+                onChange={videouploadHandler}
+                id="video"
+                style={{ display: "none" }}
+              />
+              {loadingVideo ? (
+                <LoadingBox />
+              ) : video ? (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <FontAwesomeIcon icon={faVideo} />
+                  <span>Video Uploaded</span>
+                </div>
+              ) : (
+                <label
+                  htmlFor="video"
+                  style={{
+                    display: "block",
+                    cursor: "pointer",
+                    color: "var(--orange-color)",
+                    textAlign: "center",
+                  }}
+                >
+                  Add a short Clip
+                </label>
+              )}
               <ImageRow>
                 <VintageCont>
                   <ItemCheck>

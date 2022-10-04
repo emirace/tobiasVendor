@@ -36,7 +36,7 @@ productRouter.post(
       image3,
       image4,
       tags,
-      // video,
+      video,
       product,
       subCategory,
       category,
@@ -68,7 +68,7 @@ productRouter.post(
       image: image1,
       images: images ? images : [],
       tags,
-      // video: video ? video : '',
+      video: video ? video : "",
       price,
       actualPrice: discount,
       product,
@@ -180,7 +180,7 @@ productRouter.post(
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId).populate(
-      "reviews.username",
+      "reviews",
       "usernsme image"
     );
     if (product) {
@@ -196,12 +196,12 @@ productRouter.post(
       }
 
       const review = {
-        name: req.user._id,
+        name: req.body.name,
+        user: req.user._id,
         rating: Number(req.body.rating),
         comment: req.body.comment,
         like: req.body.like,
       };
-      console.log(review);
       product.reviews.push(review);
       product.numReviews = product.reviews.length;
       product.rating =
