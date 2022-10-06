@@ -5,7 +5,11 @@ import Form from "react-bootstrap/Form";
 import { Store } from "../Store";
 import styled from "styled-components";
 import axios from "axios";
-import { getError } from "../utils";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { getError, loginGig } from "../utils";
+import useGeoLocation from "../hooks/useGeoLocation";
 
 const Container = styled.div`
   margin: 30px;
@@ -92,7 +96,18 @@ const reducer = (state, action) => {
         addresses: action.payload,
         error: "",
       };
+    case "FETCH_STATIONs_REQUEST":
+      return { ...state, loadingStations: true };
+    case "FETCH_STATIONs_SUCCESS":
+      return {
+        ...state,
+        loadingStations: false,
+        stations: action.payload,
+        error: "",
+      };
 
+    case "FETCH_STATIONs_FAILED":
+      return { ...state, loadingStations: false };
     case "FETCH_ADDRESS_FAILED":
       return { ...state, loadingAddress: false, error: action.payload };
     default:
@@ -125,11 +140,39 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   //   console.log("union", union);
   // }, [cartItems]);
 
-  const [{ loadingAddress, error, addresses }, dispatch] = useReducer(reducer, {
+  const [
+    { loadingAddress, error, loadingStations, stations, addresses },
+    dispatch,
+  ] = useReducer(reducer, {
     loadingAddress: true,
     error: "",
     addresses: null,
+    loadingStations: true,
   });
+
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const fetchStations = async () => {
+      try {
+        dispatch({ type: "FETCH_STATIONs_REQUEST" });
+        const logins = await loginGig();
+        setToken(logins);
+        if (deliveryOption === "GIG Logistics") {
+          const { data } = await axios.get(
+            "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/localStations",
+            {
+              headers: { Authorization: `Bearer ${token.token}` },
+            }
+          );
+          dispatch({ type: "FETCH_STATIONs_SUCCESS", payload: data.Object });
+        }
+      } catch (error) {
+        dispatch({ type: "FETCH_STATIONs_FAIL" });
+      }
+    };
+    fetchStations();
+  }, [deliveryOption]);
 
   useEffect(() => {
     dispatch({ type: "FETCH_ADDRESS_REQUEST" });
@@ -160,13 +203,73 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         }
       });
     }
-  }, [deliveryOption]);
-
+  }, [addresses, deliveryOption]);
+  const location = useGeoLocation();
+  const [locationerror, setLocationerror] = useState("");
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("value", value);
-    console.log("meta", meta);
-    const deliverySelect = { deliveryOption, cost: value, ...meta };
+    var deliverySelect;
+    if (location.error) {
+      setLocationerror("Location is require for proper delivery");
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Location is require for proper delivery",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+    console.log(location);
+    if (deliveryOption === "GIG Logistics") {
+      if (location.error) {
+        return;
+      }
+      const { data } = await axios.post(
+        "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/price",
+        {
+          ReceiverAddress: meta.address,
+          CustomerCode: token.username,
+          SenderLocality: meta.address,
+          SenderAddress: item.meta.address,
+          ReceiverPhoneNumber: meta.phone,
+          VehicleType: "BIKE",
+          SenderPhoneNumber: item.meta.phone,
+          SenderName: item.meta.name,
+          ReceiverName: meta.name,
+          UserId: token.userId,
+          ReceiverStationId: meta.stationId,
+          SenderStationId: item.meta.stationId,
+          ReceiverLocation: {
+            Latitude: location.coordinates.lat,
+            Longitude: location.coordinates.lng,
+          },
+          SenderLocation: { Latitude: item.meta.lat, Longitude: item.meta.lng },
+          PreShipmentItems: [
+            {
+              SpecialPackageId: "0",
+              Quantity: item.quantity,
+              ItemType: "Normal",
+              ItemName: item.name,
+              Value: item.actualPrice,
+              ShipmentType: "Regular",
+              Description: item.description,
+              ImageUrl: item.image,
+            },
+          ],
+        },
+        {
+          headers: { Authorization: `Bearer ${token.token}` },
+        }
+      );
+      console.log(data);
+      deliverySelect = {
+        deliveryOption,
+        cost: data.Object.DeliverPrice,
+        ...meta,
+      };
+    }
+    deliverySelect = { deliveryOption, cost: value, ...meta };
     if (userInfo) {
       await axios.post(
         update ? `/api/addresses/${selected}` : "/api/addresses",
@@ -506,6 +609,112 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Province"
                           value={meta.province}
                         />
+                      </Plan>
+                      <a
+                        className="link"
+                        href="https://www.youtube.com/watch?v=VlUQTF064y8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        How Aramex works
+                      </a>
+                    </Plans>
+                  ) : deliveryOption === "GIG Logistics" ? (
+                    <Plans>
+                      {locationerror && (
+                        <div style={{ color: "red", textAlign: "center" }}>
+                          {locationerror}
+                        </div>
+                      )}
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, name: e.target.value })
+                          }
+                          placeholder="Name"
+                          value={meta.name}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
+                          placeholder="Phone"
+                          value={meta.phone}
+                        />
+                      </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, address: e.target.value })
+                          }
+                          placeholder="Address"
+                          value={meta.address}
+                        />
+                      </Plan>
+                      <Plan style={{ justifyContent: "unset" }}>
+                        <div
+                          style={{
+                            fontSize: "14px",
+                            marginLeft: "20px",
+                            marginRight: "20px",
+                            color: "grey",
+                          }}
+                        >
+                          Select Station
+                        </div>
+                        <FormControl
+                          sx={{
+                            width: "80%",
+                            margin: 0,
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            onChange={(e) =>
+                              setMeta({ ...meta, stationId: e.target.value })
+                            }
+                            displayEmpty
+                            value={meta.stationId}
+                          >
+                            {loadingStations ? (
+                              <MenuItem value="">Loading...</MenuItem>
+                            ) : (
+                              stations.map((station) => (
+                                <MenuItem value={station.StationId}>
+                                  {station.StateName}
+                                </MenuItem>
+                              ))
+                            )}
+                          </Select>
+                        </FormControl>
                       </Plan>
                       <a
                         className="link"

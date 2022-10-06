@@ -553,11 +553,13 @@ export default function NewProduct() {
   const [showDelivery, setShowDelivery] = useState(false);
 
   const [paxi, setPaxi] = useState(true);
+  const [gig, setGig] = useState(false);
   const [pudo, setPudo] = useState(false);
   const [postnet, setPostnet] = useState(false);
   const [aramex, setAramex] = useState(false);
   const [pickup, setPickup] = useState(true);
   const [bundle, setBundle] = useState(false);
+  const [meta, setMeta] = useState({});
 
   const navigate = useNavigate();
 
@@ -692,6 +694,7 @@ export default function NewProduct() {
             brand,
             discount,
             deliveryOption,
+            meta,
             tags,
             price,
             location,
@@ -1763,6 +1766,8 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   <DeliveryOption
                     paxi={paxi}
                     setPaxi={setPaxi}
+                    gig={gig}
+                    setGig={setGig}
                     pudo={pudo}
                     setPudo={setPudo}
                     aramex={aramex}
@@ -1774,6 +1779,8 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                     bundle={bundle}
                     setBundle={setBundle}
                     setDeliveryOption={setDeliveryOption}
+                    meta={meta}
+                    setMeta={setMeta}
                     deliveryOption={deliveryOption}
                   />
                   {console.log(deliveryOption)}

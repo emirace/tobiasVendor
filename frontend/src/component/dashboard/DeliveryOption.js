@@ -1,9 +1,15 @@
 import { faQuestionCircle, faTruck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../Store";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { loginGig } from "../../utils";
+import axios from "axios";
+import useGeoLocation from "../../hooks/useGeoLocation";
 
 const Container = styled.div`
   padding: 30px 15vw;
@@ -114,6 +120,14 @@ const Plan = styled.div`
   margin: 8px 0;
   justify-content: space-between;
 `;
+
+const Plan1 = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  justify-content: space-between;
+  padding: 10px 30px;
+`;
 const PlanName = styled.div`
   font-size: 14px;
 `;
@@ -134,11 +148,55 @@ const Radio = styled.input`
   }
 `;
 
+const Input = styled.input`
+  border: none;
+  width: 100%;
+  height: 30px;
+  border-bottom: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  background: none;
+  padding-left: 10px;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  &:focus {
+    outline: none;
+    border-bottom: 1px solid var(--orange-color);
+  }
+  &::placeholder {
+    font-size: 14px;
+  }
+`;
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_STATIONs_REQUEST":
+      return { ...state, loadingStations: true };
+    case "FETCH_STATIONs_SUCCESS":
+      return {
+        ...state,
+        loadingStations: false,
+        stations: action.payload,
+        error: "",
+      };
+
+    case "FETCH_STATIONs_FAILED":
+      return { ...state, loadingStations: false };
+
+    default:
+      return state;
+  }
+};
+
 export default function DeliveryOption({
   setDeliveryOption,
   deliveryOption,
   paxi,
   setPaxi,
+  setGig,
+  gig,
   pudo,
   setPudo,
   postnet,
@@ -149,12 +207,29 @@ export default function DeliveryOption({
   setPickup,
   bundle,
   setBundle,
+  meta,
+  setMeta,
 }) {
   const { state } = useContext(Store);
   const { mode } = state;
+
   const handleChange = (e) => {
     const { name, value } = e;
     const exist = deliveryOption.filter((x) => x.name === name);
+    if (e.gig) {
+      if (location.error) {
+        console.log(location);
+        return;
+      } else {
+        setMeta({
+          ...meta,
+          lat: location.coordinates.lat,
+          lng: location.coordinates.lng,
+        });
+      }
+    }
+    console.log("meta", meta);
+
     if (exist) {
       const newArray = deliveryOption.filter((x) => x.name !== name);
       setDeliveryOption([...newArray, { name, value }]);
@@ -162,6 +237,49 @@ export default function DeliveryOption({
       setDeliveryOption((prevstate) => [...prevstate, { name, value }]);
     }
   };
+
+  const [{ error, loadingStations, stations }, dispatch] = useReducer(reducer, {
+    error: "",
+    loadingStations: true,
+  });
+
+  useEffect(() => {
+    const fetchStations = async () => {
+      try {
+        dispatch({ type: "FETCH_STATIONs_REQUEST" });
+        const token = await loginGig();
+        console.log(token);
+        const { data } = await axios.get(
+          "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/localStations",
+          {
+            headers: { Authorization: `Bearer ${token.token}` },
+          }
+        );
+        console.log(data);
+        dispatch({ type: "FETCH_STATIONs_SUCCESS", payload: data.Object });
+      } catch (error) {
+        dispatch({ type: "FETCH_STATIONs_FAIL" });
+      }
+    };
+    fetchStations();
+  }, []);
+
+  const location = useGeoLocation();
+  const [locationerror, setLocationerror] = useState("");
+  useEffect(() => {
+    if (gig) {
+      if (location.error) {
+        setLocationerror("Location is require for proper delivery");
+      } else {
+        setMeta({
+          ...meta,
+          lat: location.coordinates.lat,
+          lng: location.coordinates.lng,
+        });
+      }
+    }
+  }, [gig, location]);
+
   const handleCheck = (e) => {
     const { name, value } = e;
     console.log("hello", name, value);
@@ -207,7 +325,6 @@ export default function DeliveryOption({
             }}
           ></Switch>
         </Option>
-        {console.log(deliveryOption)}
         <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
         {paxi && (
           <Plans>
@@ -474,6 +591,136 @@ export default function DeliveryOption({
               rel="noopener noreferrer"
             >
               How Aramex works
+            </a>
+          </Plans>
+        )}
+      </OptionCont>
+      <OptionCont>
+        <Option>
+          <Label>
+            <FontAwesomeIcon icon={faTruck} />
+            <Name>GIG Logistics</Name>
+            <Tips mode={mode} tips={`About GIG Logistics `}>
+              <FontAwesomeIcon icon={faQuestionCircle} />
+            </Tips>
+          </Label>
+          <Switch
+            mode={mode}
+            checked={gig}
+            onChange={(e) => {
+              setGig(e.target.checked);
+              handleChange({
+                name: "GIG Logistics",
+                value: 1,
+                gig: e.target.checked,
+              });
+              if (!e.target.checked) {
+                setDeliveryOption(
+                  deliveryOption.filter((x) => x.name !== "Gig Logistics")
+                );
+              }
+            }}
+          ></Switch>
+        </Option>
+        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
+        {gig && (
+          <Plans>
+            {locationerror && (
+              <div style={{ color: "red", textAlign: "center" }}>
+                {locationerror}
+              </div>
+            )}
+            <Plan1>
+              <Input
+                mode={mode}
+                type="text"
+                onChange={(e) => setMeta({ ...meta, name: e.target.value })}
+                placeholder="Name"
+                value={meta?.name}
+              />
+            </Plan1>
+            <Plan1>
+              {console.log(meta)}
+              <Input
+                mode={mode}
+                type="text"
+                onChange={(e) => setMeta({ ...meta, address: e.target.value })}
+                placeholder="Address"
+                value={meta?.address}
+              />
+            </Plan1>
+            <Plan1>
+              <Input
+                mode={mode}
+                type="text"
+                onChange={(e) => setMeta({ ...meta, phone: e.target.value })}
+                placeholder="Phone"
+                value={meta?.phone}
+              />
+            </Plan1>
+            <Plan1>
+              <div
+                style={{
+                  fontSize: "14px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  color: "grey",
+                }}
+              >
+                Select Station
+              </div>
+              <FormControl
+                sx={{
+                  width: "80%",
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  onChange={(e) =>
+                    setMeta({ ...meta, stationId: e.target.value })
+                  }
+                  displayEmpty
+                >
+                  {loadingStations ? (
+                    <MenuItem value="">Loading...</MenuItem>
+                  ) : (
+                    stations.map((station) => (
+                      <MenuItem value={station.StationId}>
+                        {station.StateName}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              </FormControl>
+            </Plan1>
+            <a
+              className="link"
+              href="/#"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              How GIG works
             </a>
           </Plans>
         )}

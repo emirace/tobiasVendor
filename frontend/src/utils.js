@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const getError = (error) => {
   return error.response && error.response.data.message
     ? error.response.data.message
@@ -157,4 +159,20 @@ export const deliveryNumber = (status) => {
     default:
       return 0;
   }
+};
+
+export const loginGig = async () => {
+  const { data } = await axios.post(
+    "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/login",
+    {
+      username: "ACC001052",
+      Password: "1234567",
+      SessionObj: "",
+    }
+  );
+  return {
+    token: data.Object.access_token,
+    username: data.Object.UserName,
+    userId: data.Object.UserId,
+  };
 };

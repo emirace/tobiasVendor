@@ -51,6 +51,7 @@ const productSchema = new mongoose.Schema(
     reviews: [reviewSchema],
     sold: { type: Boolean },
     badge: { type: Boolean },
+    meta: {},
     active: { type: Boolean },
     vintage: { type: Boolean },
     luxury: { type: Boolean },
