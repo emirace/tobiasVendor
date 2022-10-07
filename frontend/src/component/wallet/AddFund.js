@@ -114,7 +114,7 @@ export default function AddFund({
     dispatch({ type: "FETCH_REQUEST" });
     try {
       const { data } = await axios.post(
-        "/api/accounts/deposit",
+        "/api/accounts/fundwallet",
         { ...response, purpose: "funding" },
         {
           headers: { authorization: `Bearer ${userInfo.token}` },

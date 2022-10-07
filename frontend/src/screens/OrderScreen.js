@@ -387,7 +387,7 @@ export default function OrderScreen() {
     successDeliver,
   ]);
 
-  async function deliverOrderHandler(deliveryStatus, productId) {
+  async function deliverOrderHandler(deliveryStatus, productId, orderitem) {
     try {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
@@ -406,7 +406,7 @@ export default function OrderScreen() {
           state1: "visible1 success",
         },
       });
-      if (deliveryStatus !== "Recieved" || deliveryStatus !== "Returned") {
+      if (deliveryStatus !== "Received" || deliveryStatus !== "Returned") {
         socket.emit("post_data", {
           userId: order.user,
           itemId: order._id,
@@ -416,6 +416,14 @@ export default function OrderScreen() {
           userImage: "/images/pimage.png",
         });
       } else {
+        socket.emit("post_data", {
+          userId: orderitem.seller._id,
+          itemId: order._id,
+          notifyType: "delivery",
+          msg: `Your order is ${deliveryStatus} `,
+          link: `/order/${order._id}`,
+          userImage: "/images/pimage.png",
+        });
       }
     } catch (err) {
       ctxDispatch({
@@ -456,12 +464,40 @@ export default function OrderScreen() {
       userImage: sellerImage,
     });
   };
-  const daydiff =
+  const daydiff = (x) =>
     order.createdAt &&
-    3 - timeDifference(new window.Date(order.createdAt), new window.Date());
+    x - timeDifference(new window.Date(order.createdAt), new window.Date());
 
   var itemsPrice = 0;
   var shippingPrice = 0;
+
+  const refund = async (product) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: order.user,
+        amount: product.deliverySelect.cost + product.actualPrice,
+        meta: {
+          Type: "Order Refund",
+          from: "Wallet",
+          to: "Wallet",
+          currency: product.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: product._id,
+      notifyType: "payment",
+      msg: `Order Refund`,
+      link: `/payment/${paymentData._id}`,
+      userImage: "/images/pimage.png",
+    });
+  };
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -502,15 +538,17 @@ export default function OrderScreen() {
           }}
         >
           <Heading>Items in your order</Heading>
-          {!isSeller && daydiff > 0 && (
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => setShowReturn(true)}
-            >
-              <b>Log a return</b>
-              <div style={{ color: "red" }}>{daydiff} days left</div>
-            </div>
-          )}
+          {!isSeller &&
+            daydiff(3) > 0 &&
+            deliveryNumber(order.deliveryStatus) > 3 && (
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowReturn(true)}
+              >
+                <b>Log a return</b>
+                <div style={{ color: "red" }}>{daydiff(3)} days left</div>
+              </div>
+            )}
           <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
             <Return
               deliverOrderHandler={deliverOrderHandler}
@@ -561,7 +599,7 @@ export default function OrderScreen() {
                           orderitem.deliveryStatus,
                           deliveryNumber(orderitem.deliveryStatus)
                         )}
-                        See delivery history
+                        Track Order
                       </div>
                     </div>
                     <Name>
@@ -690,6 +728,21 @@ export default function OrderScreen() {
                     <button className="btn btn-primary w-100">
                       <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                     </button>
+                    {console.log(daydiff(13))}
+                    {userInfo.isAdmin &&
+                      daydiff(13) <= 0 &&
+                      deliveryNumber(orderitem.deliveryStatus) < 4 && (
+                        <button
+                          onClick={() => refund(orderitem)}
+                          className="btn btn-primary w-100"
+                          style={{
+                            background: "var(--malon-color)",
+                            marginTop: "10px",
+                          }}
+                        >
+                          Refund
+                        </button>
+                      )}
                   </ActionButton>
                 </DetailButton>
                 {Object.entries(orderitem.deliverySelect).map(
@@ -749,7 +802,11 @@ export default function OrderScreen() {
                   orderitem.deliveryStatus === "Delivered" && (
                     <Received
                       onClick={() => {
-                        deliverOrderHandler("Recieved", orderitem._id);
+                        deliverOrderHandler(
+                          "Received",
+                          orderitem._id,
+                          orderitem
+                        );
                         paymentRequest(
                           orderitem.seller._id,
                           orderitem.actualPrice,

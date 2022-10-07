@@ -185,7 +185,7 @@ export default function Conversation({
           </LastMsg>
 
           <div style={{ color: "grey" }}>
-            {moment(conversation.createdAt).fromNow()}
+            {moment(conversation.updatedAt).fromNow()}
           </div>
         </ProfileDetail>
         {(conversation.productId || conversation.userId) && (

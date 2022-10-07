@@ -65,7 +65,7 @@ export default function FeeStructure() {
           app and website.
         </li>
         <li>
-          2. 5% Payment Processing fee; The payment processing fee is paid to
+          5% Payment Processing fee; The payment processing fee is paid to
           payment providers available on our platform which enables them to
           offer you safe and secured payment experience.
         </li>

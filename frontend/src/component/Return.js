@@ -304,7 +304,7 @@ export default function Return({
             <h4>Select a Product to Return</h4>
             {orderItems.map(
               (orderitem) =>
-                deliveryNumber(orderitem.deliveryStatus) < 6 && (
+                deliveryNumber(orderitem.deliveryStatus) === 4 && (
                   <>
                     <ItemCont
                       key={orderitem._id}

@@ -7,6 +7,10 @@ import {
   TwitterShareButton,
   TelegramShareButton,
   FacebookShareButton,
+  PinterestShareButton,
+  LinkedinShareButton,
+  LinkedinIcon,
+  PinterestIcon,
 } from "react-share";
 import {
   EmailIcon,
@@ -133,6 +137,13 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       >
         <TelegramIcon size={32} round={true} />
       </TelegramShareButton>
+
+      <PinterestShareButton>
+        <PinterestIcon size={32} round={true} />
+      </PinterestShareButton>
+      <LinkedinShareButton>
+        <LinkedinIcon size={32} round={true} />
+      </LinkedinShareButton>
     </Container>
   );
 }

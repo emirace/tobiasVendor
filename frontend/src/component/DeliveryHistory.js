@@ -48,7 +48,7 @@ const Line = styled.div`
     background: green;
   }
 `;
-export default function ({ status }) {
+export default function DeliveryHistory({ status }) {
   return (
     <Container>
       {console.log(status)}
@@ -102,7 +102,7 @@ export default function ({ status }) {
               <Box className={status >= 6 ? "active" : ""}>
                 <FontAwesomeIcon color="white" icon={faCheck} />
               </Box>
-              <Text>Returned</Text>
+              <Text>Return Logged</Text>
             </BoxCont>
             <Line className={status >= 6 ? "active" : ""} />
             {status > 7 ? (

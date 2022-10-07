@@ -161,7 +161,7 @@ export default function Withdraw({
           userId: userInfo._id,
           itemId: paymentData._id,
           notifyType: "payment",
-          msg: `Withdrawl request`,
+          msg: `Withdrawal request`,
           link: `/payment/${paymentData._id}`,
           userImage: userInfo.image,
         });

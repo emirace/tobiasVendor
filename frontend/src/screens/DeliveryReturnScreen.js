@@ -168,6 +168,8 @@ export default function DeliveryReturnScreen({
     }
   }, [deliveryOption]);
 
+  const [error1, setError1] = useState("");
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -192,6 +194,7 @@ export default function DeliveryReturnScreen({
               state1: "visible1 error",
             },
           });
+          setError1("Fund your wallet to complete return");
           return;
         } else {
           await axios.put(
@@ -237,6 +240,9 @@ export default function DeliveryReturnScreen({
           state1: "visible1 error",
         },
       });
+      setError1(
+        "Encoutered a problem adding addresd, ensure youe wallet is funded to continue"
+      );
     }
   };
 
@@ -271,6 +277,8 @@ export default function DeliveryReturnScreen({
         </Helmet>
         {console.log(returned)}
         <h1 className="my-3">Delivery Method</h1>
+        {error1 && <div style={{ color: "red" }}>{error1}</div>}
+        {console.log("error1", error1)}
 
         <Form onSubmit={submitHandler}>
           {[

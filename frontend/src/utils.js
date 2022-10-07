@@ -63,6 +63,24 @@ export function displayDeliveryStatus(status) {
       </div>
     );
   }
+
+  if (status === "Not yet Dispatched") {
+    return (
+      <div
+        style={{
+          background: "blue",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+
   if (status === "Hold") {
     return (
       <div

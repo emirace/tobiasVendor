@@ -449,18 +449,27 @@ userRouter.post(
     const userId = req.params.id;
     const user = await User.findById(userId);
     if (user) {
-      if (user.reviews.find((x) => x.name === req.user.name)) {
+      if (
+        user.reviews.find(
+          (x) => x.userId.toString() === req.user._id.toString()
+        )
+      ) {
         return res
           .status(400)
           .send({ message: "You already submitted a review" });
       }
+      if (user._id.toString() === req.user._id) {
+        return res.status(400).send({ message: "You can't review yourself" });
+      }
       const review = {
-        name: req.user.name,
+        name: req.body.name,
+        user: req.user._id,
         rating: Number(req.body.rating),
         comment: req.body.comment,
+        like: req.body.like,
       };
       user.reviews.push(review);
-      user.numReviews = product.reviews.length;
+      user.numReviews = user.reviews.length;
       user.rating =
         user.reviews.reduce((a, c) => c.rating + a, 0) / user.reviews.length;
 

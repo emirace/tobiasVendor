@@ -194,8 +194,8 @@ export default function OrderList() {
             <Link to={`/order/${params.row.id}`}>
               <img src={params.row.image} alt="" />
               {params.row.name}
-              {notifications.filter((x) => x.itemId === params.row.id).length >
-                0 && <Badge style={{ marginRight: "10px" }}></Badge>}
+              {/* {notifications.filter((x) => x.itemId === params.row.id).length >
+                0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
             </Link>
           </Product>
         );
@@ -251,7 +251,7 @@ export default function OrderList() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
-    date: moment(p.createdAt).format("MM DD, h:mm a"),
+    date: moment(p.createdAt).format("MMM Do, h:mm a"),
     amount: `${currency}${p.totalPrice}`,
   }));
 

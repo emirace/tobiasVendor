@@ -109,6 +109,7 @@ export default function ReturnPage() {
   const { id: returnId } = params;
   const [reasonText, setReasonText] = useState("");
   const [showModel, setShowModel] = useState(false);
+  const [refresh, setRefresh] = useState(true);
   const [{ loading, returned, loadingDeliver }, dispatch] = useReducer(
     reducer,
     {
@@ -132,14 +133,15 @@ export default function ReturnPage() {
       }
     };
     getReturn();
-  }, []);
+  }, [refresh]);
 
   const paymentRequest = async (seller, cost, itemCurrency) => {
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
         userId: returned.orderId.user._id,
-        amount: returned.productId.actualPrice,
+        amount:
+          returned.returnDelivery.cost * 2 + returned.productId.actualPrice,
         meta: {
           Type: "Return Completed",
           from: "Wallet",
@@ -196,6 +198,7 @@ export default function ReturnPage() {
         link: `/return/${returned._id}`,
         userImage: userInfo.image,
       });
+      setRefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
       dispatch({ type: "DELIVER_FAIL" });
@@ -235,7 +238,7 @@ export default function ReturnPage() {
         const { data: withdrawData } = await axios.post(
           "/api/accounts/withdraw",
           {
-            amount: returned.sending.cost,
+            amount: returned.sending.cost * 2,
             purpose: "Return delivery fee",
             userId: returned.productId.seller._id,
           },
@@ -486,7 +489,7 @@ export default function ReturnPage() {
                       >
                         <MenuItem
                           disabled={
-                            deliveryNumber(orderitem.deliveryStatus) < 8
+                            deliveryNumber(orderitem.deliveryStatus) !== 8
                           }
                           value="Return Dispatched"
                         >
@@ -495,7 +498,7 @@ export default function ReturnPage() {
 
                         <MenuItem
                           disabled={
-                            deliveryNumber(orderitem.deliveryStatus) < 9
+                            deliveryNumber(orderitem.deliveryStatus) !== 9
                           }
                           value="Return Delivered"
                         >

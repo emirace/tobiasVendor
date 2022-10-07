@@ -6,6 +6,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Store } from "../Store";
 import { socket } from "../App";
 import { getError } from "../utils";
+import { v4 } from "uuid";
 import LoadingBox from "../component/LoadingBox";
 
 const Container = styled.div`
@@ -196,7 +197,23 @@ export default function PaymentScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
+      } else if (payment.meta.to === "Account") {
+        await axios.post(
+          "/api/accounts/payaccount",
+          {
+            account_bank: payment.account_bank,
+            account_number: payment.account_number,
+            amount: payment.amount,
+            currency: payment.currency,
+            narration: "Payment for things",
+            reference: v4(),
+          },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
       }
+
       const { data } = await axios.put(
         `/api/payments/${paymentId}`,
         {
@@ -215,6 +232,7 @@ export default function PaymentScreen() {
     <LoadingBox />
   ) : (
     <Container mode={mode}>
+      {console.log(payment)}
       <Title>Comfirm Payment</Title>
       <SumaryContDetails mode={mode}>
         <Name>User</Name>

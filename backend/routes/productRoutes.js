@@ -100,6 +100,8 @@ productRouter.post(
       region,
     });
     const createdProduct = await newProduct.save();
+    product.productId = product._id.toString();
+
     res.send({ message: "Product Created", createdProduct });
   })
 );
@@ -500,7 +502,6 @@ productRouter.get(
     const searchQuery = query.q;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
-
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
@@ -512,7 +513,7 @@ productRouter.get(
                 },
               },
               {
-                _id: {
+                productId: {
                   $regex: searchQuery,
                   $options: "i",
                 },

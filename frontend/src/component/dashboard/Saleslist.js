@@ -185,7 +185,10 @@ export default function Saleslist() {
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
-  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const soldNotifications = [];
+  //  notifications.filter(
+  //   (x) => x.notifyType === "sold"
+  // );
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
@@ -268,8 +271,8 @@ export default function Saleslist() {
             <Link to={`/order/${params.row.id}`}>
               <img src={params.row.image} alt="" />
               {params.row.name}
-              {notifications.filter((x) => x.itemId === params.row.id).length >
-                0 && <Badge style={{ marginRight: "10px" }}></Badge>}
+              {/* {soldNotifications.filter((x) => x.itemId === params.row.id)
+                .length > 0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
             </Link>
           </Product>
         );
@@ -334,7 +337,7 @@ export default function Saleslist() {
     name: p.orderItems[0].name,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
-    date: moment(p.createdAt).format("MM DD, h:mm a"),
+    date: moment(p.createdAt).format("MMM Do, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.name : "anonymous",
     amount: `${currency}${p.totalPrice}`,

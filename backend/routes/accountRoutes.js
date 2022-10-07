@@ -40,6 +40,7 @@ accountRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.body);
     const account = await Account.findOne({ userId: req.body.userId });
     const accountId = account._id;
     const { amount } = req.body;
@@ -96,7 +97,7 @@ accountRouter.post(
     const accountId = account._id;
     const { amount } = req.body;
     const transaction_id = v4();
-    if (accountId && amount > 0) {
+    if (accountId && amount >= 0) {
       try {
         const creditResult = await debitAccount({
           accountId,
@@ -109,7 +110,7 @@ accountRouter.post(
         });
 
         if (!creditResult.success) {
-          throw creditResult;
+          return res.send(creditResult);
         }
 
         res.status(200).send({
@@ -189,6 +190,93 @@ accountRouter.post(
         error: "enter valid credentials",
       });
     }
+  })
+);
+accountRouter.post(
+  "/fundwallet",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { transaction_id } = req.body;
+
+    const response = await flw.Transaction.verify({ id: transaction_id });
+
+    if (response.data.status === "successful") {
+      const recipientId = await Account.findOne({ userId: req.user._id });
+      const admin = await User.findOne({
+        email: "admin@example.com",
+        isAdmin: true,
+      });
+      const senderId = await Account.findOne({ userId: admin._id });
+      const { amount } = req.body;
+      const transaction_id = v4();
+
+      if (senderId && recipientId && amount > 0) {
+        try {
+          const purpose = "transfer";
+
+          const debitResult = await debitAccount({
+            amount,
+            accountId: senderId._id,
+            purpose,
+            metadata: {
+              recipientId: recipientId._id,
+              transaction_id,
+              purpose: req.body.purpose,
+            },
+          });
+          if (debitResult.success) {
+            await creditAccount({
+              amount,
+              accountId: recipientId._id,
+              purpose,
+              metadata: {
+                senderId: senderId._id,
+                purpose: req.body.purpose,
+              },
+            });
+          } else {
+            throw debitResult;
+          }
+
+          res.status(200).send({
+            success: true,
+            message: "transfer successful",
+            transaction_id,
+          });
+        } catch (error) {
+          res.status(500).send({
+            message: error.error,
+          });
+        }
+      } else {
+        res.status(500).send({
+          success: false,
+          error: "enter valid credentials",
+        });
+      }
+    } else {
+      res.status(500).send({
+        success: false,
+        error: "error funding account, try again later",
+      });
+    }
+  })
+);
+
+accountRouter.post(
+  "/payaccount",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const details = {
+      account_bank: "044",
+      account_number: "0690000040",
+      amount: 200,
+      currency: "NGN",
+      narration: "Payment for things",
+      reference: generateTransactionReference(),
+    };
+    flw.Transfer.initiate(details).then(console.log).catch(console.log);
   })
 );
 

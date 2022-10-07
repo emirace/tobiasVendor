@@ -1562,17 +1562,7 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   </SmallImageC>
                 </SmallImageRow>
               </ImageRow>
-              <TitleDetails>
-                You will need to add aleast one image and a max of four images.
-                Add clear and quality images.Ensure ypu follow the image uplaod
-                rules.
-              </TitleDetails>
-              <input
-                type="file"
-                onChange={videouploadHandler}
-                id="video"
-                style={{ display: "none" }}
-              />
+
               {loadingVideo ? (
                 <LoadingBox />
               ) : video ? (
@@ -1588,11 +1578,24 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                     cursor: "pointer",
                     color: "var(--orange-color)",
                     textAlign: "center",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
                   }}
                 >
-                  Add a short Clip
+                  Add a short video
                 </label>
               )}
+              <TitleDetails>
+                You will need to add aleast one image and a max of four images.
+                Add clear and quality images. Ensure to follow the image uplaod
+                rules.
+              </TitleDetails>
+              <input
+                type="file"
+                onChange={videouploadHandler}
+                id="video"
+                style={{ display: "none" }}
+              />
               <ImageRow>
                 <VintageCont>
                   <ItemCheck>
@@ -1658,7 +1661,6 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   ""
                 )}
               </ImageRow>
-
               <Item>
                 <Label>Description</Label>
                 <TextArea
@@ -1754,7 +1756,11 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   </Deliv>
                 ))}
                 <div
-                  style={{ color: "var(--orange-color)", textAlign: "center" }}
+                  style={{
+                    color: "var(--orange-color)",
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
                   onClick={() => setShowDelivery(true)}
                 >
                   Add delivery option
@@ -1786,7 +1792,6 @@ We encourage you to be as reasonable as possible, as over prized products are tu
                   {console.log(deliveryOption)}
                 </ModelLogin>
               </Item>
-
               <Item>
                 <Label>Add Tags #</Label>
                 <TagCont>

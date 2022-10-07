@@ -394,7 +394,7 @@ export default function User() {
       }
       if (username.length > 0) {
         if (
-          !window.confirm(
+          window.confirm(
             "Are you sure you want to update username, next change will be in 30days"
           )
         ) {
@@ -504,7 +504,7 @@ export default function User() {
               <Wbalance>Wallet Balance</Wbalance>
               <Wamount>
                 {balance.currency}
-                {balance.balance.toFixed(2)}
+                {balance && balance.balance.toFixed(2)}
               </Wamount>
             </Wallet>
           </ShowTop>

@@ -310,7 +310,7 @@ export default function TransactionList() {
     transactions.length > 0 &&
     transactions.map((p) => ({
       id: p._id,
-      date: moment(p.createdAt).format("MM DD, h:mm a"),
+      date: moment(p.createdAt).format("MMM Do, h:mm a"),
       // user: p.userId.username,
       status: "Done",
       purpose: p.metadata.purpose,

@@ -26,7 +26,12 @@ conversationRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     if (req.user._id === req.body.recieverId) {
-      throw { message: "you cannot message yourself" };
+      throw {
+        message:
+          req.body.type === "reportUser" || req.body.type === "reportProduct"
+            ? "you cannot report yourself"
+            : "you cannot message yourself",
+      };
     }
     const existConversation =
       req.body.type === "reportUser" || req.body.type === "reportProduct"

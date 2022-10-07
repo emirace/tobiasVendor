@@ -162,7 +162,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
           const { data } = await axios.get(
             "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/localStations",
             {
-              headers: { Authorization: `Bearer ${token.token}` },
+              headers: { Authorization: `Bearer ${logins.token}` },
             }
           );
           dispatch({ type: "FETCH_STATIONs_SUCCESS", payload: data.Object });
@@ -206,23 +206,23 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   }, [addresses, deliveryOption]);
   const location = useGeoLocation();
   const [locationerror, setLocationerror] = useState("");
+
   const submitHandler = async (e) => {
     e.preventDefault();
     var deliverySelect;
-    if (location.error) {
-      setLocationerror("Location is require for proper delivery");
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Location is require for proper delivery",
-          showStatus: true,
-          state1: "visible1 error",
-        },
-      });
-    }
+
     console.log(location);
     if (deliveryOption === "GIG Logistics") {
       if (location.error) {
+        setLocationerror("Location is require for proper delivery");
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Location is require for proper delivery",
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
         return;
       }
       const { data } = await axios.post(
@@ -230,7 +230,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         {
           ReceiverAddress: meta.address,
           CustomerCode: token.username,
-          SenderLocality: meta.address,
+          SenderLocality: item.meta.address,
           SenderAddress: item.meta.address,
           ReceiverPhoneNumber: meta.phone,
           VehicleType: "BIKE",
@@ -265,16 +265,17 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       console.log(data);
       deliverySelect = {
         deliveryOption,
-        cost: data.Object.DeliverPrice,
-        ...meta,
+        cost: data.Object.DeliveryPrice,
       };
+      console.log(data.Object.DeliveryPrice, deliverySelect);
+    } else {
+      deliverySelect = { deliveryOption, cost: value, ...meta };
     }
-    deliverySelect = { deliveryOption, cost: value, ...meta };
     if (userInfo) {
       await axios.post(
         update ? `/api/addresses/${selected}` : "/api/addresses",
         {
-          meta: { deliveryOption, cost: value, ...meta },
+          meta: deliverySelect,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

@@ -140,7 +140,7 @@ export default function WidgetLarge({ refresh }) {
           <Tr>
             <User>{t._id}</User>
             <User>{t.metadata ? t.metadata.purpose : ""}</User>
-            <Date>{moment(t.createdAt).format("MMMM Do YYYY, h:mm:ss a")}</Date>
+            <Date>{moment(t.createdAt).format("MMM Do, h:mm:ss a")}</Date>
             <Amount>{t.txnType}</Amount>
             <Amount>
               {currency}
