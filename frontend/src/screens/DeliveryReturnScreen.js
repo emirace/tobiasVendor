@@ -7,6 +7,8 @@ import styled from "styled-components";
 import axios from "axios";
 import { getError } from "../utils";
 import { socket } from "../App";
+import WalletModel from "../component/wallet/WalletModel";
+import AddFund from "../component/wallet/AddFund";
 
 const Container = styled.div`
   margin: 30px;
@@ -112,6 +114,8 @@ export default function DeliveryReturnScreen({
   const [meta, setMeta] = useState("");
   const [value, setValue] = useState("");
   const [update, setUpdate] = useState(false);
+  const [showModel, setShowModel1] = useState(false);
+  const [refresh, setRefresh] = useState(true);
 
   // useEffect(() => {
   //   if (cartItems.length) {
@@ -241,7 +245,7 @@ export default function DeliveryReturnScreen({
         },
       });
       setError1(
-        "Encoutered a problem adding addresd, ensure youe wallet is funded to continue"
+        "Encoutered a problem adding address, ensure your wallet is funded to continue"
       );
     }
   };
@@ -277,8 +281,22 @@ export default function DeliveryReturnScreen({
         </Helmet>
         {console.log(returned)}
         <h1 className="my-3">Delivery Method</h1>
-        {error1 && <div style={{ color: "red" }}>{error1}</div>}
-        {console.log("error1", error1)}
+        {error1 && (
+          <div style={{ color: "red" }}>
+            {error1}
+            <span
+              onClick={() => setShowModel1(true)}
+              style={{
+                cursor: "pointer",
+                color: "var(--orange-color)",
+                textDecoration: "underline",
+              }}
+            >
+              {" "}
+              Fund now
+            </span>
+          </div>
+        )}
 
         <Form onSubmit={submitHandler}>
           {[
@@ -597,6 +615,14 @@ export default function DeliveryReturnScreen({
             </button>
           </div>
         </Form>
+        <WalletModel showModel={showModel} setShowModel={setShowModel1}>
+          <AddFund
+            setShowModel={setShowModel}
+            currency={currency}
+            setRefresh={setRefresh}
+            refresh={refresh}
+          />
+        </WalletModel>
       </div>
     </Container>
   );
