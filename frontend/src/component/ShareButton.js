@@ -59,6 +59,20 @@ const Container = styled.div`
     top: 50px;
     right: 50%;
     opacity: 0;
+    transition: all 0.4s ease 0.35s;
+  }
+  & button:nth-child(6) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
+    transition: all 0.4s ease 0.4s;
+  }
+  & button:nth-child(7) {
+    position: absolute;
+    top: 50px;
+    right: 50%;
+    opacity: 0;
     transition: all 0.4s ease 0.3s;
   }
 

@@ -29,14 +29,17 @@ import {
   faAngleRight,
   faBookmark,
   faCirclePlay,
+  faCloud,
   faFaceSmile,
   faHeart,
+  faLightbulb,
   faMessage,
   faQuestionCircle,
   faShareNodes,
   faTag,
   faThumbsDown,
   faThumbsUp,
+  faWater,
 } from "@fortawesome/free-solid-svg-icons";
 import "../style/ProductScreen.css";
 import styled from "styled-components";
@@ -185,6 +188,12 @@ const Tag = styled.div`
   border: 1px solid;
   padding: 0 10px;
   border-radius: 10px;
+`;
+
+const SustainCont = styled.div`
+  & svg {
+    margin: 5px;
+  }
 `;
 
 export default function ProductScreen() {
@@ -1391,6 +1400,20 @@ export default function ProductScreen() {
             <ProtectionRight />
             <Sustain mode={mode}>
               <SustainHeader style={{}}>Sustainability Impact</SustainHeader>
+              <div>See some importance of getting a used product</div>
+              <SustainCont>
+                <FontAwesomeIcon icon={faWater} /> 283.8 days of drinking water
+                saved
+              </SustainCont>
+              <SustainCont>
+                <FontAwesomeIcon icon={faCloud} /> 19.9 miles of driving
+                emissions avoided
+              </SustainCont>
+              <SustainCont>
+                <FontAwesomeIcon icon={faLightbulb} /> 1320 days of powering an
+                LED light prevented
+              </SustainCont>
+              <Link to="/sustainability">see more</Link>
             </Sustain>
             <ReportButton
               onClick={() => handlereport(product.seller._id, product._id)}

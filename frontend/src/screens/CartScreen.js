@@ -124,9 +124,18 @@ const SelectDelivery = styled.div`
   margin-left: 20px;
   color: var(--orange-color);
   font-size: 15px;
+  cursor: pointer;
   &:hover {
     color: var(--malon-color);
   }
+`;
+
+const SelectDeliveryButton = styled.div`
+  background: var(--orange-color);
+  color: white;
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 0.2rem;
 `;
 
 const reducer = (state, action) => {
@@ -438,9 +447,13 @@ export default function CartScreen() {
                             setShowModel(true);
                           }}
                         >
-                          {!item.deliverySelect
-                            ? "Select delivery option"
-                            : "Change"}
+                          {!item.deliverySelect ? (
+                            <SelectDeliveryButton>
+                              Select delivery option
+                            </SelectDeliveryButton>
+                          ) : (
+                            "Change"
+                          )}
                         </SelectDelivery>
                       </div>
                     </Item>

@@ -182,22 +182,28 @@ export default function ReturnPage() {
           state1: "visible1 success",
         },
       });
-      socket.emit("post_data", {
-        userId: returned.productId.seller._id,
-        itemId: returned.orderId._id,
-        notifyType: "delivery",
-        msg: `Order ${deliveryStatus} `,
-        link: `/return/${returned._id}`,
-        userImage: userInfo.image,
-      });
-      socket.emit("post_data", {
-        userId: returned.orderId.user._id,
-        itemId: returned.orderId._id,
-        notifyType: "delivery",
-        msg: `Your order ${deliveryStatus} `,
-        link: `/return/${returned._id}`,
-        userImage: userInfo.image,
-      });
+      if (
+        deliveryStatus === "Return Dispatched" ||
+        deliveryStatus === "Return Delivered"
+      ) {
+        socket.emit("post_data", {
+          userId: returned.productId.seller._id,
+          itemId: returned.orderId._id,
+          notifyType: "delivery",
+          msg: `Order ${deliveryStatus} `,
+          link: `/return/${returned._id}`,
+          userImage: userInfo.image,
+        });
+      } else {
+        socket.emit("post_data", {
+          userId: returned.orderId.user._id,
+          itemId: returned.orderId._id,
+          notifyType: "delivery",
+          msg: `Your order ${deliveryStatus} `,
+          link: `/return/${returned._id}`,
+          userImage: userInfo.image,
+        });
+      }
       setRefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
@@ -256,6 +262,18 @@ export default function ReturnPage() {
             userImage:
               "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",
           });
+        } else {
+          await axios.post(
+            "/api/accounts/deposit",
+            {
+              amount: returned.sending.cost * 2,
+              purpose: "Return delivery fee",
+              userId: "Admin",
+            },
+            {
+              headers: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          );
         }
 
         const { data } = await axios.put(

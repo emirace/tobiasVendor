@@ -7,7 +7,7 @@ import { Store } from "../../Store";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { loginGig } from "../../utils";
+import { loginGig, region } from "../../utils";
 import axios from "axios";
 import useGeoLocation from "../../hooks/useGeoLocation";
 
@@ -299,432 +299,455 @@ export default function DeliveryOption({
         Select as many as you like. Shops with multiple options sell faster. The
         Buyer will cover the delivery fee when purchasing.
       </TitleDetails>
-      <OptionCont>
-        <Option>
-          <Label>
-            <FontAwesomeIcon icon={faTruck} />
-            <Name>Paxi PEP store</Name>
-            <Tips
-              mode={mode}
-              tips={`Store-to-store courier service anywhere in South Africa. Drop off the item at the nearest PEP store / PAXI collection point. The Buyer will collect the item from the pick-up point of their choice.
+      {region() === "ZAR" ? (
+        <>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>Paxi PEP store</Name>
+                <Tips
+                  mode={mode}
+                  tips={`Store-to-store courier service anywhere in South Africa. Drop off the item at the nearest PEP store / PAXI collection point. The Buyer will collect the item from the pick-up point of their choice.
                       `}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Tips>
-          </Label>
-          <Switch
-            mode={mode}
-            checked={paxi}
-            onChange={(e) => {
-              setPaxi(e.target.checked);
-              if (!e.target.checked) {
-                setDeliveryOption(
-                  deliveryOption.filter((x) => x.name !== "Paxi PEP store")
-                );
-              }
-            }}
-          ></Switch>
-        </Option>
-        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        {paxi && (
-          <Plans>
-            <Plan>
-              <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
-              <Radio
-                type="radio"
-                name="Paxi PEP store"
-                onChange={(e) => handleChange(e.target)}
-                id="free"
-                value={0}
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Standard parcel (450x370 mm) + R 59.95</PlanName>
-              <Radio
-                type="radio"
-                name="Paxi PEP store"
-                onChange={(e) => handleChange(e.target)}
-                value={59.95}
-                id="standard"
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Large parcel (640x510 mm) + R 99.95</PlanName>
-              <Radio
-                type="radio"
-                name="Paxi PEP store"
-                onChange={(e) => handleChange(e.target)}
-                value={99.95}
-                id="Large"
-              />
-            </Plan>
-            <a
-              className="link"
-              href="https://www.paxi.co.za/send"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How PAXI works
-            </a>
-          </Plans>
-        )}
-      </OptionCont>
-      <OptionCont>
-        <Option>
-          <Label>
-            <FontAwesomeIcon icon={faTruck} />
-            <Name>PUDO Locker-to-Locker</Name>
-            <Tips
-              mode={mode}
-              tips={`
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={paxi}
+                onChange={(e) => {
+                  setPaxi(e.target.checked);
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter((x) => x.name !== "Paxi PEP store")
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {paxi && (
+              <Plans>
+                <Plan>
+                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="Paxi PEP store"
+                    onChange={(e) => handleChange(e.target)}
+                    id="free"
+                    value={0}
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Standard parcel (450x370 mm) + R 59.95</PlanName>
+                  <Radio
+                    type="radio"
+                    name="Paxi PEP store"
+                    onChange={(e) => handleChange(e.target)}
+                    value={59.95}
+                    id="standard"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Large parcel (640x510 mm) + R 99.95</PlanName>
+                  <Radio
+                    type="radio"
+                    name="Paxi PEP store"
+                    onChange={(e) => handleChange(e.target)}
+                    value={99.95}
+                    id="Large"
+                  />
+                </Plan>
+                <a
+                  className="link"
+                  href="https://www.paxi.co.za/send"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How PAXI works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>PUDO Locker-to-Locker</Name>
+                <Tips
+                  mode={mode}
+                  tips={`
               Locker-to-locker courier service anywhere in South Africa. Drop off the item at the nearest Pudo locker. The Buyer will collect the item from the locker of their choice. Pudo lockers are accessible 24/7, so you can drop off or pick up your package when it suits you best.
                       `}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Tips>
-          </Label>
-          <Switch
-            mode={mode}
-            checked={pudo}
-            onChange={(e) => {
-              setPudo(e.target.checked);
-              if (!e.target.checked) {
-                setDeliveryOption(
-                  deliveryOption.filter(
-                    (x) => x.name !== "PUDO Locker-to-Locker"
-                  )
-                );
-              }
-            }}
-          ></Switch>
-        </Option>
-        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        {pudo && (
-          <Plans>
-            <Plan>
-              <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                id="free"
-                value={0}
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Extra-Small (600x170x80 mm) + R 40.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                value={40}
-                id="standard"
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Small (600x410x80 mm) + R 50.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                value={50}
-                id="Large"
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Medium (600x410x190 mm) + R 50.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                value={50}
-                id="Large"
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Large (600x410x410 mm) + R 50.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                value={50}
-                id="Large"
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Extra-Large (600x410x690 mm) + R 50.00</PlanName>
-              <Radio
-                type="radio"
-                name="PUDO Locker-to-Locker"
-                onChange={(e) => handleChange(e.target)}
-                value={50}
-                id="Large"
-              />
-            </Plan>
-            <a
-              className="link"
-              href="https://www.pudo.co.za/how-it-works.php"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How PUDO works
-            </a>
-          </Plans>
-        )}
-      </OptionCont>
-      <OptionCont>
-        <Option>
-          <Label>
-            <FontAwesomeIcon icon={faTruck} />
-            <Name>PostNet-to-PostNet</Name>
-            <Tips
-              mode={mode}
-              tips={`
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={pudo}
+                onChange={(e) => {
+                  setPudo(e.target.checked);
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter(
+                        (x) => x.name !== "PUDO Locker-to-Locker"
+                      )
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {pudo && (
+              <Plans>
+                <Plan>
+                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    id="free"
+                    value={0}
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Extra-Small (600x170x80 mm) + R 40.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    value={40}
+                    id="standard"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Small (600x410x80 mm) + R 50.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    value={50}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Medium (600x410x190 mm) + R 50.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    value={50}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Large (600x410x410 mm) + R 50.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    value={50}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Extra-Large (600x410x690 mm) + R 50.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Locker"
+                    onChange={(e) => handleChange(e.target)}
+                    value={50}
+                    id="Large"
+                  />
+                </Plan>
+                <a
+                  className="link"
+                  href="https://www.pudo.co.za/how-it-works.php"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How PUDO works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>PostNet-to-PostNet</Name>
+                <Tips
+                  mode={mode}
+                  tips={`
               PostNet-to-PostNet courier service anywhere in South Africa. Drop off the item at the nearest PostNet counter. The Buyer will collect the item from the pick-up point of their choice. Your parcel will be delivered within 2-4 working days.
                       `}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Tips>
-          </Label>
-          <Switch
-            mode={mode}
-            checked={postnet}
-            onChange={(e) => {
-              setPostnet(e.target.checked);
-              if (!e.target.checked) {
-                setDeliveryOption(
-                  deliveryOption.filter((x) => x.name !== "PostNet-to-PostNet")
-                );
-              }
-            }}
-          ></Switch>
-        </Option>
-        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        {postnet && (
-          <Plans>
-            <Plan>
-              <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
-              <Radio
-                type="radio"
-                name="PostNet-to-PostNet"
-                onChange={(e) => handleChange(e.target)}
-                id="free"
-                value={0}
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Standard parcel (up to 5kg) + R 99.99</PlanName>
-              <Radio
-                type="radio"
-                name="PostNet-to-PostNet"
-                onChange={(e) => handleChange(e.target)}
-                value={99.99}
-                id="standard"
-              />
-            </Plan>
-            <a
-              className="link"
-              href="https://www.postnet.co.za/domestic-postnet2postnet"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How Postnet works
-            </a>
-          </Plans>
-        )}
-      </OptionCont>
-      <OptionCont>
-        <Option>
-          <Label>
-            <FontAwesomeIcon icon={faTruck} />
-            <Name>Aramex Store-to-Door</Name>
-            <Tips
-              mode={mode}
-              tips={`
-              Store-to-door courier service anywhere in South Africa. Aramex shipment sleeves can be bought at kiosks, selected Pick n Pay and Freshstop stores nationwide. The parcel will be delivered to buyer’s door.        `}
-            >
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Tips>
-          </Label>
-          <Switch
-            mode={mode}
-            checked={aramex}
-            onChange={(e) => {
-              setAramex(e.target.checked);
-              if (!e.target.checked) {
-                setDeliveryOption(
-                  deliveryOption.filter(
-                    (x) => x.name !== "Aramex Store-to-Door"
-                  )
-                );
-              }
-            }}
-          ></Switch>
-        </Option>
-        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        {aramex && (
-          <Plans>
-            <Plan>
-              <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
-              <Radio
-                type="radio"
-                name="Aramex Store-to-Door"
-                onChange={(e) => handleChange(e.target)}
-                id="free"
-                value={0}
-              />
-            </Plan>
-            <Plan>
-              <PlanName>Standard parcel (350x450 mm) + R 99.99</PlanName>
-              <Radio
-                type="radio"
-                name="Aramex Store-to-Door"
-                onChange={(e) => handleChange(e.target)}
-                value={99.99}
-                id="standard"
-              />
-            </Plan>
-            <a
-              className="link"
-              href="https://www.youtube.com/watch?v=VlUQTF064y8"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How Aramex works
-            </a>
-          </Plans>
-        )}
-      </OptionCont>
-      <OptionCont>
-        <Option>
-          <Label>
-            <FontAwesomeIcon icon={faTruck} />
-            <Name>GIG Logistics</Name>
-            <Tips mode={mode} tips={`About GIG Logistics `}>
-              <FontAwesomeIcon icon={faQuestionCircle} />
-            </Tips>
-          </Label>
-          <Switch
-            mode={mode}
-            checked={gig}
-            onChange={(e) => {
-              setGig(e.target.checked);
-              handleChange({
-                name: "GIG Logistics",
-                value: 1,
-                gig: e.target.checked,
-              });
-              if (!e.target.checked) {
-                setDeliveryOption(
-                  deliveryOption.filter((x) => x.name !== "Gig Logistics")
-                );
-              }
-            }}
-          ></Switch>
-        </Option>
-        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        {gig && (
-          <Plans>
-            {locationerror && (
-              <div style={{ color: "red", textAlign: "center" }}>
-                {locationerror}
-              </div>
-            )}
-            <Plan1>
-              <Input
-                mode={mode}
-                type="text"
-                onChange={(e) => setMeta({ ...meta, name: e.target.value })}
-                placeholder="Name"
-                value={meta?.name}
-              />
-            </Plan1>
-            <Plan1>
-              {console.log(meta)}
-              <Input
-                mode={mode}
-                type="text"
-                onChange={(e) => setMeta({ ...meta, address: e.target.value })}
-                placeholder="Address"
-                value={meta?.address}
-              />
-            </Plan1>
-            <Plan1>
-              <Input
-                mode={mode}
-                type="text"
-                onChange={(e) => setMeta({ ...meta, phone: e.target.value })}
-                placeholder="Phone"
-                value={meta?.phone}
-              />
-            </Plan1>
-            <Plan1>
-              <div
-                style={{
-                  fontSize: "14px",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                  color: "grey",
-                }}
-              >
-                Select Station
-              </div>
-              <FormControl
-                sx={{
-                  width: "80%",
-                  margin: 0,
-                  borderRadius: "0.2rem",
-                  border: `1px solid ${
-                    mode === "pagebodydark"
-                      ? "var(--dark-ev4)"
-                      : "var(--light-ev4)"
-                  }`,
-                  "& .MuiOutlinedInput-root": {
-                    color: `${
-                      mode === "pagebodydark"
-                        ? "var(--white-color)"
-                        : "var(--black-color)"
-                    }`,
-                    "&:hover": {
-                      outline: "none",
-                      border: 0,
-                    },
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    border: "0 !important",
-                  },
-                }}
-                size="small"
-              >
-                <Select
-                  onChange={(e) =>
-                    setMeta({ ...meta, stationId: e.target.value })
-                  }
-                  displayEmpty
                 >
-                  {loadingStations ? (
-                    <MenuItem value="">Loading...</MenuItem>
-                  ) : (
-                    stations.map((station) => (
-                      <MenuItem value={station.StationId}>
-                        {station.StateName}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-              </FormControl>
-            </Plan1>
-            <a
-              className="link"
-              href="/#"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              How GIG works
-            </a>
-          </Plans>
-        )}
-      </OptionCont>
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={postnet}
+                onChange={(e) => {
+                  setPostnet(e.target.checked);
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter(
+                        (x) => x.name !== "PostNet-to-PostNet"
+                      )
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {postnet && (
+              <Plans>
+                <Plan>
+                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PostNet-to-PostNet"
+                    onChange={(e) => handleChange(e.target)}
+                    id="free"
+                    value={0}
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Standard parcel (up to 5kg) + R 99.99</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PostNet-to-PostNet"
+                    onChange={(e) => handleChange(e.target)}
+                    value={99.99}
+                    id="standard"
+                  />
+                </Plan>
+                <a
+                  className="link"
+                  href="https://www.postnet.co.za/domestic-postnet2postnet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How Postnet works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>Aramex Store-to-Door</Name>
+                <Tips
+                  mode={mode}
+                  tips={`
+              Store-to-door courier service anywhere in South Africa. Aramex shipment sleeves can be bought at kiosks, selected Pick n Pay and Freshstop stores nationwide. The parcel will be delivered to buyer’s door.        `}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={aramex}
+                onChange={(e) => {
+                  setAramex(e.target.checked);
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter(
+                        (x) => x.name !== "Aramex Store-to-Door"
+                      )
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {aramex && (
+              <Plans>
+                <Plan>
+                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="Aramex Store-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    id="free"
+                    value={0}
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Standard parcel (350x450 mm) + R 99.99</PlanName>
+                  <Radio
+                    type="radio"
+                    name="Aramex Store-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={99.99}
+                    id="standard"
+                  />
+                </Plan>
+                <a
+                  className="link"
+                  href="https://www.youtube.com/watch?v=VlUQTF064y8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How Aramex works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+        </>
+      ) : (
+        <>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>GIG Logistics</Name>
+                <Tips mode={mode} tips={`About GIG Logistics `}>
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={gig}
+                onChange={(e) => {
+                  setGig(e.target.checked);
+                  handleChange({
+                    name: "GIG Logistics",
+                    value: 1,
+                    gig: e.target.checked,
+                  });
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter((x) => x.name !== "Gig Logistics")
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {gig && (
+              <Plans>
+                {locationerror && (
+                  <div style={{ color: "red", textAlign: "center" }}>
+                    {locationerror}
+                  </div>
+                )}
+                <Plan1>
+                  <Input
+                    mode={mode}
+                    type="text"
+                    onChange={(e) => setMeta({ ...meta, name: e.target.value })}
+                    placeholder="Name"
+                    value={meta?.name}
+                  />
+                </Plan1>
+                <Plan1>
+                  {console.log(meta)}
+                  <Input
+                    mode={mode}
+                    type="text"
+                    onChange={(e) =>
+                      setMeta({ ...meta, address: e.target.value })
+                    }
+                    placeholder="Address"
+                    value={meta?.address}
+                  />
+                </Plan1>
+                <Plan1>
+                  <Input
+                    mode={mode}
+                    type="text"
+                    onChange={(e) =>
+                      setMeta({ ...meta, phone: e.target.value })
+                    }
+                    placeholder="Phone"
+                    value={meta?.phone}
+                  />
+                </Plan1>
+                <Plan1>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      color: "grey",
+                    }}
+                  >
+                    Select Station
+                  </div>
+                  <FormControl
+                    sx={{
+                      width: "80%",
+                      margin: 0,
+                      borderRadius: "0.2rem",
+                      border: `1px solid ${
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
+                      }`,
+                      "& .MuiOutlinedInput-root": {
+                        color: `${
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
+                        }`,
+                        "&:hover": {
+                          outline: "none",
+                          border: 0,
+                        },
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
+                      },
+                    }}
+                    size="small"
+                  >
+                    <Select
+                      onChange={(e) =>
+                        setMeta({ ...meta, stationId: e.target.value })
+                      }
+                      displayEmpty
+                    >
+                      {loadingStations ? (
+                        <MenuItem value="">Loading...</MenuItem>
+                      ) : (
+                        stations.map((station) => (
+                          <MenuItem value={station.StationId}>
+                            {station.StateName}
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                  </FormControl>
+                </Plan1>
+                <a
+                  className="link"
+                  href="/#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How GIG works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+        </>
+      )}
       <OptionCont>
         <Option>
           <Label>

@@ -368,7 +368,7 @@ export default function Footer() {
                 <a href="/#">Returns</a>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Contact Us</a>
+                <Link to="/contactus">Contact Us</Link>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/privacypolicy">Privacy Policy</Link>
@@ -443,22 +443,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
-        <div className="footer_right">
-          <h3 className="footer_center_menu">Contact</h3>
-          <div className="footer_contacts">
-            <Phone height={25} width={25} />{" "}
-            <span style={{ paddingLeft: "10px" }}>+1 234 56 78</span>
-          </div>
-          <div className="footer_contacts">
-            <Mail height={25} width={25} />
-            <span style={{ paddingLeft: "10px" }}> support@repeddle.com</span>
-          </div>
-          <img
-            src="https://i.ibb.co/Qfvn4z6/payment.png"
-            alt=""
-            className="footor_contact_payments"
-          ></img>
         </div>
       </div>
       <Reserve>

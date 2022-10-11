@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
@@ -26,6 +26,12 @@ const Key = styled.div`
 const Value = styled.div`
   margin: 20px 0;
   flex: 2;
+`;
+
+const Image = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 `;
 
 const reducer = (state, action) => {
@@ -71,6 +77,7 @@ export default function TransactionScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: "GET_SUCCESS", payload: data });
+        console.log(data);
       } catch (err) {
         dispatch({ type: "GET_FAIL" });
         console.log(err);
@@ -78,6 +85,32 @@ export default function TransactionScreen() {
     };
     getReturn();
   }, []);
+
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      setLoadingUser(true);
+      try {
+        const { data } = await axios.get(
+          `/api/accounts/finduser/${transaction.accountId}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        setUser(data);
+        setLoadingUser(false);
+        console.log(data);
+      } catch (err) {
+        setLoadingUser(false);
+        console.log(err);
+      }
+    };
+    if (transaction.accountId) {
+      getUser();
+    }
+  }, [transaction]);
   return loading ? (
     <LoadingBox />
   ) : (
@@ -107,6 +140,17 @@ export default function TransactionScreen() {
           <Section>
             <Title>Customer information</Title>
             <hr />
+            {loadingUser ? (
+              <LoadingBox />
+            ) : (
+              <>
+                <Image src={user.image} alt="img" />
+                <div>
+                  {user.firstName} {user.lastName}
+                </div>
+                <div>@{user.username}</div>
+              </>
+            )}
           </Section>
         </div>
         <div style={{ flex: "1", border: "1px solid", margin: "5vw" }}>

@@ -35,13 +35,44 @@ accountRouter.get(
   })
 );
 
+accountRouter.get(
+  "/finduser/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const account = await Account.findById(req.params.id);
+    if (account) {
+      const user = await User.findById(account.userId);
+      if (user) {
+        res.send({
+          username: user.username,
+          image: user.image,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        });
+      } else {
+        res.status(404).send("user not found");
+      }
+    } else {
+      res.status(404).send("account not found");
+    }
+  })
+);
+
 accountRouter.post(
   "/deposit",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.body);
-    const account = await Account.findOne({ userId: req.body.userId });
+    var account;
+    if (req.body.userId === "Admin") {
+      const admin = await User.findOne({
+        email: "admin@example.com",
+        isAdmin: true,
+      });
+      account = await Account.findOne({ userId: admin._id });
+    } else {
+      account = await Account.findOne({ userId: req.body.userId });
+    }
     const accountId = account._id;
     const { amount } = req.body;
     const transaction_id = v4();

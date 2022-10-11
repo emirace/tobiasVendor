@@ -286,6 +286,16 @@ span.active2 > div > button:nth-child(5) {
   top: -30px;
   right: 40%;
 }
+span.active2 > div > button:nth-child(6) {
+  opacity: 1;
+  top: -30px;
+  right: 30%;
+}
+span.active2 > div > button:nth-child(7) {
+  opacity: 1;
+  top: -30px;
+  right: 20%;
+}
 
 @media (max-width: 992px) {
   .single_product_container {

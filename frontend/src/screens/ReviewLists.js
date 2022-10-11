@@ -1,10 +1,13 @@
 import styled from "styled-components";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Store } from "../Store";
 import { Link } from "react-router-dom";
 import Rating from "../component/Rating";
 import ListGroup from "react-bootstrap/ListGroup";
 import { ReviewCont } from "../component/ReviewCont";
+import axios from "axios";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 
 const Container = styled.div`
   height: 100%;
@@ -54,9 +57,28 @@ const Scrollable = styled.div`
   }
 `;
 
-export default function ReviewLists({ reviews }) {
+export default function ReviewLists({ userId }) {
   const { state } = useContext(Store);
   const { mode } = state;
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const getReviews = async () => {
+      setLoading(true);
+      try {
+        const { data } = await axios.get(`/api/users/allreviews/${userId}`);
+        setReviews(data);
+        console.log(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getReviews();
+  }, []);
 
   const [displayTab, setDisplayTab] = useState("sold");
 
@@ -71,13 +93,23 @@ export default function ReviewLists({ reviews }) {
           </ReviewCont1>
         );
       case "purchase":
-        return <>purchase reviwws</>;
+        return (
+          <ReviewCont1>
+            {reviews.map((review) => (
+              <ReviewCont review={review} />
+            ))}
+          </ReviewCont1>
+        );
       default:
         return <></>;
     }
   };
 
-  return (
+  return loading ? (
+    <LoadingBox />
+  ) : error ? (
+    <MessageBox>{error}</MessageBox>
+  ) : (
     <Container>
       <Tab>
         <TabItem

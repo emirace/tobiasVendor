@@ -84,6 +84,7 @@ import initFacebookSdk from "./hooks/initFacebookSdk";
 import VerifyAccountScreen from "./screens/VerifyAccountScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import TransactionScreen from "./screens/TransactionScreen";
+import ContactUsPage from "./screens/ContactUsPage";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -401,6 +402,7 @@ function App() {
                       <Route path="/search" element={<SearchSceen />} />
                       <Route path="/sell" element={<SellScreen />} />
                       <Route path="/signin" element={<SigninScreen />} />
+                      <Route path="/contactus" element={<ContactUsPage />} />
                       <Route
                         path="/forgetpassword"
                         element={<ForgetScreen />}

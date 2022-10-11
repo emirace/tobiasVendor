@@ -449,11 +449,7 @@ userRouter.post(
     const userId = req.params.id;
     const user = await User.findById(userId);
     if (user) {
-      if (
-        user.reviews.find(
-          (x) => x.userId.toString() === req.user._id.toString()
-        )
-      ) {
+      if (user.reviews.find((x) => x.userId.toString() === req.user._id)) {
         return res
           .status(400)
           .send({ message: "You already submitted a review" });
@@ -481,6 +477,18 @@ userRouter.post(
         numReviews: userId.numReviews,
         rating: user.rating,
       });
+    } else {
+      res.status(404).send({ message: "User Not Found" });
+    }
+  })
+);
+
+userRouter.get(
+  "/allreviews/:id",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.send(user.reviews);
     } else {
       res.status(404).send({ message: "User Not Found" });
     }

@@ -176,6 +176,18 @@ const Received = styled.div`
   color: var(--white-color);
   padding: 3px 7px;
   height: 30px;
+  margin-right: 20px;
+  &:hover {
+    background: var(--malon-color);
+  }
+`;
+
+const ReturnButton = styled.div`
+  cursor: pointer;
+  background: var(--malon-color);
+  color: var(--white-color);
+  padding: 3px 7px;
+  height: 30px;
   &:hover {
     background: var(--malon-color);
   }
@@ -199,6 +211,10 @@ const SetStatus = styled.div`
   @media print {
     display: none;
   }
+`;
+
+const AfterAction = styled.div`
+  display: flex;
 `;
 
 function reducer(state, action) {
@@ -406,9 +422,9 @@ export default function OrderScreen() {
           state1: "visible1 success",
         },
       });
-      if (deliveryStatus !== "Received" || deliveryStatus !== "Returned") {
+      if (deliveryStatus === "Received" || deliveryStatus === "Returned") {
         socket.emit("post_data", {
-          userId: order.user,
+          userId: orderitem.seller._id,
           itemId: order._id,
           notifyType: "delivery",
           msg: `Your order is ${deliveryStatus} `,
@@ -417,7 +433,7 @@ export default function OrderScreen() {
         });
       } else {
         socket.emit("post_data", {
-          userId: orderitem.seller._id,
+          userId: order.user,
           itemId: order._id,
           notifyType: "delivery",
           msg: `Your order is ${deliveryStatus} `,
@@ -443,7 +459,7 @@ export default function OrderScreen() {
       "/api/payments",
       {
         userId: seller,
-        amount: cost,
+        amount: (92.1 / 100) * cost,
         meta: {
           Type: "Order Completed",
           from: "Wallet",
@@ -476,7 +492,8 @@ export default function OrderScreen() {
       "/api/payments",
       {
         userId: order.user,
-        amount: product.deliverySelect.cost + product.actualPrice,
+        amount:
+          Number(product.deliverySelect.cost) + Number(product.actualPrice),
         meta: {
           Type: "Order Refund",
           from: "Wallet",
@@ -493,6 +510,33 @@ export default function OrderScreen() {
       itemId: product._id,
       notifyType: "payment",
       msg: `Order Refund`,
+      link: `/payment/${paymentData._id}`,
+      userImage: "/images/pimage.png",
+    });
+  };
+
+  const paySeller = async (product) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: product.seller._id,
+        amount: (92.1 / 100) * product.actualPrice,
+        meta: {
+          Type: "Pay Seller",
+          from: "Wallet",
+          to: "Wallet",
+          currency: product.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: product._id,
+      notifyType: "payment",
+      msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
     });
@@ -684,7 +728,7 @@ export default function OrderScreen() {
                           </MenuItem>
                           <MenuItem
                             disabled={
-                              deliveryNumber(orderitem.deliveryStatus) > 1
+                              deliveryNumber(orderitem.deliveryStatus) !== 1
                             }
                             value="Dispatched"
                           >
@@ -692,7 +736,7 @@ export default function OrderScreen() {
                           </MenuItem>
                           <MenuItem
                             disabled={
-                              deliveryNumber(orderitem.deliveryStatus) > 2
+                              deliveryNumber(orderitem.deliveryStatus) !== 2
                             }
                             value="In transit"
                           >
@@ -700,7 +744,7 @@ export default function OrderScreen() {
                           </MenuItem>
                           <MenuItem
                             disabled={
-                              deliveryNumber(orderitem.deliveryStatus) > 3
+                              deliveryNumber(orderitem.deliveryStatus) !== 3
                             }
                             value="Delivered"
                           >
@@ -728,7 +772,6 @@ export default function OrderScreen() {
                     <button className="btn btn-primary w-100">
                       <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                     </button>
-                    {console.log(daydiff(13))}
                     {userInfo.isAdmin &&
                       daydiff(13) <= 0 &&
                       deliveryNumber(orderitem.deliveryStatus) < 4 && (
@@ -741,6 +784,26 @@ export default function OrderScreen() {
                           }}
                         >
                           Refund
+                        </button>
+                      )}
+                    {userInfo.isAdmin &&
+                      daydiff(13) <= 0 &&
+                      deliveryNumber(orderitem.deliveryStatus) === 4 && (
+                        <button
+                          onClick={() => {
+                            paySeller(orderitem);
+                            deliverOrderHandler(
+                              "Payment To Seller Initiated",
+                              orderitem._id
+                            );
+                          }}
+                          className="btn btn-primary w-100"
+                          style={{
+                            background: "var(--malon-color)",
+                            marginTop: "10px",
+                          }}
+                        >
+                          Pay Seller
                         </button>
                       )}
                   </ActionButton>
@@ -787,7 +850,7 @@ export default function OrderScreen() {
                         );
                       }}
                     >
-                      See delivery history
+                      Track Order
                     </div>
                   </div>
                   <Name>
@@ -800,23 +863,36 @@ export default function OrderScreen() {
                 {userInfo &&
                   order.user === userInfo._id &&
                   orderitem.deliveryStatus === "Delivered" && (
-                    <Received
-                      onClick={() => {
-                        deliverOrderHandler(
-                          "Received",
-                          orderitem._id,
-                          orderitem
-                        );
-                        paymentRequest(
-                          orderitem.seller._id,
-                          orderitem.actualPrice,
-                          orderitem.currency,
-                          orderitem.seller.image
-                        );
-                      }}
-                    >
-                      Comfirm you have recieved order
-                    </Received>
+                    <div>
+                      <AfterAction>
+                        <Received
+                          onClick={() => {
+                            deliverOrderHandler(
+                              "Received",
+                              orderitem._id,
+                              orderitem
+                            );
+                            paymentRequest(
+                              orderitem.seller._id,
+                              orderitem.actualPrice,
+                              orderitem.currency,
+                              orderitem.seller.image
+                            );
+                          }}
+                        >
+                          Comfirm you have recieved order
+                        </Received>
+                        <ReturnButton onClick={() => setShowReturn(true)}>
+                          Log a return
+                        </ReturnButton>
+                      </AfterAction>
+                      <div style={{ fontSize: "13px", maxWidth: "400px" }}>
+                        Please inspect your order before confirming receipt.
+                        Kindly know that you can't LOG A RETURN after order
+                        receipt confirmation. However, you can re-list your
+                        product for sale at this point
+                      </div>
+                    </div>
                   )}
               </div>
               <hr />

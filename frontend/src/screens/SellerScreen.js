@@ -28,6 +28,7 @@ import ReviewLists from "./ReviewLists";
 import ModelLogin from "../component/ModelLogin";
 import Report from "../component/Report";
 import { socket } from "../App";
+import WriteReview from "../component/WriteReview";
 
 const Right = styled.div`
   flex: 7;
@@ -196,6 +197,8 @@ export default function SellerScreen() {
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
+  const [showWriteReview, setShowWriteReview] = useState(false);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -540,9 +543,22 @@ export default function SellerScreen() {
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating rating={user.rating} numReviews={user.numReviews} />
               </ReviewsClick>
-              <Model showModel={showModel} setShowModel={setShowModel}>
-                <ReviewLists />
-              </Model>
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => setShowWriteReview(true)}
+              >
+                Leave a review
+              </div>
+              <ModelLogin showModel={showModel} setShowModel={setShowModel}>
+                <ReviewLists userId={sellerId} />
+              </ModelLogin>
+              <ModelLogin
+                showModel={showWriteReview}
+                setShowModel={setShowWriteReview}
+              >
+                <WriteReview userId={sellerId} 
+                setShowModel={setShowWriteReview}/>
+              </ModelLogin>
               <button
                 onClick={() => addConversation(user._id, "user")}
                 type="buton"

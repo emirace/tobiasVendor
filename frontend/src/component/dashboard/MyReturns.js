@@ -323,7 +323,7 @@ export default function MyReturns() {
       name: p.productId.name,
       image: p.productId.image,
       slug: p.productId.slug,
-      date: moment(p.createdAt).format("MM DD, h:mm a"),
+      date: moment(p.createdAt).format("MMM DD, h:mm a"),
       orderId: p.orderId._id,
       user: p.orderId.user.username,
     }));

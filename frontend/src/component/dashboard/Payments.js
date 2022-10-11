@@ -303,7 +303,7 @@ export default function Payments() {
     payments.length > 0 &&
     payments.map((p) => ({
       id: p._id,
-      date: moment(p.createdAt).format("MM DD, h:mm a"),
+      date: moment(p.createdAt).format("MMM DD, h:mm a"),
       user: p.userId.username,
       status: p.status,
       amount: p.amount,

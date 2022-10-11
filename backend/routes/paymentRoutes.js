@@ -12,7 +12,9 @@ paymentRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const payments = await Payment.find().populate("userId", "username");
+    const payments = await Payment.find()
+      .populate("userId", "username")
+      .sort({ createdAt: -1 });
     res.send(payments);
   })
 );
