@@ -31,6 +31,7 @@ import Notification from "./models/notificationModel.js";
 import cartItemRouter from "./routes/cartRoutes.js";
 import locationRouter from "./routes/locationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
+import User from "./models/userModel.js";
 
 dotenv.config();
 
@@ -225,16 +226,33 @@ io.on("connection", (socket) => {
   // Add notifications
   socket.on("post_data", async (body) => {
     const { userId, notifyType, userImage, itemId, msg, link } = body;
-    const notification = new Notification({
-      userId,
-      notifyType,
-      itemId,
-      msg,
-      link,
-      userImage,
-    });
-    await notification.save();
-    io.sockets.emit("change_data");
+    if (userId === "Admin") {
+      const admin = await User.findOne({
+        email: "admin@example.com",
+        isAdmin: true,
+      });
+      const notification = new Notification({
+        userId: admin._ids,
+        notifyType,
+        itemId,
+        msg,
+        link,
+        userImage,
+      });
+      await notification.save();
+      io.sockets.emit("change_data");
+    } else {
+      const notification = new Notification({
+        userId,
+        notifyType,
+        itemId,
+        msg,
+        link,
+        userImage,
+      });
+      await notification.save();
+      io.sockets.emit("change_data");
+    }
   });
 
   // mark as read

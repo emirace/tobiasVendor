@@ -32,7 +32,11 @@ import Return from "../component/Return";
 import { socket } from "../App";
 import Model from "../component/Model";
 import DeliveryHistory from "../component/DeliveryHistory";
-import { faCommentsDollar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCommentsDollar,
+  faSquareCheck,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Main = styled.div`
   padding: 20px 5vw 0 5vw;
@@ -217,6 +221,22 @@ const AfterAction = styled.div`
   display: flex;
 `;
 
+const TextInput = styled.input`
+  background: none;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  border: 1px solid grey;
+  border-radius: 0.2rem;
+  height: 40px;
+  padding: 10px;
+  margin-left: 20px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+`;
+
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -290,6 +310,8 @@ export default function OrderScreen() {
   const [isSeller, setIsSeller] = useState(false);
   const [showDeliveryHistory, setShowDeliveryHistory] = useState(false);
   const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0);
+  const [enterwaybil, setEnterwaybil] = useState(false);
+  const [waybillNumber, setWaybillNumber] = useState("");
   function createOrder(data, actions) {
     return actions.order
       .create({
@@ -408,7 +430,7 @@ export default function OrderScreen() {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
         `/api/orders/${order._id}/deliver/${productId}`,
-        { deliveryStatus },
+        { deliveryStatus, trackingNumber: waybillNumber },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -464,6 +486,8 @@ export default function OrderScreen() {
           Type: "Order Completed",
           from: "Wallet",
           to: "Wallet",
+          typeName: "Order",
+          id: orderId,
           currency: itemCurrency,
         },
       },
@@ -472,7 +496,7 @@ export default function OrderScreen() {
       }
     );
     socket.emit("post_data", {
-      userId: userInfo._id,
+      userId: "Admin",
       itemId: paymentData._id,
       notifyType: "payment",
       msg: `Order Completed`,
@@ -498,6 +522,8 @@ export default function OrderScreen() {
           Type: "Order Refund",
           from: "Wallet",
           to: "Wallet",
+          typeName: "Order",
+          id: orderId,
           currency: product.currency,
         },
       },
@@ -509,10 +535,12 @@ export default function OrderScreen() {
       userId: userInfo._id,
       itemId: product._id,
       notifyType: "payment",
-      msg: `Order Refund`,
+      msg: `Order Refunded`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
     });
+
+    deliverOrderHandler("Refunded", product._id);
   };
 
   const paySeller = async (product) => {
@@ -525,6 +553,8 @@ export default function OrderScreen() {
           Type: "Pay Seller",
           from: "Wallet",
           to: "Wallet",
+          typeName: "Order",
+          id: orderId,
           currency: product.currency,
         },
       },
@@ -540,6 +570,15 @@ export default function OrderScreen() {
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
     });
+
+    deliverOrderHandler("Payment to Seller Initiated", product._id);
+  };
+
+  const comfirmWaybill = async (product) => {
+    if (!waybillNumber) return;
+
+    await deliverOrderHandler("Dispatched", product._id);
+    setEnterwaybil(false);
   };
 
   return loading ? (
@@ -666,92 +705,132 @@ export default function OrderScreen() {
                     )}
                   {userInfo && order && (
                     <SetStatus>
-                      <FormControl
-                        disabled={
-                          order.deliveryStatus === "Hold" ||
-                          order.deliveryStatus === "Received" ||
-                          order.deliveryStatus === "Returned"
-                        }
-                        sx={{
-                          minWidth: "220px",
-                          margin: 0,
-                          borderRadius: "0.2rem",
-                          border: `1px solid ${
-                            mode === "pagebodydark"
-                              ? "var(--dark-ev4)"
-                              : "var(--light-ev4)"
-                          }`,
-                          "& .MuiOutlinedInput-root": {
-                            color: `${
-                              mode === "pagebodydark"
-                                ? "var(--white-color)"
-                                : "var(--black-color)"
-                            }`,
-                            "&:hover": {
-                              outline: "none",
-                              border: 0,
-                            },
-                          },
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "0 !important",
-                          },
-                        }}
-                        size="small"
-                      >
-                        <InputLabel
-                          sx={{
-                            color: `${
-                              mode === "pagebodydark"
-                                ? "var(--white-color)"
-                                : "var(--black-color)"
-                            }`,
+                      {enterwaybil ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
                           }}
-                          id="deliveryStatus"
                         >
-                          Update Delivery Status
-                        </InputLabel>
+                          <label>Enter Tracking number </label>
+                          <TextInput
+                            mode={mode}
+                            value={waybillNumber}
+                            type="text"
+                            onChange={(e) => setWaybillNumber(e.target.value)}
+                          />
+                          <FontAwesomeIcon
+                            style={{
+                              color: "var(--orange-color)",
+                              height: "40px",
+                              width: "40px",
+                            }}
+                            icon={faSquareCheck}
+                            onClick={() => comfirmWaybill(orderitem)}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {orderitem.trackingNumber && (
+                            <label style={{ marginRight: "20px" }}>
+                              Tracking Number: {orderitem.trackingNumber}
+                            </label>
+                          )}
+                          <FormControl
+                            disabled={
+                              order.deliveryStatus === "Hold" ||
+                              order.deliveryStatus === "Received" ||
+                              order.deliveryStatus === "Returned"
+                            }
+                            sx={{
+                              minWidth: "220px",
+                              margin: 0,
+                              borderRadius: "0.2rem",
+                              border: `1px solid ${
+                                mode === "pagebodydark"
+                                  ? "var(--dark-ev4)"
+                                  : "var(--light-ev4)"
+                              }`,
+                              "& .MuiOutlinedInput-root": {
+                                color: `${
+                                  mode === "pagebodydark"
+                                    ? "var(--white-color)"
+                                    : "var(--black-color)"
+                                }`,
+                                "&:hover": {
+                                  outline: "none",
+                                  border: 0,
+                                },
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                border: "0 !important",
+                              },
+                            }}
+                            size="small"
+                          >
+                            <InputLabel
+                              sx={{
+                                color: `${
+                                  mode === "pagebodydark"
+                                    ? "var(--white-color)"
+                                    : "var(--black-color)"
+                                }`,
+                              }}
+                              id="deliveryStatus"
+                            >
+                              Update Delivery Status
+                            </InputLabel>
 
-                        <Select
-                          onChange={(e) =>
-                            deliverOrderHandler(e.target.value, orderitem._id)
-                          }
-                          displayEmpty
-                          id="deliveryStatus"
-                        >
-                          <MenuItem
-                            disabled={
-                              deliveryNumber(orderitem.deliveryStatus) > 0
-                            }
-                            value="Not yet Dispatched"
-                          >
-                            Not yet Dispatched
-                          </MenuItem>
-                          <MenuItem
-                            disabled={
-                              deliveryNumber(orderitem.deliveryStatus) !== 1
-                            }
-                            value="Dispatched"
-                          >
-                            Dispatched
-                          </MenuItem>
-                          <MenuItem
-                            disabled={
-                              deliveryNumber(orderitem.deliveryStatus) !== 2
-                            }
-                            value="In transit"
-                          >
-                            In transit
-                          </MenuItem>
-                          <MenuItem
-                            disabled={
-                              deliveryNumber(orderitem.deliveryStatus) !== 3
-                            }
-                            value="Delivered"
-                          >
-                            Delivered
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                            <Select
+                              onChange={(e) => {
+                                if (e.target.value === "Dispatched") {
+                                  setEnterwaybil(true);
+                                } else {
+                                  deliverOrderHandler(
+                                    e.target.value,
+                                    orderitem._id
+                                  );
+                                }
+                              }}
+                              displayEmpty
+                              id="deliveryStatus"
+                            >
+                              <MenuItem
+                                disabled={
+                                  deliveryNumber(orderitem.deliveryStatus) > 0
+                                }
+                                value="Not yet Dispatched"
+                              >
+                                Not yet Dispatched
+                              </MenuItem>
+                              <MenuItem
+                                disabled={
+                                  deliveryNumber(orderitem.deliveryStatus) !== 1
+                                }
+                                value="Dispatched"
+                              >
+                                Dispatched
+                              </MenuItem>
+                              <MenuItem
+                                disabled={
+                                  deliveryNumber(orderitem.deliveryStatus) !== 2
+                                }
+                                value="In transit"
+                              >
+                                In transit
+                              </MenuItem>
+                              <MenuItem
+                                disabled={
+                                  deliveryNumber(orderitem.deliveryStatus) !== 3
+                                }
+                                value="Delivered"
+                              >
+                                Delivered
+                              </MenuItem>
+                            </Select>
+                          </FormControl>
+                        </>
+                      )}
                     </SetStatus>
                   )}
                 </div>

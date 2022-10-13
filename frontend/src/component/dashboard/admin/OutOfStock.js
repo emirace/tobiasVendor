@@ -6,7 +6,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { getError, region } from "../../../utils";
+import { Helmet } from "react-helmet-async";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -131,7 +132,7 @@ export default function OutOfStock() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/admin/outofstock?q=${productsQuery}`,
+          `/api/products/${region()}/admin/outofstock?q=${productsQuery}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -230,6 +231,9 @@ export default function OutOfStock() {
 
   return (
     <ProductLists mode={mode}>
+      <Helmet>
+        <title>Out of Stock</title>
+      </Helmet>
       <Title>Out of stock Products</Title>
       <SearchCont>
         <SearchInput

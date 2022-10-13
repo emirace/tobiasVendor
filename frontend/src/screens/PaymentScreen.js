@@ -241,6 +241,9 @@ export default function PaymentScreen() {
         <hr />
         <Name>Type</Name>
         <ItemNum>{payment.meta.Type}</ItemNum>
+        <ItemNum>
+          {payment.meta.typeName} id {payment.meta.id}
+        </ItemNum>
         <hr />
         <Name>Amount</Name>
         <ItemNum>

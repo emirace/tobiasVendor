@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { getError, loginGig } from "../utils";
 import useGeoLocation from "../hooks/useGeoLocation";
+import LoadingBox from "../component/LoadingBox";
 
 const Container = styled.div`
   margin: 30px;
@@ -206,7 +207,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   }, [addresses, deliveryOption]);
   const location = useGeoLocation();
   const [locationerror, setLocationerror] = useState("");
-
+  const [loadingGig, setLoadingGig] = useState(false);
   const submitHandler = async (e) => {
     e.preventDefault();
     var deliverySelect;
@@ -225,49 +226,57 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         });
         return;
       }
-      const { data } = await axios.post(
-        "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/price",
-        {
-          ReceiverAddress: meta.address,
-          CustomerCode: token.username,
-          SenderLocality: item.meta.address,
-          SenderAddress: item.meta.address,
-          ReceiverPhoneNumber: meta.phone,
-          VehicleType: "BIKE",
-          SenderPhoneNumber: item.meta.phone,
-          SenderName: item.meta.name,
-          ReceiverName: meta.name,
-          UserId: token.userId,
-          ReceiverStationId: meta.stationId,
-          SenderStationId: item.meta.stationId,
-          ReceiverLocation: {
-            Latitude: location.coordinates.lat,
-            Longitude: location.coordinates.lng,
-          },
-          SenderLocation: { Latitude: item.meta.lat, Longitude: item.meta.lng },
-          PreShipmentItems: [
-            {
-              SpecialPackageId: "0",
-              Quantity: item.quantity,
-              ItemType: "Normal",
-              ItemName: item.name,
-              Value: item.actualPrice,
-              ShipmentType: "Regular",
-              Description: item.description,
-              ImageUrl: item.image,
+      try {
+        setLoadingGig(true);
+
+        const { data } = await axios.post(
+          "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/price",
+          {
+            ReceiverAddress: meta.address,
+            CustomerCode: token.username,
+            SenderLocality: item.meta.address,
+            SenderAddress: item.meta.address,
+            ReceiverPhoneNumber: meta.phone,
+            VehicleType: "BIKE",
+            SenderPhoneNumber: item.meta.phone,
+            SenderName: item.meta.name,
+            ReceiverName: meta.name,
+            UserId: token.userId,
+            ReceiverStationId: meta.stationId,
+            SenderStationId: item.meta.stationId,
+            ReceiverLocation: {
+              Latitude: location.coordinates.lat,
+              Longitude: location.coordinates.lng,
             },
-          ],
-        },
-        {
-          headers: { Authorization: `Bearer ${token.token}` },
-        }
-      );
-      console.log(data);
-      deliverySelect = {
-        deliveryOption,
-        cost: data.Object.DeliveryPrice,
-      };
-      console.log(data.Object.DeliveryPrice, deliverySelect);
+            SenderLocation: {
+              Latitude: item.meta.lat,
+              Longitude: item.meta.lng,
+            },
+            PreShipmentItems: [
+              {
+                SpecialPackageId: "0",
+                Quantity: item.quantity,
+                ItemType: "Normal",
+                ItemName: item.name,
+                Value: item.actualPrice,
+                ShipmentType: "Regular",
+                Description: item.description,
+                ImageUrl: item.image,
+              },
+            ],
+          },
+          {
+            headers: { Authorization: `Bearer ${token.token}` },
+          }
+        );
+        console.log(data);
+        deliverySelect = {
+          deliveryOption,
+          cost: data.Object.DeliveryPrice,
+        };
+      } catch (err) {
+        setLoadingGig(false);
+      }
     } else {
       deliverySelect = { deliveryOption, cost: value, ...meta };
     }
@@ -293,6 +302,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     ctxDispatch({ type: "SAVE_DELIVERY_METHOD", payload: deliverySelect });
     setShowModel(false);
     // navigate("/placeorder");
+    setLoadingGig(false);
   };
 
   function receiveMessage(message) {
@@ -723,7 +733,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        How Aramex works
+                        How GIG works
                       </a>
                     </Plans>
                   ) : (
@@ -737,12 +747,14 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
           ))}
           <div className="mb-3">
             <button
+              disabled={loadingGig}
               className="search-btn1"
               style={{ width: "100%" }}
               type="submit"
             >
               Continue
             </button>
+            {loadingGig && <LoadingBox />}
           </div>
         </Form>
       </div>

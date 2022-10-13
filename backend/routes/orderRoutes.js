@@ -402,6 +402,9 @@ orderRouter.put(
             ...x,
             deliveryStatus: req.body.deliveryStatus,
             deliveredAt: Date.now(),
+            trackingNumber: req.body.trackingNumber
+              ? req.body.trackingNumber
+              : "",
           };
         } else {
           return x;

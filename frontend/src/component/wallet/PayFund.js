@@ -103,7 +103,7 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
     try {
       const { data } = await axios.post(
         "/api/accounts/transfer",
-        { amount, purpose: "Payment" },
+        { amount, purpose: "Order Purchased" },
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }

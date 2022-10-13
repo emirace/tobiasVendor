@@ -10,6 +10,7 @@ import DeliveryHistory from "../../DeliveryHistory";
 import LoadingBox from "../../LoadingBox";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ModelLogin from "../../ModelLogin";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   flex: 4;
@@ -135,7 +136,7 @@ export default function ReturnPage() {
     getReturn();
   }, [refresh]);
 
-  const paymentRequest = async (seller, cost, itemCurrency) => {
+  const paymentRequest = async (user, cost, itemCurrency) => {
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
@@ -146,6 +147,8 @@ export default function ReturnPage() {
           Type: "Return Completed",
           from: "Wallet",
           to: "Wallet",
+          typeName: "Return",
+          id: orderId,
           currency: returned.productId.currency,
         },
       },
@@ -154,7 +157,7 @@ export default function ReturnPage() {
       }
     );
     socket.emit("post_data", {
-      userId: userInfo._id,
+      userId: "Admim",
       itemId: paymentData._id,
       notifyType: "payment",
       msg: `Return Completed`,
@@ -238,6 +241,12 @@ export default function ReturnPage() {
         console.log(data);
         dispatch({ type: "GET_SUCCESS", payload: data });
         deliverOrderHandler("Return Declined", returned.productId._id);
+        paymentRequest(
+          returned.productId.seller._id,
+          (92.1 / 100) *
+            (returned.returnDelivery.cost + returned.productId.actualPrice),
+          returned.productId.currency
+        );
       } catch (error) {}
     } else {
       try {
@@ -298,8 +307,44 @@ export default function ReturnPage() {
     <Container mode={mode}>
       <Title>Return</Title>
       <SumaryContDetails mode={mode}>
+        <Name>Product</Name>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={returned.productId.image}
+            alt=""
+            style={{
+              width: "100px",
+              height: "100px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "top",
+            }}
+          />
+          <Link to={`/product/${returned.productId.slug}`}>
+            <div style={{ marginLeft: "20px" }}>{returned.productId.name}</div>
+          </Link>
+        </div>
+        <hr />
+        <Name>Buyer</Name>
+        <ItemNum>
+          <Link to={`/seller/${returned.orderId.user._id}`}>
+            {returned.orderId.user.username}
+          </Link>
+        </ItemNum>
+        <hr />
+
+        <Name>Seller</Name>
+        <ItemNum>
+          <Link to={`/seller/${returned.productId.seller._id}`}>
+            {returned.productId.seller.username}
+          </Link>
+        </ItemNum>
+        <hr />
         <Name>Preferred Resolution Method</Name>
         <ItemNum>Report Form</ItemNum>
+        <hr />
+        <Name>Preferred Resolution Method</Name>
+        <ItemNum>Return Form</ItemNum>
         <hr />
         <Name>Reasons for Return</Name>
         <ItemNum>{returned.reason}</ItemNum>
@@ -439,7 +484,12 @@ export default function ReturnPage() {
                             e.target.value,
                             returned.productId._id
                           );
-                          paymentRequest();
+                          paymentRequest(
+                            returned.orderId.user._id,
+                            returned.returnDelivery.cost * 2 +
+                              returned.productId.actualPrice,
+                            returned.productId.currency
+                          );
                         }}
                         displayEmpty
                         id="deliveryStatus"

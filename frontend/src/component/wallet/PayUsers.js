@@ -7,6 +7,8 @@ import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
 import { getError } from "../../utils";
 import axios from "axios";
+import MessageBox from "../MessageBox";
+import LoadingBox from "../LoadingBox";
 const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Container = styled.div`
@@ -75,63 +77,87 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AddFund({
-  setShowModel,
-  setRefresh,
-  refresh,
-  currency,
-}) {
-  const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+export default function PayUsers({ setShowModel, setRefresh, refresh }) {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { mode, userInfo, currency } = state;
   const [{ loading, error, message }, dispatch] = useReducer(reducer, {
-    loading: true,
+    loading: false,
     error: "",
     balance: 0,
   });
   const [amount, setAmount] = useState("");
-  const config = {
-    public_key: BASE_KEY,
-    tx_ref: v4(),
-    amount,
-    currency: currency === "N " ? "NGN" : "ZAR",
-    //currency: "ZAR",
-    //country: "ZAR",
-    payment_options: "card,mobilemoney,ussd",
-    customer: {
-      email: userInfo.email,
-      phonenumber: userInfo.phone,
-      name: `${userInfo.firstName} ${userInfo.lastName}`,
-    },
-    customizations: {
-      title: "Repeddle",
-      description: "Funding Repeddle Wallet",
-      logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
-    },
-  };
+  const [userId, setUserId] = useState("");
+  const [purpose, setPurpose] = useState("");
 
-  const handleFlutterPayment = useFlutterwave(config);
   const onApprove = async (response) => {
+    console.log(!userId);
+    if (!userId) {
+      dispatch({ type: "FETCH_FAIL", payload: "Enter a valid User Id" });
+      return;
+    }
+    if (userId.length < 24) {
+      dispatch({ type: "FETCH_FAIL", payload: "Enter a valid User Id" });
+      return;
+    }
+    if (!amount) {
+      dispatch({ type: "FETCH_FAIL", payload: "Enter a valid amount" });
+      return;
+    }
+    if (!purpose) {
+      dispatch({ type: "FETCH_FAIL", payload: "Enter purpose of payment" });
+      return;
+    }
+
     dispatch({ type: "FETCH_REQUEST" });
     try {
       const { data } = await axios.post(
-        "/api/accounts/fundwallet",
-        { ...response, purpose: "Wallet Funded" },
+        "/api/payments",
+        {
+          userId,
+          amount,
+          meta: {
+            Type: purpose,
+            from: "Wallet",
+            to: "Wallet",
+            typeName: "User",
+            id: userId,
+            currency,
+          },
+        },
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Transfer request sent",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
       dispatch({ type: "FETCH_FAIL", payload: data.message });
-      setShowModel(false);
       setRefresh(!refresh);
+      setShowModel(false);
     } catch (err) {
       dispatch({ type: "FETCH_FAIL", payload: getError(err) });
     }
   };
   return (
     <Container>
-      {console.log(BASE_KEY)}
       <FontAwesomeIcon size="4x" color="var(--orange-color)" icon={faWallet} />
-      <Text>Fund your Wallet</Text>
+      <Text>Make Transfer</Text>
+      <div style={{ color: "grey", textTransform: "uppercase" }}>
+        From {userInfo.username}
+      </div>
+      {error && <MessageBox variant="danger">{error}</MessageBox>}
+      <Input
+        type="text"
+        mode={mode}
+        value={userId}
+        placeholder="Enter User Id"
+        onChange={(e) => setUserId(e.target.value)}
+      />
       <Input
         type="number"
         mode={mode}
@@ -139,20 +165,14 @@ export default function AddFund({
         placeholder="Enter Amount to be Added in Wallet"
         onChange={(e) => setAmount(e.target.value)}
       />
-      <Button
-        onClick={() => {
-          handleFlutterPayment({
-            callback: async (response) => {
-              console.log(response);
-              onApprove(response);
-              closePaymentModal(); // this will close the modal programmatically
-            },
-            onClose: () => {},
-          });
-        }}
-      >
-        Continue
-      </Button>
+      <Input
+        type="text"
+        mode={mode}
+        value={purpose}
+        placeholder="Enter Purpose of Payment"
+        onChange={(e) => setPurpose(e.target.value)}
+      />
+      {loading ? <LoadingBox /> : <Button onClick={onApprove}>Continue</Button>}
     </Container>
   );
 }

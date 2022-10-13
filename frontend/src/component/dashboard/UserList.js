@@ -133,7 +133,7 @@ export default function UserList() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 100 },
+    { field: "id", headerName: "ID", width: 200 },
     {
       field: "user",
       headerName: "User",

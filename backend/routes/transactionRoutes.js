@@ -13,7 +13,24 @@ transactionRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const transactions = await Transaction.find().sort({ createdAt: -1 });
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const transactions = await Transaction.find({ ...queryFilter }).sort({
+      createdAt: -1,
+    });
     res.send(transactions);
   })
 );

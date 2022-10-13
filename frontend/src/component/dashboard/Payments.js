@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import ModelLogin from "../ModelLogin";
+import WalletModel from "../wallet/WalletModel";
+import PayUsers from "../wallet/PayUsers";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -142,6 +144,15 @@ const SearchInput = styled.input`
   }
 `;
 
+const PayButton = styled.button`
+  border: 0;
+  background: var(--orange-color);
+  color: white;
+  padding: 5px 7px;
+  border-radius: 0.2rem;
+  margin-left: 20px;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "USERS_REQUEST":
@@ -183,6 +194,8 @@ export default function Payments() {
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
+  const [showModelWallet, setShowModelWallet] = useState(false);
+  const [refresh, setRefresh] = useState(true);
   useEffect(() => {
     const fetchReturns = async () => {
       try {
@@ -198,7 +211,7 @@ export default function Payments() {
       }
     };
     fetchReturns();
-  }, [userInfo, salesQurrey]);
+  }, [userInfo, salesQurrey, refresh]);
 
   const deleteHandler = async (order) => {
     if (window.confirm("Are you sure to delete")) {
@@ -319,6 +332,21 @@ export default function Payments() {
           placeholder="Search by id"
         />
       </SearchCont>
+      <PayButton onClick={() => setShowModelWallet(true)}>
+        Make Payment
+      </PayButton>
+      <WalletModel
+        setShowModel={setShowModelWallet}
+        showModel={showModelWallet}
+        setRefresh={setRefresh}
+        refresh={refresh}
+      >
+        <PayUsers
+          setShowModel={setShowModelWallet}
+          setRefresh={setRefresh}
+          refresh={refresh}
+        />
+      </WalletModel>
       <DataGrid
         sx={{
           width: "100%",

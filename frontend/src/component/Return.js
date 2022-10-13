@@ -161,7 +161,6 @@ export default function Return({
   const [refund, setRefund] = useState("");
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
-
   const handleReturn = async () => {
     if (!reason.length) {
       setError("Please select a reason for return");
@@ -220,7 +219,7 @@ export default function Return({
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Fail sending report, pls try again",
+          message: "Fail sending return, pls try again",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -540,7 +539,8 @@ export default function Return({
                   onChange={uploadImageHandler}
                 />
               </InputCont>
-              <Button onClick={handleReturn}>Submit</Button>
+              <Button onClick={loading ? "" : handleReturn}>Submit</Button>
+              {loading && <LoadingBox />}
             </Form>
           </Content>
         );

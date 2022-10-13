@@ -206,6 +206,10 @@ export const deliveryNumber = (status) => {
       return 10;
     case "Return Received":
       return 11;
+    case "Refunded":
+      return 12;
+    case "Payment to Seller Initiated":
+      return 13;
 
     default:
       return 0;

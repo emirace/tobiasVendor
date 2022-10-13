@@ -100,7 +100,8 @@ productRouter.post(
       region,
     });
     const createdProduct = await newProduct.save();
-    product.productId = product._id.toString();
+    createdProduct.productId = createdProduct._id.toString();
+    await createdProduct.save();
 
     res.send({ message: "Product Created", createdProduct });
   })
@@ -409,10 +410,20 @@ productRouter.get(
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
-            name: {
-              $regex: searchQuery,
-              $options: "i",
-            },
+            $or: [
+              {
+                name: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                productId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
           }
         : {};
 
@@ -445,10 +456,20 @@ productRouter.get(
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
-            name: {
-              $regex: searchQuery,
-              $options: "i",
-            },
+            $or: [
+              {
+                name: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                productId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
           }
         : {};
 

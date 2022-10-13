@@ -324,6 +324,7 @@ export default function User() {
   const [image, setImage] = useState("");
   const [active, setActive] = useState("");
   const [badge, setBadge] = useState("");
+  const [influencer, setInfluencer] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showModel, setShowModel] = useState(false);
@@ -395,7 +396,7 @@ export default function User() {
       if (username.length > 0) {
         if (
           window.confirm(
-            "Are you sure you want to update username, next change will be in 30days"
+            "Are you sure you want to edit your username? The next edit window  will be after 30 days"
           )
         ) {
           return;
@@ -416,6 +417,7 @@ export default function User() {
           address,
           image,
           active,
+          influencer,
           badge,
           password,
           accountName,
@@ -737,6 +739,39 @@ export default function User() {
                         onChange={(e) => setBadge(e.target.value)}
                       />
                       <Label htmlFor="badgeno">No</Label>
+                    </Gender>
+                    <Label>Influencer</Label>
+                    <Gender mode={mode}>
+                      <input
+                        checked={
+                          badge === "yes"
+                            ? true
+                            : user.influencer
+                            ? true
+                            : false
+                        }
+                        type="radio"
+                        name="influencer"
+                        id="influenceryes"
+                        value="yes"
+                        onClick={(e) => setInfluencer(e.target.value)}
+                      />
+                      <Label htmlFor="influenceryes">Yes</Label>
+                      <input
+                        checked={
+                          influencer === "no"
+                            ? true
+                            : !user.influencer
+                            ? true
+                            : false
+                        }
+                        type="radio"
+                        name="influencer"
+                        id="influencerno"
+                        value="no"
+                        onChange={(e) => setInfluencer(e.target.value)}
+                      />
+                      <Label htmlFor="influencerno">No</Label>
                     </Gender>
                   </>
                 ) : (

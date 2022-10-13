@@ -15,7 +15,22 @@ returnRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const returns = await Return.find({ region })
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const returns = await Return.find({ region, ...queryFilter })
       .sort({ createdAt: -1 })
       .populate("productId")
       .populate({
@@ -33,7 +48,25 @@ returnRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     console.log("user returns");
-    const returns = await Return.find({ sellerId: req.user._id })
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const returns = await Return.find({
+      sellerId: req.user._id,
+      ...queryFilter,
+    })
       .sort({ createdAt: -1 })
       .populate("productId")
       .populate({
@@ -66,6 +99,8 @@ returnRouter.post(
       others: req.body.others,
     });
     const newReturn = await returned.save();
+    newReturn.returnId = newReturn._id.toString();
+    const newReturn1 = await newReturn.save();
     res.status(201).send(newReturn);
   })
 );
@@ -82,13 +117,13 @@ returnRouter.put(
         select: "user orderItems",
         populate: {
           path: "user",
-          select: "image",
+          select: "image username",
         },
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice",
-        populate: { path: "seller", select: "image" },
+        select: "seller actualPrice image name",
+        populate: { path: "seller", select: "image username" },
       });
     if (returned) {
       returned.adminReason = req.body.adminReason;
@@ -111,13 +146,13 @@ returnRouter.put(
         select: "user orderItems",
         populate: {
           path: "user",
-          select: "image",
+          select: "image username",
         },
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice",
-        populate: { path: "seller", select: "image" },
+        select: "seller actualPrice image name",
+        populate: { path: "seller", select: "image username" },
       });
     const transaction = await Transaction.find({
       "metadata.transaction_id": req.body.comfirmDelivery,
@@ -150,13 +185,13 @@ returnRouter.put(
         select: "user orderItems",
         populate: {
           path: "user",
-          select: "image",
+          select: "image username",
         },
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice",
-        populate: { path: "seller", select: "image" },
+        select: "seller actualPrice image name",
+        populate: { path: "seller", select: "image username" },
       });
     if (returned) {
       const product = await Product.findById(returned.productId);
@@ -199,13 +234,13 @@ returnRouter.get(
         select: "user orderItems",
         populate: {
           path: "user",
-          select: "image",
+          select: "image username",
         },
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice",
-        populate: { path: "seller", select: "image" },
+        select: "seller actualPrice image name",
+        populate: { path: "seller", select: "image username" },
       });
     if (returned) {
       res.status(201).send(returned);

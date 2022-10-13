@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
     numReviews: { type: Number, default: 0 },
     badge: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
+    influencer: { type: Boolean, default: false },
     isVerifiedEmail: { type: Boolean, default: false, required: true },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: String },

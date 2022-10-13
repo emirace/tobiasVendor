@@ -765,6 +765,7 @@ userRouter.put(
     const user = await User.findById(req.params.id);
     const useractive = () => (req.body.active === "yes" ? true : false);
     const userbadge = () => (req.body.badge === "yes" ? true : false);
+    const userinfluencer = () => (req.body.influencer === "yes" ? true : false);
     if (user) {
       user.username = user.username;
       user.firstName = req.body.firstName || user.firstName;
@@ -778,6 +779,8 @@ userRouter.put(
       user.image = req.body.image || user.image;
       user.active = req.body.active === "" ? user.active : useractive();
       user.badge = req.body.badge === "" ? user.badge : userbadge();
+      user.influencer =
+        req.body.influencer === "" ? user.influencer : userinfluencer();
 
       const updatedUser = await user.save();
       res.send({

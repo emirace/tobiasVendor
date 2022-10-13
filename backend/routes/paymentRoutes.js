@@ -12,7 +12,22 @@ paymentRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const payments = await Payment.find()
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const payments = await Payment.find({ ...queryFilter })
       .populate("userId", "username")
       .sort({ createdAt: -1 });
     res.send(payments);
