@@ -105,7 +105,7 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px 0;
+  margin: 40px 0;
   &.back {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -198,7 +198,7 @@ export default function SellScreen() {
           <SubHeading> - LIST - </SubHeading>
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
-        <Row style={{}}>
+        <Row style={{ width: "80%" }}>
           <Sides>
             <PhoneImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
@@ -256,12 +256,12 @@ export default function SellScreen() {
       <Section className="back" mode={mode} style={{ padding: "30px" }}>
         <SubHeading>WHAT TO SELL?</SubHeading>
         <Text>
-          FASHION - BEAUTY - FINE JEWLERY - HOME & ARTS - PET CARE & GROOMING -
-          GADGETS
+          FASHION - BEAUTY - FINE JEWLERY - HOME & ARTS - PET - CARE & GROOMING
+          - GADGETS
         </Text>
         <Text>
-          We accept all your pre-loved precious Items, our communitu are
-          constantly looking for,willing to love, and give a warm home.{" "}
+          We accept all your pre-loved precious Items, our community are
+          constantly looking for, willing to love, and give a warm home.{" "}
         </Text>
 
         <Link to="/newproduct">
@@ -292,44 +292,39 @@ export default function SellScreen() {
       </Section>
       <Section>
         <Header2>RE:BATCH</Header2>
-        <div style={{ maxWidth: "100%" }}>
-          <Row>
-            <RebatchImg
-              src="https://res.cloudinary.com/emirace/image/upload/v1661221991/derick-anies-hDJT_ERrB-w-unsplash_tty8rb.webp"
-              alt="img"
-            />
-            <div>
-              <Text style={{ textAlign: "left" }}>
-                Repeddle Batch is a consignment option that offers a
-                personalized service to our community members that wish to
-                transfer their pre-loved items to a new loving home but don’t
-                like the admin.
-              </Text>
-              <Text style={{ textAlign: "left" }}>
-                Consigning your garment is part of the steps you take to reduce
-                fashion foot print on our environment. Serve our planet by
-                recycling garments instead of dumping them to landfills.
-              </Text>
-              <div style={{ height: "30px" }} />
-              <SubHeading style={{ fontSize: "18px" }}>
-                COMING SOON!!!
-              </SubHeading>
+        <Row style={{ width: "70%" }}>
+          <RebatchImg
+            src="https://res.cloudinary.com/emirace/image/upload/v1661221991/derick-anies-hDJT_ERrB-w-unsplash_tty8rb.webp"
+            alt="img"
+          />
+          <div>
+            <Text style={{ textAlign: "left", textAlign: "justify" }}>
+              Repeddle Batch is a consignment option that offers a personalized
+              service to our community members that wish to transfer their
+              pre-loved items to a new loving home but don’t like the admin.
+            </Text>
+            <Text style={{ textAlign: "left", textAlign: "justify" }}>
+              Consigning your garment is part of the steps you take to reduce
+              fashion foot print on our environment. Serve our planet by
+              recycling garments instead of dumping them to landfills.
+            </Text>
+            <div style={{ height: "30px" }} />
+            <SubHeading style={{ fontSize: "18px" }}>COMING SOON!!!</SubHeading>
 
-              <SubHeading style={{ fontSize: "18px" }}>
-                WANTS TO CONSIGN WITH US?
-              </SubHeading>
-              <Text style={{ textAlign: "left" }}>
-                Drop Your email and we will let you know once we start accepting
-                consignment
-              </Text>
+            <SubHeading style={{ fontSize: "18px" }}>
+              WANTS TO CONSIGN WITH US?
+            </SubHeading>
+            <Text style={{ textAlign: "left" }}>
+              Drop Your email and we will let you know once we start accepting
+              consignment
+            </Text>
 
-              <InputCont>
-                <Input mode={mode} placeholder="Email:" />
-                <div style={{ cursor: "pointer", flex: 1 }}>SUBMIT</div>
-              </InputCont>
-            </div>
-          </Row>
-        </div>
+            <InputCont>
+              <Input mode={mode} placeholder="Email:" />
+              <div style={{ cursor: "pointer", flex: 1 }}>SUBMIT</div>
+            </InputCont>
+          </div>
+        </Row>
       </Section>
       <Section>
         <Header2>BULK n SLOT</Header2>
@@ -344,14 +339,14 @@ export default function SellScreen() {
         />
         <Text style={{ textAlign: "left" }}>
           Repeddle BULK n SLOT offers opportunity to either retailers who are
-          clearing out a large amount of items as clearance or wholesalers who
-          are selling items in bulk or slots, also known as BALES. These option
+          clearing out a large amount of items as clearance, or wholesalers who
+          are selling items in bulk or slots also known as BALES. These option
           gives you the benefit to list a minimum of ten items in a bag/box and
           you can list as much items as you are able to deliver.
         </Text>
         <Text style={{ textAlign: "left" }}>
-          We initiated this solution to provide a self B2B services to our
-          community members who may be in need to buy in bulk from fellow
+          We initiated this solution to provide a self <b>B2B</b> services to
+          our community members who may be in need to buy in bulk from fellow
           community members. If you’re a retailer and would prefer to buy items
           online that you can also resale online; these service carters for you,
           and if you are a wholesaler that prefer to sell your BALES online,
@@ -389,8 +384,8 @@ export default function SellScreen() {
           <b style={{ marginRight: "10px" }}>3.</b>
           <Text style={{ textAlign: "left" }}>
             <b>SHARE AND CASH OUT:</b> After a successful upload, be sure to
-            share your listing both on Repeddle’s platforms and social medias to
-            help buyers discover your items. You can cash out by either
+            share your listing, both on Repeddle’s platforms and social medias
+            to help buyers discover your items. You can cash out by either
             withdrawing your cash from your Repeddle’s wallet to your bank
             account or you can decide to further trade with it, buying more
             goods to sell, as soon as your item sale and buyer receives your
@@ -398,11 +393,11 @@ export default function SellScreen() {
           </Text>
         </Row>
         <Button>
-          <Header2>GET STARTED FREE</Header2>
+          <Header2>GET STARTED, FREE!</Header2>
         </Button>
       </Section>
       <Section mode={mode}>
-        <Header2>WHY SELL WITH REPEDDLE</Header2>
+        <Header2>WHY SELL WITH REPEDDLE?</Header2>
         <Row style={{ width: "90vw" }}>
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>MAKE A CHANGE</SubHeading>
@@ -488,9 +483,9 @@ export default function SellScreen() {
             <Text>
               Coupons and campaigns:{" "}
               <b style={{ color: "var(--malon-color)" }}>
-                ACCESS TO DISCOUNT, GIFT CARD, PROMOTION AND FREE DELIVERY
+                ACCESS TO DISCOUNT, GIFT CARD, PROMOTION AND FREE DELIVERY.
               </b>{" "}
-              offering creating tools to drive sales for your store.
+              Offering creating tools to drive sales for your store.
             </Text>
           </Step>
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
@@ -508,13 +503,14 @@ export default function SellScreen() {
             </Text>
           </Step>
         </Row>
-
-        <Button>
-          <Header2>SELL FREE NOW</Header2>
-        </Button>
+        <Link to="/newproduct">
+          <Button>
+            <Header2>SELL FREE NOW</Header2>
+          </Button>
+        </Link>
       </Section>
 
-      <Section>
+      <Section style={{ background: "" }}>
         <Text>
           <b>WONDERING WHAT TO BUY?</b>
         </Text>

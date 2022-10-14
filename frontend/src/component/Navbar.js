@@ -226,6 +226,12 @@ const Underline = styled.div`
   margin: 0 5px;
   color: var(--orange-color);
   text-decoration: underline;
+  position: relative;
+  cursor: pointer;
+
+  &:hover .text {
+    display: block;
+  }
 `;
 
 const Logo = styled.div`
@@ -561,6 +567,25 @@ const Tips = styled.span`
   }
 `;
 
+const DetailText = styled.div`
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 40px;
+  z-index: 9;
+  width: 300px;
+  padding: 10px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
+`;
+
 export const signoutHandler = () => {
   logout();
   localStorage.removeItem("userInfo");
@@ -660,12 +685,14 @@ export default function Navbar({
             <First>
               No Selling Fees, Hurry, Start Selling, Limited Off!!{" "}
               <Underline>
-                <Tips
-                  mode={mode}
-                  tips={`Sell more than 10,400 brand names you love. To give you unmatched user experiencd and support the growth of your business as part of our thrift secondhand community, you will not be charge REPEDDLE SELLER'S COMMISSION FEE until after 30th November 2022`}
-                >
-                  DETAILS
-                </Tips>
+                DETAILS
+                <DetailText className="text">
+                  Sell more than 10,400 brand names you love. To give you
+                  unmatched user experiencd and support the growth of your
+                  business as part of our thrift secondhand community, you will
+                  not be charge REPEDDLE SELLER'S COMMISSION FEE until after
+                  30th November 2022
+                </DetailText>
               </Underline>
             </First>
             <First>
@@ -715,6 +742,7 @@ export default function Navbar({
               ref={modelRef2}
               width={25}
               onClick={() => setShowNotification(!showNotification)}
+              alt="img"
             />
             <IconsTooltips tips="Notifications" />
             {allNotification.length > 0 && (

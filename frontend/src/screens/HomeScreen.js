@@ -55,7 +55,6 @@ const Section = styled.div`
 `;
 const Content = styled.div`
   display: flex;
-  width: 100%;
   gap: 10px;
   justify-content: space-between;
   margin: 5px 5vw;
