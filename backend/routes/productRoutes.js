@@ -725,6 +725,11 @@ productRouter.get(
       ...sizeFilter,
       ...ratingFilter,
       ...conditionFilter,
+      ...dealFilter,
+      ...typeFilter,
+      ...availabilityFilter,
+      ...shippingFilter,
+      ...patternFilter,
       region,
     });
     res.send({
