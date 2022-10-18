@@ -136,6 +136,9 @@ const SelectDeliveryButton = styled.div`
   cursor: pointer;
   padding: 3px 7px;
   border-radius: 0.2rem;
+  &:hover {
+    background: var(--malon-color);
+  }
 `;
 
 const reducer = (state, action) => {
@@ -475,7 +478,7 @@ export default function CartScreen() {
             </Top>
             {userInfo && (
               <Bottom mode={mode}>
-                <h1>Save Item</h1>
+                <h1>Wishlist</h1>
                 {user.saved && user.saved.length === 0 ? (
                   <MessageBox>No save item</MessageBox>
                 ) : (

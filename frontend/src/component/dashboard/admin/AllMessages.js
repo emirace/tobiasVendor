@@ -97,6 +97,9 @@ const Conserv = styled.div`
 const ChatCont2 = styled.div`
   overflow-y: auto;
   height: 100%;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const NoConversation = styled.span`
   display: flex;

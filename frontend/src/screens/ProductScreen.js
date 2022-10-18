@@ -563,7 +563,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Signin/Register to save an item",
+          message: "Signin/Register to add an item to wishlist",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -574,7 +574,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "You can't save your product",
+          message: "You can't add your product to wishlist",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -1166,7 +1166,7 @@ export default function ProductScreen() {
                 }}
                 icon={faBookmark}
               />
-              <IconsTooltips tips="Save Product " />
+              <IconsTooltips tips="Add to wishlist " />
             </IconContainer>
 
             <ModelLogin

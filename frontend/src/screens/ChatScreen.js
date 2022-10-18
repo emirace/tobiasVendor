@@ -658,7 +658,11 @@ export default function ChatScreen() {
       console.log(getError(err));
     }
   };
-
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
+  };
   const [currentTab, setCurrentTab] = useState("messages");
   const toggleTab = (tab) => {
     switch (tab) {
@@ -845,7 +849,6 @@ export default function ChatScreen() {
                   style={{
                     color: "grey",
                     textAlign: "center",
-                    lineHeight: "13px",
                   }}
                 >
                   {currentTab === "messages"
@@ -875,7 +878,11 @@ export default function ChatScreen() {
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <ProductImg src={product.image} />
-                    <div>{product.name}</div>
+                    <div>
+                      {currentChat.conversationType === "reportUser"
+                        ? product.username
+                        : product.name}
+                    </div>
                   </div>
                 </Link>
               )}
@@ -904,6 +911,7 @@ export default function ChatScreen() {
                   placeholder="Write a message"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
                 <FontAwesomeIcon
                   onClick={() => setShowUploadingImage(true)}
@@ -925,11 +933,7 @@ export default function ChatScreen() {
                   >
                     {image ? (
                       <div>
-                        <img
-                          src={image}
-                          style={{ height: "100%" }}
-                          alt="image"
-                        />
+                        <img src={image} style={{ height: "100%" }} alt="img" />
                       </div>
                     ) : (
                       <label
@@ -961,6 +965,7 @@ export default function ChatScreen() {
                         placeholder="Write a message"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
                       />
 
                       <FontAwesomeIcon

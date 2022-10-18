@@ -273,7 +273,7 @@ productRouter.put(
           const updatedUser = await user.save();
 
           res.status(201).send({
-            message: "Product unsaved",
+            message: "Product removed from wishlist",
             user: updatedUser,
             status: "visible1 error",
           });
@@ -281,7 +281,7 @@ productRouter.put(
           user.saved.push(productId);
           const updatedUser = await user.save();
           res.status(201).send({
-            message: "Product saved",
+            message: "Product added to wishlist",
             user: updatedUser,
             status: "visible1 success",
           });

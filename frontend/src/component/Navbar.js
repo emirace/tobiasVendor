@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import IconsTooltips from "./IconsTooltips";
 import {
+  faBell,
   faEnvelope,
   faHeart,
   faShoppingCart,
@@ -446,9 +447,10 @@ const Label = styled.label.attrs({
 
 const ProfileMenu = styled.div`
   z-index: 9;
-  padding: 15px;
+  padding: 10px;
   position: absolute;
-  left: -60px;
+  left: -130px;
+  width: 200px;
   top: 50px;
   box-shadow: ${(props) =>
     props.mode === "pagebodylight "
@@ -459,12 +461,13 @@ const ProfileMenu = styled.div`
   & ul li {
     white-space: nowrap;
     cursor: pointer;
-    padding: 5px 5px;
+    padding: 5px 30px;
   }
-  /* & ul li:hover {
+  & ul li:hover {
     background: ${(props) =>
-    props.mode === "pagebodylight " ? "var(--light-ev2)" : "var(--dark-ev2)"};
-  } */
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    color: var(--orange-color);
+  }
 `;
 const ProfileCont = styled.div`
   position: relative;
@@ -584,6 +587,12 @@ const DetailText = styled.div`
     props.mode === "pagebodydark"
       ? "var(--black-color)"
       : "var(--white-color)"};
+`;
+
+const Welcome = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--orange-color);
 `;
 
 export const signoutHandler = () => {
@@ -736,14 +745,20 @@ export default function Navbar({
             </Link>
           </MenuItem>
           <MenuItem>
-            <img
-              src="/images/Icons-11.png"
-              height={25}
+            <div
               ref={modelRef2}
-              width={25}
-              onClick={() => setShowNotification(!showNotification)}
-              alt="img"
-            />
+              onClick={() => {
+                setShowNotification(!showNotification);
+                console.log(showNotification);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faBell}
+                color="var(--malon-color)"
+                style={{ cursor: "pointer", size: "25px" }}
+              />
+            </div>
+
             <IconsTooltips tips="Notifications" />
             {allNotification.length > 0 && (
               <Badge>
@@ -805,8 +820,10 @@ export default function Navbar({
                 ref={modelRef}
                 onClick={() => setMymenu(!menu)}
               />
+              {console.log(mode)}
               {menu && (
                 <ProfileMenu mode={mode} className={mode}>
+                  <Welcome>Hi {userInfo.username}</Welcome>
                   <ul>
                     <Li>
                       <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
@@ -840,6 +857,20 @@ export default function Navbar({
                       <Link to="/dashboard/productlist">My Products</Link>
                       {console.log("product", productNotification)}
 
+                      {productNotification.length > 0 && (
+                        <Badge>
+                          <span>{productNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+
+                    <Li>
+                      <Link to="/#">
+                        Wishlist{" "}
+                        <span style={{ color: "var(--orange-color)" }}>
+                          (23)
+                        </span>
+                      </Link>
                       {productNotification.length > 0 && (
                         <Badge>
                           <span>{productNotification.length}</span>

@@ -8,6 +8,7 @@ const RecievedChat = styled.div`
   display: flex;
   justify-content: start;
   margin-bottom: 15px;
+  margin-top: 15px;
 `;
 const SendChat = styled.div`
   display: flex;
@@ -83,7 +84,13 @@ export default function Messages({ message, own, report, product }) {
       ) : (
         <RecievedChat>
           <div>
-            {message.image && <img src={message.image} alt="msg" />}
+            {message.image && (
+              <img
+                src={message.image}
+                alt="msg"
+                style={{ maxWidth: "150px", display: "block" }}
+              />
+            )}
 
             <InlineR>{message.text}</InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>

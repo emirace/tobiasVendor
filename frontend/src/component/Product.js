@@ -137,7 +137,7 @@ export default function Product(props) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "login to save item",
+          message: "login to add item to wishlist",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -148,7 +148,7 @@ export default function Product(props) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "You can't save your product",
+          message: "You can't add your product to wishlist",
           showStatus: true,
           state1: "visible1 error",
         },

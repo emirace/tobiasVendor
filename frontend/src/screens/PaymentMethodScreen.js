@@ -40,9 +40,9 @@ export default function PaymentMethodScreen() {
   return (
     <div className="container">
       <Helmet>
-        <title>Payment Method</title>
+        <title>Payment Methods</title>
       </Helmet>
-      <h1 className="my-3">Payment Method</h1>
+      <h1 className="my-3">Payment Methods</h1>
       <Form onSubmit={submitHandler}>
         <div className="mb-3">
           <Form.Check

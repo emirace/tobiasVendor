@@ -12,7 +12,7 @@ conversationRouter.get(
   expressAsyncHandler(async (req, res) => {
     const conversations = await Conversation.find({
       $or: [{ conversationType: "user" }, { conversationType: "product" }],
-    });
+    }).sort({ updatedAt: -1 });
     if (conversations) {
       res.status(200).send(conversations);
     } else {
