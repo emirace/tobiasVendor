@@ -205,7 +205,7 @@ export const deliveryNumber = (status) => {
       return 1;
     case "Dispatched":
       return 2;
-    case "In transit":
+    case "In Transit":
       return 3;
     case "Delivered":
       return 4;

@@ -724,6 +724,10 @@ export default function OrderScreen() {
                               color: "var(--orange-color)",
                               height: "40px",
                               width: "40px",
+                              cursor: "pointer",
+                              // &&:hover{
+                              //     color:'var(--malon-color)'
+                              // }
                             }}
                             icon={faSquareCheck}
                             onClick={() => comfirmWaybill(orderitem)}
@@ -815,9 +819,9 @@ export default function OrderScreen() {
                                 disabled={
                                   deliveryNumber(orderitem.deliveryStatus) !== 2
                                 }
-                                value="In transit"
+                                value="In Transit"
                               >
-                                In transit
+                                In Transit
                               </MenuItem>
                               <MenuItem
                                 disabled={
