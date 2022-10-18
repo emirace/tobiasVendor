@@ -162,6 +162,16 @@ const RebatchImg = styled.img`
   flex: 1;
   height: 500px;
 `;
+
+const GetStart = styled.div`
+  font-size: 40px;
+  font-weight: bold;
+  position: absolute;
+  left: 55%;
+  bottom: 10%;
+  transform: translateX(-50%);
+`;
+
 export default function SellScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -169,7 +179,7 @@ export default function SellScreen() {
     <Container>
       <Section>
         <SubHeading style={{ fontSize: "30px" }}>
-          LET YOUR WARDROBE LIVE IN YOUR POCKET. ITS FAST
+          LET YOUR WARDROBE LIVE IN YOUR POCKET, ITS FAST
         </SubHeading>
         <Row>
           <SubHeadingMalon>"CAN'T DO IT IN REAL LIFE?</SubHeadingMalon>
@@ -195,7 +205,10 @@ export default function SellScreen() {
         </Row>
         <Row>
           <SubHeadingMalon>SNAP</SubHeadingMalon>
-          <SubHeading> - LIST - </SubHeading>
+          <SubHeading style={{ fontSize: "1.5rem", marginBottom: "0px" }}>
+            {" "}
+            - LIST -{" "}
+          </SubHeading>
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
         <Row style={{ width: "80%" }}>
@@ -209,7 +222,7 @@ export default function SellScreen() {
             <Step mode={mode} style={{ width: "350px" }}>
               <SubHeading>1. TAKE A PICS</SubHeading>
               <Text>
-                Your wardrobe getting cluttered or Storage keeps pillig up?
+                Your wardrobe getting cluttered or Storage keeps pilling up?
                 Don't panic, we got you! Just take <b>nice</b> pics using a good
                 source of natural lighting. Always remember "Great quality
                 pictures sale fast"
@@ -225,11 +238,11 @@ export default function SellScreen() {
               </Text>
             </Step>
             <Step mode={mode} style={{ width: "350px" }}>
-              <SubHeading>3. CASH OUT</SubHeading>
+              <SubHeading>3. CASH-OUT</SubHeading>
               <Text>
                 When your item is sold, ship your item with the prefered
                 selected delivery method, once the buyer receives your item, you
-                cash out
+                cash-out.
               </Text>
             </Step>
             <Link to="/newproduct">
@@ -241,9 +254,7 @@ export default function SellScreen() {
         </Row>
 
         <div>
-          <SubHeading>
-            THRIFT - BUY - SELL - CHAT - CASH OUT - REPEAT
-          </SubHeading>
+          <SubHeading>THRIFT - BUY - SELL - CHAT - CASHOUT - REPEAT</SubHeading>
           <Row>
             <FontAwesomeIcon icon={faCircle} />
             <Header2 style={{ color: "var(--malon-color)" }}>ALL IN</Header2>
@@ -260,7 +271,7 @@ export default function SellScreen() {
           - GADGETS
         </Text>
         <Text>
-          We accept all your pre-loved precious Items, our community are
+          We accept all your pre-loved precious Items our community are
           constantly looking for, willing to love, and give a warm home.{" "}
         </Text>
 
@@ -305,7 +316,7 @@ export default function SellScreen() {
             </Text>
             <Text style={{ textAlign: "left", textAlign: "justify" }}>
               Consigning your garment is part of the steps you take to reduce
-              fashion foot print on our environment. Serve our planet by
+              fashion foot print on our environment. Save our planet by
               recycling garments instead of dumping them to landfills.
             </Text>
             <div style={{ height: "30px" }} />
@@ -328,15 +339,20 @@ export default function SellScreen() {
       </Section>
       <Section>
         <Header2>BULK n SLOT</Header2>
-        <MainImage
-          style={{ width: "100%" }}
-          src={
-            mode === "pagebodylight"
-              ? "https://res.cloudinary.com/emirace/image/upload/v1661221987/For_Dark_Theme_1_dmcdl9.webp"
-              : "https://res.cloudinary.com/emirace/image/upload/v1661221986/For_Light_Theme_1_wilk83.webp"
-          }
-          alt="image"
-        />
+        <div style={{ position: "relative" }}>
+          <MainImage
+            style={{ width: "100%" }}
+            src={
+              mode === "pagebodylight"
+                ? "https://res.cloudinary.com/emirace/image/upload/v1665979415/png_20221014_165106_0000_288__pg6wxw.webp"
+                : "https://res.cloudinary.com/emirace/image/upload/v1665979442/png_20221014_164522_0000_287__vlarrx.webp"
+            }
+            alt="image"
+          />
+          <Link to="/sell">
+            <GetStart>GET STARTED</GetStart>
+          </Link>
+        </div>
         <Text style={{ textAlign: "left" }}>
           Repeddle BULK n SLOT offers opportunity to either retailers who are
           clearing out a large amount of items as clearance, or wholesalers who
@@ -383,9 +399,9 @@ export default function SellScreen() {
         <Row style={{ alignItems: "flex-start" }}>
           <b style={{ marginRight: "10px" }}>3.</b>
           <Text style={{ textAlign: "left" }}>
-            <b>SHARE AND CASH OUT:</b> After a successful upload, be sure to
+            <b>SHARE AND CASH-OUT:</b> After a successful upload, be sure to
             share your listing, both on Repeddle’s platforms and social medias
-            to help buyers discover your items. You can cash out by either
+            to help buyers discover your items. You can cash-out by either
             withdrawing your cash from your Repeddle’s wallet to your bank
             account or you can decide to further trade with it, buying more
             goods to sell, as soon as your item sale and buyer receives your
@@ -511,14 +527,26 @@ export default function SellScreen() {
       </Section>
 
       <Section style={{ background: "" }}>
-        <Text>
-          <b>WONDERING WHAT TO BUY?</b>
-        </Text>
-        <Link to="/search">
-          <Button>
-            <Header2>SHOP NOW</Header2>
-          </Button>
-        </Link>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            background: "var(--malon-color)",
+            width: "100%",
+            padding: "20px",
+            borderRadius: "0.2rem",
+          }}
+        >
+          <Text style={{ color: "white", fontSize: "25px" }}>
+            <b>WONDERING WHAT TO BUY?</b>
+          </Text>
+          <Link to="/search">
+            <Button>
+              <Header2>SHOP NOW</Header2>
+            </Button>
+          </Link>
+        </div>
       </Section>
     </Container>
   );

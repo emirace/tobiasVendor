@@ -29,6 +29,7 @@ const Left = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: sticky;
   border-radius: 0.2rem;
+  margin-bottom: 20px;
   top: 168px;
   @media (max-width: 992px) {
     left: ${(props) => (props.showFilter ? 0 : "-100vw")};
@@ -45,6 +46,8 @@ const Right = styled.div`
   margin: 0 10px;
   padding: 10px;
   border-radius: 0.2rem;
+  margin-bottom: 20px;
+
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
@@ -201,23 +204,6 @@ const reducer = (state, action) => {
   }
 };
 
-const prices = [
-  {
-    name: "$1 to $50",
-    id: 1,
-    value: "1-50",
-  },
-  {
-    name: "$51 to $200",
-    id: 2,
-    value: "51-200",
-  },
-  {
-    name: "$201 to $1000",
-    id: 3,
-    value: "201-1000",
-  },
-];
 const deals = [
   {
     name: "On Sale Now",
@@ -332,7 +318,7 @@ const patternlist = [
 export default function SearchSceen() {
   const navigate = useNavigate();
   const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -358,6 +344,23 @@ export default function SearchSceen() {
       error: "",
     });
 
+  const prices = [
+    {
+      name: `${currency}1 to ${currency}50`,
+      id: 1,
+      value: "1-50",
+    },
+    {
+      name: `${currency}51 to ${currency}200`,
+      id: 2,
+      value: "51-200",
+    },
+    {
+      name: `${currency}201 to ${currency}1000`,
+      id: 3,
+      value: "201-1000",
+    },
+  ];
   let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
 
   useEffect(() => {
@@ -900,10 +903,23 @@ export default function SearchSceen() {
                   {category !== "all" && " : " + category}
                   {price !== "all" && "  Price: " + price}
                   {brand !== "all" && "  Brand: " + brand}
+                  {color !== "all" && "  Brand: " + color}
+                  {condition !== "all" && "  Brand: " + condition}
+                  {availability !== "all" && "  Brand: " + availability}
+                  {pattern !== "all" && "  Brand: " + pattern}
+                  {size !== "all" && "  Brand: " + size}
+                  {shipping !== "all" && "  Brand: " + shipping}
                   {rating !== "all" && "  Rating:" + rating + " & up"}
                   {query !== "all" ||
                   category !== "all" ||
                   rating !== "all" ||
+                  brand !== "all" ||
+                  color !== "all" ||
+                  condition !== "all" ||
+                  availability !== "all" ||
+                  pattern !== "all" ||
+                  shipping !== "all" ||
+                  size !== "all" ||
                   price !== "all" ? (
                     <Button variant="none" onClick={() => navigate("/search")}>
                       <i className="fas fa-times-circle"></i>
@@ -957,6 +973,7 @@ export default function SearchSceen() {
                       display: "flex",
                       justifyContent: "start",
                     }}
+                    key={product._id}
                   >
                     <Product product={product}></Product>
                   </div>

@@ -521,18 +521,37 @@ function App() {
 
                       <Route
                         path="/dashboard"
-                        element={<DashboardNewScreen />}
+                        element={
+                          <ProtectedRoute>
+                            <DashboardNewScreen />
+                          </ProtectedRoute>
+                        }
                       />
 
                       <Route
                         path="/deliveryoption"
-                        element={<DeliveryOptionScreen />}
+                        element={
+                          <ProtectedRoute>
+                            <DeliveryOptionScreen />
+                          </ProtectedRoute>
+                        }
                       />
                       <Route
                         path="/dashboard/:tab"
-                        element={<DashboardNewScreen />}
+                        element={
+                          <ProtectedRoute>
+                            <DashboardNewScreen />
+                          </ProtectedRoute>
+                        }
                       />
-                      <Route path="/newproduct" element={<NewProduct />} />
+                      <Route
+                        path="/newproduct"
+                        element={
+                          <ProtectedRoute>
+                            <NewProduct />
+                          </ProtectedRoute>
+                        }
+                      />
 
                       <Route
                         path="/category/:name"

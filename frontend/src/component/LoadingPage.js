@@ -37,8 +37,8 @@ export default function LoadingPage() {
         <Image
           src={
             mode === "pagebodydark"
-              ? "https://res.cloudinary.com/emirace/image/upload/v1660419474/White-Icon_hq7kqa.gif"
-              : "https://res.cloudinary.com/emirace/image/upload/v1660419474/Icon-Black_tmgxd4.gif"
+              ? "https://res.cloudinary.com/emirace/image/upload/v1666000558/Icon_White_xpdmum.gif"
+              : "https://res.cloudinary.com/emirace/image/upload/v1666000541/Icon_Black_g8wcdj.gif"
           }
           alt="loading"
         />

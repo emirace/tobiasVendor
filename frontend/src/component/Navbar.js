@@ -485,7 +485,7 @@ const SList = styled.li`
   }
 `;
 const LogoImage = styled.img`
-  width: 100%;
+  width: 80%;
 `;
 
 const Li = styled.li`
@@ -683,7 +683,7 @@ export default function Navbar({
               , List All Item For Free{" "}
             </First>
             <First>
-              No Selling Fees, Hurry, Start Selling, Limited Off!!{" "}
+              No Selling Fees, Hurry, Start Selling, Limited Offer!!{" "}
               <Underline>
                 DETAILS
                 <DetailText className="text">

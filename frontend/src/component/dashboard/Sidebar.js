@@ -31,7 +31,7 @@ const Container = styled.div`
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
-  margin-bottom: -25px;
+  margin-bottom: 20px;
   @media (max-width: 992px) {
     display: none;
   }
