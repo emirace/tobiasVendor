@@ -345,6 +345,9 @@ export default function User() {
             },
           });
           dispatch({ type: "FETCH_SUCCESS", payload: data });
+          setActive(`${data.active}`);
+          setBadge(`${data.badge}`);
+          setInfluencer(`${data.influencer}`);
         };
         fetchUser();
       } else {
@@ -500,7 +503,9 @@ export default function User() {
               <Name>
                 {user.name || user.firstName} {user.lastName}
               </Name>
-              <UserTitle>{user.isAdmin ? "Admin" : "Seller"}</UserTitle>
+              <UserTitle>
+                {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
+              </UserTitle>
             </TopTitle>
             <Wallet mode={mode}>
               <Wbalance>Wallet Balance</Wbalance>
@@ -693,24 +698,20 @@ export default function User() {
                     </div>
                     <Gender mode={mode}>
                       <input
-                        checked={
-                          active === "yes" ? true : user.active ? true : false
-                        }
+                        checked={active === "true"}
                         type="radio"
                         name="gender"
                         id="yes"
-                        value="yes"
+                        value={true}
                         onChange={(e) => setActive(e.target.value)}
                       />
                       <Label htmlFor="yes">Yes</Label>
                       <input
-                        checked={
-                          active === "no" ? true : !user.active ? true : false
-                        }
+                        checked={active === "false"}
                         type="radio"
                         name="gender"
                         id="no"
-                        value="no"
+                        value={false}
                         onClick={(e) => setActive(e.target.value)}
                       />
                       <Label htmlFor="no">No</Label>
@@ -718,24 +719,20 @@ export default function User() {
                     <Label>Badge</Label>
                     <Gender mode={mode}>
                       <input
-                        checked={
-                          badge === "yes" ? true : user.badge ? true : false
-                        }
+                        checked={badge === "true"}
                         type="radio"
                         name="badge"
                         id="badgeyes"
-                        value="yes"
+                        value={true}
                         onClick={(e) => setBadge(e.target.value)}
                       />
                       <Label htmlFor="badgeyes">Yes</Label>
                       <input
-                        checked={
-                          badge === "no" ? true : !user.badge ? true : false
-                        }
+                        checked={badge === "false"}
                         type="radio"
                         name="badge"
                         id="badgeno"
-                        value="no"
+                        value={false}
                         onChange={(e) => setBadge(e.target.value)}
                       />
                       <Label htmlFor="badgeno">No</Label>
@@ -743,32 +740,21 @@ export default function User() {
                     <Label>Influencer</Label>
                     <Gender mode={mode}>
                       <input
-                        checked={
-                          badge === "yes"
-                            ? true
-                            : user.influencer
-                            ? true
-                            : false
-                        }
+                        checked={influencer === "true"}
                         type="radio"
                         name="influencer"
                         id="influenceryes"
-                        value="yes"
+                        value={true}
                         onClick={(e) => setInfluencer(e.target.value)}
                       />
+                      {console.log("influencer", influencer)}
                       <Label htmlFor="influenceryes">Yes</Label>
                       <input
-                        checked={
-                          influencer === "no"
-                            ? true
-                            : !user.influencer
-                            ? true
-                            : false
-                        }
+                        checked={influencer === "false"}
                         type="radio"
                         name="influencer"
                         id="influencerno"
-                        value="no"
+                        value={false}
                         onChange={(e) => setInfluencer(e.target.value)}
                       />
                       <Label htmlFor="influencerno">No</Label>

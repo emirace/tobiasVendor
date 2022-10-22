@@ -85,6 +85,7 @@ import VerifyAccountScreen from "./screens/VerifyAccountScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import TransactionScreen from "./screens/TransactionScreen";
 import ContactUsPage from "./screens/ContactUsPage";
+import Earning from "./component/dashboard/Earning";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -326,6 +327,8 @@ function App() {
   const [showNotification, setShowNotification] = useState(false);
 
   const closeModel = (e) => {
+    console.log(e.target);
+    console.log(modelRef2);
     if (modelRef1 !== e.target) {
       setMymenu(false);
     } else {
@@ -377,6 +380,7 @@ function App() {
                         element={<ProductScreen />}
                       />
                       <Route path="/seller/:id" element={<SellerScreen />} />
+                      <Route path="/earning" element={<Earning />} />
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />

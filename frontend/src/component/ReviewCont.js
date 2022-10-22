@@ -5,6 +5,7 @@ import Rating from "../component/Rating";
 import LoadingBox from "./LoadingBox";
 import { Store } from "../Store";
 import { getError } from "../utils";
+import { Link } from "react-router-dom";
 
 const ListGroupI = styled.div`
   margin-left: 10px;
@@ -38,7 +39,9 @@ export const ReviewCont = ({ review }) => {
         style={{ width: "150px", height: "150px" }}
       />
       <ListGroupI>
-        <strong>@{review.name}</strong>
+        <strong>
+          <Link to="/seller">@{review.name}</Link>
+        </strong>
         <Para>
           <Rating rating={review.rating} caption=" "></Rating>
         </Para>

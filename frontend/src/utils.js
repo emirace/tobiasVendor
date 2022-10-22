@@ -64,7 +64,7 @@ export function displayDeliveryStatus(status) {
     );
   }
 
-  if (status === "Not yet Dispatched") {
+  if (status === "Processing") {
     return (
       <div
         style={{
@@ -114,7 +114,23 @@ export function displayDeliveryStatus(status) {
       </div>
     );
   }
-  if (status === "Not yet Dispatched") {
+  if (status === "In Transit") {
+    return (
+      <div
+        style={{
+          background: "#FFC000",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+  if (status === "Processing") {
     return (
       <div
         style={{
@@ -201,7 +217,7 @@ export const GOOGLE_CLIENT_ID =
 
 export const deliveryNumber = (status) => {
   switch (status) {
-    case "Not yet Dispatched":
+    case "Processing":
       return 1;
     case "Dispatched":
       return 2;

@@ -79,6 +79,7 @@ export default function ModelLogin({ showModel, setShowModel, children }) {
           <ModelWrapper className={mode} mode={mode} showModel={showModel}>
             {children}
             <CloseModelButton
+              style={{ color: "grey" }}
               ariel-label="Close model"
               onClick={() => setShowModel(!showModel)}
             >

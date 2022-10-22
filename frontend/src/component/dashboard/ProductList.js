@@ -12,6 +12,7 @@ import moment from "moment";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -154,7 +155,7 @@ export default function ProductList() {
 
   const deleteHandler = async (product) => {
     console.log("params", product);
-    if (window.confirm("Are you sure to delete?")) {
+    if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         dispatch({ type: "DELETE_REQUEST" });
         await axios.delete(`/api/products/${product}`, {

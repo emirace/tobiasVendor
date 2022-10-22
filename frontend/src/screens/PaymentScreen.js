@@ -179,7 +179,7 @@ export default function PaymentScreen() {
           "/api/accounts/withdraw",
           {
             amount: payment.amount,
-            purpose: payment.Type,
+            purpose: payment.meta.Type,
             userId: "Admin",
           },
           {

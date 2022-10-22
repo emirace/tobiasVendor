@@ -67,6 +67,7 @@ orderRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
+    const { from, to } = query;
     const searchQuery = query.q;
     const queryFilter =
       searchQuery && searchQuery !== "all"
@@ -84,9 +85,10 @@ orderRouter.get(
       seller: { $in: [seller] },
       ...queryFilter,
       isPaid: true,
+      createdAt: { $gte: new Date(from), $lte: new Date(to) },
     })
       .sort({ createdAt: -1 })
-      .populate("user", "name");
+      .populate("user", "username");
     res.send(orders);
   })
 );
@@ -379,9 +381,9 @@ orderRouter.get(
   "/:id",
 
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id).populate(
-      "orderItems.product"
-    );
+    const order = await Order.findById(req.params.id)
+      .populate("orderItems.product")
+      .populate("user", "image username");
     if (order) {
       res.send(order);
     } else {
@@ -404,7 +406,7 @@ orderRouter.put(
             deliveredAt: Date.now(),
             trackingNumber: req.body.trackingNumber
               ? req.body.trackingNumber
-              : "",
+              : x.trackingNumber,
           };
         } else {
           return x;

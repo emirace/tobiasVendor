@@ -29,8 +29,8 @@ conversationRouter.post(
       throw {
         message:
           req.body.type === "reportUser" || req.body.type === "reportProduct"
-            ? "you cannot report yourself"
-            : "you cannot message yourself",
+            ? "You cannot report Yourself"
+            : "You cannot message Yourself",
       };
     }
     const existConversation =

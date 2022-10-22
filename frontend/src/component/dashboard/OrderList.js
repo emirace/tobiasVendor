@@ -14,6 +14,7 @@ import moment from "moment";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -219,7 +220,7 @@ export default function OrderList() {
     },
     {
       field: "user",
-      headerName: "Buyer",
+      headerName: "Seller",
       width: 100,
     },
     {
@@ -250,7 +251,7 @@ export default function OrderList() {
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
-    user: p.user ? p.user.name : "anonymous",
+    user: p.user ? p.user.username : "anonymous",
     date: moment(p.createdAt).format("MMM Do, h:mm a"),
     amount: `${currency}${p.totalPrice}`,
   }));

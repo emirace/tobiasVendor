@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Store } from "../Store";
 import BuyersPro from "./info/BuyersPro";
 import Model from "./Model";
+import ModelLogin from "./ModelLogin";
 
 const Container = styled.div`
   margin: 5px;
@@ -36,9 +37,9 @@ export default function ProtectionRight() {
       <Container mode={mode} onClick={() => setShowModel(!showModel)}>
         <FontAwesomeIcon icon={faKey} /> Buyer's & Seller's Protection !
       </Container>
-      <Model showModel={showModel} setShowModel={setShowModel}>
+      <ModelLogin showModel={showModel} setShowModel={setShowModel}>
         <BuyersPro />
-      </Model>
+      </ModelLogin>
     </div>
   );
 }

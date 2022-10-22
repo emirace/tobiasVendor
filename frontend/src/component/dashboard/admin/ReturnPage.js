@@ -305,7 +305,7 @@ export default function ReturnPage() {
     <LoadingBox />
   ) : (
     <Container mode={mode}>
-      <Title>Return</Title>
+      <Title>Return ID MRRN: {returnId}</Title>
       <SumaryContDetails mode={mode}>
         <Name>Product</Name>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -342,9 +342,6 @@ export default function ReturnPage() {
         <hr />
         <Name>Preferred Resolution Method</Name>
         <ItemNum>Report Form</ItemNum>
-        <hr />
-        <Name>Preferred Resolution Method</Name>
-        <ItemNum>Return Form</ItemNum>
         <hr />
         <Name>Reasons for Return</Name>
         <ItemNum>{returned.reason}</ItemNum>

@@ -189,7 +189,7 @@ export default function FeatureInfo({ type, number }) {
         <Right>
           <Percentage>
             {<FontAwesomeIcon className="negative" icon={faArrowDown} />}
-            20 %
+            20%
           </Percentage>
           {data.icon}
         </Right>

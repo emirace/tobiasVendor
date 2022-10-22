@@ -15,6 +15,7 @@ import moment from "moment";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -185,6 +186,9 @@ export default function Saleslist() {
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
+  var now = new window.Date();
+  const [from, setFrom] = useState("2022-04-24");
+  const [to, setTo] = useState(now);
   const soldNotifications = [];
   //  notifications.filter(
   //   (x) => x.notifyType === "sold"
@@ -194,7 +198,7 @@ export default function Saleslist() {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/orders/seller/${userInfo._id}?q=${salesQurrey}`,
+          `/api/orders/seller/${userInfo._id}?q=${salesQurrey}&to=${to}&from=${from}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -339,7 +343,7 @@ export default function Saleslist() {
     deliveryStatus: p.deliveryStatus,
     date: moment(p.createdAt).format("MMM Do, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
-    user: p.user ? p.user.name : "anonymous",
+    user: p.user ? p.user.username : "anonymous",
     amount: `${currency}${p.totalPrice}`,
   }));
 

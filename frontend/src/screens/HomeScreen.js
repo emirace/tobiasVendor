@@ -253,11 +253,11 @@ export default function ProductsScreen() {
 
         <section className="CategoryListing_section ">
           <div className="product-title-Listing">
-            <h2 className="product-categorylisting">New Collection</h2>
+            <h2 className="product-categorylisting">New Collections</h2>
             <p>
               Discover new shops launching on our App and Website daily. Shop
-              Hot deals, New Arrivals New style drops from your favorite shops
-              and influencers
+              Hot deals, New Arrivals & New style drops from your favorite shops
+              and influencers.
             </p>
           </div>
           <div className="CategoryListing_item scroll_snap">
@@ -353,7 +353,7 @@ export default function ProductsScreen() {
             <p>
               Discover brands that tick the boxes, from names you love, price
               that does not break the bank and environmental conscious brands
-              that you can pass on to generations. That is sustainability
+              that you can pass on to generations. That is sustainability.
             </p>
           </div>
           <div className="CategoryListing_item scroll_snap">

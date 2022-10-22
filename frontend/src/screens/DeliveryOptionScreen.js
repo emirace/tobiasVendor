@@ -212,7 +212,6 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     e.preventDefault();
     var deliverySelect;
 
-    console.log(location);
     if (deliveryOption === "GIG Logistics") {
       if (location.error) {
         setLocationerror("Location is require for proper delivery");
@@ -271,14 +270,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         );
         console.log(data);
         deliverySelect = {
-          deliveryOption,
+          "delivery Option": deliveryOption,
           cost: data.Object.DeliveryPrice,
         };
       } catch (err) {
         setLoadingGig(false);
       }
     } else {
-      deliverySelect = { deliveryOption, cost: value, ...meta };
+      deliverySelect = {
+        "delivery Option": deliveryOption,
+        cost: value,
+        ...meta,
+      };
     }
     if (userInfo) {
       await axios.post(
@@ -350,7 +353,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     onChange={(e) => {
                       setMeta({
                         ...meta,
-                        deliveryOption: e.target.value,
+                        "delivery Option": e.target.value,
                         cost: x.value,
                       });
                       setDeliveryOption(e.target.value);

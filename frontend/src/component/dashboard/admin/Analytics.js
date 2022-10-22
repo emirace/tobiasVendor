@@ -362,7 +362,7 @@ export default function Analytics() {
       )}
       <Content mode={mode}>
         <NameCont>
-          <Tittle>New Join Members</Tittle>
+          <Tittle>New Joined Members</Tittle>
           <Link to="/dashboard/userlist">See All</Link>
         </NameCont>
         {!users ? (
@@ -397,7 +397,7 @@ export default function Analytics() {
       </Content>
       <Content mode={mode}>
         <NameCont>
-          <Tittle>Best Sellers</Tittle>
+          <Tittle>Top Sellers</Tittle>
           <Link to="/dashboard/userlist">See All</Link>
         </NameCont>
         {!bestseller ? (
@@ -434,8 +434,8 @@ export default function Analytics() {
       </Content>
       <Content mode={mode}>
         <NameCont>
-          <Tittle>Recently Added Product</Tittle>
-          <Link to="admin/allProductList/">See All</Link>
+          <Tittle>Recently Added Products</Tittle>
+          <Link to="/admin/allProductList/">See All</Link>
         </NameCont>
         {error ? (
           error
@@ -511,7 +511,7 @@ export default function Analytics() {
 
       <Content mode={mode}>
         <NameCont>
-          <Tittle>Most Viewed Product</Tittle>
+          <Tittle>Most Viewed Products</Tittle>
           <Link to="/dashboard/productlist">See All</Link>
         </NameCont>
         {error ? (
@@ -520,6 +520,7 @@ export default function Analytics() {
           <LoadingBox />
         ) : (
           <ItemRow>
+            {console.log("mostView", mostView)}
             {mostView.map((product) => (
               <ItemCont mode={mode}>
                 <ItemImage src={product.productId.image} alt="item" />

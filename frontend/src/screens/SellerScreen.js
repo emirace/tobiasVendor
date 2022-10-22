@@ -148,7 +148,7 @@ const Sold = styled.div`
 `;
 
 const Badge = styled.img`
-  width: 40px;
+  width: 20px;
   object-fit: cover;
 `;
 
@@ -244,7 +244,7 @@ export default function SellerScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "you can't follow yourself",
+          message: "You can't follow yourself",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -329,8 +329,8 @@ export default function SellerScreen() {
             {userInfo && (
               <ProductCont>
                 <Link
-                  to={userInfo.isSeller ? "newproduct" : "/sell"}
-                  style={{ width: "100%" }}
+                  to={userInfo.isSeller ? "/newproduct" : "/sell"}
+                  style={{ width: "240px", height: "500px" }}
                 >
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
@@ -543,12 +543,14 @@ export default function SellerScreen() {
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating rating={user.rating} numReviews={user.numReviews} />
               </ReviewsClick>
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowWriteReview(true)}
-              >
-                Leave a review
-              </div>
+              {userInfo._id === sellerId && (
+                <div
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowWriteReview(true)}
+                >
+                  Leave a review
+                </div>
+              )}
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>
                 <ReviewLists userId={sellerId} />
               </ModelLogin>
@@ -556,8 +558,10 @@ export default function SellerScreen() {
                 showModel={showWriteReview}
                 setShowModel={setShowWriteReview}
               >
-                <WriteReview userId={sellerId} 
-                setShowModel={setShowWriteReview}/>
+                <WriteReview
+                  userId={sellerId}
+                  setShowModel={setShowWriteReview}
+                />
               </ModelLogin>
               <button
                 onClick={() => addConversation(user._id, "user")}
@@ -588,7 +592,10 @@ export default function SellerScreen() {
                   <div>
                     <FontAwesomeIcon icon={faLocationDot} /> From
                   </div>
-                  <div className="seller_single_right">Nigeria</div>
+                  {console.log(user)}
+                  <div className="seller_single_right">
+                    {user.region === "NGN" ? "Nigeria" : "South African"}
+                  </div>
                 </div>
                 <div className="seller_single_detail">
                   <div>

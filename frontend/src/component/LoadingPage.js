@@ -4,11 +4,7 @@ import { Store } from "../Store";
 
 const Background = styled.div`
   width: 100vw;
-  height: 100vh;
-  /* background: rgba(0, 0, 0, 0.8); */
-  position: fixed;
-  top: 0;
-  left: 0;
+  height: 50vh;
   display: flex;
   justify-content: center;
   align-items: center;

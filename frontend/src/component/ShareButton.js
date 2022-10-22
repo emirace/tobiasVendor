@@ -114,7 +114,7 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
     <Container>
       {console.log("share", shareUrl)}
       <FacebookShareButton
-        quote={"Hey! Look what I found on Repeddle"}
+        quote={"Hey! Look what I found on Repeddle "}
         hashtag={"#Repeddle"}
         url={shareUrl}
         onShareWindowClose={handleShare}
@@ -123,7 +123,7 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </FacebookShareButton>
       <EmailShareButton
         subject="Repeddle"
-        body="Hey! Look what i found at Repeddle"
+        body="Hey! Look what i found on Repeddle "
         url={shareUrl}
         onShareWindowClose={handleShare}
       >
@@ -131,13 +131,13 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </EmailShareButton>
       <WhatsappShareButton
         url={shareUrl}
-        title={"Hey! Look what I found on Repeddle"}
+        title={"Hey! Look what I found on Repeddle "}
         onShareWindowClose={handleShare}
       >
         <WhatsappIcon size={32} round={true} />
       </WhatsappShareButton>
       <TwitterShareButton
-        title={"Hey! Look what I found on Repeddle"}
+        title={"Hey! Look what I found on Repeddle "}
         hashtags={["Repeddle"]}
         url={shareUrl}
         onShareWindowClose={handleShare}
@@ -146,7 +146,7 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </TwitterShareButton>
       <TelegramShareButton
         url={shareUrl}
-        title={"Hey! Look what I found on Repeddle"}
+        title={"Hey! Look what I found on Repeddle "}
         onShareWindowClose={handleShare}
       >
         <TelegramIcon size={32} round={true} />

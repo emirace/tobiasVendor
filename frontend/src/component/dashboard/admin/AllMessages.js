@@ -23,6 +23,7 @@ const Container = styled.div`
   flex: 4;
   min-width: 0;
   margin: 0 20px;
+  margin-bottom: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   display: flex;

@@ -312,8 +312,14 @@ export default function CartScreen() {
       </Helmet>
       <Container>
         <h1>Shopping Cart</h1>
+
         <CartCont>
           <LeftCorner>
+            <div style={{ textAlign: "center", width: "100%", color: "grey" }}>
+              Placing an item in your shopping cart does not reserve that item
+              or price. We only reserve the stock for your order once payment is
+              received.
+            </div>
             {console.log(cart)}
             <Top mode={mode}>
               {cart.cartItems.length === 0 ? (
@@ -437,7 +443,8 @@ export default function CartScreen() {
                           Delivery:{" "}
                           {item.deliverySelect ? (
                             <span style={{ marginLeft: "20px" }}>
-                              {item.deliverySelect.deliveryOption} + {currency}
+                              {item.deliverySelect["delivery Option"]} +{" "}
+                              {currency}
                               {item.deliverySelect.cost}
                             </span>
                           ) : (

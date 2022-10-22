@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -134,7 +135,11 @@ export default function TransactionScreen() {
             </Row>
             <Row>
               <Key>Type</Key>
-              <Value>{transaction.type}</Value>
+              <Value>{transaction.txnType}</Value>
+            </Row>
+            <Row>
+              <Key>Purpose</Key>
+              <Value>{transaction.metadata.purpose}</Value>
             </Row>
           </Section>
           <Section>
@@ -156,6 +161,8 @@ export default function TransactionScreen() {
         <div style={{ flex: "1", border: "1px solid", margin: "5vw" }}>
           <Section>
             <Title>Transaction time</Title>
+
+            {moment(transaction.createdAt).format("MMM Do, h:mm a")}
           </Section>
         </div>
       </div>

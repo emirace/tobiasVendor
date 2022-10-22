@@ -5,7 +5,9 @@ import {
   faBell,
   faEnvelope,
   faHeart,
+  faMoon,
   faShoppingCart,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBox from "./SearchBox";
@@ -19,6 +21,8 @@ import { ReactComponent as Notification } from "./../icons/Icons-11.svg";
 import { socket } from "../App";
 import moment from "moment";
 import { logout } from "../hooks/initFacebookSdk";
+import { BsFillSunFill } from "react-icons/bs";
+import { BsFillMoonStarsFill } from "react-icons/bs";
 
 const Container = styled.div`
   width: 100%;
@@ -342,6 +346,7 @@ export const Badge = styled.span`
   position: absolute;
   right: 0;
   top: 0;
+  cursor: default;
 `;
 
 const SellButton = styled.div`
@@ -396,6 +401,9 @@ const SwitchCont = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
+  & svg {
+    color: white;
+  }
 `;
 
 const Switch = styled.input.attrs({
@@ -404,7 +412,7 @@ const Switch = styled.input.attrs({
   role: "switch",
 })`
   position: relative;
-
+  margin: 0 10px;
   width: 40px;
   height: 15px;
   -webkit-appearance: none;
@@ -676,11 +684,12 @@ export default function Navbar({
       <Wrapper>
         <Left>
           <SwitchCont>
+            <BsFillSunFill />
             <Switch
               checked={mode === "pagebodydark"}
               onChange={(e) => darkMode(e.target.checked)}
             ></Switch>
-            <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
+            <BsFillMoonStarsFill />
           </SwitchCont>
         </Left>
         <Center>
@@ -746,17 +755,28 @@ export default function Navbar({
           </MenuItem>
           <MenuItem>
             <div
-              ref={modelRef2}
               onClick={() => {
                 setShowNotification(!showNotification);
                 console.log(showNotification);
               }}
+              styled={{ position: "relative" }}
             >
               <FontAwesomeIcon
                 icon={faBell}
                 color="var(--malon-color)"
                 style={{ cursor: "pointer", size: "25px" }}
               />
+              <div
+                ref={modelRef2}
+                style={{
+                  position: "absolute",
+                  left: "0",
+                  top: "0",
+                  right: "0",
+                  bottom: "0",
+                  cursor: "pointer",
+                }}
+              ></div>
             </div>
 
             <IconsTooltips tips="Notifications" />
@@ -850,6 +870,24 @@ export default function Navbar({
                       {soldNotification.length > 0 && (
                         <Badge>
                           <span>{soldNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+                    <Li>
+                      <Link to="/earning">My Earnings</Link>
+
+                      {productNotification.length > 0 && (
+                        <Badge>
+                          <span>{productNotification.length}</span>
+                        </Badge>
+                      )}
+                    </Li>
+                    <Li>
+                      <Link to="/dashboard/wallet">My Wallet</Link>
+
+                      {productNotification.length > 0 && (
+                        <Badge>
+                          <span>{productNotification.length}</span>
                         </Badge>
                       )}
                     </Li>

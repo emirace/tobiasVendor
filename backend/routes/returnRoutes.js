@@ -122,7 +122,7 @@ returnRouter.put(
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice image name",
+        select: "seller actualPrice image name slug",
         populate: { path: "seller", select: "image username" },
       });
     if (returned) {

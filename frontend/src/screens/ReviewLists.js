@@ -116,13 +116,13 @@ export default function ReviewLists({ userId }) {
           className={displayTab === "sold" && "active"}
           onClick={() => setDisplayTab("sold")}
         >
-          Sold
+          Sold (Seller)
         </TabItem>
         <TabItem
           className={displayTab === "purchase" && "active"}
           onClick={() => setDisplayTab("purchase")}
         >
-          Purchase
+          Purchase (Buyer)
         </TabItem>
       </Tab>
       <Content>

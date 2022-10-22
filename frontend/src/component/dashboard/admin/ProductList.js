@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Store } from "../../../Store";
 import { getError, region } from "../../../utils";
+import moment from "moment";
 
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -199,6 +201,11 @@ export default function ProductListAdmin() {
       width: 150,
     },
     {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+    },
+    {
       field: "action",
       headerName: "Action",
       width: 150,
@@ -222,6 +229,7 @@ export default function ProductListAdmin() {
   const rows = products.map((p) => ({
     id: p._id,
     name: p.name,
+    date: moment(p.createdAt).format("MMM Do, h:mm a"),
     image: p.image,
     stock: p.countInStock,
     price: "$" + p.price,

@@ -13,6 +13,7 @@ import ModelLogin from "../ModelLogin";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -285,6 +286,18 @@ export default function AllReturnsLogs() {
       },
     },
     {
+      field: "seller",
+      headerName: "Seller",
+      width: 100,
+      renderCell: (params) => {
+        return (
+          <Product>
+            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
+          </Product>
+        );
+      },
+    },
+    {
       field: "orderId",
       headerName: "Order",
       width: 200,
@@ -323,6 +336,7 @@ export default function AllReturnsLogs() {
     products.map((p) => ({
       id: p._id,
       name: p.productId.name,
+      seller: p.productId.sellerName,
       image: p.productId.image,
       slug: p.productId.slug,
       date: moment(p.createdAt).format("MMM DD, h:mm a"),

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Protection = styled.div`
@@ -25,9 +26,12 @@ export default function BuyersPro() {
         product is remarkably not as described or doesn’t arrive as a result of
         seller not sending your product or seller’s negligent (and not yours),
         we will refund you in full including delivery fee, otherwise all sale is
-        final. Please have a look at our refund policy here. Any payment made
-        outside our App or Website will not be covered by the buyer’s
-        protection. When you purchase a product on our App or Website we
+        final. Please have a look at our refund policy{" "}
+        <Link style={{ color: "var(--orange-color" }} to="/privacypolicy">
+          here.
+        </Link>{" "}
+        Any payment made outside our App or Website will not be covered by the
+        buyer’s protection. When you purchase a product on our App or Website we
         transfer the money to the seller’s account ONLY when the buyer confirms
         receipt of the product. Repeddle buyer’s protection by default covers
         all Repeddle user/community members that complete their purchase through
@@ -45,7 +49,10 @@ export default function BuyersPro() {
         bank account. The Repeddle protection by default cover sellers of all
         levels that successfully completes their entire sale transaction inside
         Repeddle App or Website. To find out more about payment turn around
-        period, see our refund policy here
+        period, see our refund policy{" "}
+        <Link style={{ color: "var(--orange-color" }} to="/privacypolicy">
+          here.
+        </Link>
       </Content>
     </Protection>
   );

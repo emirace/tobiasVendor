@@ -13,8 +13,8 @@ const Container = styled.div`
   flex: 4;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
-  margin: 0 20px;
   margin-bottom: 20px;
+  margin: 0 20px;
   border-radius: 0.2rem;
 `;
 const Title = styled.h1`
@@ -160,8 +160,8 @@ export default function UserList() {
       width: 80,
     },
     {
-      field: "earnings",
-      headerName: "Earnings",
+      field: "transactions",
+      headerName: "Transaction",
       width: 100,
     },
     {
@@ -191,7 +191,7 @@ export default function UserList() {
     date: moment(u.createdAt).format("MMM Do, h:mm a"),
     email: u.email,
     status: "online",
-    earnings: "$242.23",
+    transactions: "$242.23",
   }));
 
   //   const rows = [

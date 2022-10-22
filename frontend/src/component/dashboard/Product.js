@@ -51,7 +51,7 @@ const TopRight = styled.div`
   padding: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
-  margin: 20px;
+  margin: 0 20px;
   border-radius: 0.2rem;
 `;
 const InfoTop = styled.div`

@@ -232,7 +232,7 @@ io.on("connection", (socket) => {
         isAdmin: true,
       });
       const notification = new Notification({
-        userId: admin._ids,
+        userId: admin._id,
         notifyType,
         itemId,
         msg,

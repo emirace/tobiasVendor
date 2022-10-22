@@ -1350,7 +1350,12 @@ export default function ProductScreen() {
                 </div>
 
                 <div className="sp_detail_contail">
-                  <div className="sp_condition">{product.condition}</div>
+                  <div
+                    className="sp_condition"
+                    style={{ fontWeight: "bold", padding: "10px" }}
+                  >
+                    {product.condition}
+                  </div>
                   {conditionDetails(product.condition)}
                 </div>
               </div>
@@ -1399,19 +1404,31 @@ export default function ProductScreen() {
             </div>
             <ProtectionRight />
             <Sustain mode={mode}>
-              <SustainHeader style={{}}>Sustainability Impact</SustainHeader>
-              <div>See some importance of getting a used product</div>
+              <SustainHeader style={{ fontWeight: "600" }}>
+                REPEDDLE SUSTAINABILITY IMPACT
+              </SustainHeader>
+              <div>
+                Save our environment (AFRICA) and planet from Landfill, Water
+                pollution and Carbon Emission. We advocate for <b>clean air</b>,{" "}
+                <b>clean water</b> and a <b>clean environment</b>. These are not
+                too much to ask; these are common basic living condition!!! By
+                buying and selling secondhand item on Repeddle, you’re not only
+                reducing carbon footprint and saving the planet, but you are
+                giving an African Child a better hope for tomorrow. Learn more
+                on our sustainability take{" "}
+                <Link to="/sustainability">here.</Link>
+              </div>
               <SustainCont>
-                <FontAwesomeIcon icon={faWater} /> 283.8 days of drinking water
-                saved
+                <FontAwesomeIcon icon={faWater} /> 2,700 L of water saved for
+                one person to drink for 900 days.
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faCloud} /> 19.9 miles of driving
-                emissions avoided
+                <FontAwesomeIcon icon={faCloud} /> 10% co2 of global carbon
+                emissions avoided.
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faLightbulb} /> 1320 days of powering an
-                LED light prevented
+                <FontAwesomeIcon icon={faLightbulb} /> 98% Chance of clothes
+                ending up in landfills avoided.
               </SustainCont>
               <Link to="/sustainability">see more</Link>
             </Sustain>

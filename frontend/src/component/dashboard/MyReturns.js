@@ -13,6 +13,7 @@ import ModelLogin from "../ModelLogin";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -277,7 +278,7 @@ export default function MyReturns() {
       renderCell: (params) => {
         return (
           <Product>
-            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
+            <Link to={`/seller/${params.row.id}`}>{params.row.user}</Link>
           </Product>
         );
       },

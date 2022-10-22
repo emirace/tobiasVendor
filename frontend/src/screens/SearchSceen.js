@@ -503,7 +503,10 @@ export default function SearchSceen() {
 
   const handleInput = (e) => {
     e.preventDefault();
-    setQueryBrand(e.target.value);
+
+    if (e.target.value.length > 2) {
+      setQueryBrand(e.target.value);
+    }
   };
   if (brandInput.length > 0) {
     brands = brands.filter((i) => {

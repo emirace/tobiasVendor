@@ -116,7 +116,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const newUser = new User({
-      username: req.body.username,
+      username: req.body.username.toLowerCase(),
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
@@ -350,7 +350,7 @@ userRouter.post(
       firstName: response.given_name,
       lastName: response.family_name,
       isVerifiedEmail: true,
-      username: `${response.given_name}_${generateOTP()}`,
+      username: `${response.given_name.toLowerCase()}_${generateOTP()}`,
       region: req.params.region,
     };
     let result = await User.findOne({
@@ -405,7 +405,7 @@ userRouter.post(
       firstName: data.first_name,
       lastName: data.last_name,
       isVerifiedEmail: true,
-      username: `${data.short_name}_${generateOTP()}`,
+      username: `${data.short_name.toLowerCase()}_${generateOTP()}`,
       region: req.params.region,
     };
     let result = await User.findOne({
@@ -449,12 +449,12 @@ userRouter.post(
     const userId = req.params.id;
     const user = await User.findById(userId);
     if (user) {
-      if (user.reviews.find((x) => x.userId.toString() === req.user._id)) {
+      if (user.reviews.find((x) => x.userId === req.user._id)) {
         return res
           .status(400)
           .send({ message: "You already submitted a review" });
       }
-      if (user._id.toString() === req.user._id) {
+      if (user._id === req.user._id) {
         return res.status(400).send({ message: "You can't review yourself" });
       }
       const review = {
@@ -526,6 +526,7 @@ userRouter.get(
         isAdmin: user.isAdmin,
         address: user.address,
         active: user.active,
+        influencer: user.influencer,
         badge: user.badge,
         dob: user.dob,
         accountName: user.accountName,
@@ -650,6 +651,22 @@ userRouter.get(
     res.send(followingList);
   })
 );
+
+userRouter.get(
+  "/:region/search",
+  expressAsyncHandler(async (req, res) => {
+    const { q } = req.query;
+    const users = await User.find({
+      username: { $regex: q.toLowerCase() },
+      $options: "i",
+      region: req.params.region,
+    })
+      .select("username image")
+      .limit(10);
+    res.send(users);
+  })
+);
+
 userRouter.get(
   "/profile/user",
   isAuth,

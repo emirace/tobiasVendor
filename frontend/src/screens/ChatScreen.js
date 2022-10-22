@@ -21,7 +21,7 @@ import { Store } from "../Store";
 import Conversation from "../component/Conversation";
 import Messages from "../component/Messages";
 import { Link, useLocation } from "react-router-dom";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import ReportConversation from "../component/Report/ReportConversation";
 import Report from "../component/Report";
 import ModelLogin from "../component/ModelLogin";
@@ -242,6 +242,28 @@ const ProductImg = styled.img.attrs((props) => ({
   margin-right: 0 15px;
 `;
 
+const SearchUl = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 0;
+  padding: 15px;
+  width: 100%;
+  z-index: 9;
+  background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
+`;
+const SearchLi = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+`;
+const SearchImg = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -292,7 +314,7 @@ export default function ChatScreen() {
   const [onlineUser, setOnlineUser] = useState([]);
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchResult, setSearchResult] = useState("");
   const [refresh, setRefresh] = useState(false);
   const [image, setImage] = useState("");
   const [showUploadingImage, setShowUploadingImage] = useState(false);
@@ -613,9 +635,11 @@ export default function ChatScreen() {
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id },
+        { recieverId: id, type: "user" },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
+      setCurrentChat(data);
+      setSearchResult([]);
     } catch (err) {
       console.log(err);
     }
@@ -663,6 +687,17 @@ export default function ChatScreen() {
       handleSubmit(e);
     }
   };
+
+  const handleSearchInput = async (e) => {
+    e.preventDefault();
+    if (e.target.value.length > 2) {
+      const { data } = await axios.get(
+        `/api/users/${region()}/search?q=${e.target.value}`
+      );
+      setSearchResult(data);
+    }
+  };
+
   const [currentTab, setCurrentTab] = useState("messages");
   const toggleTab = (tab) => {
     switch (tab) {
@@ -777,13 +812,30 @@ export default function ChatScreen() {
       <ChatCont mode={mode}>
         <Left mode={mode} showLeft={showLeft}>
           <TopBar>
-            <div>
+            <div style={{ position: "relative" }}>
               <FontAwesomeIcon icon={faSearch} />
               <Search
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={handleSearchInput}
                 placeholder="Search..."
                 mode={mode}
               />
+
+              {searchResult.length > 0 && (
+                <SearchUl mode={mode}>
+                  {searchResult.map(
+                    (u) =>
+                      u._id !== userInfo._id && (
+                        <SearchLi
+                          key={u._id}
+                          onClick={() => addConversation(u._id)}
+                        >
+                          <SearchImg src={u.image} alt="img" />
+                          <div>{u.username}</div>
+                        </SearchLi>
+                      )
+                  )}
+                </SearchUl>
+              )}
             </div>
             <div>
               <FontAwesomeIcon icon={faMessage} />

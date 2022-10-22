@@ -237,6 +237,43 @@ const TextInput = styled.input`
   }
 `;
 
+const UserCont = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+`;
+const UserImg = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+const UserName = styled.div`
+  font-weight: bold;
+  margin: 0 20px;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const PaymentRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  @media (max-width: 992) {
+    flex-direction: column;
+  }
+`;
+const Commision = styled.div`
+  width: 50%;
+`;
+
+const Key = styled.div`
+  flex: 2;
+`;
+const Value = styled.div`
+  flex: 3;
+`;
+
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -803,9 +840,9 @@ export default function OrderScreen() {
                                 disabled={
                                   deliveryNumber(orderitem.deliveryStatus) > 0
                                 }
-                                value="Not yet Dispatched"
+                                value="Processing"
                               >
-                                Not yet Dispatched
+                                Processing
                               </MenuItem>
                               <MenuItem
                                 disabled={
@@ -905,6 +942,17 @@ export default function OrderScreen() {
                     </div>
                   )
                 )}
+                <div style={{ marginTop: "20px" }}>
+                  <div>Buyer Information</div>
+                  <UserCont>
+                    <UserImg src={order.user.image} alt="img" />
+                    <UserName>
+                      <Link to={`/seller/${order.user._id}`}>
+                        {order.user.username}
+                      </Link>
+                    </UserName>
+                  </UserCont>
+                </div>
               </SumaryContDetails>
             )
           ) : (
@@ -977,6 +1025,11 @@ export default function OrderScreen() {
                       </div>
                     </div>
                   )}
+                {orderitem.trackingNumber && (
+                  <label style={{ marginRight: "20px" }}>
+                    Tracking Number: {orderitem.trackingNumber}
+                  </label>
+                )}
               </div>
               <hr />
               <DetailButton>
@@ -1010,6 +1063,17 @@ export default function OrderScreen() {
                   <div style={{ flex: "5" }}>{value}</div>
                 </div>
               ))}
+              <div style={{ marginTop: "20px" }}>
+                <div>Seller Information</div>
+                <UserCont>
+                  <UserImg src={orderitem.seller.image} alt="img" />
+                  <UserName>
+                    <Link to={`/seller/${orderitem.seller._id}`}>
+                      {orderitem.sellerName}
+                    </Link>
+                  </UserName>
+                </UserCont>
+              </div>
             </SumaryContDetails>
           )
         )}
@@ -1036,22 +1100,60 @@ export default function OrderScreen() {
               <Name>Payment Method</Name>
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />
-              <Name>Payment Details</Name>
-              <ItemNum>
-                Item Total:{"   "} {currency}
-                {isSeller ? itemsPrice : order.itemsPrice}
-              </ItemNum>
-              <ItemNum>
-                Shipping Fee: {currency}
-                {isSeller ? shippingPrice : order.shippingPrice}
-              </ItemNum>
-              <ItemNum>
-                Total:{" "}
-                <ItemPrice>
-                  {currency}
-                  {isSeller ? itemsPrice + shippingPrice : order.totalPrice}
-                </ItemPrice>
-              </ItemNum>
+              <PaymentRow>
+                <div>
+                  <Name>Payment Details</Name>
+                  <ItemNum>
+                    Item Total:{"   "} {currency}
+                    {isSeller ? itemsPrice : order.itemsPrice}
+                  </ItemNum>
+                  <ItemNum>
+                    Shipping Fee: {currency}
+                    {isSeller ? shippingPrice : order.shippingPrice}
+                  </ItemNum>
+                  <ItemNum>
+                    Total:{" "}
+                    <ItemPrice>
+                      {currency}
+                      {isSeller ? itemsPrice + shippingPrice : order.totalPrice}
+                    </ItemPrice>
+                  </ItemNum>
+                </div>
+                {isSeller && (
+                  <Commision>
+                    <ItemNum>
+                      <Key>Total cost:</Key>
+                      <Value>
+                        {" "}
+                        {currency}
+                        {itemsPrice + shippingPrice}
+                      </Value>
+                    </ItemNum>
+                    <ItemNum>
+                      <Key>Repeddle Commision (7.9%):</Key>
+                      <Value>
+                        {" "}
+                        {currency}
+                        {((7.9 / 100) * (itemsPrice + shippingPrice)).toFixed(
+                          2
+                        )}
+                      </Value>
+                    </ItemNum>
+                    <ItemNum>
+                      <Key>You will Receive:</Key>
+                      <Value>
+                        {" "}
+                        {currency}
+                        {(
+                          itemsPrice +
+                          shippingPrice -
+                          (7.9 / 100) * (itemsPrice + shippingPrice)
+                        ).toFixed(2)}
+                      </Value>
+                    </ItemNum>
+                  </Commision>
+                )}
+              </PaymentRow>
             </SumaryContDetails>
           </PaymentDliveryItem>
           {/* <PaymentDliveryItem>

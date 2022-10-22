@@ -14,11 +14,13 @@ import axios from "axios";
 import { Store } from "../../../Store";
 import { getError, region } from "../../../utils";
 import { useReactToPrint } from "react-to-print";
+import moment from "moment";
 
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
   border-radius: 0.2rem;
+  margin-bottom: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
@@ -234,7 +236,7 @@ export default function OrderListAdmin() {
   }
 
   const columns = [
-    { field: "id", headerName: "ID", width: 250 },
+    { field: "id", headerName: "ID", width: 220 },
     {
       field: "order",
       headerName: "Order",
@@ -254,17 +256,23 @@ export default function OrderListAdmin() {
     {
       field: "payStatus",
       headerName: "Payment Status",
-      width: 150,
+      width: 130,
     },
     {
       field: "amount",
       headerName: "Amount",
-      width: 100,
+      width: 90,
+    },
+
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
     },
     {
       field: "buyer",
       headerName: "Buyer",
-      width: 100,
+      width: 90,
       renderCell: (params) => {
         return (
           <Product>
@@ -278,7 +286,7 @@ export default function OrderListAdmin() {
     {
       field: "seller",
       headerName: "Seller",
-      width: 100,
+      width: 90,
       renderCell: (params) => {
         return (
           <Product>
@@ -331,6 +339,7 @@ export default function OrderListAdmin() {
     slug: p.orderItems[0].slug,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
+    date: moment(p.createdAt).format("MMM Do, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     buyer: p.user ? p.user.username : "anonymous",
     seller: p.seller
