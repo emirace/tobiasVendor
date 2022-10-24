@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { RiCustomerService2Fill } from "react-icons/ri";
+import { CgChevronRight } from "react-icons/cg";
 import { Store } from "../Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +23,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  & svg {
+  & svg.bigicon {
     font-size: 30px;
 
     color: ${(props) =>
@@ -34,8 +35,8 @@ const Container = styled.div`
 const Box = styled.div`
   position: absolute;
   bottom: 70px;
-  right: 20px;
-  width: 350px;
+  right: 0;
+  width: 360px;
   border-radius: 0.2rem;
   height: 80vh;
   display: flex;
@@ -43,29 +44,48 @@ const Box = styled.div`
   background: white;
 `;
 const Top = styled.div`
-  flex: 1;
+  flex: 2;
   border-top-left-radius: 0.2rem;
   border-top-right-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodylight" ? "black" : "white"};
   color: ${(props) => (props.mode === "pagebodylight" ? "white" : "black")};
 `;
-const Logo = styled.div``;
-const Name = styled.div``;
+const Logo = styled.img``;
+const Name = styled.div`
+  font-size: 25px;
+  text-transform: capitalize;
+  margin-left: 30px;
+  font-weight: bold;
+`;
 const Bottom = styled.div`
-  flex: 4;
+  flex: 5;
 `;
 const SmallBox = styled.div`
+  padding: 15px;
+  border-radius: 0.2rem;
+  border-top: 1px solid var(--orange-color);
   background: white;
+  margin-bottom: 20px;
+  box-shadow: 0 0 25px rgba(24, 24, 24, 0.4);
 `;
 const BoxCont = styled.div`
   width: 100%;
   position: absolute;
   left: 0;
   top: 0;
+  overflow-y: auto;
+  height: 100%;
 `;
-const Head = styled.div``;
-const Li = styled.div``;
+const Head = styled.div`
+  font-weight: bold;
+`;
+const Li = styled.div`
+  margin: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+`;
 const Button = styled.div``;
 
 export default function Support() {
@@ -73,7 +93,7 @@ export default function Support() {
   const { mode, userInfo } = state;
   return (
     <Container mode={mode}>
-      <RiCustomerService2Fill />
+      <RiCustomerService2Fill className="bigicon" />
       <FontAwesomeIcon icon={faArrowDown} />
       <Box>
         <Top mode={mode}>
@@ -82,30 +102,32 @@ export default function Support() {
         </Top>
         <Bottom />
         <BoxCont>
-          <SmallBox>
-            <Head>FAQ</Head>
-            <div>
-              <Li>
-                <span>How can i start sell </span>{" "}
-                <FontAwesomeIcon icon={faArrowRight} />
-              </Li>
-              <Li>
-                <span>How can i start sell </span>{" "}
-                <FontAwesomeIcon icon={faArrowRight} />
-              </Li>
-              <Li>
-                <span>How can i start sell </span>{" "}
-                <FontAwesomeIcon icon={faArrowRight} />
-              </Li>
-            </div>
-          </SmallBox>
-          <SmallBox>
-            <Head>Start a conversation</Head>
-            <div>We will replay as soon as we can</div>
-            <Button>
-              <FontAwesomeIcon icon={faPaperPlane} /> Send us a message
-            </Button>
-          </SmallBox>
+          <div style={{ padding: "100px 10px 10px 10px" }}>
+            <SmallBox>
+              <Head>FAQ</Head>
+              <div>
+                <Li>
+                  <span>How can i start sell </span> <CgChevronRight />
+                </Li>
+                <Li>
+                  <span>How can i start sell </span> <CgChevronRight />
+                </Li>
+                <Li>
+                  <span>How can i start sell </span> <CgChevronRight />
+                </Li>
+                <Li>
+                  <span>How can i start sell </span> <CgChevronRight />
+                </Li>
+              </div>
+            </SmallBox>
+            <SmallBox>
+              <Head>Start a conversation</Head>
+              <div>We will replay as soon as we can</div>
+              <Button>
+                <FontAwesomeIcon icon={faPaperPlane} /> Send us a message
+              </Button>
+            </SmallBox>
+          </div>
         </BoxCont>
       </Box>
     </Container>
