@@ -1,10 +1,20 @@
 import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import { Store } from "../Store";
 import "../style/Newsletter.css";
+
+const Sent = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Newletter() {
   const { dispatch: ctxDispatch } = useContext(Store);
   const [input, setInput] = useState("");
+  const [sent, setSent] = useState(false);
   const handlesubmit = () => {
     if (!input) {
       ctxDispatch({
@@ -17,8 +27,14 @@ export default function Newletter() {
       });
       return;
     }
+    setSent(true);
   };
-  return (
+  return sent ? (
+    <Sent>
+      Great! Welcome to the Repeddle Tribe. We've sent you an email to con firm
+      your subscription.
+    </Sent>
+  ) : (
     <div className="newsletter_container">
       <div className="newsletter_desc">
         <b>
@@ -37,7 +53,9 @@ export default function Newletter() {
           Send
         </button>
       </div>
-      <div className="newsletter_desc">We prioritize your privacy</div>
+      <div className="newsletter_desc" style={{ marginTop: "5px" }}>
+        We prioritize your privacy
+      </div>
     </div>
   );
 }

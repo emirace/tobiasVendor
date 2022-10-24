@@ -58,6 +58,13 @@ const Badge1 = styled.div`
   border-radius: 50%;
   background: green;
 `;
+const Badgered = styled.div`
+  width: 10px;
+  margin-left: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: red;
+`;
 const ProductImage = styled.img`
   width: 60px;
   height: 60px;
@@ -145,53 +152,56 @@ export default function Conversation({
     getproduct();
   }, []);
 
-  return loading ? (
-    <LoadingBox />
-  ) : (
-    <>
-      <User
-        mode={mode}
-        className={currentChat === conversation._id ? "active" : ""}
-      >
-        {report ? (
-          <ProfileImg src={user.image} />
-        ) : (
-          <ProfileImg
-            src={
-              conversation.conversationType === "reportProduct" ||
-              conversation.conversationType === "reportUser"
-                ? "https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png"
-                : user.image
-            }
-          />
-        )}
-        <ProfileDetail>
-          <Name>
-            {conversation.conversationType === "reportProduct" ||
-            conversation.conversationType === "reportUser" ? (
-              <div style={{ color: "red" }}>Report</div>
-            ) : (
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <>{user.username}</>
-                {status && <Badge1 />}
-              </div>
-            )}
-          </Name>
-          <LastMsg>
-            {message.message && message.messages.length > 0
-              ? message.messages[message.messages.length - 1].text
-              : "No messages"}{" "}
-            {count.length > 0 && <Badge>{count.length}</Badge>}
-          </LastMsg>
+  return (
+    (message?.messages?.length || currentChat === conversation._id) && (
+      <>
+        <User
+          mode={mode}
+          className={currentChat === conversation._id ? "active" : ""}
+        >
+          {report ? (
+            <ProfileImg src={user.image} />
+          ) : (
+            <ProfileImg
+              src={
+                conversation.conversationType === "reportProduct" ||
+                conversation.conversationType === "reportUser"
+                  ? "https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png"
+                  : user.image
+              }
+            />
+          )}
+          <ProfileDetail>
+            <Name>
+              {conversation.conversationType === "reportProduct" ||
+              conversation.conversationType === "reportUser" ? (
+                <div style={{ color: "red" }}>Report</div>
+              ) : (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <>{user.username}</>
+                  {status && <Badge1 />}
+                </div>
+              )}
+            </Name>
+            <LastMsg>
+              {console.log("count", count, "not", notifications)}
+              {console.log(conversation)}
+              {message.message && message.messages.length > 0
+                ? message.messages[message.messages.length - 1].text
+                : "No messages"}{" "}
+              {count.length > 0 && <Badge>{count.length}</Badge>}
+              {conversation.needRespond && report && <Badgered />}
+            </LastMsg>
 
-          <div style={{ color: "grey" }}>
-            {moment(conversation.updatedAt).fromNow()}
-          </div>
-        </ProfileDetail>
-        {(conversation.productId || conversation.userId) && (
-          <ProductImage src={product.image} />
-        )}
-      </User>
-    </>
+            <div style={{ color: "grey" }}>
+              {moment(conversation.updatedAt).fromNow()}
+            </div>
+          </ProfileDetail>
+          {(conversation.productId || conversation.userId) && (
+            <ProductImage src={product.image} />
+          )}
+        </User>
+      </>
+    )
   );
 }

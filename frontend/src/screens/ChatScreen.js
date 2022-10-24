@@ -362,6 +362,7 @@ export default function ChatScreen() {
         text: data.text,
         message: data.message,
       });
+      setRefresh(!refresh);
     });
   }, [userInfo]);
 
@@ -439,7 +440,7 @@ export default function ChatScreen() {
       }
     };
     if (userInfo.isAdmin) getReportConversation();
-  }, [userInfo]);
+  }, [userInfo, refresh]);
 
   const [reports1, setReports1] = useState(false);
 
@@ -535,7 +536,12 @@ export default function ChatScreen() {
         text: newMessage,
       });
       socket.emit("post_data", {
-        userId: receiverId,
+        userId:
+          (currentChat.conversationType === "reportProduct" ||
+            currentChat.conversationType === "reportUser") &&
+          !userInfo.isAdmin
+            ? "Admin"
+            : receiverId,
         itemId: currentChat._id,
         notifyType: "message",
         msg: `${userInfo.username} sent you a message`,
@@ -730,7 +736,13 @@ export default function ChatScreen() {
             {reportConversions.length < 1
               ? "No Reports"
               : reportConversions.map((r, index) => (
-                  <div key={r._id} onClick={() => setCurrentChat(r)}>
+                  <div
+                    key={r._id}
+                    onClick={() => {
+                      setCurrentChat(r);
+                      socket.emit("remove_notifications", r._id);
+                    }}
+                  >
                     <Conversation
                       report
                       conversation={r}

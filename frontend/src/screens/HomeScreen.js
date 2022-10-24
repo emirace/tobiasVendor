@@ -26,6 +26,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
 import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
+import Support from "../component/Support";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -419,7 +420,7 @@ export default function ProductsScreen() {
               <div className="downloadapp_section_text">
                 <h2 className="downloadapp_title">try it on mobile</h2>
                 Easy, with just aclick away. Never miss amazing deals and hot
-                drops by getting real-time Notifications. Buy, Sell Chat,
+                drops by getting real-time Notifications. Buy, Sell,Chat,
                 Cash-out and Repeat. Anywhere, Anytime.
               </div>
               <div className="downloadapp_img">
@@ -553,6 +554,7 @@ export default function ProductsScreen() {
           </div>
         </section>
       </div>
+      <Support />
     </div>
   );
 }

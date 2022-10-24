@@ -191,7 +191,11 @@ const Tag = styled.div`
 `;
 
 const SustainCont = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
   & svg {
+    font-size: 16px;
     margin: 5px;
   }
 `;
@@ -1407,30 +1411,62 @@ export default function ProductScreen() {
               <SustainHeader style={{ fontWeight: "600" }}>
                 REPEDDLE SUSTAINABILITY IMPACT
               </SustainHeader>
-              <div>
-                Save our environment (AFRICA) and planet from Landfill, Water
-                pollution and Carbon Emission. We advocate for <b>clean air</b>,{" "}
-                <b>clean water</b> and a <b>clean environment</b>. These are not
-                too much to ask; these are common basic living condition!!! By
-                buying and selling secondhand item on Repeddle, you’re not only
-                reducing carbon footprint and saving the planet, but you are
-                giving an African Child a better hope for tomorrow. Learn more
-                on our sustainability take{" "}
-                <Link to="/sustainability">here.</Link>
+              <div style={{ fontSize: "14px" }}>
+                <p>
+                  Save our environment (AFRICA) and planet from Landfill, Water
+                  pollution and Carbon Emission.
+                </p>{" "}
+                <p>
+                  We advocate for <b>clean air</b>, <b>clean water</b> and a{" "}
+                  <b>clean environment</b>. These are not too much to ask; these
+                  are common basic living condition!!!
+                </p>
+                <p>
+                  {" "}
+                  By buying and{" "}
+                  <Link
+                    style={{
+                      textDecoration: "underline",
+                      color: "var(--malon-color)",
+                    }}
+                    to="/sell"
+                  >
+                    selling
+                  </Link>{" "}
+                  secondhand item on Repeddle, you’re not only reducing carbon
+                  footprint and saving the planet, but you are giving an African
+                  Child a better hope for tomorrow. Learn more on our
+                  sustainability take{" "}
+                  <Link
+                    style={{
+                      textDecoration: "underline",
+                      color: "var(--malon-color)",
+                    }}
+                    to="/sustainability"
+                  >
+                    here.
+                  </Link>
+                </p>
               </div>
+              <SustainHeader style={{ fontWeight: "600" }}>
+                POSITIVE IMPACT OF USING SECONDHAND CLOTHES
+              </SustainHeader>
               <SustainCont>
-                <FontAwesomeIcon icon={faWater} /> 2,700 L of water saved for
-                one person to drink for 900 days.
+                <FontAwesomeIcon icon={faWater} />{" "}
+                <span>
+                  2,700 L of water saved for one person to drink for 900 days.
+                </span>
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faCloud} /> 10% co2 of global carbon
-                emissions avoided.
+                <FontAwesomeIcon icon={faCloud} />{" "}
+                <span>10% co2 of global carbon emissions avoided.</span>
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faLightbulb} /> 98% Chance of clothes
-                ending up in landfills avoided.
+                <FontAwesomeIcon icon={faLightbulb} />{" "}
+                <span>
+                  98% Chance of clothes ending up in landfills avoided.
+                </span>
               </SustainCont>
-              <Link to="/sustainability">see more</Link>
             </Sustain>
             <ReportButton
               onClick={() => handlereport(product.seller._id, product._id)}

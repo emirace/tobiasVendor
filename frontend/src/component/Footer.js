@@ -26,6 +26,8 @@ const CopyRight = styled.div`
   color: ${(props) => (props.back ? "#fff" : "#000")};
   height: 50px;
   align-items: center;
+  font-size: 14px;
+  font-weight: bold;
   & svg {
     margin-right: 10px;
     font-size: 20px;
@@ -78,7 +80,7 @@ const SmTitle = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 80%;
+  width: 60%;
 `;
 const Logo = styled.div`
   width: 100%;
@@ -87,6 +89,7 @@ const Logo = styled.div`
 const Reserve = styled.div`
   margin: 5px 20vw;
   text-align: center;
+  font-size: 12px;
   @media (max-width: 992px) {
     margin: 5px;
     text-align: center;
@@ -341,7 +344,10 @@ export default function Footer() {
             fashion in Africa, one garment at a time, one person at a time, and
             one loving home at a time. Let’s peddle and thrift.
           </p>
-          <b>Connect with us</b>
+          <div>
+            <b style={{ textTransform: "uppercase" }}>Connect with us: </b>
+            <span> We're Social, Let's Make It Media:</span>
+          </div>
           <div className="footer_social">
             <div className="footer_social_icon">
               <FacebookIcon height={25} width={25} />
@@ -359,13 +365,13 @@ export default function Footer() {
             <h3 className="footer_center_menu">Customer Care</h3>
             <ul className="footer_center_list">
               <li className="footer_center_listitem">
-                <Link to="/about">Support Center</Link>
+                <Link to="/">Support Center</Link>
               </li>
               <li className="footer_center_listitem">
-                <Link to="/sustainability">FAQ</Link>
+                <Link to="/">FAQ</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Returns</a>
+                <a href="/">Returns</a>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/contactus">Contact Us</Link>

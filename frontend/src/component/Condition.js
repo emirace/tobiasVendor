@@ -21,7 +21,7 @@ export default function Condition() {
       <Content>
         New with Tags: A preowned secondhand product that has never been worn or
         used. These products reflect no sign of use and has its original
-        purchase tags on it (include a photo of the tag).
+        purchase tags on it (include a photo of the tag).{" "}
         <SmallContent>
           This product shows no alterations, no defects and comes with Original
           purchase tags.
@@ -30,7 +30,7 @@ export default function Condition() {
       <Title>NEW WITH NO TAGs</Title>
       <Content>
         A preowned secondhand product that has never been worn or use but
-        doesn’t have original purchase tags.
+        doesn’t have original purchase tags.{" "}
         <SmallContent>
           This product should show no defects or alterations.
         </SmallContent>
@@ -58,7 +58,7 @@ export default function Condition() {
       <Content>
         A preowned secondhand product which has been frequently used or worn.
         Products may show reasonable defects signs, scratches, worn corners or
-        interior wear.
+        interior wear.{" "}
         <SmallContent>
           Defects are to be shown on product photos and mentioned in
           description.

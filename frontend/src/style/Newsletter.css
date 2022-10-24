@@ -27,6 +27,9 @@
   border-bottom-left-radius: 15px;
   border-top-left-radius: 15px;
 }
+.newsletter_input input:focus-visible {
+  outline: none;
+}
 
 .newsletter_input button {
   flex: 2;

@@ -2,6 +2,7 @@ import express from "express";
 import Message from "../models/messageModel.js";
 import expressAsyncHandler from "express-async-handler";
 import { isAuth } from "../utils.js";
+import Conversation from "../models/conversationModel.js";
 
 const messageRouter = express.Router();
 
@@ -9,15 +10,29 @@ messageRouter.post(
   "/",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const newmessage = new Message({
-      conversationId: req.body.conversationId,
-      sender: req.user._id,
-      text: req.body.text,
-      image: req.body.image,
-    });
     try {
-      const savedmessage = await newmessage.save();
-      res.status(200).send({ messages: "message sent", message: savedmessage });
+      const conversation = await Conversation.findById(req.body.conversationId);
+      if (conversation) {
+        conversation.needRespond = req.user.isAdmin ? false : true;
+        conversation.updatedAt = Date.now();
+        await conversation.save();
+        console.log("conversation", conversation);
+        const newmessage = new Message({
+          conversationId: req.body.conversationId,
+          sender: req.user._id,
+          text: req.body.text,
+          image: req.body.image,
+        });
+        const savedmessage = await newmessage.save();
+        res
+          .status(200)
+          .send({ messages: "message sent", message: savedmessage });
+      } else {
+        res.status(500).send({
+          message: "Conversation not Found",
+          err: { message: "Conversation not Found" },
+        });
+      }
     } catch (err) {
       res.status(500).send({ message: "message sending failed", err });
     }

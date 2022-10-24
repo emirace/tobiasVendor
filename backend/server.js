@@ -227,20 +227,21 @@ io.on("connection", (socket) => {
   socket.on("post_data", async (body) => {
     const { userId, notifyType, userImage, itemId, msg, link } = body;
     if (userId === "Admin") {
-      const admin = await User.findOne({
-        email: "admin@example.com",
+      const admins = await User.find({
         isAdmin: true,
       });
-      const notification = new Notification({
-        userId: admin._id,
-        notifyType,
-        itemId,
-        msg,
-        link,
-        userImage,
+      admins.map(async (admin) => {
+        const notification = new Notification({
+          userId: admin._id,
+          notifyType,
+          itemId,
+          msg,
+          link,
+          userImage,
+        });
+        await notification.save();
+        io.sockets.emit("change_data");
       });
-      await notification.save();
-      io.sockets.emit("change_data");
     } else {
       const notification = new Notification({
         userId,

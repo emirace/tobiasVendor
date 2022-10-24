@@ -379,7 +379,7 @@ export default function SustainabilityImpact() {
           alt="img"
         />
       </Section>
-      <Section>
+      {/* <Section>
         <SubHeading>
           HOW REPEDDLE IS MAKING SUSTAINABILITY MORE IMPACTFUL.
         </SubHeading>
@@ -488,7 +488,7 @@ export default function SustainabilityImpact() {
             SPREAD THE WORD. START SELLING. ADD MORE ITEMS TO KEEP EARNING TODAY
           </b>
         </Link>
-      </Section>
+      </Section> */}
     </Container>
   );
 }
