@@ -268,6 +268,15 @@ export default function Sidebar({ current }) {
                   All Transactions
                 </ListItem>
               </Link>
+              <Link to="/dashboard/newsletter">
+                <ListItem
+                  mode={mode}
+                  className={current === "newsletter" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faMoneyBill} />
+                  Newsletter
+                </ListItem>
+              </Link>
             </List>
           </Menu>
         )}

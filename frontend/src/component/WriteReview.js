@@ -69,7 +69,7 @@ export default function WriteReview({ userId, setShowModel }) {
       setLoading(true);
       const { data } = await axios.post(
         `/api/users/${userId}/reviews`,
-        { rating, comment, name: userInfo.username, like },
+        { rating, comment, name: userInfo.username, like, type: "buyer" },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }

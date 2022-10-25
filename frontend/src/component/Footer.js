@@ -371,7 +371,9 @@ export default function Footer() {
                 <Link to="/">FAQ</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/">Returns</a>
+                <Link to="/returns" href="/">
+                  Returns
+                </Link>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/contactus">Contact Us</Link>

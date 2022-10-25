@@ -21,16 +21,13 @@ newsletterRouter.get(
 
 newsletterRouter.post(
   "/",
-  isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newsletter = new Newsletters({
-      userId: req.user._id,
-      meta: req.body.meta,
+      email: req.body.email,
     });
 
-    const newAddress = await newsletter.save();
-    res.status(201).send(newAddress);
+    const newNewsletter = await newsletter.save();
+    res.status(201).send(newNewsletter);
   })
 );
 

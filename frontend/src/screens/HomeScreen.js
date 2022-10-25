@@ -554,7 +554,6 @@ export default function ProductsScreen() {
           </div>
         </section>
       </div>
-      <Support />
     </div>
   );
 }

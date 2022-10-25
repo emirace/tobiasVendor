@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../Store";
@@ -15,7 +16,7 @@ export default function Newletter() {
   const { dispatch: ctxDispatch } = useContext(Store);
   const [input, setInput] = useState("");
   const [sent, setSent] = useState(false);
-  const handlesubmit = () => {
+  const handlesubmit = async () => {
     if (!input) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -27,11 +28,19 @@ export default function Newletter() {
       });
       return;
     }
-    setSent(true);
+    try {
+      const { data } = await axios.post("/api/newsletters/", {
+        email: input,
+      });
+      setInput("");
+      setSent(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
   return sent ? (
     <Sent>
-      Great! Welcome to the Repeddle Tribe. We've sent you an email to con firm
+      Great! Welcome to the Repeddle Tribe. We've sent you an email to confirm
       your subscription.
     </Sent>
   ) : (

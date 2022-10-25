@@ -448,23 +448,32 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
+    const { type } = req.body;
     if (user) {
-      if (user.reviews.find((x) => x.userId === req.user._id)) {
-        return res
-          .status(400)
-          .send({ message: "You already submitted a review" });
-      }
-      if (user._id === req.user._id) {
-        return res.status(400).send({ message: "You can't review yourself" });
+      if (type === "buyer") {
+        if (user.reviews.find((x) => x.userId === req.user._id)) {
+          return res
+            .status(400)
+            .send({ message: "You already submitted a review" });
+        }
+        if (user._id === req.user._id) {
+          return res.status(400).send({ message: "You can't review yourself" });
+        }
+      } else if (req.user._id !== userId) {
+        return res.status(400).send({ message: "You can't submit review" });
       }
       const review = {
         name: req.body.name,
-        user: req.user._id,
+        user: type === "buyer" ? req.user._id : req.body.user._id,
         rating: Number(req.body.rating),
         comment: req.body.comment,
         like: req.body.like,
+        type,
       };
+
       user.reviews.push(review);
+      console.log(user.reviews);
+
       user.numReviews = user.reviews.length;
       user.rating =
         user.reviews.reduce((a, c) => c.rating + a, 0) / user.reviews.length;
@@ -500,7 +509,10 @@ userRouter.get(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id)
       .populate("likes")
-      .populate("saved");
+      .populate({
+        path: "saved",
+        populate: [{ path: "seller", select: "username image" }],
+      });
 
     if (user) {
       res.send({

@@ -31,6 +31,7 @@ const productSchema = new mongoose.Schema(
     material: { type: String },
     description: { type: String, required: true },
     sizes: { type: Array, required: true, default: [] },
+    userBuy: { type: Array, default: [] },
     deliveryOption: { type: Array },
     condition: { type: String, required: true },
     shippingLocation: { type: String, required: true },

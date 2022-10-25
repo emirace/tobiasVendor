@@ -972,9 +972,9 @@ export default function SearchSceen() {
                 {products.map((product, index) => (
                   <div
                     style={{
-                      flex: 1,
+                      width: "25%",
                       display: "flex",
-                      justifyContent: "start",
+                      justifyContent: "center",
                     }}
                     key={product._id}
                   >

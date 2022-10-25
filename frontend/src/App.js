@@ -86,6 +86,8 @@ import PaymentScreen from "./screens/PaymentScreen";
 import TransactionScreen from "./screens/TransactionScreen";
 import ContactUsPage from "./screens/ContactUsPage";
 import Earning from "./component/dashboard/Earning";
+import Support from "./component/Support";
+import Returns from "./component/info/Returns";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -381,6 +383,7 @@ function App() {
                       />
                       <Route path="/seller/:id" element={<SellerScreen />} />
                       <Route path="/earning" element={<Earning />} />
+                      <Route path="/returns" element={<Returns />} />
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />
@@ -861,6 +864,8 @@ function App() {
           </p>
         </footer> */}
               {/* </div> */}
+
+              <Support />
             </div>
           )}
         </ScrollToTop>

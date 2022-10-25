@@ -1,11 +1,17 @@
 import Button from "react-bootstrap/Button";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import MessageBox from "../component/MessageBox";
 import axios from "axios";
 import "../style/Cart.css";
@@ -160,6 +166,10 @@ const reducer = (state, action) => {
 };
 
 export default function CartScreen() {
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const wishlist = sp.get("wishlist") || null;
+
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode, currency } = state;
@@ -172,6 +182,15 @@ export default function CartScreen() {
   const [deliveryOption, setDeliveryOption] = useState(null);
   const [showModel, setShowModel] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+
+  const scrollref = useRef();
+
+  useEffect(() => {
+    if (wishlist) {
+      scrollref.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [wishlist]);
+
   calcPrice(cart);
 
   useEffect(() => {
@@ -484,12 +503,13 @@ export default function CartScreen() {
               </ModelLogin>
             </Top>
             {userInfo && (
-              <Bottom mode={mode}>
+              <Bottom ref={scrollref} mode={mode}>
                 <h1>Wishlist</h1>
                 {user.saved && user.saved.length === 0 ? (
                   <MessageBox>No save item</MessageBox>
                 ) : (
                   <>
+                    {console.log("user", user)}
                     {user.saved &&
                       user.saved.map((product, index) => {
                         const existItem = cart.cartItems.find(
@@ -497,7 +517,7 @@ export default function CartScreen() {
                         );
                         return (
                           !existItem && (
-                            <Item key={index}>
+                            <Item key={index} mode={mode}>
                               <Row className="align-items-center justify-content-between">
                                 <div className="col-7 d-flex  align-items-center">
                                   <img

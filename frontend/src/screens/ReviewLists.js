@@ -87,17 +87,21 @@ export default function ReviewLists({ userId }) {
       case "sold":
         return (
           <ReviewCont1>
-            {reviews.map((review) => (
-              <ReviewCont review={review} />
-            ))}
+            {reviews.map((review) => {
+              if (review.type === "buyer") {
+                return <ReviewCont review={review} userId={userId} />;
+              }
+            })}
           </ReviewCont1>
         );
       case "purchase":
         return (
           <ReviewCont1>
-            {reviews.map((review) => (
-              <ReviewCont review={review} />
-            ))}
+            {reviews.map((review) => {
+              if (review.type === "seller") {
+                return <ReviewCont review={review} userId={userId} />;
+              }
+            })}
           </ReviewCont1>
         );
       default:

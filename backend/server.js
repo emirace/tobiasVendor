@@ -32,6 +32,7 @@ import cartItemRouter from "./routes/cartRoutes.js";
 import locationRouter from "./routes/locationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import User from "./models/userModel.js";
+import newsletterRouter from "./routes/newsletterRoutes.js";
 
 dotenv.config();
 
@@ -96,6 +97,7 @@ app.use("/api/returns", returnRouter);
 app.use("/api/accounts", accountRouter);
 app.use("/api/locations", locationRouter);
 app.use("/api/bestsellers", bestsellerRouter);
+app.use("/api/newsletters", newsletterRouter);
 app.use("/api/cartItems", cartItemRouter);
 app.use("/api/transactions", transactionRouter);
 app.use("/api/reportConversation", reportConversionRouter);

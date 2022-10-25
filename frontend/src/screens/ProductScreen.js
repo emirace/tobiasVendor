@@ -210,6 +210,7 @@ export default function ProductScreen() {
   const [like, setLike] = useState("");
   const [comment2, setComment2] = useState("");
   const [itemDetail, setItemDetail] = useState(false);
+  const [overview, setOverview] = useState(false);
   const [specification, setSpecification] = useState(false);
   const [condition, setCondition] = useState(false);
   const [shipping, setShipping] = useState(false);
@@ -545,6 +546,9 @@ export default function ProductScreen() {
     switch (type) {
       case "itemDetail":
         setItemDetail(!itemDetail);
+        break;
+      case "overview":
+        setOverview(!overview);
         break;
       case "condition":
         setCondition(!condition);
@@ -896,73 +900,74 @@ export default function ProductScreen() {
                 ))}
               </ListGroup>
               <div className="my-3">
-                {userInfo ? (
-                  <form onSubmit={submitHandler}>
-                    <h2>Write a customer review</h2>
-                    <Form.Group className="my-3" controlId="rating">
-                      <Form.Label>Rating</Form.Label>
-                      <Form.Select
-                        aria-label="Rating"
-                        value={rating}
-                        onChange={(e) => setRAting(e.target.value)}
+                {product?.userBuy.includes(userInfo._id) &&
+                  (userInfo ? (
+                    <form onSubmit={submitHandler}>
+                      <h2>Write a customer review</h2>
+                      <Form.Group className="my-3" controlId="rating">
+                        <Form.Label>Rating</Form.Label>
+                        <Form.Select
+                          aria-label="Rating"
+                          value={rating}
+                          onChange={(e) => setRAting(e.target.value)}
+                        >
+                          <option value="">Select...</option>
+                          <option value="1">1- Poor</option>
+                          <option value="2">2- Fair</option>
+                          <option value="3">3- Good</option>
+                          <option value="4">4- Very good</option>
+                          <option value="5">5- Excelent</option>
+                        </Form.Select>
+                      </Form.Group>
+                      <FloatingLabel
+                        controlId="floatingTextarea"
+                        lablel="Coments"
+                        className="my-3"
                       >
-                        <option value="">Select...</option>
-                        <option value="1">1- Poor</option>
-                        <option value="2">2- Fair</option>
-                        <option value="3">3- Good</option>
-                        <option value="4">4- Very good</option>
-                        <option value="5">5- Excelent</option>
-                      </Form.Select>
-                    </Form.Group>
-                    <FloatingLabel
-                      controlId="floatingTextarea"
-                      lablel="Coments"
-                      className="my-3"
-                    >
-                      <Form.Control
-                        className={` ${
-                          mode === "pagebodydark" ? "" : "color_black"
-                        }`}
-                        as="textarea"
-                        placeholder="Leave a comment here"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                      />
-                    </FloatingLabel>
-                    <Thumbs>
-                      <div>Like</div>
-                      <FontAwesomeIcon
-                        icon={faThumbsUp}
-                        onClick={() => setLike("yes")}
-                        color={like === "yes" ? "#eb9f40" : "grey"}
-                      />{" "}
-                      <div>Dislike</div>
-                      <FontAwesomeIcon
-                        icon={faThumbsDown}
-                        onClick={() => setLike("no")}
-                        color={like === "no" ? "#eb9f40" : "grey"}
-                      />
-                    </Thumbs>
-                    <div className="my-3">
-                      <button
-                        className="search-btn1"
-                        disabled={loadingCreateReview}
-                        type="submit"
-                      >
-                        Submit
-                      </button>
-                      {loadingCreateReview && <LoadingBox></LoadingBox>}
-                    </div>
-                  </form>
-                ) : (
-                  <CustomMessage>
-                    Please{" "}
-                    <Link to={`/signin?redirect=/product/${product.slug}`}>
-                      Sign In
-                    </Link>{" "}
-                    to write a review
-                  </CustomMessage>
-                )}
+                        <Form.Control
+                          className={` ${
+                            mode === "pagebodydark" ? "" : "color_black"
+                          }`}
+                          as="textarea"
+                          placeholder="Leave a comment here"
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        />
+                      </FloatingLabel>
+                      <Thumbs>
+                        <div>Like</div>
+                        <FontAwesomeIcon
+                          icon={faThumbsUp}
+                          onClick={() => setLike("yes")}
+                          color={like === "yes" ? "#eb9f40" : "grey"}
+                        />{" "}
+                        <div>Dislike</div>
+                        <FontAwesomeIcon
+                          icon={faThumbsDown}
+                          onClick={() => setLike("no")}
+                          color={like === "no" ? "#eb9f40" : "grey"}
+                        />
+                      </Thumbs>
+                      <div className="my-3">
+                        <button
+                          className="search-btn1"
+                          disabled={loadingCreateReview}
+                          type="submit"
+                        >
+                          Submit
+                        </button>
+                        {loadingCreateReview && <LoadingBox></LoadingBox>}
+                      </div>
+                    </form>
+                  ) : (
+                    <CustomMessage>
+                      Please{" "}
+                      <Link to={`/signin?redirect=/product/${product.slug}`}>
+                        Sign In
+                      </Link>{" "}
+                      to write a review
+                    </CustomMessage>
+                  ))}
               </div>
             </div>
           </>
@@ -1130,7 +1135,7 @@ export default function ProductScreen() {
                 />
               </ReviewsClick>
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>
-                <ReviewLists reviews={product.reviews} />
+                <ReviewLists userId={product.seller._id} />
               </ModelLogin>
             </div>
           </div>
@@ -1306,28 +1311,38 @@ export default function ProductScreen() {
               </button>
             </div>
             <div className="sp_more_detail">
-              <div style={{ textTransform: "uppercase", marginBottom: "5px" }}>
-                Overview
+              <div
+                className={`sp_detail_section ${
+                  overview ? "active" : ""
+                } sp_detail_section_f`}
+              >
+                <div
+                  className="sp_detail_title  sp_condition_cont"
+                  onClick={() => toggleCollapse("overview")}
+                  style={{ textTransform: "uppercase", marginBottom: "5px" }}
+                >
+                  Overview
+                </div>
+                <Overview className="sp_detail_contail">
+                  <LeftOverview>
+                    <Key>Price</Key>
+                    <Key>Brand</Key>
+                    <Key>Category</Key>
+                    <Key>SubCategory</Key>
+                    <Key>Color</Key>
+                    <Key>Size</Key>
+                  </LeftOverview>
+                  <RightOverview>
+                    <Value>{product.actualPrice}</Value>
+                    <Value>{product.brand}</Value>
+                    <Value>{product.category}</Value>
+                    <Value>{product.subCategory || "nal"}</Value>
+                    <Value>{product.color || "nal"}</Value>
+                    <Value>{product.size || "nal"}</Value>
+                    {console.log("hello")}
+                  </RightOverview>
+                </Overview>
               </div>
-              <Overview>
-                <LeftOverview>
-                  <Key>Price</Key>
-                  <Key>Brand</Key>
-                  <Key>Category</Key>
-                  <Key>SubCategory</Key>
-                  <Key>Color</Key>
-                  <Key>Size</Key>
-                </LeftOverview>
-                <RightOverview>
-                  <Value>{product.actualPrice}</Value>
-                  <Value>{product.brand}</Value>
-                  <Value>{product.category}</Value>
-                  <Value>{product.subCategory || "nal"}</Value>
-                  <Value>{product.color || "nal"}</Value>
-                  <Value>{product.size || "nal"}</Value>
-                  {console.log("hello")}
-                </RightOverview>
-              </Overview>
               <div
                 className={`sp_detail_section ${
                   itemDetail ? "active" : ""

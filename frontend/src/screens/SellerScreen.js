@@ -89,9 +89,8 @@ const Content = styled.div`
 const ProductCont = styled.div`
   position: relative;
   display: flex;
-  flex: 1;
-  justify-content: start;
-  margin: 10px;
+  width: 25%;
+  justify-content: center;
   @media (max-width: 992px) {
     width: 162px;
     height: 342px;

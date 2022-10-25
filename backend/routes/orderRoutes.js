@@ -475,6 +475,7 @@ orderRouter.put(
           order.orderItems.map((x) => {
             if (p._id.toString() === x._id) return x.quantity;
           });
+        p.userBuy.push(req.user._id);
 
         const seller = await User.findById(p.seller);
         seller.sold.push(p._id);

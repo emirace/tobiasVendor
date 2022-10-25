@@ -659,6 +659,22 @@ export default function Navbar({
     }
   }, [userInfo]);
 
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    try {
+      const fetchUser = async () => {
+        const { data } = await axios.get(`/api/users/profile/user`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setUser(data);
+        console.log("user", data);
+      };
+      fetchUser();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo]);
+
   const backMode = (mode) => {
     if (mode === "pagebodydark") {
       mode = false;
@@ -903,10 +919,10 @@ export default function Navbar({
                     </Li>
 
                     <Li>
-                      <Link to="/#">
+                      <Link to="/cart?wishlist=true">
                         Wishlist{" "}
                         <span style={{ color: "var(--orange-color)" }}>
-                          (23)
+                          ({user?.saved?.length})
                         </span>
                       </Link>
                       {productNotification.length > 0 && (

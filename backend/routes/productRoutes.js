@@ -199,6 +199,9 @@ productRouter.post(
           .status(400)
           .send({ message: "You already submitted a review" });
       }
+      if (!product.userBuy.includes(req.user._id)) {
+        return;
+      }
 
       const review = {
         name: req.body.name,
