@@ -15,6 +15,7 @@ import PayUsers from "../wallet/PayUsers";
 const ProductLists = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -271,7 +272,7 @@ export default function Payments() {
       renderCell: (params) => {
         return (
           <Product>
-            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
+            <Link to={`/seller/${params.row.userId}`}>{params.row.user}</Link>
           </Product>
         );
       },
@@ -321,6 +322,7 @@ export default function Payments() {
       status: p.status,
       amount: p.amount,
       type: p.meta.Type,
+      userId: p.userId._id,
     }));
 
   return (

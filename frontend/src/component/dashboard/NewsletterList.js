@@ -255,7 +255,7 @@ export default function NewsletterList() {
     {
       field: "email",
       headerName: "Email",
-      width: 150,
+      width: 250,
     },
     {
       field: "date",

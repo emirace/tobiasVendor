@@ -348,7 +348,7 @@ export default function OrderListAdmin() {
         : p.seller[0].username
       : "anonymous",
     amount: p.totalPrice,
-    sellerId: p.seller ? p.seller._id : "",
+    sellerId: p.seller ? p.seller[0]._id : "",
     buyerId: p.user ? p.user._id : "",
   }));
 

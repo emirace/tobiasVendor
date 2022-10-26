@@ -628,7 +628,7 @@ export default function Navbar({
   }, []);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode, notifications } = state;
+  const { cart, userInfo, mode, notifications,refresher } = state;
 
   const [categories, setCategories] = useState([]);
 
@@ -673,7 +673,7 @@ export default function Navbar({
     } catch (err) {
       console.log(getError(err));
     }
-  }, [userInfo]);
+  }, [userInfo,refresher]);
 
   const backMode = (mode) => {
     if (mode === "pagebodydark") {

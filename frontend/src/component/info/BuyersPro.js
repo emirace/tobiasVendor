@@ -27,7 +27,7 @@ export default function BuyersPro() {
         seller not sending your product or seller’s negligent (and not yours),
         we will refund you in full including delivery fee, otherwise all sale is
         final. Please have a look at our refund policy{" "}
-        <Link style={{ color: "var(--orange-color" }} to="/privacypolicy">
+        <Link style={{ color: "var(--orange-color" }} to="/returns">
           here.
         </Link>{" "}
         Any payment made outside our App or Website will not be covered by the
@@ -50,7 +50,7 @@ export default function BuyersPro() {
         levels that successfully completes their entire sale transaction inside
         Repeddle App or Website. To find out more about payment turn around
         period, see our refund policy{" "}
-        <Link style={{ color: "var(--orange-color" }} to="/privacypolicy">
+        <Link style={{ color: "var(--orange-color" }} to="/returns">
           here.
         </Link>
       </Content>

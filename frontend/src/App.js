@@ -88,6 +88,7 @@ import ContactUsPage from "./screens/ContactUsPage";
 import Earning from "./component/dashboard/Earning";
 import Support from "./component/Support";
 import Returns from "./component/info/Returns";
+import VipShield from "./component/info/VipShield";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -339,7 +340,7 @@ function App() {
     if (modelRef2 !== e.target) {
       setShowNotification(false);
     } else {
-      setShowNotification(!menu);
+      setShowNotification(!showNotification);
     }
   };
   const changeRef = (res) => {
@@ -396,6 +397,7 @@ function App() {
                         path="/sustainability"
                         element={<SustainabilityImpact />}
                       />
+                      <Route path="/vipshield" element={<VipShield />} />
                       <Route path="/protections" element={<BuyersPro />} />
                       <Route path="/rebundle" element={<Bundle />} />
                       <Route

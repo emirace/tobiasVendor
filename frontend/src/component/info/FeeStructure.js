@@ -7,7 +7,9 @@ const Container = styled.div`
 `;
 const RedTitle = styled.h3`
   text-align: center;
+  font-sizs: 1.2rem;
   color: var(--red-color);
+  margin-top: 20px;
 `;
 const BoldText = styled.span`
   font-weight: bold;
@@ -18,7 +20,9 @@ const RedText = styled.span`
 export default function FeeStructure() {
   return (
     <Container>
-      <h3 style={{ textAlign: "center" }}>HOW REPEDDLE COMMISSION WORKS</h3>
+      <h3 style={{ textAlign: "center", fontSize: "1.2rem" }}>
+        HOW REPEDDLE COMMISSION WORKS
+      </h3>
       <RedTitle>OUR COMMISSION EXPLIANED</RedTitle>
       <p>
         Here’s how our fee structure works to help you understand what you could

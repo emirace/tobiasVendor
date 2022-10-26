@@ -6,39 +6,39 @@ import styled from "styled-components";
 
 const Container = styled.div`
   margin: 0 10vw 5vw 10vw;
-  & a {
-    color: var(--malon-color);
-  }
 `;
 const Header = styled.h2`
   font-weight: bold;
   font-size: 20px;
+  & a {
+    text-decoration: underline;
+  }
+  & a:hover {
+    color: var(--malon-color);
+  }
 `;
 const Header2 = styled.h2`
   font-size: 20px;
+  width: 100%;
   color: var(--malon-color);
 `;
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 50px 0;
+  /* margin: 20px 0; */
   &.back {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
     padding: 20px;
     border-radius: 0.2rem;
   }
+  & .a {
+    color: var(--malon-color);
+  }
 `;
 const List = styled.ul`
-  & svg {
-    font-size: 8px;
-    margin: 5px;
-  }
-  & li {
-    display: flex;
-    align-items: center;
-  }
+  list-style-type: disc;
 `;
 const PhoneImg = styled.img`
   width: 350px;
@@ -54,11 +54,13 @@ export default function Bundle() {
     <Container>
       <Section>
         <Header>RE: BUNDLE</Header>
-        <p>
-          <b>
-            Something great caught your eye? Wondering if you could buy them
-            together using one delivery fee? <b>Yes, you can!</b>
-          </b>
+        <p
+          style={{
+            textTransform: "uppercase",
+          }}
+        >
+          Something great caught your eye? Wondering if you could buy them
+          together using one delivery fee? <b>Yes, you can!</b>
         </p>
       </Section>
       <Section>
@@ -100,56 +102,46 @@ export default function Bundle() {
           When a seller enables Re:Bundle Option in their profile/shop, they
           will package all items as one package, (
           <i>including the first purchase</i>) to other purchases the same buyer
-          has made within two hours window and ship as one.
+          had made within two hours window and ship as one.
         </p>
       </Section>
       <Section>
         <Header>LET’S BREAK IT DOWN</Header> <Header2>AS A BUYER:</Header2>
         <List>
+          <li> You add the first item to your cart. </li>
           <li>
-            <FontAwesomeIcon icon={faCircle} /> You add the first item to your
-            cart.{" "}
+            {" "}
+            You check out and pay for the first item + the preferred offered
+            delivery fee.{" "}
           </li>
           <li>
-            <FontAwesomeIcon icon={faCircle} /> You check out and pay for the
-            first item + the preferred offered delivery fee.{" "}
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} />
             Within two hours from the first purchase, you are eligible for free
             delivery for other items you buy from the same seller/shop because
             they have enabled the Re:Bundle option on their shop.{" "}
           </li>
           <li>
-            <FontAwesomeIcon icon={faCircle} />
             The free delivery elapses after two hours you made the first
             purchase.
           </li>
         </List>
         <Header2> AS A SELLER:</Header2>
         <List>
+          <li> You activate Re:Bundle on your profile/shop. </li>
           <li>
-            <FontAwesomeIcon icon={faCircle} /> You activate Re:Bundle on your
-            profile/shop.{" "}
+            {" "}
+            Buyers will pay for delivery only on the first purchase, and within
+            two hours from that first purchase, they will be able to buy more
+            items from your shop and get free delivery for the rest items they
+            bought within the two hours’ window.{" "}
           </li>
           <li>
-            <FontAwesomeIcon icon={faCircle} /> Buyers will pay for delivery
-            only on the first purchase, and within two hours from that first
-            purchase, they will be able to buy more items from your shop and get
-            free delivery for the rest items they bought within the two hours’
-            window.{" "}
+            {" "}
+            When the two hours’ window ends, you will package all items the
+            buyer purchased (including the first item purchased) and ship them
+            as one package.{" "}
           </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} /> When the two hours’ window ends,
-            you will package all items the buyer purchased (including the first
-            item purchased) and ship them as one package.{" "}
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faCircle} /> This means more sale and more
-            earnings for you.
-          </li>
+          <li> This means more sale and more earnings for you.</li>
         </List>
-        <div> See sample image bellow</div>
         <Center>
           <div>
             <PhoneImg
@@ -157,8 +149,10 @@ export default function Bundle() {
               alt="imag"
             />
             <div>
-              <b>Purchase No 1</b> - Free delivery option is visible but grayed
-              out
+              <b style={{ textTransform: "uppercase", fontSize: "14px" }}>
+                Purchase No 1
+              </b>{" "}
+              - Free delivery option is visible but grayed out
             </div>
           </div>
           <div>
@@ -167,16 +161,29 @@ export default function Bundle() {
               alt="imag"
             />
             <div>
-              <b>Purchase No 2</b> - Free delivery is enabled and can be chosen
+              <b style={{ textTransform: "uppercase", fontSize: "14px" }}>
+                Purchase No 2
+              </b>{" "}
+              - Free delivery is enabled and can be chosen
             </div>
           </div>
         </Center>
       </Section>
       <Section>
-        <Header>Happy Thrifting!</Header>
-        <Link to="/rebundle">Shopping guide???</Link>
-        <div>
-          <Link to="/rebundle">Earn more with Free Delivery message???</Link>
+        <Header>
+          <Link to="/">Happy Thrifting!</Link>
+        </Header>
+        <div
+          className="a"
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-around",
+          }}
+        >
+          <Link to="/rebundle">BUYING GUILD</Link>
+
+          <Link to="/rebundle">CASH-OUT WITH FREE DELIVERY</Link>
         </div>
       </Section>
     </Container>

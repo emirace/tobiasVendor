@@ -274,7 +274,7 @@ export default function Sidebar({ current }) {
                   className={current === "newsletter" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faMoneyBill} />
-                  Newsletter
+                  Collected Email
                 </ListItem>
               </Link>
             </List>

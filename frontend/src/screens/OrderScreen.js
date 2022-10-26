@@ -235,6 +235,9 @@ const TextInput = styled.input`
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
+  &:hover svg {
+    color: var(--malon-color);
+  }
 `;
 
 const UserCont = styled.div`
@@ -992,7 +995,7 @@ export default function OrderScreen() {
                   </Name>
                 </div>
                 {userInfo &&
-                  order.user === userInfo._id &&
+                  order.user._id === userInfo._id &&
                   orderitem.deliveryStatus === "Delivered" && (
                     <div>
                       <AfterAction>

@@ -526,27 +526,47 @@ export default function SellScreen() {
         </Link>
       </Section>
 
-      <Section style={{ background: "" }}>
+      <Section
+        style={{
+          backgroundImage:
+            "url(https://res.cloudinary.com/emirace/image/upload/v1666772704/charlesdeluvio-1-nx1QR5dTE-unsplash_dzdawl.jpg)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+          position: "relative",
+        }}
+      >
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-around",
-            background: "var(--malon-color)",
             width: "100%",
             padding: "20px",
             borderRadius: "0.2rem",
+            zIndex: "9",
           }}
         >
           <Text style={{ color: "white", fontSize: "25px" }}>
             <b>WONDERING WHAT TO BUY?</b>
           </Text>
           <Link to="/search">
-            <Button>
+            <Button style={{ background: "var(--malon-color)" }}>
               <Header2>SHOP NOW</Header2>
             </Button>
           </Link>
         </div>
+        <div
+          style={{
+            position: "absolute",
+            left: "0",
+            top: "0",
+            opacity: "0.3",
+            background: "var(--malon-color)",
+            width: "100%",
+            height: "100%",
+          }}
+        ></div>
       </Section>
     </Container>
   );

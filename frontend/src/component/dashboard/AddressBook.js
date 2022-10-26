@@ -17,6 +17,7 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 const Container = styled.div`
   flex: 4;
   margin: 0 20px;
+  margin-top: 20px;
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>

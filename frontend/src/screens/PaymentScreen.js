@@ -8,6 +8,7 @@ import { socket } from "../App";
 import { getError } from "../utils";
 import { v4 } from "uuid";
 import LoadingBox from "../component/LoadingBox";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   flex: 4;
@@ -242,7 +243,8 @@ export default function PaymentScreen() {
         <Name>Type</Name>
         <ItemNum>{payment.meta.Type}</ItemNum>
         <ItemNum>
-          {payment.meta.typeName} id {payment.meta.id}
+          {payment.meta.typeName} id{" "}
+          <Link to={`/order/${payment.meta.id}`}>{payment.meta.id}</Link>
         </ItemNum>
         <hr />
         <Name>Amount</Name>

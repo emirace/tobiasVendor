@@ -372,7 +372,7 @@ export default function Footer() {
               </li>
               <li className="footer_center_listitem">
                 <Link to="/returns" href="/">
-                  Returns
+                  Returns & Refund
                 </Link>
               </li>
               <li className="footer_center_listitem">
@@ -394,6 +394,9 @@ export default function Footer() {
               </li>
               <li className="footer_center_listitem">
                 <Link to="/sustainability">Sustainability</Link>
+              </li>
+              <li className="footer_center_listitem">
+                <Link to="/vipshield">Vip Shield</Link>
               </li>
               <li className="footer_center_listitem">
                 <a href="/#">Blog and News</a>

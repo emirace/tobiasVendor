@@ -22,6 +22,7 @@ const initialState = {
     shippingAddress: localStorage.getItem("shippingAddress")
       ? JSON.parse(localStorage.getItem("shippingAddress"))
       : {},
+    refresher: true,
   },
   notification: {
     text: "",
@@ -170,6 +171,11 @@ function reducer(state, action) {
       return {
         ...state,
         notifications: action.payload,
+      };
+    case "REFRESHER":
+      return {
+        ...state,
+        refresher: action.payload,
       };
 
     default:

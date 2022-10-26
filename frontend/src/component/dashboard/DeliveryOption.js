@@ -778,7 +778,7 @@ export default function DeliveryOption({
             <Tips
               mode={mode}
               tips={`
-              Bundling allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next hour, free delivery will then automatically apply. Shops who enable bundling sell more and faster.       `}
+              Bundling allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.       `}
             >
               <FontAwesomeIcon icon={faQuestionCircle} />
             </Tips>
