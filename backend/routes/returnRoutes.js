@@ -85,11 +85,14 @@ returnRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const product = await Product.findById(req.body.productId);
+    const product = await Product.findById(req.body.productId).populate(
+      "seller",
+      "email"
+    );
     const returned = new Return({
       orderId: req.body.orderId,
       productId: req.body.productId,
-      sellerId: product.seller,
+      sellerId: product.seller._id,
       reason: req.body.reason,
       resolution: req.body.resolution,
       sending: req.body.sending,
@@ -97,6 +100,17 @@ returnRouter.post(
       image: req.body.image,
       region,
       others: req.body.others,
+    });
+    sendEmail({
+      to: [req.user.username, product.seller.email],
+      subject: "ORDER RETURN RECEIVED ",
+      template: "returnRequest",
+      context: {
+        username: req.user.username,
+        url: region === "NGN" ? "com" : "co.za",
+        orderId: req.body.orderId,
+        reason: req.body.reason,
+      },
     });
     const newReturn = await returned.save();
     newReturn.returnId = newReturn._id.toString();
@@ -117,19 +131,66 @@ returnRouter.put(
         select: "user orderItems",
         populate: {
           path: "user",
-          select: "image username",
+          select: "image username email",
         },
       })
       .populate({
         path: "productId",
         select: "seller actualPrice image name slug",
-        populate: { path: "seller", select: "image username" },
+        populate: { path: "seller", select: "image username email" },
       });
     if (returned) {
+      const url = returned.region === "NGN" ? "com" : "co.za";
       returned.adminReason = req.body.adminReason;
       returned.status = req.body.status;
       returned.comfirmDelivery = req.body.transaction_id;
       const newReturn = await returned.save();
+      switch (newReturn.status) {
+        case "Decline":
+          sendEmail({
+            to: returned.orderId.user.email,
+            subject: "ORDER RETURN DECLINED",
+            template: "returnDeclineBuyer",
+            context: {
+              username: returned.orderId.user.username,
+              orderId: returned.orderId._id,
+              returnId: returned._id,
+              declineReason: req.body.adminReason,
+              url,
+            },
+          });
+          break;
+        case "Approve":
+          sendEmail({
+            to: returned.orderId.user.email,
+            subject: "ORDER RETURN APPROVED",
+            template: "returnAppoveBuyer",
+            context: {
+              username: returned.orderId.user.username,
+              orderId: returned.orderId._id,
+              returnId: returned._id,
+              url,
+            },
+          });
+
+          sendEmail({
+            to: returned.productId.seller.email,
+            subject: "ORDER RETURN APPROVED",
+            template: "returnAppoveSeller",
+            context: {
+              username: returned.productId.seller.username,
+              orderId: returned.orderId._id,
+              returnId: returned._id,
+              reason: returned.reason,
+              url,
+            },
+          });
+          break;
+
+        default:
+          break;
+      }
+
       res.status(200).send(newReturn);
     } else {
       res.status(404).send("returned not found");

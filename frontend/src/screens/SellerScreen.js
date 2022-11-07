@@ -499,7 +499,9 @@ export default function SellerScreen() {
                   alt={user.username}
                 />
                 <div className="seller_profile_badge">
-                  <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
+                  {user.badge && (
+                    <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
+                  )}
                 </div>
               </div>
               <Link to="/dashboard/user">
@@ -606,7 +608,7 @@ export default function SellerScreen() {
             </SellerLeft>
             <SellerLeft mode={mode}>
               <div className="seller_profile_detail seller_detail_first">
-                <div className="seller_detail_title">About Seller</div>
+                <div className="seller_detail_title">About</div>
                 <div className="seller_detail_content">{user.about}</div>
               </div>
             </SellerLeft>

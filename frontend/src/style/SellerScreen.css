@@ -82,8 +82,8 @@
 .seller_profile_badge {
   border-radius: 50%;
   position: absolute;
-  bottom: 7.5px;
-  right: 7.5px;
+  bottom: 25px;
+  right: 10px;
 }
 
 .seller_profile_name {

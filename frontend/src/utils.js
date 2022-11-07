@@ -185,7 +185,6 @@ export const region = () => {
     window.location.hostname === "repeddle.com"
       ? "NGN"
       : "ZAR";
-  console.log(window.location.hostname, "region", add);
   return add;
 };
 

@@ -1,5 +1,11 @@
 import express from "express";
-import { isAuth, isAdmin, isSellerOrAdmin, isAuthOrNot } from "../utils.js";
+import {
+  isAuth,
+  isAdmin,
+  isSellerOrAdmin,
+  isAuthOrNot,
+  sendEmail,
+} from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
 import User from "../models/userModel.js";
@@ -396,7 +402,13 @@ orderRouter.put(
   "/:id/deliver/:productId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id)
+      .populate({
+        path: "user",
+        select: "email username",
+      })
+      .populate("orderItems.product");
+    const product = await Product.findById(req.params.productId);
     if (order) {
       order.orderItems = order.orderItems.map((x) => {
         if (x._id === req.params.productId) {
@@ -413,6 +425,121 @@ orderRouter.put(
         }
       });
       order.deliveryStatus = req.body.deliveryStatus;
+      switch (req.body.deliceryStatus) {
+        case "Processing":
+          sendEmail({
+            to: order.user.email,
+            subject: "PREPARINING ORDER FOR DELIVERY",
+            template: "preparingOrder",
+            context: {
+              username: order.user.username,
+              url: region === "NGN" ? "com" : "co.za",
+              orderId: order._id,
+              orderItems: order.orderItems,
+            },
+          });
+          break;
+        case "Dispatched":
+          order.orderItems.map((x) => {
+            if (x._id === req.params.productId) {
+              return sendEmail({
+                to: order.user.email,
+                subject: "RDER DISPATCHED",
+                template: "dispatchOrder",
+                context: {
+                  username: order.user.username,
+                  url: region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  deliveryMethod: x.deliverySelet["delivery Option"],
+                  orderItems: order.orderItems,
+                },
+              });
+            }
+          });
+
+          break;
+        case "In Transit":
+          order.orderItems.map((x) => {
+            if (x._id === req.params.productId) {
+              return sendEmail({
+                to: order.user.email,
+                subject: "ORDER IN TRANSIT ",
+                template: "transitOrder",
+                context: {
+                  username: order.user.username,
+                  url: region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  deliveryMethod: x.deliverySelet["delivery Option"],
+                  orderItems: order.orderItems,
+                },
+              });
+            }
+          });
+
+          break;
+        case "Delivered":
+          order.orderItems.map((x) => {
+            if (x._id === req.params.productId) {
+              const address =
+                x.deliverySelect["delivery Option"] === "Paxi PEP store"
+                  ? x.deliverySelect["shortName"]
+                  : x.deliverySelect["delivery Option"] ===
+                    "PUDO Locker-to-Locker"
+                  ? `${x.deliverySelect["shortName"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["delivery Option"] === "PostNet-to-PostNet"
+                  ? `${x.deliverySelect["pickUp"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["address"];
+              return sendEmail({
+                to: order.user.email,
+                subject: "ORDER DELIVERED ",
+                template: "orderDelivered",
+                context: {
+                  username: order.user.username,
+                  url: region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  address,
+                  deliveryMethod: x.deliverySelect["delivery Option"],
+                  orderItems: order.orderItems,
+                },
+              });
+            }
+          });
+
+          break;
+        case "Received":
+          order.orderItems.map((x) => {
+            if (x._id === req.params.productId) {
+              return sendEmail({
+                to: x.seller.email,
+                subject: "ORDER RECEIVED ",
+                template: "orderReceive",
+                context: {
+                  username: x.seller.username,
+                  url: region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  orderItems: order.orderItems,
+                },
+              });
+            }
+          });
+
+          break;
+        case "Refunded":
+          // sendEmail({
+          //   to: order.user.email,
+          //   subject: "RETURN REFUNDED",
+          //   template: "returnRefunded",
+          //   context: {
+          //     username: order.user.username,
+          //     url: region === "NGN" ? "com" : "co.za",
+          //     orderId: order._id,
+          //   },
+          // });
+          break;
+
+        default:
+          break;
+      }
       await order.save();
       res.send({ message: "Order Delivery Status changed" });
     } else {
@@ -461,8 +588,12 @@ orderRouter.put(
         response = await flw.Transaction.verify({ id: transaction_id });
       }
     }
-    if (response.data.status === "successful") {
-      const order = await Order.findById(req.params.id);
+    console.log(response);
+    if (response?.data?.status === "successful") {
+      const order = await Order.findById(req.params.id).populate({
+        path: "user",
+        select: "email username",
+      });
       const products = [];
       order.orderItems.map((i) => products.push(i._id));
       const records = await Product.find({
@@ -479,6 +610,7 @@ orderRouter.put(
 
         const seller = await User.findById(p.seller);
         seller.sold.push(p._id);
+        seller.earnings = seller.earnings + p.actualPrice;
         await seller.save();
         await p.save();
       });
@@ -493,6 +625,18 @@ orderRouter.put(
           email_address: req.body.email_address,
         };
         const updateOrder = await order.save();
+        sendEmail({
+          to: order.user.email,
+          subject: "PROCESSING YOUR ORDER",
+          template: "processingOrder",
+          context: {
+            username: order.user.username,
+            url: region === "NGN" ? "com" : "co.za",
+            seller: order.orderItems[0].seller.username,
+            orderId: order._id,
+            orderItems: order.orderItems,
+          },
+        });
         res.send({ message: "Order Paid", order: updateOrder });
       } else {
         res.status(404).send({ message: "Order Not Found" });

@@ -52,6 +52,36 @@ const ActionSec = styled.div`
   }
 `;
 
+const SearchCont = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+  margin-right: 10px;
+`;
+
+const SearchInput = styled.input`
+  width: 40%;
+  height: 45px;
+  padding: 15px;
+  border: 1px solid var(--malon-color);
+  border-radius: 5px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+
+  background: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
+  &::placeholder {
+    padding: 10px;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "USERS_REQUEST":
@@ -80,7 +110,7 @@ const reducer = (state, action) => {
 
 export default function UserList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const [{ loading, loadingDelete, successDelete, users, error }, dispatch] =
     useReducer(reducer, {
@@ -109,7 +139,7 @@ export default function UserList() {
     } else {
       fetchAllUser();
     }
-  }, [successDelete, userInfo]);
+  }, [successDelete, userInfo, userQuery]);
 
   const deleteHandler = async (user) => {
     if (window.confirm("Are you sure to delete")) {
@@ -191,7 +221,7 @@ export default function UserList() {
     date: moment(u.createdAt).format("MMM Do, h:mm a"),
     email: u.email,
     status: "online",
-    earnings: "$242.23",
+    earnings: `${currency}${u.earnings}`,
   }));
 
   //   const rows = [
@@ -224,7 +254,13 @@ export default function UserList() {
   return (
     <Container mode={mode}>
       <Title>User List</Title>
-      {console.log("user", users)}
+      <SearchCont>
+        <SearchInput
+          mode={mode}
+          onChange={(e) => setUserQuery(e.target.value)}
+          placeholder="Search by id"
+        />
+      </SearchCont>
       <DataGrid
         sx={{
           width: "100%",

@@ -9,7 +9,8 @@ import {
   faShield,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
@@ -173,8 +174,43 @@ const GetStart = styled.div`
 `;
 
 export default function SellScreen() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode } = state;
+  const [input, setInput] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const handlesubmit = async () => {
+    if (!input.length) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please enter your email to get updates",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.post("/api/newsletters/", {
+        email: input,
+        emailType: "Rebatch",
+      });
+      setInput("");
+      setSent(true);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: " email updated",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Container>
       <Section>
@@ -331,8 +367,17 @@ export default function SellScreen() {
             </Text>
 
             <InputCont>
-              <Input mode={mode} placeholder="Email:" />
-              <div style={{ cursor: "pointer", flex: 1 }}>SUBMIT</div>
+              <Input
+                mode={mode}
+                placeholder="Email:"
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <div
+                style={{ cursor: "pointer", flex: 1 }}
+                onClick={handlesubmit}
+              >
+                SUBMIT
+              </div>
             </InputCont>
           </div>
         </Row>

@@ -33,6 +33,7 @@ import locationRouter from "./routes/locationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import User from "./models/userModel.js";
 import newsletterRouter from "./routes/newsletterRoutes.js";
+import { sendEmail } from "./utils.js";
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "https://localhost:3000",
       "http://localhost:19006",
       "http://repeddle.com",
       "http://www.repeddle.com",
@@ -77,6 +79,263 @@ app.use(session({ secret: "SECRET", resave: true, saveUninitialized: true }));
 
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
+});
+app.use("/api/email", async (req, res) => {
+  const url = "com";
+  const returned = {
+    _id: "6344e35552987aee285f54cd",
+    orderId: {
+      _id: "6344dd023d8dcc41550b13da",
+      orderItems: [
+        {
+          _id: "6311c79762d17b63ee0171ea",
+          name: "Black Sleeveless Turtleneck Top",
+          sellerName: "text",
+          seller: {
+            _id: "6311bbb008a7269433b575d5",
+            username: "text",
+            image:
+              "https://res.cloudinary.com/emirace/image/upload/v1662106705/hovxuvpllq2kqkx0hqkq.jpg",
+            sold: [
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+              "6311c79762d17b63ee0171ea",
+            ],
+            rating: 3,
+            numReviews: 1,
+          },
+          slug: "black-sleeveless-turtleneck-top",
+          image:
+            "https://res.cloudinary.com/emirace/image/upload/v1662109438/e2ylfar3gh585hok6zth.jpg",
+          images: ["", "", ""],
+          tags: ["black"],
+          brand: "A Fine Mess",
+          color: "black",
+          category: "CLOTHING",
+          product: "6311c79762d17b63ee0171ea",
+          subCategory: "Tops",
+          material: "Cotton",
+          description: "khvyy",
+          sizes: [
+            {
+              size: "S",
+              value: "02",
+            },
+          ],
+          deliveryOption: [
+            {
+              name: "Pick up from Seller",
+              value: 1,
+            },
+            {
+              name: "Paxi PEP store",
+              value: "59.95",
+            },
+            {
+              name: "PUDO Locker-to-Locker",
+              value: "40",
+            },
+            {
+              name: "PostNet-to-PostNet",
+              value: "99.99",
+            },
+            {
+              name: "Aramex Store-to-Door",
+              value: "99.99",
+            },
+          ],
+          condition: "New with Tags",
+          shippingLocation: "South African",
+          keyFeatures: "Camo",
+          specification: "ihgjkh",
+          price: 180,
+          actualPrice: 171,
+          rating: 2.6666666666666665,
+          currency: "R ",
+          numReviews: 3,
+          likes: ["631312ac6ac50ac8cf472968"],
+          sold: true,
+          active: true,
+          vintage: false,
+          luxury: false,
+          countInStock: 9,
+          region: "ZAR",
+          createdAt: "2022-09-02T09:06:31.704Z",
+          updatedAt: "2022-10-10T23:45:01.303Z",
+          __v: 22,
+          shares: ["631312ac6ac50ac8cf472968", "6311bbb008a7269433b575d5"],
+          reviews: [
+            {
+              name: "631312ac6ac50ac8cf472968",
+              comment: "good",
+              rating: 2,
+              like: "yes",
+              _id: "6338a70535e25a4de61746bc",
+              createdAt: "2022-10-01T20:45:57.621Z",
+              updatedAt: "2022-10-01T20:45:57.621Z",
+            },
+            {
+              name: "631312ac6ac50ac8cf472968",
+              comment: "the ",
+              rating: 3,
+              like: "yes",
+              _id: "633a14a44235ce83c9c37711",
+              createdAt: "2022-10-02T22:45:56.192Z",
+              updatedAt: "2022-10-02T22:45:56.192Z",
+            },
+            {
+              user: "631312ac6ac50ac8cf472968",
+              name: "emirace",
+              comment: "ihgh",
+              rating: 3,
+              like: "no",
+              _id: "633a16720ff7c70f11d380f0",
+              createdAt: "2022-10-02T22:53:39.055Z",
+              updatedAt: "2022-10-02T22:53:39.055Z",
+            },
+          ],
+          quantity: 1,
+          selectSize: "S",
+          deliverySelect: {
+            "delivery Option": "Aramex Store-to-Door",
+            cost: "99.99",
+            name: "Emmanuel Ikechukwu Akwuba",
+            phone: "+2349036168775",
+            email: "emmanuelakwuba57@gmail.com",
+            address:
+              "7 1st Avenue off Christ mary. 1 obaze lane, off upper mission Rd.",
+            suburb: "Benin",
+            city: "Benin",
+            postalcode: "300271",
+            province: "Edo",
+          },
+          deliveryStatus: "Return Approved",
+          deliveredAt: 1665459086860,
+        },
+      ],
+      user: {
+        _id: "631312ac6ac50ac8cf472968",
+        username: "emirace",
+        image: "/images/pimage.png",
+        email: "emmanuelakwuba57@gmail.com",
+      },
+    },
+    productId: {
+      _id: "6311c79762d17b63ee0171ea",
+      name: "Black Sleeveless Turtleneck Top",
+      seller: {
+        _id: "6311bbb008a7269433b575d5",
+        username: "text",
+        email: "emiracegroup@gmail.com",
+        image:
+          "https://res.cloudinary.com/emirace/image/upload/v1662106705/hovxuvpllq2kqkx0hqkq.jpg",
+      },
+      image:
+        "https://res.cloudinary.com/emirace/image/upload/v1662109438/e2ylfar3gh585hok6zth.jpg",
+      actualPrice: 171,
+    },
+    sellerId: "6311bbb008a7269433b575d5",
+    reason: "Product condition is significantly not as described",
+    sending: {
+      deliveryOption: "Aramex Store-to-Door",
+      cost: "99.99",
+      name: "Emmanuel Ikechukwu Akwuba",
+      phone: "+2349036168775",
+      email: "emmanuelakwuba57@gmail.com",
+      address:
+        "7 1st Avenue off Christ mary. 1 obaze lane, off upper mission Rd.",
+      suburb: "Benin",
+      city: "Benin",
+      postalcode: "300271",
+      province: "Edo",
+    },
+    refund: "Refund to my original payment method",
+    image: "",
+    others: "hgfy",
+    region: "ZAR",
+    comfirmDelivery: null,
+    status: "Approve",
+    createdAt: "2022-10-11T03:30:29.738Z",
+    updatedAt: "2022-10-11T03:31:26.151Z",
+    __v: 0,
+  };
+
+  try {
+    switch ("Decline") {
+      case "Decline":
+        sendEmail({
+          to: returned.orderId.user.email,
+          subject: "ORDER RETURN DECLINED",
+          template: "returnDeclineBuyer",
+          context: {
+            username: returned.orderId.user.username,
+            orderId: returned.orderId._id,
+            returnId: returned._id,
+            declineReason: req.body.adminReason,
+            url,
+          },
+        });
+        break;
+      case "Approve":
+        sendEmail({
+          to: returned.orderId.user.email,
+          subject: "ORDER RETURN APPROVED",
+          template: "returnAppoveBuyer",
+          context: {
+            username: returned.orderId.user.username,
+            orderId: returned.orderId._id,
+            returnId: returned._id,
+            url,
+          },
+        });
+
+        sendEmail({
+          to: returned.productId.seller.email,
+          subject: "ORDER RETURN APPROVED",
+          template: "returnAppoveSeller",
+          context: {
+            username: returned.productId.seller.username,
+            orderId: returned.orderId._id,
+            returnId: returned._id,
+            reason: returned.reason,
+            url,
+          },
+        });
+        break;
+
+      default:
+        break;
+    }
+    res.send("Email sent");
+  } catch (error) {
+    console.log(error);
+    res.send("Email not sent");
+  }
 });
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);

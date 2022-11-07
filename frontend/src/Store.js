@@ -1,9 +1,11 @@
+import axios from "axios";
 import { createContext, useReducer } from "react";
+import secureLocalStorage from "react-secure-storage";
 
 export const Store = createContext();
 const initialState = {
-  userInfo: localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo"))
+  userInfo: secureLocalStorage.getItem("userInfo")
+    ? secureLocalStorage.getItem("userInfo")
     : null,
   mode: localStorage.getItem("mode")
     ? localStorage.getItem("mode")
@@ -85,6 +87,7 @@ function reducer(state, action) {
       return { ...state, cart: { ...state.cart, cartItems: [] } };
     }
     case "USER_SIGNIN":
+      secureLocalStorage.setItem("userInfo", action.payload);
       return { ...state, userInfo: action.payload };
     case "USER_SIGNOUT":
       return {
@@ -177,7 +180,6 @@ function reducer(state, action) {
         ...state,
         refresher: action.payload,
       };
-
     default:
       return state;
   }

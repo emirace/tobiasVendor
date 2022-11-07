@@ -60,8 +60,12 @@ import styled from "styled-components";
 import {
   AdminRoute,
   CartNotEmpty,
+  IsActive,
   IsPaymentMethod,
   IsShippingAdd,
+  IsVerifyAddress,
+  IsVerifyBank,
+  IsVerifyEmail,
   ProtectedRoute,
   SellerRoute,
 } from "./component/ProtectedRoute";
@@ -89,6 +93,9 @@ import Earning from "./component/dashboard/Earning";
 import Support from "./component/Support";
 import Returns from "./component/info/Returns";
 import VipShield from "./component/info/VipShield";
+import VerifyAddressScreen from "./screens/VerifyAddressScreen";
+import Terms from "./component/info/Terms";
+import BanScreen from "./screens/successPage/BanScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -226,24 +233,22 @@ function App() {
 
   useEffect(() => {
     const checkLoacation = async () => {
-      console.log("userInfo", userInfo);
       if (!userInfo || userInfo.isAdmin) {
         setLoading(false);
       } else {
         const { data } = await axios.get("/api/locations");
-        console.log("locationdate", data);
         if (data === "ZA") {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
             signoutHandler();
-            //alert("redirevting to za");
+            // alert("redirevting to za");
             window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
             signoutHandler();
-            //alert("redirevting to com");
+            // alert("redirevting to com");
             window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);
@@ -330,8 +335,6 @@ function App() {
   const [showNotification, setShowNotification] = useState(false);
 
   const closeModel = (e) => {
-    console.log(e.target);
-    console.log(modelRef2);
     if (modelRef1 !== e.target) {
       setMymenu(false);
     } else {
@@ -398,6 +401,7 @@ function App() {
                         element={<SustainabilityImpact />}
                       />
                       <Route path="/vipshield" element={<VipShield />} />
+                      <Route path="/terms" element={<Terms />} />
                       <Route path="/protections" element={<BuyersPro />} />
                       <Route path="/rebundle" element={<Bundle />} />
                       <Route
@@ -440,7 +444,9 @@ function App() {
                         path="/messages"
                         element={
                           <ProtectedRoute>
-                            <ChatScreen />
+                            <IsActive>
+                              <ChatScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -449,7 +455,19 @@ function App() {
                         path="/verifyaccount"
                         element={
                           <ProtectedRoute>
-                            <VerifyAccountScreen />
+                            <IsActive>
+                              <VerifyAccountScreen />
+                            </IsActive>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/verifyaddress"
+                        element={
+                          <ProtectedRoute>
+                            <IsActive>
+                              <VerifyAddressScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -458,7 +476,17 @@ function App() {
                         path="/verifyemail"
                         element={
                           <ProtectedRoute>
-                            <VerifyEmailScreen />
+                            <IsActive>
+                              <VerifyEmailScreen />
+                            </IsActive>
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/banned"
+                        element={
+                          <ProtectedRoute>
+                            <BanScreen />
                           </ProtectedRoute>
                         }
                       />
@@ -474,7 +502,9 @@ function App() {
                         path="/profilmenu"
                         element={
                           <ProtectedRoute>
-                            <MobileProfileScreen />
+                            <IsActive>
+                              <MobileProfileScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -490,9 +520,11 @@ function App() {
                         path="/payment"
                         element={
                           <ProtectedRoute>
-                            <CartNotEmpty>
-                              <PaymentMethodScreen />
-                            </CartNotEmpty>
+                            <IsActive>
+                              <CartNotEmpty>
+                                <PaymentMethodScreen />
+                              </CartNotEmpty>
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -500,11 +532,13 @@ function App() {
                         path="/placeorder"
                         element={
                           <ProtectedRoute>
-                            <CartNotEmpty>
-                              <IsPaymentMethod>
-                                <PlaceOrderScreen />
-                              </IsPaymentMethod>
-                            </CartNotEmpty>
+                            <IsActive>
+                              <CartNotEmpty>
+                                <IsPaymentMethod>
+                                  <PlaceOrderScreen />
+                                </IsPaymentMethod>
+                              </CartNotEmpty>
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -521,7 +555,9 @@ function App() {
                         path="/dashboard/:tab/:id"
                         element={
                           <ProtectedRoute>
-                            <DashboardNewScreen />
+                            <IsActive>
+                              <DashboardNewScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -532,7 +568,9 @@ function App() {
                         path="/dashboard"
                         element={
                           <ProtectedRoute>
-                            <DashboardNewScreen />
+                            <IsActive>
+                              <DashboardNewScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -549,7 +587,9 @@ function App() {
                         path="/dashboard/:tab"
                         element={
                           <ProtectedRoute>
-                            <DashboardNewScreen />
+                            <IsActive>
+                              <DashboardNewScreen />
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />
@@ -557,7 +597,15 @@ function App() {
                         path="/newproduct"
                         element={
                           <ProtectedRoute>
-                            <NewProduct />
+                            <IsActive>
+                              <IsVerifyEmail>
+                                <IsVerifyBank>
+                                  <IsVerifyAddress>
+                                    <NewProduct />
+                                  </IsVerifyAddress>
+                                </IsVerifyBank>
+                              </IsVerifyEmail>
+                            </IsActive>
                           </ProtectedRoute>
                         }
                       />

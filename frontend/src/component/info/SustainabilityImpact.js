@@ -80,6 +80,8 @@ const ContImage = styled.div``;
 
 const Image = styled.img`
   height: 600px;
+  width: 400px;
+  object-fit: cover;
 `;
 
 export default function SustainabilityImpact() {
@@ -122,8 +124,7 @@ export default function SustainabilityImpact() {
         >
           WHAT YOU MAY NEED TO KNOW! “THE PROBLEM”{" "}
         </h3>
-        <div style={{ textAlign: "left" }}>
-          {" "}
+        <div style={{ textAlign: "left", width: "100%" }}>
           <b style={{ color: "var(--malon-color)" }}>FACTS:</b> Here are some
           REAL FACTS that shows the impact of fast fashion which harms Africa
           and the planet.
@@ -255,7 +256,6 @@ export default function SustainabilityImpact() {
           </Malon>
         </SubHeading>
         <Image
-          style={{ height: "800px" }}
           src="https://res.cloudinary.com/emirace/image/upload/v1661221992/cherie-birkner-J6MJPuJiDPo-unsplash_cclo31.webp"
           alt="img"
         />
@@ -372,7 +372,6 @@ export default function SustainabilityImpact() {
       <Section>
         <SubHeading>REUSE & RESELL</SubHeading>
         <Image
-          style={{ height: "800px" }}
           src="https://res.cloudinary.com/emirace/image/upload/v1661221988/utopia-by-cho-rgC0lhKbr5o-unsplash_2_sckict.webp"
           alt="img"
         />

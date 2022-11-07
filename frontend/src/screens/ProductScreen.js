@@ -240,10 +240,8 @@ export default function ProductScreen() {
         }
         const factor = 0.9;
         var views = JSON.parse(localStorage.getItem("recentlyView") || "[]");
-        console.log(views);
         const existing = views.find((x) => x.productId === data._id);
 
-        console.log(!existing, "hello");
         const newView = {
           score: factor,
           numViews: 1,
@@ -1127,7 +1125,10 @@ export default function ProductScreen() {
                 </Link>
               </div>
               {console.log(product)}
-              <div>Benin City, Nigeria</div>
+              <div>
+                {product.seller?.state},
+                {product.seller.region === "NGN" ? "Nigeria" : "South African"}
+              </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
                   rating={product.seller.rating}

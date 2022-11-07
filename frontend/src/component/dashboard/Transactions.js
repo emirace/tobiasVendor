@@ -113,8 +113,7 @@ export default function Transactions() {
             <LoadingBox />
           ) : (
             <Balance>
-              {console.log(balance)}
-              {`${balance.currency}` + balance.balance.toFixed(2)}
+              {`${balance.currency}${Math.floor(balance.balance * 100) / 100}`}
             </Balance>
           )}
           <TextSmall>Current Repeddle Wallet Balance</TextSmall>

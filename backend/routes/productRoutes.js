@@ -301,6 +301,36 @@ productRouter.put(
 );
 
 productRouter.put(
+  "/:id/unsave",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        if (user.saved.includes(product._id)) {
+          user.saved.pull(productId);
+          const updatedUser = await user.save();
+
+          res.status(201).send({
+            message: "Product removed from wishlist",
+            user: updatedUser,
+            status: "visible1 error",
+          });
+        }
+      } else {
+        res.status(404).send({
+          message: "you must login to save to wishlist",
+        });
+      }
+    } else {
+      res.status(404).send({ message: "Product Not Found" });
+    }
+  })
+);
+
+productRouter.put(
   "/:id/likes",
   isAuth,
   expressAsyncHandler(async (req, res) => {
@@ -754,7 +784,10 @@ productRouter.get(
 
 productRouter.get("/slug/:slug", async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })
-    .populate("seller", "username image sold rating numReviews ")
+    .populate(
+      "seller",
+      "username email image sold rating numReviews address region "
+    )
     .populate("reviews.name", "username image");
   if (product) {
     res.send(product);
@@ -762,6 +795,7 @@ productRouter.get("/slug/:slug", async (req, res) => {
     res.status(404).send({ message: "Product Not Found" });
   }
 });
+
 productRouter.get("/:id", async (req, res) => {
   console.log("checking");
   const product = await Product.findById(req.params.id).populate(

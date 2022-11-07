@@ -60,6 +60,7 @@ const Row = styled.div`
 const Image2 = styled.img`
   width: 50%;
   padding: 5px;
+  object-fit: contain;
 `;
 
 const List = styled.ul`
@@ -76,6 +77,18 @@ const CenHeader = styled.div`
   align-items: center;
   flex-direction: column;
 `;
+const JoinUs = styled.div`
+  background: var(--orange-color);
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  padding: 5px 10px;
+  border-radius: 0.2rem;
+  color: white;
+  transform: translateX(-50%);
+  font-size: 30px;
+  font-weight: bold;
+`;
 
 export default function About() {
   const { state } = useContext(Store);
@@ -91,10 +104,15 @@ export default function About() {
         circular fashion in Africa, one garment at a time, one person at a time,
         and one loving home at a time.
       </div>
-      <Image
-        src="https://res.cloudinary.com/emirace/image/upload/v1661221990/20220711_223429_0000_qkboad.webp"
-        alt="img"
-      />
+      <div style={{ position: "relative" }}>
+        <Image
+          src="https://res.cloudinary.com/emirace/image/upload/v1666946911/20221028_104228_0000_hnjzz1.webp"
+          alt="img"
+        />
+        <Link to="/signup">
+          <JoinUs>JOIN US</JoinUs>
+        </Link>
+      </div>
       <Section>
         <SubHeading>WHO WE ARE</SubHeading>
         <div>
@@ -119,7 +137,7 @@ export default function About() {
             src={
               mode === "pagebodydark"
                 ? "https://res.cloudinary.com/emirace/image/upload/v1657405562/yne3ejukoc1glryhx7zk.png"
-                : "https://res.cloudinary.com/emirace/image/upload/v1657017233/Screenshot_20220705-112727_q9u7ha.png"
+                : "https://res.cloudinary.com/emirace/image/upload/v1666953838/Repeddle_Logo-02_ztvmtx.png"
             }
             alt="img"
           />
@@ -220,12 +238,7 @@ export default function About() {
               <SubHeading> MAKING IT BETTER FOR AFRICA</SubHeading>
               <SubHeading> +THE PLANET</SubHeading>
             </CenHeader>
-            <div>
-              By buying and selling secondhand item on Repeddle, you’re not only
-              reducing carbon footprint and saving the planet, but you are
-              giving an African Child a better hope for tomorrow. Learn more on
-              our sustainability take <Link to="/sustainability">here</Link>
-            </div>
+
             <List>
               <li>Think before you buy.</li>
               <li>

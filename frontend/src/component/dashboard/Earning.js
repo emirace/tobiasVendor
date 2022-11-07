@@ -125,6 +125,31 @@ const Edit = styled.button`
   margin-right: 10px;
 `;
 
+const Tips = styled.span`
+  position: relative;
+  &:hover::after {
+    content: "${(props) => props.tips}";
+    width: 200px;
+    position: absolute;
+    border-radius: 0.5rem;
+    left: 30px;
+    text-align: justify;
+    font-size: 14px;
+    z-index: 2;
+    line-height: 1.2;
+    font-weight: 400;
+    padding: 10px;
+    background: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
+    color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+  }
+`;
+
 export default function Earning() {
   const { state } = useContext(Store);
   const [totalSales, setTotalSales] = useState(0);
@@ -149,7 +174,6 @@ export default function Earning() {
             },
           }
         );
-        console.log("data", data);
         let totalSale = 0;
         const orderData1 = data.dailyOrders.map((x) => {
           totalSale = totalSale + Number(x.sales);
@@ -343,10 +367,16 @@ export default function Earning() {
             <Widget mode={mode}>
               <div style={{ display: "flex" }}>
                 <SmallText>Your Total Earnings</SmallText>
-                <FontAwesomeIcon
-                  color="var(--orange-coor)"
-                  icon={faCircleQuestion}
-                />
+                <Tips
+                  mode={mode}
+                  tips={`Your total earnings is the total (price) amount of your sold product inclusive
+                  expenses and net.`}
+                >
+                  <FontAwesomeIcon
+                    color="var(--orange-coor)"
+                    icon={faCircleQuestion}
+                  />
+                </Tips>
               </div>
               <Amount>
                 {currency}
@@ -357,11 +387,17 @@ export default function Earning() {
               style={{ background: "var(--malon-color)", color: "white" }}
             >
               <div style={{ display: "flex" }}>
-                <SmallText>Repeddle Commision (7.9%)</SmallText>
-                <FontAwesomeIcon
-                  color="var(--orange-coor)"
-                  icon={faCircleQuestion}
-                />
+                <SmallText>Repeddle Expenses (7.9%)</SmallText>
+                <Tips
+                  mode={mode}
+                  tips={`Expenses is Repeddle commission charged against your total earnings that’s less
+                  when a sale is successfully completed and paid for.`}
+                >
+                  <FontAwesomeIcon
+                    color="var(--orange-coor)"
+                    icon={faCircleQuestion}
+                  />
+                </Tips>
               </div>
               <Amount>
                 {currency}
@@ -373,10 +409,16 @@ export default function Earning() {
             >
               <div style={{ display: "flex" }}>
                 <SmallText>Your Net Earnings</SmallText>
-                <FontAwesomeIcon
-                  color="var(--orange-coor)"
-                  icon={faCircleQuestion}
-                />
+                <Tips
+                  mode={mode}
+                  tips={`Net earnings is your actual withdrawable balance you receive into your Repeddle
+                  wallet. I.E. Total Earnings (- minus) Expenses (=) Net earnings.`}
+                >
+                  <FontAwesomeIcon
+                    color="var(--orange-coor)"
+                    icon={faCircleQuestion}
+                  />
+                </Tips>
               </div>
               <Amount>
                 {currency}

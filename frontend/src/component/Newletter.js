@@ -31,6 +31,7 @@ export default function Newletter() {
     try {
       const { data } = await axios.post("/api/newsletters/", {
         email: input,
+        emailType: "Newsletter",
       });
       setInput("");
       setSent(true);

@@ -193,6 +193,7 @@ export default function PaymentScreen() {
             amount: payment.amount,
             purpose: payment.meta.Type,
             userId: payment.userId._id,
+            orderId: payment.meta.id,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -208,6 +209,8 @@ export default function PaymentScreen() {
             currency: payment.currency,
             narration: "Payment for things",
             reference: v4(),
+
+            userId: payment.userId._id,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },

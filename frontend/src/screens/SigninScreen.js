@@ -15,6 +15,7 @@ import styled from "styled-components";
 import Input from "../component/Input";
 import OAuth2Login from "react-simple-oauth2-login";
 import { login, logout } from "../hooks/initFacebookSdk";
+import secureLocalStorage from "react-secure-storage";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -218,7 +219,7 @@ export default function SigninScreen() {
     console.log(account);
     //signin here
     ctxDispatch({ type: "USER_SIGNIN", payload: account });
-    localStorage.setItem("userInfo", JSON.stringify(account));
+    secureLocalStorage.setItem("userInfo", account);
     window.location.href = `${redirect}?redirect=${redirect}`;
   }
   const submitHandler = async () => {
@@ -227,9 +228,10 @@ export default function SigninScreen() {
         email: input.email,
         password: input.password,
       });
-      ctxDispatch({ type: "USER_SIGNIN", payload: data });
-      localStorage.setItem("userInfo", JSON.stringify(data));
       console.log(data);
+
+      ctxDispatch({ type: "USER_SIGNIN", payload: data });
+      secureLocalStorage.setItem("userInfo", data);
       if (data.isVerifiedEmail) {
         window.location.href = `${redirect}?redirect=${redirect}`;
       } else {

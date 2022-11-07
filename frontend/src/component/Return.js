@@ -145,7 +145,7 @@ export default function Return({
 
   const [{ loadingUpload, loading }, dispatch] = useReducer(reducer, {
     product: null,
-    loading: true,
+    loading: false,
     error: "",
     comments: [],
   });
@@ -216,6 +216,7 @@ export default function Return({
       setImage("");
       setShowReturn(false);
     } catch (err) {
+      dispatch({ type: "RETURN_FAIL" });
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -465,7 +466,7 @@ export default function Return({
                     {console.log(current)}
 
                     <MenuItem value={current.deliverySelect}>
-                      {current.deliverySelect.deliveryOption}
+                      {current.deliverySelect["delivery Option"]}
                     </MenuItem>
                   </Select>
                 </FormControl>

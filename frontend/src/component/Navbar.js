@@ -23,6 +23,7 @@ import moment from "moment";
 import { logout } from "../hooks/initFacebookSdk";
 import { BsFillSunFill } from "react-icons/bs";
 import { BsFillMoonStarsFill } from "react-icons/bs";
+import secureLocalStorage from "react-secure-storage";
 
 const Container = styled.div`
   width: 100%;
@@ -605,7 +606,7 @@ const Welcome = styled.div`
 
 export const signoutHandler = () => {
   logout();
-  localStorage.removeItem("userInfo");
+  secureLocalStorage.removeItem("userInfo");
   localStorage.removeItem("cartItems");
   localStorage.removeItem("shippingAddress");
   localStorage.removeItem("useraddress");
@@ -628,7 +629,7 @@ export default function Navbar({
   }, []);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode, notifications,refresher } = state;
+  const { cart, userInfo, mode, notifications, refresher } = state;
 
   const [categories, setCategories] = useState([]);
 
@@ -673,7 +674,7 @@ export default function Navbar({
     } catch (err) {
       console.log(getError(err));
     }
-  }, [userInfo,refresher]);
+  }, [userInfo, refresher]);
 
   const backMode = (mode) => {
     if (mode === "pagebodydark") {

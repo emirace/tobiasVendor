@@ -193,7 +193,7 @@ const ReturnButton = styled.div`
   padding: 3px 7px;
   height: 30px;
   &:hover {
-    background: var(--malon-color);
+    background: var(--orange-color);
   }
 `;
 const Print = styled.div`
@@ -275,6 +275,20 @@ const Key = styled.div`
 `;
 const Value = styled.div`
   flex: 3;
+`;
+
+const TrackingCont = styled.div`
+  display: flex;
+  align-items: center;
+  & svg {
+    color: var(--orange-color);
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    &:hover {
+      color: var(--malon-color);
+    }
+  }
 `;
 
 function reducer(state, action) {
@@ -746,12 +760,7 @@ export default function OrderScreen() {
                   {userInfo && order && (
                     <SetStatus>
                       {enterwaybil ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
+                        <TrackingCont>
                           <label>Enter Tracking number </label>
                           <TextInput
                             mode={mode}
@@ -760,19 +769,10 @@ export default function OrderScreen() {
                             onChange={(e) => setWaybillNumber(e.target.value)}
                           />
                           <FontAwesomeIcon
-                            style={{
-                              color: "var(--orange-color)",
-                              height: "40px",
-                              width: "40px",
-                              cursor: "pointer",
-                              // &&:hover{
-                              //     color:'var(--malon-color)'
-                              // }
-                            }}
                             icon={faSquareCheck}
                             onClick={() => comfirmWaybill(orderitem)}
                           />
-                        </div>
+                        </TrackingCont>
                       ) : (
                         <>
                           {orderitem.trackingNumber && (

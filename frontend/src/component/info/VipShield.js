@@ -12,6 +12,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   margin: 0 10vw;
+  text-align: justify;
   & a {
     color: var(--malon-color);
   }
@@ -27,9 +28,9 @@ const List = styled.ul`
   }
 `;
 const SubHeading = styled.h4`
-  margin: 0 5px;
-  font-weight: bold;
-  font-size: 30px;
+  font-size: 1.2rem;
+  color: var(--red-color);
+  margin-top: 15px;
 `;
 const Section = styled.section`
   display: flex;
@@ -89,7 +90,7 @@ export default function VipShield() {
         <title>Vip Shield</title>
       </Helmet>
       <Section>
-        <h1 style={{ fontWeight: "bold" }}>REPEDDLE VIP SHIELD</h1>
+        <h4>REPEDDLE VIP SHIELD</h4>
         <p>
           <Orange>
             <b>OUR APPROACH:</b>
@@ -120,9 +121,11 @@ export default function VipShield() {
           saving our environment. We hope these will minimize the emergency of
           global environmental crisis we and the planet is currently faced.
         </p>
-        <SubHeading>HOW WE MEASURE TOP SELLER QUALIFICATION</SubHeading> For you
-        to qualify to become a TOP SELLER and earn a VIP shield, you must meet
-        the following 5 simple criterial:{" "}
+        <SubHeading>HOW WE MEASURE TOP SELLER QUALIFICATION</SubHeading>{" "}
+        <div style={{ width: "100%" }}>
+          For you to qualify to become a TOP SELLER and earn a VIP shield, you
+          must meet the following 5 simple criterial:
+        </div>
         <List>
           <li>
             1. Actively participating in the circular economy by buying and

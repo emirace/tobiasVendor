@@ -272,7 +272,7 @@ export default function VerifyEmailScreen() {
         <div className="mb-3">
           <button type="submit" className="search-btn1">
             <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faCheck} />{" "}
-            Verfy
+            Verify
           </button>
         </div>
         <div className="mb-3">

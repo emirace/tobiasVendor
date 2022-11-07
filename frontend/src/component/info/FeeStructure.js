@@ -3,13 +3,25 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-  padding: 20px;
+  padding: 20px 40px;
+  text-align: justify;
+  & a {
+    color: var(--malon-color);
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 const RedTitle = styled.h3`
-  text-align: center;
-  font-sizs: 1.2rem;
+  font-size: 1.2rem;
+  width: 100%;
   color: var(--red-color);
-  margin-top: 20px;
+  margin-top: 15px;
+`;
+const RedTitle1 = styled.h3`
+  font-size: 1.2rem;
+  color: var(--red-color);
+  margin-top: 15px;
 `;
 const BoldText = styled.span`
   font-weight: bold;
@@ -195,19 +207,21 @@ export default function FeeStructure() {
         5% of the total amount for every transaction that goes through your
         sellers account/dashboard. 5% of the 7.9% we charge covers this fee.
       </p>{" "}
-      In Summary, the more you sell, the better your opportunity and chances to
-      ea
       <p>
-        rn more with our reward programs and free membership VIP prioritization.
-        For you to make it to our <RedText> PRIORITY LIST</RedText> and get
-        verified with <RedText>VIP SHILED,</RedText> your sale and earnings
-        needs to be higher in number than other users + your total profile
-        reviews + star ratings. Read more about our reward programs and how we
-        calculate our verification shield approval <Link to="/">here</Link>.
+        In Summary, the more you sell, the better your opportunity and chances
+        to earn more with our reward programs and free membership VIP
+        prioritization. For you to make it to our{" "}
+        <RedText> PRIORITY LIST</RedText> and get verified with{" "}
+        <RedText>VIP SHILED,</RedText> your sale and earnings needs to be higher
+        in number than other users + your total profile reviews + star ratings.
+        Read more about our reward programs and how we calculate our
+        verification shield approval <Link to="/vipshield">here</Link>.
       </p>{" "}
-      <RedTitle>
-        <Link to="/newproduct">LIST A PRODUCT TO START SELLING TODAY!</Link>
-      </RedTitle>
+      <RedTitle1>
+        <Link style={{ color: "var(--orange-color)" }} to="/newproduct">
+          LIST A PRODUCT TO START SELLING TODAY!
+        </Link>
+      </RedTitle1>
     </Container>
   );
 }

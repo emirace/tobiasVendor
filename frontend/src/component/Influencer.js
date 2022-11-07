@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useReducer } from "react";
+import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { baseURL, getError } from "../utils";
@@ -142,33 +143,37 @@ export default function Influencer({ sellerId }) {
     <Container>
       <User>
         <ProfileImg src={user.image} alt="img" />
-        <Details>
-          <Names>
-            {user.firstName} {user.lastName}
-          </Names>
-          <Username>@{user.username}</Username>
-        </Details>
+        <Link to={`/seller/${user._id}`}>
+          <Details>
+            <Names>
+              {user.firstName} {user.lastName}
+            </Names>
+            <Username>@{user.username}</Username>
+          </Details>
+        </Link>
       </User>
       <ProductList>
         {products.length > 0 ? (
           products.slice(0, 3).map((product) => (
-            <Product>
-              <ProductImg src={product.image} alt="img" />
-              <PDetail>
-                <Price>
-                  {product.current}
-                  {product.actualPrice}
-                </Price>
-                <Sizes>
-                  {product.sizes.map((size) => (
-                    <Size>{size.name}</Size>
-                  ))}
-                </Sizes>
-              </PDetail>
-            </Product>
+            <Link to={`/product/${product.slug}`}>
+              <Product>
+                <ProductImg src={product.image} alt="img" />
+                <PDetail>
+                  <Price>
+                    {product.currency}
+                    {product.actualPrice}
+                  </Price>
+                  <Sizes>
+                    {product.sizes.map((size) => (
+                      <Size>{size.name}</Size>
+                    ))}
+                  </Sizes>
+                </PDetail>
+              </Product>
+            </Link>
           ))
         ) : (
-          <div>Loading...</div>
+          <div>No Product Available</div>
         )}
       </ProductList>
     </Container>

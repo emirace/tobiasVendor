@@ -40,7 +40,7 @@ const TimeS = styled.div`
 const Reporting = styled.div`
   text-align: right;
 `;
-export default function Messages({ message, own, report, product }) {
+export default function Messages({ message, own, report, product, support }) {
   const [user, setUser] = useState();
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -64,7 +64,7 @@ export default function Messages({ message, own, report, product }) {
         <>
           <SendChat>
             <div>
-              <InlineS>
+              <InlineS style={{ padding: support ? "10px" : "20px" }}>
                 {message.image && (
                   <img
                     style={{ maxWidth: "150px", display: "block" }}
@@ -84,15 +84,16 @@ export default function Messages({ message, own, report, product }) {
       ) : (
         <RecievedChat>
           <div>
-            {message.image && (
-              <img
-                src={message.image}
-                alt="msg"
-                style={{ maxWidth: "150px", display: "block" }}
-              />
-            )}
-
-            <InlineR>{message.text}</InlineR>
+            <InlineR style={{ padding: support ? "10px" : "20px" }}>
+              {message.image && (
+                <img
+                  src={message.image}
+                  alt="msg"
+                  style={{ maxWidth: "150px", display: "block" }}
+                />
+              )}
+              {message.text}
+            </InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>
           </div>
         </RecievedChat>

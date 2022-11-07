@@ -13,8 +13,8 @@ import { Store } from "../Store";
 import "../style/Footer.css";
 import Newletter from "./Newletter";
 import { ReactComponent as FacebookIcon } from "./../icons/Icons-19.svg";
-import { ReactComponent as WhatsappIcon } from "./../icons/Icons-22.svg";
-import { ReactComponent as InstagramIcon } from "./../icons/Icons-29.svg";
+import { ReactComponent as Twitter } from "./../icons/Icons-21.svg";
+import { ReactComponent as InstagramIcon } from "./../icons/Icons-20.svg";
 import { Link } from "react-router-dom";
 import { ReactComponent as Phone } from "./../icons/Icons-02.svg";
 import { ReactComponent as Mail } from "./../icons/Icons-04.svg";
@@ -353,7 +353,7 @@ export default function Footer() {
               <FacebookIcon height={25} width={25} />
             </div>
             <div className="footer_social_icon">
-              <WhatsappIcon height={25} width={25} />
+              <Twitter height={25} width={25} />
             </div>
             <div className="footer_social_icon">
               <InstagramIcon height={25} width={25} />
@@ -382,7 +382,7 @@ export default function Footer() {
                 <Link to="/privacypolicy">Privacy Policy</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Terms of Use</a>
+                <a href="/terms">Terms of Use</a>
               </li>
             </ul>
           </div>

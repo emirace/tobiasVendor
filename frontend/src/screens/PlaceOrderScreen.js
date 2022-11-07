@@ -192,6 +192,15 @@ export default function PlaceOrderScreen() {
         { headers: { authorization: `Bearer ${userInfo.token}` } }
       );
       dispatch({ type: "CREATE_SUCCESS", payload: data });
+      cart.cartItems.map(async (x) => {
+        await axios.put(
+          `/api/products/${x._id}/unsave`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+      });
       return data;
     } catch (err) {
       dispatch({ type: "CREATE_FAIL" });

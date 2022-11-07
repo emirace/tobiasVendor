@@ -5,6 +5,7 @@ import {
   isAdmin,
   isAuth,
   isAuthOrNot,
+  sendEmail,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
@@ -14,6 +15,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 import Flutterwave from "flutterwave-node-v3";
 import User from "../models/userModel.js";
+import Return from "../models/returnModel.js";
+import Order from "../models/orderModel.js";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -27,6 +30,20 @@ accountRouter.get(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const account = await Account.findOne({ userId: req.user._id });
+    if (account) {
+      res.status(200).send(account);
+    } else {
+      res.status(404).send("account not found");
+    }
+  })
+);
+
+accountRouter.get(
+  "/balance/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const account = await Account.findOne({ userId: req.params.id });
     if (account) {
       res.status(200).send(account);
     } else {
@@ -95,6 +112,34 @@ accountRouter.post(
           success: true,
           message: "deposit successful",
         });
+        const user = await User.findById(req.body.userId);
+        const order = await Order.findById(req.body.userId);
+        if (req.body.purpose === "Order Completed") {
+          sendEmail({
+            to: user.email,
+            subject: "ORDER COMPLETED",
+            template: "ordercCompleted",
+            context: {
+              username: user.username,
+              url: user.region === "NGN" ? "com" : "co.za",
+              orderItems: order.orderItems,
+            },
+          });
+        }
+        const returned = await Return.findOne({ orderId: order._id });
+        if (req.body.purpose === "Return Completed") {
+          sendEmail({
+            to: user.email,
+            subject: "RETURN REFUNDED",
+            template: "returnRefunded",
+            context: {
+              username: user.username,
+              url: user.region === "NGN" ? "com" : "co.za",
+              orderItems: order.orderItems,
+              returnId: returned?._id,
+            },
+          });
+        }
       } catch (error) {
         res.status(500).send({
           success: false,
@@ -307,7 +352,22 @@ accountRouter.post(
       narration: "Payment for things",
       reference: generateTransactionReference(),
     };
-    flw.Transfer.initiate(details).then(console.log).catch(console.log);
+    const user = await User.findById(req.body.userId);
+
+    flw.Transfer.initiate(details)
+      .then(() => {
+        sendEmail({
+          to: user.email,
+          subject: "WITHDRAWAL REQUESTED",
+          template: "withdrawalRequest",
+          context: {
+            username: user.username,
+            url: user.region === "NGN" ? "com" : "co.za",
+            amount,
+          },
+        });
+      })
+      .catch(console.log);
   })
 );
 

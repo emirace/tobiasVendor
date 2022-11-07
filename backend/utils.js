@@ -2,6 +2,9 @@ import jwt from "jsonwebtoken";
 import Account from "./models/accountModel.js";
 import Transaction from "./models/transactionModel.js";
 import nodemailer from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+
+import path from "path";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -87,29 +90,44 @@ export const isSocialAuth = (req, res, next) => {
 };
 
 export const sendEmail = (options) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
-    port: 80,
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtpout.secureserver.net",
+  //   port: 80,
 
-    auth: {
-      user: "tobias@repeddle.com",
-      pass: "jH4/&FS-WqJubdK",
-    },
-  });
-  // var transporter = nodemailer.createTransport({
-  //   host: "smtp.mailtrap.io",
-  //   port: 2525,
   //   auth: {
-  //     user: "aeef4e04706b4f",
-  //     pass: "1239ac3ae8cd9a",
+  //     user: "tobias@repeddle.com",
+  //     pass: "jH4/&FS-WqJubdK",
   //   },
   // });
+  var transporter = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "aeef4e04706b4f",
+      pass: "1239ac3ae8cd9a",
+    },
+  });
+
+  transporter.use(
+    "compile",
+    hbs({
+      viewEngine: {
+        extname: ".handlebars",
+        partialsDir: path.resolve("./utils/layouts/"),
+        defaultLayout: false,
+      },
+      viewPath: path.resolve("./utils/layouts/"),
+      extName: ".handlebars",
+    })
+  );
 
   const mailOption = {
-    from: "support@repeddle.com",
+    from: "no-reply@repeddle.com",
     to: options.to,
     subject: options.subject,
     html: options.text,
+    template: options.template,
+    context: options.context,
   };
 
   transporter.sendMail(mailOption, function (err, info) {

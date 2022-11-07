@@ -83,7 +83,37 @@ conversationRouter.post(
             userId: req.body.recieverId,
             conversationType: req.body.type,
           })
+        : req.body.type === "support"
+        ? new Conversation({
+            members: [req.body.recieverId],
+            userId: req.body.recieverId,
+            conversationType: req.body.type,
+          })
         : "";
+    const savedConversation = await newConversation.save();
+    res.status(200).send(savedConversation);
+  })
+);
+conversationRouter.post(
+  "/support",
+  expressAsyncHandler(async (req, res) => {
+    console.log(req.body);
+    const existConversation = await Conversation.findOne({
+      members: { $all: [req.body.recieverId] },
+      conversationType: req.body.type,
+    });
+    if (existConversation) {
+      existConversation.updatedAt = new Date();
+      await existConversation.save();
+      res.status(200).send(existConversation);
+      return;
+    }
+
+    const newConversation = new Conversation({
+      members: [req.body.recieverId],
+      userId: req.body.recieverId,
+      conversationType: req.body.type,
+    });
     const savedConversation = await newConversation.save();
     res.status(200).send(savedConversation);
   })
@@ -130,6 +160,22 @@ conversationRouter.get(
       res.status(200).send(report);
     } else {
       res.status(404).send("No report Found");
+    }
+  })
+);
+
+conversationRouter.get(
+  "/supports",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const supports = await Conversation.find({
+      conversationType: "support",
+    }).sort({ updatedAt: -1 });
+    if (supports) {
+      res.status(200).send(supports);
+    } else {
+      res.status(404).send("No supports Found");
     }
   })
 );

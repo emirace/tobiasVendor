@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
 import { Store } from "../Store";
 import { getError } from "../utils";
 
@@ -10708,7 +10709,7 @@ export default function BrandScreen() {
 
   const alpha = Array.from(Array(26)).map((e, i) => i + 65);
   const alphabet = alpha.map((x) => String.fromCharCode(x));
-  const brandArray = Brands.split("\n");
+  // const brandArray = Brands.split("\n");
 
   const scrollref = useRef(alphabet.map(React.createRef));
   const [dataBrands, setDataBrands] = useState(null);
@@ -10792,21 +10793,24 @@ export default function BrandScreen() {
         </SearchContainer>
       </Search>
 
-      {/* <Content>
+      <Content>
         {alphabet.map((x, i) => (
           <div key={i}>
             <Header ref={scrollref.current[i]} mode={mode}>
               {x}
             </Header>
             <BrandGroup>
-              {dataBrands &&
+              {!dataBrands ? (
+                <LoadingBox />
+              ) : (
                 dataBrands.map((y, i) => {
-                  return <Brand key={i}>{y.name}</Brand>;
-                })}
+                  if (y.alpha === x) return <Brand key={i}>{y.name}</Brand>;
+                })
+              )}
             </BrandGroup>
           </div>
         ))}
-      </Content> */}
+      </Content>
     </Container>
   );
 }

@@ -258,6 +258,11 @@ export default function NewsletterList() {
       width: 250,
     },
     {
+      field: "emailType",
+      headerName: "Type",
+      width: 100,
+    },
+    {
       field: "date",
       headerName: "Created",
       width: 150,
@@ -268,6 +273,7 @@ export default function NewsletterList() {
     newsletters.map((p) => ({
       date: moment(p.createdAt).format("MMM Do, h:mm a"),
       email: p.email,
+      emailType: p.emailType,
       id: p._id,
     }));
 

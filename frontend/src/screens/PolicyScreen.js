@@ -8,15 +8,12 @@ const Container = styled.div`
     margin: 0 5vw;
   }
 `;
-const Header = styled.h1`
-  font-weight: bold;
-  text-align: center;
-`;
+const Header = styled.h4``;
 const SubHeader = styled.h3`
-  color: var(--malon-color);
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 0.3rem;
+  font-size: 1.2rem;
+  color: var(--red-color);
+  margin-top: 15px;
+  text-transform: capitalize;
 `;
 const Para = styled.p`
   text-align: justify;
@@ -38,7 +35,7 @@ export default function PolicyScreen() {
         agreed to be bound by this privacy policy.
       </Para>
 
-      <SubHeader>PERSONAL INFORMATION WE COLLECT </SubHeader>
+      <SubHeader>personal information we collect </SubHeader>
       <Para>
         When you visit our App or WebSite, we automatically collect certain
         information about your device, including information about your web
@@ -82,7 +79,7 @@ export default function PolicyScreen() {
         wrong delivery due to your false or miss-information.
       </Para>
 
-      <SubHeader>HOW WE USE YOUR PERSONAL INFORMATION</SubHeader>
+      <SubHeader>how we use your personal information</SubHeader>
       <Para>
         We use the Order Information that we collect generally to fulfill any
         orders placed through the Site (including processing your payment
@@ -109,7 +106,7 @@ export default function PolicyScreen() {
         to assess the success of our marketing and advertising campaigns).{" "}
       </Para>
 
-      <SubHeader>SOCIAL MEDIA NETWORKS</SubHeader>
+      <SubHeader>social media networks</SubHeader>
       <Para>
         Our company is a social e-commerce marketplace, this means we may use a
         lot of social media interactions and links such as Instagram, Facebook,
@@ -125,7 +122,7 @@ export default function PolicyScreen() {
         policies.
       </Para>
 
-      <SubHeader>SHARING YOUR PERSONAL INFORMATION </SubHeader>
+      <SubHeader>sharing your personal information </SubHeader>
       <Para>
         We share your Personal Information with third parties to help us use
         your Personal Information, as described above. For example, we use
@@ -145,7 +142,7 @@ export default function PolicyScreen() {
         otherwise protect our rights.{" "}
       </Para>
 
-      <SubHeader>BEHAVIORAL ADVERTISING </SubHeader>
+      <SubHeader>behavioral advertising </SubHeader>
       <Para>
         As described above, we use your Personal Information to provide you with
         targeted advertisements or marketing communications we believe may be of
@@ -173,13 +170,13 @@ export default function PolicyScreen() {
         http://optout.aboutads.info/.{" "}
       </Para>
 
-      <SubHeader>DO NOT TRACK </SubHeader>
+      <SubHeader>do not track </SubHeader>
       <Para>
         Please note that we do not alter our Site’s data collection and use
         practices when we see a Do Not Track signal from your browser.{" "}
       </Para>
 
-      <SubHeader>YOUR RIGHTS </SubHeader>
+      <SubHeader> your rights</SubHeader>
       <Para>
         If you are a European resident, you have the right to access personal
         information we hold about you and to ask that your personal information
@@ -196,14 +193,14 @@ export default function PolicyScreen() {
         outside of Europe, including to Canada and the United States.{" "}
       </Para>
 
-      <SubHeader>DATA RETENTION </SubHeader>
+      <SubHeader>data retention</SubHeader>
       <Para>
         When you place an order through the Site, we will maintain your Order
         Information for our records unless and until you ask us to delete this
         information.{" "}
       </Para>
 
-      <SubHeader>Facebook Data Deletion Instructions URL</SubHeader>
+      <SubHeader>Facebook Data Deletion Instructions URL </SubHeader>
       <Para>
         Repeddle does not save your Facebook personal data on its server.
         However, according to Facebook policy, we have to provide User Data
@@ -227,14 +224,14 @@ export default function PolicyScreen() {
         </ol>
       </Para>
 
-      <SubHeader>CHANGES </SubHeader>
+      <SubHeader> changes</SubHeader>
       <Para>
         We may update this privacy policy from time to time in order to reflect,
         for example, changes to our practices or for other operational, legal or
         regulatory reasons.{" "}
       </Para>
 
-      <SubHeader>POPIA DISCLAIMER(SA)</SubHeader>
+      <SubHeader>popia disclaimer(SA)</SubHeader>
       <Para>
         By viewing this App or Website, you hereby acknowledge that you have
         read and accepted the Protection of Personal Information (POPIA)
@@ -277,7 +274,7 @@ export default function PolicyScreen() {
         information made available on these pages or links, or actions or
         transaction resulting therefrom.
       </Para>
-      <SubHeader>SECURITY</SubHeader>
+      <SubHeader> security</SubHeader>
       <Para>
         Repeddle takes the security of personal information very seriously and
         will always do its possible best to comply with applicable data
@@ -289,14 +286,14 @@ export default function PolicyScreen() {
         obligations.
       </Para>
 
-      <SubHeader>LIMITATION</SubHeader>
+      <SubHeader> limitation</SubHeader>
       <Para>
         Repeddle will not be responsible to give warranties, nor make any
         representations in respect of the privacy policies of links or any
         third-party websites.
       </Para>
 
-      <SubHeader>CONTACT US </SubHeader>
+      <SubHeader>contact us</SubHeader>
       <Para>
         For more information about our privacy practices, if you have questions,
         or if you would like to make a complaint, please contact us by e‑mail at

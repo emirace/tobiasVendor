@@ -99,13 +99,13 @@ export default function SignupScreen() {
         if (region() === "ZAR") {
           setLoading(false);
         } else {
-          //alert("redirevting to za");
+          // alert("redirevting to za");
           setRedirectLoc(true);
           window.location.replace(`https://repeddle.co.za/signup/${redirect}`);
         }
       } else {
         if (region() === "ZAR") {
-          //alert("redirevting to com");
+          // alert("redirevting to com");
           setRedirectLoc(true);
           window.location.replace(`https://repeddle.com/signup/${redirect}`);
         }

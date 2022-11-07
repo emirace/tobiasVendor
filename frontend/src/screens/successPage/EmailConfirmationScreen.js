@@ -60,13 +60,16 @@ export default function EmailConfirmationScreen({ email }) {
             marginBottom: "30px",
           }}
         >
-          We have sent email to {email} to reset your password. After receiving
-          the email follow the link provided to reset your password
+          We have sent you an email to reset your password. If the email address
+          you entered is registered to a RePeddle account, you’ll receive a
+          password reset link. Follow the link provided to reset your password.
         </Text>
         <Text>
-          If you did not get any mail{" "}
+          If you did not get an email, check your junk or spam folders, and if
+          nothing, try again with an email address linked to your RePeddle
+          account or{" "}
           <Link to="/forgetpassword">
-            <Bold>Resend confirmation mail</Bold>
+            <Bold>Resend email confirmation</Bold>
           </Link>
         </Text>
       </Content>

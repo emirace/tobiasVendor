@@ -4,6 +4,7 @@ import findOrCreate from "mongoose-findorcreate";
 const reviewSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    userId: { type: String },
     name: { type: String, required: true },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
@@ -43,14 +44,22 @@ const userSchema = new mongoose.Schema(
     googleId: { type: String },
     accountName: { type: String },
     bankName: { type: String },
-    address: { type: String },
+    earnings: { type: Number, default: 0 },
+    address: {
+      apartment: { type: String },
+      street: { type: String },
+      state: { type: String },
+      zipcode: { type: Number },
+    },
     numReviews: { type: Number, default: 0 },
     badge: { type: Boolean, default: false },
     active: { type: Boolean, default: true },
     influencer: { type: Boolean, default: false },
     isVerifiedEmail: { type: Boolean, default: false, required: true },
     resetPasswordToken: { type: String },
+    resetEmailToken: { type: String },
     resetPasswordExpire: { type: String },
+    resetEmailExpire: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {

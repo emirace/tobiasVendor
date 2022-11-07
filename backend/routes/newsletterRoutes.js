@@ -24,6 +24,7 @@ newsletterRouter.post(
   expressAsyncHandler(async (req, res) => {
     const newsletter = new Newsletters({
       email: req.body.email,
+      emailType: req.body.emailType,
     });
 
     const newNewsletter = await newsletter.save();

@@ -14,10 +14,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Store } from "../../Store";
 import axios from "axios";
-import { getError, timeDifference } from "../../utils";
+import { getError, region, timeDifference } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import SmallModel from "../SmallModel";
 import moment from "moment";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { banks, states } from "../../constant";
 
 const Container = styled.div`
   flex: 4;
@@ -106,6 +110,9 @@ const Info = styled.div`
   display: flex;
   align-items: center;
   margin: 20px 0;
+  &.small {
+    margin: 5px 0;
+  }
   & svg {
     font-size: 14px;
   }
@@ -265,6 +272,24 @@ const AccButton = styled.div`
     background: var(--malon-color);
   }
 `;
+const InfoCont = styled.div`
+  padding: 0 20px;
+`;
+const Key = styled.div`
+  flex: 1;
+`;
+const Value = styled.div`
+  flex: 2;
+`;
+
+const Textarea = styled.textarea`
+  background: none;
+  height: 100px;
+  &:focus-visible {
+    outline: none;
+    border: 1px solid var(--orange-color);
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -328,6 +353,7 @@ export default function User() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showModel, setShowModel] = useState(false);
+  const [showModelAddress, setShowModelAddress] = useState(false);
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
@@ -358,6 +384,7 @@ export default function User() {
             },
           });
           dispatch({ type: "FETCH_SUCCESS", payload: data });
+          setAddress(data.address);
         };
         fetchUser();
       }
@@ -370,13 +397,23 @@ export default function User() {
   const [balance, setBalance] = useState(0);
   useEffect(() => {
     try {
-      const getBalance = async () => {
-        const { data } = await axios.get("/api/accounts/balance", {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        });
-        setBalance(data);
-      };
-      getBalance();
+      if (id) {
+        const getBalance = async () => {
+          const { data } = await axios.get(`/api/accounts/balance/${id}`, {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          });
+          setBalance(data);
+        };
+        getBalance();
+      } else {
+        const getBalance = async () => {
+          const { data } = await axios.get("/api/accounts/balance", {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          });
+          setBalance(data);
+        };
+        getBalance();
+      }
     } catch (err) {
       console.log(getError(err));
     }
@@ -422,6 +459,7 @@ export default function User() {
           active,
           influencer,
           badge,
+          about,
           password,
           accountName,
           accountNumber,
@@ -537,14 +575,51 @@ export default function User() {
             </Info>
             <Info>
               <FontAwesomeIcon icon={faLocationDot} />
-              <Username>{user.address}</Username>
+              <Username>Address Information</Username>
+
+              <AccButton
+                onClick={() => {
+                  console.log("hello");
+                  setShowModelAddress(!showModelAddress);
+                }}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </AccButton>
             </Info>
+            {user?.address?.street && (
+              <InfoCont>
+                <Info className="small">
+                  <Key>Street</Key>
+                  <Value>{user.address.street}</Value>
+                </Info>
+                <Info className="small">
+                  <Key>Apartment</Key>
+                  <Value>{user.address.apartment}</Value>
+                </Info>
+                <Info className="small">
+                  <Key>State</Key>
+                  <Value>{user.address.state}</Value>
+                </Info>
+                <Info className="small">
+                  <Key>Zipcode</Key>
+                  <Value>{user.address.zipcode}</Value>
+                </Info>
+              </InfoCont>
+            )}
             <Info>
               <FontAwesomeIcon icon={faMoneyBill} />
               <Username>Bank Account Detail</Username>
-              <AccButton onClick={() => setShowModel(!showModel)}>
-                <FontAwesomeIcon icon={faPlus} />
-              </AccButton>
+              {userInfo.isAdmin ? (
+                <AccButton onClick={() => setShowModel(!showModel)}>
+                  <FontAwesomeIcon icon={faPlus} />
+                </AccButton>
+              ) : (
+                !user.accountNumber && (
+                  <AccButton onClick={() => setShowModel(!showModel)}>
+                    <FontAwesomeIcon icon={faPlus} />
+                  </AccButton>
+                )
+              )}
               <SmallModel showModel={showModel} setShowModel={setShowModel}>
                 <Form2>
                   <Item>
@@ -569,24 +644,153 @@ export default function User() {
                   </Item>
                   <Item>
                     <Label>Bank Name</Label>
-                    <TextInput
-                      mode={mode}
-                      name="bankName"
-                      placeholder={user.bankName}
-                      type="text"
-                      onChange={(e) => setBankName(e.target.value)}
-                    />
+                    <FormControl
+                      sx={{
+                        margin: 0,
+                        borderRadius: "0.2rem",
+                        border: `1px solid ${
+                          mode === "pagebodydark"
+                            ? "var(--dark-ev4)"
+                            : "var(--light-ev4)"
+                        }`,
+                        "& .MuiOutlinedInput-root": {
+                          color: `${
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
+                          }`,
+                          "&:hover": {
+                            outline: "none",
+                            border: 0,
+                          },
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "0 !important",
+                        },
+                      }}
+                      size="small"
+                    >
+                      <Select
+                        onChange={(e) => setBankName(e.target.value)}
+                        displayEmpty
+                      >
+                        {region() === "NGN"
+                          ? banks.Nigeria.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))
+                          : banks.SouthAfrica.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))}
+                      </Select>
+                    </FormControl>
                   </Item>
                   <UploadButton onClick={submitHandler}>Update</UploadButton>
                 </Form2>
               </SmallModel>
             </Info>
-
-            <Info>
-              <Username>{user.accountName}</Username>
-              <Username>{user.accountNumber}</Username>
-              <Username>{user.bankName}</Username>
-            </Info>
+            {user.accountNumber && (
+              <InfoCont>
+                <Info className="small">
+                  <Key>Account Name</Key>
+                  <Value>{user.accountName}</Value>
+                </Info>
+                <Info className="small">
+                  <Key>Account Number</Key>
+                  <Value>{user.accountNumber}</Value>
+                </Info>
+                <Info className="small">
+                  <Key>Bank Name</Key>
+                  <Value>{user.bankName}</Value>
+                </Info>
+              </InfoCont>
+            )}
+            <SmallModel
+              showModel={showModelAddress}
+              setShowModel={setShowModelAddress}
+            >
+              <Form2>
+                <Item>
+                  <Label>Strret</Label>
+                  <TextInput
+                    mode={mode}
+                    name="street"
+                    type="text"
+                    onChange={(e) =>
+                      setAddress({ ...address, street: e.target.value })
+                    }
+                  />
+                </Item>
+                <Item>
+                  <Label>Apartment</Label>
+                  <TextInput
+                    mode={mode}
+                    name="apartment"
+                    type="text"
+                    onChange={(e) =>
+                      setAddress({ ...address, apartment: e.target.value })
+                    }
+                  />
+                </Item>
+                <Item>
+                  <Label>{region() === "NGN" ? "State" : "Province"}</Label>
+                  <FormControl
+                    sx={{
+                      margin: 0,
+                      borderRadius: "0.2rem",
+                      border: `1px solid ${
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
+                      }`,
+                      "& .MuiOutlinedInput-root": {
+                        color: `${
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
+                        }`,
+                        "&:hover": {
+                          outline: "none",
+                          border: 0,
+                        },
+                      },
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
+                      },
+                    }}
+                    size="small"
+                  >
+                    <Select
+                      value={address?.state}
+                      onChange={(e) =>
+                        setAddress({ ...address, state: e.target.value })
+                      }
+                      displayEmpty
+                    >
+                      {region() === "NGN"
+                        ? states.Nigeria.map((x) => (
+                            <MenuItem value={x}>{x}</MenuItem>
+                          ))
+                        : states.SouthAfrican.map((x) => (
+                            <MenuItem value={x}>{x}</MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                </Item>
+                <Item>
+                  <Label>Zip Code</Label>
+                  <TextInput
+                    mode={mode}
+                    name="zipcode"
+                    value={user?.address?.zipcode}
+                    type="number"
+                    onChange={(e) =>
+                      setAddress({ ...address, zipcode: e.target.value })
+                    }
+                  />
+                </Item>
+                <UploadButton onClick={submitHandler}>Update</UploadButton>
+              </Form2>
+            </SmallModel>
           </ShowBottom>
         </Show>
         <Update mode={mode}>
@@ -595,7 +799,7 @@ export default function User() {
             <Left>
               <Item>
                 <Label>Username</Label>
-                {daydiff && (
+                {daydiff > 0 && (
                   <div
                     style={{ fontSize: "12px", color: "var(--malon-color)" }}
                   >
@@ -606,7 +810,7 @@ export default function User() {
                 {console.log("daydiff", daydiff)}
                 <TextInput
                   mode={mode}
-                  disabled={daydiff}
+                  disabled={daydiff > 0}
                   placeholder={user.username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -654,12 +858,10 @@ export default function User() {
                 />
               </Item>
               <Item>
-                <Label>Address</Label>
-                <TextInput
-                  mode={mode}
-                  placeholder={user.address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+                <Label>About</Label>
+                <Textarea onChange={(e) => setAbout(e.target.value)}>
+                  {user.about}
+                </Textarea>
               </Item>
             </Left>
             <Right>

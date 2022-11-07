@@ -94,7 +94,7 @@ export default function DeliveryHistory({ status }) {
               <Text>Received</Text>
             </BoxCont>
           </>
-        ) : (
+        ) : status < 12 ? (
           <>
             {/* <Line className={status >= 5 ? "active" : ""} /> */}
             <Line className={status >= 6 ? "active" : ""} />
@@ -155,6 +155,32 @@ export default function DeliveryHistory({ status }) {
               </Box>
               <Text>Return Received</Text>
             </BoxCont>
+          </>
+        ) : status > 12 ? (
+          <>
+            <Line className={status >= 13 ? "active" : ""} />
+            <BoxCont>
+              <Box className={status >= 13 ? "active" : ""}>
+                <FontAwesomeIcon color="white" icon={faCheck} />
+              </Box>
+              <Text>Pay Seller</Text>
+            </BoxCont>
+            <Line className={status >= 13 ? "active" : ""} />
+          </>
+        ) : (
+          <>
+            <Line className={status >= 12 ? "active" : ""} />
+            <BoxCont>
+              <Box
+                className={status >= 12 ? "active" : ""}
+                style={{ background: status >= 12 && "red" }}
+              >
+                <FontAwesomeIcon color="white" icon={faCheck} />
+              </Box>
+              <Text>Refund Buyer</Text>
+            </BoxCont>
+
+            <Line />
           </>
         )}
       </Content>

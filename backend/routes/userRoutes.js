@@ -16,6 +16,11 @@ import dotenv from "dotenv";
 import { plainEmailTemp } from "../utils/mailTemplete.js";
 import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
+import { Welcome } from "../utils/mailTempleter/Welcome.js";
+import { verifyEmail } from "../utils/mailTempleter/verifyEmail.js";
+import { passwordReset } from "../utils/mailTempleter/passwordReset.js";
+import { resetConfirmation } from "../utils/mailTempleter/resetConfirmation.js";
+import { resetSuccess } from "../utils/mailTempleter/resetSuccess.js";
 dotenv.config();
 
 const userRouter = express.Router();
@@ -34,6 +39,15 @@ userRouter.get(
     res.send({
       topSellers,
     });
+  })
+);
+
+userRouter.get(
+  "/:region/influencer",
+  expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
+    const users = await User.find({ region, influencer: true }).select("_id");
+    res.send(users);
   })
 );
 
@@ -65,13 +79,20 @@ userRouter.put(
         _id: updatedUser._id,
         name: updatedUser.name,
         username: updatedUser.username,
+        usernameUpdate: updatedUser.usernameUpdate,
         firstName: updatedUser.firstName,
         lastName: updatedUser.lastName,
-        isSeller: updatedUser.isSeller,
+        region: updatedUser.region,
         email: updatedUser.email,
-        about: updatedUser.about,
-        image: updatedUser.image,
+        isSeller: updatedUser.isSeller,
         isAdmin: updatedUser.isAdmin,
+        image: updatedUser.image,
+        active: updatedUser.active,
+        isVerifiedEmail: updatedUser.isVerifiedEmail,
+        address: updatedUser.address,
+        bankName: updatedUser.bankName,
+        accountNumber: updatedUser.accountNumber,
+        accountName: updatedUser.accountName,
         token: generateToken(updatedUser),
       });
     } else {
@@ -102,6 +123,11 @@ userRouter.post(
           isAdmin: user.isAdmin,
           image: user.image,
           isVerifiedEmail: user.isVerifiedEmail,
+          address: user.address,
+          active: user.active,
+          bankName: user.bankName,
+          accountNumber: user.accountNumber,
+          accountName: user.accountName,
           token: generateToken(user),
         });
         return;
@@ -115,6 +141,7 @@ userRouter.post(
   "/:region/signup",
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
+    const url = region === "NGN" ? "com" : "co.za";
     const newUser = new User({
       username: req.body.username.toLowerCase(),
       firstName: req.body.firstName,
@@ -127,25 +154,35 @@ userRouter.post(
       region,
       numReviews: 0,
     });
+    newUser.userId = newUser._id.toString();
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    newUser.resetEmailToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    newUser.resetEmailExpire = Date.now() + 10 * (60 * 1000);
+    const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
-    const OTP = generateOTP();
-
-    const newVerificationToken = new VerificationToken({
-      owner: newUser._id,
-      token: OTP,
-    });
-    const verificationToken = await newVerificationToken.save();
     const user = await newUser.save();
-    const message = `
-    <h1> Welcome to Repeddle</h1>
-    <p>Please Verify Your Email To Continue. Your Verification code id</p>
-<h3>${OTP}</h3>
-    `;
 
     sendEmail({
       to: newUser.email,
-      subject: "Verify your email account",
-      text: message,
+      subject: "WELCOME TO REPEDDLE ",
+      template: "welcome",
+      context: {
+        username: newUser.username,
+        url,
+      },
+    });
+    sendEmail({
+      to: newUser.email,
+      subject: "VERIFY YOUR EMAIL",
+      template: "verifyEmail",
+      context: {
+        username: newUser.username,
+        url,
+        resetlink: resetUrl,
+      },
     });
     await Account.create({
       userId: user.id,
@@ -156,58 +193,59 @@ userRouter.post(
       _id: user._id,
       name: user.name,
       username: user.username,
-      region: user.region,
-      firstName: user.firstName,
       usernameUpdate: user.usernameUpdate,
+      firstName: user.firstName,
       lastName: user.lastName,
+      region: user.region,
       email: user.email,
       isSeller: user.isSeller,
-      isVerifiedEmail: user.isVerifiedEmail,
       isAdmin: user.isAdmin,
+      image: user.image,
+      isVerifiedEmail: user.isVerifiedEmail,
+      address: user.address,
+      active: user.active,
+      bankName: user.bankName,
+      accountNumber: user.accountNumber,
+      accountName: user.accountName,
       token: generateToken(user),
     });
   })
 );
 
 userRouter.post(
-  "/verifyemail",
+  "/verifyemail/:resetToken",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { otp } = req.body;
-    const userId = req.user._id;
-    if (!userId || !otp.trim())
-      return res.status(500).send({ message: "Invalid user or token" });
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: {
+        $gt: Date.now(),
+      },
+    });
     if (user) {
-      if (user.isVerifiedEmail)
-        return res
-          .status(500)
-          .send({ message: "This user is already verified" });
-
-      const token = await VerificationToken.findOne({ owner: user._id });
-      if (!token) return res.status(500).send({ message: "User not found " });
-
-      const isMatched = await token.compareToken(otp);
-      if (!isMatched)
-        return res
-          .status(500)
-          .send({ message: "Please, provide a valid token" });
-
+      const url = user.region === "NGN" ? "com" : "co.za";
+      user.resetEmailExpire = undefined;
+      user.resetEmailToken = undefined;
       user.isVerifiedEmail = true;
-      await VerificationToken.findByIdAndDelete(token._id);
       await user.save();
       sendEmail({
         to: user.email,
-        subject: "Email Verified Successfully",
-        text: plainEmailTemp(
-          "Email Varified Successfully",
-          "Thanks for connecting with us"
-        ),
+        subject: "EMAIL VERIFIED SUCCESSFULLY",
+        template: "successEmail",
+        context: {
+          url,
+        },
       });
-      res.status(200).send({ message: "Your email is verified" });
+      res
+        .status(201)
+        .send({ success: true, message: "Email verified successfuly" });
     } else {
-      res.status(404).send({ message: "User not Found" });
+      res.status(400).send({ message: "Invalid Token" });
     }
   })
 );
@@ -215,10 +253,9 @@ userRouter.post(
 userRouter.post(
   "/:url/forgetpassword",
   expressAsyncHandler(async (req, res) => {
-    console.log("working");
-    const { url } = req.params;
     const user = await User.findOne({ email: req.body.email });
     if (user) {
+      const url = user.region === "NGN" ? "com" : "co.za";
       const resetToken = crypto.randomBytes(20).toString("hex");
       user.resetPasswordToken = crypto
         .createHash("sha256")
@@ -226,17 +263,19 @@ userRouter.post(
         .digest("hex");
       user.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
       await user.save();
-      const resetUrl = `https://${url}/resetpassword/${resetToken}`;
-      const message = `
-<h1> You have requested a password reset</h1>
-<p>Please go to this link to reset your password</p>
-<a href=${resetUrl} clicktracking=off>${resetUrl}
-`;
+      const resetUrl = `https://repeddle.${url}/resetpassword/${resetToken}`;
+      console.log(resetToken);
+
       try {
         sendEmail({
           to: user.email,
-          text: message,
-          subject: "Password Reset",
+          subject: "PASSWORD RESET ",
+          template: "passwordReset",
+          context: {
+            url,
+            resetlink: resetUrl,
+            email: user.email,
+          },
         });
 
         res
@@ -262,6 +301,7 @@ userRouter.post(
 userRouter.post(
   "/resetpassword/:resetToken",
   expressAsyncHandler(async (req, res) => {
+    console.log(req.params.resetToken);
     const resetPasswordToken = crypto
       .createHash("sha256")
       .update(req.params.resetToken)
@@ -274,10 +314,22 @@ userRouter.post(
       },
     });
     if (user) {
+      const url = user.region === "NGN" ? "com" : "co.za";
+
       user.password = bcrypt.hashSync(req.body.password);
       user.resetPasswordExpire = undefined;
       user.resetPasswordToken = undefined;
       await user.save();
+      sendEmail({
+        to: user.email,
+        subject: "PASSWORD SUCCESSFULLY RESET",
+        template: "passwordResetSuccess",
+        context: {
+          username: user.username,
+          url,
+          email: user.email,
+        },
+      });
       res
         .status(201)
         .send({ success: true, message: "Password Reset Success" });
@@ -298,27 +350,27 @@ userRouter.get(
           .status(500)
           .send({ message: "This user is already verified" });
 
-      const token = await VerificationToken.findOne({ owner: user._id });
-      if (token) {
-        await token.remove();
-      }
-      const OTP = generateOTP();
+      const url = user.region === "NGN" ? "com" : "co.za";
 
-      const newVerificationToken = new VerificationToken({
-        owner: user._id,
-        token: OTP,
-      });
-      const verificationToken = await newVerificationToken.save();
-      const message = `
-    <h1> Welcome to Repeddle</h1>
-    <p>Please Verify Your Email To Continue. Your Verification code id</p>
-<h3>${OTP}</h3>
-    `;
-      console.log(OTP);
+      const resetToken = crypto.randomBytes(20).toString("hex");
+      user.resetEmailToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+      user.resetEmailExpire = Date.now() + 10 * (60 * 1000);
+      const resetUrl = `https://repeddle.${url}/resetemail/${resetToken}`;
+
+      const user = await newUser.save();
+
       sendEmail({
         to: user.email,
-        subject: "Verify your email account",
-        text: message,
+        subject: "VERIFY YOUR EMAIL",
+        template: "veriyEmail",
+        context: {
+          username: user.username,
+          url,
+          resetlink: resetUrl,
+        },
       });
       res.status(200).send({ message: "Email sent" });
     }
@@ -329,7 +381,7 @@ userRouter.post(
   "/:region/google",
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
+    const url = region === "NGN" ? "com" : "co.za";
     const ticket = await client.verifyIdToken({
       idToken: req.body.tokenId,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -366,21 +418,36 @@ userRouter.post(
         currency: req.params.region === "ZAR" ? "R " : "N ",
       });
 
+      sendEmail({
+        to: newUser.email,
+        subject: "WELCOME TO REPEDDLE ",
+        template: "welcome",
+        context: {
+          username: result.username,
+          url,
+        },
+      });
+
     const token = generateToken(result);
     const data = {
       token,
       _id: result._id,
       name: result.name,
       username: result.username,
-      region: result.region,
-      firstName: result.firstName,
       usernameUpdate: result.usernameUpdate,
+      firstName: result.firstName,
       lastName: result.lastName,
+      region: result.region,
       email: result.email,
       isSeller: result.isSeller,
       isAdmin: result.isAdmin,
-      isVerifiedEmail: result.isVerifiedEmail,
       image: result.image,
+      isVerifiedEmail: result.isVerifiedEmail,
+      address: result.address,
+      active: result.active,
+      bankName: result.bankName,
+      accountNumber: result.accountNumber,
+      accountName: result.accountName,
     };
 
     res.status(200).send(data);
@@ -392,6 +459,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     console.log("accessToken", req.body.accessToken);
 
+    const url = region === "NGN" ? "com" : "co.za";
     const { data } = await axios.get(
       `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
     );
@@ -421,21 +489,36 @@ userRouter.post(
         currency: req.params.region === "ZAR" ? "R " : "N ",
       });
 
+      sendEmail({
+        to: newUser.email,
+        subject: "WELCOME TO REPEDDLE ",
+        template: "welcome",
+        context: {
+          username: result.username,
+          url,
+        },
+      });
+
     const token = generateToken(result);
     const data1 = {
       token,
       _id: result._id,
       name: result.name,
       username: result.username,
-      region: result.region,
-      firstName: result.firstName,
       usernameUpdate: result.usernameUpdate,
+      firstName: result.firstName,
       lastName: result.lastName,
+      region: result.region,
       email: result.email,
       isSeller: result.isSeller,
-      isVerifiedEmail: result.isVerifiedEmail,
       isAdmin: result.isAdmin,
       image: result.image,
+      isVerifiedEmail: result.isVerifiedEmail,
+      address: result.address,
+      active: result.active,
+      bankName: result.bankName,
+      accountNumber: result.accountNumber,
+      accountName: result.accountName,
     };
 
     res.status(200).send(data1);
@@ -707,6 +790,7 @@ userRouter.get(
         isAdmin: user.isAdmin,
         address: user.address,
         active: user.active,
+        isVerifiedEmail: user.isVerifiedEmail,
         badge: user.badge,
         dob: user.dob,
         accountName: user.accountName,
@@ -725,66 +809,91 @@ userRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const { query } = req;
     const { region } = req.params;
-    const users = await User.find({ region }).sort({ createdAt: -1 });
+    const searchQuery = query.q;
+
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                username: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                userId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    console.log(queryFilter);
+    const users = await User.find({ ...queryFilter, region }).sort({
+      createdAt: -1,
+    });
     res.send(users);
   })
 );
 
-userRouter.get(
-  "/:id",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      res.send({
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSeller: user.isSeller,
-      });
-    } else {
-      res.status(404).send({ message: "User Not Found" });
-    }
-  })
-);
+// userRouter.get(
+//   "/:id",
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const user = await User.findById(req.params.id);
+//     if (user) {
+//       res.send({
+//         username: user.username,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         email: user.email,
+//         isAdmin: user.isAdmin,
+//         isSeller: user.isSeller,
+//       });
+//     } else {
+//       res.status(404).send({ message: "User Not Found" });
+//     }
+//   })
+// );
 
-userRouter.get(
-  "/profile/user",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (user) {
-      res.send({
-        _id: user._id,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        image: user.image,
-        about: user.about,
-        followers: user.followers,
-        following: user.following,
-        likes: user.likes,
-        saved: user.saved,
-        sold: user.sold,
-        createdAt: user.createdAt,
-        numReviews: user.numReviews,
-        rating: user.rating,
-        phone: user.phone,
-        isAdmin: user.isAdmin,
-        address: user.address,
-        active: user.active,
-        badge: user.badge,
-        dob: user.dob,
-      });
-    } else {
-      res.status(404).send({ message: "User Not Found" });
-    }
-  })
-);
+// userRouter.get(
+//   "/profile/user",
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const user = await User.findById(req.user._id);
+//     if (user) {
+//       res.send({
+//         _id: user._id,
+//         username: user.username,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         email: user.email,
+//         image: user.image,
+//         about: user.about,
+//         followers: user.followers,
+//         following: user.following,
+//         likes: user.likes,
+//         saved: user.saved,
+//         sold: user.sold,
+//         createdAt: user.createdAt,
+//         numReviews: user.numReviews,
+//         rating: user.rating,
+//         phone: user.phone,
+//         isAdmin: user.isAdmin,
+//         address: user.address,
+//         active: user.active,
+//         badge: user.badge,
+//         dob: user.dob,
+//       });
+//     } else {
+//       res.status(404).send({ message: "User Not Found" });
+//     }
+//   })
+// );
 
 userRouter.put(
   "/:id",
@@ -792,24 +901,24 @@ userRouter.put(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
-    const useractive = () => (req.body.active === "yes" ? true : false);
-    const userbadge = () => (req.body.badge === "yes" ? true : false);
-    const userinfluencer = () => (req.body.influencer === "yes" ? true : false);
+    // const useractive = () => (req.body.active === "yes" ? true : false);
+    // const userbadge = () => (req.body.badge === "yes" ? true : false);
+    // const userinfluencer = () => (req.body.influencer === "yes" ? true : false);
     if (user) {
       user.username = user.username;
       user.firstName = req.body.firstName || user.firstName;
       user.lastName = req.body.lastName || user.lastName;
       user.email = req.body.email || user.email;
       user.dob = req.body.dob || user.dob;
-      user.activeUpdate = req.body.active === "" ? "" : new Date();
+      user.activeUpdate =
+        req.body.active === "" ? user.activeUpdate : new Date();
       user.phone = req.body.phone || user.phone;
       user.address = req.body.address || user.address;
       user.about = req.body.about || user.about;
       user.image = req.body.image || user.image;
-      user.active = req.body.active === "" ? user.active : useractive();
-      user.badge = req.body.badge === "" ? user.badge : userbadge();
-      user.influencer =
-        req.body.influencer === "" ? user.influencer : userinfluencer();
+      user.active = req.body.active || user.active;
+      user.badge = req.body.badge || user.badge;
+      user.influencer = req.body.influencer || user.influencer;
 
       const updatedUser = await user.save();
       res.send({

@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   padding: 0 10vw;
+  text-align: justify;
 `;
 const RedTitle = styled.h3`
   text-align: center;

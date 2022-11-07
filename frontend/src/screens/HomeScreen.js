@@ -46,8 +46,7 @@ const Imagediv = styled.div`
 `;
 
 const Badge = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 20px;
   object-fit: cover;
 `;
 
@@ -56,9 +55,18 @@ const Section = styled.div`
 `;
 const Content = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 10px;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin: 5px 5vw;
+  height: 600px;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   @media (max-width: 992px) {
     flex-direction: column;
     width: auto;
@@ -72,6 +80,7 @@ const LeftSide = styled.div`
 `;
 const Top = styled.div`
   flex: 1;
+  margin-right: 40px;
 `;
 
 const DiscountText = styled.div`
@@ -164,6 +173,18 @@ export default function ProductsScreen() {
     };
     fetchData();
   }, []);
+  const [influencerList, setInfluencerList] = useState([]);
+  useEffect(() => {
+    const getInfluencer = async () => {
+      try {
+        const { data } = await axios.get(`/api/users/${region()}/influencer`);
+        setInfluencerList(data);
+        console.log("influence", data);
+      } catch (err) {}
+    };
+    getInfluencer();
+  }, []);
+
   const sliderHandler = (direction) => {
     if (direction === "left") {
       var slider = document.getElementById("slider");
@@ -443,24 +464,17 @@ export default function ProductsScreen() {
           <div className="product-title">
             <h2 className="product-category1">influencers Block</h2>
           </div>
-          <Content>
-            <LeftSide>
-              <Top>
-                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
-              </Top>
-              <Top>
-                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
-              </Top>
-            </LeftSide>
-            <LeftSide>
-              <Top>
-                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
-              </Top>
-              <Top>
-                <Influencer sellerId={"63076f85af7aa8c03e280d4d"} />
-              </Top>
-            </LeftSide>
-          </Content>
+          {influencerList.length > 0 ? (
+            <Content>
+              {influencerList?.map((influence) => (
+                <Top>
+                  <Influencer sellerId={influence._id} />
+                </Top>
+              ))}
+            </Content>
+          ) : (
+            "Coming soon"
+          )}
         </Section>
 
         <section className="discount spad">
@@ -538,9 +552,9 @@ export default function ProductsScreen() {
                               alt={seller.userId.username}
                               className="carousel_profile_image"
                             ></img>
-                            {seller.badge && (
+                            {seller.userId.badge && (
                               <div className="seller_profile_badge">
-                                <Badge src="/images/Icons-28_hfzerc.png" />
+                                <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
                               </div>
                             )}
                           </Imagediv>

@@ -113,6 +113,8 @@ const Search = styled.input.attrs((props) => ({
 const ChatArea = styled.div`
   height: calc(100% - 210px);
   overflow-y: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -169,6 +171,8 @@ const NoConversation = styled.span`
 const Conserv = styled.div`
   overflow: auto;
   height: calc(100% - 90px);
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -318,6 +322,7 @@ export default function ChatScreen() {
   const [refresh, setRefresh] = useState(false);
   const [image, setImage] = useState("");
   const [showUploadingImage, setShowUploadingImage] = useState(false);
+  const searchRef = useRef();
 
   const backMode = (mode) => {
     if (mode === "pagebodydark") {
@@ -334,7 +339,6 @@ export default function ChatScreen() {
     setmodelRef2(res);
   };
   const closeModel = (e) => {
-    console.log(e.target, modelRef2);
     if (modelRef1 !== e.target) {
       setMymenu(false);
     } else {
@@ -344,6 +348,9 @@ export default function ChatScreen() {
       setShowNotification(false);
     } else {
       setShowNotification(!menu);
+    }
+    if (searchRef !== e.target) {
+      setSearchResult("");
     }
   };
 
@@ -440,6 +447,24 @@ export default function ChatScreen() {
       }
     };
     if (userInfo.isAdmin) getReportConversation();
+  }, [userInfo, refresh]);
+
+  const [supportConversations, setSupportConversations] = useState([]);
+  useEffect(() => {
+    const getSupportConversation = async () => {
+      try {
+        dispatch({ type: "FETCH_REQUEST" });
+        const { data } = await axios.get(`/api/conversations/supports`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        console.log("support", data);
+        setSupportConversations(data);
+      } catch (err) {
+        dispatch({ type: "FETCH_FAIL", payload: err });
+        console.log(err);
+      }
+    };
+    if (userInfo.isAdmin) getSupportConversation();
   }, [userInfo, refresh]);
 
   const [reports1, setReports1] = useState(false);
@@ -544,7 +569,11 @@ export default function ChatScreen() {
             : receiverId,
         itemId: currentChat._id,
         notifyType: "message",
-        msg: `${userInfo.username} sent you a message`,
+        msg:
+          currentChat.conversationType === "reportProduct" ||
+          currentChat.conversationType === "reportUser"
+            ? "New report Message"
+            : `${userInfo.username} sent you a message`,
         link: `/messages?conversation=${currentChat._id}`,
         userImage: userInfo.image,
       });
@@ -712,22 +741,25 @@ export default function ChatScreen() {
           <Conserv>
             {conversations.length < 1
               ? "No Conversation"
-              : conversations.map((c, index) => (
-                  <div
-                    onClick={() => {
-                      setShowLeft(false);
-                      setCurrentChat(c);
-                      socket.emit("remove_notifications", c._id);
-                    }}
-                    key={index}
-                  >
-                    <Conversation
-                      conversation={c}
-                      status={isOnlineCon(c)}
-                      currentChat={currentChat._id}
-                    />
-                  </div>
-                ))}
+              : conversations.map(
+                  (c, index) =>
+                    c.conversationType !== "support" && (
+                      <div
+                        onClick={() => {
+                          setShowLeft(false);
+                          setCurrentChat(c);
+                          socket.emit("remove_notifications", c._id);
+                        }}
+                        key={index}
+                      >
+                        <Conversation
+                          conversation={c}
+                          status={isOnlineCon(c)}
+                          currentChat={currentChat._id}
+                        />
+                      </div>
+                    )
+                )}
           </Conserv>
         );
       case "reports":
@@ -754,7 +786,28 @@ export default function ChatScreen() {
           </Conserv>
         );
       case "supports":
-        return <Conserv>No supports</Conserv>;
+        return (
+          <Conserv>
+            {supportConversations.length < 1
+              ? "No Support"
+              : supportConversations.map((r, index) => (
+                  <div
+                    key={r._id}
+                    onClick={() => {
+                      setCurrentChat(r);
+                      socket.emit("remove_notifications", r._id);
+                    }}
+                  >
+                    <Conversation
+                      report
+                      conversation={r}
+                      status={isOnlineCon(r)}
+                      currentChat={currentChat._id}
+                    />
+                  </div>
+                ))}
+          </Conserv>
+        );
 
       default:
         break;
@@ -833,7 +886,7 @@ export default function ChatScreen() {
               />
 
               {searchResult.length > 0 && (
-                <SearchUl mode={mode}>
+                <SearchUl mode={mode} ref={searchRef}>
                   {searchResult.map(
                     (u) =>
                       u._id !== userInfo._id && (
@@ -913,6 +966,7 @@ export default function ChatScreen() {
                   style={{
                     color: "grey",
                     textAlign: "center",
+                    lineHeight: "18px",
                   }}
                 >
                   {currentTab === "messages"

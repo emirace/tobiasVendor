@@ -15,7 +15,7 @@ import React, {
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../../Store";
-import { getError } from "../../../utils";
+import { getError, region } from "../../../utils";
 import Messages from "../../Messages";
 import Conversation from "./Conversation";
 
@@ -153,6 +153,27 @@ const ProductImg = styled.img.attrs((props) => ({
   object-position: top;
   margin-right: 0 15px;
 `;
+const SearchUl = styled.div`
+  position: absolute;
+  top: 20px;
+  left: 0;
+  padding: 15px;
+  width: 100%;
+  z-index: 9;
+  background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
+`;
+const SearchLi = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+`;
+const SearchImg = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -179,6 +200,7 @@ const reducer = (state, action) => {
 export default function AllMessages() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
+  const searchRef = useRef();
 
   const [{ loading, error, conversations, messages }, dispatch] = useReducer(
     reducer,
@@ -229,6 +251,7 @@ export default function AllMessages() {
   const [user, setUser] = useState([]);
   const [user2, setUser2] = useState([]);
   const [loadingx, setLoadingx] = useState(false);
+  const [searchResult, setSearchResult] = useState("");
 
   useEffect(() => {
     if (currentChat) {
@@ -303,13 +326,47 @@ export default function AllMessages() {
     getproduct();
   }, [currentChat]);
 
+  const closeModel = (e) => {
+    if (searchRef !== e.target) {
+      setSearchResult("");
+    }
+  };
+
+  const handleSearchInput = async (e) => {
+    e.preventDefault();
+    if (e.target.value.length > 2) {
+      const { data } = await axios.get(
+        `/api/users/${region()}/search?q=${e.target.value}`
+      );
+      setSearchResult(data);
+    }
+  };
+
   return (
-    <Container mode={mode}>
+    <Container mode={mode} onClick={closeModel}>
       <Left mode={mode}>
         <TopBar>
-          <div>
+          <div style={{ position: "relative" }}>
             <FontAwesomeIcon icon={faSearch} />
-            <Search placeholder="Search..." mode={mode} />
+            <Search
+              placeholder="Search..."
+              mode={mode}
+              onChange={handleSearchInput}
+            />
+
+            {searchResult.length > 0 && (
+              <SearchUl mode={mode} ref={searchRef}>
+                {searchResult.map(
+                  (u) =>
+                    u._id !== userInfo._id && (
+                      <SearchLi key={u._id}>
+                        <SearchImg src={u.image} alt="img" />
+                        <div>{u.username}</div>
+                      </SearchLi>
+                    )
+                )}
+              </SearchUl>
+            )}
           </div>
           <div>
             <FontAwesomeIcon icon={faMessage} />

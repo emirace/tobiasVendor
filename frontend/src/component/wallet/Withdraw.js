@@ -109,8 +109,8 @@ export default function Withdraw({
     getUser();
   }, []);
   const handleWithdraw = async () => {
+    console.log(amount, balance.balance);
     if (amount > balance.balance) {
-      console.log("hello2", error);
       dispatch({
         type: "FETCH_FAIL",
         payload: "Enter amount less than current balance",
@@ -212,7 +212,7 @@ export default function Withdraw({
           fontWeight: "13px",
           cursor: "pointer",
         }}
-        onClick={() => setAmount(balance.balance.toFixed(2))}
+        onClick={() => setAmount(Math.floor(balance.balance * 100) / 100)}
       >
         All
       </div>
