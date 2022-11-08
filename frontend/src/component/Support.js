@@ -18,6 +18,8 @@ import axios from "axios";
 import { socket } from "../App";
 import Messages from "./Messages";
 import { useLocation } from "react-router-dom";
+import secureLocalStorage from "react-secure-storage";
+import { getError } from "../utils";
 
 const Container = styled.div`
   position: fixed;
@@ -248,6 +250,18 @@ export default function Support() {
     getMessages();
   }, [currentChat, user]);
 
+  const storeGuestUser = (guest) => {
+    const guestUsers = secureLocalStorage.getItem("guestUsers") || [];
+    console.log(guestUsers);
+    const exist = guestUsers.find((user) => user.email === guest.email);
+    if (exist) {
+      return exist;
+    } else {
+      secureLocalStorage.setItem("guestUsers", [...guestUsers, guest]);
+      return guest;
+    }
+  };
+
   const handleOnChange = (text, input) => {
     setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
   };
@@ -264,13 +278,29 @@ export default function Support() {
       handleError("Please enter an email", "email");
       return;
     }
-    setUser({
-      username: input.username,
-      email: input.email,
-      guest: true,
-      _id: v4(),
-    });
-    await addConversation(user._id);
+    console.log("hey");
+    try {
+      const id = (
+        m = Math,
+        d = Date,
+        h = 16,
+        s = (s) => m.floor(s).toString(h)
+      ) =>
+        s(d.now() / 1000) +
+        " ".repeat(h).replace(/./g, () => s(m.random() * h));
+      const currentGuest = storeGuestUser({
+        username: input.username,
+        email: input.email,
+        guest: true,
+        _id: id(),
+      });
+      await addConversation(currentGuest._id);
+      console.log(id());
+      setUser(currentGuest);
+    } catch (err) {
+      console.log(err.message);
+    }
+    console.log("hello");
   };
 
   const addConversation = async (id) => {
@@ -305,6 +335,7 @@ export default function Support() {
         message: data.message,
         senderId: user._id,
         receiverId,
+        isAdmin: false,
         text: message,
       });
       socket.emit("post_data", {
@@ -318,7 +349,7 @@ export default function Support() {
       });
       setMessage("");
     } catch (err) {
-      console.log(err);
+      console.log(getError(err));
     }
   };
 
@@ -327,6 +358,11 @@ export default function Support() {
       await addConversation(user._id);
     }
     setSendMessage(true);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
   };
 
   return (
@@ -360,7 +396,7 @@ export default function Support() {
                   <Admin style={{ marginLeft: "70px" }}>
                     <Image src="/images/pimage.png" />
                     <div style={{ margin: "10px 0", maxWidth: "200px" }}>
-                      We will reply as soon as we can
+                      We will reply as soon as we can, but usually within 48hrs
                     </div>
                   </Admin>
                 </>
@@ -400,6 +436,7 @@ export default function Support() {
                       <GrAttachment />
                       <FontAwesomeIcon
                         onClick={handleSubmit}
+                        onKeyDown={handleKeyDown}
                         icon={faPaperPlane}
                       />
                     </InputCont>
@@ -473,7 +510,8 @@ export default function Support() {
                     <Admin>
                       <Image src="/images/pimage.png" />
                       <div style={{ margin: "10px 0" }}>
-                        We will reply as soon as we can
+                        We will reply as soon as we can, but usually within
+                        48hrs
                       </div>
                     </Admin>
                     <Button onClick={handleSendMessage}>

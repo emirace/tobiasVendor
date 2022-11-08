@@ -30,12 +30,19 @@ export function CartNotEmpty({ children }) {
 }
 
 export function IsShippingAdd({ children }) {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { shippingAddress },
   } = state;
   Object.keys(shippingAddress).length === 0 &&
-    toast.error("Enter Shipping Address");
+    ctxDispatch({
+      type: "SHOW_TOAST",
+      payload: {
+        message: "Enter Shipping Address",
+        showStatus: true,
+        state1: "visible1 error",
+      },
+    });
   return Object.keys(shippingAddress).length === 0 ? (
     <Navigate to="/shipping" />
   ) : (
@@ -44,12 +51,20 @@ export function IsShippingAdd({ children }) {
 }
 
 export function IsPaymentMethod({ children }) {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { paymentMethod },
   } = state;
 
-  !paymentMethod && toast.error("Select Payment Method");
+  !paymentMethod &&
+    ctxDispatch({
+      type: "SHOW_TOAST",
+      payload: {
+        message: "Select Payment Method",
+        showStatus: true,
+        state1: "visible1 error",
+      },
+    });
   return paymentMethod ? children : <Navigate to="/payment" />;
 }
 

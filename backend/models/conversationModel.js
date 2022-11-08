@@ -7,6 +7,7 @@ const conversationSchema = new mongoose.Schema(
     needRespond: { type: Boolean, default: true },
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    guest: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -80,263 +80,290 @@ app.use(session({ secret: "SECRET", resave: true, saveUninitialized: true }));
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
-app.use("/api/email", async (req, res) => {
-  const url = "com";
-  const returned = {
-    _id: "6344e35552987aee285f54cd",
-    orderId: {
-      _id: "6344dd023d8dcc41550b13da",
-      orderItems: [
-        {
-          _id: "6311c79762d17b63ee0171ea",
-          name: "Black Sleeveless Turtleneck Top",
-          sellerName: "text",
-          seller: {
-            _id: "6311bbb008a7269433b575d5",
-            username: "text",
-            image:
-              "https://res.cloudinary.com/emirace/image/upload/v1662106705/hovxuvpllq2kqkx0hqkq.jpg",
-            sold: [
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-              "6311c79762d17b63ee0171ea",
-            ],
-            rating: 3,
-            numReviews: 1,
-          },
-          slug: "black-sleeveless-turtleneck-top",
-          image:
-            "https://res.cloudinary.com/emirace/image/upload/v1662109438/e2ylfar3gh585hok6zth.jpg",
-          images: ["", "", ""],
-          tags: ["black"],
-          brand: "A Fine Mess",
-          color: "black",
-          category: "CLOTHING",
-          product: "6311c79762d17b63ee0171ea",
-          subCategory: "Tops",
-          material: "Cotton",
-          description: "khvyy",
-          sizes: [
-            {
-              size: "S",
-              value: "02",
-            },
-          ],
-          deliveryOption: [
-            {
-              name: "Pick up from Seller",
-              value: 1,
-            },
-            {
-              name: "Paxi PEP store",
-              value: "59.95",
-            },
-            {
-              name: "PUDO Locker-to-Locker",
-              value: "40",
-            },
-            {
-              name: "PostNet-to-PostNet",
-              value: "99.99",
-            },
-            {
-              name: "Aramex Store-to-Door",
-              value: "99.99",
-            },
-          ],
-          condition: "New with Tags",
-          shippingLocation: "South African",
-          keyFeatures: "Camo",
-          specification: "ihgjkh",
-          price: 180,
-          actualPrice: 171,
-          rating: 2.6666666666666665,
-          currency: "R ",
-          numReviews: 3,
-          likes: ["631312ac6ac50ac8cf472968"],
-          sold: true,
-          active: true,
-          vintage: false,
-          luxury: false,
-          countInStock: 9,
-          region: "ZAR",
-          createdAt: "2022-09-02T09:06:31.704Z",
-          updatedAt: "2022-10-10T23:45:01.303Z",
-          __v: 22,
-          shares: ["631312ac6ac50ac8cf472968", "6311bbb008a7269433b575d5"],
-          reviews: [
-            {
-              name: "631312ac6ac50ac8cf472968",
-              comment: "good",
-              rating: 2,
-              like: "yes",
-              _id: "6338a70535e25a4de61746bc",
-              createdAt: "2022-10-01T20:45:57.621Z",
-              updatedAt: "2022-10-01T20:45:57.621Z",
-            },
-            {
-              name: "631312ac6ac50ac8cf472968",
-              comment: "the ",
-              rating: 3,
-              like: "yes",
-              _id: "633a14a44235ce83c9c37711",
-              createdAt: "2022-10-02T22:45:56.192Z",
-              updatedAt: "2022-10-02T22:45:56.192Z",
-            },
-            {
-              user: "631312ac6ac50ac8cf472968",
-              name: "emirace",
-              comment: "ihgh",
-              rating: 3,
-              like: "no",
-              _id: "633a16720ff7c70f11d380f0",
-              createdAt: "2022-10-02T22:53:39.055Z",
-              updatedAt: "2022-10-02T22:53:39.055Z",
-            },
-          ],
-          quantity: 1,
-          selectSize: "S",
-          deliverySelect: {
-            "delivery Option": "Aramex Store-to-Door",
-            cost: "99.99",
-            name: "Emmanuel Ikechukwu Akwuba",
-            phone: "+2349036168775",
-            email: "emmanuelakwuba57@gmail.com",
-            address:
-              "7 1st Avenue off Christ mary. 1 obaze lane, off upper mission Rd.",
-            suburb: "Benin",
-            city: "Benin",
-            postalcode: "300271",
-            province: "Edo",
-          },
-          deliveryStatus: "Return Approved",
-          deliveredAt: 1665459086860,
-        },
-      ],
-      user: {
-        _id: "631312ac6ac50ac8cf472968",
-        username: "emirace",
-        image: "/images/pimage.png",
-        email: "emmanuelakwuba57@gmail.com",
-      },
-    },
-    productId: {
-      _id: "6311c79762d17b63ee0171ea",
-      name: "Black Sleeveless Turtleneck Top",
-      seller: {
-        _id: "6311bbb008a7269433b575d5",
-        username: "text",
-        email: "emiracegroup@gmail.com",
-        image:
-          "https://res.cloudinary.com/emirace/image/upload/v1662106705/hovxuvpllq2kqkx0hqkq.jpg",
-      },
-      image:
-        "https://res.cloudinary.com/emirace/image/upload/v1662109438/e2ylfar3gh585hok6zth.jpg",
-      actualPrice: 171,
-    },
-    sellerId: "6311bbb008a7269433b575d5",
-    reason: "Product condition is significantly not as described",
-    sending: {
-      deliveryOption: "Aramex Store-to-Door",
-      cost: "99.99",
-      name: "Emmanuel Ikechukwu Akwuba",
-      phone: "+2349036168775",
-      email: "emmanuelakwuba57@gmail.com",
-      address:
-        "7 1st Avenue off Christ mary. 1 obaze lane, off upper mission Rd.",
-      suburb: "Benin",
-      city: "Benin",
-      postalcode: "300271",
-      province: "Edo",
-    },
-    refund: "Refund to my original payment method",
-    image: "",
-    others: "hgfy",
-    region: "ZAR",
-    comfirmDelivery: null,
-    status: "Approve",
-    createdAt: "2022-10-11T03:30:29.738Z",
-    updatedAt: "2022-10-11T03:31:26.151Z",
-    __v: 0,
-  };
+// app.use("/api/email", async (req, res) => {
+//   const url = "com";
+//   const order = {
+//     _id: "63691020a10ea54d5d767c8c",
+//     orderItems: [
+//       {
+//         _id: "631318516ac50ac8cf4729bf",
+//         name: "Young Men Short Sleeve",
+//         sellerName: "emirace",
+//         seller: {
+//           address: {
+//             apartment: "plot",
+//             street: "3 Bee road",
+//             state: "Free State",
+//             zipcode: 2,
+//           },
+//           _id: "631312ac6ac50ac8cf472968",
+//           username: "emirace",
+//           image: "/images/pimage.png",
+//           email: "emmanuelakwuba57@gmail.com",
+//           sold: [
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63235a1a3c9ca3ee9d815b46",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63519848365e3ca273e98633",
+//             "63401c4b6a327648e2caba12",
+//             "63401c4b6a327648e2caba12",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//             "631318516ac50ac8cf4729bf",
+//           ],
+//           rating: 3,
+//           numReviews: 3,
+//           region: "NGN",
+//         },
+//         slug: "young-men-short-sleeve",
+//         image:
+//           "https://res.cloudinary.com/emirace/image/upload/v1662195583/srjzwaihbid5oxh0tfh6.webp",
+//         images: ["", "", ""],
+//         tags: ["jean"],
+//         brand: "A Is For Audrey",
+//         color: "blue",
+//         category: "CLOTHING",
+//         product: "631318516ac50ac8cf4729bf",
+//         subCategory: "Tops",
+//         material: "Cloth",
+//         description:
+//           "The color of the actual jacket may be different from the picture because of different monitors and color rendering modes.",
+//         sizes: [
+//           {
+//             size: "M",
+//             value: "04",
+//           },
+//         ],
+//         deliveryOption: [
+//           {
+//             name: "Pick up from Seller",
+//             value: 1,
+//           },
+//           {
+//             name: "Paxi PEP store",
+//             value: "59.95",
+//           },
+//           {
+//             name: "PUDO Locker-to-Locker",
+//             value: "40",
+//           },
+//           {
+//             name: "PostNet-to-PostNet",
+//             value: "99.99",
+//           },
+//           {
+//             name: "Aramex Store-to-Door",
+//             value: "99.99",
+//           },
+//         ],
+//         condition: "New with Tags",
+//         shippingLocation: "Nigeria",
+//         keyFeatures: "Plain",
+//         specification:
+//           "The color of the actual jacket may be different from the picture because of different monitors and color rendering modes.",
+//         price: 210,
+//         actualPrice: 199.5,
+//         rating: 4,
+//         currency: "N ",
+//         numReviews: 1,
+//         likes: [
+//           "6317459789dfae6cedc8e90b",
+//           "6317459789dfae6cedc8e90b",
+//           "6321809eb09887ad99b3ceaa",
+//         ],
+//         sold: true,
+//         active: true,
+//         vintage: false,
+//         luxury: false,
+//         countInStock: 9,
+//         region: "NGN",
+//         reviews: [
+//           {
+//             name: "Emmanuel_757865",
+//             comment: "came in as seen",
+//             rating: 4,
+//             like: "yes",
+//             _id: "6325780047754d5f14086b1e",
+//             createdAt: "2022-09-17T07:32:16.353Z",
+//             updatedAt: "2022-09-17T07:32:16.353Z",
+//           },
+//         ],
+//         createdAt: "2022-09-03T09:03:13.981Z",
+//         updatedAt: "2022-11-06T18:29:10.050Z",
+//         __v: 20,
+//         shares: [
+//           "6321809eb09887ad99b3ceaa",
+//           "632165b19849f6b85993af77",
+//           "631312ac6ac50ac8cf472968",
+//         ],
+//         userBuy: [
+//           "632165b19849f6b85993af77",
+//           "632165b19849f6b85993af77",
+//           "6363826861111a4610e98372",
+//           "6311bbb008a7269433b575d5",
+//           "6311bbb008a7269433b575d5",
+//         ],
+//         quantity: 1,
+//         selectSize: "M",
+//         deliverySelect: {
+//           "delivery Option": "Aramex Store-to-Door",
+//           cost: "99.99",
+//           name: "Emmanuel Ikechukwu Akwuba",
+//           phone: "+2349036168775",
+//           email: "emmanuelakwuba57@gmail.com",
+//           address:
+//             "7 1st Avenue off Christ mary. 1 obaze lane, off upper mission Rd.",
+//           suburb: "Benin",
+//           city: "Benin",
+//           postalcode: "300271",
+//           province: "x",
+//         },
+//         deliveryStatus: "Delivered",
+//         deliveredAt: 1667834744020,
+//         trackingNumber: "23455678976",
+//       },
+//     ],
+//     paymentMethod: "Credit/Debit card",
+//     itemsPrice: 199.5,
+//     shippingPrice: 99.99,
+//     taxPrice: 0,
+//     totalPrice: 299.49,
+//     seller: ["631312ac6ac50ac8cf472968"],
+//     user: {
+//       _id: "6369000a669d9bf87182b631",
+//       username: "joe",
+//       image: "/images/pimage.png",
+//       email: "emirace@mail.com",
+//     },
+//     isPaid: true,
+//     deliveryStatus: "Delivered",
+//     region: "NGN",
+//     createdAt: "2022-11-07T14:03:12.567Z",
+//     updatedAt: "2022-11-07T15:25:44.026Z",
+//     __v: 4,
+//     orderId: "63691020a10ea54d5d767c8c",
+//     paidAt: "2022-11-07T14:03:13.329Z",
+//   };
 
-  try {
-    switch ("Decline") {
-      case "Decline":
-        sendEmail({
-          to: returned.orderId.user.email,
-          subject: "ORDER RETURN DECLINED",
-          template: "returnDeclineBuyer",
-          context: {
-            username: returned.orderId.user.username,
-            orderId: returned.orderId._id,
-            returnId: returned._id,
-            declineReason: req.body.adminReason,
-            url,
-          },
-        });
-        break;
-      case "Approve":
-        sendEmail({
-          to: returned.orderId.user.email,
-          subject: "ORDER RETURN APPROVED",
-          template: "returnAppoveBuyer",
-          context: {
-            username: returned.orderId.user.username,
-            orderId: returned.orderId._id,
-            returnId: returned._id,
-            url,
-          },
-        });
-
-        sendEmail({
-          to: returned.productId.seller.email,
-          subject: "ORDER RETURN APPROVED",
-          template: "returnAppoveSeller",
-          context: {
-            username: returned.productId.seller.username,
-            orderId: returned.orderId._id,
-            returnId: returned._id,
-            reason: returned.reason,
-            url,
-          },
-        });
-        break;
-
-      default:
-        break;
-    }
-    res.send("Email sent");
-  } catch (error) {
-    console.log(error);
-    res.send("Email not sent");
-  }
-});
+//   try {
+//     order.orderItems.map((x) => {
+//       if (x._id === "631318516ac50ac8cf4729bf") {
+//         const address =
+//           x.deliverySelect["delivery Option"] === "Paxi PEP store"
+//             ? x.deliverySelect["shortName"]
+//             : x.deliverySelect["delivery Option"] === "PUDO Locker-to-Locker"
+//             ? `${x.deliverySelect["shortName"]},${x.deliverySelect["province"]}`
+//             : x.deliverySelect["delivery Option"] === "PostNet-to-PostNet"
+//             ? `${x.deliverySelect["pickUp"]},${x.deliverySelect["province"]}`
+//             : x.deliverySelect["address"];
+//         return sendEmail({
+//           to: order.user.email,
+//           subject: "ORDER DELIVERED ",
+//           template: "orderDelivered",
+//           context: {
+//             username: order.user.username,
+//             url,
+//             orderId: order._id,
+//             address,
+//             deliveryMethod: x.deliverySelect["delivery Option"],
+//             orderItems: order.orderItems,
+//           },
+//         });
+//       }
+//     });
+//     res.send("Email sent");
+//   } catch (error) {
+//     console.log(error);
+//     res.send("Email not sent");
+//   }
+// });
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);

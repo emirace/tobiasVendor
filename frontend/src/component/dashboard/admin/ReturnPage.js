@@ -148,7 +148,7 @@ export default function ReturnPage() {
           from: "Wallet",
           to: "Wallet",
           typeName: "Return",
-          id: orderId,
+          id: returned.orderId._id,
           currency: returned.productId.currency,
         },
       },
@@ -157,7 +157,7 @@ export default function ReturnPage() {
       }
     );
     socket.emit("post_data", {
-      userId: "Admim",
+      userId: "Admin",
       itemId: paymentData._id,
       notifyType: "payment",
       msg: `Return Completed`,
@@ -288,7 +288,7 @@ export default function ReturnPage() {
         const { data } = await axios.put(
           `/api/returns/admin/${returnId}`,
           {
-            status: "Approve",
+            status: "Approved",
             transaction_id: withdrawData.transaction_id || null,
           },
           {
@@ -391,7 +391,7 @@ export default function ReturnPage() {
                 Enter Reason for Declince here...
               </textarea>
             </div>
-            <Button onClick={() => handleReturn("Approve")}>Approve</Button>
+            <Button onClick={() => handleReturn("Approved")}>Approve</Button>
             <Button className="decline" onClick={() => handleReturn("Decline")}>
               Decline
             </Button>
@@ -399,7 +399,7 @@ export default function ReturnPage() {
         ) : (
           <p style={{ color: "red" }}>Waiting Admin Approver/Decline</p>
         )}
-        {returned.status === "Approve" && (
+        {returned.status === "Approved" && (
           <>
             <Name>Return Delivery Address</Name>
             {returned.returnDelivery ? (

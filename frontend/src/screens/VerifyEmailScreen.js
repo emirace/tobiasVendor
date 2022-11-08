@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import jwt_decode from "jwt-decode";
 import styled from "styled-components";
 import Input from "../component/Input";
+import Countdown from "react-countdown";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -163,8 +164,14 @@ export default function VerifyEmailScreen() {
   });
   const [error, setError] = useState("");
 
+  const [restart, setRestart] = useState(Math.random());
+  const [countdown, setCountdown] = useState(false);
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
+  useEffect(() => {
+    resendEmail();
+  }, [userInfo]);
 
   const submitHandler = async () => {
     try {
@@ -199,36 +206,9 @@ export default function VerifyEmailScreen() {
     }
   };
 
-  const validate = (e) => {
-    e.preventDefault();
-    let valid = true;
-    if (!input.number || input.number.length < 6) {
-      handleError("Enter a six digit code", "number");
-      valid = false;
-    }
-
-    if (valid) {
-      submitHandler();
-    }
-  };
-
-  const darkMode = (mode) => {
-    if (mode) {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
-      localStorage.setItem("mode", "pagebodydark");
-    } else {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
-      localStorage.setItem("mode", "pagebodylight");
-    }
-  };
-
-  const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text }));
-  };
-  const handleError = (errorMessage, input) => {
-    setError((prevState) => ({ ...prevState, [input]: errorMessage }));
-  };
   const resendEmail = async () => {
+    setRestart(Math.random());
+    setCountdown(true);
     try {
       const { data } = await axios.get(`/api/users/sendverifyemail`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -246,46 +226,61 @@ export default function VerifyEmailScreen() {
     }
   };
 
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+      return "";
+    } else {
+      // Render a countdown
+      return (
+        <span>
+          {" "}
+          {minutes}min : {seconds}secs
+        </span>
+      );
+    }
+  };
+
   return (
-    <Container className="small-container">
+    <Container
+      className="small-container"
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
       <Helmet>
         <title>Verify email</title>
       </Helmet>
 
       <h3 className="my-3">Verify Your Email Address</h3>
+      <p>You're almost there! We sent an email to</p>
       <p>
-        We emailed you a six digit code at {userInfo.email}. Enter the code
-        below to confirm your email
+        <b>{userInfo.email}</b>
       </p>
-
-      <Form onSubmit={validate}>
-        <Form.Group className="mb-3" controlId="number">
-          <Input
-            type="number"
-            error={error.number}
-            onFocus={() => {
-              handleError(null, "number");
-            }}
-            onChange={(e) => handleOnChange(e.target.value, "number")}
+      <p style={{ textAlign: "center" }}>
+        Just click on the link in that email to verify your email. If you don't
+        see it, you may need to <b>check your spam</b> folder.
+      </p>
+      <p>Still can't find the email?</p>
+      <div>
+        <button
+          disabled={countdown}
+          onClick={resendEmail}
+          style={{ padding: "7px 25px", fontSize: "15px" }}
+          className="search-btn1"
+        >
+          Resend Email
+        </button>
+      </div>
+      {countdown && (
+        <div>
+          <span>Try again in</span>
+          <Countdown
+            date={Date.now() + 120000}
+            key={restart}
+            onComplete={() => setCountdown(false)}
+            renderer={renderer}
           />
-        </Form.Group>
-        <div className="mb-3">
-          <button type="submit" className="search-btn1">
-            <FontAwesomeIcon style={{ marginRight: "10px" }} icon={faCheck} />{" "}
-            Verify
-          </button>
         </div>
-        <div className="mb-3">
-          Didn't received verification code
-          <span
-            style={{ cursor: "pointer", color: "var(--orange-color)" }}
-            onClick={resendEmail}
-          >
-            {" "}
-            {"  "}Send again
-          </span>
-        </div>
-      </Form>
+      )}
     </Container>
   );
 }

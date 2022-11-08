@@ -130,7 +130,14 @@ export default function Signin() {
       localStorage.setItem("userInfo", JSON.stringify(data));
       window.location.href = redirect || "/signin";
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 

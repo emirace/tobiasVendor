@@ -795,6 +795,7 @@ export default function User() {
         </Show>
         <Update mode={mode}>
           <UpdateTitle>Edit</UpdateTitle>
+          const {region} = req.params;
           <Form onSubmit={submitHandler}>
             <Left>
               <Item>

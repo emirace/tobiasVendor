@@ -128,7 +128,14 @@ export default function Product(props) {
         });
       }
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -173,7 +180,14 @@ export default function Product(props) {
       });
       // dispatch({ type: 'REFRESH_PRODUCT', payload: data.user });
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 

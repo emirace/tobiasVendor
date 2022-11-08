@@ -17,6 +17,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
+import secureLocalStorage from "react-secure-storage";
 
 const Container = styled.div`
   display: none;
@@ -128,7 +129,7 @@ export default function MobileProfileScreen() {
 
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
-    localStorage.removeItem("userInfo");
+    secureLocalStorage.removeItem("userInfo");
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");

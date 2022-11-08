@@ -456,10 +456,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           >
                             {region() === "NGN"
                               ? states.Nigeria.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))
                               : states.SouthAfrican.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))}
                           </Select>
                         </FormControl>
@@ -561,10 +561,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           >
                             {region() === "NGN"
                               ? states.Nigeria.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))
                               : states.SouthAfrican.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))}
                           </Select>
                         </FormControl>
@@ -741,10 +741,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           >
                             {region() === "NGN"
                               ? states.Nigeria.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))
                               : states.SouthAfrican.map((x) => (
-                                  <MenuItem value="x">{x}</MenuItem>
+                                  <MenuItem value={x}>{x}</MenuItem>
                                 ))}
                           </Select>
                         </FormControl>

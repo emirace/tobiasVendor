@@ -182,6 +182,7 @@ export default function PaymentScreen() {
             amount: payment.amount,
             purpose: payment.meta.Type,
             userId: "Admin",
+            orderId: payment.meta.id,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -221,7 +222,7 @@ export default function PaymentScreen() {
       const { data } = await axios.put(
         `/api/payments/${paymentId}`,
         {
-          status: "Approve",
+          status: "Approved",
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

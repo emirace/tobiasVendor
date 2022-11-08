@@ -238,7 +238,14 @@ export default function SigninScreen() {
         window.location.href = `/verifyemail`;
       }
     } catch (err) {
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -321,6 +328,7 @@ export default function SigninScreen() {
         <Form.Group className="mb-3" controlId="email">
           <Form.Label>Email</Form.Label>
           <Input
+            name="email"
             error={error.email}
             onFocus={() => {
               handleError(null, "email");
@@ -331,6 +339,7 @@ export default function SigninScreen() {
         <Form.Group className="mb-3" controlId="password">
           <Form.Label>Password</Form.Label>
           <Input
+            name="password"
             password
             error={error.password}
             onFocus={() => {

@@ -160,7 +160,7 @@ userRouter.post(
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-    newUser.resetEmailExpire = Date.now() + 10 * (60 * 1000);
+    newUser.resetEmailExpire = Date.now() + 30 * (60 * 1000);
     const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
     const user = await newUser.save();
@@ -172,16 +172,6 @@ userRouter.post(
       context: {
         username: newUser.username,
         url,
-      },
-    });
-    sendEmail({
-      to: newUser.email,
-      subject: "VERIFY YOUR EMAIL",
-      template: "verifyEmail",
-      context: {
-        username: newUser.username,
-        url,
-        resetlink: resetUrl,
       },
     });
     await Account.create({
@@ -214,16 +204,16 @@ userRouter.post(
 
 userRouter.post(
   "/verifyemail/:resetToken",
-  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const resetPasswordToken = crypto
+    const resetEmailToken = crypto
       .createHash("sha256")
       .update(req.params.resetToken)
       .digest("hex");
+    console.log(req.params.resetToken, resetEmailToken);
 
     const user = await User.findOne({
-      resetPasswordToken,
-      resetPasswordExpire: {
+      resetEmailToken,
+      resetEmailExpire: {
         $gt: Date.now(),
       },
     });
@@ -245,7 +235,7 @@ userRouter.post(
         .status(201)
         .send({ success: true, message: "Email verified successfuly" });
     } else {
-      res.status(400).send({ message: "Invalid Token" });
+      res.status(400).send({ message: "Invalid Verification Token" });
     }
   })
 );
@@ -261,7 +251,7 @@ userRouter.post(
         .createHash("sha256")
         .update(resetToken)
         .digest("hex");
-      user.resetPasswordExpire = Date.now() + 10 * (60 * 1000);
+      user.resetPasswordExpire = Date.now() + 30 * (60 * 1000);
       await user.save();
       const resetUrl = `https://repeddle.${url}/resetpassword/${resetToken}`;
       console.log(resetToken);
@@ -358,14 +348,14 @@ userRouter.get(
         .update(resetToken)
         .digest("hex");
       user.resetEmailExpire = Date.now() + 10 * (60 * 1000);
-      const resetUrl = `https://repeddle.${url}/resetemail/${resetToken}`;
+      const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
-      const user = await newUser.save();
+      const newUser = await user.save();
 
       sendEmail({
         to: user.email,
         subject: "VERIFY YOUR EMAIL",
-        template: "veriyEmail",
+        template: "verifyEmail",
         context: {
           username: user.username,
           url,
@@ -381,6 +371,7 @@ userRouter.post(
   "/:region/google",
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const { region } = req.params;
     const url = region === "NGN" ? "com" : "co.za";
     const ticket = await client.verifyIdToken({
       idToken: req.body.tokenId,
@@ -418,15 +409,15 @@ userRouter.post(
         currency: req.params.region === "ZAR" ? "R " : "N ",
       });
 
-      sendEmail({
-        to: newUser.email,
-        subject: "WELCOME TO REPEDDLE ",
-        template: "welcome",
-        context: {
-          username: result.username,
-          url,
-        },
-      });
+    sendEmail({
+      to: newUser.email,
+      subject: "WELCOME TO REPEDDLE ",
+      template: "welcome",
+      context: {
+        username: result.username,
+        url,
+      },
+    });
 
     const token = generateToken(result);
     const data = {
@@ -458,7 +449,7 @@ userRouter.post(
   "/:region/facebook",
   expressAsyncHandler(async (req, res) => {
     console.log("accessToken", req.body.accessToken);
-
+    const { region } = req.params;
     const url = region === "NGN" ? "com" : "co.za";
     const { data } = await axios.get(
       `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
@@ -489,15 +480,15 @@ userRouter.post(
         currency: req.params.region === "ZAR" ? "R " : "N ",
       });
 
-      sendEmail({
-        to: newUser.email,
-        subject: "WELCOME TO REPEDDLE ",
-        template: "welcome",
-        context: {
-          username: result.username,
-          url,
-        },
-      });
+    sendEmail({
+      to: newUser.email,
+      subject: "WELCOME TO REPEDDLE ",
+      template: "welcome",
+      context: {
+        username: result.username,
+        url,
+      },
+    });
 
     const token = generateToken(result);
     const data1 = {

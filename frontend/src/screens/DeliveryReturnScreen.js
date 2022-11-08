@@ -161,7 +161,7 @@ export default function DeliveryReturnScreen({
     console.log(addresses);
     if (addresses && addresses.length > 0) {
       addresses.map((d) => {
-        if (d.meta.deliveryOption === deliveryOption) {
+        if (d.meta["deliveryOption"] === deliveryOption) {
           setMeta(d.meta);
           setUpdate(true);
           setSelected(d._id);
@@ -301,7 +301,7 @@ export default function DeliveryReturnScreen({
         <Form onSubmit={submitHandler}>
           {[
             {
-              name: returned.sending.deliveryOption,
+              name: returned.sending["delivery Option"],
               value: returned.sending.cost,
             },
           ].map((x) => (

@@ -204,7 +204,14 @@ export default function PlaceOrderScreen() {
       return data;
     } catch (err) {
       dispatch({ type: "CREATE_FAIL" });
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
   const saveOrderHandler = async () => {
@@ -223,7 +230,14 @@ export default function PlaceOrderScreen() {
       navigate(`/order/${data.order._id}`);
     } catch (err) {
       dispatch({ type: "CREATE_FAIL" });
-      toast.error(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -252,7 +266,9 @@ export default function PlaceOrderScreen() {
           { headers: { authorization: `Bearer ${userInfo.token}` } }
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
-        await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
+        order1.order.seller.map(async (x) => {
+          await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
+        });
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -308,8 +324,8 @@ export default function PlaceOrderScreen() {
           { headers: { authorization: `Bearer ${userInfo.token}` } }
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
-        order1.order.seller.map(async (seller) => {
-          await axios.put(`api/bestsellers/${region()}/${seller}`);
+        order1.order.seller.map(async (x) => {
+          await axios.put(`api/bestsellers/${region()}/${x}`);
         });
         ctxDispatch({
           type: "SHOW_TOAST",

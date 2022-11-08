@@ -93,6 +93,7 @@ accountRouter.post(
     const accountId = account._id;
     const { amount } = req.body;
     const transaction_id = v4();
+
     if (accountId && amount > 0) {
       try {
         const creditResult = await creditAccount({
@@ -108,38 +109,52 @@ accountRouter.post(
         if (!creditResult.success) {
           throw creditResult;
         }
+        if (
+          req.body.purpose === "Order Completed" ||
+          req.body.purpose === "Return Completed"
+        ) {
+          const user = await User.findById(req.body.userId);
+          const order = await Order.findById(req.body.orderId);
+
+          if (req.body.purpose === "Order Completed") {
+            sendEmail({
+              to: user.email,
+              subject: "ORDER COMPLETED",
+              template: "ordercCompleted",
+              context: {
+                username: user.username,
+                url: user.region === "NGN" ? "com" : "co.za",
+                orderItems: order.orderItems,
+              },
+            });
+          }
+          if (req.body.purpose === "Return Completed") {
+            const returned = await Return.findOne({ orderId: order._id });
+            if (returned) {
+              console.log("gddddfg return complete 222");
+              sendEmail({
+                to: user.email,
+                subject: "RETURN REFUNDED",
+                template: "returnRefunded",
+                context: {
+                  username: user.username,
+                  url: user.region === "NGN" ? "com" : "co.za",
+                  orderItems: order.orderItems,
+                  returnId: returned?._id,
+                },
+              });
+            } else {
+              throw {
+                success: false,
+                error: "return not found",
+              };
+            }
+          }
+        }
         res.status(200).send({
           success: true,
           message: "deposit successful",
         });
-        const user = await User.findById(req.body.userId);
-        const order = await Order.findById(req.body.userId);
-        if (req.body.purpose === "Order Completed") {
-          sendEmail({
-            to: user.email,
-            subject: "ORDER COMPLETED",
-            template: "ordercCompleted",
-            context: {
-              username: user.username,
-              url: user.region === "NGN" ? "com" : "co.za",
-              orderItems: order.orderItems,
-            },
-          });
-        }
-        const returned = await Return.findOne({ orderId: order._id });
-        if (req.body.purpose === "Return Completed") {
-          sendEmail({
-            to: user.email,
-            subject: "RETURN REFUNDED",
-            template: "returnRefunded",
-            context: {
-              username: user.username,
-              url: user.region === "NGN" ? "com" : "co.za",
-              orderItems: order.orderItems,
-              returnId: returned?._id,
-            },
-          });
-        }
       } catch (error) {
         res.status(500).send({
           success: false,
@@ -344,30 +359,51 @@ accountRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    console.log("pay account request");
     const details = {
       account_bank: "044",
       account_number: "0690000040",
       amount: 200,
       currency: "NGN",
       narration: "Payment for things",
-      reference: generateTransactionReference(),
+      reference: v4(),
     };
     const user = await User.findById(req.body.userId);
+    sendEmail({
+      to: user.email,
+      subject: "WITHDRAWAL REQUESTED",
+      template: "withdrawalRequest",
+      context: {
+        username: user.username,
+        url: user.region === "NGN" ? "com" : "co.za",
+        amount: req.body.amount,
+        currency: req.body.currency,
+        bankName: req.body.bankName,
+        accountNumber: req.body.accountNumber,
+        accountName: req.body.accountName,
+        
+      },
+    });
 
-    flw.Transfer.initiate(details)
-      .then(() => {
-        sendEmail({
-          to: user.email,
-          subject: "WITHDRAWAL REQUESTED",
-          template: "withdrawalRequest",
-          context: {
-            username: user.username,
-            url: user.region === "NGN" ? "com" : "co.za",
-            amount,
-          },
-        });
-      })
-      .catch(console.log);
+    // flw.Transfer.initiate(details)
+    //   .then(() => {
+    //     sendEmail({
+    //       to: user.email,
+    //       subject: "WITHDRAWAL REQUESTED",
+    //       template: "withdrawalRequest",
+    //       context: {
+    //         username: user.username,
+    //         url: user.region === "NGN" ? "com" : "co.za",
+    //         amount,
+    //       },
+    //     });
+    //   })
+    //   .catch(console.log);
+
+    res.status(200).send({
+      success: true,
+      message: "transfer successful",
+    });
   })
 );
 

@@ -96,6 +96,8 @@ import VipShield from "./component/info/VipShield";
 import VerifyAddressScreen from "./screens/VerifyAddressScreen";
 import Terms from "./component/info/Terms";
 import BanScreen from "./screens/successPage/BanScreen";
+import VerifyEmailConfirmScreen from "./screens/VerifyEmailConfirmScreen";
+import secureLocalStorage from "react-secure-storage";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -219,7 +221,7 @@ function App() {
   const { cart, userInfo, mode, notifications } = state;
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
-    localStorage.removeItem("userInfo");
+    secureLocalStorage.removeItem("userInfo");
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
@@ -481,6 +483,10 @@ function App() {
                             </IsActive>
                           </ProtectedRoute>
                         }
+                      />
+                      <Route
+                        path="/verifyemail/:token"
+                        element={<VerifyEmailConfirmScreen />}
                       />
                       <Route
                         path="/banned"

@@ -185,7 +185,7 @@ export default function Conversation({
             </Name>
             <LastMsg>
               {console.log("count", count, "not", notifications)}
-              {console.log(conversation)}
+              {console.log(conversation.guest, "guest")}
               {message.message && message.messages.length > 0
                 ? message.messages[message.messages.length - 1].text
                 : "No messages"}{" "}

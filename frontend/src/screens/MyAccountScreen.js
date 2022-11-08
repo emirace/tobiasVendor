@@ -1,13 +1,15 @@
-import axios from 'axios';
-import React, { useContext, useReducer, useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { Helmet } from 'react-helmet-async';
-import { toast } from 'react-toastify';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from "axios";
+import React, { useContext, useReducer, useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
+import { Store } from "../Store";
+import { getError } from "../utils";
+import styled from "styled-components";
+import secureLocalStorage from "react-secure-storage";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
   faCircleHalfStroke,
@@ -22,24 +24,24 @@ import {
   faBookmark,
   faGift,
   faChartArea,
-} from '@fortawesome/free-solid-svg-icons';
-import Rating from '../component/Rating';
-import { Link, Route, Routes } from 'react-router-dom';
-import MessageBox from '../component/MessageBox';
-import ProtectedRoute from '../component/ProtectedRoute';
-import OrderHistoryScreen from './OrderHistoryScreen';
-import ProductListScreen from './ProductListScreen';
-import UserListScreen from './UserListScreen';
-import DashboardScreen from './DashboardScreen';
-import OrderListScreen from './OrderListScreen';
+} from "@fortawesome/free-solid-svg-icons";
+import Rating from "../component/Rating";
+import { Link, Route, Routes } from "react-router-dom";
+import MessageBox from "../component/MessageBox";
+import ProtectedRoute from "../component/ProtectedRoute";
+import OrderHistoryScreen from "./OrderHistoryScreen";
+import ProductListScreen from "./ProductListScreen";
+import UserListScreen from "./UserListScreen";
+import DashboardScreen from "./DashboardScreen";
+import OrderListScreen from "./OrderListScreen";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'UPDATE_REQUEST':
+    case "UPDATE_REQUEST":
       return { ...state, loadingUpdate: true };
-    case 'UPDATE_SUCCESS':
+    case "UPDATE_SUCCESS":
       return { ...state, loadingUpdate: false };
-    case 'UPDATE_FAIL':
+    case "UPDATE_FAIL":
       return { ...state, loadingUpdate: false };
 
     default:
@@ -185,7 +187,7 @@ const MobileMenu = styled.div.attrs((props) => ({
 }))`
   display: none;
   @media (max-width: 992px) {
-    display: ${(props) => (props.displaymenu ? 'none' : 'block')};
+    display: ${(props) => (props.displaymenu ? "none" : "block")};
     overflow: auto;
     position: fixed;
     top: 0;
@@ -209,8 +211,8 @@ const MobileMenuItem = styled.div`
 `;
 
 const AdsImage = styled.img.attrs({
-  src: '/images/p8.png',
-  alt: 'ads',
+  src: "/images/p8.png",
+  alt: "ads",
 })`
   width: 100vw;
   height: 100px;
@@ -221,9 +223,9 @@ const AdsImage = styled.img.attrs({
 `;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
 
@@ -248,7 +250,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -259,7 +261,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: 'darkmodeSwitch',
+  for: "darkmodeSwitch",
 })`
   margin-left: 5px;
   @media (max-width: 992px) {
@@ -278,18 +280,18 @@ export default function MyAccountScreen() {
   const { userInfo, cart, mode } = state;
   const { shippingAddress: address } = cart;
 
-  const [display, setDispalay] = useState('account');
+  const [display, setDispalay] = useState("account");
   const [hideMenu, setHideMwnu] = useState(false);
 
   const displaySection = () => {
     switch (display) {
-      case 'account':
+      case "account":
         return (
           <DetailCont>
             <DetailLeft>
               <Card>
                 <CardTitle>
-                  account Information{' '}
+                  account Information{" "}
                   <Link to="/profile">
                     <FontAwesomeIcon icon={faPen} />
                   </Link>
@@ -313,7 +315,7 @@ export default function MyAccountScreen() {
               </Card>
               <Card>
                 <CardTitle>
-                  Payment Information{' '}
+                  Payment Information{" "}
                   <Link to="/paymentinfo">
                     <FontAwesomeIcon icon={faPen} />
                   </Link>
@@ -330,7 +332,7 @@ export default function MyAccountScreen() {
                 <CardTitle>
                   Shipping Address
                   <Link to="/shipping">
-                    {' '}
+                    {" "}
                     <FontAwesomeIcon icon={faPen} />
                   </Link>
                 </CardTitle>
@@ -353,17 +355,17 @@ export default function MyAccountScreen() {
           </DetailCont>
         );
 
-      case 'order':
+      case "order":
         return <OrderHistoryScreen />;
-      case 'product':
+      case "product":
         return <ProductListScreen />;
-      case 'allproduct':
+      case "allproduct":
         return <ProductListScreen />;
-      case 'allorder':
+      case "allorder":
         return <OrderListScreen />;
-      case 'alluser':
+      case "alluser":
         return <UserListScreen />;
-      case 'dashboard':
+      case "dashboard":
         return <DashboardScreen />;
       default:
         break;
@@ -371,21 +373,21 @@ export default function MyAccountScreen() {
   };
 
   const signoutHandler = () => {
-    ctxDispatch({ type: 'USER_SIGNOUT' });
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems');
-    localStorage.removeItem('shippingAddress');
-    localStorage.removeItem('paymentMethod');
-    window.location.href = '/signin';
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    secureLocalStorage.removeItem("userInfo");
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("shippingAddress");
+    localStorage.removeItem("paymentMethod");
+    window.location.href = "/signin";
   };
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
-      localStorage.setItem('mode', 'pagebodydark');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
     } else {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
-      localStorage.setItem('mode', 'pagebodylight');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
     }
   };
 
@@ -395,14 +397,14 @@ export default function MyAccountScreen() {
         <AdsImage />
         <SwitchCont>
           <Switch
-            checked={mode === 'pagebodydark'}
+            checked={mode === "pagebodydark"}
             onChange={(e) => darkMode(e.target.checked)}
           ></Switch>
-          <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+          <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
         </SwitchCont>
         <MobileMenuItem
           onClick={() => {
-            setDispalay('account');
+            setDispalay("account");
             setHideMwnu(true);
           }}
         >
@@ -412,7 +414,7 @@ export default function MyAccountScreen() {
 
         <MobileMenuItem
           onClick={() => {
-            setDispalay('order');
+            setDispalay("order");
             setHideMwnu(true);
           }}
         >
@@ -427,7 +429,7 @@ export default function MyAccountScreen() {
         </MobileMenuItem>
         <MobileMenuItem
           onClick={() => {
-            setDispalay('saved');
+            setDispalay("saved");
             setHideMwnu(true);
           }}
         >
@@ -437,7 +439,7 @@ export default function MyAccountScreen() {
         {userInfo && userInfo.isSeller && (
           <MobileMenuItem
             onClick={() => {
-              setDispalay('product');
+              setDispalay("product");
               setHideMwnu(true);
             }}
           >
@@ -449,7 +451,7 @@ export default function MyAccountScreen() {
           <>
             <MobileMenuItem
               onClick={() => {
-                setDispalay('allproduct');
+                setDispalay("allproduct");
                 setHideMwnu(true);
               }}
             >
@@ -458,7 +460,7 @@ export default function MyAccountScreen() {
             </MobileMenuItem>
             <MobileMenuItem
               onClick={() => {
-                setDispalay('allorder');
+                setDispalay("allorder");
                 setHideMwnu(true);
               }}
             >
@@ -467,7 +469,7 @@ export default function MyAccountScreen() {
             </MobileMenuItem>
             <MobileMenuItem
               onClick={() => {
-                setDispalay('alluser');
+                setDispalay("alluser");
                 setHideMwnu(true);
               }}
             >
@@ -476,7 +478,7 @@ export default function MyAccountScreen() {
             </MobileMenuItem>
             <MobileMenuItem
               onClick={() => {
-                setDispalay('dashboard');
+                setDispalay("dashboard");
                 setHideMwnu(true);
               }}
             >
@@ -487,7 +489,7 @@ export default function MyAccountScreen() {
         )}
         <MobileMenuItem
           onClick={() => {
-            setDispalay('gift');
+            setDispalay("gift");
             setHideMwnu(true);
           }}
         >
@@ -501,7 +503,7 @@ export default function MyAccountScreen() {
       </MobileMenu>
       <Left>
         <Menu>
-          <MenuItem onClick={() => setDispalay('account')}>
+          <MenuItem onClick={() => setDispalay("account")}>
             <FontAwesomeIcon icon={faUser} />
             Account
           </MenuItem>
@@ -512,42 +514,42 @@ export default function MyAccountScreen() {
               Inbox
             </Link>
           </MenuItem>
-          <MenuItem onClick={() => setDispalay('order')}>
+          <MenuItem onClick={() => setDispalay("order")}>
             <FontAwesomeIcon icon={faBagShopping} />
             Orders
           </MenuItem>
-          <MenuItem onClick={() => setDispalay('save')}>
+          <MenuItem onClick={() => setDispalay("save")}>
             <FontAwesomeIcon icon={faBookmark} />
             Saved Items
           </MenuItem>
           {userInfo && userInfo.isSeller && (
-            <MenuItem onClick={() => setDispalay('product')}>
+            <MenuItem onClick={() => setDispalay("product")}>
               <FontAwesomeIcon icon={faBasketShopping} />
               Product
             </MenuItem>
           )}
           {userInfo && userInfo.isAdmin && (
             <>
-              <MenuItem onClick={() => setDispalay('allproduct')}>
+              <MenuItem onClick={() => setDispalay("allproduct")}>
                 <FontAwesomeIcon icon={faBasketShopping} />
                 All Products
               </MenuItem>
-              <MenuItem onClick={() => setDispalay('allorder')}>
+              <MenuItem onClick={() => setDispalay("allorder")}>
                 <FontAwesomeIcon icon={faBagShopping} />
                 All Order
               </MenuItem>
-              <MenuItem onClick={() => setDispalay('alluser')}>
+              <MenuItem onClick={() => setDispalay("alluser")}>
                 <FontAwesomeIcon icon={faUser} />
                 All Users
               </MenuItem>
-              <MenuItem onClick={() => setDispalay('dashboard')}>
+              <MenuItem onClick={() => setDispalay("dashboard")}>
                 <FontAwesomeIcon icon={faChartArea} />
                 Analytics
               </MenuItem>
             </>
           )}
 
-          <MenuItem onClick={() => setDispalay('coupons')}>
+          <MenuItem onClick={() => setDispalay("coupons")}>
             <FontAwesomeIcon icon={faGift} />
             Coupons
           </MenuItem>

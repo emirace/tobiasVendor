@@ -1,16 +1,16 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faTrash, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import { Store } from "../Store";
+import { getError } from "../utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faTrash, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import styled from "styled-components";
 
 const ContainerBig = styled.div`
   width: 100%;
@@ -45,7 +45,7 @@ const TabItem = styled.div`
   &.active {
     color: var(--orange-color);
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -102,7 +102,7 @@ const Right = styled.div`
 `;
 const OrderImg = styled.img.attrs((props) => ({
   src: props.src,
-  alt: 'imag',
+  alt: "imag",
 }))`
   object-fit: cover;
   object-position: top;
@@ -141,11 +141,11 @@ const Status = styled.div`
   margin: 0 5px 10px 5px;
 
   background: ${(props) =>
-    props.isDelivered || props.isPaid ? 'green' : 'grey'};
+    props.isDelivered || props.isPaid ? "green" : "grey"};
   color: #fff;
   font-size: 13px;
   padding: 2px 5px;
-  width: ${(props) => (props.isDelivered || props.isPaid ? '70px' : '100px')};
+  width: ${(props) => (props.isDelivered || props.isPaid ? "70px" : "100px")};
   text-align: center;
 
   border: 0;
@@ -164,24 +164,24 @@ const Date = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return { ...state, loading: false, orders: action.payload };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'DELETE_REQUEST':
+    case "DELETE_REQUEST":
       return { ...state, loadingDelete: true, successDelete: false };
-    case 'DELETE_SUCCESS':
+    case "DELETE_SUCCESS":
       return { ...state, loadingDelete: false, successDelete: true };
-    case 'DELETE_FAIL':
+    case "DELETE_FAIL":
       return {
         ...state,
         loadingDelete: false,
         successDelete: false,
         error: action.payload,
       };
-    case 'DELETE_RESET':
+    case "DELETE_RESET":
       return { ...state, loadingDelete: false, successDelete: false };
     default:
       return state;
@@ -189,11 +189,11 @@ const reducer = (state, action) => {
 };
 
 export default function OrderListScreen() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
 
-  const [displayTab, setDisplayTab] = useState('openorders');
+  const [displayTab, setDisplayTab] = useState("openorders");
 
   const sellerMode = () => {
     return userInfo.isSeller && !userInfo.isAdmin ? true : false;
@@ -203,53 +203,60 @@ export default function OrderListScreen() {
   const [{ loading, error, orders, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
       loading: true,
-      error: '',
+      error: "",
     });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch({ type: 'FETCH_REQUEST' });
+        dispatch({ type: "FETCH_REQUEST" });
 
         const { data } = await axios.get(
-          `/api/orders${isSellerMode ? '/seller/' : ''}${
-            isSellerMode ? userInfo._id : ''
+          `/api/orders${isSellerMode ? "/seller/" : ""}${
+            isSellerMode ? userInfo._id : ""
           }`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', paylood: getError(err) });
+        dispatch({ type: "FETCH_FAIL", paylood: getError(err) });
       }
     };
     if (successDelete) {
-      dispatch({ type: 'DELETE_RESET' });
+      dispatch({ type: "DELETE_RESET" });
     } else {
       fetchData();
     }
   }, [successDelete, userInfo]);
 
   const deleteHandler = async (order) => {
-    if (window.confirm('Are you sure to delete')) {
+    if (window.confirm("Are you sure to delete")) {
       try {
-        dispatch({ type: 'DELETE_REQUEST' });
+        dispatch({ type: "DELETE_REQUEST" });
         await axios.delete(`/api/orders/${order._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        toast.success('Order delected successfully');
-        dispatch({ type: 'DELETE_SUCCESS' });
+        toast.success("Order delected successfully");
+        dispatch({ type: "DELETE_SUCCESS" });
       } catch (err) {
-        toast.error(getError(err));
-        dispatch({ type: 'DELETE_FAIL' });
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: getError(err),
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+        dispatch({ type: "DELETE_FAIL" });
       }
     }
   };
 
   const tabSwitch = (tab) => {
     switch (tab) {
-      case 'openorders':
+      case "openorders":
         return orders.map((order) => (
           <Content>
             <Left>
@@ -260,13 +267,13 @@ export default function OrderListScreen() {
               <OrderNum>Order {order._id}</OrderNum>
               <Statuscont>
                 <Status isDelivered={order.isDelivered}>
-                  {order.isDelivered ? 'Delivered' : 'Not Delivered'}
+                  {order.isDelivered ? "Delivered" : "Not Delivered"}
                 </Status>
                 <Status isPaid={order.isPaid}>
-                  {order.isPaid ? 'Paid' : 'Not Paid'}
+                  {order.isPaid ? "Paid" : "Not Paid"}
                 </Status>
               </Statuscont>
-              <Date>By {order.user ? order.user.name : 'anonymous'}</Date>
+              <Date>By {order.user ? order.user.name : "anonymous"}</Date>
             </Center>
             <Right>
               <Link to={`/order/${order._id}`}>
@@ -285,7 +292,7 @@ export default function OrderListScreen() {
             </Right>
           </Content>
         ));
-      case 'closedorders':
+      case "closedorders":
         return <>closedorders</>;
 
       default:
@@ -309,14 +316,14 @@ export default function OrderListScreen() {
           <Container>
             <Tab>
               <TabItem
-                className={displayTab === 'openorders' && 'active'}
-                onClick={() => setDisplayTab('openorders')}
+                className={displayTab === "openorders" && "active"}
+                onClick={() => setDisplayTab("openorders")}
               >
                 Open Orders ({orders.length})
               </TabItem>
               <TabItem
-                className={displayTab === 'closedorders' && 'active'}
-                onClick={() => setDisplayTab('closedorders')}
+                className={displayTab === "closedorders" && "active"}
+                onClick={() => setDisplayTab("closedorders")}
               >
                 Closed Orders (10)
               </TabItem>

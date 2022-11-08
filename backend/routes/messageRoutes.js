@@ -47,7 +47,7 @@ messageRouter.post(
       const conversation = await Conversation.findById(req.body.conversationId);
       if (conversation) {
         console.log("hello2");
-        conversation.needRespond = req.body.senderId.isAdmin ? false : true;
+        conversation.needRespond = req.body.isAdmin ? false : true;
         conversation.updatedAt = Date.now();
         console.log("hello2a");
         await conversation.save();

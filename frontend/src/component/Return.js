@@ -95,6 +95,7 @@ const Button = styled.div`
   color: var(--white-color);
   background: var(--orange-color);
   border-radius: 0.2rem;
+  cursor: pointer;
   &:hover {
     background: var(--malon-color);
   }
@@ -207,6 +208,14 @@ export default function Return({
       });
       socket.emit("post_data", {
         userId: current.seller,
+        itemId: current._id,
+        notifyType: "return",
+        msg: `${userInfo.username} requested a return`,
+        link: `/return/${data._id}?orderId=${orderId}`,
+        userImage: userInfo.image,
+      });
+      socket.emit("post_data", {
+        userId: "Admin",
         itemId: current._id,
         notifyType: "return",
         msg: `${userInfo.username} requested a return`,

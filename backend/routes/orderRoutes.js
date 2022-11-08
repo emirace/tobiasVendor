@@ -425,18 +425,25 @@ orderRouter.put(
         }
       });
       order.deliveryStatus = req.body.deliveryStatus;
-      switch (req.body.deliceryStatus) {
+      await order.save();
+      console.log("change status", req.body.deliveryStatus);
+
+      switch (req.body.deliveryStatus) {
         case "Processing":
-          sendEmail({
-            to: order.user.email,
-            subject: "PREPARINING ORDER FOR DELIVERY",
-            template: "preparingOrder",
-            context: {
-              username: order.user.username,
-              url: region === "NGN" ? "com" : "co.za",
-              orderId: order._id,
-              orderItems: order.orderItems,
-            },
+          order.orderItems.map((x) => {
+            if (x._id === req.params.productId) {
+              sendEmail({
+                to: order.user.email,
+                subject: "PREPARINING ORDER FOR DELIVERY",
+                template: "preparingOrder",
+                context: {
+                  username: order.user.username,
+                  url: x.region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  orderItems: order.orderItems,
+                },
+              });
+            }
           });
           break;
         case "Dispatched":
@@ -444,14 +451,15 @@ orderRouter.put(
             if (x._id === req.params.productId) {
               return sendEmail({
                 to: order.user.email,
-                subject: "RDER DISPATCHED",
+                subject: "ORDER DISPATCHED",
                 template: "dispatchOrder",
                 context: {
                   username: order.user.username,
-                  url: region === "NGN" ? "com" : "co.za",
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
-                  deliveryMethod: x.deliverySelet["delivery Option"],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: order.orderItems,
+                  trackId: x.trackingNumber,
                 },
               });
             }
@@ -459,6 +467,7 @@ orderRouter.put(
 
           break;
         case "In Transit":
+          console.log("change status to transit");
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               return sendEmail({
@@ -467,9 +476,9 @@ orderRouter.put(
                 template: "transitOrder",
                 context: {
                   username: order.user.username,
-                  url: region === "NGN" ? "com" : "co.za",
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
-                  deliveryMethod: x.deliverySelet["delivery Option"],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: order.orderItems,
                 },
               });
@@ -478,6 +487,7 @@ orderRouter.put(
 
           break;
         case "Delivered":
+          console.log("change status to dilivered");
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               const address =
@@ -495,7 +505,7 @@ orderRouter.put(
                 template: "orderDelivered",
                 context: {
                   username: order.user.username,
-                  url: region === "NGN" ? "com" : "co.za",
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   address,
                   deliveryMethod: x.deliverySelect["delivery Option"],
@@ -515,7 +525,7 @@ orderRouter.put(
                 template: "orderReceive",
                 context: {
                   username: x.seller.username,
-                  url: region === "NGN" ? "com" : "co.za",
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   orderItems: order.orderItems,
                 },
@@ -540,7 +550,6 @@ orderRouter.put(
         default:
           break;
       }
-      await order.save();
       res.send({ message: "Order Delivery Status changed" });
     } else {
       res.status(404).send({ message: "Order Not Found" });
@@ -635,6 +644,7 @@ orderRouter.put(
             seller: order.orderItems[0].seller.username,
             orderId: order._id,
             orderItems: order.orderItems,
+            sellerId: order.orderItems[0].seller._id,
           },
         });
         res.send({ message: "Order Paid", order: updateOrder });

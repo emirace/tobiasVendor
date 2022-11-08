@@ -1,5 +1,5 @@
 import express from "express";
-import { isAdmin, isAuth } from "../utils.js";
+import { isAdmin, isAuth, sendEmail } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Return from "../models/returnModel.js";
 import Product from "../models/productModel.js";
@@ -102,19 +102,29 @@ returnRouter.post(
       others: req.body.others,
     });
     sendEmail({
-      to: [req.user.username, product.seller.email],
+      to: product.seller.email,
       subject: "ORDER RETURN RECEIVED ",
       template: "returnRequest",
       context: {
-        username: req.user.username,
+        username: "Tribe",
         url: region === "NGN" ? "com" : "co.za",
         orderId: req.body.orderId,
         reason: req.body.reason,
       },
     });
+    sendEmail({
+      to: req.user.email,
+      subject: "ORDER RETURN RECEIVED ",
+      template: "returnRequest",
+      context: {
+        username: "Tribe",
+        url: region === "NGN" ? "com" : "co.za",
+        orderId: req.body.orderId,
+        reason: req.body.reason,
+      },
+    });
+    returned.returnId = returned._id.toString();
     const newReturn = await returned.save();
-    newReturn.returnId = newReturn._id.toString();
-    const newReturn1 = await newReturn.save();
     res.status(201).send(newReturn);
   })
 );
@@ -154,6 +164,7 @@ returnRouter.put(
             context: {
               username: returned.orderId.user.username,
               orderId: returned.orderId._id,
+              reason: returned.reason,
               returnId: returned._id,
               declineReason: req.body.adminReason,
               url,

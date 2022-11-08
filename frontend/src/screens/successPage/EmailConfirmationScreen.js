@@ -54,7 +54,7 @@ export default function EmailConfirmationScreen({ email }) {
           color="var(--malon-color)"
           icon={faEnvelopeCircleCheck}
         />
-        <Title>Email Confirmation</Title>
+        <Title>Reset Password</Title>
         <Text
           style={{
             marginBottom: "30px",

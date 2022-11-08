@@ -981,29 +981,31 @@ export default function ChatScreen() {
                   directly from the report tab on the item page.`}
                 </div>
               </PrivacyInfo>
-              {currentChat.conversationType !== "user" && (
-                <Link
-                  to={
-                    currentChat.conversationType === "reportUser"
-                      ? `/seller/${product._id}`
-                      : `/product/${product.slug}`
-                  }
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    borderBottom: "1px solid grey",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <ProductImg src={product.image} />
-                    <div>
-                      {currentChat.conversationType === "reportUser"
-                        ? product.username
-                        : product.name}
+              {console.log(currentChat.conversationType, "heellloo")}
+              {currentChat.conversationType !== "user" &&
+                currentChat.conversationType !== "support" && (
+                  <Link
+                    to={
+                      currentChat.conversationType === "reportUser"
+                        ? `/seller/${product._id}`
+                        : `/product/${product.slug}`
+                    }
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      borderBottom: "1px solid grey",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ProductImg src={product.image} />
+                      <div>
+                        {currentChat.conversationType === "reportUser"
+                          ? product.username
+                          : product.name}
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              )}
+                  </Link>
+                )}
               <ChatArea>
                 <div
                   style={{
