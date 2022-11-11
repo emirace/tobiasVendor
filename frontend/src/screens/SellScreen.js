@@ -17,6 +17,9 @@ import { Store } from "../Store";
 
 const Container = styled.div`
   margin: 0 10vw;
+  @media (max-width: 992px) {
+    margin: 0 5vw;
+  }
 `;
 const Header = styled.h1`
   font-weight: bold;
@@ -28,23 +31,37 @@ const Header = styled.h1`
   left: 10%;
   color: white;
   transform: translateY(-50%);
+  @media (max-width: 992px) {
+    font-size: 30px;
+    top: 80%;
+    text-align: center;
+  }
 `;
 const Header2 = styled.h2`
   display: flex;
+  text-align: center;
   justify-content: center;
   font-weight: bold;
   margin: 0 5px;
+  @media (max-width: 992px) {
+    font-size: 15px !important;
+  }
 `;
 const SubHeading = styled.h4`
   margin: 0 5px;
   font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 10px;
+  text-align: center;
+  @media (max-width: 992px) {
+    font-size: 12px !important;
+  }
 `;
 const SubHeadingMalon = styled.h4`
   margin: 0 5px;
   font-weight: bold;
   color: var(--malon-color);
+  @media (max-width: 992px) {
+    font-size: 12px;
+  }
 `;
 const Row = styled.div`
   display: flex;
@@ -52,6 +69,17 @@ const Row = styled.div`
   justify-content: center;
   align-items: center;
 
+  @media (max-width: 992px) {
+    &.mobile {
+      flex-direction: column;
+    }
+    &.scroll {
+      overflow-x: auto;
+    }
+    &.width {
+      width: auto !important;
+    }
+  }
   &.gap {
     gap: 10px;
   }
@@ -68,6 +96,9 @@ const Sides = styled.div`
 const SubHeadingOrange = styled.h4`
   margin: 0 5px;
   font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 12px;
+  }
   color: var(--orange-color);
 `;
 
@@ -75,6 +106,9 @@ const ImageCont = styled.div`
   position: relative;
   width: 100%;
   height: 70vh;
+  @media (max-width: 992px) {
+    height: auto;
+  }
 `;
 const MainImage = styled.img`
   width: 100%;
@@ -96,11 +130,18 @@ const Step = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   padding: 10px;
+
+  @media (max-width: 992px) {
+    margin: 10px 20px;
+  }
 `;
 const Text = styled.div`
   text-align: center;
   font-size: 16px;
   margin-bottom: 10px;
+  @media (max-width: 992px) {
+    font-size: 14px;
+  }
 `;
 const Section = styled.section`
   display: flex;
@@ -112,6 +153,9 @@ const Section = styled.section`
       props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
     padding: 20px;
     border-radius: 0.2rem;
+  }
+  @media (max-width: 992px) {
+    margin: 20px 0;
   }
 `;
 const Button = styled.div`
@@ -135,6 +179,10 @@ const Imagesqr = styled.img`
 const PhoneImg = styled.img`
   width: 350px;
   margin-bottom: 20px;
+  @media (max-width: 992px) {
+    margin-bottom: 10px;
+    width: 200px;
+  }
 `;
 const InputCont = styled.div`
   border: 1px solid;
@@ -162,6 +210,9 @@ const RebatchImg = styled.img`
   margin: 20px 20px 20px 0;
   flex: 1;
   height: 500px;
+  @media (max-width: 992px) {
+    width: 200px;
+  }
 `;
 
 const GetStart = styled.div`
@@ -214,9 +265,9 @@ export default function SellScreen() {
   return (
     <Container>
       <Section>
-        <SubHeading style={{ fontSize: "30px" }}>
+        <Header2 style={{ fontSize: "30px" }}>
           LET YOUR WARDROBE LIVE IN YOUR POCKET, ITS FAST
-        </SubHeading>
+        </Header2>
         <Row>
           <SubHeadingMalon>"CAN'T DO IT IN REAL LIFE?</SubHeadingMalon>
           <SubHeadingOrange>DO IT ON REPEDDLE"</SubHeadingOrange>
@@ -247,7 +298,7 @@ export default function SellScreen() {
           </SubHeading>
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
-        <Row style={{ width: "80%" }}>
+        <Row className="mobile" style={{ width: "80%" }}>
           <Sides>
             <PhoneImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
@@ -314,7 +365,7 @@ export default function SellScreen() {
         <Link to="/newproduct">
           <Button>Start Selling</Button>
         </Link>
-        <Row className="gap">
+        <Row className="gap scroll">
           <Imagesqr
             src="https://res.cloudinary.com/emirace/image/upload/v1661221989/james-ree-ZmeFtu11Hpc-unsplash_xzwcxb.webp"
             alt="img"
@@ -339,7 +390,7 @@ export default function SellScreen() {
       </Section>
       <Section>
         <Header2>RE:BATCH</Header2>
-        <Row style={{ width: "70%" }}>
+        <Row className="mobile width" style={{ width: "70%" }}>
           <RebatchImg
             src="https://res.cloudinary.com/emirace/image/upload/v1661221991/derick-anies-hDJT_ERrB-w-unsplash_tty8rb.webp"
             alt="img"
@@ -398,14 +449,14 @@ export default function SellScreen() {
             <GetStart>GET STARTED</GetStart>
           </Link>
         </div>
-        <Text style={{ textAlign: "left" }}>
+        <Text style={{ textAlign: "justify" }}>
           Repeddle BULK n SLOT offers opportunity to either retailers who are
           clearing out a large amount of items as clearance, or wholesalers who
           are selling items in bulk or slots also known as BALES. These option
           gives you the benefit to list a minimum of ten items in a bag/box and
           you can list as much items as you are able to deliver.
         </Text>
-        <Text style={{ textAlign: "left" }}>
+        <Text style={{ textAlign: "justify" }}>
           We initiated this solution to provide a self <b>B2B</b> services to
           our community members who may be in need to buy in bulk from fellow
           community members. If you’re a retailer and would prefer to buy items
@@ -416,7 +467,7 @@ export default function SellScreen() {
         <SubHeading>THREE EASY STEPS TO USE BULK n SLOT</SubHeading>
         <Row style={{ alignItems: "flex-start" }}>
           <b style={{ marginRight: "10px" }}>1.</b>
-          <Text style={{ textAlign: "left" }}>
+          <Text style={{ textAlign: "justify" }}>
             <b>TAKE A PIC/VIDEO:</b> Make sure to pack up to Ten (10) items
             minimum, you want to sell in a bag/box, snap a photo of your Bulk or
             Slot bag/box and take extra clear detailed photos or make a short
@@ -428,7 +479,7 @@ export default function SellScreen() {
 
         <Row style={{ alignItems: "flex-start" }}>
           <b style={{ marginRight: "10px" }}>2.</b>
-          <Text style={{ textAlign: "left" }}>
+          <Text style={{ textAlign: "justify" }}>
             <b>LIST:</b> Ensure to describe in details the conditions of your
             items as per our condition guidelines before listing your Bulk or
             Slot bag/box, give full details of items in the description and if
@@ -443,7 +494,7 @@ export default function SellScreen() {
 
         <Row style={{ alignItems: "flex-start" }}>
           <b style={{ marginRight: "10px" }}>3.</b>
-          <Text style={{ textAlign: "left" }}>
+          <Text style={{ textAlign: "justify" }}>
             <b>SHARE AND CASH-OUT:</b> After a successful upload, be sure to
             share your listing, both on Repeddle’s platforms and social medias
             to help buyers discover your items. You can cash-out by either
@@ -459,7 +510,7 @@ export default function SellScreen() {
       </Section>
       <Section mode={mode}>
         <Header2>WHY SELL WITH REPEDDLE?</Header2>
-        <Row style={{ width: "90vw" }}>
+        <Row style={{ width: "90vw" }} className="mobile">
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>MAKE A CHANGE</SubHeading>
             <Text>
@@ -505,7 +556,7 @@ export default function SellScreen() {
         className="back"
       >
         <Header2>WHAT YOU WILL GET</Header2>
-        <Row style={{ width: "80vw" }}>
+        <Row style={{ width: "80vw" }} className="mobile">
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <FontAwesomeIcon
               size="4x"

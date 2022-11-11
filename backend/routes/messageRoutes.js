@@ -1,8 +1,9 @@
 import express from "express";
 import Message from "../models/messageModel.js";
 import expressAsyncHandler from "express-async-handler";
-import { isAuth } from "../utils.js";
+import { isAuth, sendEmail } from "../utils.js";
 import Conversation from "../models/conversationModel.js";
+import User from "../models/userModel.js";
 
 const messageRouter = express.Router();
 
@@ -24,6 +25,22 @@ messageRouter.post(
           image: req.body.image,
         });
         const savedmessage = await newmessage.save();
+        if (conversation.conversationType === "support") {
+          console.log(req.body.receiverId);
+
+          const realUser = await User.findById(req.body.receiverId);
+          console.log(realUser);
+          sendEmail({
+            to: realUser.email || req.body.guestEmail,
+            subject: "REPEDDLE SUPPORT ",
+            template: "support",
+            context: {
+              username: realUser.username || "Tribe",
+              url: req.body.url,
+              message: req.body.text,
+            },
+          });
+        }
         res
           .status(200)
           .send({ messages: "message sent", message: savedmessage });

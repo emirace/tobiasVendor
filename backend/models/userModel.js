@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
     rating: { type: Number, default: 0 },
     wallet: { type: Number, default: 0 },
     accountNumber: { type: Number },
-    phone: { type: Number },
+    phone: { type: String },
     googleId: { type: String },
     accountName: { type: String },
     bankName: { type: String },

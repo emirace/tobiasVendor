@@ -113,6 +113,7 @@ conversationRouter.post(
       members: [req.body.recieverId],
       conversationType: req.body.type,
       guest: true,
+      guestEmail: req.body.guestEmail,
     });
     const savedConversation = await newConversation.save();
     res.status(200).send(savedConversation);

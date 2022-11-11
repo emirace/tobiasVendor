@@ -484,6 +484,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("sendSupport", ({ message, senderId, receiverId, text }) => {
+    const admins = users.filter((x) => x.isAdmin);
+    admins.map((admin) => {
+      io.to(admin.socketId).emit("getMessage", {
+        senderId,
+        text,
+        message,
+      });
+    });
+  });
+
   socket.on("sendReport", ({ report }) => {
     const user = users.find((x) => x._id === report.user);
     const admin = users.find((x) => x.isAdmin);
@@ -546,7 +557,7 @@ io.on("connection", (socket) => {
 
   // mark as read
   socket.on("remove_notifications", async (id) => {
-    const notifications = await Notification.find({ itemId: id });
+    const notifications = await Notification.find({ itemId: id, read: false });
 
     notifications.forEach(async (notification) => {
       notification.read = true;

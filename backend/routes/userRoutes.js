@@ -58,43 +58,55 @@ userRouter.put(
     const user = await User.findById(req.user._id);
     const current = new Date();
     if (user) {
-      user.about = req.body.about || user.about;
-      user.username = req.body.username || user.username;
-      user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
-      user.firstName = req.body.firstName || user.firstName;
-      user.lastName = req.body.lastName || user.lastName;
-      user.email = req.body.email || user.email;
-      user.dob = req.body.dob || user.dob;
-      user.accountName = req.body.accountName || user.accountName;
-      user.accountNumber = req.body.accountNumber || user.accountNumber;
-      user.bankName = req.body.bankName || user.bankName;
-      user.phone = req.body.phone || user.phone;
-      user.address = req.body.address || user.address;
-      user.image = req.body.image || user.image;
-      if (req.body.password) {
-        user.password = bcrypt.hashSync(req.body.password, 8);
+      try {
+        user.about = req.body.about || user.about;
+        user.username = req.body.username || user.username;
+        user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
+        user.firstName = req.body.firstName || user.firstName;
+        user.lastName = req.body.lastName || user.lastName;
+        user.email = req.body.email || user.email;
+        user.dob = req.body.dob || user.dob;
+        user.accountName = req.body.accountName || user.accountName;
+        user.accountNumber = req.body.accountNumber || user.accountNumber;
+        user.bankName = req.body.bankName || user.bankName;
+        user.phone = req.body.phone || user.phone;
+        user.address = req.body.address || user.address;
+        user.image = req.body.image || user.image;
+        if (req.body.password) {
+          user.password = bcrypt.hashSync(req.body.password, 8);
+        }
+        const updatedUser = await user.save();
+        res.send({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          username: updatedUser.username,
+          usernameUpdate: updatedUser.usernameUpdate,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          region: updatedUser.region,
+          email: updatedUser.email,
+          isSeller: updatedUser.isSeller,
+          isAdmin: updatedUser.isAdmin,
+          image: updatedUser.image,
+          active: updatedUser.active,
+          isVerifiedEmail: updatedUser.isVerifiedEmail,
+          address: updatedUser.address,
+          bankName: updatedUser.bankName,
+          accountNumber: updatedUser.accountNumber,
+          accountName: updatedUser.accountName,
+          token: generateToken(updatedUser),
+        });
+      } catch (err) {
+        if (err) {
+          if (err.name === "MongoServerError" && err.code === 11000) {
+            // Duplicate username
+            return res
+              .status(500)
+              .send({ succes: false, message: "User already exist!" });
+          }
+        }
+        return res.status(500).send(err);
       }
-      const updatedUser = await user.save();
-      res.send({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        username: updatedUser.username,
-        usernameUpdate: updatedUser.usernameUpdate,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        region: updatedUser.region,
-        email: updatedUser.email,
-        isSeller: updatedUser.isSeller,
-        isAdmin: updatedUser.isAdmin,
-        image: updatedUser.image,
-        active: updatedUser.active,
-        isVerifiedEmail: updatedUser.isVerifiedEmail,
-        address: updatedUser.address,
-        bankName: updatedUser.bankName,
-        accountNumber: updatedUser.accountNumber,
-        accountName: updatedUser.accountName,
-        token: generateToken(updatedUser),
-      });
     } else {
       res.status(404).send({ message: "User not Found" });
     }
@@ -140,65 +152,76 @@ userRouter.post(
 userRouter.post(
   "/:region/signup",
   expressAsyncHandler(async (req, res) => {
-    const { region } = req.params;
-    const url = region === "NGN" ? "com" : "co.za";
-    const newUser = new User({
-      username: req.body.username.toLowerCase(),
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      phone: req.body.phone,
-      image: "/images/pimage.png",
-      password: bcrypt.hashSync(req.body.password),
-      rating: 0,
-      region,
-      numReviews: 0,
-    });
-    newUser.userId = newUser._id.toString();
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    newUser.resetEmailToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
-    newUser.resetEmailExpire = Date.now() + 30 * (60 * 1000);
-    const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
+    try {
+      const { region } = req.params;
+      const url = region === "NGN" ? "com" : "co.za";
+      const newUser = new User({
+        username: req.body.username.toLowerCase(),
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        phone: req.body.phone,
+        image: "/images/pimage.png",
+        password: bcrypt.hashSync(req.body.password),
+        rating: 0,
+        region,
+        numReviews: 0,
+      });
+      newUser.userId = newUser._id.toString();
+      const resetToken = crypto.randomBytes(20).toString("hex");
+      newUser.resetEmailToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+      newUser.resetEmailExpire = Date.now() + 30 * (60 * 1000);
+      const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
-    const user = await newUser.save();
+      const user = await newUser.save();
 
-    sendEmail({
-      to: newUser.email,
-      subject: "WELCOME TO REPEDDLE ",
-      template: "welcome",
-      context: {
-        username: newUser.username,
-        url,
-      },
-    });
-    await Account.create({
-      userId: user.id,
-      balance: 0,
-      currency: region === "ZAR" ? "R " : "N ",
-    });
-    res.send({
-      _id: user._id,
-      name: user.name,
-      username: user.username,
-      usernameUpdate: user.usernameUpdate,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      region: user.region,
-      email: user.email,
-      isSeller: user.isSeller,
-      isAdmin: user.isAdmin,
-      image: user.image,
-      isVerifiedEmail: user.isVerifiedEmail,
-      address: user.address,
-      active: user.active,
-      bankName: user.bankName,
-      accountNumber: user.accountNumber,
-      accountName: user.accountName,
-      token: generateToken(user),
-    });
+      sendEmail({
+        to: newUser.email,
+        subject: "WELCOME TO REPEDDLE ",
+        template: "welcome",
+        context: {
+          username: newUser.username,
+          url,
+        },
+      });
+      await Account.create({
+        userId: user.id,
+        balance: 0,
+        currency: region === "ZAR" ? "R " : "N ",
+      });
+      res.send({
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        usernameUpdate: user.usernameUpdate,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        region: user.region,
+        email: user.email,
+        isSeller: user.isSeller,
+        isAdmin: user.isAdmin,
+        image: user.image,
+        isVerifiedEmail: user.isVerifiedEmail,
+        address: user.address,
+        active: user.active,
+        bankName: user.bankName,
+        accountNumber: user.accountNumber,
+        accountName: user.accountName,
+        token: generateToken(user),
+      });
+    } catch (err) {
+      if (err.name === "MongoServerError" && err.code === 11000) {
+        // Duplicate username
+        return res
+          .status(500)
+          .send({ succes: false, message: "User already exist!" });
+      }
+
+      return res.status(500).send(err);
+    }
   })
 );
 
@@ -400,7 +423,18 @@ userRouter.post(
       $or: [{ email: user.email, social_id: user.social_id }],
     });
 
-    if (!result) result = await User.create(user);
+    if (!result) {
+      result = await User.create(user);
+      sendEmail({
+        to: result.email,
+        subject: "WELCOME TO REPEDDLE ",
+        template: "welcome",
+        context: {
+          username: result.username,
+          url,
+        },
+      });
+    }
     const account = await Account.findOne({ userId: result._id });
     if (!account)
       await Account.create({
@@ -408,16 +442,6 @@ userRouter.post(
         balance: 0,
         currency: req.params.region === "ZAR" ? "R " : "N ",
       });
-
-    sendEmail({
-      to: newUser.email,
-      subject: "WELCOME TO REPEDDLE ",
-      template: "welcome",
-      context: {
-        username: result.username,
-        url,
-      },
-    });
 
     const token = generateToken(result);
     const data = {
@@ -914,12 +938,24 @@ userRouter.put(
       const updatedUser = await user.save();
       res.send({
         message: "User Updated",
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        isSeller: user.isSeller,
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        username: updatedUser.username,
+        usernameUpdate: updatedUser.usernameUpdate,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        region: updatedUser.region,
+        email: updatedUser.email,
+        isSeller: updatedUser.isSeller,
+        isAdmin: updatedUser.isAdmin,
+        image: updatedUser.image,
+        active: updatedUser.active,
+        isVerifiedEmail: updatedUser.isVerifiedEmail,
+        address: updatedUser.address,
+        bankName: updatedUser.bankName,
+        accountNumber: updatedUser.accountNumber,
+        accountName: updatedUser.accountName,
+        token: generateToken(updatedUser),
       });
     } else {
       res.status(404).send({ message: "User Not Found" });

@@ -427,12 +427,13 @@
                                     "
                                   >
                                     <p style="margin: 0">
-                                      Thanks for shopping with us!<a
-                                        href="https://www.repeddle.{{url}}/seller/{{sellerId}}"
+                                      Thanks for shopping with us!{{#each sellers}}
+                                      <a
+                                        href="https://www.repeddle.{{../url}}/seller/{{this._id}}"
                                         alt=""
                                         style="color: #8a1719"
                                       >
-                                        @{{seller}}</a>
+                                      &nbsp;@{{this.username}}&nbsp;</a>{{/each}}
                                       is getting your order ready for
                                       you.&nbsp;&nbsp;
                                     </p>
@@ -600,7 +601,7 @@
                                       letter-spacing: 0px;
                                     "
                                   >
-                                    <li style="margin-bottom: 0px">
+                                    <li style="margin-bottom: 5px">
                                       &nbsp;Orders can't be cancelled once
                                       placed. If you would like to make any
                                       adjustment on your&nbsp;order, Please
@@ -823,7 +824,7 @@
                                       style="line-height: 10px"
                                     >
                                       <a
-                                        href="https://www.repeddle.{{url}}/product/{{this.slug}}"
+                                        href="https://www.repeddle.{{../url}}/product/{{this.slug}}"
                                         target="_blank"
                                         style="outline: none"
                                         tabindex="-1"

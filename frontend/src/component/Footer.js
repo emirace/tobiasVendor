@@ -44,6 +44,8 @@ const SmDetail = styled.p`
   transition: 0.5s;
   @media (max-width: 992px) {
     display: block;
+    font-size: 14px !important;
+    margin-bottom: 0;
   }
 `;
 
@@ -69,11 +71,15 @@ const SmTitle = styled.div`
     width: 40px;
     margin-right: 10px;
     margin-bottom: 0 !important;
+    @media (max-width: 992px) {
+      font-size: 20px !important;
+    }
   }
 
   @media (max-width: 992px) {
     display: flex;
-    font-size: 18px;
+    font-size: 15px;
+    margin: 5px 0;
     font-weight: bold;
     align-items: center;
   }
@@ -95,6 +101,18 @@ const Reserve = styled.div`
     text-align: center;
   }
 `;
+const MFooterCenter = styled.div`
+  display: none;
+  @media (max-width: 992px) {
+    display: block;
+  }
+`;
+const DFooterCenter = styled.div`
+  display: flex;
+  @media (max-width: 992px) {
+    display: none;
+  }
+`;
 
 export default function Footer() {
   const { state } = useContext(Store);
@@ -112,6 +130,12 @@ export default function Footer() {
   const [shipMethod1, setShippingMethod1] = useState(false);
   const [shipMethod2, setShippingMethod2] = useState(false);
   const [shipMethod3, setShippingMethod3] = useState(false);
+  const [shipMethod4, setShippingMethod4] = useState(false);
+
+  const [footerLinks1, setFooterLinks1] = useState(false);
+  const [footerLinks2, setFooterLinks2] = useState(false);
+  const [footerLinks3, setFooterLinks3] = useState(false);
+  const [footerLinks4, setFooterLinks4] = useState(false);
 
   const toggleCollapse = (type) => {
     switch (type) {
@@ -121,8 +145,11 @@ export default function Footer() {
       case "shipMethod2":
         setShippingMethod2(!shipMethod2);
         break;
-      case "shipMethod3":
+      case "shipMethod4":
         setShippingMethod3(!shipMethod3);
+        break;
+      case "shipMethod3":
+        setShippingMethod4(!shipMethod4);
         break;
       default:
         break;
@@ -137,7 +164,7 @@ export default function Footer() {
           alt=""
         ></img>
         <div className="bg_malon">
-          <div className="container ">
+          <div className="container " style={{ margin: "5px 0" }}>
             <div className="row d-flex justify-content-between ">
               <div className="col-lg-3 col-md-6 col-sm-12">
                 <div className="single-method ">
@@ -225,7 +252,7 @@ export default function Footer() {
                     show={shipMethod3}
                     onClick={() => toggleCollapse("shipMethod3")}
                   >
-                    <FontAwesomeIcon icon={faCreditCard} />
+                    <FontAwesomeIcon icon={faHandshake} />
                     Community Engagement
                   </SmTitle>
                   <SmDetail show={shipMethod3}>
@@ -256,9 +283,9 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod3}
-                    onClick={() => toggleCollapse("shipMethod3")}
+                    onClick={() => toggleCollapse("shipMethod4")}
                   >
-                    <FontAwesomeIcon icon={faCreditCard} />
+                    <FontAwesomeIcon icon={faGlobe} />
                     Repeddle Sustainability Impact
                   </SmTitle>
                   <SmDetail show={shipMethod3}>
@@ -360,7 +387,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="footer_center">
+        <DFooterCenter className="footer_center">
           <div style={{ flex: 1 }}>
             <h3 className="footer_center_menu">Customer Care</h3>
             <ul className="footer_center_list">
@@ -454,7 +481,130 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-        </div>
+        </DFooterCenter>
+        <MFooterCenter className="footer_center">
+          <div style={{ flex: 1 }}>
+            <h3
+              className="footer_center_menu"
+              onClick={() => setFooterLinks1(!footerLinks1)}
+            >
+              Customer Care
+            </h3>
+            {footerLinks1 && (
+              <ul className="footer_center_list">
+                <li className="footer_center_listitem">
+                  <Link to="/">Support Center</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/">FAQ</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/returns" href="/">
+                    Returns & Refund
+                  </Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/contactus">Contact Us</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/privacypolicy">Privacy Policy</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/terms">Terms of Use</a>
+                </li>
+              </ul>
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3
+              className="footer_center_menu"
+              onClick={() => setFooterLinks2(!footerLinks2)}
+            >
+              Our Company
+            </h3>
+            {footerLinks2 && (
+              <ul className="footer_center_list">
+                <li className="footer_center_listitem">
+                  <Link to="/about">About Us</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/sustainability">Sustainability</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/vipshield">Vip Shield</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Blog and News</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <Link to="/rebundle">Re:Bundle</Link>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Wholesale</a>
+                </li>
+              </ul>
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3
+              className="footer_center_menu"
+              onClick={() => setFooterLinks3(!footerLinks3)}
+            >
+              Categories
+            </h3>
+
+            {footerLinks3 && (
+              <ul className="footer_center_list">
+                <li className="footer_center_listitem">
+                  <a href="/#">Women</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Men</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Kids</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Home</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">More</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Re:Curated</a>
+                </li>
+              </ul>
+            )}
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3
+              className="footer_center_menu"
+              onClick={() => setFooterLinks4(!footerLinks4)}
+            >
+              Top Brand
+            </h3>
+
+            {footerLinks1 && (
+              <ul className="footer_center_list">
+                <li className="footer_center_listitem">
+                  <a href="/#">Adidas</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Alexander Mcqueen</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Balanciaga</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Gucci</a>
+                </li>
+                <li className="footer_center_listitem">
+                  <a href="/#">Patagonia</a>
+                </li>
+              </ul>
+            )}
+          </div>
+        </MFooterCenter>
       </div>
       <Reserve>
         All third party logos and brand names appearing on our App, Websites or

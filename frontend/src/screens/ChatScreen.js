@@ -113,6 +113,9 @@ const Search = styled.input.attrs((props) => ({
 const ChatArea = styled.div`
   height: calc(100% - 210px);
   overflow-y: auto;
+  &.support {
+    height: calc(100% - 100px);
+  }
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
@@ -170,7 +173,7 @@ const NoConversation = styled.span`
 
 const Conserv = styled.div`
   overflow: auto;
-  height: calc(100% - 90px);
+  height: calc(100% - 98px);
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
@@ -537,10 +540,15 @@ export default function ChatScreen() {
       });
       return;
     }
+    const receiverId = currentChat.members.find(
+      (member) => member !== userInfo._id
+    );
     const message = {
       text: newMessage,
       conversationId: currentChat._id,
       image: image,
+      receiverId,
+      guestEmail: currentChat.guest ? currentChat.guestEmail : "",
     };
     try {
       const { data } = await axios.post("api/messages", message, {
@@ -550,9 +558,6 @@ export default function ChatScreen() {
         type: "MSG_SUCCESS",
         payload: [...messages, data.message],
       });
-      const receiverId = currentChat.members.find(
-        (member) => member !== userInfo._id
-      );
       socket.emit("sendMessage", {
         message: data.message,
         senderId: userInfo._id,
@@ -568,11 +573,19 @@ export default function ChatScreen() {
             ? "Admin"
             : receiverId,
         itemId: currentChat._id,
-        notifyType: "message",
+        notifyType:
+          currentChat.conversationType === "reportProduct" ||
+          currentChat.conversationType === "reportUser"
+            ? "report"
+            : currentChat.conversationType === "support"
+            ? "support"
+            : "message",
         msg:
           currentChat.conversationType === "reportProduct" ||
           currentChat.conversationType === "reportUser"
             ? "New report Message"
+            : currentChat.conversationType === "support"
+            ? "New Support message"
             : `${userInfo.username} sent you a message`,
         link: `/messages?conversation=${currentChat._id}`,
         userImage: userInfo.image,
@@ -950,6 +963,10 @@ export default function ChatScreen() {
                       display: "flex",
                       justifyContent: "end",
                       paddingRight: "10px",
+                      "box-shadow":
+                        mode === "pagebodylight"
+                          ? "0 0 3px rgba(0, 0, 0, 0.2)"
+                          : "0 0 3px rgba(225, 225, 225, 0.2)",
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -960,28 +977,32 @@ export default function ChatScreen() {
                 ) : (
                   ""
                 ))}
-              <PrivacyInfo>
-                <FontAwesomeIcon icon={faShield} />
-                <div
-                  style={{
-                    color: "grey",
-                    textAlign: "center",
-                    lineHeight: "18px",
-                  }}
-                >
-                  {currentTab === "messages"
-                    ? `
+              {currentTab !== "supports" && (
+                <PrivacyInfo>
+                  <FontAwesomeIcon icon={faShield} />
+
+                  <div
+                    style={{
+                      color: "grey",
+                      textAlign: "center",
+                      lineHeight: "18px",
+                    }}
+                  >
+                    {currentTab === "messages"
+                      ? `
                   Kind Reminder: To make sure you're covered by Repeddle Buyer's
                   & Seller's Protection, all payments must be made using
                   Repeddle's App and Website complete CHECKOUT system.`
-                    : `Please leave all information that will help us resolve your
+                      : currentTab === "report"
+                      ? `Please leave all information that will help us resolve your
                   query. Please include an order number if your report is
                   related to an order you purchased from this seller, or you
                   can go to your purchase history and report the related item
-                  directly from the report tab on the item page.`}
-                </div>
-              </PrivacyInfo>
-              {console.log(currentChat.conversationType, "heellloo")}
+                  directly from the report tab on the item page.`
+                      : ""}
+                  </div>
+                </PrivacyInfo>
+              )}
               {currentChat.conversationType !== "user" &&
                 currentChat.conversationType !== "support" && (
                   <Link
@@ -1006,7 +1027,7 @@ export default function ChatScreen() {
                     </div>
                   </Link>
                 )}
-              <ChatArea>
+              <ChatArea className={currentTab === "supports" ? "support" : ""}>
                 <div
                   style={{
                     height: "100%",

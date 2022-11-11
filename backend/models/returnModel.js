@@ -16,7 +16,7 @@ const returnSchema = new mongoose.Schema(
     comfirmDelivery: { type: String, default: null },
     status: {
       type: String,
-      enum: ["Approve", "Decline", "Pending"],
+      enum: ["Approved", "Decline", "Pending"],
       default: "Pending",
     },
     returnDelivery: {},

@@ -18,7 +18,7 @@
 }
 
 .downloadapp_title {
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-size: 50px;
   padding-bottom: 20px;
 }
@@ -75,6 +75,10 @@
     overflow: hidden;
     border-bottom: 5px solid var(--malon-color);
   }
+  .carousel_profile_image {
+    width: 150px;
+    height: 150px;
+  }
   .downloadapp_left {
     padding: 10px;
   }
@@ -84,7 +88,7 @@
 
   .downloadapp_title {
     line-height: 40px;
-    font-size: 35px;
+    font-size: 30px;
     padding-bottom: 10px;
   }
 

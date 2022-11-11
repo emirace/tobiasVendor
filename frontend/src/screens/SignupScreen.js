@@ -140,12 +140,14 @@ export default function SignupScreen() {
       callback: handleCallbackResponse,
     });
   }, []);
+  const { innerWidth } = window;
+
   useEffect(() => {
     if (!loading) {
       google.accounts.id.renderButton(document.getElementById("signInDiv1"), {
         theme: "dark",
         size: "large",
-        width: 400,
+        width: innerWidth > 992 ? 400 : 300,
         logo_alignment: "center",
       });
     }

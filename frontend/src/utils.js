@@ -64,7 +64,7 @@ export function displayDeliveryStatus(status) {
     );
   }
 
-  if (status === "Processing") {
+  if (status === "Been Processing") {
     return (
       <div
         style={{
@@ -130,7 +130,7 @@ export function displayDeliveryStatus(status) {
       </div>
     );
   }
-  if (status === "Processing") {
+  if (status === "Been Processing") {
     return (
       <div
         style={{
@@ -216,7 +216,7 @@ export const GOOGLE_CLIENT_ID =
 
 export const deliveryNumber = (status) => {
   switch (status) {
-    case "Processing":
+    case "Been Processing":
       return 1;
     case "Dispatched":
       return 2;

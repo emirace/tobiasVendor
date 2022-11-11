@@ -16,6 +16,7 @@ import moment from "moment";
 import dotenv from "dotenv";
 import Flutterwave from "flutterwave-node-v3";
 import Transaction from "../models/transactionModel.js";
+import Return from "../models/returnModel.js";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -419,6 +420,9 @@ orderRouter.put(
             trackingNumber: req.body.trackingNumber
               ? req.body.trackingNumber
               : x.trackingNumber,
+            returnTrackingNumber: req.body.returnTrackingNumber
+              ? req.body.returnTrackingNumber
+              : x.returnTrackingNumber,
           };
         } else {
           return x;
@@ -429,12 +433,12 @@ orderRouter.put(
       console.log("change status", req.body.deliveryStatus);
 
       switch (req.body.deliveryStatus) {
-        case "Processing":
+        case "Been Processing":
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               sendEmail({
                 to: order.user.email,
-                subject: "PREPARINING ORDER FOR DELIVERY",
+                subject: "PREPARING ORDER FOR DELIVERY",
                 template: "preparingOrder",
                 context: {
                   username: order.user.username,
@@ -534,17 +538,85 @@ orderRouter.put(
           });
 
           break;
-        case "Refunded":
-          // sendEmail({
-          //   to: order.user.email,
-          //   subject: "RETURN REFUNDED",
-          //   template: "returnRefunded",
-          //   context: {
-          //     username: order.user.username,
-          //     url: region === "NGN" ? "com" : "co.za",
-          //     orderId: order._id,
-          //   },
-          // });
+        case "Return Dispatched":
+          order.orderItems.map(async (x) => {
+            if (x._id === req.params.productId) {
+              const returned = await Return.findOne({
+                productId: x._id,
+                orderId: order._id,
+              });
+              console.log("returned", returned._id);
+              return sendEmail({
+                to: x.seller.email,
+                subject: "ORDER RETURN DISPATCHED",
+                template: "returnDispatched",
+                context: {
+                  username: x.seller.username,
+                  url: x.region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  deliveryMethod: x.deliverySelect["delivery Option"],
+                  orderItems: [x],
+                  trackId: x.returnTrackingNumber,
+                  returnId: returned._id,
+                },
+              });
+            }
+          });
+          break;
+        case "Return Delivered":
+          order.orderItems.map(async (x) => {
+            if (x._id === req.params.productId) {
+              const returned = await Return.findOne({
+                productId: x._id,
+                orderId: order._id,
+              });
+              console.log("returned", returned._id);
+              const address =
+                x.deliverySelect["delivery Option"] === "Paxi PEP store"
+                  ? x.deliverySelect["shortName"]
+                  : x.deliverySelect["delivery Option"] ===
+                    "PUDO Locker-to-Locker"
+                  ? `${x.deliverySelect["shortName"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["delivery Option"] === "PostNet-to-PostNet"
+                  ? `${x.deliverySelect["pickUp"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["address"];
+              return sendEmail({
+                to: x.seller.email,
+                subject: "RETURN DELIVERED ",
+                template: "returnDelivered",
+                context: {
+                  username: x.seller.username,
+                  url: x.region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  address,
+                  deliveryMethod: x.deliverySelect["delivery Option"],
+                  returnId: returned._id,
+                  orderItems: [x],
+                },
+              });
+            }
+          });
+          break;
+        case "Return Received":
+          order.orderItems.map(async (x) => {
+            const returned = await Return.findOne({ productId: x._id });
+            console.log("returned", returned, returned._id);
+            if (x._id === req.params.productId) {
+              return sendEmail({
+                to: order.user.email,
+                subject: "RETURN RECEIVED ",
+                template: "returnReceived",
+                context: {
+                  username: order.user.username,
+                  url: x.region === "NGN" ? "com" : "co.za",
+                  orderId: order._id,
+                  orderItems: [x],
+                  returnId: returned._id,
+                },
+              });
+            }
+          });
+
           break;
 
         default:
@@ -604,10 +676,17 @@ orderRouter.put(
         select: "email username",
       });
       const products = [];
+      const sellers = [];
       order.orderItems.map((i) => products.push(i._id));
       const records = await Product.find({
         _id: { $in: products },
       });
+      order.orderItems.forEach((element) => {
+        if (!sellers.includes(element.seller)) {
+          sellers.push(element.seller);
+        }
+      });
+      console.log(sellers);
       records.map(async (p) => {
         p.sold = true;
         p.countInStock =
@@ -641,11 +720,29 @@ orderRouter.put(
           context: {
             username: order.user.username,
             url: region === "NGN" ? "com" : "co.za",
-            seller: order.orderItems[0].seller.username,
+            sellers,
             orderId: order._id,
             orderItems: order.orderItems,
             sellerId: order.orderItems[0].seller._id,
           },
+        });
+        sellers.map((seller) => {
+          sendEmail({
+            to: seller.email,
+            subject: "NEW ORDER",
+            template: "processingOrderSeller",
+            context: {
+              username: seller.username,
+              url: region === "NGN" ? "com" : "co.za",
+              buyer: order.user.username,
+              orderId: order._id,
+              sellerId: seller._id,
+              orderItems: order.orderItems.filter(
+                (x) => x.seller._id === seller._id
+              ),
+              sellerId: order.orderItems[0].seller._id,
+            },
+          });
         });
         res.send({ message: "Order Paid", order: updateOrder });
       } else {

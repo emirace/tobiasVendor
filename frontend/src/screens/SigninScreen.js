@@ -184,6 +184,7 @@ export default function SigninScreen() {
     localStorage.setItem("userInfo", JSON.stringify(data));
     window.location.href = `${redirect}?redirect=${redirect}`;
   };
+  const { innerWidth } = window;
   useEffect(() => {
     /* global google*/
     console.log("google", google);
@@ -194,7 +195,7 @@ export default function SigninScreen() {
     google.accounts.id.renderButton(document.getElementById("signInDiv"), {
       theme: "dark",
       size: "large",
-      width: 400,
+      width: innerWidth > 992 ? 400 : 300,
       logo_alignment: "center",
     });
   }, []);

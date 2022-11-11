@@ -521,11 +521,12 @@ export default function OrderScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Network error",
+          message: getError(err),
           showStatus: true,
           state1: "visible1 error",
         },
       });
+      console.log(getError(err));
       dispatch({ type: "DELIVER_FAIL" });
     }
   }
@@ -708,7 +709,10 @@ export default function OrderScreen() {
                   }}
                 >
                   <div style={{ display: "none" }}>
-                    {(itemsPrice = itemsPrice + orderitem.actualPrice)}
+                    {
+                      (itemsPrice =
+                        itemsPrice + orderitem.actualPrice * orderitem.quantity)
+                    }
                     {
                       (shippingPrice =
                         shippingPrice + Number(orderitem.deliverySelect.cost))
@@ -843,9 +847,9 @@ export default function OrderScreen() {
                                 disabled={
                                   deliveryNumber(orderitem.deliveryStatus) > 0
                                 }
-                                value="Processing"
+                                value="Been Processing"
                               >
-                                Processing
+                                Been Processing
                               </MenuItem>
                               <MenuItem
                                 disabled={
@@ -886,8 +890,12 @@ export default function OrderScreen() {
                       <Name>{orderitem.name}</Name>
                       <Quantity>QTY: {orderitem.quantity}</Quantity>
                       <ItemPrice>
-                        {orderitem.currency}
+                        Unit Price: {orderitem.currency}
                         {orderitem.actualPrice}
+                      </ItemPrice>
+                      <ItemPrice>
+                        Total: {orderitem.currency}
+                        {orderitem.actualPrice * orderitem.quantity}
                       </ItemPrice>
                     </Details1>
                   </OrderItem>

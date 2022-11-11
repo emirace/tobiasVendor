@@ -11,7 +11,7 @@ import Select from "@mui/material/Select";
 import { getError, loginGig, region } from "../utils";
 import useGeoLocation from "../hooks/useGeoLocation";
 import LoadingBox from "../component/LoadingBox";
-import { states } from "../constant";
+import { postnet, pudo, states } from "../constant";
 
 const Container = styled.div`
   margin: 30px;
@@ -61,9 +61,10 @@ const Plans = styled.div`
 `;
 const Plan = styled.div`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   margin: 15px 0;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const Input = styled.input`
@@ -86,6 +87,10 @@ const Input = styled.input`
   &::placeholder {
     font-size: 14px;
   }
+`;
+const Error = styled.div`
+  color: red;
+  font-size: 13px;
 `;
 
 const reducer = (state, action) => {
@@ -210,8 +215,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   const location = useGeoLocation();
   const [locationerror, setLocationerror] = useState("");
   const [loadingGig, setLoadingGig] = useState(false);
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  const submitHandler = async () => {
     var deliverySelect = {};
 
     if (deliveryOption === "GIG Logistics") {
@@ -318,7 +322,165 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     // navigate("/placeorder");
     setLoadingGig(false);
   };
+  const [validationError, setValidationError] = useState("");
+  const validation = (e) => {
+    e.preventDefault();
+    var valid = true;
+    if (deliveryOption === "Paxi PEP store") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.shortName) {
+        setValidationError({
+          ...validationError,
+          point: "Select a pick up point ",
+        });
+        valid = false;
+      }
+    }
+    if (deliveryOption === "PUDO Locker-to-Locker") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.province) {
+        setValidationError({
+          ...validationError,
+          phone: "Select province",
+        });
+        valid = false;
+      }
+      if (!meta.shortName) {
+        setValidationError({
+          ...validationError,
+          shortName: "Select a pick up point ",
+        });
+        valid = false;
+      }
+    }
+    if (deliveryOption === "PostNet-to-PostNet") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.province) {
+        setValidationError({
+          ...validationError,
+          phone: "Select province",
+        });
+        valid = false;
+      }
+      if (!meta.pickUp) {
+        setValidationError({
+          ...validationError,
+          pickUp: "Select a pick up locker ",
+        });
+        valid = false;
+      }
+    }
+    if (deliveryOption === "Aramex Store-to-Door") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.name) {
+        setValidationError({
+          ...validationError,
+          name: "Enter your name ",
+        });
+        valid = false;
+      }
+      if (!meta.email) {
+        setValidationError({
+          ...validationError,
+          email: "Enter your email ",
+        });
+        valid = false;
+      }
+      if (!meta.address) {
+        setValidationError({
+          ...validationError,
+          address: "Enter your address ",
+        });
+        valid = false;
+      }
+      if (!meta.suburb) {
+        setValidationError({
+          ...validationError,
+          suburb: "Enter your suburb ",
+        });
+        valid = false;
+      }
+      if (!meta.city) {
+        setValidationError({
+          ...validationError,
+          city: "Enter your city ",
+        });
+        valid = false;
+      }
+      if (!meta.postalcode) {
+        setValidationError({
+          ...validationError,
+          postalcode: "Enter your postal code ",
+        });
+        valid = false;
+      }
+      if (!meta.province) {
+        setValidationError({
+          ...validationError,
+          phone: "Select province",
+        });
+        valid = false;
+      }
+    }
+    if (deliveryOption === "GIG Logistics") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.name) {
+        setValidationError({
+          ...validationError,
+          name: "Enter your name ",
+        });
+        valid = false;
+      }
+      if (!meta.address) {
+        setValidationError({
+          ...validationError,
+          address: "Enter your address ",
+        });
+        valid = false;
+      }
+      if (!meta.stationId) {
+        setValidationError({
+          ...validationError,
+          stationId: "Select a station ",
+        });
+        valid = false;
+      }
+    }
 
+    if (valid) {
+      submitHandler();
+    }
+  };
   function receiveMessage(message) {
     if (
       message.origin == "https://map.paxi.co.za" &&
@@ -351,7 +513,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         <h1 className="my-3">Delivery Method</h1>
         {console.log(item)}
 
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={validation}>
           {item.deliveryOption.map((x) => (
             <div className="mb-3" key={x.name}>
               <OptionCont>
@@ -381,11 +543,20 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     <Plans>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              shortName: "",
+                            })
+                          }
                           type="text"
                           onClick={() => setShowMap(true)}
                           placeholder="Choose the closest pick up point"
                           defaultValue={meta.shortName}
                         />
+                        {validationError.shortName && (
+                          <Error>{validationError.shortName}</Error>
+                        )}
                       </Plan>
                       {showMap && (
                         <iframe
@@ -398,6 +569,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       )}
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, phone: e.target.value })
@@ -405,6 +582,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Phone number"
                           value={meta.phone}
                         />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
                       </Plan>
 
                       <a
@@ -449,9 +629,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         >
                           <Select
                             value={meta.province}
-                            onChange={(e) =>
-                              setMeta({ ...meta, province: e.target.value })
-                            }
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                province: "",
+                              });
+                            }}
                             displayEmpty
                           >
                             {region() === "NGN"
@@ -463,7 +647,11 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                                 ))}
                           </Select>
                         </FormControl>
+                        {validationError.province && (
+                          <Error>{validationError.province}</Error>
+                        )}
                         {/* <Input
+                        onFocus={()=>setValidationError({...validationError,phone:''})}
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, province: e.target.value })
@@ -482,17 +670,74 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         Find locker near your location
                       </a>
                       <Plan>
-                        <Input
+                        {/* <Input
+                          onFocus={()=>setValidationError({
+                            ...validationError,
+                            shortName: "",
+                          })}
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, shortName: e.target.value })
                           }
                           placeholder="Pick Up Locker"
                           value={meta.shortName}
-                        />
+                        /> */}
+                        <Label>Pick Up Locker</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.shortName}
+                            onChange={(e) => {
+                              setMeta({ ...meta, shortName: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                shortName: "",
+                              });
+                            }}
+                            displayEmpty
+                          >
+                            {pudo[meta.province]?.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {validationError.shortName && (
+                          <Error>{validationError.shortName}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, phone: e.target.value })
@@ -500,6 +745,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Phone"
                           value={meta.phone}
                         />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
                       </Plan>
                       <a
                         className="link"
@@ -554,9 +802,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         >
                           <Select
                             value={meta.province}
-                            onChange={(e) =>
-                              setMeta({ ...meta, province: e.target.value })
-                            }
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                province: "",
+                              });
+                            }}
                             displayEmpty
                           >
                             {region() === "NGN"
@@ -568,6 +820,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                                 ))}
                           </Select>
                         </FormControl>
+                        {validationError.province && (
+                          <Error>{validationError.province}</Error>
+                        )}
                       </Plan>
 
                       <a
@@ -579,21 +834,62 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         Find store near your location
                       </a>
                       <Plan>
-                        <Input
-                          mode={mode}
-                          type="text"
-                          onChange={(e) =>
-                            setMeta({
-                              ...meta,
-                              pickUp: e.target.value,
-                            })
-                          }
-                          placeholder="Pick Up Locker"
-                          value={meta.pickUp}
-                        />
+                        <Label>Pick Up Locker</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.pickUp}
+                            onChange={(e) => {
+                              setMeta({ ...meta, pickUp: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                pickUp: "",
+                              });
+                            }}
+                            displayEmpty
+                          >
+                            {postnet[meta.province]?.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {validationError.pickUp && (
+                          <Error>{validationError.pickUp}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
                           mode={mode}
                           type="number"
                           onChange={(e) =>
@@ -602,6 +898,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Phone"
                           value={meta.phone}
                         />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
                       </Plan>
                       <a
                         className="link"
@@ -616,6 +915,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     <Plans>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              name: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -624,10 +929,19 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Name"
                           value={meta.name}
                         />
+                        {validationError.name && (
+                          <Error>{validationError.name}</Error>
+                        )}
                       </Plan>
 
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -636,9 +950,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Phone"
                           value={meta.phone}
                         />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              email: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -647,9 +970,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="E-mail"
                           value={meta.email}
                         />
+                        {validationError.email && (
+                          <Error>{validationError.email}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              company: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -658,9 +990,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Company name (if applicable)"
                           value={meta.company}
                         />
+                        {validationError.company && (
+                          <Error>{validationError.company}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              address: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -669,9 +1010,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Address (P.O. box not accepted"
                           value={meta.address}
                         />
+                        {validationError.address && (
+                          <Error>{validationError.address}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              suburb: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -680,9 +1030,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Suburb"
                           value={meta.suburb}
                         />
+                        {validationError.suburb && (
+                          <Error>{validationError.suburb}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              city: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -691,9 +1050,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="City/Town"
                           value={meta.city}
                         />
+                        {validationError.city && (
+                          <Error>{validationError.city}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              postalcode: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -702,6 +1070,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Postal Code"
                           value={meta.postalcode}
                         />
+                        {validationError.postalcode && (
+                          <Error>{validationError.postalcode}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Label>Province</Label>
@@ -734,9 +1105,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         >
                           <Select
                             value={meta.province}
-                            onChange={(e) =>
-                              setMeta({ ...meta, province: e.target.value })
-                            }
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                province: "",
+                              });
+                            }}
                             displayEmpty
                           >
                             {region() === "NGN"
@@ -748,6 +1123,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                                 ))}
                           </Select>
                         </FormControl>
+                        {console.log(validationError)}
+                        {validationError.province && (
+                          <Error>{validationError.province}</Error>
+                        )}
                       </Plan>
                       <a
                         className="link"
@@ -767,6 +1146,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       )}
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              name: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -775,9 +1160,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Name"
                           value={meta.name}
                         />
+                        {validationError.name && (
+                          <Error>{validationError.name}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -786,9 +1180,18 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Phone"
                           value={meta.phone}
                         />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
                       </Plan>
                       <Plan>
                         <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              address: "",
+                            })
+                          }
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -797,6 +1200,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           placeholder="Address"
                           value={meta.address}
                         />
+                        {validationError.address && (
+                          <Error>{validationError.address}</Error>
+                        )}
                       </Plan>
                       <Plan style={{ justifyContent: "unset" }}>
                         <div
@@ -837,9 +1243,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           size="small"
                         >
                           <Select
-                            onChange={(e) =>
-                              setMeta({ ...meta, stationId: e.target.value })
-                            }
+                            onChange={(e) => {
+                              setMeta({ ...meta, stationId: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                stationId: "",
+                              });
+                            }}
                             displayEmpty
                             value={meta.stationId}
                           >
@@ -854,10 +1264,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                             )}
                           </Select>
                         </FormControl>
+                        {validationError.stationId && (
+                          <Error>{validationError.stationId}</Error>
+                        )}
                       </Plan>
                       <a
                         className="link"
-                        href="https://www.youtube.com/watch?v=VlUQTF064y8"
+                        href="https://gig.com"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -882,7 +1295,6 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
             >
               Continue
             </button>
-            {loadingGig && <LoadingBox />}
           </div>
         </Form>
       </div>

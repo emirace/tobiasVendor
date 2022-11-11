@@ -47,6 +47,9 @@ const initialState = {
     window.location.hostname === "repeddle.com"
       ? "N "
       : "R ",
+  cookies: secureLocalStorage.getItem("cookies")
+    ? secureLocalStorage.getItem("cookies")
+    : false,
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -179,6 +182,12 @@ function reducer(state, action) {
       return {
         ...state,
         refresher: action.payload,
+      };
+    case "SET_COOKIES":
+      secureLocalStorage.setItem("cookies", action.payload);
+      return {
+        ...state,
+        cookies: action.payload,
       };
     default:
       return state;

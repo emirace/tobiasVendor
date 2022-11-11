@@ -434,11 +434,11 @@ export default function User() {
         return;
       }
       if (username.length > 0) {
-        if (
-          window.confirm(
-            "Are you sure you want to edit your username? The next edit window  will be after 30 days"
-          )
-        ) {
+        const confirm = window.confirm(
+          "Are you sure you want to edit your username? The next edit window  will be after 30 days"
+        );
+        console.log(confirm);
+        if (!confirm) {
           return;
         }
       }
@@ -485,6 +485,14 @@ export default function User() {
     } catch (err) {
       console.log(getError(err));
       dispatch({ type: "UPDATE_FAIL" });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 errorr",
+        },
+      });
     }
   };
 
@@ -795,7 +803,6 @@ export default function User() {
         </Show>
         <Update mode={mode}>
           <UpdateTitle>Edit</UpdateTitle>
-          const {region} = req.params;
           <Form onSubmit={submitHandler}>
             <Left>
               <Item>
@@ -836,7 +843,10 @@ export default function User() {
               <Item>
                 <Label>Email</Label>
                 <TextInput
+                  name="email"
+                  type="email"
                   mode={mode}
+                  disabled={id ? false : true}
                   placeholder={user.email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -846,6 +856,7 @@ export default function User() {
                 <TextInput
                   type="date"
                   mode={mode}
+                  name="DOB"
                   placeholder={user.dob && user.dob.substring(0, 10)}
                   onChange={(e) => setDob(e.target.value)}
                 />
@@ -854,6 +865,8 @@ export default function User() {
                 <Label>Phone</Label>
                 <TextInput
                   mode={mode}
+                  type="text"
+                  name="phone"
                   placeholder={user.phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
@@ -971,6 +984,7 @@ export default function User() {
                         mode={mode}
                         name="password"
                         type="password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
                     </Item>

@@ -243,11 +243,11 @@ export default function Product(props) {
         <p className="product-short-desc1">{product.brand}</p>
         <span className="price1">
           {product.currency}
-          {product.price}
+          {product.actualPrice}
         </span>
         <span className="actual-price1">
           {product.currency}
-          {product.actualPrice}
+          {product.price}
         </span>
       </div>
     </div>

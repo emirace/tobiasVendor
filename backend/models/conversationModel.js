@@ -8,6 +8,7 @@ const conversationSchema = new mongoose.Schema(
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     guest: { type: Boolean, default: false },
+    guestEmail: { type: String },
   },
   {
     timestamps: true,

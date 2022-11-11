@@ -30,6 +30,9 @@ const Container = styled.div`
   margin-bottom: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin-bottom: 0;
+  }
 `;
 const Wrapper = styled.div`
   padding: 0 20px;
@@ -48,7 +51,7 @@ const Wrapper2 = styled.div`
   justify-content: center;
   align-items: center;
   @media (max-width: 992px) {
-    margin-bottom: 10px;
+    padding-bottom: 10px;
   }
 `;
 const Left = styled.div`
@@ -128,12 +131,15 @@ const SliderCont = styled.div`
     animation-play-state: paused;
   }
 `;
-const First = styled.div`
+const First = styled.span`
   display: flex;
   width: 100%;
   flex-shrink: 0;
   box-sizing: border-box;
   justify-content: center;
+  @media (max-width: 992px) {
+    font-size: 11px !important;
+  }
 `;
 const Second = styled.div`
   animation: second 30s infinite linear;
@@ -387,7 +393,7 @@ const SubCategory = styled.ul`
 
 const SignIn = styled.div`
   margin-left: 20px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   &:hover {
     color: var(--orange-color);
@@ -849,7 +855,9 @@ export default function Navbar({
               )}
             </Link>
           </MenuItemCart>
-          <SellButton>Sell</SellButton>
+          <Link to="/sell">
+            <SellButton>Sell</SellButton>
+          </Link>
           {userInfo ? (
             <ProfileCont>
               <ProfileImg
@@ -872,7 +880,7 @@ export default function Navbar({
                       )} */}
                     </Li>
                     <Li>
-                      <Link to="/dashboard/orderlist">Purchase Orders</Link>
+                      <Link to="/dashboard/orderlist">Purchased Orders</Link>
 
                       {purchaseNotification.length > 0 && (
                         <Badge>
@@ -942,7 +950,7 @@ export default function Navbar({
             </ProfileCont>
           ) : (
             <SignIn>
-              <Link to="signin">Signin / Register</Link>
+              <Link to="signin">SIGN IN / SIGN UP</Link>
             </SignIn>
           )}
         </RightMenu>

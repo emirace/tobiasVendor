@@ -197,7 +197,7 @@ export default function Return({
         }
       );
       dispatch({ type: "RETURN_SUCCESS" });
-      deliverOrderHandler("Returned", current._id);
+      deliverOrderHandler("Returned", current._id, current);
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -311,34 +311,28 @@ export default function Return({
         return (
           <Content>
             <h4>Select a Product to Return</h4>
-            {orderItems.map(
-              (orderitem) =>
-                deliveryNumber(orderitem.deliveryStatus) === 4 && (
-                  <>
-                    <ItemCont
-                      key={orderitem._id}
-                      onClick={() => {
-                        setTab("option");
-                        setCurrent(orderitem);
-                      }}
-                    >
-                      <OrderItem>
-                        <Image src={orderitem.image} alt={orderitem.name} />
-                        <Details1>
-                          <Name>{orderitem.name}</Name>
-                          <Quantity>QTY: {orderitem.quantity}</Quantity>
-                          <ItemPrice>$ {orderitem.price}</ItemPrice>
-                        </Details1>
-                      </OrderItem>
-                      <FontAwesomeIcon
-                        size={"2x"}
-                        icon={faChevronCircleRight}
-                      />
-                    </ItemCont>
-                    <hr />
-                  </>
-                )
-            )}
+            {orderItems.map((orderitem) => (
+              <>
+                <ItemCont
+                  key={orderitem._id}
+                  onClick={() => {
+                    setTab("option");
+                    setCurrent(orderitem);
+                  }}
+                >
+                  <OrderItem>
+                    <Image src={orderitem.image} alt={orderitem.name} />
+                    <Details1>
+                      <Name>{orderitem.name}</Name>
+                      <Quantity>QTY: {orderitem.quantity}</Quantity>
+                      <ItemPrice>$ {orderitem.price}</ItemPrice>
+                    </Details1>
+                  </OrderItem>
+                  <FontAwesomeIcon size={"2x"} icon={faChevronCircleRight} />
+                </ItemCont>
+                <hr />
+              </>
+            ))}
           </Content>
         );
       case "option":
@@ -367,9 +361,11 @@ export default function Return({
               >
                 Message seller
               </SelectOpt>
-              <SelectOpt mode={mode} onClick={() => setTab("form")}>
-                Return form
-              </SelectOpt>
+              {deliveryNumber(current.deliveryStatus) === 4 && (
+                <SelectOpt mode={mode} onClick={() => setTab("form")}>
+                  Return form
+                </SelectOpt>
+              )}
             </div>
           </Content>
         );

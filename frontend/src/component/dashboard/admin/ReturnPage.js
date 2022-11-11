@@ -11,6 +11,8 @@ import LoadingBox from "../../LoadingBox";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ModelLogin from "../../ModelLogin";
 import { Link } from "react-router-dom";
+import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Container = styled.div`
   flex: 4;
@@ -76,6 +78,39 @@ const SetStatus = styled.div`
   margin: 20px 0;
 `;
 
+const TrackingCont = styled.div`
+  display: flex;
+  align-items: center;
+  & svg {
+    color: var(--orange-color);
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    &:hover {
+      color: var(--malon-color);
+    }
+  }
+`;
+
+const TextInput = styled.input`
+  background: none;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  border: 1px solid grey;
+  border-radius: 0.2rem;
+  height: 40px;
+  padding: 10px;
+  margin-left: 20px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  &:hover svg {
+    color: var(--malon-color);
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "GET_REQUEST":
@@ -111,6 +146,8 @@ export default function ReturnPage() {
   const [reasonText, setReasonText] = useState("");
   const [showModel, setShowModel] = useState(false);
   const [refresh, setRefresh] = useState(true);
+  const [enterwaybil, setEnterwaybil] = useState(false);
+  const [waybillNumber, setWaybillNumber] = useState("");
   const [{ loading, returned, loadingDeliver }, dispatch] = useReducer(
     reducer,
     {
@@ -171,7 +208,7 @@ export default function ReturnPage() {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
         `/api/orders/${returned.orderId._id}/deliver/${productId}`,
-        { deliveryStatus },
+        { deliveryStatus, returnTrackingNumber: waybillNumber },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -301,6 +338,13 @@ export default function ReturnPage() {
     }
   };
 
+  const comfirmWaybill = async (product) => {
+    if (!waybillNumber) return;
+
+    await deliverOrderHandler("Return Dispatched", product._id);
+    setEnterwaybil(false);
+  };
+
   return loading ? (
     <LoadingBox />
   ) : (
@@ -347,7 +391,7 @@ export default function ReturnPage() {
         <ItemNum>{returned.reason}</ItemNum>
         <hr />
         <Name>Preferred Sending Method</Name>
-        <ItemNum>{returned.sending.deliveryOption}</ItemNum>
+        <ItemNum>{returned.sending["delivery Option"]}</ItemNum>
         <hr />
         <Name>Preferred Refund Method</Name>
         <ItemNum>{returned.refund}</ItemNum>
@@ -484,7 +528,8 @@ export default function ReturnPage() {
                           paymentRequest(
                             returned.orderId.user._id,
                             returned.returnDelivery.cost * 2 +
-                              returned.productId.actualPrice,
+                              returned.productId.actualPrice *
+                                returned.productId.quantity,
                             returned.productId.currency
                           );
                         }}
@@ -501,76 +546,101 @@ export default function ReturnPage() {
                         </MenuItem>
                       </Select>
                     </FormControl>
+                  ) : enterwaybil ? (
+                    <TrackingCont>
+                      <label>Enter Tracking number </label>
+                      <TextInput
+                        mode={mode}
+                        value={waybillNumber}
+                        type="text"
+                        onChange={(e) => setWaybillNumber(e.target.value)}
+                      />
+                      <FontAwesomeIcon
+                        icon={faSquareCheck}
+                        onClick={() => comfirmWaybill(orderitem)}
+                      />
+                    </TrackingCont>
                   ) : (
-                    <FormControl
-                      sx={{
-                        minWidth: "220px",
-                        margin: 0,
-                        borderRadius: "0.2rem",
-                        border: `1px solid ${
-                          mode === "pagebodydark"
-                            ? "var(--dark-ev4)"
-                            : "var(--light-ev4)"
-                        }`,
-                        "& .MuiOutlinedInput-root": {
-                          color: `${
-                            mode === "pagebodydark"
-                              ? "var(--white-color)"
-                              : "var(--black-color)"
-                          }`,
-                          "&:hover": {
-                            outline: "none",
-                            border: 0,
-                          },
-                        },
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "0 !important",
-                        },
-                      }}
-                      size="small"
-                    >
-                      <InputLabel
+                    <>
+                      {orderitem.returnTrackingNumber && (
+                        <label style={{ marginRight: "20px" }}>
+                          Tracking Number: {orderitem.returnTrackingNumber}
+                        </label>
+                      )}
+                      <FormControl
                         sx={{
-                          color: `${
+                          minWidth: "220px",
+                          margin: 0,
+                          borderRadius: "0.2rem",
+                          border: `1px solid ${
                             mode === "pagebodydark"
-                              ? "var(--white-color)"
-                              : "var(--black-color)"
+                              ? "var(--dark-ev4)"
+                              : "var(--light-ev4)"
                           }`,
+                          "& .MuiOutlinedInput-root": {
+                            color: `${
+                              mode === "pagebodydark"
+                                ? "var(--white-color)"
+                                : "var(--black-color)"
+                            }`,
+                            "&:hover": {
+                              outline: "none",
+                              border: 0,
+                            },
+                          },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "0 !important",
+                          },
                         }}
-                        id="deliveryStatus"
+                        size="small"
                       >
-                        Update Delivery Status
-                      </InputLabel>
-
-                      <Select
-                        onChange={(e) =>
-                          deliverOrderHandler(
-                            e.target.value,
-                            returned.productId._id
-                          )
-                        }
-                        displayEmpty
-                        id="deliveryStatus"
-                      >
-                        <MenuItem
-                          disabled={
-                            deliveryNumber(orderitem.deliveryStatus) !== 8
-                          }
-                          value="Return Dispatched"
+                        <InputLabel
+                          sx={{
+                            color: `${
+                              mode === "pagebodydark"
+                                ? "var(--white-color)"
+                                : "var(--black-color)"
+                            }`,
+                          }}
+                          id="deliveryStatus"
                         >
-                          Return Dispatched
-                        </MenuItem>
+                          Update Delivery Status
+                        </InputLabel>
 
-                        <MenuItem
-                          disabled={
-                            deliveryNumber(orderitem.deliveryStatus) !== 9
-                          }
-                          value="Return Delivered"
+                        <Select
+                          onChange={(e) => {
+                            if (e.target.value === "Return Dispatched") {
+                              setEnterwaybil(true);
+                            } else {
+                              deliverOrderHandler(
+                                e.target.value,
+                                returned.productId._id
+                              );
+                            }
+                          }}
+                          displayEmpty
+                          id="deliveryStatus"
                         >
-                          Return Delivered
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) !== 8
+                            }
+                            value="Return Dispatched"
+                          >
+                            Return Dispatched
+                          </MenuItem>
+
+                          <MenuItem
+                            disabled={
+                              deliveryNumber(orderitem.deliveryStatus) !== 9
+                            }
+                            value="Return Delivered"
+                          >
+                            Return Delivered
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </>
                   )}
                 </SetStatus>
                 <DeliveryHistory

@@ -523,11 +523,11 @@ export default function PlaceOrderScreen() {
                               <Right>x </Right>
                               <Right>
                                 {currency}
-                                {c.price}
+                                {c.actualPrice}
                               </Right>
                             </Left>
                             <Right>
-                              {` =  ${currency}` + c.quantity * c.price}
+                              {` =  ${currency}` + c.quantity * c.actualPrice}
                             </Right>
                           </SumCont>
                         </>

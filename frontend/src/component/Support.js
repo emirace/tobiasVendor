@@ -20,6 +20,7 @@ import Messages from "./Messages";
 import { useLocation } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import { getError } from "../utils";
+import OneNewMessage from "./OneNewMessage";
 
 const Container = styled.div`
   position: fixed;
@@ -43,6 +44,9 @@ const Container = styled.div`
       props.mode === "pagebodylight"
         ? "var(--orange-color)"
         : "var(--orange-color)"};
+  }
+  @media (max-width: 992px) {
+    bottom: 65px;
   }
 `;
 const Box = styled.div`
@@ -77,6 +81,7 @@ const Name = styled.div`
 `;
 const Bottom = styled.div`
   flex: 5;
+  height: 100px;
 `;
 const SmallBox = styled.div`
   padding: 15px;
@@ -208,7 +213,7 @@ const Error = styled.div`
 
 export default function Support() {
   const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, notifications } = state;
   const [showSupport, setShowSupport] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
   const [input, setInput] = useState("");
@@ -219,9 +224,14 @@ export default function Support() {
   const scrollref = useRef();
   const [messages, setMessages] = useState([]);
   const [displaySupport, setDisplaySupport] = useState(true);
+  const [arrivalMessage, setArrivalMessage] = useState("");
   const location = useLocation();
 
   const CurrentPath = location.pathname;
+
+  const supportNotification = notifications.filter(
+    (x) => x.notifyType === "support" && x.read === false
+  );
 
   useEffect(() => {
     if (CurrentPath === "/messages") {
@@ -233,8 +243,32 @@ export default function Support() {
   }, [CurrentPath]);
 
   useEffect(() => {
+    socket.on("getMessage", (data) => {
+      console.log(data);
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        message: data.message,
+      });
+    });
+  }, [userInfo]);
+
+  useEffect(() => {
+    console.log(arrivalMessage, currentChat);
+
+    if (arrivalMessage && currentChat) {
+      if (currentChat._id === arrivalMessage.message.conversationId) {
+        console.log(arrivalMessage);
+
+        setMessages([...messages, arrivalMessage.message]);
+      }
+    }
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
     scrollref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    console.log(scrollref.current);
+  }, [messages, showSupport]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -278,7 +312,6 @@ export default function Support() {
       handleError("Please enter an email", "email");
       return;
     }
-    console.log("hey");
     try {
       const id = (
         m = Math,
@@ -294,6 +327,7 @@ export default function Support() {
         guest: true,
         _id: id(),
       });
+      socket.emit("onlogin", currentGuest);
       await addConversation(currentGuest._id);
       console.log(id());
       setUser(currentGuest);
@@ -308,8 +342,10 @@ export default function Support() {
       const { data } = await axios.post(`/api/conversations/support`, {
         recieverId: id,
         type: "support",
+        guestEmail: user.email,
       });
       setCurrentChat(data);
+      socket.emit("remove_notifications", data._id);
     } catch (err) {
       console.log(err);
     }
@@ -331,7 +367,8 @@ export default function Support() {
       const receiverId = currentChat.members.find(
         (member) => member !== user._id
       );
-      socket.emit("sendMessage", {
+      console.log(receiverId, currentChat, user);
+      socket.emit("sendSupport", {
         message: data.message,
         senderId: user._id,
         receiverId,
@@ -364,14 +401,18 @@ export default function Support() {
       handleSubmit(e);
     }
   };
-
   return (
     displaySupport && (
-      <Container mode={mode}>
+      <Container
+        mode={mode}
+        onClick={() => socket.emit("remove_notifications", currentChat?._id)}
+      >
         {!showSupport ? (
           <RiCustomerService2Fill
             className="bigicon"
-            onClick={() => setShowSupport(true)}
+            onClick={() => {
+              setShowSupport(true);
+            }}
           />
         ) : (
           <CgChevronDown
@@ -523,6 +564,7 @@ export default function Support() {
             )}
           </Box>
         )}
+        <OneNewMessage notification={supportNotification.length} />
       </Container>
     )
   );
