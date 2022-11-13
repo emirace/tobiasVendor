@@ -390,7 +390,7 @@ orderRouter.get(
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
       .populate("orderItems.product")
-      .populate("user", "image username");
+      .populate("user", "image username lastName firstName");
     if (order) {
       res.send(order);
     } else {

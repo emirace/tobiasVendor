@@ -71,7 +71,7 @@ const SumCont = styled.div`
 `;
 const Left = styled.div`
   display: flex;
-  flex: 3;
+  flex: 5;
 `;
 const Right = styled.div`
   flex: 1;
@@ -375,7 +375,11 @@ export default function CartScreen() {
                               {item.name}
                             </Link>
 
-                            <div> ${item.actualPrice}</div>
+                            <div>
+                              {" "}
+                              {item.currency}
+                              {item.actualPrice}
+                            </div>
                             <span>Size: {item.selectSize}</span>
                           </div>
                           <div className="col-3 d-flex align-items-center">
@@ -564,12 +568,12 @@ export default function CartScreen() {
                             <Left>
                               <Right>{c.quantity} </Right>
                               <Right>x </Right>
-                              <Right>
+                              <Right style={{ flex: "2" }}>
                                 {currency}
                                 {c.actualPrice}
                               </Right>
                             </Left>
-                            <Right>
+                            <Right style={{ flex: "3" }}>
                               {` =  ${currency}` + c.quantity * c.actualPrice}
                             </Right>
                           </SumCont>

@@ -478,6 +478,7 @@ main {
   background: var(--orange-color);
   border: 0;
   margin: 0 5px;
+  font-size: 0.8rem;
 }
 .products {
   display: flex;

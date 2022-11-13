@@ -32,6 +32,10 @@ const Main = styled.div`
   padding: 20px 5vw 0 5vw;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 10px 0;
+    padding: 20px 5px 0 5px;
+  }
 `;
 const LeftC = styled.div`
   flex: 8;
@@ -45,7 +49,7 @@ const SumCont = styled.div`
 `;
 const Left = styled.div`
   display: flex;
-  flex: 3;
+  flex: 5;
 `;
 const Right = styled.div`
   flex: 1;
@@ -109,9 +113,18 @@ const RowData = styled.div`
 `;
 const ColTitle = styled.div`
   flex: 1;
+  @media (max-width: 992px) {
+    flex: 2;
+  }
 `;
 const ColValue = styled.div`
   flex: 5;
+`;
+const DeliveryKey = styled.div`
+  flex: 1;
+  @media (max-width: 992px) {
+    flex: 2;
+  }
 `;
 const reducer = (state, action) => {
   switch (action.type) {
@@ -413,7 +426,7 @@ export default function PlaceOrderScreen() {
                           display: "flex",
                           alignItems: "center",
                         }}
-                        className="col-6"
+                        className="col-7"
                       >
                         <img
                           src={item.image}
@@ -437,12 +450,12 @@ export default function PlaceOrderScreen() {
                           <div>Size: {item.selectSize}</div>
                         </div>
                       </div>
-                      <div className="col-3">
-                        <span>{item.quantity}</span>
+                      <div className="col-2">
+                        <span>x {item.quantity}</span>
                       </div>
                       <div className="col-3">
                         {currency}
-                        {item.price}
+                        {item.actualPrice * item.quantiy}
                       </div>
                     </Row>
                     {Object.entries(item.deliverySelect).map(([key, value]) => (
@@ -453,7 +466,7 @@ export default function PlaceOrderScreen() {
                           fontSize: "13px",
                         }}
                       >
-                        <div style={{ flex: "1" }}>{key}:</div>
+                        <DeliveryKey>{key}:</DeliveryKey>
                         <div style={{ flex: "5" }}>{value}</div>
                       </div>
                     ))}
@@ -521,12 +534,12 @@ export default function PlaceOrderScreen() {
                             <Left>
                               <Right>{c.quantity} </Right>
                               <Right>x </Right>
-                              <Right>
+                              <Right style={{ flex: "2" }}>
                                 {currency}
                                 {c.actualPrice}
                               </Right>
                             </Left>
-                            <Right>
+                            <Right style={{ flex: "3" }}>
                               {` =  ${currency}` + c.quantity * c.actualPrice}
                             </Right>
                           </SumCont>

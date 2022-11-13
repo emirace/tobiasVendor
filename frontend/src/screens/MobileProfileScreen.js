@@ -1,13 +1,18 @@
 import {
+  faArrowRotateLeft,
   faBasketShopping,
   faChartBar,
   faChartColumn,
   faChartLine,
   faComment,
+  faEnvelope,
   faGear,
+  faGift,
   faHome,
   faListCheck,
+  faMailBulk,
   faMessage,
+  faMoneyBill,
   faMoneyBillTransfer,
   faRightFromBracket,
   faUser,
@@ -166,37 +171,78 @@ export default function MobileProfileScreen() {
         <Link to="/dashboard">Home</Link>
       </MobileMenuItem>
       <MobileMenuItem>
-        <FontAwesomeIcon icon={faChartLine} />
-        <Link to="/dashboard/analytics">Analytics</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faChartBar} />
-        <Link to="/dashboard/orderlist">Orders</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faChartBar} />
-        <Link to="/dashboard/saleslist">Sales</Link>
-      </MobileMenuItem>
-      <SectionTitle mode={mode}>Quick Menu</SectionTitle>
-      {userInfo.isAdmin && (
-        <MobileMenuItem>
-          <FontAwesomeIcon icon={faUser} />
-          <Link to="/dashboard/userlist">Users</Link>
-        </MobileMenuItem>
-      )}
-      <MobileMenuItem>
         <FontAwesomeIcon icon={faBasketShopping} />
         <Link to="/dashboard/productlist">Products</Link>
       </MobileMenuItem>
       <MobileMenuItem>
+        <FontAwesomeIcon icon={faChartBar} />
+        <Link to="/dashboard/orderlist">Purchase Orders</Link>
+      </MobileMenuItem>
+      <MobileMenuItem>
+        <FontAwesomeIcon icon={faChartBar} />
+        <Link to="/dashboard/saleslist">Sold Orders</Link>
+      </MobileMenuItem>
+      <MobileMenuItem>
+        <FontAwesomeIcon icon={faArrowRotateLeft} />
+        <Link to="/dashboard/returns">Returns</Link>
+      </MobileMenuItem>
+      <MobileMenuItem>
         <FontAwesomeIcon icon={faMoneyBillTransfer} />
-        <Link to="/dashboard/wallet">Wallet</Link>
+        <Link to="/dashboard/wallet">My Wallet</Link>
+      </MobileMenuItem>
+      <SectionTitle mode={mode}>Quick Menu</SectionTitle>
+      <MobileMenuItem>
+        <FontAwesomeIcon icon={faHome} />
+        <Link to="/dashboard/wallet">Address Book</Link>
+      </MobileMenuItem>
+      <MobileMenuItem>
+        <FontAwesomeIcon icon={faGift} />
+        <Link to="/dashboard/wallet">Coupon/Gift</Link>
       </MobileMenuItem>
       {userInfo.isAdmin && (
-        <MobileMenuItem>
-          <FontAwesomeIcon icon={faListCheck} />
-          <Link to="/dashboard/categories">Categories</Link>
-        </MobileMenuItem>
+        <>
+          <SectionTitle mode={mode}>Admin</SectionTitle>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faChartLine} />
+            <Link to="/dashboard/analytics">Analytics</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faUser} />
+            <Link to="/dashboard/userlist">Users</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faChartColumn} />
+            <Link to="/messages">Reports</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faListCheck} />
+            <Link to="/dashboard/categories">Categories</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faEnvelope} />
+            <Link to="/dashboard/messages">All Messages</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faArrowRotateLeft} />
+            <Link to="/dashboard/allreturns">Return Querries</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faArrowRotateLeft} />
+            <Link to="/dashboard/logreturns">All Logged Returns</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faMoneyBill} />
+            <Link to="/dashboard/payments">Payments</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faMoneyBill} />
+            <Link to="/dashboard/transactionlist">All Transactions</Link>
+          </MobileMenuItem>
+          <MobileMenuItem>
+            <FontAwesomeIcon icon={faMailBulk} />
+            <Link to="/dashboard/newsletter">Collected Email</Link>
+          </MobileMenuItem>
+        </>
       )}
       <SectionTitle mode={mode}>Notification</SectionTitle>
       <MobileMenuItem>
@@ -205,10 +251,6 @@ export default function MobileProfileScreen() {
       </MobileMenuItem>
       {userInfo.isAdmin && (
         <>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faChartColumn} />
-            <Link to="/messages">Reports</Link>
-          </MobileMenuItem>
           <MobileMenuItem>
             <FontAwesomeIcon icon={faComment} />
             <Link to="/messages">Support</Link>

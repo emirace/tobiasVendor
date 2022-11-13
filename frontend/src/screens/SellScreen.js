@@ -51,8 +51,17 @@ const SubHeading = styled.h4`
   margin: 0 5px;
   font-weight: bold;
   text-align: center;
+  &.mobileshow {
+    display: none;
+  }
   @media (max-width: 992px) {
     font-size: 12px !important;
+    &.nomobileshow {
+      display: none;
+    }
+    &.mobileshow {
+      display: block;
+    }
   }
 `;
 const SubHeadingMalon = styled.h4`
@@ -75,6 +84,7 @@ const Row = styled.div`
     }
     &.scroll {
       overflow-x: auto;
+      justify-content: start;
     }
     &.width {
       width: auto !important;
@@ -156,6 +166,12 @@ const Section = styled.section`
   }
   @media (max-width: 992px) {
     margin: 20px 0;
+    &.bottom {
+      margin-bottom: 10px;
+    }
+    &.top {
+      margin-top: 20px;
+    }
   }
 `;
 const Button = styled.div`
@@ -201,6 +217,10 @@ const Input = styled.input`
     props.mode === "pagebodydark"
       ? "var(--black-color)"
       : "var(--white-color)"};
+  color: ${(props) =>
+    props.mode === "pagebodylight"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   &:focus-visible {
     outline: none;
   }
@@ -211,6 +231,7 @@ const RebatchImg = styled.img`
   flex: 1;
   height: 500px;
   @media (max-width: 992px) {
+    margin: 10px 0 10px 0;
     width: 200px;
   }
 `;
@@ -222,6 +243,65 @@ const GetStart = styled.div`
   left: 55%;
   bottom: 10%;
   transform: translateX(-50%);
+  @media (max-width: 992px) {
+    font-size: 13px;
+  }
+`;
+const Line = styled.div`
+  display: none;
+  opacity: 0.2;
+  background: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
+  width: 100%;
+  height: 1px;
+  @media (max-width: 992px) {
+    display: block;
+  }
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding: 10px;
+  border-radius: 0.2rem;
+  z-index: 9;
+  @media screen {
+    padding: 5px;
+    flex-direction: column;
+  }
+`;
+
+const ButtonShow = styled.div`
+  background: var(--orange-color);
+  cursor: pointer;
+  color: #fff;
+  text-transform: uppercase;
+  border-radius: 0.2rem;
+  padding: 5px 10px;
+  margin: 20px 10px 0 10px;
+  &:hover {
+    background: var(--malon-color);
+  }
+  @media (max-width: 992px) {
+    margin-left: auto;
+  }
+`;
+const Wondering = styled.div`
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 13px;
+  }
+`;
+
+const ButtonText = styled.div`
+  font-weight: bold;
+  font-size: 25px;
+  @media (max-width: 992px) {
+    font-size: 13px;
+  }
 `;
 
 export default function SellScreen() {
@@ -252,7 +332,7 @@ export default function SellScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: " email updated",
+          message: " Thank You For Submiting Your Email",
           showStatus: true,
           state1: "visible1 success",
         },
@@ -292,9 +372,8 @@ export default function SellScreen() {
         </Row>
         <Row>
           <SubHeadingMalon>SNAP</SubHeadingMalon>
-          <SubHeading style={{ fontSize: "1.5rem", marginBottom: "0px" }}>
-            {" "}
-            - LIST -{" "}
+          <SubHeading style={{ fontSize: "1.5rem", margin: "0px" }}>
+            - LIST -
           </SubHeading>
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
@@ -351,7 +430,7 @@ export default function SellScreen() {
           </Row>
         </div>
       </Section>
-      <Section className="back" mode={mode} style={{ padding: "30px" }}>
+      <Section className="back" mode={mode} style={{ padding: "10px" }}>
         <SubHeading>WHAT TO SELL?</SubHeading>
         <Text>
           FASHION - BEAUTY - FINE JEWLERY - HOME & ARTS - PET - CARE & GROOMING
@@ -362,9 +441,6 @@ export default function SellScreen() {
           constantly looking for, willing to love, and give a warm home.{" "}
         </Text>
 
-        <Link to="/newproduct">
-          <Button>Start Selling</Button>
-        </Link>
         <Row className="gap scroll">
           <Imagesqr
             src="https://res.cloudinary.com/emirace/image/upload/v1661221989/james-ree-ZmeFtu11Hpc-unsplash_xzwcxb.webp"
@@ -387,10 +463,22 @@ export default function SellScreen() {
             alt="img"
           />
         </Row>
+
+        <Link to="/newproduct">
+          <Button>
+            <Header2>Start Selling</Header2>
+          </Button>
+        </Link>
       </Section>
       <Section>
         <Header2>RE:BATCH</Header2>
         <Row className="mobile width" style={{ width: "70%" }}>
+          <SubHeading className="mobileshow" style={{ fontSize: "18px" }}>
+            COMING SOON!!!
+          </SubHeading>
+          <SubHeading className="mobileshow" style={{ fontSize: "18px" }}>
+            WANTS TO CONSIGN WITH US?
+          </SubHeading>
           <RebatchImg
             src="https://res.cloudinary.com/emirace/image/upload/v1661221991/derick-anies-hDJT_ERrB-w-unsplash_tty8rb.webp"
             alt="img"
@@ -406,10 +494,11 @@ export default function SellScreen() {
               fashion foot print on our environment. Save our planet by
               recycling garments instead of dumping them to landfills.
             </Text>
-            <div style={{ height: "30px" }} />
-            <SubHeading style={{ fontSize: "18px" }}>COMING SOON!!!</SubHeading>
-
-            <SubHeading style={{ fontSize: "18px" }}>
+            {/* <div style={{ height: "30px" }} /> */}
+            <SubHeading className="nomobileshow" style={{ fontSize: "18px" }}>
+              COMING SOON!!!
+            </SubHeading>
+            <SubHeading className="nomobileshow" style={{ fontSize: "18px" }}>
               WANTS TO CONSIGN WITH US?
             </SubHeading>
             <Text style={{ textAlign: "left" }}>
@@ -420,6 +509,7 @@ export default function SellScreen() {
             <InputCont>
               <Input
                 mode={mode}
+                value={input}
                 placeholder="Email:"
                 onChange={(e) => setInput(e.target.value)}
               />
@@ -433,7 +523,7 @@ export default function SellScreen() {
           </div>
         </Row>
       </Section>
-      <Section>
+      <Section className="bottom">
         <Header2>BULK n SLOT</Header2>
         <div style={{ position: "relative" }}>
           <MainImage
@@ -465,11 +555,11 @@ export default function SellScreen() {
           this service is also tailored made for you.
         </Text>
         <SubHeading>THREE EASY STEPS TO USE BULK n SLOT</SubHeading>
-        <Row style={{ alignItems: "flex-start" }}>
+        <Row style={{ alignItems: "flex-start", marginTop: "10px" }}>
           <b style={{ marginRight: "10px" }}>1.</b>
           <Text style={{ textAlign: "justify" }}>
-            <b>TAKE A PIC/VIDEO:</b> Make sure to pack up to Ten (10) items
-            minimum, you want to sell in a bag/box, snap a photo of your Bulk or
+            <b>TAKE A PIC/VIDEO:</b> Make sure to pack up to Ten (10) minimum
+            items, you want to sell in a bag/box, snap a photo of your Bulk or
             Slot bag/box and take extra clear detailed photos or make a short
             video of items with any visible and reasonable tear & wear.
             Uploading video is optional, but strongly advised to make things
@@ -508,7 +598,8 @@ export default function SellScreen() {
           <Header2>GET STARTED, FREE!</Header2>
         </Button>
       </Section>
-      <Section mode={mode}>
+      <Line />
+      <Section mode={mode} className="top">
         <Header2>WHY SELL WITH REPEDDLE?</Header2>
         <Row style={{ width: "90vw" }} className="mobile">
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
@@ -550,11 +641,7 @@ export default function SellScreen() {
           </Step>
         </Row>
       </Section>
-      <Section
-        mode={mode}
-        style={{ marginLeft: "-5vw", width: "90vw" }}
-        className="back"
-      >
+      <Section mode={mode}>
         <Header2>WHAT YOU WILL GET</Header2>
         <Row style={{ width: "80vw" }} className="mobile">
           <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
@@ -632,32 +719,20 @@ export default function SellScreen() {
           position: "relative",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-around",
-            width: "100%",
-            padding: "20px",
-            borderRadius: "0.2rem",
-            zIndex: "9",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: "25px" }}>
-            <b>WONDERING WHAT TO BUY?</b>
-          </Text>
-          <Link to="/search">
-            <Button style={{ background: "var(--malon-color)" }}>
-              <Header2>SHOP NOW</Header2>
-            </Button>
+        <ButtonRow>
+          <Wondering>WONDERING WHAT TO BUY?</Wondering>
+          <Link to="/search" style={{ marginLeft: "auto" }}>
+            <ButtonShow style={{ background: "var(--malon-color)" }}>
+              <ButtonText>SHOP NOW</ButtonText>
+            </ButtonShow>
           </Link>
-        </div>
+        </ButtonRow>
         <div
           style={{
             position: "absolute",
             left: "0",
             top: "0",
-            opacity: "0.3",
+            opacity: "0.4",
             background: "var(--malon-color)",
             width: "100%",
             height: "100%",

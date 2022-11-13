@@ -182,6 +182,14 @@ const Searchcont = styled.div`
     display: block;
   }
 `;
+const EachCont = styled.div`
+  width: 25%;
+  display: flex;
+  justify-content: center;
+  @media (max-width: 992px) {
+    width: 50%;
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -970,16 +978,9 @@ export default function SearchSceen() {
               )}
               <ProductListC>
                 {products.map((product, index) => (
-                  <div
-                    style={{
-                      width: "25%",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    key={product._id}
-                  >
+                  <EachCont key={product._id}>
                     <Product product={product}></Product>
-                  </div>
+                  </EachCont>
                 ))}
               </ProductListC>
             </>

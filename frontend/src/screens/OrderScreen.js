@@ -39,9 +39,15 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Main = styled.div`
+  margin: 20px;
   padding: 20px 5vw 0 5vw;
-  background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  background: white;
+  @media (max-width: 992px) {
+    margin: 10px;
+    padding: 10px 5px 0 5px;
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  }
 `;
 const Container = styled.div`
   width: 100%;
@@ -60,6 +66,20 @@ const Header = styled.h1`
   @media (max-width: 992px) {
     padding: 10px 10px;
     margin-top: 15px;
+  }
+`;
+const InvoiceHead = styled.h2`
+  margin-bottom: 0;
+  width: 100%;
+  padding: 15px 30px;
+  display: none;
+  color: var(--malon-color);
+  @media (max-width: 992px) {
+    padding: 10px 10px;
+    margin-top: 15px;
+  }
+  @media print {
+    display: block;
   }
 `;
 const SumaryContDetails = styled.div`
@@ -252,8 +272,8 @@ const UserImg = styled.img`
   object-fit: cover;
 `;
 const UserName = styled.div`
-  font-weight: bold;
   margin: 0 20px;
+  font-weight: bold;
   &:hover {
     text-decoration: underline;
   }
@@ -262,12 +282,16 @@ const UserName = styled.div`
 const PaymentRow = styled.div`
   display: flex;
   justify-content: space-between;
-  @media (max-width: 992) {
+  @media (max-width: 992px) {
     flex-direction: column;
   }
 `;
 const Commision = styled.div`
   width: 50%;
+  @media (max-width: 992px) {
+    width: 100%;
+    margin-top: 20px;
+  }
 `;
 
 const Key = styled.div`
@@ -288,6 +312,22 @@ const TrackingCont = styled.div`
     &:hover {
       color: var(--malon-color);
     }
+  }
+`;
+
+const DeliveryKey = styled.div`
+  flex: 1;
+  @media (max-width: 992px) {
+    flex: 2;
+  }
+`;
+
+const SubSumaryContDetails = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  @media (max-width: 992px) {
+    flex-direction: column;
   }
 `;
 
@@ -646,9 +686,10 @@ export default function OrderScreen() {
         <title>Order {orderId}</title>
         {console.log(order)}
       </Helmet>
+      <InvoiceHead>Invoice</InvoiceHead>
       <div style={{ display: "flex" }}>
         <Header>Order Details</Header>
-        <Print onClick={handlePrint}>Print</Print>
+        <Print onClick={handlePrint}>Print as invoice</Print>
       </div>
       <Container>
         <SumaryCont mode={mode}>
@@ -701,13 +742,7 @@ export default function OrderScreen() {
           isSeller ? (
             orderitem.seller._id === userInfo._id && (
               <SumaryContDetails mode={mode}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
+                <SubSumaryContDetails>
                   <div style={{ display: "none" }}>
                     {
                       (itemsPrice =
@@ -881,7 +916,7 @@ export default function OrderScreen() {
                       )}
                     </SetStatus>
                   )}
-                </div>
+                </SubSumaryContDetails>
                 <hr />
                 <DetailButton>
                   <OrderItem>
@@ -948,7 +983,7 @@ export default function OrderScreen() {
                         fontSize: "13px",
                       }}
                     >
-                      <div style={{ flex: "1" }}>{key}:</div>
+                      <DeliveryKey>{key}:</DeliveryKey>
                       <div style={{ flex: "5" }}>{value}</div>
                     </div>
                   )
@@ -957,11 +992,16 @@ export default function OrderScreen() {
                   <div>Buyer Information</div>
                   <UserCont>
                     <UserImg src={order.user.image} alt="img" />
-                    <UserName>
-                      <Link to={`/seller/${order.user._id}`}>
-                        {order.user.username}
-                      </Link>
-                    </UserName>
+                    <div>
+                      <UserName>
+                        <Link to={`/seller/${order.user._id}`}>
+                          @{order.user.username}
+                        </Link>
+                      </UserName>
+                      <UserName>
+                        {order.user.firstName} {order.user.lastName}
+                      </UserName>
+                    </div>
                   </UserCont>
                 </div>
               </SumaryContDetails>
@@ -1052,7 +1092,7 @@ export default function OrderScreen() {
                     <Quantity>Size: {orderitem.selectSize}</Quantity>
                     <ItemPrice>
                       {orderitem.currency}
-                      {orderitem.actualPrice}
+                      {orderitem.actualPrice * orderitem.quantity}
                     </ItemPrice>
                   </Details1>
                 </OrderItem>
@@ -1069,8 +1109,9 @@ export default function OrderScreen() {
                     textTransform: "capitalize",
                     fontSize: "13px",
                   }}
+                  key={key}
                 >
-                  <div style={{ flex: "1" }}>{key}:</div>
+                  <DeliveryKey>{key}:</DeliveryKey>
                   <div style={{ flex: "5" }}>{value}</div>
                 </div>
               ))}
@@ -1078,11 +1119,16 @@ export default function OrderScreen() {
                 <div>Seller Information</div>
                 <UserCont>
                   <UserImg src={orderitem.seller.image} alt="img" />
-                  <UserName>
-                    <Link to={`/seller/${orderitem.seller._id}`}>
-                      {orderitem.sellerName}
-                    </Link>
-                  </UserName>
+                  <div>
+                    <UserName>
+                      <Link to={`/seller/${orderitem.seller._id}`}>
+                        @{orderitem.sellerName}
+                      </Link>
+                    </UserName>
+                    <UserName>
+                      {orderitem.seller.firstName} {orderitem.seller.lastNames}
+                    </UserName>
+                  </div>
                 </UserCont>
               </div>
             </SumaryContDetails>
@@ -1112,57 +1158,85 @@ export default function OrderScreen() {
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />
               <PaymentRow>
-                <div>
+                <div style={{ width: "100%" }}>
                   <Name>Payment Details</Name>
-                  <ItemNum>
-                    Item Total:{"   "} {currency}
-                    {isSeller ? itemsPrice : order.itemsPrice}
-                  </ItemNum>
-                  <ItemNum>
-                    Shipping Fee: {currency}
-                    {isSeller ? shippingPrice : order.shippingPrice}
-                  </ItemNum>
-                  <ItemNum>
-                    Total:{" "}
-                    <ItemPrice>
+                  <div
+                    style={{
+                      display: "flex",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    <DeliveryKey>Item Total:</DeliveryKey>
+                    <div style={{ flex: "5" }}>
                       {currency}
-                      {isSeller ? itemsPrice + shippingPrice : order.totalPrice}
-                    </ItemPrice>
-                  </ItemNum>
+                      {isSeller ? itemsPrice : order.itemsPrice}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    <DeliveryKey>Shipping Fee:</DeliveryKey>
+                    <div style={{ flex: "5" }}>
+                      {currency}
+                      {isSeller ? shippingPrice : order.shippingPrice}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    <DeliveryKey>Total:</DeliveryKey>
+                    <div style={{ flex: "5" }}>
+                      <ItemPrice>
+                        {currency}
+                        {isSeller
+                          ? itemsPrice + shippingPrice
+                          : order.totalPrice}
+                      </ItemPrice>
+                    </div>
+                  </div>
                 </div>
                 {isSeller && (
-                  <Commision>
-                    <ItemNum>
-                      <Key>Total cost:</Key>
-                      <Value>
-                        {" "}
-                        {currency}
-                        {itemsPrice + shippingPrice}
-                      </Value>
-                    </ItemNum>
-                    <ItemNum>
-                      <Key>Repeddle Commision (7.9%):</Key>
-                      <Value>
-                        {" "}
-                        {currency}
-                        {((7.9 / 100) * (itemsPrice + shippingPrice)).toFixed(
-                          2
-                        )}
-                      </Value>
-                    </ItemNum>
-                    <ItemNum>
-                      <Key>You will Receive:</Key>
-                      <Value>
-                        {" "}
-                        {currency}
-                        {(
-                          itemsPrice +
-                          shippingPrice -
-                          (7.9 / 100) * (itemsPrice + shippingPrice)
-                        ).toFixed(2)}
-                      </Value>
-                    </ItemNum>
-                  </Commision>
+                  <>
+                    <hr />
+                    <Commision>
+                      <ItemNum>
+                        <Key>Total cost:</Key>
+                        <Value>
+                          {" "}
+                          {currency}
+                          {itemsPrice + shippingPrice}
+                        </Value>
+                      </ItemNum>
+                      <ItemNum>
+                        <Key>Repeddle Commision (7.9%):</Key>
+                        <Value>
+                          {" "}
+                          {currency}
+                          {((7.9 / 100) * (itemsPrice + shippingPrice)).toFixed(
+                            2
+                          )}
+                        </Value>
+                      </ItemNum>
+                      <ItemNum>
+                        <Key>You will Receive:</Key>
+                        <Value>
+                          {" "}
+                          {currency}
+                          {(
+                            itemsPrice +
+                            shippingPrice -
+                            (7.9 / 100) * (itemsPrice + shippingPrice)
+                          ).toFixed(2)}
+                        </Value>
+                      </ItemNum>
+                    </Commision>
+                  </>
                 )}
               </PaymentRow>
             </SumaryContDetails>

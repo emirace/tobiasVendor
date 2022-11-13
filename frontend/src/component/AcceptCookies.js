@@ -22,6 +22,7 @@ const Container = styled.div`
       : "0 5px 16px rgba(225, 225, 225, 0.5)"};
   @media (max-width: 992px) {
     width: 100%;
+    flex-direction: column;
   }
 `;
 const Title = styled.div`
