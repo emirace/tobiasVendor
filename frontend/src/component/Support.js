@@ -234,6 +234,16 @@ export default function Support() {
   );
 
   useEffect(() => {
+    const exist = secureLocalStorage.getItem("guestUser");
+    console.log("storage");
+    if (exist && !userInfo) {
+      console.log("storage user", exist);
+      socket.emit("onlogin", exist);
+      setUser(exist);
+    }
+  }, []);
+
+  useEffect(() => {
     if (CurrentPath === "/messages") {
       setDisplaySupport(false);
     } else {
@@ -284,18 +294,6 @@ export default function Support() {
     getMessages();
   }, [currentChat, user]);
 
-  const storeGuestUser = (guest) => {
-    const guestUsers = secureLocalStorage.getItem("guestUsers") || [];
-    console.log(guestUsers);
-    const exist = guestUsers.find((user) => user.email === guest.email);
-    if (exist) {
-      return exist;
-    } else {
-      secureLocalStorage.setItem("guestUsers", [...guestUsers, guest]);
-      return guest;
-    }
-  };
-
   const handleOnChange = (text, input) => {
     setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
   };
@@ -313,34 +311,25 @@ export default function Support() {
       return;
     }
     try {
-      const id = (
-        m = Math,
-        d = Date,
-        h = 16,
-        s = (s) => m.floor(s).toString(h)
-      ) =>
-        s(d.now() / 1000) +
-        " ".repeat(h).replace(/./g, () => s(m.random() * h));
-      const currentGuest = storeGuestUser({
+      const { data: currentGuest } = await axios.post("/api/guestusers/", {
         username: input.username,
         email: input.email,
         guest: true,
-        _id: id(),
       });
-      socket.emit("onlogin", currentGuest);
-      await addConversation(currentGuest._id);
-      console.log(id());
       setUser(currentGuest);
+      secureLocalStorage.setItem("guestUser", currentGuest);
+      socket.emit("onlogin", currentGuest);
+      await addConversation(currentGuest);
     } catch (err) {
       console.log(err.message);
     }
-    console.log("hello");
   };
 
-  const addConversation = async (id) => {
+  const addConversation = async (user) => {
+    console.log("conversation user", user);
     try {
       const { data } = await axios.post(`/api/conversations/support`, {
-        recieverId: id,
+        recieverId: user._id,
         type: "support",
         guestEmail: user.email,
       });
@@ -364,6 +353,7 @@ export default function Support() {
     try {
       const { data } = await axios.post("api/messages/support", message1);
       setMessages([...messages, data.message]);
+      console.log("heeellllooo");
       const receiverId = currentChat.members.find(
         (member) => member !== user._id
       );

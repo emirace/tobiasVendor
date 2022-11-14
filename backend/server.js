@@ -34,6 +34,7 @@ import paymentRouter from "./routes/paymentRoutes.js";
 import User from "./models/userModel.js";
 import newsletterRouter from "./routes/newsletterRoutes.js";
 import { sendEmail } from "./utils.js";
+import guestUserRouter from "./routes/guestUserRoutes.js";
 
 dotenv.config();
 
@@ -388,6 +389,7 @@ app.use("/api/cartItems", cartItemRouter);
 app.use("/api/transactions", transactionRouter);
 app.use("/api/reportConversation", reportConversionRouter);
 app.use("/api/payments", paymentRouter);
+app.use("/api/guestusers", guestUserRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));
@@ -486,7 +488,9 @@ io.on("connection", (socket) => {
 
   socket.on("sendSupport", ({ message, senderId, receiverId, text }) => {
     const admins = users.filter((x) => x.isAdmin);
+    console.log("i am here");
     admins.map((admin) => {
+      console.log("admin");
       io.to(admin.socketId).emit("getMessage", {
         senderId,
         text,

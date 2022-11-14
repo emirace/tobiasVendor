@@ -30,16 +30,16 @@ messageRouter.post(
 
           const realUser = await User.findById(req.body.receiverId);
           console.log(realUser);
-          sendEmail({
-            to: realUser.email || req.body.guestEmail,
-            subject: "REPEDDLE SUPPORT ",
-            template: "support",
-            context: {
-              username: realUser.username || "Tribe",
-              url: req.body.url,
-              message: req.body.text,
-            },
-          });
+          // sendEmail({
+          //   to: realUser ? realUser.email : req.body.guestEmail,
+          //   subject: "REPEDDLE SUPPORT ",
+          //   template: "support",
+          //   context: {
+          //     username: realUser ? realUser.username : "Tribe",
+          //     url: req.body.url,
+          //     message: req.body.text,
+          //   },
+          // });
         }
         res
           .status(200)

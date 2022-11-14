@@ -558,6 +558,7 @@ export default function ChatScreen() {
         type: "MSG_SUCCESS",
         payload: [...messages, data.message],
       });
+      console.log("receiver", receiverId);
       socket.emit("sendMessage", {
         message: data.message,
         senderId: userInfo._id,
