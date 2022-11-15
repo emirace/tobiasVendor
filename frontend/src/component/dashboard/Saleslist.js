@@ -341,7 +341,7 @@ export default function Saleslist() {
     name: p.orderItems[0].name,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
-    date: moment(p.createdAt).format("MMM Do, h:mm a"),
+    date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.username : "anonymous",
     amount: `${currency}${p.totalPrice}`,

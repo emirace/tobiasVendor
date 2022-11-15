@@ -398,7 +398,7 @@ export default function Analytics() {
       <Content mode={mode}>
         <NameCont>
           <Tittle>Top Sellers</Tittle>
-          <Link to="/dashboard/userlist">See All</Link>
+          <Link to="/admin/topsellers">See All</Link>
         </NameCont>
         {!bestseller ? (
           <LoadingBox />
@@ -416,12 +416,12 @@ export default function Analytics() {
                 <Count>{user.userId.sold.length} sold</Count>
 
                 <Actions>
-                  <Link to={`/seller/${user._id}`}>
+                  <Link to={`/seller/${user.userId._id}`}>
                     <View>
                       <FontAwesomeIcon icon={faEye} /> View
                     </View>
                   </Link>
-                  <Link to={`/dashboard/user/${user._id}`}>
+                  <Link to={`/dashboard/user/${user.userId._id}`}>
                     <Edit>
                       <FontAwesomeIcon icon={faPen} /> Edit
                     </Edit>

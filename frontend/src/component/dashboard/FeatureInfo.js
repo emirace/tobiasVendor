@@ -75,7 +75,7 @@ const Percentage = styled.div`
 
 export default function FeatureInfo({ type, number }) {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, currency } = state;
   let data;
 
   switch (type) {
@@ -111,24 +111,6 @@ export default function FeatureInfo({ type, number }) {
             }}
             className="icon"
             icon={faBagShopping}
-          />
-        ),
-      };
-      break;
-    case "earning":
-      data = {
-        title: " TOTAL EARNINGS",
-        isMoney: true,
-        to: "/dashboard/earning",
-        link: "view all net earning",
-        icon: (
-          <FontAwesomeIcon
-            className="icon"
-            icon={faMoneyBill}
-            style={{
-              color: "var(--green-color)",
-              background: `${mode === "pagebodydark" ? "#1d3b23" : "#d6f5dc"}`,
-            }}
           />
         ),
       };
@@ -199,7 +181,7 @@ export default function FeatureInfo({ type, number }) {
         <Left>
           <Title>{data.title}</Title>
           <Counter>
-            {data.isMoney && "$"} {number}
+            {data.isMoney && currency} {number}
           </Counter>
           {data.to && (
             <Links>

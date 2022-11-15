@@ -43,7 +43,7 @@ bestsellerRouter.get(
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const views = await BestSeller.find({ region })
-      .populate("userId", "name image sold username badge")
+      .populate("userId", "name image sold username badge email earnings")
       .sort({ score: -1 });
     res.status(201).send(views);
   })

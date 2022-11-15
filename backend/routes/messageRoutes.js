@@ -17,7 +17,6 @@ messageRouter.post(
         conversation.needRespond = req.user.isAdmin ? false : true;
         conversation.updatedAt = Date.now();
         await conversation.save();
-        console.log("conversation", conversation);
         const newmessage = new Message({
           conversationId: req.body.conversationId,
           sender: req.user._id,
@@ -25,21 +24,21 @@ messageRouter.post(
           image: req.body.image,
         });
         const savedmessage = await newmessage.save();
-        if (conversation.conversationType === "support") {
-          console.log(req.body.receiverId);
+        if (conversation.conversationType === "support" && !req.body.sendMail) {
+          console.log("sendMail", req.body.sendMail);
 
           const realUser = await User.findById(req.body.receiverId);
-          console.log(realUser);
-          // sendEmail({
-          //   to: realUser ? realUser.email : req.body.guestEmail,
-          //   subject: "REPEDDLE SUPPORT ",
-          //   template: "support",
-          //   context: {
-          //     username: realUser ? realUser.username : "Tribe",
-          //     url: req.body.url,
-          //     message: req.body.text,
-          //   },
-          // });
+
+          sendEmail({
+            to: realUser ? realUser.email : req.body.guestEmail,
+            subject: "REPEDDLE SUPPORT ",
+            template: "support",
+            context: {
+              username: realUser ? realUser.username : "Tribe",
+              url: req.body.url,
+              message: req.body.text,
+            },
+          });
         }
         res
           .status(200)
@@ -60,13 +59,10 @@ messageRouter.post(
   "/support",
   expressAsyncHandler(async (req, res) => {
     try {
-      console.log("hello");
       const conversation = await Conversation.findById(req.body.conversationId);
       if (conversation) {
-        console.log("hello2");
         conversation.needRespond = req.body.isAdmin ? false : true;
         conversation.updatedAt = Date.now();
-        console.log("hello2a");
         await conversation.save();
         const newmessage = new Message({
           conversationId: req.body.conversationId,

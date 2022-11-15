@@ -140,6 +140,8 @@ orderRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
+    const { query } = req;
+    const { from, to } = query;
     const orders = await Order.aggregate([
       { $match: { region } },
       {
@@ -169,7 +171,12 @@ orderRouter.get(
       },
     ]);
     const dailyOrders = await Order.aggregate([
-      { $match: { region } },
+      {
+        $match: {
+          region,
+          createdAt: { $gte: new Date(from), $lte: new Date(to) },
+        },
+      },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -410,6 +417,13 @@ orderRouter.put(
       })
       .populate("orderItems.product");
     const product = await Product.findById(req.params.productId);
+    const isValidUser = req.user.isAdmin
+      ? true
+      : req.user._id === order.user._id
+      ? true
+      : req.user._id === product.seller
+      ? true
+      : false;
     if (order) {
       order.orderItems = order.orderItems.map((x) => {
         if (x._id === req.params.productId) {

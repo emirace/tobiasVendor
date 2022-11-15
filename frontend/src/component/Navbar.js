@@ -602,6 +602,12 @@ const DetailText = styled.div`
     props.mode === "pagebodydark"
       ? "var(--black-color)"
       : "var(--white-color)"};
+  @media (max-width: 992px) {
+    left: 25%;
+    width: 250px;
+    top: 20px;
+    text-align: justify;
+  }
 `;
 
 const Welcome = styled.div`

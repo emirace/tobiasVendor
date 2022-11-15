@@ -552,7 +552,7 @@ export default function OrderScreen() {
           userId: order.user,
           itemId: order._id,
           notifyType: "delivery",
-          msg: `Your order is ${deliveryStatus} `,
+          msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
         });
@@ -882,9 +882,9 @@ export default function OrderScreen() {
                                 disabled={
                                   deliveryNumber(orderitem.deliveryStatus) > 0
                                 }
-                                value="Been Processing"
+                                value="Processing"
                               >
-                                Been Processing
+                                Processing
                               </MenuItem>
                               <MenuItem
                                 disabled={

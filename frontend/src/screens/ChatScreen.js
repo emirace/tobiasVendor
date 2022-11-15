@@ -549,6 +549,7 @@ export default function ChatScreen() {
       image: image,
       receiverId,
       guestEmail: currentChat.guest ? currentChat.guestEmail : "",
+      sendMail: isOnlineCon(currentChat),
     };
     try {
       const { data } = await axios.post("api/messages", message, {

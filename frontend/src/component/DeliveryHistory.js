@@ -5,12 +5,15 @@ import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
+  width: 40%;
   padding-bottom: 30px;
 `;
 const Content = styled.div`
   display: flex;
   align-items: center;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const BoxCont = styled.div`
   position: relative;
@@ -39,6 +42,10 @@ const Text = styled.div`
   font-weight: 500;
   font-size: 13px;
   line-height: 1em;
+  @media (max-width: 992px) {
+    left: 100px;
+    top: 0;
+  }
 `;
 const Line = styled.div`
   width: 45px;
@@ -47,11 +54,14 @@ const Line = styled.div`
   &.active {
     background: green;
   }
+  @media (max-width: 992px) {
+    height: 20px;
+    width: 5px;
+  }
 `;
 export default function DeliveryHistory({ status }) {
   return (
     <Container>
-      {console.log(status)}
       <Content>
         {status < 6 ? (
           <>

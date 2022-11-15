@@ -4,6 +4,7 @@ import {
   faHome,
   faSearch,
   faUser,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -67,6 +68,16 @@ export default function StickyNav() {
         >
           <FontAwesomeIcon icon={faList} />
           <div className="stickynav_text">Categories</div>
+        </Link>
+        <Link
+          to="/notifications"
+          onClick={() => setCurrentNav("notifications")}
+          className={`sticky_item ${
+            currentNav === "notifications" && "active"
+          }`}
+        >
+          <FontAwesomeIcon icon={faBell} />
+          <div className="stickynav_text">Notifications</div>
         </Link>
         <Link
           to="/messages"

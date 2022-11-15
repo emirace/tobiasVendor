@@ -488,9 +488,7 @@ io.on("connection", (socket) => {
 
   socket.on("sendSupport", ({ message, senderId, receiverId, text }) => {
     const admins = users.filter((x) => x.isAdmin);
-    console.log("i am here");
     admins.map((admin) => {
-      console.log("admin");
       io.to(admin.socketId).emit("getMessage", {
         senderId,
         text,
@@ -520,6 +518,7 @@ io.on("connection", (socket) => {
     const notifications = await Notification.find({
       userId,
     }).sort({ createdAt: -1 });
+
     const user = users.find((x) => x._id === userId);
     if (user) {
       io.to(user.socketId).emit("get_data", notifications);

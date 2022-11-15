@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { RiCustomerService2Fill } from "react-icons/ri";
 import { CgChevronRight } from "react-icons/cg";
@@ -211,8 +217,25 @@ const Error = styled.div`
   color: var(--red-color);
 `;
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "UPLOAD_REQUEST":
+      return { ...state, loadingUpload: true };
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 export default function Support() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo, notifications } = state;
   const [showSupport, setShowSupport] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
@@ -225,10 +248,15 @@ export default function Support() {
   const [messages, setMessages] = useState([]);
   const [displaySupport, setDisplaySupport] = useState(true);
   const [arrivalMessage, setArrivalMessage] = useState("");
+  const [image, setImage] = useState("");
   const location = useLocation();
 
-  const CurrentPath = location.pathname;
+  const [{ loadingUpload }, dispatch] = useReducer(reducer, {
+    loadingUpload: false,
+  });
 
+  const CurrentPath = location.pathname;
+  console.log("notifications", notifications);
   const supportNotification = notifications.filter(
     (x) => x.notifyType === "support" && x.read === false
   );
@@ -240,8 +268,21 @@ export default function Support() {
       console.log("storage user", exist);
       socket.emit("onlogin", exist);
       setUser(exist);
+      console.log(user);
     }
-  }, []);
+  }, [user, userInfo]);
+
+  useEffect(() => {
+    if (!userInfo && user) {
+      socket.emit("initial_data", { userId: user._id });
+      socket.on("get_data", (notification) =>
+        ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification })
+      );
+      socket.on("change_data", () =>
+        socket.emit("initial_data", { userId: user._id })
+      );
+    }
+  }, [user, userInfo]);
 
   useEffect(() => {
     if (CurrentPath === "/messages") {
@@ -349,6 +390,7 @@ export default function Support() {
       text: message,
       conversationId: currentChat._id,
       senderId: user._id,
+      image,
     };
     try {
       const { data } = await axios.post("api/messages/support", message1);
@@ -362,6 +404,7 @@ export default function Support() {
         message: data.message,
         senderId: user._id,
         receiverId,
+        image,
         isAdmin: false,
         text: message,
       });
@@ -375,6 +418,7 @@ export default function Support() {
           "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",
       });
       setMessage("");
+      socket.emit("remove_notifications", currentChat?._id);
     } catch (err) {
       console.log(getError(err));
     }
@@ -382,15 +426,54 @@ export default function Support() {
 
   const handleSendMessage = async () => {
     if (user) {
-      await addConversation(user._id);
+      await addConversation(user);
     }
     setSendMessage(true);
   };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      console.log("keypress");
       handleSubmit(e);
     }
   };
+
+  const uploadHandler = async (e) => {
+    console.log(e);
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      setImage(data.secure_url);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Image Uploaded",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (err) {
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Failed uploading image",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      console.log(getError(err));
+    }
+  };
+
   return (
     displaySupport && (
       <Container
@@ -416,7 +499,7 @@ export default function Support() {
               {!sendMessage ? (
                 <>
                   <Logo src="https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif" />
-                  <Name>Hello {userInfo?.username ?? "Guest"}</Name>
+                  <Name>Hello {user?.username ?? "Guest"}</Name>
                 </>
               ) : (
                 <>
@@ -463,11 +546,19 @@ export default function Support() {
                         value={message}
                         placeholder="Start typing..."
                         onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={handleKeyDown}
                       />
-                      <GrAttachment />
+                      <label htmlFor="addimage">
+                        <GrAttachment />
+                      </label>
+                      <input
+                        type="file"
+                        id="addimage"
+                        style={{ display: "none" }}
+                        onChange={uploadHandler}
+                      />
                       <FontAwesomeIcon
                         onClick={handleSubmit}
-                        onKeyDown={handleKeyDown}
                         icon={faPaperPlane}
                       />
                     </InputCont>

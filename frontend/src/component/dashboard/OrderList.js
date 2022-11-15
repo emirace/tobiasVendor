@@ -252,7 +252,7 @@ export default function OrderList() {
     deliveryStatus: p.deliveryStatus,
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     user: p.user ? p.user.username : "anonymous",
-    date: moment(p.createdAt).format("MMM Do, h:mm a"),
+    date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
     amount: `${currency}${p.totalPrice}`,
   }));
 

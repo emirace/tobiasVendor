@@ -171,7 +171,7 @@ returnRouter.put(
             },
           });
           break;
-        case "Approve":
+        case "Approved":
           sendEmail({
             to: returned.orderId.user.email,
             subject: "ORDER RETURN APPROVED",

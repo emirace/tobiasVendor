@@ -150,7 +150,7 @@ const reducer = (state, action) => {
 
 export default function OrderListAdmin() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
   const [refresh, setRefresh] = useState(false);
   const [sort, setSort] = useState("all");
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
@@ -339,7 +339,7 @@ export default function OrderListAdmin() {
     slug: p.orderItems[0].slug,
     image: p.orderItems[0].image,
     deliveryStatus: p.deliveryStatus,
-    date: moment(p.createdAt).format("MMM Do, h:mm a"),
+    date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
     payStatus: p.isPaid ? "Paid" : "Not Paid",
     buyer: p.user ? p.user.username : "anonymous",
     seller: p.seller
@@ -347,7 +347,7 @@ export default function OrderListAdmin() {
         ? "multi-seller"
         : p.seller[0].username
       : "anonymous",
-    amount: p.totalPrice,
+    amount: currency + p.totalPrice,
     sellerId: p.seller ? p.seller[0]._id : "",
     buyerId: p.user ? p.user._id : "",
   }));

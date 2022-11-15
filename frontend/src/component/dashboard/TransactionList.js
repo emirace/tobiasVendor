@@ -171,7 +171,7 @@ const reducer = (state, action) => {
 
 export default function TransactionList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const [
     { loading, transactions, error, loadingDelete, successDelete },
@@ -311,11 +311,11 @@ export default function TransactionList() {
     transactions.length > 0 &&
     transactions.map((p) => ({
       id: p._id,
-      date: moment(p.createdAt).format("MMM Do, h:mm a"),
+      date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
       // user: p.userId.username,
       status: "Done",
       purpose: p.metadata.purpose,
-      amount: p.amount,
+      amount: currency + p.amount,
       type: p.txnType,
     }));
 

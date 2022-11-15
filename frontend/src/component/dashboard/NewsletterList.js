@@ -271,7 +271,7 @@ export default function NewsletterList() {
   const rows =
     newsletters.length > 0 &&
     newsletters.map((p) => ({
-      date: moment(p.createdAt).format("MMM Do, h:mm a"),
+      date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
       email: p.email,
       emailType: p.emailType,
       id: p._id,

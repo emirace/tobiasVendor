@@ -99,6 +99,8 @@ import BanScreen from "./screens/successPage/BanScreen";
 import VerifyEmailConfirmScreen from "./screens/VerifyEmailConfirmScreen";
 import secureLocalStorage from "react-secure-storage";
 import AcceptCookies from "./component/AcceptCookies";
+import MobileNotificationScreen from "./screens/MobileNotificationScreen";
+import TopSellerList from "./component/dashboard/TopSellerList";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -280,7 +282,6 @@ function App() {
     }
   }, [userInfo]);
   const getData = (notification) => {
-    console.log("notification", notification);
     ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
   };
   const changeData = () => {
@@ -449,6 +450,17 @@ function App() {
                           <ProtectedRoute>
                             <IsActive>
                               <ChatScreen />
+                            </IsActive>
+                          </ProtectedRoute>
+                        }
+                      />
+
+                      <Route
+                        path="/notifications"
+                        element={
+                          <ProtectedRoute>
+                            <IsActive>
+                              <MobileNotificationScreen />
                             </IsActive>
                           </ProtectedRoute>
                         }
@@ -664,6 +676,14 @@ function App() {
                         element={
                           <AdminRoute>
                             <OrderListAdmin />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/topsellers"
+                        element={
+                          <AdminRoute>
+                            <TopSellerList />
                           </AdminRoute>
                         }
                       />

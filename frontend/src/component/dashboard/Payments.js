@@ -182,7 +182,7 @@ const reducer = (state, action) => {
 
 export default function Payments() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
   const [{ loading, payments, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
@@ -317,10 +317,10 @@ export default function Payments() {
     payments.length > 0 &&
     payments.map((p) => ({
       id: p._id,
-      date: moment(p.createdAt).format("MMM DD, h:mm a"),
+      date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
       user: p.userId.username,
       status: p.status,
-      amount: p.amount,
+      amount: currency + p.amount,
       type: p.meta.Type,
       userId: p.userId._id,
     }));

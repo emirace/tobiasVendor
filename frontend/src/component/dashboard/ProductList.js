@@ -236,7 +236,7 @@ export default function ProductList() {
     id: p._id,
     name: p.name,
     image: p.image,
-    date: moment(p.createdAt).format("MMM Do, h:mm a"),
+    date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
     stock: p.countInStock,
     price: `${p.currency}${p.actualPrice}`,
     slug: p.slug,

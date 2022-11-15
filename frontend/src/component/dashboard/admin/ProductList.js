@@ -229,10 +229,10 @@ export default function ProductListAdmin() {
   const rows = products.map((p) => ({
     id: p._id,
     name: p.name,
-    date: moment(p.createdAt).format("MMM Do, h:mm a"),
+    date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
     image: p.image,
     stock: p.countInStock,
-    price: "$" + p.price,
+    price: p.currency + p.actualPrice,
     slug: p.slug,
   }));
 

@@ -13,8 +13,8 @@ const Container = styled.div`
   flex: 4;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
-  margin-bottom: 20px;
   margin: 0 20px;
+  margin-bottom: 20px;
   border-radius: 0.2rem;
 `;
 const Title = styled.h1`
@@ -52,6 +52,36 @@ const ActionSec = styled.div`
   }
 `;
 
+const SearchCont = styled.div`
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
+  margin-right: 10px;
+`;
+
+const SearchInput = styled.input`
+  width: 40%;
+  height: 45px;
+  padding: 15px;
+  border: 1px solid var(--malon-color);
+  border-radius: 5px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+
+  background: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
+  &::placeholder {
+    padding: 10px;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "USERS_REQUEST":
@@ -78,61 +108,32 @@ const reducer = (state, action) => {
   }
 };
 
-export default function UserList() {
+export default function TopSellerList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, currency } = state;
 
-  const [{ loading, loadingDelete, successDelete, users, error }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      users: [],
-      error: "",
-    });
+  const [{ loading, users, error }, dispatch] = useReducer(reducer, {
+    loading: true,
+    users: [],
+    error: "",
+  });
   const [userQuery, setUserQuery] = useState("all");
+
   useEffect(() => {
-    const fetchAllUser = async () => {
+    const fetchBestSellers = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(
-          `/api/users/${region()}?q=${userQuery}`,
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
+        const { data } = await axios.get(`/api/bestsellers/${region()}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
+        dispatch({ type: "USERS_FAIL", payload: err });
         console.log(getError(err));
       }
     };
-    if (successDelete) {
-      dispatch({ type: "DELETE_RESET" });
-    } else {
-      fetchAllUser();
-    }
-  }, [successDelete, userInfo]);
-
-  const deleteHandler = async (user) => {
-    if (window.confirm("Are you sure to delete")) {
-      try {
-        dispatch({ type: "DELETE_REQUEST" });
-        await axios.delete(`/api/users/${user}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
-        dispatch({ type: "DELETE_SUCCESS" });
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "User deleted",
-            showStatus: true,
-            state1: "visible1 error",
-          },
-        });
-      } catch (err) {
-        console.log(getError(err));
-        dispatch({ type: "DELETE_FAIL" });
-      }
-    }
-  };
+    fetchBestSellers();
+  }, [userInfo]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 200 },
@@ -155,13 +156,8 @@ export default function UserList() {
       width: 150,
     },
     {
-      field: "status",
-      headerName: "Status",
-      width: 80,
-    },
-    {
-      field: "transactions",
-      headerName: "Transaction",
+      field: "earnings",
+      headerName: "Earnings",
       width: 100,
     },
     {
@@ -174,10 +170,6 @@ export default function UserList() {
             <Link to={`/dashboard/user/${params.row.id}`}>
               <Edit mode={mode}>Edit</Edit>
             </Link>
-            <FontAwesomeIcon
-              onClick={() => deleteHandler(params.row.id)}
-              icon={faTrash}
-            />
           </ActionSec>
         );
       },
@@ -185,46 +177,23 @@ export default function UserList() {
   ];
 
   const rows = users.map((u) => ({
-    id: u._id,
-    username: u.username,
-    image: u.image,
-    date: moment(u.createdAt).format("MMM Do, h:mm a"),
-    email: u.email,
-    status: "online",
-    transactions: "$242.23",
+    id: u.userId._id,
+    username: u.userId.username,
+    image: u.userId.image,
+    email: u.userId.email,
+    earnings: `${currency}${u.userId.earnings}`,
   }));
-
-  //   const rows = [
-  //     {
-  //       id: 1,
-  //       username: 'John Doe',
-  //       image: '/images/men.png',
-  //       email: 'test@mail.com',
-  //       status: 'online',
-  //       transactions: '$242.32',
-  //     },
-  //     {
-  //       id: 2,
-  //       username: 'John Doe',
-  //       image: '/images/men.png',
-  //       email: 'test@mail.com',
-  //       status: 'online',
-  //       transactions: '$242.32',
-  //     },
-  //     {
-  //       id: 3,
-  //       username: 'John Doe',
-  //       image: '/images/men.png',
-  //       email: 'test@mail.com',
-  //       status: 'online',
-  //       transactions: '$242.32',
-  //     },
-  //   ];
 
   return (
     <Container mode={mode}>
-      <Title>User List</Title>
-      {console.log("user", users)}
+      <Title>Top Sellers</Title>
+      {/* <SearchCont>
+        <SearchInput
+          mode={mode}
+          onChange={(e) => setUserQuery(e.target.value)}
+          placeholder="Search by id"
+        />
+      </SearchCont> */}
       <DataGrid
         sx={{
           width: "100%",

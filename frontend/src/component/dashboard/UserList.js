@@ -218,7 +218,7 @@ export default function UserList() {
     id: u._id,
     username: u.username,
     image: u.image,
-    date: moment(u.createdAt).format("MMM Do, h:mm a"),
+    date: moment(u.createdAt).format("MMM DD YY, h:mm a"),
     email: u.email,
     status: "online",
     earnings: `${currency}${u.earnings}`,
