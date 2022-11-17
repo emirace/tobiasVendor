@@ -122,6 +122,11 @@ const AddProduct = styled.div`
     font-size: 50px;
     margin-bottom: 5px;
   }
+  @media (max-width: 992px) {
+    width: 162px;
+    height: 342px;
+    margin: 5px 3px;
+  }
 `;
 
 const SellerLeft = styled.div`
@@ -327,10 +332,7 @@ export default function SellerScreen() {
           <>
             {userInfo && (
               <ProductCont>
-                <Link
-                  to={userInfo.isSeller ? "/newproduct" : "/sell"}
-                  style={{ width: "240px", height: "500px" }}
-                >
+                <Link to={userInfo.isSeller ? "/newproduct" : "/sell"}>
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     <span>Add Product</span>

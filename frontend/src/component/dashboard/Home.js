@@ -32,7 +32,7 @@ const HomeWidget = styled.div`
   @media (max-width: 992px) {
     flex-direction: column;
     gap: 10px;
-    align-items: center;
+    align-items: start;
   }
 `;
 const WidgetsCont = styled.div`
@@ -46,6 +46,9 @@ const Row = styled.div`
   flex: 1;
   gap: 20px;
   margin: 0 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const Col = styled.div`
   flex: 1;
@@ -55,7 +58,7 @@ const Col = styled.div`
 `;
 
 const Filter = styled.div`
-  display: flex;
+  display: none;
   padding: 0 20px;
   justify-content: end;
   align-items: center;

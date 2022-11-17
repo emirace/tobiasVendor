@@ -8,10 +8,16 @@ import moment from "moment";
 
 const Container = styled.div`
   flex: 2;
+
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   padding: 20px;
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    font-size: 11px;
+    padding: 5px;
+    width: 100%;
+  }
 `;
 const Tittle = styled.div`
   font-size: 22px;
@@ -29,8 +35,12 @@ const Th = styled.th`
 const Tr = styled.tr``;
 const User = styled.td`
   text-transform: capitalize;
-  align-items: center;
+  // align-items: center;
   margin: 10px 0;
+  white-space: nowrap;
+  width: 20%;
+  overflow: hidden;
+  // text-overflow: ellipsis;
 `;
 const Img = styled.img.attrs((props) => ({
   src: props.src,
@@ -48,6 +58,9 @@ const Date = styled.td`
 `;
 const Amount = styled.td`
   font-weight: 300;
+  @media (max-width: 992px) {
+    margin-left: 15px;
+  }
 `;
 const Status = styled.td``;
 const Button = styled.button`
@@ -69,6 +82,13 @@ const Button = styled.button`
       props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
     color: var(--orange-color);
   }
+`;
+
+const Column = styled.div`
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const reducer = (state, action) => {
@@ -138,9 +158,17 @@ export default function WidgetLarge({ refresh }) {
         </Tr>
         {transactions.map((t) => (
           <Tr>
-            <User>{t._id}</User>
-            <User>{t.metadata ? t.metadata.purpose : ""}</User>
-            <Date>{moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}</Date>
+            <User>
+              <Column>{t._id}</Column>
+            </User>
+            <User>
+              <Column>{t.metadata ? t.metadata.purpose : ""}</Column>
+            </User>
+            <Date>
+              <Column>
+                {moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}
+              </Column>
+            </Date>
             <Amount>{t.txnType}</Amount>
             <Amount>
               {currency}

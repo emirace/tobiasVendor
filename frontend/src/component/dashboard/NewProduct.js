@@ -38,6 +38,9 @@ const NewProductC = styled.div`
 `;
 const TitleCont = styled.div`
   margin-bottom: 20px;
+  @media (max-width: 992px) {
+    margin-bottom: 0;
+  }
 `;
 const Title = styled.h1`
   font-size: 28px;
@@ -47,6 +50,9 @@ const TitleDetails = styled.span`
   font-size: 14px;
   line-height: 1.2;
   margin-bottom: 5px;
+  @media (max-width: 992px) {
+    width: auto;
+  }
 `;
 const Content = styled.div``;
 const Left = styled.div`
@@ -116,6 +122,10 @@ const Label = styled.label`
 const ItemCont = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+    gap: 0;
+  }
 `;
 const ItemLeft = styled.div`
   flex: 1;
@@ -200,6 +210,11 @@ const Sizes = styled.div`
   display: flex;
   margin: 20px 0;
   gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+  }
 `;
 const SizeLeft = styled.div`
   flex: 1;
@@ -379,6 +394,12 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
+    @media (max-width: 992px) {
+      width: 250px;
+      font-size: 11px;
+      top: 20px;
+      left: -20px;
+    }
   }
 `;
 const LuxuryCont = styled.div`
@@ -1376,42 +1397,44 @@ export default function NewProduct() {
             </Sizes>
 
             <Price>
-              <Item className="half">
-                <Label>
-                  Price{" "}
-                  <Tips
-                    mode={mode}
-                    tips={`
+              <div style={{ diplay: "flex", alignItems: "center" }}>
+                <Item className="half">
+                  <Label>
+                    Price{" "}
+                    <Tips
+                      mode={mode}
+                      tips={`
                   Any price suggestion for my product? We encourage you to be as reasonable as possible, as over prized products are turn off to buyers. Keep in mind that our community are experienced secondhand THRIFT buyers & sellers both in vintage and luxury goods and overpricing may affect the sale of your product. However, buyers will appreciate a fairly reasonable price that’s worth the value of your product. Also, bear in mind that there might be competitive product you may be selling on our app or website, hence, be sure to beat any possible competition you can. Offer discounts, promos or free delivery where and when possible as these are great ways to sell FAST! We are doing our best to provide you with competitive goods and price suggestions for similar and previously SOLD products. 
 `}
-                  >
-                    <FontAwesomeIcon icon={faQuestionCircle} />
-                  </Tips>
-                </Label>
-                <TextInput
-                  mode={mode}
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </Item>
-              <Item className="half">
-                <Label>Discount</Label>
-                <Discount>
+                    >
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Tips>
+                  </Label>
                   <TextInput
-                    className="half"
                     mode={mode}
                     type="number"
-                    onChange={(e) => {
-                      if (price) {
-                        const value = (price * (100 - e.target.value)) / 100;
-                        setDiscount(value);
-                      }
-                    }}
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
                   />
-                  <span>%</span>
-                </Discount>
-              </Item>
+                </Item>
+                <Item className="half">
+                  <Label>Discount</Label>
+                  <Discount>
+                    <TextInput
+                      className="half"
+                      mode={mode}
+                      type="number"
+                      onChange={(e) => {
+                        if (price) {
+                          const value = (price * (100 - e.target.value)) / 100;
+                          setDiscount(value);
+                        }
+                      }}
+                    />
+                    <span>%</span>
+                  </Discount>
+                </Item>
+              </div>
               <PriceDisplay>
                 <Offer>
                   {currency}

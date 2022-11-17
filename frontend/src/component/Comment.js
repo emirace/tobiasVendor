@@ -317,7 +317,7 @@ export default function Comment({ commentC, product }) {
             <CommentText>{comment.comment}</CommentText>
             <Action>
               <Reply onClick={() => setReplyArea(!replyArea)}>
-                {comment.replies.length} reply
+                {comment?.replies?.length} reply
               </Reply>
               <Like>{comment.likes.length} like</Like>
               <FontAwesomeIcon

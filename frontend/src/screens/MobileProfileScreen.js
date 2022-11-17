@@ -8,6 +8,7 @@ import {
   faEnvelope,
   faGear,
   faGift,
+  faHeart,
   faHome,
   faListCheck,
   faMailBulk,
@@ -131,7 +132,7 @@ const Logout = styled.div`
 `;
 
 const Welcome = styled.div`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   color: var(--orange-color);
 `;
@@ -219,13 +220,13 @@ export default function MobileProfileScreen() {
       </Link>
       <Link to="/earning">
         <MobileMenuItem>
-          <FontAwesomeIcon icon={faChartBar} />
+          <FontAwesomeIcon icon={faMoneyBillTransfer} />
           My Earnings
         </MobileMenuItem>
       </Link>
       <Link to="/cart?wishlist=true">
         <MobileMenuItem>
-          <FontAwesomeIcon icon={faChartBar} />
+          <FontAwesomeIcon icon={faHeart} />
           My Wishlist{" "}
           <span style={{ color: "var(--orange-color)" }}>
             ({user?.saved?.length})
