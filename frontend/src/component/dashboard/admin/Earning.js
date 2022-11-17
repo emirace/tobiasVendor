@@ -130,8 +130,8 @@ const Tips = styled.span`
     width: 200px;
     position: absolute;
     border-radius: 0.5rem;
-    left: 30px;
-    text-align: justify;
+    left: -50px;
+    top: 20px;
     font-size: 14px;
     z-index: 2;
     line-height: 1.2;
@@ -378,14 +378,14 @@ export default function Earning() {
               </div>
               <Amount>
                 {currency}
-                {totalSales}
+                {Math.floor(totalSales * 100) / 100}
               </Amount>
             </Widget>
             <Widget
               style={{ background: "var(--malon-color)", color: "white" }}
             >
               <div style={{ display: "flex" }}>
-                <SmallText>Repeddle Expenses (7.9%)</SmallText>
+                <SmallText>Expenses (7.9%)</SmallText>
                 <Tips
                   mode={mode}
                   tips={`Expenses is Repeddle commission charged against your total earnings that’s less

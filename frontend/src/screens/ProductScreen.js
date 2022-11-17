@@ -101,14 +101,14 @@ const LeftOverview = styled.div`
   flex: 1;
 `;
 const RightOverview = styled.div`
-  flex: 3;
+  flex: 1;
 `;
 const Key = styled.div`
   font-weight: 500;
 `;
 const Value = styled.div``;
 const Sustain = styled.div`
-  margin: 20px 0;
+  margin: 15px 0;
 `;
 const SustainHeader = styled.div`
   text-transform: uppercase;
@@ -155,7 +155,6 @@ const IconContainer = styled.div`
 `;
 
 const ReportButton = styled.div`
-  margin: 10px;
   cursor: pointer;
   color: var(--malon-color);
   text-align: right;
@@ -192,7 +191,7 @@ const Tag = styled.div`
 
 const SustainCont = styled.div`
   display: flex;
-  align-items: center;
+  align-items: start;
   font-size: 14px;
   & svg {
     font-size: 16px;
@@ -297,7 +296,7 @@ export default function ProductScreen() {
       }
     };
     fetchData();
-  }, [slug]);
+  }, [slug, comment]);
   useEffect(() => {
     const fetchComment = async () => {
       try {
@@ -569,7 +568,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Signin/Register to add an item to wishlist",
+          message: "Sign In/ Sign Up to add an item to wishlist",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -614,7 +613,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Sign in / Register to like",
+          message: "Sign in /  Sign Up to like",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -827,6 +826,7 @@ export default function ProductScreen() {
                         onChange={(e) => setComment2(e.target.value)}
                       />
                       <input
+                        style={{ margintop: "5px" }}
                         type="file"
                         label="hello"
                         onChange={(e) => uploadImageHandler(e)}
@@ -981,7 +981,7 @@ export default function ProductScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Signin/Register to start a conversation",
+          message: "Signin/ Sign Up to start a conversation",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -1376,7 +1376,9 @@ export default function ProductScreen() {
                   >
                     {product.condition}
                   </div>
-                  {conditionDetails(product.condition)}
+                  <div style={{ textAlign: "justify" }}>
+                    {conditionDetails(product.condition)}
+                  </div>
                 </div>
               </div>
               <div

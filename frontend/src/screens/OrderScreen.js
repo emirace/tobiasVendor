@@ -220,6 +220,7 @@ const Print = styled.div`
   font-weight: 500;
   color: white;
   padding: 1px 8px;
+  width: 150px;
   border-radius: 0.2rem;
   cursor: pointer;
   height: 30px;
@@ -274,8 +275,10 @@ const UserImg = styled.img`
 const UserName = styled.div`
   margin: 0 20px;
   font-weight: bold;
-  &:hover {
-    text-decoration: underline;
+  &.link {
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -538,7 +541,7 @@ export default function OrderScreen() {
           state1: "visible1 success",
         },
       });
-      if (deliveryStatus === "Received" || deliveryStatus === "Returned") {
+      if (deliveryStatus === "Received" || deliveryStatus === "Return Logged") {
         socket.emit("post_data", {
           userId: orderitem.seller._id,
           itemId: order._id,
@@ -689,7 +692,7 @@ export default function OrderScreen() {
       <InvoiceHead>Invoice</InvoiceHead>
       <div style={{ display: "flex" }}>
         <Header>Order Details</Header>
-        <Print onClick={handlePrint}>Print as invoice</Print>
+        <Print onClick={handlePrint}>Print as Invoice</Print>
       </div>
       <Container>
         <SumaryCont mode={mode}>
@@ -823,7 +826,7 @@ export default function OrderScreen() {
                             disabled={
                               order.deliveryStatus === "Hold" ||
                               order.deliveryStatus === "Received" ||
-                              order.deliveryStatus === "Returned"
+                              order.deliveryStatus === "Return Logged"
                             }
                             sx={{
                               minWidth: "220px",
@@ -866,7 +869,12 @@ export default function OrderScreen() {
 
                             <Select
                               onChange={(e) => {
-                                if (e.target.value === "Dispatched") {
+                                if (
+                                  e.target.value === "Dispatched" &&
+                                  orderitem.deliverySelect[
+                                    "delivery Option"
+                                  ] !== "Pick up from Seller"
+                                ) {
                                   setEnterwaybil(true);
                                 } else {
                                   deliverOrderHandler(
@@ -993,7 +1001,7 @@ export default function OrderScreen() {
                   <UserCont>
                     <UserImg src={order.user.image} alt="img" />
                     <div>
-                      <UserName>
+                      <UserName className="link">
                         <Link to={`/seller/${order.user._id}`}>
                           @{order.user.username}
                         </Link>
@@ -1089,9 +1097,12 @@ export default function OrderScreen() {
                   <Details1>
                     <Name>{orderitem.name}</Name>
                     <Quantity>QTY: {orderitem.quantity}</Quantity>
-                    <Quantity>Size: {orderitem.selectSize}</Quantity>
                     <ItemPrice>
-                      {orderitem.currency}
+                      Unit Price: {orderitem.currency}
+                      {orderitem.actualPrice}
+                    </ItemPrice>
+                    <ItemPrice>
+                      Total: {orderitem.currency}
                       {orderitem.actualPrice * orderitem.quantity}
                     </ItemPrice>
                   </Details1>
@@ -1120,7 +1131,7 @@ export default function OrderScreen() {
                 <UserCont>
                   <UserImg src={orderitem.seller.image} alt="img" />
                   <div>
-                    <UserName>
+                    <UserName className="link">
                       <Link to={`/seller/${orderitem.seller._id}`}>
                         @{orderitem.sellerName}
                       </Link>

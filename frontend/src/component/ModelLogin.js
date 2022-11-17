@@ -48,6 +48,10 @@ const CloseModelButton = styled.div`
   height: 32px;
   padding: 0;
   z-index: 10;
+  @media (max-width: 992px) {
+    right: 10px;
+    width: 20px;
+  }
 `;
 
 export default function ModelLogin({ showModel, setShowModel, children }) {

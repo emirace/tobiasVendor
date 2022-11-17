@@ -133,7 +133,6 @@ const Tips = styled.span`
     position: absolute;
     border-radius: 0.5rem;
     left: 30px;
-    text-align: justify;
     font-size: 14px;
     z-index: 2;
     line-height: 1.2;

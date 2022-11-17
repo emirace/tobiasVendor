@@ -17,17 +17,23 @@ const SendChat = styled.div`
 `;
 const InlineR = styled.div`
   display: inline-block;
-  padding: 20px;
+  padding: 10px;
   background: var(--malon-color);
   color: #fff;
-  border-radius: 10px;
+  border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    padding: 5px !important;
+  }
 `;
 const InlineS = styled.div`
   display: inline-block;
-  padding: 20px;
+  padding: 10px;
   background: var(--orange-color);
   color: #fff;
-  border-radius: 10px;
+  border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    padding: 5px !important;
+  }
 `;
 const TimeR = styled.div`
   text-align: left;

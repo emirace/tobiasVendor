@@ -51,6 +51,9 @@
   .newsletter_desc {
     text-align: center;
   }
+  .newsletter_desc b {
+    font-size: 12px;
+  }
   .newsletter_input {
     width: 90%;
   }

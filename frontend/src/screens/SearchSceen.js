@@ -18,6 +18,7 @@ import styled from "styled-components";
 import { Store } from "../Store";
 import SearchBox from "../component/SearchBox";
 import SearchFilter from "./SearchFilter";
+import { BiFilter } from "react-icons/bi";
 
 const Container = styled.div`
   display: flex;
@@ -74,6 +75,7 @@ const Result = styled.div`
 const RowCont = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Col = styled.div``;
@@ -91,6 +93,17 @@ const EachCont = styled.div`
   justify-content: center;
   @media (max-width: 992px) {
     width: 50%;
+  }
+`;
+
+const Filters = styled.div`
+  background: var(--orange-color);
+  padding: 5px 7px;
+  color: white;
+  border-radius: 0.2rem;
+  display: none;
+  @media (max-width: 992px) {
+    display: block;
   }
 `;
 
@@ -229,6 +242,9 @@ export default function SearchSceen() {
       </Helmet>
       <Container>
         <SearchFilter
+          setQueryBrand={setQueryBrand}
+          searchBrand={searchBrand}
+          queryBrand={queryBrand}
           showFilter={showFilter}
           setShowFilter={setShowFilter}
           category={category}
@@ -258,7 +274,9 @@ export default function SearchSceen() {
                 <SearchBox />
               </Searchcont>
               <RowCont>
-                <div onClick={() => setShowFilter(true)}>Filters</div>
+                <Filters onClick={() => setShowFilter(true)}>
+                  <BiFilter /> Filters
+                </Filters>
                 <Result>
                   {countProducts === 0 ? "No" : countProducts} Results
                   {query !== "all" && " : " + query}

@@ -39,13 +39,13 @@ const CopyRight = styled.div`
 const SmDetail = styled.p`
   display: none;
   position: relative;
-  height: ${(props) => (props.show ? "120px" : 0)};
+  height: ${(props) => (props.show ? "auto" : 0)};
   overflow: hidden;
   transition: 0.5s;
   @media (max-width: 992px) {
     display: block;
     font-size: 14px !important;
-    margin-bottom: 0;
+    margin-bottom: 15px;
   }
 `;
 
@@ -103,6 +103,10 @@ const Reserve = styled.div`
 `;
 const MFooterCenter = styled.div`
   display: none;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  padding: 20px;
+  margin: 10px 0;
   @media (max-width: 992px) {
     display: block;
   }
@@ -111,6 +115,32 @@ const DFooterCenter = styled.div`
   display: flex;
   @media (max-width: 992px) {
     display: none;
+  }
+`;
+
+const About = styled.p`
+  @media (max-width: 992px) {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  }
+`;
+
+const NavHeader = styled.h3`
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.83;
+  margin-bottom: 15px;
+  &::before {
+    content: " ";
+    width: 10px;
+    height: 10px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+    transform: rotate(${(props) => (!props.show ? "-45deg" : "135deg")})
+      translateY(-50%);
+    position: absolute;
+    right: 20px;
   }
 `;
 
@@ -145,10 +175,10 @@ export default function Footer() {
       case "shipMethod2":
         setShippingMethod2(!shipMethod2);
         break;
-      case "shipMethod4":
+      case "shipMethod3":
         setShippingMethod3(!shipMethod3);
         break;
-      case "shipMethod3":
+      case "shipMethod4":
         setShippingMethod4(!shipMethod4);
         break;
       default:
@@ -218,7 +248,7 @@ export default function Footer() {
                     Secure, Easy and Protected Payments
                   </SmTitle>
                   <SmDetail show={shipMethod2}>
-                    With every item you buy using the complete CHECKOUT on our
+                    With every item you buy using the complete checkout on our
                     App or Website, you are guaranteed 100% money back. Find out{" "}
                     <Link
                       to="protections"
@@ -362,7 +392,7 @@ export default function Footer() {
               />
             </Link>
           </Logo>
-          <p className="footer_desc">
+          <About mode={mode} className="footer_desc">
             Africa’s leading social marketplace for Pre-loved fashion/Items,
             Gen-Z, The Millennials, The Environment and Your Budget. By
             fostering a creative generation of conscious fashion consumers to
@@ -370,8 +400,8 @@ export default function Footer() {
             fashion waste crisis, crafting our story of a sustainable circular
             fashion in Africa, one garment at a time, one person at a time, and
             one loving home at a time. Let’s peddle and thrift.
-          </p>
-          <div>
+          </About>
+          <div className="footer_connect">
             <b style={{ textTransform: "uppercase" }}>Connect with us: </b>
             <span> We're Social, Let's Make It Media:</span>
           </div>
@@ -482,14 +512,16 @@ export default function Footer() {
             </ul>
           </div>
         </DFooterCenter>
-        <MFooterCenter className="footer_center">
+        <MFooterCenter mode={mode} className="footer_center">
           <div style={{ flex: 1 }}>
-            <h3
+            <NavHeader
+              mode={mode}
+              show={footerLinks1}
               className="footer_center_menu"
               onClick={() => setFooterLinks1(!footerLinks1)}
             >
               Customer Care
-            </h3>
+            </NavHeader>
             {footerLinks1 && (
               <ul className="footer_center_list">
                 <li className="footer_center_listitem">
@@ -516,12 +548,14 @@ export default function Footer() {
             )}
           </div>
           <div style={{ flex: 1 }}>
-            <h3
+            <NavHeader
+              mode={mode}
+              show={footerLinks2}
               className="footer_center_menu"
               onClick={() => setFooterLinks2(!footerLinks2)}
             >
               Our Company
-            </h3>
+            </NavHeader>
             {footerLinks2 && (
               <ul className="footer_center_list">
                 <li className="footer_center_listitem">
@@ -546,12 +580,14 @@ export default function Footer() {
             )}
           </div>
           <div style={{ flex: 1 }}>
-            <h3
+            <NavHeader
+              mode={mode}
+              show={footerLinks3}
               className="footer_center_menu"
               onClick={() => setFooterLinks3(!footerLinks3)}
             >
               Categories
-            </h3>
+            </NavHeader>
 
             {footerLinks3 && (
               <ul className="footer_center_list">
@@ -577,14 +613,16 @@ export default function Footer() {
             )}
           </div>
           <div style={{ flex: 1 }}>
-            <h3
+            <NavHeader
+              mode={mode}
+              show={footerLinks4}
               className="footer_center_menu"
               onClick={() => setFooterLinks4(!footerLinks4)}
             >
               Top Brand
-            </h3>
+            </NavHeader>
 
-            {footerLinks1 && (
+            {footerLinks4 && (
               <ul className="footer_center_list">
                 <li className="footer_center_listitem">
                   <a href="/#">Adidas</a>

@@ -93,6 +93,13 @@ const DiscountText = styled.div`
   }
 `;
 
+const SalesUp = styled.span`
+  @media (max-width: 992px) {
+    color: ${(props) =>
+      props.mode === "pagebodylight" ? "black" : "white"} !important;
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -495,7 +502,7 @@ export default function ProductsScreen() {
                     <span>Discount</span>
                     <h2>Season Sales </h2>
                     <h5>
-                      <span>Sales Up To</span> 60% OFF
+                      <SalesUp mode={mode}>Sales Up To 60% OFF</SalesUp>
                     </h5>
                   </div>
                   <div className="discount_countdown">

@@ -226,7 +226,7 @@ export const deliveryNumber = (status) => {
       return 4;
     case "Received":
       return 5;
-    case "Returned":
+    case "Return Logged":
       return 6;
     case "Return Approved":
       return 8;

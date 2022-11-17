@@ -18,11 +18,13 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
 import secureLocalStorage from "react-secure-storage";
+import { getError } from "../utils";
+import axios from "axios";
 
 const Container = styled.div`
   display: none;
@@ -128,9 +130,31 @@ const Logout = styled.div`
   }
 `;
 
+const Welcome = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--orange-color);
+`;
+
 export default function MobileProfileScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { mode, userInfo, refresher } = state;
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    try {
+      const fetchUser = async () => {
+        const { data } = await axios.get(`/api/users/profile/user`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setUser(data);
+        console.log("user", data);
+      };
+      fetchUser();
+    } catch (err) {
+      console.log(getError(err));
+    }
+  }, [userInfo, refresher]);
 
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
@@ -161,103 +185,160 @@ export default function MobileProfileScreen() {
         ></Switch>
         <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
       </SwitchCont>
-      <SectionTitle mode={mode}>Dashboard</SectionTitle>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faUser} />
-        <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faHome} />
-        <Link to="/dashboard">Home</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faBasketShopping} />
-        <Link to="/dashboard/productlist">Products</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faChartBar} />
-        <Link to="/dashboard/orderlist">Purchase Orders</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faChartBar} />
-        <Link to="/dashboard/saleslist">Sold Orders</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faArrowRotateLeft} />
-        <Link to="/dashboard/returns">Returns</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faMoneyBillTransfer} />
-        <Link to="/dashboard/wallet">My Wallet</Link>
-      </MobileMenuItem>
+      <Welcome>Hi {userInfo?.username}</Welcome>
+      <SectionTitle mode={mode}>Dashboard</SectionTitle>{" "}
+      <Link to={`/seller/${userInfo._id}`}>
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faUser} />
+          My Profile
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faHome} />
+          Home
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/productlist">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faBasketShopping} />
+          Products
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/orderlist">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faChartBar} />
+          Purchase Orders
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/saleslist">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faChartBar} />
+          Sold Orders
+        </MobileMenuItem>
+      </Link>
+      <Link to="/earning">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faChartBar} />
+          My Earnings
+        </MobileMenuItem>
+      </Link>
+      <Link to="/cart?wishlist=true">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faChartBar} />
+          My Wishlist{" "}
+          <span style={{ color: "var(--orange-color)" }}>
+            ({user?.saved?.length})
+          </span>
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/returns">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faArrowRotateLeft} />
+          Returns
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/wallet">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faMoneyBillTransfer} />
+          My Wallet
+        </MobileMenuItem>
+      </Link>
       <SectionTitle mode={mode}>Quick Menu</SectionTitle>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faHome} />
-        <Link to="/dashboard/wallet">Address Book</Link>
-      </MobileMenuItem>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faGift} />
-        <Link to="/dashboard/wallet">Coupon/Gift</Link>
-      </MobileMenuItem>
+      <Link to="/dashboard/wallet">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faHome} />
+          Address Book
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/wallet">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faGift} />
+          Coupon/Gift
+        </MobileMenuItem>
+      </Link>
       {userInfo.isAdmin && (
         <>
           <SectionTitle mode={mode}>Admin</SectionTitle>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faChartLine} />
-            <Link to="/dashboard/analytics">Analytics</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faUser} />
-            <Link to="/dashboard/userlist">Users</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faChartColumn} />
-            <Link to="/messages">Reports</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faListCheck} />
-            <Link to="/dashboard/categories">Categories</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faEnvelope} />
-            <Link to="/dashboard/messages">All Messages</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faArrowRotateLeft} />
-            <Link to="/dashboard/allreturns">Return Querries</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faArrowRotateLeft} />
-            <Link to="/dashboard/logreturns">All Logged Returns</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faMoneyBill} />
-            <Link to="/dashboard/payments">Payments</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faMoneyBill} />
-            <Link to="/dashboard/transactionlist">All Transactions</Link>
-          </MobileMenuItem>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faMailBulk} />
-            <Link to="/dashboard/newsletter">Collected Email</Link>
-          </MobileMenuItem>
+          <Link to="/dashboard/analytics">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faChartLine} />
+              Analytics
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/userlist">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faUser} />
+              Users
+            </MobileMenuItem>
+          </Link>{" "}
+          <Link to="/messages">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faChartColumn} />
+              Reports
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/categories">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faListCheck} />
+              Categories
+            </MobileMenuItem>
+          </Link>{" "}
+          <Link to="/dashboard/messages">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faEnvelope} />
+              All Messages
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/allreturns">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faArrowRotateLeft} />
+              Return Querries
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/logreturns">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faArrowRotateLeft} />
+              All Logged Returns
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/payments">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faMoneyBill} />
+              Payments
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/transactionlist">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faMoneyBill} />
+              All Transactions
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/newsletter">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faMailBulk} />
+              Collected Email
+            </MobileMenuItem>
+          </Link>
         </>
       )}
       <SectionTitle mode={mode}>Notification</SectionTitle>
-      <MobileMenuItem>
-        <FontAwesomeIcon icon={faMessage} />
-        <Link to="/messages">Messages</Link>
-      </MobileMenuItem>
+      <Link to="/messages">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faMessage} />
+          Messages
+        </MobileMenuItem>
+      </Link>
       {userInfo.isAdmin && (
         <>
-          <MobileMenuItem>
-            <FontAwesomeIcon icon={faComment} />
-            <Link to="/messages">Support</Link>
-          </MobileMenuItem>
+          <Link to="/messages">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faComment} />
+              Support
+            </MobileMenuItem>
+          </Link>
         </>
       )}
-
       <Logout onClick={() => signoutHandler()}>
         <FontAwesomeIcon icon={faRightFromBracket} />
         Logout

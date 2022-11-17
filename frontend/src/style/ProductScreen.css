@@ -267,7 +267,9 @@
 .orange-color {
   color: var(--orange-color);
 }
-
+span.active2 > div {
+  z-index: 8;
+}
 span.active2 > div > button:nth-child(1) {
   opacity: 1;
   top: -30px;
@@ -328,18 +330,24 @@ span.active2 > div > button:nth-child(7) {
   }
 
   span.active2 > div > button:nth-child(1) {
-    right: 80%;
+    right: -13%;
   }
   span.active2 > div > button:nth-child(2) {
-    right: 60%;
+    right: 75%;
   }
   span.active2 > div > button:nth-child(3) {
-    right: 40%;
+    right: 60%;
   }
   span.active2 > div > button:nth-child(4) {
-    right: 20%;
+    right: 45%;
   }
   span.active2 > div > button:nth-child(5) {
+    right: 30%;
+  }
+  span.active2 > div > button:nth-child(6) {
+    right: 15%;
+  }
+  span.active2 > div > button:nth-child(7) {
     right: 0%;
   }
 }

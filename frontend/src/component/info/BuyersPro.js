@@ -5,6 +5,9 @@ import styled from "styled-components";
 const Protection = styled.div`
   padding: 30px 10vw;
   overflow: auto;
+  @media (max-width: 992px) {
+    padding: 35px 10vw;
+  }
 `;
 const Title = styled.div`
   font-size: 25px;
@@ -13,7 +16,11 @@ const Title = styled.div`
   text-align: center;
 `;
 const Content = styled.div`
-  margin-bottom: 50px;
+  margin-bottom: 30px;
+  text-align: justify;
+  @media (max-width: 992px) {
+    margin-bottom: 20px;
+  }
 `;
 export default function BuyersPro() {
   return (

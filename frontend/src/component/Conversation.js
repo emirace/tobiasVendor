@@ -50,6 +50,9 @@ const LastMsg = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  @media (max-width: 992px) {
+    width: 170px;
+  }
 `;
 const Badge1 = styled.div`
   width: 10px;
@@ -184,8 +187,6 @@ export default function Conversation({
               )}
             </Name>
             <LastMsg>
-              {console.log("count", count, "not", notifications)}
-              {console.log(conversation.guest, "guest")}
               {message.message && message.messages.length > 0
                 ? message.messages[message.messages.length - 1].text
                 : "No messages"}{" "}

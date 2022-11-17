@@ -36,6 +36,20 @@ commentRouter.post(
   })
 );
 
+// get a comment
+
+commentRouter.get(
+  "/comment/:id",
+  expressAsyncHandler(async (req, res) => {
+    const comment = await Comment.findById(req.params.id);
+    if (comment) {
+      res.send(comment);
+    } else {
+      res.status(404).send("Comment not found");
+    }
+  })
+);
+
 // get all comments
 
 commentRouter.get(

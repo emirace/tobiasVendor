@@ -1,7 +1,7 @@
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { format } from "timeago.js";
 import { socket } from "../App";
@@ -15,6 +15,9 @@ const Container = styled.div`
   display: flex;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    padding: 10px;
+  }
 `;
 const Image = styled.img`
   width: 50px;
@@ -70,9 +73,12 @@ const Button = styled.button`
   border: 0;
   background: var(--orange-color);
   color: var(--white-color);
-  padding: 1px 7px;
+  padding: 5px 7px;
   font-size: 12px;
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    margin: 0;
+  }
 `;
 const SubCont = styled.div`
   padding: 20px;
@@ -81,6 +87,10 @@ const SubCont = styled.div`
   margin: 5px 0 5px 90px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 5px 0 5px 25px;
+    padding: 10px;
+  }
 `;
 const Textarea = styled.textarea`
   margin: 10px 0 0 90px;
@@ -102,6 +112,10 @@ const Textarea = styled.textarea`
     border: 1px solid var(--orange-color);
     box-shadow: 0 0 0 0.25rem rgb(247 154 35 / 10%);
   }
+  @media (max-width: 992px) {
+    margin: 0;
+    width: 100%;
+  }
 `;
 const CommentImg = styled.img`
   margin-top: 5px;
@@ -114,6 +128,20 @@ export default function Comment({ commentC, product }) {
   const [comment, setComment] = useState(commentC);
   const [reply, setReply] = useState("");
   const [replyArea, setReplyArea] = useState(false);
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        const { data } = await axios.get(
+          `/api/comments/comment/${comment._id}`
+        );
+        setComment(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchComment();
+  }, []);
 
   const likeComment = async (id) => {
     if (comment.name === userInfo.name) {

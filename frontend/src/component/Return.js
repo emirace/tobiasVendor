@@ -197,7 +197,7 @@ export default function Return({
         }
       );
       dispatch({ type: "RETURN_SUCCESS" });
-      deliverOrderHandler("Returned", current._id, current);
+      deliverOrderHandler("Return Logged", current._id, current);
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {

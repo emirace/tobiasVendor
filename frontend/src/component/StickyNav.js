@@ -44,9 +44,26 @@ const Switch = styled.input.attrs({ type: "checkbox", role: "switch" })`
   }
 `;
 
+export const Badge = styled.span`
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-color);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: default;
+`;
 export default function StickyNav() {
   const { state, dispatxh: ctxDispatch } = useContext(Store);
-  const { userInfo, mode } = state;
+  const { userInfo, mode, notifications } = state;
+
+  const allNotification = notifications.filter((x) => x.read === false);
 
   const [currentNav, setCurrentNav] = useState("home");
 
@@ -76,8 +93,15 @@ export default function StickyNav() {
             currentNav === "notifications" && "active"
           }`}
         >
-          <FontAwesomeIcon icon={faBell} />
+          <div style={{ position: "relative" }}>
+            <FontAwesomeIcon icon={faBell} />
+          </div>
           <div className="stickynav_text">Notifications</div>
+          {allNotification.length > 0 && (
+            <Badge>
+              <span>{allNotification.length}</span>
+            </Badge>
+          )}
         </Link>
         <Link
           to="/messages"

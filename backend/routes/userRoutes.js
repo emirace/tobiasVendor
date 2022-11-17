@@ -505,7 +505,7 @@ userRouter.post(
       });
 
     sendEmail({
-      to: newUser.email,
+      to: result.email,
       subject: "WELCOME TO REPEDDLE ",
       template: "welcome",
       context: {

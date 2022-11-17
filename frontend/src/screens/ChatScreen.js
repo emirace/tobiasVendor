@@ -45,6 +45,7 @@ const ChatCont = styled.div`
   height: calc(100% - 172px);
   @media (max-width: 992px) {
     margin: 5px;
+    height: calc(100% - 132px);
   }
 `;
 const Left = styled.div`
@@ -121,6 +122,9 @@ const ChatArea = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+  @media (max-width: 992px) {
+    height: calc(100% - 190px);
+  }
 `;
 
 const Message = styled.div`
@@ -131,6 +135,12 @@ const Message = styled.div`
     font-size: 30px;
     margin-left: 20px;
     cursor: pointer;
+  }
+  @media (max-width: 992px) {
+    height: 40px;
+    & svg {
+      font-size: 20px;
+    }
   }
 `;
 const TextInput = styled.input`
@@ -160,6 +170,11 @@ const TextInput = styled.input`
       props.mode === "pagebodydark"
         ? "var(--white-color)"
         : "var(--black-color)"};
+  }
+  @media (max-width: 992px) {
+    &::placeholder {
+      padding: 10px;
+    }
   }
 `;
 const NoConversation = styled.span`
@@ -198,10 +213,12 @@ const TabItem = styled.div`
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   }
+  @media (max-width: 992px) {
+    padding: 10px 20px;
+  }
 `;
 const Back = styled.div`
   display: none;
-  margin-left: 15px;
   padding: 5px;
   justify-content: center;
   width: 50px;
@@ -209,10 +226,16 @@ const Back = styled.div`
     font-size: 15px;
   }
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     display: flex;
   }
+`;
+
+const BackUser = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const PrivacyInfo = styled.div`
@@ -224,6 +247,17 @@ const PrivacyInfo = styled.div`
     color: grey;
     font-size: 30px;
     margin: 5px;
+  }
+  @media (max-width: 992px) {
+    opacity: 0.6;
+    padding: 5px 0;
+    & svg {
+      font-size: 20px;
+    }
+    & div {
+      line-height: 11px !important;
+      font-size: 11px;
+    }
   }
 `;
 
@@ -269,6 +303,14 @@ const SearchImg = styled.img`
   height: 20px;
   border-radius: 50%;
   margin-right: 10px;
+`;
+
+const Image = styled.img`
+  height: 100%;
+  @media (max-width: 992px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -364,6 +406,16 @@ export default function ChatScreen() {
       conversations: [],
       messages: [],
     });
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.paddingRight = "15px";
+
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
+    };
+  }, []);
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
@@ -786,6 +838,7 @@ export default function ChatScreen() {
                   <div
                     key={r._id}
                     onClick={() => {
+                      setShowLeft(false);
                       setCurrentChat(r);
                       socket.emit("remove_notifications", r._id);
                     }}
@@ -809,6 +862,7 @@ export default function ChatScreen() {
                   <div
                     key={r._id}
                     onClick={() => {
+                      setShowLeft(false);
                       setCurrentChat(r);
                       socket.emit("remove_notifications", r._id);
                     }}
@@ -884,11 +938,7 @@ export default function ChatScreen() {
         setMymenu={setMymenu}
         setmodelRef2={changeRef2}
       />
-      {!showLeft && (
-        <Back mode={mode} onClick={() => setShowLeft(true)}>
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </Back>
-      )}
+
       <ChatCont mode={mode}>
         <Left mode={mode} showLeft={showLeft}>
           <TopBar>
@@ -959,23 +1009,31 @@ export default function ChatScreen() {
             <ChatCont2>
               {!loadingx &&
                 (user._id ? (
-                  <Link
-                    to={`/seller/${user._id}`}
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                      paddingRight: "10px",
-                      "box-shadow":
-                        mode === "pagebodylight"
-                          ? "0 0 3px rgba(0, 0, 0, 0.2)"
-                          : "0 0 3px rgba(225, 225, 225, 0.2)",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <ProfileImg src={user.image} />
-                      <div>{user.username}</div>
-                    </div>
-                  </Link>
+                  <BackUser>
+                    {!showLeft && (
+                      <Back mode={mode} onClick={() => setShowLeft(true)}>
+                        <FontAwesomeIcon icon={faAngleLeft} />
+                      </Back>
+                    )}
+                    <div></div>
+                    <Link
+                      to={`/seller/${user._id}`}
+                      style={{
+                        display: "flex",
+                        justifyContent: "end",
+                        paddingRight: "10px",
+                        "box-shadow":
+                          mode === "pagebodylight"
+                            ? "0 0 3px rgba(0, 0, 0, 0.2)"
+                            : "0 0 3px rgba(225, 225, 225, 0.2)",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <ProfileImg src={user.image} />
+                        <div>{user.username}</div>
+                      </div>
+                    </Link>
+                  </BackUser>
                 ) : (
                   ""
                 ))}
@@ -995,7 +1053,7 @@ export default function ChatScreen() {
                   Kind Reminder: To make sure you're covered by Repeddle Buyer's
                   & Seller's Protection, all payments must be made using
                   Repeddle's App and Website complete CHECKOUT system.`
-                      : currentTab === "report"
+                      : currentTab === "reports"
                       ? `Please leave all information that will help us resolve your
                   query. Please include an order number if your report is
                   related to an order you purchased from this seller, or you
@@ -1076,7 +1134,7 @@ export default function ChatScreen() {
                   >
                     {image ? (
                       <div>
-                        <img src={image} style={{ height: "100%" }} alt="img" />
+                        <Image src={image} alt="img" />
                       </div>
                     ) : (
                       <label

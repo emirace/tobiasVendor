@@ -7,6 +7,9 @@ import styled from "styled-components";
 const Container = styled.div`
   margin: 0 10vw 5vw 10vw;
   text-align: justify;
+  @media (max-width: 992px) {
+    margin: 0 5vw 5vw 5vw;
+  }
 `;
 const Header = styled.h4`
   & a {
@@ -21,6 +24,9 @@ const Header2 = styled.h2`
   color: var(--red-color);
   margin-top: 15px;
   width: 100%;
+  @media (max-width: 992px) {
+    margin-top: 10px;
+  }
 `;
 const Section = styled.section`
   display: flex;
@@ -44,10 +50,24 @@ const PhoneImg = styled.img`
   width: 350px;
   margin-bottom: 10px;
   margin-top: 20px;
+  @media (max-width: 992px) {
+  }
 `;
 const Center = styled.div`
   display: flex;
   gap: 50px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
+const Links = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  @media (max-width: 992px) {
+    justify-content: space-between;
+    font-size: 11px;
+  }
 `;
 export default function Bundle() {
   return (
@@ -172,18 +192,11 @@ export default function Bundle() {
         <Header>
           <Link to="/">Happy Thrifting!</Link>
         </Header>
-        <div
-          className="a"
-          style={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-around",
-          }}
-        >
+        <Links className="a">
           <Link to="/rebundle">BUYING GUILD</Link>
 
           <Link to="/rebundle">CASH-OUT WITH FREE DELIVERY</Link>
-        </div>
+        </Links>
       </Section>
     </Container>
   );

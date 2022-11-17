@@ -22,7 +22,9 @@ const Left = styled.div`
     display: ${(props) => (props.showFilter ? "block" : "none")};
     transition: left 2s;
     z-index: 9;
-    position: absolute;
+    position: fixed;
+    height: 100vh;
+    overflow: auto;
     width: 100vw;
     top: 0;
   }
@@ -51,6 +53,8 @@ const Filter = styled.div`
   z-index: 9;
   padding: 5px 7px;
   color: white;
+  @media (max-width: 992px) {
+  }
 `;
 
 const Wrapper = styled.div`
@@ -241,6 +245,9 @@ const ratings = [
 ];
 
 export default function SearchFilter({
+  setQueryBrand,
+  queryBrand,
+  searchBrand,
   showFilter,
   setShowFilter,
   category,
@@ -275,9 +282,6 @@ export default function SearchFilter({
   const [typeClass, setTypeClass] = useState(true);
   const [patternClass, setPatternClass] = useState(true);
   const [categories, setCategories] = useState([]);
-
-  const [queryBrand, setQueryBrand] = useState(null);
-  const [searchBrand, setSearchBrand] = useState(null);
 
   useEffect(() => {
     try {
@@ -386,7 +390,14 @@ export default function SearchFilter({
         <FontAwesomeIcon icon={faTimes} />
       </Close>
       {showFilter && (
-        <Filter onClick={() => setShowFilter(false)}>Filter</Filter>
+        <Filter
+          onClick={() => {
+            setShowFilter(false);
+            window.scrollTo(0, 0);
+          }}
+        >
+          Filter
+        </Filter>
       )}
 
       <Wrapper>
@@ -556,14 +567,26 @@ export default function SearchFilter({
                   to={getFilterUrl({ color: c.name })}
                 >
                   <ListItem mode={mode}>
-                    <div
-                      style={{
-                        background: c.name,
-                        width: "30px",
-                        height: "20px",
-                        borderRadius: "0.2rem",
-                      }}
-                    ></div>
+                    {c.name === "multiculour" ? (
+                      <img
+                        src="https://res.cloudinary.com/emirace/image/upload/v1668595263/multi-color_s2zd1o.jpg"
+                        alt="multiculour"
+                        style={{
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          background: c.name,
+                          width: "30px",
+                          height: "20px",
+                          borderRadius: "0.2rem",
+                        }}
+                      />
+                    )}
                   </ListItem>
                 </Link>
               ))}
