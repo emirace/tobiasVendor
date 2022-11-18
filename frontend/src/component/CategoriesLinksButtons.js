@@ -30,6 +30,7 @@ const Box = styled.div`
     &:hover {
       background: var(--orange-color);
       border-color: var(--orange-color);
+      color: white;
     }
   }
 `;

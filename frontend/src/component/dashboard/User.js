@@ -74,6 +74,9 @@ const ShowTop = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const Image = styled.img.attrs((props) => ({
   src: props.src,
@@ -246,7 +249,7 @@ const Gender = styled.div`
 
 const Wallet = styled.div`
   position: absolute;
-  top: 0;
+  top: 30px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -255,6 +258,12 @@ const Wallet = styled.div`
   align-items: center;
   background-color: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  @media (max-width: 992px) {
+    padding: 0 10px;
+    position: static;
+    margin: 10px;
+    flex-direction: row;
+  }
 `;
 const Wbalance = styled.div`
   font-size: 10px;
@@ -262,6 +271,10 @@ const Wbalance = styled.div`
 const Wamount = styled.div`
   font-size: 25px;
   font-weight: 300;
+  @media (max-width: 992px) {
+    font-size: 20px;
+    margin-left: 10px;
+  }
 `;
 const AccButton = styled.div`
   margin-left: 5px;
@@ -544,15 +557,17 @@ export default function User() {
       <UserContainer>
         <Show mode={mode}>
           <ShowTop>
-            <Image src={user.image} alt="p" />
-            <TopTitle>
-              <Name>
-                {user.name || user.firstName} {user.lastName}
-              </Name>
-              <UserTitle>
-                {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
-              </UserTitle>
-            </TopTitle>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Image src={user.image} alt="p" />
+              <TopTitle>
+                <Name>
+                  {user.name || user.firstName} {user.lastName}
+                </Name>
+                <UserTitle>
+                  {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
+                </UserTitle>
+              </TopTitle>
+            </div>
             <Wallet mode={mode}>
               <Wbalance>Wallet Balance</Wbalance>
               <Wamount>
@@ -587,7 +602,6 @@ export default function User() {
 
               <AccButton
                 onClick={() => {
-                  console.log("hello");
                   setShowModelAddress(!showModelAddress);
                 }}
               >

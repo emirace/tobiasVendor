@@ -14,6 +14,9 @@ const Container = styled.div`
   padding: 20px;
   margin-right: 20px;
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 `;
 const Tittle = styled.div`
   font-size: 22px;
@@ -41,6 +44,10 @@ const User = styled.div`
 `;
 const Username = styled.span`
   font-weight: 600;
+  width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 const Role = styled.span`
   font-weight: 300;

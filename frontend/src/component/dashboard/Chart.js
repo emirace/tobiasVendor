@@ -12,9 +12,13 @@ import { Store } from "../../Store";
 
 const Container = styled.div`
   padding: 20px;
+  height: 300px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    height: 200px;
+  }
 `;
 const Title = styled.h3``;
 const Row = styled.div`
@@ -36,7 +40,7 @@ export default function Chart({ title, total, data, dataKey, grid }) {
         <Title>{title}</Title>
         <Total>{total}</Total>
       </Row>
-      <ResponsiveContainer width="100%" aspect={5 / 1}>
+      <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <XAxis dataKey={"name"} stroke="var(--orange-color)" />
           <Line

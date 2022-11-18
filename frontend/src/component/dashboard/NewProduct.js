@@ -394,12 +394,13 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
-  @media (max-width: 992px) {
+    @media (max-width: 992px) {
       width: 250px;
       font-size: 11px;
       top: 20px;
       left: -20px;
     }
+  }
 `;
 const LuxuryCont = styled.div`
   display: flex;
@@ -747,7 +748,7 @@ export default function NewProduct() {
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: "Error creating product, try again late",
+            message: "Error creating product, fiil mising fields",
             showStatus: true,
             state1: "visible1 error",
           },
@@ -758,9 +759,11 @@ export default function NewProduct() {
     }
   };
 
+  const [currentSizeValue, setCurrentSizeValue] = useState("");
   const smallSizeHandler = (label, value) => {
     const sizeIndex = sizes.findIndex((x) => x.size === label);
     sizes[sizeIndex].value = value;
+    setCurrentSizeValue(value);
   };
   //   const deleteSizeHandler = (label) => {
   //     const newsizes = sizes.filter((s) => {
@@ -1330,7 +1333,7 @@ export default function NewProduct() {
                       <SizeInput
                         placeholder="qty"
                         mode={mode}
-                        value={s.value}
+                        value={currentSizeValue}
                         onChange={(e) =>
                           smallSizeHandler(s.size, e.target.value)
                         }

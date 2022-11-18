@@ -55,8 +55,8 @@ export const Badge = styled.span`
   font-size: 10px;
   border-radius: 50%;
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 20px;
+  top: 5px;
   cursor: default;
 `;
 export default function StickyNav() {

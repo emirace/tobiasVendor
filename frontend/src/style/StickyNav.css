@@ -21,6 +21,7 @@
   min-width: 50px;
   overflow: hidden;
   white-space: nowrap;
+  position: relative;
 }
 
 .sticky_item:hover {

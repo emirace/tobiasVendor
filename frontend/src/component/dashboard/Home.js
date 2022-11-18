@@ -45,7 +45,7 @@ const Row = styled.div`
   display: flex;
   flex: 1;
   gap: 20px;
-  margin: 0 20px;
+  margin: 20px 20px;
   @media (max-width: 992px) {
     flex-direction: column;
   }
@@ -352,7 +352,7 @@ export default function Home() {
             <Col>
               <Chart
                 title="Earning"
-                total={`${currency}${totalSales}`}
+                total={`${currency}${totalSales.toFixed(2)}`}
                 data={orderData}
                 dataKey="earning"
                 grid

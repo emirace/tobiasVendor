@@ -99,6 +99,12 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
+    @media (max-width: 992px) {
+      font-size: 11px;
+      left: -90px;
+      top: 20px;
+      width: 200px;
+    }
   }
   & svg {
     margin-left: 10px;

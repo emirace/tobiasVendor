@@ -4,12 +4,17 @@ import styled from "styled-components";
 
 const Container = styled.div`
   padding: 20px 40px;
-  text-align: justify;
+  & p {
+    text-align: justify;
+  }
   & a {
     color: var(--malon-color);
     &:hover {
       text-decoration: underline;
     }
+  }
+  @media (max-width) {
+    padding: 20px 10px;
   }
 `;
 const RedTitle = styled.h3`

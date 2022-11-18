@@ -85,10 +85,21 @@ const Button = styled.button`
 `;
 
 const Column = styled.div`
-  width: 50px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  position: relative;
+  &:hover::after {
+    content: "${(props) => props.tips}";
+    top: 10px;
+    left: 0;
+    position: absolute;
+    z-index: 9;
+  }
+
+  @media (max-width: 992px) {
+    width: 50px;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -159,7 +170,7 @@ export default function WidgetLarge({ refresh }) {
         {transactions.map((t) => (
           <Tr>
             <User>
-              <Column>{t._id}</Column>
+              <Column tips={t._id}>{t._id}</Column>
             </User>
             <User>
               <Column>{t.metadata ? t.metadata.purpose : ""}</Column>

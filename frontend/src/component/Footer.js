@@ -318,7 +318,7 @@ export default function Footer() {
                     <FontAwesomeIcon icon={faGlobe} />
                     Repeddle Sustainability Impact
                   </SmTitle>
-                  <SmDetail show={shipMethod3}>
+                  <SmDetail show={shipMethod4}>
                     Fashion industry is the second most intense water consuming
                     and polluting industry in the world. With the help of our
                     community, we can drastically reduce this impact in Africa
