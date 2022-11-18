@@ -10,6 +10,10 @@ const Sent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  @media (max-width: 992px) {
+    padding: 0 10px;
+    text-align: center;
+  }
 `;
 
 export default function Newletter() {
