@@ -379,6 +379,9 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
+    @media (max-width: 992px) {
+      font-size: 11px;
+    }
   }
 `;
 const LuxuryCont = styled.div`

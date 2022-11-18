@@ -27,6 +27,7 @@ import { Store } from "../Store";
 import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
 import Support from "../component/Support";
+import CategoriesLinksButtons from "../component/CategoriesLinksButtons";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -278,6 +279,10 @@ export default function ProductsScreen() {
               </div>
             </div>
           </OwlCarousel>
+        </section>
+
+        <section>
+          <CategoriesLinksButtons />
         </section>
 
         <section className="CategoryListing_section ">

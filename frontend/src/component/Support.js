@@ -66,6 +66,26 @@ const Box = styled.div`
   flex-direction: column;
   background: white;
   box-shadow: 0 0 25px rgba(24, 24, 24, 0.4);
+  @media (max-width: 992px) {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    border-radius: 0;
+  }
+`;
+const CloseButton = styled.div`
+  display: none;
+  position: fixed;
+  right: 20px;
+  top: 10px;
+
+  border-radius: 50%;
+  @media (max-width: 992px) {
+    display: block;
+  }
 `;
 const Top = styled.div`
   flex: 2;
@@ -643,6 +663,10 @@ export default function Support() {
                 </div>
               </BoxCont>
             )}
+            <CloseButton onClick={() => setShowSupport(false)}>
+              {console.log(showSupport)}
+              <CgChevronDown className="bigicon" />
+            </CloseButton>
           </Box>
         )}
         <OneNewMessage notification={supportNotification.length} />
