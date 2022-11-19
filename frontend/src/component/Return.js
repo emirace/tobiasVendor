@@ -325,7 +325,10 @@ export default function Return({
                     <Details1>
                       <Name>{orderitem.name}</Name>
                       <Quantity>QTY: {orderitem.quantity}</Quantity>
-                      <ItemPrice>$ {orderitem.price}</ItemPrice>
+                      <ItemPrice>
+                        {orderitem.currency}{" "}
+                        {orderitem.quality * orderitem.actualPrice}
+                      </ItemPrice>
                     </Details1>
                   </OrderItem>
                   <FontAwesomeIcon size={"2x"} icon={faChevronCircleRight} />

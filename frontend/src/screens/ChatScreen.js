@@ -75,6 +75,11 @@ const Right = styled.div`
 const ChatCont2 = styled.div`
   overflow-y: auto;
   height: 100%;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const TopBar = styled.div`

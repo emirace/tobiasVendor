@@ -1092,14 +1092,17 @@ export default function ProductScreen() {
                   src={product.image}
                   alt="product"
                 ></img>
-                {product.images.map((image, index) => (
-                  <img
-                    key={index}
-                    style={{ transform: sliderstyle }}
-                    src={image}
-                    alt="product"
-                  ></img>
-                ))}
+                {product.images.map(
+                  (image, index) =>
+                    image && (
+                      <img
+                        key={index}
+                        style={{ transform: sliderstyle }}
+                        src={image}
+                        alt="product"
+                      />
+                    )
+                )}
               </div>
             </div>
           </div>

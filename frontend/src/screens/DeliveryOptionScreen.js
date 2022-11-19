@@ -1277,6 +1277,20 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         How GIG works
                       </a>
                     </Plans>
+                  ) : deliveryOption === "Pick up from Seller" ? (
+                    <Plans>
+                      <Plan>
+                        <div style={{ fontSize: "12px" }}>
+                          When using Pick Up From Seller, our system is
+                          unfortunately not able to record the delivery process.
+                          This means (you) the buyer makes arrangement with the
+                          seller to pick up your order. The risk involved in
+                          getting your product is expressly yours and not of
+                          Repeddle, any affiliate or Delivery companies offered
+                          on Repeddle.
+                        </div>
+                      </Plan>
+                    </Plans>
                   ) : (
                     ""
                   )

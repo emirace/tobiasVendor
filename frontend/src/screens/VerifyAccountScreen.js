@@ -127,17 +127,18 @@ export default function VerifyAccountScreen() {
         </Form.Group>
         <Form.Group className="mb-3" controlId="bankName">
           <Label>Bank Name</Label>
-          <Input
+          {/* <Input
             type="text"
             error={error.bankName}
             onFocus={() => {
               handleError(null, "bankName");
             }}
             onChange={(e) => handleOnChange(e.target.value, "bankName")}
-          />
+          /> */}
           <FormControl
             sx={{
               margin: 0,
+              width: "100%",
               borderRadius: "0.2rem",
               border: `1px solid ${
                 mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"
