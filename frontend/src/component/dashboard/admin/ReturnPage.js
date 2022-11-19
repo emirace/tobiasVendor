@@ -29,6 +29,9 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 28px;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 
 const SumaryContDetails = styled.div`
@@ -46,6 +49,9 @@ const SumaryContDetails = styled.div`
 
 const ItemNum = styled.div`
   display: flex;
+  & a {
+    color: var(--malon-color);
+  }
 `;
 
 const Name = styled.div`

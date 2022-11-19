@@ -8,6 +8,7 @@ import axios from "axios";
 import { Store } from "../../../Store";
 import { getError, region } from "../../../utils";
 import moment from "moment";
+import useWindowDimensions from "../../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -165,67 +166,127 @@ export default function ProductListAdmin() {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 200 },
-    {
-      field: "product",
-      headerName: "Product",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <img src={params.row.image} alt="" />
-            <Link to={`/product/${params.row.slug}`}>{params.row.name}</Link>
-          </Product>
-        );
-      },
-    },
-    { field: "stock", headerName: "Stock", width: 100 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 200,
-      renderCell: (params) => {
-        return params.row.stock ? (
-          <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
-        ) : (
-          <Stock className="empty">
-            {params.row.stock ? "In Stock" : "Out of Stock"}
-          </Stock>
-        );
-      },
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      width: 150,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/dashboard/product/${params.row.id}`}>
-              <Edit mode={mode}>Edit</Edit>
-            </Link>
-            {userInfo.isAdmin && (
-              <FontAwesomeIcon
-                onClick={() => deleteHandler(params.row.id)}
-                icon={faTrash}
-              />
-            )}
-          </ActionSec>
-        );
-      },
-    },
-  ];
+  const { height, width } = useWindowDimensions();
+
+  const columns =
+    width > 992
+      ? [
+          { field: "id", headerName: "ID", width: 200 },
+          {
+            field: "product",
+            headerName: "Product",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <img src={params.row.image} alt="" />
+                  <Link to={`/product/${params.row.slug}`}>
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          { field: "stock", headerName: "Stock", width: 100 },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 200,
+            renderCell: (params) => {
+              return params.row.stock ? (
+                <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
+              ) : (
+                <Stock className="empty">
+                  {params.row.stock ? "In Stock" : "Out of Stock"}
+                </Stock>
+              );
+            },
+          },
+          {
+            field: "price",
+            headerName: "Price",
+            width: 150,
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/product/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  {userInfo.isAdmin && (
+                    <FontAwesomeIcon
+                      onClick={() => deleteHandler(params.row.id)}
+                      icon={faTrash}
+                    />
+                  )}
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          {
+            field: "product",
+            headerName: "Product",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <img src={params.row.image} alt="" />
+                  <Link to={`/product/${params.row.slug}`}>
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "stock",
+            headerName: "Stock",
+            width: 50,
+            renderCell: (params) => {
+              return params.row.stock > 0 ? (
+                <Stock>{params.row.stock}</Stock>
+              ) : (
+                <Stock className="empty">{params.row.stock}</Stock>
+              );
+            },
+          },
+          {
+            field: "price",
+            headerName: "Price",
+            width: 80,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/product/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  {userInfo.isAdmin && (
+                    <FontAwesomeIcon
+                      onClick={() => deleteHandler(params.row.id)}
+                      icon={faTrash}
+                    />
+                  )}
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows = products.map((p) => ({
     id: p._id,
     name: p.name,
@@ -319,7 +380,6 @@ export default function ProductListAdmin() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </ProductLists>
   );

@@ -31,6 +31,9 @@ const Content = styled.div`
 const Tittle = styled.div`
   font-size: 22px;
   font-weight: 600;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 const List = styled.ul``;
 const ListItem = styled.li`
@@ -533,7 +536,7 @@ export default function Analytics() {
                       <FontAwesomeIcon icon={faEye} /> View
                     </View>
                   </Link>
-                  <Link to={`/dashboard/product/${product._id}`}>
+                  <Link to={`/dashboard/product/${product.productId._id}`}>
                     <Edit>
                       <FontAwesomeIcon icon={faPen} /> Edit
                     </Edit>

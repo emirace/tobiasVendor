@@ -28,6 +28,9 @@ const Row = styled.div`
   display: flex;
   padding: 10px;
   gap: 30px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 
 const Filter = styled.div`
@@ -145,6 +148,9 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
+    @media (max-width: 992px) {
+      font-size: 11px;
+    }
   }
 `;
 

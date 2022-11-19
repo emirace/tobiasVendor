@@ -15,6 +15,7 @@ import { Store } from "../../../Store";
 import { getError, region } from "../../../utils";
 import { useReactToPrint } from "react-to-print";
 import moment from "moment";
+import useWindowDimensions from "../../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -108,6 +109,23 @@ const Goto = styled.div`
   &:hover {
     background-color: var(--malon-color);
     color: white;
+  }
+  @media (max-width: 992px) {
+    white-space: nowrap;
+    margin-top: 10px;
+  }
+`;
+const RowFilter = styled.div`
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 992px) {
+    overflow-x: auto;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 const Print = styled.div`
@@ -214,7 +232,7 @@ export default function OrderListAdmin() {
     try {
       dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
-        `/api/orders/${order}/deliver`,
+        `/api/orders/${order}/deliver/`,
         { deliveryStatus },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -234,105 +252,98 @@ export default function OrderListAdmin() {
       dispatch({ type: "DELIVER_FAIL" });
     }
   }
+  const { height, width } = useWindowDimensions();
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 220 },
-    {
-      field: "order",
-      headerName: "Order",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/product/${params.row.slug}`}>
-              <img src={params.row.image} alt="" />
-              {params.row.name}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    { field: "deliveryStatus", headerName: "Delivery Status", width: 150 },
-    {
-      field: "payStatus",
-      headerName: "Payment Status",
-      width: 130,
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      width: 90,
-    },
-
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "buyer",
-      headerName: "Buyer",
-      width: 90,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.buyerId}`}>
-              @{params.row.buyer}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "seller",
-      headerName: "Seller",
-      width: 90,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.sellerId}`}>
-              @{params.row.seller}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 120,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/order/${params.row.id}`}>
-              <Edit mode={mode}>View</Edit>
-            </Link>
-            <div
-              onClick={() =>
-                deliverOrderHandler(
-                  params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold",
-                  params.row.id
-                )
-              }
-            >
-              <Edit mode={mode}>
-                {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
-              </Edit>
-            </div>
-            {params.row.deliveryStatus === "Delivered" && (
-              <Reject mode={mode}>Return</Reject>
-            )}
-            {/* {userInfo.isAdmin && (
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "order",
+            headerName: "Order",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 90,
+          },
+          {
+            field: "buyer",
+            headerName: "Buyer",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.buyerId}`}>
+                    @{params.row.buyer}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "seller",
+            headerName: "Seller",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.sellerId}`}>
+                    @{params.row.seller}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 120,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                  {/* <div
+                    onClick={() =>
+                      deliverOrderHandler(
+                        params.row.deliveryStatus !== "Hold"
+                          ? "Hold"
+                          : "Unhold",
+                        params.row.id
+                      )
+                    }
+                  >
+                    <Edit mode={mode}>
+                      {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
+                    </Edit>
+                  </div> */}
+                  {params.row.deliveryStatus === "Delivered" && (
+                    <Reject mode={mode}>Return</Reject>
+                  )}
+                  {/* {userInfo.isAdmin && (
               <FontAwesomeIcon
                 onClick={() => deleteHandler(params.row.id)}
                 icon={faTrash}
               />
             )} */}
-          </ActionSec>
-        );
-      },
-    },
-  ];
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [];
   const rows = products.map((p) => ({
     id: p._id,
     name: p.orderItems[0].name,
@@ -362,13 +373,13 @@ export default function OrderListAdmin() {
           placeholder="Search by id"
         />
       </SearchCont>
-      <div style={{ display: "flex", gap: "20px" }}>
+      <RowFilter>
         <Goto onClick={() => setSort("all")}>All</Goto>
         <Goto onClick={() => setSort("Pending")}>Pending</Goto>
         <Goto onClick={() => setSort("Progress")}>In Progress</Goto>
         <Goto onClick={() => setSort("Delivered")}>Completed</Goto>
         <Print onClick={handlePrint}>Print</Print>
-      </div>
+      </RowFilter>
       <style type="text/css" media="print">
         {"\
   @page { size: landscape; }\

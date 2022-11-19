@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import moment from "moment";
+import useWindowDimensions from "../Dimension";
 
 const Container = styled.div`
   flex: 4;
@@ -16,6 +17,10 @@ const Container = styled.div`
   margin: 0 20px;
   margin-bottom: 20px;
   border-radius: 0.2rem;
+
+  @media (max-width: 992px) {
+    margin: 20px 5px;
+  }
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -163,56 +168,101 @@ export default function UserList() {
       }
     }
   };
+  const { height, width } = useWindowDimensions();
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 200 },
-    {
-      field: "user",
-      headerName: "User",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <User>
-            <img src={params.row.image} alt="p" />@{params.row.username}
-          </User>
-        );
-      },
-    },
-    { field: "email", headerName: "Email", width: 200 },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 80,
-    },
-    {
-      field: "earnings",
-      headerName: "Earnings",
-      width: 100,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/dashboard/user/${params.row.id}`}>
-              <Edit mode={mode}>Edit</Edit>
-            </Link>
-            <FontAwesomeIcon
-              onClick={() => deleteHandler(params.row.id)}
-              icon={faTrash}
-            />
-          </ActionSec>
-        );
-      },
-    },
-  ];
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "user",
+            headerName: "User",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <User>
+                  <img src={params.row.image} alt="p" />@{params.row.username}
+                </User>
+              );
+            },
+          },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 50,
+          },
+          {
+            field: "earnings",
+            headerName: "Earnings",
+            width: 80,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/user/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  <FontAwesomeIcon
+                    onClick={() => deleteHandler(params.row.id)}
+                    icon={faTrash}
+                  />
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 200 },
+          {
+            field: "user",
+            headerName: "User",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <User>
+                  <img src={params.row.image} alt="p" />@{params.row.username}
+                </User>
+              );
+            },
+          },
+          { field: "email", headerName: "Email", width: 200 },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 80,
+          },
+          {
+            field: "earnings",
+            headerName: "Earnings",
+            width: 100,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/user/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  <FontAwesomeIcon
+                    onClick={() => deleteHandler(params.row.id)}
+                    icon={faTrash}
+                  />
+                </ActionSec>
+              );
+            },
+          },
+        ];
 
   const rows = users.map((u) => ({
     id: u._id,
@@ -332,7 +382,6 @@ export default function UserList() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </Container>
   );

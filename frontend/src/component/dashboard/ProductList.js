@@ -8,10 +8,11 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import moment from "moment";
+import useWindowDimensions from "../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
-  margin: 0 20px;
+  margin: 0 5px;
   margin-bottom: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
@@ -31,6 +32,10 @@ const Product = styled.div`
     margin-right: 10px;
   }
   & a {
+    width: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &:hover {
       text-decoration: underline;
     }
@@ -118,6 +123,7 @@ const reducer = (state, action) => {
 export default function ProductList() {
   const { state } = useContext(Store);
   const { mode, userInfo } = state;
+  const { height, width } = useWindowDimensions();
 
   const [{ loading, products, error, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
@@ -168,70 +174,113 @@ export default function ProductList() {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 100 },
-    {
-      field: "product",
-      headerName: "Product",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <img src={params.row.image} alt="" />
-            <Link to={`/product/${params.row.slug}`}>{params.row.name}</Link>
-          </Product>
-        );
-      },
-    },
-    { field: "stock", headerName: "Stock", width: 100 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 200,
-      renderCell: (params) => {
-        return params.row.stock ? (
-          <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
-        ) : (
-          <Stock className="empty">
-            {params.row.stock ? "In Stock" : "Out of Stock"}
-          </Stock>
-        );
-      },
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/dashboard/product/${params.row.id}`}>
-              <Edit mode={mode}>Edit</Edit>
-            </Link>
-            {userInfo.isAdmin && (
-              <FontAwesomeIcon
-                onClick={() => deleteHandler(params.row.id)}
-                icon={faTrash}
-              />
-            )}
-          </ActionSec>
-        );
-      },
-    },
-  ];
-  {
-    console.log(products);
-  }
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "product",
+            headerName: "Product",
+            width: 120,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <img src={params.row.image} alt="" />
+                  <Link to={`/product/${params.row.slug}`}>
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "price",
+            headerName: "Price",
+            width: 80,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/product/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  {userInfo.isAdmin && (
+                    <FontAwesomeIcon
+                      onClick={() => deleteHandler(params.row.id)}
+                      icon={faTrash}
+                    />
+                  )}
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 100 },
+          {
+            field: "product",
+            headerName: "Product",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <img src={params.row.image} alt="" />
+                  <Link to={`/product/${params.row.slug}`}>
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          { field: "stock", headerName: "Stock", width: 100 },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 200,
+            renderCell: (params) => {
+              return params.row.stock ? (
+                <Stock>{params.row.stock ? "In Stock" : "Out of Stock"}</Stock>
+              ) : (
+                <Stock className="empty">
+                  {params.row.stock ? "In Stock" : "Out of Stock"}
+                </Stock>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "price",
+            headerName: "Price",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/dashboard/product/${params.row.id}`}>
+                    <Edit mode={mode}>Edit</Edit>
+                  </Link>
+                  {userInfo.isAdmin && (
+                    <FontAwesomeIcon
+                      onClick={() => deleteHandler(params.row.id)}
+                      icon={faTrash}
+                    />
+                  )}
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows = products.map((p) => ({
     id: p._id,
     name: p.name,

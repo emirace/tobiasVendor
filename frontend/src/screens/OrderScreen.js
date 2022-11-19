@@ -61,7 +61,6 @@ const Container = styled.div`
 `;
 const Header = styled.h1`
   margin-bottom: 0;
-  width: 100%;
   padding: 15px 30px;
   @media (max-width: 992px) {
     padding: 10px 10px;
@@ -71,7 +70,7 @@ const Header = styled.h1`
 const InvoiceHead = styled.h2`
   margin-bottom: 0;
   width: 100%;
-  padding: 15px 30px;
+  padding: 15px 10px;
   display: none;
   color: var(--malon-color);
   @media (max-width: 992px) {
@@ -317,11 +316,22 @@ const TrackingCont = styled.div`
     }
   }
 `;
-
+const Cont123 = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
 const DeliveryKey = styled.div`
   flex: 1;
+`;
+
+const DeliveryValue = styled.div`
+  flex: 5;
   @media (max-width: 992px) {
-    flex: 2;
+    flex: 1;
   }
 `;
 
@@ -690,7 +700,7 @@ export default function OrderScreen() {
         {console.log(order)}
       </Helmet>
       <InvoiceHead>Invoice</InvoiceHead>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header>Order Details</Header>
         <Print onClick={handlePrint}>Print as Invoice</Print>
       </div>
@@ -992,7 +1002,7 @@ export default function OrderScreen() {
                       }}
                     >
                       <DeliveryKey>{key}:</DeliveryKey>
-                      <div style={{ flex: "5" }}>{value}</div>
+                      <div>{value}</div>
                     </div>
                   )
                 )}
@@ -1016,13 +1026,7 @@ export default function OrderScreen() {
             )
           ) : (
             <SumaryContDetails mode={mode}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
+              <Cont123>
                 <div>
                   <div style={{ display: "flex", textAlign: "center" }}>
                     {displayDeliveryStatus(orderitem.deliveryStatus)}
@@ -1089,7 +1093,7 @@ export default function OrderScreen() {
                     Tracking Number: {orderitem.trackingNumber}
                   </label>
                 )}
-              </div>
+              </Cont123>
               <hr />
               <DetailButton>
                 <OrderItem>
@@ -1123,7 +1127,7 @@ export default function OrderScreen() {
                   key={key}
                 >
                   <DeliveryKey>{key}:</DeliveryKey>
-                  <div style={{ flex: "5" }}>{value}</div>
+                  <DeliveryValue>{value}</DeliveryValue>
                 </div>
               ))}
               <div style={{ marginTop: "20px" }}>
@@ -1178,10 +1182,10 @@ export default function OrderScreen() {
                     }}
                   >
                     <DeliveryKey>Item Total:</DeliveryKey>
-                    <div style={{ flex: "5" }}>
+                    <DeliveryValue>
                       {currency}
                       {isSeller ? itemsPrice : order.itemsPrice}
-                    </div>
+                    </DeliveryValue>
                   </div>
                   <div
                     style={{
@@ -1190,10 +1194,10 @@ export default function OrderScreen() {
                     }}
                   >
                     <DeliveryKey>Shipping Fee:</DeliveryKey>
-                    <div style={{ flex: "5" }}>
+                    <DeliveryValue>
                       {currency}
                       {isSeller ? shippingPrice : order.shippingPrice}
-                    </div>
+                    </DeliveryValue>
                   </div>
                   <div
                     style={{
@@ -1202,14 +1206,14 @@ export default function OrderScreen() {
                     }}
                   >
                     <DeliveryKey>Total:</DeliveryKey>
-                    <div style={{ flex: "5" }}>
+                    <DeliveryValue>
                       <ItemPrice>
                         {currency}
                         {isSeller
                           ? itemsPrice + shippingPrice
                           : order.totalPrice}
                       </ItemPrice>
-                    </div>
+                    </DeliveryValue>
                   </div>
                 </div>
                 {isSeller && (

@@ -35,6 +35,9 @@ const AddButton = styled.button`
 
 const Top = styled.div`
   display: flex;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const Bottom = styled.div`
   padding: 20px;
@@ -42,6 +45,9 @@ const Bottom = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 20px 5px;
+  }
 `;
 const TopLeft = styled.div`
   flex: 1;
@@ -53,6 +59,9 @@ const TopRight = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   margin: 0 20px;
   border-radius: 0.2rem;
+  @media (max-width: 992px) {
+    margin: 10px 5px;
+  }
 `;
 const InfoTop = styled.div`
   display: flex;
@@ -88,6 +97,9 @@ const InfoValue = styled.span`
 const Form = styled.form`
   display: flex;
   justify-content: space-between;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const FormLeft = styled.div`
   display: flex;
@@ -206,6 +218,9 @@ const Item = styled.div`
     width: 118px;
     margin-right: 5px;
   }
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 `;
 
 const SelBoxGroup = styled.div`
@@ -269,6 +284,10 @@ const TextArea = styled.textarea`
 const Price = styled.div`
   display: flex;
   align-items: center;
+  @media (max-width: 992px) {
+    align-items: start;
+    flex-direction: column;
+  }
 `;
 const Discount = styled.div`
   display: flex;

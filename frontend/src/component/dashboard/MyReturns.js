@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import ModelLogin from "../ModelLogin";
+import useWindowDimensions from "../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -253,70 +254,113 @@ export default function MyReturns() {
       console.log(getError(err));
     }
   };
+  const { height, width } = useWindowDimensions();
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 200 },
-    {
-      field: "name",
-      headerName: "Product",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/product/${params.row.slug}`}>
-              <img src={params.row.image} alt="" />
-              {params.row.name}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "user",
-      headerName: "Buyer",
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.id}`}>{params.row.user}</Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "orderId",
-      headerName: "Order",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/order/${params.row.orderId}`}>
-              {params.row.orderId}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/return/${params.row.id}?orderId=${params.row.orderId}`}>
-              <Edit mode={mode}>View</Edit>
-            </Link>
-          </ActionSec>
-        );
-      },
-    },
-  ];
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "name",
+            headerName: "Product",
+            width: 110,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 90,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 80,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link
+                    to={`/return/${params.row.id}?orderId=${params.row.orderId}`}
+                  >
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 200 },
+          {
+            field: "name",
+            headerName: "Product",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "user",
+            headerName: "Buyer",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.id}`}>{params.row.user}</Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "orderId",
+            headerName: "Order",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.orderId}`}>
+                    {params.row.orderId}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link
+                    to={`/return/${params.row.id}?orderId=${params.row.orderId}`}
+                  >
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows =
     products.length > 0 &&
     products.map((p) => ({

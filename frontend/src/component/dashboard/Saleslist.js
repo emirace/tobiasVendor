@@ -11,6 +11,7 @@ import ModelLogin from "../ModelLogin";
 import { Badge } from "../Navbar";
 import { socket } from "../../App";
 import moment from "moment";
+import useWindowDimensions from "../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -263,79 +264,132 @@ export default function Saleslist() {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 120 },
-    {
-      field: "order",
-      headerName: "Order",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/order/${params.row.id}`}>
-              <img src={params.row.image} alt="" />
-              {params.row.name}
-              {/* {soldNotifications.filter((x) => x.itemId === params.row.id)
-                .length > 0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    { field: "deliveryStatus", headerName: "Delivery Status", width: 120 },
-    {
-      field: "payStatus",
-      headerName: "Payment Status",
-      width: 120,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 120,
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      width: 90,
-    },
-    {
-      field: "user",
-      headerName: "Buyer",
-      width: 80,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/order/${params.row.id}`}>
-              <Edit
-                mode={mode}
-                onClick={() => {
-                  socket.emit("remove_notifications", params.row.id);
-                }}
-              >
-                View
-              </Edit>
-            </Link>
+  const { height, width } = useWindowDimensions();
 
-            <Reject
-              onClick={() => {
-                setShowModel(true);
-                socket.emit("remove_notifications", params.row.id);
-                setCurrentId(params.row.id);
-              }}
-              mode={mode}
-            >
-              Reject
-            </Reject>
-          </ActionSec>
-        );
-      },
-    },
-  ];
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "order",
+            headerName: "Order",
+            width: 110,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.id}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                    {/* {soldNotifications.filter((x) => x.itemId === params.row.id)
+                .length > 0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 80,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 80,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit
+                      mode={mode}
+                      onClick={() => {
+                        socket.emit("remove_notifications", params.row.id);
+                      }}
+                    >
+                      View
+                    </Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 120 },
+          {
+            field: "order",
+            headerName: "Order",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.id}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                    {/* {soldNotifications.filter((x) => x.itemId === params.row.id)
+              .length > 0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "deliveryStatus",
+            headerName: "Delivery Status",
+            width: 120,
+          },
+          {
+            field: "payStatus",
+            headerName: "Payment Status",
+            width: 120,
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 120,
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 90,
+          },
+          {
+            field: "user",
+            headerName: "Buyer",
+            width: 80,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit
+                      mode={mode}
+                      onClick={() => {
+                        socket.emit("remove_notifications", params.row.id);
+                      }}
+                    >
+                      View
+                    </Edit>
+                  </Link>
+
+                  {/* <Reject
+                  onClick={() => {
+                    setShowModel(true);
+                    socket.emit("remove_notifications", params.row.id);
+                    setCurrentId(params.row.id);
+                  }}
+                  mode={mode}
+                >
+                  Reject
+                </Reject> */}
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows = products.map((p) => ({
     id: p._id,
     name: p.orderItems[0].name,

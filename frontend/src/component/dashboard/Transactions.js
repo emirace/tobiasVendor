@@ -41,6 +41,9 @@ const Balance = styled.div`
   font-size: 50px;
   color: var(--orange-color);
   font-family: "Absentiasans";
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 const Currency = styled.div`
   font-size: 15px;
@@ -59,10 +62,19 @@ const Action = styled.div`
   }
   &:hover {
   }
+
+  @media (max-width: 992px) {
+    padding: 5px 7px;
+    font-size: 12px;
+  }
 `;
 const TextSmall = styled.div`
   font-weight: bold;
   color: var(--orange-color);
+
+  @media (max-width: 992px) {
+    font-size: 11px;
+  }
 `;
 const reducer = (state, action) => {
   switch (action.type) {

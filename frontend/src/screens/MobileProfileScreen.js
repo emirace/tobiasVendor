@@ -246,13 +246,13 @@ export default function MobileProfileScreen() {
         </MobileMenuItem>
       </Link>
       <SectionTitle mode={mode}>Quick Menu</SectionTitle>
-      <Link to="/dashboard/wallet">
+      <Link to="/dashboard/address">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faHome} />
           Address Book
         </MobileMenuItem>
       </Link>
-      <Link to="/dashboard/wallet">
+      <Link to="/dashboard/coupon">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faGift} />
           Coupon/Gift

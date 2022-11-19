@@ -30,6 +30,9 @@ const Row = styled.div`
   display: flex;
   padding: 10px;
   gap: 30px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 
 const Filter = styled.div`
@@ -146,6 +149,12 @@ const Tips = styled.span`
       props.mode === "pagebodydark"
         ? "var(--black-color)"
         : "var(--white-color)"};
+    @media (max-width: 992px) {
+      font-size: 11px;
+      left: -70px;
+      top: 10px;
+      width: 170px;
+    }
   }
 `;
 
@@ -379,14 +388,14 @@ export default function Earning() {
               </div>
               <Amount>
                 {currency}
-                {totalSales}
+                {totalSales.toFixed(2)}
               </Amount>
             </Widget>
             <Widget
               style={{ background: "var(--malon-color)", color: "white" }}
             >
               <div style={{ display: "flex" }}>
-                <SmallText>Repeddle Expenses (7.9%)</SmallText>
+                <SmallText>Expenses (7.9%)</SmallText>
                 <Tips
                   mode={mode}
                   tips={`Expenses is Repeddle commission charged against your total earnings that’s less
