@@ -1454,9 +1454,8 @@ export default function NewProduct() {
               </div>
               To give you unmatched user experience and support the growth of
               your business as part of our community, you will not be charged
-              Repeddle commission fee until 3oth November 2022. To understand
-              how our fee works after the grace period, please have a look at
-              our fee structure{" "}
+              Repeddle commission fee. To understand how our fee works after the
+              grace period, please have a look at our fee structure{" "}
               <span
                 onClick={() => setShowComissionModal(true)}
                 style={{

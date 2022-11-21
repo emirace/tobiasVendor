@@ -61,6 +61,7 @@ const Right = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin: 0;
+    margin-bottom: 10px;
     padding: 10px;
   }
 `;

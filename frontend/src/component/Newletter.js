@@ -56,7 +56,9 @@ export default function Newletter() {
           FAVOURITES STORE?
         </b>
       </div>
-      <div className="newsletter_desc">Drop your email not to miss out!</div>
+      <div className="newsletter_desc malon">
+        Drop your email not to miss out!
+      </div>
       <div className="newsletter_input">
         <input
           type={"text"}

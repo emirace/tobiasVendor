@@ -55,6 +55,7 @@ const Right = styled.div`
   @media (max-width: 992px) {
     margin: 0;
     padding: 10px;
+    margin-bottom: 10px;
   }
 `;
 

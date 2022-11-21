@@ -86,10 +86,17 @@ const SmTitle = styled.div`
 `;
 
 const LogoImage = styled.img`
-  width: 60%;
+  width: 45%;
 `;
 const Logo = styled.div`
   width: 100%;
+  @media (max-width: 992px) {
+    & a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
 `;
 
 const Reserve = styled.div`
@@ -325,7 +332,7 @@ export default function Footer() {
                     and make our environment and planet, a more livable place.
                     Learn{" "}
                     <Link
-                      to="sustainable"
+                      to="/sustainability"
                       style={{ color: "var(--orange-color)" }}
                     >
                       more
@@ -341,7 +348,7 @@ export default function Footer() {
                     and make our environment and planet, a more livable place.
                     Learn{" "}
                     <Link
-                      to="sustainability"
+                      to="/sustainability"
                       style={{ color: "var(--orange-color)" }}
                     >
                       how

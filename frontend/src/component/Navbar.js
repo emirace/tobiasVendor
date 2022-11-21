@@ -606,7 +606,6 @@ const DetailText = styled.div`
     left: 25%;
     width: 250px;
     top: 20px;
-    text-align: justify;
   }
 `;
 
@@ -737,8 +736,7 @@ export default function Navbar({
                   Sell more than 10,400 brand names you love. To give you
                   unmatched user experiencd and support the growth of your
                   business as part of our thrift secondhand community, you will
-                  not be charge REPEDDLE SELLER'S COMMISSION FEE until after
-                  30th November 2022
+                  not be charge Repeddle seller's commision fee.
                 </DetailText>
               </Underline>
             </First>

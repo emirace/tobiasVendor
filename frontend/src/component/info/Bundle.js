@@ -58,6 +58,7 @@ const Center = styled.div`
   gap: 50px;
   @media (max-width: 992px) {
     flex-direction: column;
+    gap: 20px;
   }
 `;
 const Links = styled.div`

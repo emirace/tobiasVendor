@@ -826,7 +826,7 @@ export default function ProductScreen() {
                         onChange={(e) => setComment2(e.target.value)}
                       />
                       <input
-                        style={{ margintop: "5px" }}
+                        style={{ marginTop: "5px" }}
                         type="file"
                         label="hello"
                         onChange={(e) => uploadImageHandler(e)}
@@ -1216,7 +1216,7 @@ export default function ProductScreen() {
             </span>
           </div>
           <div style={{ display: "flex" }}>
-            <div style={{ marginRight: "100px" }}>
+            <div style={{ marginRight: "50px" }}>
               <b>{product.likes.length} </b> Likes
             </div>
             <div>
@@ -1332,7 +1332,7 @@ export default function ProductScreen() {
                     <Key>Price</Key>
                     <Key>Brand</Key>
                     <Key>Category</Key>
-                    <Key>SubCategory</Key>
+                    <Key>Subcategory</Key>
                     <Key>Color</Key>
                     <Key>Size</Key>
                   </LeftOverview>

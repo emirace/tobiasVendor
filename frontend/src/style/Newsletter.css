@@ -50,11 +50,19 @@
 @media (max-width: 992px) {
   .newsletter_desc {
     text-align: center;
+    color: black;
+  }
+  .malon {
+    color: var(--malon-color);
   }
   .newsletter_desc b {
     font-size: 12px;
+    color: black;
   }
   .newsletter_input {
     width: 90%;
+  }
+  .newsletter_container {
+    padding-top: 10px;
   }
 }

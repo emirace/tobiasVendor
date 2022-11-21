@@ -26,6 +26,7 @@ import { Store } from "../Store";
 import secureLocalStorage from "react-secure-storage";
 import { getError } from "../utils";
 import axios from "axios";
+import { logout } from "../hooks/initFacebookSdk";
 
 const Container = styled.div`
   display: none;
@@ -120,6 +121,7 @@ const SwitchCont = styled.div`
 `;
 const SectionTitle = styled.div`
   padding: 10px;
+  text-transform: uppercase;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
 `;
@@ -158,6 +160,7 @@ export default function MobileProfileScreen() {
   }, [userInfo, refresher]);
 
   const signoutHandler = () => {
+    logout();
     ctxDispatch({ type: "USER_SIGNOUT" });
     secureLocalStorage.removeItem("userInfo");
     localStorage.removeItem("cartItems");
@@ -203,13 +206,13 @@ export default function MobileProfileScreen() {
       <Link to="/dashboard/productlist">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faBasketShopping} />
-          Products
+          My Products
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/orderlist">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faChartBar} />
-          Purchase Orders
+          Purchased Orders
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/saleslist">
@@ -236,7 +239,7 @@ export default function MobileProfileScreen() {
       <Link to="/dashboard/returns">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faArrowRotateLeft} />
-          Returns
+          My Returns
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/wallet">

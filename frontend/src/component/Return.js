@@ -327,7 +327,7 @@ export default function Return({
                       <Quantity>QTY: {orderitem.quantity}</Quantity>
                       <ItemPrice>
                         {orderitem.currency}{" "}
-                        {orderitem.quality * orderitem.actualPrice}
+                        {orderitem.quantity * orderitem.actualPrice}
                       </ItemPrice>
                     </Details1>
                   </OrderItem>

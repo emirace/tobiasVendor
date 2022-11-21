@@ -556,7 +556,7 @@ export default function OrderScreen() {
           userId: orderitem.seller._id,
           itemId: order._id,
           notifyType: "delivery",
-          msg: `Your order is ${deliveryStatus} `,
+          msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
         });

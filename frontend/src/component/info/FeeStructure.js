@@ -48,8 +48,8 @@ export default function FeeStructure() {
       <p>
         To give you unmatched user experience and support the growth of your
         business as part of our thrift secondhand community, you will not be
-        charged <BoldText> Repeddle commission</BoldText> until after 3oth
-        November 2022. The only charge that will be due to you is the{" "}
+        charged <BoldText> Repeddle commission.</BoldText> The only charge that
+        will be due to you is the{" "}
         <BoldText> payment platform processing fee.</BoldText>
         These fee is entirely up to the payment platform. Repeddle do not have
         any say or take in these charge whatsoever. The payment processing fee

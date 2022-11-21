@@ -780,11 +780,11 @@ export default function DeliveryOption({
         <Option>
           <Label>
             <FontAwesomeIcon icon={faTruck} />
-            <Name>Bundling</Name>
+            <Name>Re:Bundle</Name>
             <Tips
               mode={mode}
               tips={`
-              Bundling allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.       `}
+              Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.       `}
             >
               <FontAwesomeIcon icon={faQuestionCircle} />
             </Tips>
@@ -798,7 +798,7 @@ export default function DeliveryOption({
         <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
         <Plans>
           <Link to="/rebundle" target="_blank">
-            More on bundling
+            More on Re:bundle
           </Link>
         </Plans>
       </OptionCont>
