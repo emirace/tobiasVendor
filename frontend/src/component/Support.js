@@ -236,7 +236,11 @@ const Button1 = styled.div`
 const Error = styled.div`
   color: var(--red-color);
 `;
-
+const ImageFile = styled.img`
+  width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPLOAD_REQUEST":
@@ -270,6 +274,7 @@ export default function Support() {
   const [arrivalMessage, setArrivalMessage] = useState("");
   const [image, setImage] = useState("");
   const location = useLocation();
+  const [uploadImage, setUploadImage] = useState(false);
 
   const [{ loadingUpload }, dispatch] = useReducer(reducer, {
     loadingUpload: false,
@@ -387,12 +392,12 @@ export default function Support() {
   };
 
   const addConversation = async (user) => {
-    console.log("conversation user", user);
     try {
       const { data } = await axios.post(`/api/conversations/support`, {
         recieverId: user._id,
         type: "support",
         guestEmail: user.email,
+        guest: userInfo ? true : false,
       });
       setCurrentChat(data);
       socket.emit("remove_notifications", data._id);
@@ -404,6 +409,14 @@ export default function Support() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.length) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Enter a message to send",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
       return;
     }
     const message1 = {
@@ -438,6 +451,7 @@ export default function Support() {
           "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",
       });
       setMessage("");
+      setImage("");
       socket.emit("remove_notifications", currentChat?._id);
     } catch (err) {
       console.log(getError(err));
@@ -549,16 +563,22 @@ export default function Support() {
                           padding: "20px",
                         }}
                       >
-                        {messages.map((m, index) => (
-                          <div ref={scrollref} key={index}>
-                            <Messages
-                              key={m._id}
-                              own={m.sender === user._id}
-                              message={m}
-                              support
-                            />
+                        {image ? (
+                          <div>
+                            <ImageFile src={image} alt="file" />
                           </div>
-                        ))}
+                        ) : (
+                          messages.map((m, index) => (
+                            <div ref={scrollref} key={index}>
+                              <Messages
+                                key={m._id}
+                                own={m.sender === user._id}
+                                message={m}
+                                support
+                              />
+                            </div>
+                          ))
+                        )}
                       </div>
                     </ChatArea>
                     <InputCont>

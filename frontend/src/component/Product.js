@@ -10,6 +10,12 @@ import Notification from "./Notification";
 import Model from "../component/Model";
 import { toast } from "react-toastify";
 import { getError } from "../utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowsAlt,
+  faHeart,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ModelImg = styled.img.attrs((props) => ({
   src: props.src,
@@ -221,17 +227,17 @@ export default function Product(props) {
         <ul className="product_hover">
           <li>
             <span onClick={() => setShowModel(!showModel)}>
-              <i className="fa fa-arrows-alt"></i>
+              <FontAwesomeIcon icon={faArrowsAlt} />
             </span>
           </li>
           <li>
             <span onClick={toggleLikes}>
-              <i className="fa fa-heart"></i>
+              <FontAwesomeIcon icon={faThumbsUp} />
             </span>
           </li>
           <li>
             <span onClick={() => saveItem()}>
-              <i className="fa fa-bookmark"></i>
+              <FontAwesomeIcon icon={faHeart} />
             </span>
           </li>
         </ul>

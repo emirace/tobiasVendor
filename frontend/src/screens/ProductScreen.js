@@ -195,10 +195,13 @@ const SustainCont = styled.div`
   font-size: 14px;
   & svg {
     font-size: 16px;
-    margin: 5px;
   }
 `;
 
+const Sustainbold = styled.span`
+  font-size: 16px;
+  font-weight: bold;
+`;
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
@@ -1159,7 +1162,7 @@ export default function ProductScreen() {
                     : ""
                 }
                 onClick={toggleLikes}
-                icon={faHeart}
+                icon={faThumbsUp}
               />
               <IconsTooltips tips="Like Product " />
             </IconContainer>
@@ -1177,7 +1180,7 @@ export default function ProductScreen() {
                 onClick={() => {
                   saveItem();
                 }}
-                icon={faBookmark}
+                icon={faHeart}
               />
               <IconsTooltips tips="Add to wishlist " />
             </IconContainer>
@@ -1473,20 +1476,31 @@ export default function ProductScreen() {
                 POSITIVE IMPACT OF USING SECONDHAND CLOTHES
               </SustainHeader>
               <SustainCont>
-                <FontAwesomeIcon icon={faWater} />{" "}
-                <span>
-                  2,700 L of water saved for one person to drink for 900 days.
-                </span>
+                <div style={{ flex: "1", marginTop: "4px" }}>
+                  <FontAwesomeIcon icon={faWater} />
+                </div>
+                <div style={{ flex: "9" }}>
+                  <Sustainbold>2,700L</Sustainbold> of water saved for one
+                  person to drink for 900 days.
+                </div>
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faCloud} />{" "}
-                <span>10% co2 of global carbon emissions avoided.</span>
+                <div style={{ flex: "1", marginTop: "4px" }}>
+                  <FontAwesomeIcon icon={faCloud} />
+                </div>
+                <div style={{ flex: "9" }}>
+                  <Sustainbold>10%</Sustainbold> co2 of global carbon emissions
+                  avoided.
+                </div>
               </SustainCont>
               <SustainCont>
-                <FontAwesomeIcon icon={faLightbulb} />{" "}
-                <span>
-                  98% Chance of clothes ending up in landfills avoided.
-                </span>
+                <div style={{ flex: "1", marginTop: "4px" }}>
+                  <FontAwesomeIcon icon={faLightbulb} />
+                </div>
+                <div style={{ flex: "9" }}>
+                  <Sustainbold>98%</Sustainbold> Chance of clothes ending up in
+                  landfills avoided.
+                </div>
               </SustainCont>
             </Sustain>
             <ReportButton

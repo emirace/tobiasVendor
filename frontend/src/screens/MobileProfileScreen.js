@@ -47,6 +47,7 @@ const MobileMenuItem = styled.div`
   border-bottom: 1px solid rgba(99, 91, 91, 0.2);
   padding: 10px 10px;
   border-radius: 0.2rem;
+  position: relative;
   & svg {
     margin-right: 10px;
   }
@@ -139,9 +140,25 @@ const Welcome = styled.div`
   color: var(--orange-color);
 `;
 
+const Badge = styled.span`
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-color);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 50%;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  cursor: default;
+`;
+
 export default function MobileProfileScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, userInfo, refresher } = state;
+  const { mode, userInfo, refresher, notifications } = state;
 
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -162,7 +179,7 @@ export default function MobileProfileScreen() {
   const signoutHandler = () => {
     logout();
     ctxDispatch({ type: "USER_SIGNOUT" });
-    secureLocalStorage.removeItem("userInfo");
+    localStorage.removeItem("userInfo");
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
@@ -178,6 +195,13 @@ export default function MobileProfileScreen() {
       localStorage.setItem("mode", "pagebodylight");
     }
   };
+
+  const purchaseNotification = notifications.filter(
+    (x) => x.notifyType === "purchase" && x.read === false
+  );
+  const soldNotification = notifications.filter(
+    (x) => x.notifyType === "sold" && x.read === false
+  );
 
   return (
     <Container className={mode}>
@@ -213,12 +237,22 @@ export default function MobileProfileScreen() {
         <MobileMenuItem>
           <FontAwesomeIcon icon={faChartBar} />
           Purchased Orders
+          {purchaseNotification.length > 0 && (
+            <Badge>
+              <span>{purchaseNotification.length}</span>
+            </Badge>
+          )}
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/saleslist">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faChartBar} />
           Sold Orders
+          {soldNotification.length > 0 && (
+            <Badge>
+              <span>{soldNotification.length}</span>
+            </Badge>
+          )}
         </MobileMenuItem>
       </Link>
       <Link to="/earning">

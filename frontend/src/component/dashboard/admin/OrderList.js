@@ -138,6 +138,10 @@ const Print = styled.div`
   &:hover {
     background-color: var(--malon-color);
   }
+  @media (max-width: 992px) {
+    white-space: nowrap;
+    margin-top: 10px;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -315,7 +319,7 @@ export default function OrderListAdmin() {
                   <Link to={`/order/${params.row.id}`}>
                     <Edit mode={mode}>View</Edit>
                   </Link>
-                  {/* <div
+                  <div
                     onClick={() =>
                       deliverOrderHandler(
                         params.row.deliveryStatus !== "Hold"
@@ -328,10 +332,10 @@ export default function OrderListAdmin() {
                     <Edit mode={mode}>
                       {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
                     </Edit>
-                  </div> */}
-                  {params.row.deliveryStatus === "Delivered" && (
+                  </div>
+                  {/* {params.row.deliveryStatus === "Delivered" && (
                     <Reject mode={mode}>Return</Reject>
-                  )}
+                  )} */}
                   {/* {userInfo.isAdmin && (
               <FontAwesomeIcon
                 onClick={() => deleteHandler(params.row.id)}
@@ -343,7 +347,94 @@ export default function OrderListAdmin() {
             },
           },
         ]
-      : [];
+      : [
+          { field: "id", headerName: "ID", width: 200 },
+          {
+            field: "order",
+            headerName: "Order",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 90,
+          },
+          {
+            field: "buyer",
+            headerName: "Buyer",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.buyerId}`}>
+                    @{params.row.buyer}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "seller",
+            headerName: "Seller",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.sellerId}`}>
+                    @{params.row.seller}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 120,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                  <div
+                    onClick={() =>
+                      deliverOrderHandler(
+                        params.row.deliveryStatus !== "Hold"
+                          ? "Hold"
+                          : "Unhold",
+                        params.row.id
+                      )
+                    }
+                  >
+                    <Edit mode={mode}>
+                      {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
+                    </Edit>
+                  </div>
+                  {/* {params.row.deliveryStatus === "Delivered" && (
+                  <Reject mode={mode}>Return</Reject>
+                )} */}
+                  {/* {userInfo.isAdmin && (
+            <FontAwesomeIcon
+              onClick={() => deleteHandler(params.row.id)}
+              icon={faTrash}
+            />
+          )} */}
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows = products.map((p) => ({
     id: p._id,
     name: p.orderItems[0].name,

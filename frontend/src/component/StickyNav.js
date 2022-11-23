@@ -13,37 +13,6 @@ import { Store } from "../Store";
 import "../style/StickyNav.css";
 import styled from "styled-components";
 
-const Switch = styled.input.attrs({ type: "checkbox", role: "switch" })`
-  position: relative;
-  width: 40px;
-  height: 15px;
-  -webkit-appearance: none;
-  background: #fff;
-  border-radius: 20px;
-  outline: none;
-  transition: 0.5s;
-  @media (max-width: 992px) {
-    display: none;
-  }
-  &:checked {
-    background: #000;
-    &:before {
-      left: 25px;
-    }
-  }
-  &:before {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: var(--malon-color);
-    transition: 0.5s;
-  }
-`;
-
 export const Badge = styled.span`
   width: 12px;
   height: 12px;
@@ -59,11 +28,21 @@ export const Badge = styled.span`
   top: 5px;
   cursor: default;
 `;
+
 export default function StickyNav() {
   const { state, dispatxh: ctxDispatch } = useContext(Store);
   const { userInfo, mode, notifications } = state;
 
   const allNotification = notifications.filter((x) => x.read === false);
+  const messageNotification = notifications.filter(
+    (x) => x.notifyType === "message" && x.read === false
+  );
+  const purchaseNotification = notifications.filter(
+    (x) => x.notifyType === "purchase" && x.read === false
+  );
+  const soldNotification = notifications.filter(
+    (x) => x.notifyType === "sold" && x.read === false
+  );
 
   const [currentNav, setCurrentNav] = useState("home");
 
@@ -110,6 +89,11 @@ export default function StickyNav() {
         >
           <FontAwesomeIcon icon={faEnvelope} />
           <div className="stickynav_text">Message</div>
+          {messageNotification.length > 0 && (
+            <Badge>
+              <span>{messageNotification.length}</span>
+            </Badge>
+          )}
         </Link>
         <Link
           onClick={() => setCurrentNav("profile")}
@@ -118,6 +102,13 @@ export default function StickyNav() {
         >
           <FontAwesomeIcon icon={faUser} />
           <div className="stickynav_text">Profile</div>
+          {[...soldNotification, ...purchaseNotification].length > 0 && (
+            <Badge>
+              <span>
+                {[...soldNotification, ...purchaseNotification].length}
+              </span>
+            </Badge>
+          )}
         </Link>
       </div>
     </div>

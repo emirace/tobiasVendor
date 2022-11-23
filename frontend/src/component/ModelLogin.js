@@ -49,7 +49,7 @@ const CloseModelButton = styled.div`
   padding: 0;
   z-index: 10;
   @media (max-width: 992px) {
-    right: 10px;
+    right: 20px;
     width: 20px;
   }
 `;

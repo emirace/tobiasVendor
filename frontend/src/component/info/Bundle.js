@@ -51,6 +51,7 @@ const PhoneImg = styled.img`
   margin-bottom: 10px;
   margin-top: 20px;
   @media (max-width: 992px) {
+    width: 150px;
   }
 `;
 const Center = styled.div`
@@ -59,6 +60,7 @@ const Center = styled.div`
   @media (max-width: 992px) {
     flex-direction: column;
     gap: 20px;
+    align-items: center;
   }
 `;
 const Links = styled.div`
@@ -69,6 +71,12 @@ const Links = styled.div`
     justify-content: space-between;
     font-size: 11px;
   }
+`;
+
+const CenterAlign = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 export default function Bundle() {
   return (
@@ -163,7 +171,7 @@ export default function Bundle() {
           </List>
         </Section>
         <Center>
-          <div>
+          <CenterAlign>
             <PhoneImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
               alt="imag"
@@ -174,8 +182,8 @@ export default function Bundle() {
               </b>{" "}
               - Free delivery option is visible but grayed out
             </div>
-          </div>
-          <div>
+          </CenterAlign>
+          <CenterAlign>
             <PhoneImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
               alt="imag"
@@ -186,7 +194,7 @@ export default function Bundle() {
               </b>{" "}
               - Free delivery is enabled and can be chosen
             </div>
-          </div>
+          </CenterAlign>
         </Center>
       </Section>
       <Section>

@@ -150,6 +150,7 @@ const Tips = styled.span`
         : "var(--white-color)"};
     @media (max-width: 992px) {
       font-size: 11px;
+      left: -70px;
     }
   }
 `;

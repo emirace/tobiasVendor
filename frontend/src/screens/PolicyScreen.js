@@ -175,6 +175,52 @@ export default function PolicyScreen() {
         Please note that we do not alter our Site’s data collection and use
         practices when we see a Do Not Track signal from your browser.{" "}
       </Para>
+      <SubHeader>Cookies</SubHeader>
+      <Para>
+        Cookies are text files, often encrypted, stored in your browser. They
+        are created when a user’s browser loads a given website: the website
+        sends information to the browser, which then creates a text file. Each
+        time the user returns to the same site, the browser retrieves this file
+        and sends it to the website’s server.
+      </Para>
+      <Para>
+        We can distinguish two types of cookies, which have different purposes:
+        technical cookies and advertising cookies:
+      </Para>
+      <Para>
+        Technical cookies are used throughout your browsing experience to
+        facilitate and perform certain functions. For example, a technical
+        cookie may be used to remember the answers you give in a form or the
+        user’s preferences for the language or layout of a website, where such
+        options are available.
+      </Para>
+      <Para>
+        Advertising cookies may be created not only by the website on which the
+        user is browsing, but also by other websites displaying advertisements,
+        announcements, widgets or other elements on the page displayed. These
+        cookies can be used to carry out targeted advertising, i.e. advertising
+        determined according to the user’s navigation.
+      </Para>
+      <Para>
+        We use technical cookies. These are stored in your browser for a period
+        not exceeding six months.
+      </Para>
+      <Para>
+        We do not use advertising cookies. However, if we were to use them in
+        the future, we would inform you in advance and you would have the
+        possibility to deactivate these cookies.
+      </Para>
+      <Para>
+        We use or may use Google Analytics which is a statistical audience
+        analysis tool that generates a cookie to measure the number of visits to
+        the site, the number of pages viewed and visitor activity. Your IP
+        address is also collected to determine the city from which you connect.
+      </Para>
+      <Para>
+        We remind you that you can refuse the deposit of cookies by configuring
+        your browser. However, such a refusal could prevent the site from
+        functioning properly.
+      </Para>
 
       <SubHeader> your rights</SubHeader>
       <Para>

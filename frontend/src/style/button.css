@@ -231,7 +231,7 @@ a {
 .product_hover li:hover span {
   background-color: var(--orange-color);
 }
-.product_hover li:hover span i {
+.product_hover li:hover span svg {
   color: #fff;
   transform: rotate(360deg);
 }
@@ -249,7 +249,7 @@ a {
   transition: all 0.5s;
 }
 
-.product_hover li span i {
+.product_hover li span svg {
   position: relative;
   display: inline-block;
   transform: rotate(0);

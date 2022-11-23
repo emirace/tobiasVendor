@@ -15,6 +15,9 @@ const Container = styled.div`
   & a {
     color: var(--malon-color);
   }
+  @media (max-width: 992px) {
+    margin: 0 5vw;
+  }
 `;
 
 const List = styled.ul`
@@ -30,12 +33,15 @@ const SubHeading = styled.h4`
   margin: 0 5px;
   font-weight: bold;
   font-size: 30px;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 30px 0;
+  margin: 20px 0;
   &.back {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -51,6 +57,10 @@ const Row = styled.div`
 
   &.gap {
     gap: 10px;
+  }
+  @media (max-width: 992px) {
+    flex-direction: column;
+    gap: 5px;
   }
 `;
 const Col = styled.div`
@@ -69,6 +79,9 @@ const Malon = styled.span`
 
 const Cont = styled.div`
   padding: 20px;
+  @media (max-width: 992px) {
+    padding: 5px;
+  }
 `;
 const ContText = styled.div`
   text-align: center;
@@ -82,6 +95,10 @@ const Image = styled.img`
   height: 600px;
   width: 400px;
   object-fit: cover;
+  @media (max-width: 992px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 export default function SustainabilityImpact() {
@@ -92,7 +109,7 @@ export default function SustainabilityImpact() {
       </Helmet>
       <Section>
         <h1 style={{ fontWeight: "bold" }}>REPEDDPLE SUSTAINABILITY IMPACT</h1>
-        <div>
+        <p>
           Fashion industry is the second most intense water consuming and
           polluting industry in the world, releasing up to 10% global carbon
           emission, greater than international airlines and maritime logistic
@@ -100,14 +117,14 @@ export default function SustainabilityImpact() {
           continent “Africa” is faced, in order for we to do so, we must firstly
           change the way people perceive and use fashion. Addressing stigma
           associated with secondhand thrifting is a good place to start.
-        </div>
-        <div>
+        </p>
+        <p>
           Research has shown that international fast fashion companies target
           Africa as the final destination for their unsold, abandoned or used
           product that their international consumers no longer want or use. This
           over the years has increasingly turned Africa as a dumping ground,
           hence causing enormous landfills in Africa.{" "}
-        </div>
+        </p>
         <div>
           Repeddle is set to address this landfills problems in Africa by
           creating a platform that will change the way we trade secondhand.
@@ -116,14 +133,14 @@ export default function SustainabilityImpact() {
         </div>
       </Section>
       <Section>
-        <h3
+        <SubHeading
           style={{
             color: "var(--malon-color)",
             fontWeight: "bold",
           }}
         >
           WHAT YOU MAY NEED TO KNOW! “THE PROBLEM”{" "}
-        </h3>
+        </SubHeading>
         <div style={{ textAlign: "left", width: "100%" }}>
           <b style={{ color: "var(--malon-color)" }}>FACTS:</b> Here are some
           REAL FACTS that shows the impact of fast fashion which harms Africa
@@ -204,7 +221,7 @@ export default function SustainabilityImpact() {
                   fontStyle: "italic",
                 }}
               >
-                every
+                every second
               </div>
               <FontAwesomeIcon size="3x" icon={faTruckRampBox} />
             </ContText>
@@ -250,9 +267,9 @@ export default function SustainabilityImpact() {
           <Orange>
             <b>Less</b>
           </Orange>{" "}
-          is{" "}
+          Is{" "}
           <Malon>
-            <b>more</b>
+            <b>More</b>
           </Malon>
         </SubHeading>
         <Image

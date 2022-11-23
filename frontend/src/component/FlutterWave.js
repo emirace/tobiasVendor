@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
 import styled from "styled-components";
-const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
+import axios from "axios";
+import { Store } from "../Store";
+// const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Button = styled.div`
   cursor: pointer;
@@ -17,8 +19,22 @@ const Button = styled.div`
   height: 40px;
 `;
 export default function FlutterWave({ amount, currency, user, onApprove }) {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const [baseKey, setBaseKey] = useState("");
+  useEffect(() => {
+    const getKey = async () => {
+      const { data } = await axios.get("/api/keys/flutterwave", {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
+      console.log(data);
+      setBaseKey(data);
+    };
+    getKey();
+  }, []);
+
   const config = {
-    public_key: BASE_KEY,
+    public_key: baseKey,
     tx_ref: v4(),
     amount,
     currency,

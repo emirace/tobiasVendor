@@ -617,7 +617,7 @@ const Welcome = styled.div`
 
 export const signoutHandler = () => {
   logout();
-  secureLocalStorage.removeItem("userInfo");
+  localStorage.removeItem("userInfo");
   localStorage.removeItem("cartItems");
   localStorage.removeItem("shippingAddress");
   localStorage.removeItem("useraddress");

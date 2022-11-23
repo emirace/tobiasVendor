@@ -4,8 +4,8 @@ import secureLocalStorage from "react-secure-storage";
 
 export const Store = createContext();
 const initialState = {
-  userInfo: secureLocalStorage.getItem("userInfo")
-    ? secureLocalStorage.getItem("userInfo")
+  userInfo: JSON.parse(localStorage.getItem("userInfo"))
+    ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
   mode: localStorage.getItem("mode")
     ? localStorage.getItem("mode")
@@ -47,8 +47,8 @@ const initialState = {
     window.location.hostname === "repeddle.com"
       ? "N "
       : "R ",
-  cookies: secureLocalStorage.getItem("cookies")
-    ? secureLocalStorage.getItem("cookies")
+  cookies: localStorage.getItem("cookies")
+    ? localStorage.getItem("cookies")
     : false,
 };
 function reducer(state, action) {
@@ -90,7 +90,7 @@ function reducer(state, action) {
       return { ...state, cart: { ...state.cart, cartItems: [] } };
     }
     case "USER_SIGNIN":
-      secureLocalStorage.setItem("userInfo", action.payload);
+      localStorage.setItem("userInfo", JSON.stringify(action.payload));
       return { ...state, userInfo: action.payload };
     case "USER_SIGNOUT":
       return {
@@ -184,7 +184,7 @@ function reducer(state, action) {
         refresher: action.payload,
       };
     case "SET_COOKIES":
-      secureLocalStorage.setItem("cookies", action.payload);
+      localStorage.setItem("cookies", action.payload);
       return {
         ...state,
         cookies: action.payload,

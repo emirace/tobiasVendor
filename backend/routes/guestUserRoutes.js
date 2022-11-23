@@ -20,11 +20,11 @@ guestUserRouter.get(
 // get a guestUsers
 
 guestUserRouter.get(
-  "/",
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const guestUser = await GuestUser.findOne();
+    const guestUser = await GuestUser.findById(req.params.id);
     res.status(200).send(guestUser);
   })
 );

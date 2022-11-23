@@ -455,7 +455,7 @@ export default function PlaceOrderScreen() {
                       </div>
                       <div className="col-3">
                         {currency}
-                        {item.actualPrice * item.quantiy}
+                        {item.actualPrice * item.quantity}
                       </div>
                     </Row>
                     {Object.entries(item.deliverySelect).map(([key, value]) => (

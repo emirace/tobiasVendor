@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import {
   faCalendarDays,
+  faDotCircle,
   faEnvelope,
   faLocationDot,
   faMoneyBill,
@@ -581,6 +582,10 @@ export default function User() {
             <Info>
               <FontAwesomeIcon icon={faUser} />
               <Username>@{user.username}</Username>
+            </Info>
+            <Info>
+              <FontAwesomeIcon icon={faDotCircle} />
+              <Username>@{user._id}</Username>
             </Info>
             <Info>
               <FontAwesomeIcon icon={faCalendarDays} />

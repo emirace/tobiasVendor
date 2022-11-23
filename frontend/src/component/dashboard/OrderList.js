@@ -22,6 +22,9 @@ const ProductLists = styled.div`
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 const Product = styled.div`
   position: relative;
@@ -401,7 +404,6 @@ export default function OrderList() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </ProductLists>
   );

@@ -15,6 +15,7 @@ const Container = styled.div`
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
+    margin-bottom: 10px;
   }
 `;
 
@@ -46,6 +47,9 @@ const Apply = styled.button`
   border-bottom-right-radius: 0.2rem;
   &:hover {
     background: var(--malon-color);
+  }
+  @media (max-width: 992px) {
+    flex: 2;
   }
 `;
 export default function Coupon() {

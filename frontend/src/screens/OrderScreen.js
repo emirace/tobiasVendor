@@ -64,19 +64,17 @@ const Header = styled.h1`
   padding: 15px 30px;
   @media (max-width: 992px) {
     padding: 10px 10px;
+    font-size: 20px;
     margin-top: 15px;
   }
 `;
 const InvoiceHead = styled.h2`
   margin-bottom: 0;
   width: 100%;
-  padding: 15px 10px;
+  padding: 0;
   display: none;
   color: var(--malon-color);
-  @media (max-width: 992px) {
-    padding: 10px 10px;
-    margin-top: 15px;
-  }
+
   @media print {
     display: block;
   }
@@ -219,6 +217,7 @@ const Print = styled.div`
   font-weight: 500;
   color: white;
   padding: 1px 8px;
+  text-align: center;
   width: 150px;
   border-radius: 0.2rem;
   cursor: pointer;

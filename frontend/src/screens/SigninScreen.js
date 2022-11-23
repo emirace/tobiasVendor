@@ -220,7 +220,7 @@ export default function SigninScreen() {
     console.log(account);
     //signin here
     ctxDispatch({ type: "USER_SIGNIN", payload: account });
-    secureLocalStorage.setItem("userInfo", account);
+    localStorage.setItem("userInfo", JSON.stringify(account));
     window.location.href = `${redirect}?redirect=${redirect}`;
   }
   const submitHandler = async () => {
@@ -232,7 +232,7 @@ export default function SigninScreen() {
       console.log(data);
 
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
-      secureLocalStorage.setItem("userInfo", data);
+      localStorage.setItem("userInfo", JSON.stringify(data));
       if (data.isVerifiedEmail) {
         window.location.href = `${redirect}?redirect=${redirect}`;
       } else {

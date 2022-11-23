@@ -534,7 +534,11 @@ export default function CartScreen() {
                                       {product.name}
                                     </Link>
 
-                                    <div> ${product.price}</div>
+                                    <div>
+                                      {" "}
+                                      {product.currency}
+                                      {product.price}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="col-4">

@@ -1,6 +1,9 @@
 import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import Cropper from "react-easy-crop";
+import { getCroppedImg, getRotatedImage } from "./cropImage1";
+import { getOrientation } from "get-orientation/browser";
+
 // import ReactCrop, {
 //   centerCrop,
 //   makeAspectCrop,
@@ -32,7 +35,7 @@ import Cropper from "react-easy-crop";
 const Container = styled.div`
   padding: 30px;
   width: 100%;
-  height: 600px;
+  height: 100%;
 `;
 
 const App = styled.div`
@@ -42,6 +45,7 @@ const App = styled.div`
   justify-content: center;
   height: 90%;
   padding: 5px;
+  position: relative;
 `;
 const InputButton = styled.label`
   color: var(--malon-color);
@@ -64,6 +68,12 @@ const Done = styled.label`
 // const acceptedFileTypesArray = acceptedFileTypes.split(",").map((item) => {
 //   return item.trim();
 // });
+
+const ORIENTATION_TO_ANGLE = {
+  3: 180,
+  6: 90,
+  8: -90,
+};
 
 export default function CropImage({
   uploadHandler,
@@ -162,24 +172,68 @@ export default function CropImage({
   };
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const [image, setImage] = useState("");
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(null);
+  const [imageSrc, setImageSrc] = useState("");
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    console.log(croppedArea, croppedAreaPixels);
+    setCroppedAreaPixels(croppedAreaPixels);
   }, []);
+
+  const showCroppedImage = useCallback(async () => {
+    try {
+      const croppedImage = await getCroppedImg(
+        imageSrc,
+        croppedAreaPixels,
+        rotation
+      );
+      console.log("donee", { croppedImage });
+      uploadHandler(croppedImage, currentImage);
+      setShowModel(false);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [imageSrc, croppedAreaPixels, rotation]);
+
+  const onFileChange = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      let imageDataUrl = await readFile(file);
+
+      // apply rotation if needed
+      const orientation = await getOrientation(file);
+      const rotation = ORIENTATION_TO_ANGLE[orientation];
+      if (rotation) {
+        imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+      }
+
+      setImageSrc(imageDataUrl);
+    }
+  };
+
+  function readFile(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => resolve(reader.result), false);
+      reader.readAsDataURL(file);
+    });
+  }
 
   return (
     <Container>
       <InputButton htmlFor="inputButton">Add an image</InputButton>
       <App>
-        {image && (
+        {imageSrc && (
           <Cropper
-            image={image}
+            image={imageSrc}
             crop={crop}
+            rotation={rotation}
             zoom={zoom}
             aspect={9 / 14}
             onCropChange={setCrop}
+            onRotationChange={setRotation}
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
           />
@@ -190,7 +244,7 @@ export default function CropImage({
             style={{ display: "none" }}
             type="file"
             accept="image/*"
-            onChange={setImage}
+            onChange={onFileChange}
           />
           {/* {Boolean(imgSrc) && (
             <ReactCrop
@@ -229,7 +283,7 @@ export default function CropImage({
           alignItems: "flex-end",
         }}
       >
-        <Done onClick={() => handleSubmit()}>Done</Done>
+        <Done onClick={showCroppedImage}>Done</Done>
       </div>
     </Container>
   );

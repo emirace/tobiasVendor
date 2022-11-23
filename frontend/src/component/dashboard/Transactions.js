@@ -25,6 +25,7 @@ const Container = styled.div`
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
+    margin-bottom: 10px;
   }
 `;
 const BannerImage = styled.div`

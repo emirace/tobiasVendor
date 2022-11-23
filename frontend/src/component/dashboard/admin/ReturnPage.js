@@ -411,7 +411,7 @@ export default function ReturnPage() {
             <>
               <img
                 src={returned.image}
-                style={{ maxHeight: "400px" }}
+                style={{ maxHeight: "400px", width: "100%" }}
                 alt="img"
               />
             </>

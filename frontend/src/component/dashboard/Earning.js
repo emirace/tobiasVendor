@@ -17,6 +17,7 @@ import LoadingBox from "../LoadingBox";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { socket } from "../../App";
+import useWindowDimensions from "../Dimension";
 
 const today = moment().startOf("day");
 
@@ -248,68 +249,121 @@ export default function Earning() {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 210 },
-    {
-      field: "order",
-      headerName: "Order",
-      width: 220,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/order/${params.row.id}`}>
-              <img src={params.row.image} alt="" />
-              {params.row.name}
-              {/* {notifications.filter((x) => x.itemId === params.row.id).length >
+  const { height, width } = useWindowDimensions();
+  const columns =
+    width < 992
+      ? [
+          { field: "id", headerName: "ID", width: 210 },
+          {
+            field: "order",
+            headerName: "Order",
+            width: 220,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.id}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                    {/* {notifications.filter((x) => x.itemId === params.row.id).length >
+              0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "payStatus",
+            headerName: "Payment Status",
+            width: 120,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 120,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit
+                      mode={mode}
+                      onClick={() => {
+                        socket.emit("remove_notifications", params.row.id);
+                      }}
+                    >
+                      View
+                    </Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 210 },
+          {
+            field: "order",
+            headerName: "Order",
+            width: 220,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.id}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                    {/* {notifications.filter((x) => x.itemId === params.row.id).length >
                 0 && <Badge style={{ marginRight: "10px" }}></Badge>} */}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    { field: "deliveryStatus", headerName: "Delivery Status", width: 120 },
-    {
-      field: "payStatus",
-      headerName: "Payment Status",
-      width: 120,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      width: 100,
-    },
-    {
-      field: "user",
-      headerName: "Buyer",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 120,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/order/${params.row.id}`}>
-              <Edit
-                mode={mode}
-                onClick={() => {
-                  socket.emit("remove_notifications", params.row.id);
-                }}
-              >
-                View
-              </Edit>
-            </Link>
-          </ActionSec>
-        );
-      },
-    },
-  ];
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "deliveryStatus",
+            headerName: "Delivery Status",
+            width: 120,
+          },
+          {
+            field: "payStatus",
+            headerName: "Payment Status",
+            width: 120,
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 100,
+          },
+          {
+            field: "user",
+            headerName: "Buyer",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 120,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/order/${params.row.id}`}>
+                    <Edit
+                      mode={mode}
+                      onClick={() => {
+                        socket.emit("remove_notifications", params.row.id);
+                      }}
+                    >
+                      View
+                    </Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows = order.map((p) => ({
     id: p._id,
     name: p.orderItems[0].name,

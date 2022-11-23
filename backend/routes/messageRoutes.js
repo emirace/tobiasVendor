@@ -68,6 +68,7 @@ messageRouter.post(
           conversationId: req.body.conversationId,
           sender: req.body.senderId,
           text: req.body.text,
+          image: req.body.image,
         });
         console.log("hello3");
         const savedmessage = await newmessage.save();

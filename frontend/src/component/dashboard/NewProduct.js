@@ -482,6 +482,7 @@ const reducer = (state, action) => {
     case "UPLOAD_SUCCESS":
       return { ...state, loadingUpload: false, errorUpload: "" };
     case "UPLOAD_FAIL":
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     case "VIDEO_REQUEST":
       return { ...state, loadingVideo: true };
     case "VIDEO_SUCCESS":

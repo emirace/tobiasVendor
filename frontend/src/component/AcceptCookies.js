@@ -67,8 +67,8 @@ export default function AcceptCookies() {
       {/* <Title>Cookies</Title> */}
       <div>
         Cookies are use on this website to ensure we give you the best
-        exdiverience. If you continue to use this site that means you agree to
-        the use of cookies.
+        experience. If you continue to use this site that means you agree to the
+        use of cookies.
       </div>
       <Buttons>
         <ButtonNo onClick={() => navigate("/privacypolicy")}>

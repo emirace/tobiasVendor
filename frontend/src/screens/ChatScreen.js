@@ -27,6 +27,8 @@ import Report from "../component/Report";
 import ModelLogin from "../component/ModelLogin";
 import CropImage from "../component/cropImage/CropImage";
 import { socket } from "../App";
+import LoadingBox from "../component/LoadingBox";
+import useWindowDimensions from "../component/Dimension";
 
 const Container = styled.div`
   position: fixed;
@@ -182,6 +184,31 @@ const TextInput = styled.input`
     }
   }
 `;
+
+const Textarea = styled.textarea`
+  height: 100%;
+  width: 100%;
+  background: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
+  border-radius: 0.2rem;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  padding: 10px;
+  resize: none;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 const NoConversation = styled.span`
   display: flex;
   justify-content: center;
@@ -312,10 +339,33 @@ const SearchImg = styled.img`
 
 const Image = styled.img`
   height: 100%;
+`;
+
+const UploadImageModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  padding: 30px;
   @media (max-width: 992px) {
-    width: 100%;
-    height: auto;
+    height: calc(100% - 55px);
+    padding-bottom: 5px;
   }
+`;
+
+const Remove = styled.div`
+  background: var(--malon-color);
+  padding: 5px 7px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: white;
+  border-radius: 0.2rem;
+`;
+
+const Imagecont = styled.div`
+  position: relative;
+  height: calc(100% - 55px);
 `;
 
 const reducer = (state, action) => {
@@ -666,9 +716,13 @@ export default function ChatScreen() {
       const getUser = async () => {
         try {
           setLoadingx(true);
-          const { data } = await axios.get(`/api/users/seller/${friendId}`, {
-            header: { Authorization: `Bearer ${userInfo.token}` },
-          });
+          const { data } = currentChat.guest
+            ? await axios.get(`/api/guestusers/${friendId}`, {
+                headers: { Authorization: `Bearer ${userInfo.token}` },
+              })
+            : await axios.get(`/api/users/seller/${friendId}`, {
+                headers: { Authorization: `Bearer ${userInfo.token}` },
+              });
           setUser(data);
           setLoadingx(false);
         } catch (err) {
@@ -789,8 +843,9 @@ export default function ChatScreen() {
       console.log(getError(err));
     }
   };
+  const { width } = useWindowDimensions();
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && width > 992) {
       handleSubmit(e);
     }
   };
@@ -1040,7 +1095,7 @@ export default function ChatScreen() {
                     </Link>
                   </BackUser>
                 ) : (
-                  ""
+                  <div style={{ hieght: "46px" }} />
                 ))}
               {currentTab !== "supports" && (
                 <PrivacyInfo>
@@ -1112,13 +1167,13 @@ export default function ChatScreen() {
                 </div>
               </ChatArea>
               <Message>
-                <TextInput
-                  mode={mode}
+                <Textarea
                   placeholder="Write a message"
-                  value={newMessage}
+                  mode={mode}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyDown={handleKeyDown}
-                />
+                  value={newMessage}
+                ></Textarea>
                 <FontAwesomeIcon
                   onClick={() => setShowUploadingImage(true)}
                   icon={faImage}
@@ -1128,19 +1183,14 @@ export default function ChatScreen() {
                   setShowModel={setShowUploadingImage}
                   showModel={showUploadingImage}
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                      justifyContent: "space-between",
-                      padding: "30px",
-                    }}
-                  >
-                    {image ? (
-                      <div>
+                  <UploadImageModal>
+                    {loadingUpload ? (
+                      <LoadingBox />
+                    ) : image ? (
+                      <Imagecont>
                         <Image src={image} alt="img" />
-                      </div>
+                        <Remove onClick={() => setImage("")}>Remove</Remove>
+                      </Imagecont>
                     ) : (
                       <label
                         htmlFor="addimage"
@@ -1156,7 +1206,7 @@ export default function ChatScreen() {
                           style={{ fontSize: "200px" }}
                           icon={faImage}
                         />
-                        Add Image
+                       Click to Add Image
                       </label>
                     )}
                     <input
@@ -1182,7 +1232,7 @@ export default function ChatScreen() {
                         }}
                       />
                     </Message>
-                  </div>
+                  </UploadImageModal>
                 </ModelLogin>
 
                 <FontAwesomeIcon icon={faPaperPlane} onClick={handleSubmit} />
