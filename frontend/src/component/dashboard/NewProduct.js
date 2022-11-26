@@ -565,7 +565,7 @@ export default function NewProduct() {
   const [formError, setFormError] = useState("");
   const [tag, setTag] = useState(null);
   const [deliveryOption, setDeliveryOption] = useState([
-    { name: "Pick up from Seller", value: 1 },
+    { name: "Pick up from Seller", value: 0 },
   ]);
   const [showConditionModal, setShowConditionModal] = useState(false);
   const [showUploadingImage, setShowUploadingImage] = useState(false);
@@ -582,6 +582,9 @@ export default function NewProduct() {
   const [pickup, setPickup] = useState(true);
   const [bundle, setBundle] = useState(false);
   const [meta, setMeta] = useState({});
+
+  const [addSize, setAddSize] = useState(false);
+  const [countInStock, setCountInStock] = useState(0);
 
   const navigate = useNavigate();
 
@@ -687,7 +690,19 @@ export default function NewProduct() {
 
   const submitHandler = async (e) => {
     setFormError("");
+    console.log("result", sizes.length === 0 && addSize === false);
     e.preventDefault();
+    if (addSize === false && sizes.length === 0) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please add size",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
@@ -730,6 +745,8 @@ export default function NewProduct() {
             material,
             color,
             luxuryImage,
+            addSize,
+            countInStock,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -1264,91 +1281,116 @@ export default function NewProduct() {
                 </Select>
               </FormControl>
             </Item>
-            <Sizes>
-              <SizeLeft>
-                <Item>
-                  <Label>
-                    Add Size
-                    <Tips
-                      mode={mode}
-                      tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+            <div>
+              <label style={{ marginRight: "10px", marginTop: "20px" }}>
+                Item do not require size
+              </label>
+              <Checkbox
+                type="checkbox"
+                checked={addSize}
+                onChange={(e) => setAddSize(e.target.checked)}
+              />
+            </div>
+            <Sizes style={{ marginTop: "0" }}>
+              {!addSize ? (
+                <SizeLeft>
+                  <>
+                    <Item style={{ marginTop: "0" }}>
+                      <Label>
+                        Add Size
+                        <Tips
+                          mode={mode}
+                          tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
                   Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size.`}
-                    >
-                      <FontAwesomeIcon icon={faQuestionCircle} />
-                    </Tips>
-                  </Label>
-
-                  <FormControl
-                    sx={{
-                      margin: 0,
-                      borderRadius: "0.2rem",
-                      border: `1px solid ${
-                        mode === "pagebodydark"
-                          ? "var(--dark-ev4)"
-                          : "var(--light-ev4)"
-                      }`,
-                      "& .MuiOutlinedInput-root": {
-                        color: `${
-                          mode === "pagebodydark"
-                            ? "var(--white-color)"
-                            : "var(--black-color)"
-                        }`,
-                        "&:hover": {
-                          outline: "none",
-                          border: 0,
-                        },
-                      },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "0 !important",
-                      },
-                    }}
-                    size="small"
-                  >
-                    <Select
-                      value={tempsize}
-                      onChange={(e) => sizeHandler(e.target.value)}
-                      displayEmpty
-                    >
-                      <MenuItem value="">-- select --</MenuItem>
-                      <MenuItem value="XS">XS</MenuItem>
-                      <MenuItem value="S">S</MenuItem>
-                      <MenuItem value="M">M</MenuItem>
-                      <MenuItem value="L">L</MenuItem>
-                      <MenuItem value="XL">XL</MenuItem>
-                      <MenuItem value="XXL">XXL</MenuItem>
-                      <MenuItem value="42">42</MenuItem>
-                      <MenuItem value="43">43</MenuItem>
-                      <MenuItem value="44">44</MenuItem>
-                      <MenuItem value="45">45</MenuItem>
-                      <MenuItem value="46">46</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Item>
-                <SmallItems>
-                  <TitleDetails>
-                    Provide the exact size as indicated on your product's label.
-                  </TitleDetails>
-                  {sizes.map((s) => (
-                    <SmallItem>
-                      <Label>{s.size}</Label>:
-                      <SizeInput
-                        placeholder="qty"
-                        mode={mode}
-                        value={currentSizeValue}
-                        onChange={(e) =>
-                          smallSizeHandler(s.size, e.target.value)
-                        }
-                      />
-                      {/* <FontAwesomeIcon
+                        >
+                          <FontAwesomeIcon icon={faQuestionCircle} />
+                        </Tips>
+                      </Label>
+                      <FormControl
+                        sx={{
+                          margin: 0,
+                          borderRadius: "0.2rem",
+                          border: `1px solid ${
+                            mode === "pagebodydark"
+                              ? "var(--dark-ev4)"
+                              : "var(--light-ev4)"
+                          }`,
+                          "& .MuiOutlinedInput-root": {
+                            color: `${
+                              mode === "pagebodydark"
+                                ? "var(--white-color)"
+                                : "var(--black-color)"
+                            }`,
+                            "&:hover": {
+                              outline: "none",
+                              border: 0,
+                            },
+                          },
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "0 !important",
+                          },
+                        }}
+                        size="small"
+                      >
+                        <Select
+                          value={tempsize}
+                          onChange={(e) => sizeHandler(e.target.value)}
+                          displayEmpty
+                        >
+                          <MenuItem value="">-- select --</MenuItem>
+                          <MenuItem value="XS">XS</MenuItem>
+                          <MenuItem value="S">S</MenuItem>
+                          <MenuItem value="M">M</MenuItem>
+                          <MenuItem value="L">L</MenuItem>
+                          <MenuItem value="XL">XL</MenuItem>
+                          <MenuItem value="XXL">XXL</MenuItem>
+                          <MenuItem value="42">42</MenuItem>
+                          <MenuItem value="43">43</MenuItem>
+                          <MenuItem value="44">44</MenuItem>
+                          <MenuItem value="45">45</MenuItem>
+                          <MenuItem value="46">46</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Item>
+                    <SmallItems>
+                      <TitleDetails>
+                        Provide the exact size as indicated on your product's
+                        label.
+                      </TitleDetails>
+                      {sizes.map((s) => (
+                        <SmallItem>
+                          <Label>{s.size}</Label>:
+                          <SizeInput
+                            placeholder="qty"
+                            mode={mode}
+                            value={currentSizeValue}
+                            onChange={(e) =>
+                              smallSizeHandler(s.size, e.target.value)
+                            }
+                          />
+                          {/* <FontAwesomeIcon
                         onClick={() => deleteSizeHandler(s.size)}
                         icon={faTimes}
                       /> */}
-                    </SmallItem>
-                  ))}
-                </SmallItems>
-              </SizeLeft>
+                        </SmallItem>
+                      ))}
+                    </SmallItems>
+                  </>
+                </SizeLeft>
+              ) : (
+                <Item style={{ marginTop: "0" }}>
+                  <Label>Count in stock</Label>
+                  <TextInput
+                    mode={mode}
+                    type="number"
+                    value={countInStock}
+                    onChange={(e) => setCountInStock(e.target.value)}
+                  />
+                </Item>
+              )}
+
               <SizeRight>
-                <Item>
+                <Item style={{ marginTop: "0" }}>
                   <Label>
                     Shipping Location
                     <Tips

@@ -99,6 +99,17 @@ export const sendEmail = (options) => {
   //     pass: "jH4/&FS-WqJubdK",
   //   },
   // });
+
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.office365.com",
+  //   port: 587,
+
+  //   auth: {
+  //     user: "tobias@repeddle.com",
+  //     pass: "jH4/&FS-WqJubdK",
+  //   },
+  // });
+
   var transporter = nodemailer.createTransport({
     host: "smtp.mailtrap.io",
     port: 2525,
@@ -122,7 +133,7 @@ export const sendEmail = (options) => {
   );
 
   const mailOption = {
-    from: "no-reply@repeddle.com",
+    from: "support@repeddle.com",
     to: options.to,
     subject: options.subject,
     html: options.text,

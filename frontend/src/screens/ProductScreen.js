@@ -340,7 +340,7 @@ export default function ProductScreen() {
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    if (!selectSize) {
+    if (!selectSize && product?.sizes > 0) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -1268,37 +1268,41 @@ export default function ProductScreen() {
             ))}
           </Taglist>
           <div className="">
-            <div className="select_size_header">select size: {size} </div>
-            <div className="flexSelect">
-              {product.sizes.map((size) => (
-                <span key={size.size}>
-                  <label
-                    className={`sp_select_size_btn ${
-                      selectSize === size.size ? "sp_btn_checked" : ""
-                    }  `}
-                    onClick={() => sizeHandler(size.size, size.name)}
+            {product.sizes.length && (
+              <>
+                <div className="select_size_header">select size: {size} </div>
+                <div className="flexSelect">
+                  {product.sizes.map((size) => (
+                    <span key={size.size}>
+                      <label
+                        className={`sp_select_size_btn ${
+                          selectSize === size.size ? "sp_btn_checked" : ""
+                        }  `}
+                        onClick={() => sizeHandler(size.size, size.name)}
+                      >
+                        {console.log("k")}
+                        {size.size}
+                      </label>
+                    </span>
+                  ))}
+
+                  <span
+                    style={{ textDecoration: "underline", cursor: "pointer" }}
+                    onClick={() => setSizechartModel(true)}
                   >
-                    {console.log("k")}
-                    {size.size}
-                  </label>
-                </span>
-              ))}
+                    size chart{" "}
+                  </span>
+                  {console.log("hello")}
 
-              <span
-                style={{ textDecoration: "underline", cursor: "pointer" }}
-                onClick={() => setSizechartModel(true)}
-              >
-                size chart{" "}
-              </span>
-              {console.log("hello")}
-
-              <ModelLogin
-                showModel={sizechartModel}
-                setShowModel={setSizechartModel}
-              >
-                <Sizechart />
-              </ModelLogin>
-            </div>
+                  <ModelLogin
+                    showModel={sizechartModel}
+                    setShowModel={setSizechartModel}
+                  >
+                    <Sizechart />
+                  </ModelLogin>
+                </div>
+              </>
+            )}
             <div className="sp_btn">
               {product.countInStock > 0 ? (
                 <button onClick={addToCartHandler} className="sp_cart_btn">

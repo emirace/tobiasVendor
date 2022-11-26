@@ -91,7 +91,7 @@ productRouter.post(
       likes: [],
       sold: false,
       active: true,
-      countInStock: countInStock,
+      countInStock: req.body.addSize ? req.body.countInStock : countInStock,
       luxury,
       vintage,
       material,
