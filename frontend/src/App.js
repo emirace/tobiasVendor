@@ -234,7 +234,7 @@ function App() {
   );
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLoacation = async () => {
@@ -246,15 +246,15 @@ function App() {
           if (region() === "ZAR") {
             setLoading(false);
           } else {
-            // signoutHandler();
+            signoutHandler();
             // alert("redirevting to za");
-            // window.location.replace(`https://repeddle.co.za/${redirect}`);
+            window.location.replace(`https://repeddle.co.za/${redirect}`);
           }
         } else {
           if (region() === "ZAR") {
-            // signoutHandler();
+            signoutHandler();
             // alert("redirevting to com");
-            // window.location.replace(`https://repeddle.com/${redirect}`);
+            window.location.replace(`https://repeddle.com/${redirect}`);
           }
           setLoading(false);
         }

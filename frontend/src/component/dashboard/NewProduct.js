@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Store } from "../../Store";
 import {
   faCheck,
+  faClose,
   faImage,
   faQuestionCircle,
   faTimes,
@@ -1632,9 +1633,16 @@ export default function NewProduct() {
               {loadingVideo ? (
                 <LoadingBox />
               ) : video ? (
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <FontAwesomeIcon icon={faVideo} />
                   <span>Video Uploaded</span>
+                  <FontAwesomeIcon icon={faClose} />
                 </div>
               ) : (
                 <label

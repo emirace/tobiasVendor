@@ -202,6 +202,9 @@ export default function MobileProfileScreen() {
   const soldNotification = notifications.filter(
     (x) => x.notifyType === "sold" && x.read === false
   );
+  const returnNotification = notifications.filter(
+    (x) => x.notifyType === "return" && x.read === false
+  );
 
   return (
     <Container className={mode}>
@@ -274,6 +277,11 @@ export default function MobileProfileScreen() {
         <MobileMenuItem>
           <FontAwesomeIcon icon={faArrowRotateLeft} />
           My Returns
+          {returnNotification.length > 0 && (
+            <Badge>
+              <span>{returnNotification.length}</span>
+            </Badge>
+          )}
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/wallet">

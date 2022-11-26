@@ -24,6 +24,10 @@ const ProductLists = styled.div`
   margin-bottom: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 10px;
+    margin-bottom: 20px;
+  }
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -281,45 +285,24 @@ export default function OrderListAdmin() {
             headerName: "Amount",
             width: 90,
           },
+
           {
-            field: "buyer",
-            headerName: "Buyer",
-            width: 90,
-            renderCell: (params) => {
-              return (
-                <Product>
-                  <Link to={`/seller/${params.row.buyerId}`}>
-                    @{params.row.buyer}
-                  </Link>
-                </Product>
-              );
-            },
+            field: "payStatus",
+            headerName: "Status",
+            width: 70,
           },
-          {
-            field: "seller",
-            headerName: "Seller",
-            width: 90,
-            renderCell: (params) => {
-              return (
-                <Product>
-                  <Link to={`/seller/${params.row.sellerId}`}>
-                    @{params.row.seller}
-                  </Link>
-                </Product>
-              );
-            },
-          },
+
           {
             field: "action",
             headerName: "Action",
-            width: 120,
+            width: 70,
             renderCell: (params) => {
               return (
                 <ActionSec>
                   <Link to={`/order/${params.row.id}`}>
                     <Edit mode={mode}>View</Edit>
                   </Link>
-                  <div
+                  {/* <div
                     onClick={() =>
                       deliverOrderHandler(
                         params.row.deliveryStatus !== "Hold"
@@ -332,7 +315,7 @@ export default function OrderListAdmin() {
                     <Edit mode={mode}>
                       {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
                     </Edit>
-                  </div>
+                  </div> */}
                   {/* {params.row.deliveryStatus === "Delivered" && (
                     <Reject mode={mode}>Return</Reject>
                   )} */}
@@ -370,6 +353,16 @@ export default function OrderListAdmin() {
             width: 90,
           },
           {
+            field: "payStatus",
+            headerName: "Status",
+            width: 100,
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
             field: "buyer",
             headerName: "Buyer",
             width: 90,
@@ -407,7 +400,7 @@ export default function OrderListAdmin() {
                   <Link to={`/order/${params.row.id}`}>
                     <Edit mode={mode}>View</Edit>
                   </Link>
-                  <div
+                  {/* <div
                     onClick={() =>
                       deliverOrderHandler(
                         params.row.deliveryStatus !== "Hold"
@@ -420,7 +413,7 @@ export default function OrderListAdmin() {
                     <Edit mode={mode}>
                       {params.row.deliveryStatus !== "Hold" ? "Hold" : "Unhold"}
                     </Edit>
-                  </div>
+                  </div> */}
                   {/* {params.row.deliveryStatus === "Delivered" && (
                   <Reject mode={mode}>Return</Reject>
                 )} */}
@@ -551,7 +544,6 @@ export default function OrderListAdmin() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </ProductLists>
   );

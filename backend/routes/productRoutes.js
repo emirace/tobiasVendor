@@ -9,6 +9,7 @@ import {
   slugify,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
+import RecentView from "../models/recentViewModel.js";
 
 const productRouter = express.Router();
 
@@ -172,6 +173,11 @@ productRouter.delete(
     const product = await Product.findById(req.params.id);
     if (product) {
       await product.remove();
+      const view = await RecentView.findOne({ productId: req.params.id });
+      if (view) {
+        await view.remove();
+      }
+
       res.send({ message: "Product Delected" });
     } else {
       res.status(404).send({ message: "Product Not Found" });

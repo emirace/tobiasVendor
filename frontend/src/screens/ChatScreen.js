@@ -122,7 +122,10 @@ const ChatArea = styled.div`
   height: calc(100% - 210px);
   overflow-y: auto;
   &.support {
-    height: calc(100% - 100px);
+    height: calc(100% - 75px);
+  }
+  &.messages {
+    height: calc(100% - 140px);
   }
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
@@ -253,9 +256,11 @@ const Back = styled.div`
   display: none;
   padding: 5px;
   justify-content: center;
-  width: 50px;
+  align-items: center;
+  width: 55px;
   & svg {
     font-size: 15px;
+    margin-right: 5px;
   }
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -1067,15 +1072,16 @@ export default function ChatScreen() {
         <Right mode={mode} showLeft={showLeft}>
           {currentChat ? (
             <ChatCont2>
-              {!loadingx &&
-                (user._id ? (
-                  <BackUser>
-                    {!showLeft && (
-                      <Back mode={mode} onClick={() => setShowLeft(true)}>
-                        <FontAwesomeIcon icon={faAngleLeft} />
-                      </Back>
-                    )}
-                    <div></div>
+              {!loadingx && (
+                <BackUser>
+                  {!showLeft && (
+                    <Back mode={mode} onClick={() => setShowLeft(true)}>
+                      <FontAwesomeIcon icon={faAngleLeft} />
+                      Back
+                    </Back>
+                  )}
+                  <div></div>
+                  {user._id ? (
                     <Link
                       to={`/seller/${user._id}`}
                       style={{
@@ -1093,10 +1099,11 @@ export default function ChatScreen() {
                         <div>{user.username}</div>
                       </div>
                     </Link>
-                  </BackUser>
-                ) : (
-                  <div style={{ hieght: "46px" }} />
-                ))}
+                  ) : (
+                    <div style={{ hieght: "46px" }} />
+                  )}
+                </BackUser>
+              )}
               {currentTab !== "supports" && (
                 <PrivacyInfo>
                   <FontAwesomeIcon icon={faShield} />
@@ -1147,7 +1154,16 @@ export default function ChatScreen() {
                     </div>
                   </Link>
                 )}
-              <ChatArea className={currentTab === "supports" ? "support" : ""}>
+              <ChatArea
+                className={
+                  currentTab === "supports"
+                    ? "support"
+                    : currentTab === "messages" &&
+                      currentChat.conversationType === "user"
+                    ? "messages"
+                    : ""
+                }
+              >
                 <div
                   style={{
                     height: "100%",
@@ -1206,7 +1222,7 @@ export default function ChatScreen() {
                           style={{ fontSize: "200px" }}
                           icon={faImage}
                         />
-                       Click to Add Image
+                        Click to Add Image
                       </label>
                     )}
                     <input

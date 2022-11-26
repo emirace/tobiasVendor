@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { format } from "timeago.js";
 import { getError } from "../utils";
+import MessageImage from "./MessageImage";
 
 const RecievedChat = styled.div`
   display: flex;
@@ -71,13 +72,7 @@ export default function Messages({ message, own, report, product, support }) {
           <SendChat>
             <div>
               <InlineS style={{ padding: support ? "10px" : "20px" }}>
-                {message.image && (
-                  <img
-                    style={{ maxWidth: "150px", display: "block" }}
-                    src={message.image}
-                    alt="msg"
-                  />
-                )}
+                {message.image && <MessageImage url={message.image} />}
                 {message.text}
               </InlineS>
               <TimeS>{format(message.createdAt)}</TimeS>
@@ -91,13 +86,7 @@ export default function Messages({ message, own, report, product, support }) {
         <RecievedChat>
           <div>
             <InlineR style={{ padding: support ? "10px" : "20px" }}>
-              {message.image && (
-                <img
-                  src={message.image}
-                  alt="msg"
-                  style={{ maxWidth: "150px", display: "block" }}
-                />
-              )}
+              {message.image && <MessageImage url={message.image} />}
               {message.text}
             </InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>

@@ -79,7 +79,6 @@ app.use(
 app.use(session({ secret: "SECRET", resave: true, saveUninitialized: true }));
 
 app.get("/api/keys/flutterwave", (req, res) => {
-  console.log(process.env.FLW_PUBLIC_KEY);
   res.send(process.env.FLW_PUBLIC_KEY || "sb");
 });
 

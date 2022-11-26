@@ -35,12 +35,8 @@ const Th = styled.th`
 const Tr = styled.tr``;
 const User = styled.td`
   text-transform: capitalize;
-  // align-items: center;
   margin: 10px 0;
-  white-space: nowrap;
   width: 20%;
-  overflow: hidden;
-  // text-overflow: ellipsis;
 `;
 const Img = styled.img.attrs((props) => ({
   src: props.src,
@@ -86,12 +82,18 @@ const Button = styled.button`
 
 const Column = styled.div`
   position: relative;
-  &:hover::after {
-    content: "${(props) => props.tips}";
-    top: 10px;
-    left: 0;
-    position: absolute;
-    z-index: 9;
+  &:hover span {
+    display: block;
+  }
+  & span {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   }
 
   @media (max-width: 992px) {
@@ -170,14 +172,23 @@ export default function WidgetLarge({ refresh }) {
         {transactions.map((t) => (
           <Tr>
             <User>
-              <Column tips={t._id}>{t._id}</Column>
+              <Column mode={mode}>
+                {t._id}
+                <span>{t._id}</span>
+              </Column>
             </User>
             <User>
-              <Column>{t.metadata ? t.metadata.purpose : ""}</Column>
+              <Column mode={mode}>
+                {t.metadata ? t.metadata.purpose : ""}
+                <span>{t.metadata ? t.metadata.purpose : ""}</span>
+              </Column>
             </User>
             <Date>
-              <Column>
+              <Column mode={mode}>
                 {moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}
+                <span>
+                  {moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}
+                </span>
               </Column>
             </Date>
             <Amount>{t.txnType}</Amount>

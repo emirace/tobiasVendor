@@ -22,7 +22,6 @@ const Container = styled.div`
 const CouponCont = styled.div`
   border: 1px solid var(--malon-color);
   height: 40px;
-  width: 60%;
   display: flex;
   border-radius: 0.2rem;
 `;
