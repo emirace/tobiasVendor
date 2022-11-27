@@ -1,4 +1,5 @@
 import {
+  faAngleLeft,
   faMessage,
   faSearch,
   faShield,
@@ -174,6 +175,22 @@ const SearchImg = styled.img`
   border-radius: 50%;
   margin-right: 10px;
 `;
+const Back = styled.div`
+  display: none;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  width: 55px;
+  & svg {
+    font-size: 15px;
+    margin-right: 5px;
+  }
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    display: flex;
+  }
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -212,7 +229,7 @@ export default function AllMessages() {
     }
   );
   const [currentChat, setCurrentChat] = useState();
-  const [showLeft, setShowLeft] = useState(false);
+  const [showLeft, setShowLeft] = useState(true);
   const scrollref = useRef();
   useEffect(() => {
     const getConversation = async () => {
@@ -344,7 +361,7 @@ export default function AllMessages() {
 
   return (
     <Container mode={mode} onClick={closeModel}>
-      <Left mode={mode}>
+      <Left mode={mode} showLeft={showLeft}>
         <TopBar>
           <div style={{ position: "relative" }}>
             <FontAwesomeIcon icon={faSearch} />
@@ -391,38 +408,48 @@ export default function AllMessages() {
               ))}
         </Conserv>
       </Left>
-      <Right mode={mode}>
+      <Right mode={mode} showLeft={showLeft}>
         {currentChat ? (
           <ChatCont2>
             {!loadingx && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Link
-                  to={`/seller/${user2._id}`}
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    paddingRight: "10px",
-                  }}
+              <>
+                {!showLeft && (
+                  <Back mode={mode} onClick={() => setShowLeft(true)}>
+                    <FontAwesomeIcon icon={faAngleLeft} />
+                    Back
+                  </Back>
+                )}
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <ProfileImg src={user2.image} />
-                    <div>{user2.username}</div>
-                  </div>
-                </Link>
-                <Link
-                  to={`/seller/${user._id}`}
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    paddingRight: "10px",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <ProfileImg src={user.image} />
-                    <div>{user.username}</div>
-                  </div>
-                </Link>
-              </div>
+                  <Link
+                    to={`/seller/${user2._id}`}
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ProfileImg src={user2.image} />
+                      <div>{user2.username}</div>
+                    </div>
+                  </Link>
+                  <Link
+                    to={`/seller/${user._id}`}
+                    style={{
+                      display: "flex",
+                      justifyContent: "end",
+                      paddingRight: "10px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <ProfileImg src={user.image} />
+                      <div>{user.username}</div>
+                    </div>
+                  </Link>
+                </div>
+              </>
             )}
             {currentChat.conversationType !== "user" && (
               <Link

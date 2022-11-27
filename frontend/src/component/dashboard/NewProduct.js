@@ -493,6 +493,8 @@ const reducer = (state, action) => {
         video: action.payload,
         errorUpload: "",
       };
+    case "REMOVE_VIDEO":
+      return { ...state, video: "" };
     case "VIDEO_FAIL":
       return {
         ...state,
@@ -1642,7 +1644,10 @@ export default function NewProduct() {
                 >
                   <FontAwesomeIcon icon={faVideo} />
                   <span>Video Uploaded</span>
-                  <FontAwesomeIcon icon={faClose} />
+                  <FontAwesomeIcon
+                    icon={faClose}
+                    onClick={() => dispatch({ type: "REMOVE_VIDEO" })}
+                  />
                 </div>
               ) : (
                 <label

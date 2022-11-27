@@ -141,7 +141,7 @@ export default function VerifyAccountScreen() {
               width: "100%",
               borderRadius: "0.2rem",
               border: `1px solid ${
-                mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"
+                mode === "pagebodydark" ? "white" : "black"
               }`,
               "& .MuiOutlinedInput-root": {
                 color: `${

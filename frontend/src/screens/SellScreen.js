@@ -140,9 +140,15 @@ const Step = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   padding: 10px;
-
+  &.small {
+    width: 350px;
+  }
   @media (max-width: 992px) {
     margin: 10px 20px;
+    &.small {
+      width: 300px;
+      margin: 10px 10px;
+    }
   }
 `;
 const Text = styled.div`
@@ -385,7 +391,7 @@ export default function SellScreen() {
             />
           </Sides>
           <Sides>
-            <Step mode={mode} style={{ width: "350px" }}>
+            <Step mode={mode} className="small">
               <SubHeading>1. TAKE A PICS</SubHeading>
               <Text>
                 Your wardrobe getting cluttered or Storage keeps pilling up?
@@ -394,7 +400,7 @@ export default function SellScreen() {
                 pictures sale fast"
               </Text>
             </Step>
-            <Step mode={mode} style={{ width: "350px" }}>
+            <Step mode={mode} className="small">
               <SubHeading>2. LIST & SHARE</SubHeading>
               <Text>
                 Listing is easier than you think. With <b>10,400 brand</b> names
@@ -403,7 +409,7 @@ export default function SellScreen() {
                 your price and share to help buyers discover your listing.{" "}
               </Text>
             </Step>
-            <Step mode={mode} style={{ width: "350px" }}>
+            <Step mode={mode} className="small">
               <SubHeading>3. CASH-OUT</SubHeading>
               <Text>
                 When your item is sold, ship your item with the prefered

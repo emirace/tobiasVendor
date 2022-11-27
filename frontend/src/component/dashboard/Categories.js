@@ -10,6 +10,7 @@ import { getError } from "../../utils";
 const Container = styled.div`
   flex: 4;
   padding: 0 20px;
+  margin-bottom: 20px;
 `;
 const Title = styled.h1``;
 const Left = styled.div`
@@ -43,7 +44,6 @@ const Form = styled.form`
 const Item = styled.div`
   display: flex;
   flex-direction: column;
-  width: 400px;
   margin-top: 10px;
   margin-right: 20px;
 `;
