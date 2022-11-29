@@ -9,6 +9,7 @@ import { getError } from "../utils";
 import { v4 } from "uuid";
 import LoadingBox from "../component/LoadingBox";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 const Container = styled.div`
   flex: 4;
@@ -240,6 +241,14 @@ export default function PaymentScreen() {
       {console.log(payment)}
       <Title>Comfirm Payment</Title>
       <SumaryContDetails mode={mode}>
+        <Name>ID</Name>
+        <ItemNum>{payment._id}</ItemNum>
+        <hr />
+        <Name>Date</Name>
+        <ItemNum>
+          {moment(payment.createdAt).format("MMM DD YY, h:mm a")}
+        </ItemNum>
+        <hr />
         <Name>User</Name>
         <Image src={payment.userId.image} alt="img" />
         <ItemNum>{payment.userId.username}</ItemNum>
@@ -265,7 +274,7 @@ export default function PaymentScreen() {
         <hr />
         {payment.meta.to === "Account" && (
           <>
-            <Name>Details</Name>
+            <Name>Bank Account Details</Name>
             {Object.entries(payment.meta.detail).map(([key, value]) => (
               <div
                 style={{

@@ -10,6 +10,7 @@ const Image = styled.img`
   display: block;
 `;
 const Largecont = styled.div`
+  z-index: 9;
   position: fixed;
   top: 0;
   left: 0;

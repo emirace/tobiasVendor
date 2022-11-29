@@ -135,7 +135,9 @@ export default function VerifyAddressScreen() {
               margin: 0,
               width: "100%",
               borderRadius: "0.2rem",
-              border: `1px solid black`,
+              border: `1px solid  ${
+                mode === "pagebodydark" ? "white" : "black"
+              }`,
               "& .MuiOutlinedInput-root": {
                 color: `${
                   mode === "pagebodydark"

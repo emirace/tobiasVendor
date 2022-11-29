@@ -24,6 +24,7 @@ import CropImage from "../cropImage/CropImage";
 import FeeStructure from "../info/FeeStructure";
 import { Helmet } from "react-helmet-async";
 import DeliveryOption from "./DeliveryOption";
+import { handleInputChange } from "../ImageUploader";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -587,7 +588,7 @@ export default function NewProduct() {
   const [meta, setMeta] = useState({});
 
   const [addSize, setAddSize] = useState(false);
-  const [countInStock, setCountInStock] = useState(0);
+  const [countInStock, setCountInStock] = useState(1);
 
   const navigate = useNavigate();
 
@@ -769,7 +770,7 @@ export default function NewProduct() {
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: "Error creating product, fiil mising fields",
+            message: "Error creating product, fill mising fields",
             showStatus: true,
             state1: "visible1 error",
           },
@@ -823,7 +824,7 @@ export default function NewProduct() {
         },
       });
     } catch (error) {
-      dispatch({ type: "VIDEO_REQUEST" });
+      dispatch({ type: "VIDEO_FAIL" });
     }
   };
 
@@ -1523,7 +1524,15 @@ export default function NewProduct() {
           </Left>
           <Right>
             <Top>
-              <Label>Product Image</Label>
+              <Label>
+                Product Image{" "}
+                <Tips
+                  mode={mode}
+                  tips={`If image size appears to be too large, you can simply crop the image on your phone and try again. This should reduce the size of the image you're trying upload.`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
               <ImageRow>
                 <BigImageC mode={mode}>
                   {image1 ? (
@@ -1667,7 +1676,10 @@ export default function NewProduct() {
               <TitleDetails>
                 You will need to add aleast one image and a max of four images.
                 Add clear and quality images. Ensure to follow the image uplaod
-                rules.
+                rules.{" "}
+                <span style={{ color: "var(--malon-color)" }}>
+                  Please note: Image size should be less than 8MB.
+                </span>
               </TitleDetails>
               <input
                 type="file"
@@ -1722,7 +1734,7 @@ export default function NewProduct() {
                               <Upload
                                 type="file"
                                 id="image1"
-                                onChange={(e) => uploadHandler(e, "luxury")}
+                                onChange={(e) =>{ setLuxury(handleInputChange(e,userInfo))}}
                               />
                             </>
                           )}

@@ -29,6 +29,7 @@ import ModelLogin from "../component/ModelLogin";
 import Report from "../component/Report";
 import { socket } from "../App";
 import WriteReview from "../component/WriteReview";
+import RebundlePoster from "../component/RebundlePoster";
 
 const Right = styled.div`
   flex: 7;
@@ -573,6 +574,7 @@ export default function SellerScreen() {
               >
                 Message Me
               </button>
+              {user.rebundle && <RebundlePoster />}
               <div className="seller_profile_detail">
                 <div className="seller_single_detail">
                   <div>

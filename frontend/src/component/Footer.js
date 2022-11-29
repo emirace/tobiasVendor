@@ -498,7 +498,7 @@ export default function Footer() {
             </ul>
           </div>
           <div style={{ flex: 1 }}>
-            <h3 className="footer_center_menu">Top Brand</h3>
+            <h3 className="footer_center_menu">Top Brands</h3>
 
             <ul className="footer_center_list">
               <li className="footer_center_listitem">
@@ -626,7 +626,7 @@ export default function Footer() {
               className="footer_center_menu"
               onClick={() => setFooterLinks4(!footerLinks4)}
             >
-              Top Brand
+              Top Brands
             </NavHeader>
 
             {footerLinks4 && (

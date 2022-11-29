@@ -153,6 +153,11 @@ const ForgetPassword = styled.div`
   }
 `;
 
+const Para = styled.p`
+  @media (max-width: 992px) {
+    margin-bottom: 0.5rem;
+  }
+`;
 export default function VerifyEmailScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -244,22 +249,27 @@ export default function VerifyEmailScreen() {
   return (
     <Container
       className="small-container"
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+      }}
     >
       <Helmet>
         <title>Verify email</title>
       </Helmet>
 
       <h3 className="my-3">Verify Your Email Address</h3>
-      <p>You're almost there! We sent an email to</p>
-      <p>
+      <Para>You're almost there! We sent an email to </Para>
+      <Para>
         <b>{userInfo.email}</b>
-      </p>
-      <p style={{ textAlign: "center" }}>
+      </Para>
+      <Para style={{ textAlign: "center" }}>
         Just click on the link in that email to verify your email. If you don't
         see it, you may need to <b>check your spam</b> folder.
-      </p>
-      <p>Still can't find the email?</p>
+      </Para>
+      <Para>Still can't find the email?</Para>
       <div>
         <button
           disabled={countdown}

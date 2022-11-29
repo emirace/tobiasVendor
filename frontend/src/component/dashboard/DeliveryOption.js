@@ -7,7 +7,7 @@ import { Store } from "../../Store";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { loginGig, region } from "../../utils";
+import { getError, loginGig, region } from "../../utils";
 import axios from "axios";
 import useGeoLocation from "../../hooks/useGeoLocation";
 
@@ -217,7 +217,7 @@ export default function DeliveryOption({
   setMeta,
 }) {
   const { state } = useContext(Store);
-  const { mode } = state;
+  const { mode, userInfo } = state;
 
   const handleChange = (e) => {
     const { name, value } = e;
@@ -296,6 +296,23 @@ export default function DeliveryOption({
       return true;
     } else {
       return false;
+    }
+  };
+
+  const handleRebundle = async (value) => {
+    try {
+      const { data } = await axios.put(
+        "/api/users/bundle",
+        { value },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      setBundle(data);
+    } catch (err) {
+      console.log(getError(err));
     }
   };
   return (
@@ -743,7 +760,7 @@ export default function DeliveryOption({
                 </Plan1>
                 <a
                   className="link"
-                  href="/#"
+                  href="https://giglogistics.com/faqs"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -792,7 +809,10 @@ export default function DeliveryOption({
           <Switch
             mode={mode}
             checked={bundle}
-            onChange={(e) => setBundle(e.target.checked)}
+            onChange={(e) => {
+              setBundle(e.target.checked);
+              handleRebundle(e.target.checked);
+            }}
           ></Switch>
         </Option>
         <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />

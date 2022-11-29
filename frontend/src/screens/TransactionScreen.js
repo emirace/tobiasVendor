@@ -8,12 +8,15 @@ import { Store } from "../Store";
 
 const Container = styled.div`
   margin: 0 10vw;
+  @media (max-width: 992px) {
+    margin: 0 5vw;
+  }
 `;
 const Title = styled.h4`
   padding: 20px 20px 0 20px;
 `;
 const Section = styled.div`
-  padding: 20px;
+  padding: 10px;
 `;
 const Row = styled.div`
   display: flex;
@@ -21,11 +24,11 @@ const Row = styled.div`
 `;
 const Key = styled.div`
   font-weight: 600;
-  margin: 20px 0;
+  margin: 10px 0;
   flex: 1;
 `;
 const Value = styled.div`
-  margin: 20px 0;
+  margin: 10px 0;
   flex: 2;
 `;
 
@@ -33,6 +36,13 @@ const Image = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 50%;
+`;
+
+const Content = styled.div`
+  display: "flex";
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -116,7 +126,7 @@ export default function TransactionScreen() {
     <LoadingBox />
   ) : (
     <Container>
-      <div style={{ display: "flex" }}>
+      <Content>
         <div style={{ flex: "1" }}>
           <Section>
             <Title>Transaction information</Title>
@@ -165,7 +175,7 @@ export default function TransactionScreen() {
             {moment(transaction.createdAt).format("MMM Do, h:mm a")}
           </Section>
         </div>
-      </div>
+      </Content>
     </Container>
   );
 }

@@ -13,6 +13,7 @@ import ModelLogin from "../../ModelLogin";
 import { Link } from "react-router-dom";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import moment from "moment";
 
 const Container = styled.div`
   flex: 4;
@@ -374,6 +375,16 @@ export default function ReturnPage() {
             <div style={{ marginLeft: "20px" }}>{returned.productId.name}</div>
           </Link>
         </div>
+        <hr />
+        <Name>Order ID</Name>
+        <Link to={`/order/${returned.orderId._id}`}>
+          <ItemNum>{returned.orderId._id}</ItemNum>
+        </Link>
+        <hr />
+        <Name>Date</Name>
+        <ItemNum>
+          {moment(returned.createdAt).format("MMM DD YY, h:mm a")}
+        </ItemNum>
         <hr />
         <Name>Buyer</Name>
         <ItemNum>

@@ -188,11 +188,12 @@ export default function VipShield() {
         </p>
       </Section>
       <Section>
-        <Link to="/sell">
-          <b>
-            SPREAD THE WORD. START SELLING. ADD MORE ITEMS TO KEEP EARNING TODAY
-          </b>
-        </Link>
+        <div>
+          SPREAD THE WORD. START SELLING. ADD MORE ITEMS TO KEEP EARNING{" "}
+          <Link to="/sell">
+            <span>TODAY</span>
+          </Link>
+        </div>
       </Section>
     </Container>
   );

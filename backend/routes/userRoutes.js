@@ -52,6 +52,22 @@ userRouter.get(
 );
 
 userRouter.put(
+  "/bundle",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      console.log(req.body.value);
+      user.rebundle = req.body.value;
+      await user.save();
+      res.status(200).send(user.rebundle);
+    } else {
+      res.status(404).send({ message: "User not Found" });
+    }
+  })
+);
+
+userRouter.put(
   "/profile",
   isAuth,
   expressAsyncHandler(async (req, res) => {
@@ -642,6 +658,7 @@ userRouter.get(
         accountName: user.accountName,
         accountNumber: user.accountNumber,
         bankName: user.bankName,
+        rebundle: user.rebundle,
       });
     } else {
       res.status(404).send({ message: "User Not Found" });
@@ -811,6 +828,7 @@ userRouter.get(
         accountName: user.accountName,
         accountNumber: user.accountNumber,
         bankName: user.bankName,
+        rebundle: user.rebundle,
       });
     } else {
       res.status(404).send({ message: "User Not Found" });

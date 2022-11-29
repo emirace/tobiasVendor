@@ -108,7 +108,7 @@ export default function VerifyEmailConfirmScreen({ email }) {
           <Title>Email verified Successfully</Title>
           <Text
             style={{
-              marginBottom: "20px",
+              marginBottom: "10px",
             }}
           >
             Thank you for verifying your email and connecting with us.

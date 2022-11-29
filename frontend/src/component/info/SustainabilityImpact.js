@@ -101,6 +101,14 @@ const Image = styled.img`
   }
 `;
 
+const TopHeader = styled.h1`
+  font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 20px;
+    text-align: center;
+  }
+`;
+
 export default function SustainabilityImpact() {
   return (
     <Container>
@@ -108,7 +116,7 @@ export default function SustainabilityImpact() {
         <title>Sustainability Impact</title>
       </Helmet>
       <Section>
-        <h1 style={{ fontWeight: "bold" }}>REPEDDPLE SUSTAINABILITY IMPACT</h1>
+        <TopHeader>REPEDDPLE SUSTAINABILITY IMPACT</TopHeader>
         <p>
           Fashion industry is the second most intense water consuming and
           polluting industry in the world, releasing up to 10% global carbon

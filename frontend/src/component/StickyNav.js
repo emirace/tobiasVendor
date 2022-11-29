@@ -28,6 +28,10 @@ export const Badge = styled.span`
   top: 5px;
   cursor: default;
 `;
+const Icon = styled.img`
+  width: 25px;
+  height: 25px;
+`;
 
 export default function StickyNav() {
   const { state, dispatxh: ctxDispatch } = useContext(Store);
@@ -62,7 +66,11 @@ export default function StickyNav() {
           onClick={() => setCurrentNav("categories")}
           className={`sticky_item ${currentNav === "categories" && "active"}`}
         >
-          <FontAwesomeIcon icon={faList} />
+          {currentNav !== "categories" ? (
+            <Icon src="/images/sesrchiconm.png" />
+          ) : (
+            <Icon src="/images/sesrchicono.png" />
+          )}
           <div className="stickynav_text">Categories</div>
         </Link>
         <Link

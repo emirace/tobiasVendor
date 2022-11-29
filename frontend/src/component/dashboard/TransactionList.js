@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import ModelLogin from "../ModelLogin";
+import useWindowDimensions from "../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -17,6 +18,10 @@ const ProductLists = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 0 10px;
+    margin-bottom: 20px;
+  }
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -250,62 +255,92 @@ export default function TransactionList() {
       console.log(getError(err));
     }
   };
+  const { height, width } = useWindowDimensions();
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 200 },
+  const columns =
+    width < 992
+      ? [
+          { field: "id", headerName: "ID", width: 80 },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 100,
+          },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 60,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 80,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/transaction/${params.row.id}`}>
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 200 },
 
-    // {
-    //   field: "user",
-    //   headerName: "User",
-    //   width: 100,
-    //   renderCell: (params) => {
-    //     return (
-    //       <Product>
-    //         <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
-    //       </Product>
-    //     );
-    //   },
-    // },
-    {
-      field: "purpose",
-      headerName: "Purpose",
-      width: 150,
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "type",
-      headerName: "Type",
-      width: 150,
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      width: 150,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/transaction/${params.row.id}`}>
-              <Edit mode={mode}>View</Edit>
-            </Link>
-          </ActionSec>
-        );
-      },
-    },
-  ];
+          // {
+          //   field: "user",
+          //   headerName: "User",
+          //   width: 100,
+          //   renderCell: (params) => {
+          //     return (
+          //       <Product>
+          //         <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
+          //       </Product>
+          //     );
+          //   },
+          // },
+          {
+            field: "purpose",
+            headerName: "Purpose",
+            width: 150,
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "type",
+            headerName: "Type",
+            width: 150,
+          },
+          {
+            field: "amount",
+            headerName: "Amount",
+            width: 150,
+          },
+          {
+            field: "status",
+            headerName: "Status",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link to={`/transaction/${params.row.id}`}>
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ];
   console.log(transactions);
   const rows =
     transactions.length > 0 &&
@@ -402,7 +437,6 @@ export default function TransactionList() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </ProductLists>
   );

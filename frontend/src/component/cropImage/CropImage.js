@@ -203,11 +203,11 @@ export default function CropImage({
       let imageDataUrl = await readFile(file);
 
       // apply rotation if needed
-      const orientation = await getOrientation(file);
-      const rotation = ORIENTATION_TO_ANGLE[orientation];
-      if (rotation) {
-        imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
-      }
+      // const orientation = await getOrientation(file);
+      // const rotation = ORIENTATION_TO_ANGLE[orientation];
+      // if (rotation) {
+      //   imageDataUrl = await getRotatedImage(imageDataUrl, rotation);
+      // }
 
       setImageSrc(imageDataUrl);
     }
@@ -233,7 +233,7 @@ export default function CropImage({
             zoom={zoom}
             aspect={9 / 14}
             onCropChange={setCrop}
-            onRotationChange={setRotation}
+            // onRotationChange={setRotation}
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
           />

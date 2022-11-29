@@ -57,6 +57,7 @@ import Sizechart from "../component/Sizechart";
 import Product from "../component/Product";
 import { socket } from "../App";
 import MagnifyImage from "../component/MagnifyImage";
+import RebundlePoster from "../component/RebundlePoster";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -1130,7 +1131,6 @@ export default function ProductScreen() {
                   @{product.seller.username}
                 </Link>
               </div>
-              {console.log(product)}
               <div>
                 {product.seller?.state},
                 {product.seller.region === "NGN" ? "Nigeria" : "South African"}
@@ -1153,6 +1153,10 @@ export default function ProductScreen() {
             </div>
             <div className="single_produc_status">online</div>
           </div>
+          {product.seller.rebundle && (
+            <RebundlePoster style={{ marginTop: "5px" }} />
+          )}
+
           <div className="single_product_actions">
             <IconContainer>
               <FontAwesomeIcon

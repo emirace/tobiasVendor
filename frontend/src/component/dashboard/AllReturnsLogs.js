@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { getError, region } from "../../utils";
 import ModelLogin from "../ModelLogin";
+import useWindowDimensions from "../Dimension";
 
 const ProductLists = styled.div`
   flex: 4;
@@ -17,6 +18,10 @@ const ProductLists = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  @media (max-width: 992px) {
+    margin: 0 10px;
+    margin-bottom: 20px;
+  }
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -256,81 +261,129 @@ export default function AllReturnsLogs() {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 200 },
-    {
-      field: "name",
-      headerName: "Product",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/product/${params.row.slug}`}>
-              <img src={params.row.image} alt="" />
-              {params.row.name}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "user",
-      headerName: "Buyer",
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "seller",
-      headerName: "Seller",
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/seller/${params.row.user}`}>{params.row.user}</Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "orderId",
-      headerName: "Order",
-      width: 200,
-      renderCell: (params) => {
-        return (
-          <Product>
-            <Link to={`/order/${params.row.orderId}`}>
-              {params.row.orderId}
-            </Link>
-          </Product>
-        );
-      },
-    },
-    {
-      field: "date",
-      headerName: "Date",
-      width: 150,
-    },
-    {
-      field: "action",
-      headerName: "Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <ActionSec>
-            <Link to={`/return/${params.row.id}?orderId=${params.row.orderId}`}>
-              <Edit mode={mode}>View</Edit>
-            </Link>
-          </ActionSec>
-        );
-      },
-    },
-  ];
+  const { height, width } = useWindowDimensions();
+
+  const columns =
+    width < 992
+      ? [
+          {
+            field: "name",
+            headerName: "Product",
+            width: 130,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 100,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 90,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link
+                    to={`/return/${params.row.id}?orderId=${params.row.orderId}`}
+                  >
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ]
+      : [
+          { field: "id", headerName: "ID", width: 200 },
+          {
+            field: "name",
+            headerName: "Product",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/product/${params.row.slug}`}>
+                    <img src={params.row.image} alt="" />
+                    {params.row.name}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "user",
+            headerName: "Buyer",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.user}`}>
+                    {params.row.user}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "seller",
+            headerName: "Seller",
+            width: 100,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/seller/${params.row.user}`}>
+                    {params.row.user}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "orderId",
+            headerName: "Order",
+            width: 200,
+            renderCell: (params) => {
+              return (
+                <Product>
+                  <Link to={`/order/${params.row.orderId}`}>
+                    {params.row.orderId}
+                  </Link>
+                </Product>
+              );
+            },
+          },
+          {
+            field: "date",
+            headerName: "Date",
+            width: 150,
+          },
+          {
+            field: "action",
+            headerName: "Action",
+            width: 150,
+            renderCell: (params) => {
+              return (
+                <ActionSec>
+                  <Link
+                    to={`/return/${params.row.id}?orderId=${params.row.orderId}`}
+                  >
+                    <Edit mode={mode}>View</Edit>
+                  </Link>
+                </ActionSec>
+              );
+            },
+          },
+        ];
   const rows =
     products.length > 0 &&
     products.map((p) => ({
@@ -427,7 +480,6 @@ export default function AllReturnsLogs() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
-        checkboxSelection
       />
     </ProductLists>
   );

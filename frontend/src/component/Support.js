@@ -108,6 +108,9 @@ const Name = styled.div`
 const Bottom = styled.div`
   flex: 5;
   height: 100px;
+  @media (max-width: 992px) {
+    height: auto;
+  }
 `;
 const SmallBox = styled.div`
   padding: 15px;
@@ -392,12 +395,13 @@ export default function Support() {
   };
 
   const addConversation = async (user) => {
+    console.log(userInfo);
     try {
       const { data } = await axios.post(`/api/conversations/support`, {
         recieverId: user._id,
         type: "support",
         guestEmail: user.email,
-        guest: userInfo ? true : false,
+        guest: userInfo ? false : true,
       });
       setCurrentChat(data);
       socket.emit("remove_notifications", data._id);

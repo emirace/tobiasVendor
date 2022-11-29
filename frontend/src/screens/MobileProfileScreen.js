@@ -377,7 +377,7 @@ export default function MobileProfileScreen() {
       </Link>
       {userInfo.isAdmin && (
         <>
-          <Link to="/messages">
+          <Link to="/contact">
             <MobileMenuItem>
               <FontAwesomeIcon icon={faComment} />
               Support

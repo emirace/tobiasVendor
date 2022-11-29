@@ -969,6 +969,18 @@ export default function OrderScreen() {
                           Refund
                         </button>
                       )}
+                    {userInfo.isAdmin && (
+                      <button
+                        // onClick={() => refund(orderitem)}
+                        className="btn btn-primary w-100"
+                        style={{
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Hold
+                      </button>
+                    )}
                     {userInfo.isAdmin &&
                       daydiff(13) <= 0 &&
                       deliveryNumber(orderitem.deliveryStatus) === 4 && (

@@ -296,12 +296,14 @@ export default function Sidebar({ current }) {
                 )}
               </ListItem>
             </Link>
-            <ListItem
-              mode={mode}
-              className={current === "support" ? "active" : ""}
-            >
-              <FontAwesomeIcon icon={faComment} /> Support
-            </ListItem>
+            <Link to="/contact">
+              <ListItem
+                mode={mode}
+                className={current === "support" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faComment} /> Support
+              </ListItem>
+            </Link>
             {/* <ListItem
               mode={mode}
               className={current === 'notification' ? 'active' : ''}

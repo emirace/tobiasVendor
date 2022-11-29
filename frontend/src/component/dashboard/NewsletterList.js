@@ -155,6 +155,16 @@ const reducer = (state, action) => {
       };
     case "USERS_FAIL":
       return { ...state, loading: false, error: action.payload };
+    case "REBATCH_REQUEST":
+      return { ...state, loadingRebatch: true };
+    case "REBATCH_SUCCESS":
+      return {
+        ...state,
+        rebatch: action.payload,
+        loadingRebatch: false,
+      };
+    case "REBATCH_FAIL":
+      return { ...state, loadingRebatch: false, error: action.payload };
     case "DELETE_REQUEST":
       return { ...state, loadingDelete: true, successDelete: false };
     case "DELETE_SUCCESS":
@@ -174,11 +184,20 @@ export default function NewsletterList() {
   const { mode, userInfo } = state;
 
   const [
-    { loading, newsletters, error, loadingDelete, successDelete },
+    {
+      loading,
+      newsletters,
+      error,
+      loadingDelete,
+      successDelete,
+      rebatch,
+      loadingRebatch,
+    },
     dispatch,
   ] = useReducer(reducer, {
     loading: true,
     newsletters: [],
+    rebatch: [],
     error: "",
   });
 
@@ -186,21 +205,47 @@ export default function NewsletterList() {
   const [currentId, setCurrentId] = useState("");
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
+
   useEffect(() => {
     const fetchNewsletter = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/newsletters?q=${salesQurrey}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/newsletters/newsletter?q=${salesQurrey}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
 
         dispatch({ type: "USERS_SUCCESS", payload: data });
+        console.log("newsletter", data);
       } catch (err) {
         dispatch({ type: "USERS_FAIL" });
         console.log(getError(err));
       }
     };
     fetchNewsletter();
+  }, [userInfo, salesQurrey]);
+
+  useEffect(() => {
+    const fetchBatch = async () => {
+      try {
+        dispatch({ type: "REBATCH_FETCH" });
+        const { data } = await axios.get(
+          `/api/newsletters/rebatch?q=${salesQurrey}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+
+        dispatch({ type: "REBATCH_SUCCESS", payload: data });
+        console.log("rebatch", data);
+      } catch (err) {
+        dispatch({ type: "REBATCH_FAIL" });
+        console.log(getError(err));
+      }
+    };
+    fetchBatch();
   }, [userInfo, salesQurrey]);
 
   const deleteHandler = async (order) => {
@@ -258,11 +303,6 @@ export default function NewsletterList() {
       width: 250,
     },
     {
-      field: "emailType",
-      headerName: "Type",
-      width: 100,
-    },
-    {
       field: "date",
       headerName: "Created",
       width: 150,
@@ -273,95 +313,188 @@ export default function NewsletterList() {
     newsletters.map((p) => ({
       date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
       email: p.email,
-      emailType: p.emailType,
+      id: p._id,
+    }));
+  const rows1 =
+    rebatch.length > 0 &&
+    rebatch.map((p) => ({
+      date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
+      email: p.email,
       id: p._id,
     }));
 
   return (
     <ProductLists mode={mode}>
-      <Title>Newsletter emails</Title>
-      {/* <SearchCont>
+      <div>
+        <Title>Newsletter emails</Title>
+        {/* <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}
           placeholder="Search by id"
         />
       </SearchCont> */}
-      <DataGrid
-        sx={{
-          width: "100%",
-          height: "650px",
-          color: `${
-            mode === "pagebodydark"
-              ? "var(--white-color)"
-              : "var(--black-color)"
-          }`,
-          border: "none",
-          "& p.MuiTablePagination-displayedRows": {
-            margin: 0,
+        <DataGrid
+          sx={{
+            width: "100%",
+            height: "650px",
             color: `${
               mode === "pagebodydark"
                 ? "var(--white-color)"
                 : "var(--black-color)"
             }`,
-          },
-          "& .MuiButtonBase-root": {
-            color: `${
-              mode === "pagebodydark"
-                ? "var(--white-color)"
-                : "var(--black-color)"
-            }`,
-          },
-          "& .MuiDataGrid-columnHeaders": {
             border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            border: "none",
-          },
-          "& .Mui-checked": {
-            color: "var(--orange-color) !important",
-          },
-          "& .Mui-selected": {
-            "background-color": `${
-              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
-            } !important`,
-          },
-          "& .MuiDataGrid-row:hover": {
-            "background-color": `${
-              mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
-            } !important`,
-          },
-          "& .Mui-selected:hover": {
-            "background-color": `${
-              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
-            } !important`,
-          },
+            "& p.MuiTablePagination-displayedRows": {
+              margin: 0,
+              color: `${
+                mode === "pagebodydark"
+                  ? "var(--white-color)"
+                  : "var(--black-color)"
+              }`,
+            },
+            "& .MuiButtonBase-root": {
+              color: `${
+                mode === "pagebodydark"
+                  ? "var(--white-color)"
+                  : "var(--black-color)"
+              }`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              border: "none",
+            },
+            "& .Mui-checked": {
+              color: "var(--orange-color) !important",
+            },
+            "& .Mui-selected": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
+              } !important`,
+            },
+            "& .MuiDataGrid-row:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
+              } !important`,
+            },
+            "& .Mui-selected:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
+              } !important`,
+            },
 
-          "& .MuiDataGrid-cell:focus": {
-            outline: "solid var(--orange-color) 1px  !important",
-            borderRadius: "0.2rem",
-          },
-          "& .MuiDataGrid-columnHeader:focus": {
-            outline: "solid var(--orange-color) 1px  !important",
-            borderRadius: "0.2rem",
-          },
-          "& .MuiCheckbox-root:hover": {
-            "background-color": `${
-              mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
-            }   !important`,
-          },
-          "& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within":
-            {
+            "& .MuiDataGrid-cell:focus": {
               outline: "solid var(--orange-color) 1px  !important",
               borderRadius: "0.2rem",
             },
-        }}
-        rows={rows}
-        columns={columns}
-        disableSelectionOnClick
-        pageSize={10}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-      />
+            "& .MuiDataGrid-columnHeader:focus": {
+              outline: "solid var(--orange-color) 1px  !important",
+              borderRadius: "0.2rem",
+            },
+            "& .MuiCheckbox-root:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
+              }   !important`,
+            },
+            "& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within":
+              {
+                outline: "solid var(--orange-color) 1px  !important",
+                borderRadius: "0.2rem",
+              },
+          }}
+          rows={rows}
+          columns={columns}
+          disableSelectionOnClick
+          pageSize={10}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+        />
+      </div>
+      <div>
+        <Title>Rebatch emails</Title>
+        {/* <SearchCont>
+        <SearchInput
+          onChange={(e) => setSalesQurrey(e.target.value)}
+          placeholder="Search by id"
+        />
+      </SearchCont> */}
+        <DataGrid
+          sx={{
+            width: "100%",
+            height: "650px",
+            color: `${
+              mode === "pagebodydark"
+                ? "var(--white-color)"
+                : "var(--black-color)"
+            }`,
+            border: "none",
+            "& p.MuiTablePagination-displayedRows": {
+              margin: 0,
+              color: `${
+                mode === "pagebodydark"
+                  ? "var(--white-color)"
+                  : "var(--black-color)"
+              }`,
+            },
+            "& .MuiButtonBase-root": {
+              color: `${
+                mode === "pagebodydark"
+                  ? "var(--white-color)"
+                  : "var(--black-color)"
+              }`,
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              border: "none",
+            },
+            "& .Mui-checked": {
+              color: "var(--orange-color) !important",
+            },
+            "& .Mui-selected": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
+              } !important`,
+            },
+            "& .MuiDataGrid-row:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"
+              } !important`,
+            },
+            "& .Mui-selected:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
+              } !important`,
+            },
+
+            "& .MuiDataGrid-cell:focus": {
+              outline: "solid var(--orange-color) 1px  !important",
+              borderRadius: "0.2rem",
+            },
+            "& .MuiDataGrid-columnHeader:focus": {
+              outline: "solid var(--orange-color) 1px  !important",
+              borderRadius: "0.2rem",
+            },
+            "& .MuiCheckbox-root:hover": {
+              "background-color": `${
+                mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"
+              }   !important`,
+            },
+            "& .MuiDataGrid-columnHeader:focus-within,.MuiDataGrid-cell:focus-within":
+              {
+                outline: "solid var(--orange-color) 1px  !important",
+                borderRadius: "0.2rem",
+              },
+          }}
+          rows={rows1}
+          columns={columns}
+          disableSelectionOnClick
+          pageSize={10}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+        />
+      </div>
     </ProductLists>
   );
 }

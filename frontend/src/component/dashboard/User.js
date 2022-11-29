@@ -8,6 +8,8 @@ import {
   faMoneyBill,
   faPhone,
   faPlus,
+  faQuestionCircle,
+  faTruck,
   faUpload,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -154,6 +156,9 @@ const Item = styled.div`
 const Label = styled.label`
   margin-bottom: 5px;
   font-size: 14px;
+  & svg {
+    margin-right: 10px;
+  }
 `;
 const TextInput = styled.input`
   border: none;
@@ -302,7 +307,105 @@ const Textarea = styled.textarea`
   &:focus-visible {
     outline: none;
     border: 1px solid var(--orange-color);
+    color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
   }
+`;
+
+const OptionCont = styled.div`
+  margin: 10px 0;
+`;
+const Plans = styled.div`
+  & a {
+    color: var(--orange-color);
+    text-decoration: underline;
+  }
+`;
+const Plan = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  justify-content: space-between;
+`;
+
+const Switch = styled.input.attrs({
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
+})`
+  position: relative;
+
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #d4d4d4;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+  }
+
+  &:checked {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "#fcf0e0"};
+    &:before {
+      left: 25px;
+      background: var(--orange-color);
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    background: grey;
+    transition: 0.5s;
+  }
+`;
+
+const Tips = styled.span`
+  position: relative;
+  &:hover::after {
+    content: "${(props) => props.tips}";
+    width: 400px;
+    position: absolute;
+    border-radius: 0.5rem;
+    left: -180px;
+    top: 20px;
+    text-align: justify;
+    font-size: 14px;
+    z-index: 2;
+    line-height: 1.2;
+    font-weight: 400;
+    padding: 10px;
+    background: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
+    color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+    @media (max-width: 992px) {
+      font-size: 11px;
+      left: -90px;
+      top: 20px;
+      width: 200px;
+    }
+  }
+  & svg {
+    margin-left: 10px;
+    color: #d4d4d4;
+  }
+`;
+
+const Option = styled.div`
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const reducer = (state, action) => {
@@ -373,6 +476,8 @@ export default function User() {
   const [bankName, setBankName] = useState("");
   const [username, setUsername] = useState("");
 
+  const [bundle, setBundle] = useState("");
+
   useEffect(() => {
     try {
       dispatch({ type: "FETCH_REQUEST" });
@@ -398,6 +503,8 @@ export default function User() {
             },
           });
           dispatch({ type: "FETCH_SUCCESS", payload: data });
+          setBundle(data.rebundle);
+          console.log("userdata", data);
           setAddress(data.address);
         };
         fetchUser();
@@ -549,6 +656,23 @@ export default function User() {
   const daydiff =
     user.usernameUpdate &&
     30 - timeDifference(new Date(user.usernameUpdate), new Date());
+
+  const handleRebundle = async (value) => {
+    try {
+      const { data } = await axios.put(
+        "/api/users/bundle",
+        { value },
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      setBundle(data);
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
 
   return (
     <Container>
@@ -892,7 +1016,10 @@ export default function User() {
               </Item>
               <Item>
                 <Label>About</Label>
-                <Textarea onChange={(e) => setAbout(e.target.value)}>
+                <Textarea
+                  mode={mode}
+                  onChange={(e) => setAbout(e.target.value)}
+                >
                   {user.about}
                 </Textarea>
               </Item>
@@ -1016,6 +1143,42 @@ export default function User() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </Item>
+                    {console.log("rebundle", bundle)}
+                    <OptionCont>
+                      <Option>
+                        <Label>
+                          <FontAwesomeIcon icon={faTruck} />
+                          <Name>Re:Bundle</Name>
+                          <Tips
+                            mode={mode}
+                            tips={`
+            Re:bundle allows buyers to shop multiple items from your store and only pay for delivery once! The buyer will be charged delivery on their first purchase, and, if they make any additional purchases within the next 2 hours, free delivery will then automatically apply. Shops who enable bundling sell more and faster.       `}
+                          >
+                            <FontAwesomeIcon icon={faQuestionCircle} />
+                          </Tips>
+                        </Label>
+                        <Switch
+                          mode={mode}
+                          checked={bundle}
+                          onChange={(e) => {
+                            setBundle(e.target.checked);
+                            handleRebundle(e.target.checked);
+                          }}
+                        ></Switch>
+                      </Option>
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "1px",
+                          background: "#d4d4d4",
+                        }}
+                      />
+                      <Plans>
+                        <Link to="/rebundle" target="_blank">
+                          More on Re:bundle
+                        </Link>
+                      </Plans>
+                    </OptionCont>
                   </>
                 )}
               </div>

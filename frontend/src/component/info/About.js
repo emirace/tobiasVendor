@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../Store";
+import useWindowDimensions from "../Dimension";
 import { ReactComponent as Globe } from "./../../icons/Icons-10.svg";
 import { ReactComponent as House } from "./../../icons/Icons-27.svg";
 import { ReactComponent as Leaf } from "./../../icons/Icons-29.svg";
@@ -18,11 +19,17 @@ const Container = styled.div`
       text-decoration: underline;
     }
   }
+  @media (max-width: 992px) {
+    margin: 0 5vw;
+  }
 `;
 const Header = styled.h1`
   display: flex;
   justify-content: center;
   font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
 `;
 const Header2 = styled.h2`
   display: flex;
@@ -35,6 +42,9 @@ const SubHeading = styled.h4`
   font-weight: bold;
   font-size: 20px;
   text-align: center;
+  @media (max-width: 992px) {
+    font-size: 18px;
+  }
 `;
 
 const Image = styled.img`
@@ -56,6 +66,11 @@ const Section = styled.section`
 `;
 const Row = styled.div`
   display: flex;
+  @media (max-width: 992px) {
+    &.column {
+      flex-direction: column;
+    }
+  }
 `;
 const Image2 = styled.img`
   width: 50%;
@@ -88,11 +103,22 @@ const JoinUs = styled.div`
   transform: translateX(-50%);
   font-size: 30px;
   font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 13px;
+    top: 75%;
+    left: 45%;
+  }
+`;
+const ThinkBold = styled.div`
+  font-weight: bold;
+  text-align: center;
 `;
 
 export default function About() {
   const { state } = useContext(Store);
   const { mode } = state;
+  const { width } = useWindowDimensions();
+  const size = width > 992 ? 200 : 70;
   return (
     <Container>
       <Helmet>
@@ -189,16 +215,16 @@ export default function About() {
         </Row>
 
         <Link to="/sell">
-          <b>
+          <ThinkBold>
             THINK THE PLANET, THINK THE ENVIRONMENT, THINK REPEDDLE; GO PEDDLE{" "}
-          </b>
+          </ThinkBold>
         </Link>
       </Section>
 
       <Section>
-        <Row style={{ alignItems: "center" }}>
+        <Row style={{ alignItems: "center" }} className="column">
           <div style={{ flex: "1" }}>
-            <House height={200} width={200} />
+            <House height={size} width={size} />
           </div>
           <div style={{ flex: "2" }}>
             <CenHeader>
@@ -219,18 +245,20 @@ export default function About() {
                 <b>98%</b> Chance of clothes ending up in landfills avoided.
               </li>
               <li>
-                2,700 L of water saved for one person to drink for 900 days.
-                “sustainablecampus.fsu.edu”
+                <b>2,700L</b> of water saved for one person to drink for 900
+                days. “sustainablecampus.fsu.edu”
               </li>
-              <li>10% Co2 of global carbon emissions avoided.</li>
+              <li>
+                <b>10%</b> Co2 of global carbon emissions avoided.
+              </li>
             </List>
           </div>
         </Row>
       </Section>
       <Section>
-        <Row style={{ alignItems: "center" }}>
+        <Row style={{ alignItems: "center" }} className="column">
           <div style={{ flex: "1" }}>
-            <Globe height={200} width={200} />
+            <Globe height={size} width={size} />
           </div>
           <div style={{ flex: "2" }}>
             <CenHeader>
@@ -256,9 +284,9 @@ export default function About() {
       </Section>
 
       <Section>
-        <Row style={{ alignItems: "center" }}>
+        <Row style={{ alignItems: "center" }} className="column">
           <div style={{ flex: "1" }}>
-            <Leaf height={200} width={200} />
+            <Leaf height={size} width={size} />
           </div>
           <div style={{ flex: "2" }}>
             <CenHeader>

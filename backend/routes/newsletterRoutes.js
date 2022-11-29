@@ -8,12 +8,26 @@ const newsletterRouter = express.Router();
 // get all newsletters
 
 newsletterRouter.get(
-  "/",
+  "/newsletter",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const newsletters = await Newsletters.find();
+    const newsletters = await Newsletters.find({
+      emailType: "Newsletter",
+    }).sort({ createdAt: -1 });
     res.send(newsletters);
+  })
+);
+
+newsletterRouter.get(
+  "/rebatch",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const rebatchs = await Newsletters.find({ emailType: "Rebatch" }).sort({
+      createdAt: -1,
+    });
+    res.send(rebatchs);
   })
 );
 

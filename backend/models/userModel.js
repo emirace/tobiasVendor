@@ -15,6 +15,12 @@ const reviewSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+const buyerSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  },
+  { timestamps: true }
+);
 
 const userSchema = new mongoose.Schema(
   {
@@ -37,6 +43,7 @@ const userSchema = new mongoose.Schema(
     activeUpdate: { type: Date, default: Date.now() },
     usernameUpdate: { type: Date },
     reviews: [reviewSchema],
+    buyers: { buyerSchema },
     rating: { type: Number, default: 0 },
     wallet: { type: Number, default: 0 },
     accountNumber: { type: Number },
@@ -61,6 +68,7 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpire: { type: String },
     resetEmailExpire: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
+    rebundle: { type: Boolean, default: false },
   },
   {
     timestamps: true,
