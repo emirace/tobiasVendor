@@ -24,7 +24,7 @@ import CropImage from "../cropImage/CropImage";
 import FeeStructure from "../info/FeeStructure";
 import { Helmet } from "react-helmet-async";
 import DeliveryOption from "./DeliveryOption";
-import { handleInputChange } from "../ImageUploader";
+import { resizeImage } from "../ImageUploader";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -847,10 +847,11 @@ export default function NewProduct() {
         setImage2(data.secure_url);
       } else if (fileType === "image3") {
         setImage3(data.secure_url);
-      } else if (fileType === "luxury") {
-        setLuxuryImage(data.secure_url);
-      } else {
+      } else if (fileType === "image4") {
         setImage4(data.secure_url);
+      } else if (fileType === "luxury") {
+        setLuxury(data.secure_url);
+      } else {
       }
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -885,6 +886,29 @@ export default function NewProduct() {
       return i.toLowerCase().match(brand);
     });
   }
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      console.log("files", invalidImage, resizeImage1);
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+          await uploadHandler(resizeImage1.file, "luxury");
+          setLuxuryImage(resizeImage1.filepreview);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleLuxury = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
+  };
 
   return (
     <NewProductC mode={mode}>
@@ -1734,8 +1758,13 @@ export default function NewProduct() {
                               <Upload
                                 type="file"
                                 id="image1"
-                                onChange={(e) =>{ setLuxury(handleInputChange(e,userInfo))}}
+                                onChange={handleLuxury}
                               />
+                              {invalidImage && (
+                                <div style={{ color: "red" }}>
+                                  {invalidImage}
+                                </div>
+                              )}
                             </>
                           )}
                         </AddImage>

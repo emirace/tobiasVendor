@@ -1,23 +1,17 @@
 import axios from "axios";
 
-export const handleInputChange = (event, user) => {
+export const resizeImage = (event, setinvalidImage, setuserInfo) => {
   let reader = new FileReader();
-
-  var userInfo = {
-    file: [],
-    filepreview: null,
-  };
-  var invalidImage = null;
   const imageFile = event.target.files[0];
   const imageFilname = event.target.files[0].name;
 
   if (!imageFile) {
-    invalidImage = "Please select image.";
+    setinvalidImage("Please select image.");
     return false;
   }
 
   if (!imageFile.name.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG|gif)$/)) {
-    invalidImage = "Please select valid image JPG,JPEG,PNG";
+    setinvalidImage("Please select valid image JPG,JPEG,PNG");
     return false;
   }
   reader.onload = (e) => {
@@ -25,11 +19,9 @@ export const handleInputChange = (event, user) => {
     img.onload = () => {
       //------------- Resize img code ----------------------------------
       var canvas = document.createElement("canvas");
-      var ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
 
-      var MAX_WIDTH = 437;
-      var MAX_HEIGHT = 437;
+      var MAX_WIDTH = 1000;
+      var MAX_HEIGHT = 1000;
       var width = img.width;
       var height = img.height;
 
@@ -54,32 +46,28 @@ export const handleInputChange = (event, user) => {
             type: "image/jpeg",
             lastModified: Date.now(),
           });
-          console.log("file", file);
-          userInfo = {
-            ...userInfo,
+          setuserInfo((prev) => ({
+            ...prev,
             file: file,
             filepreview: URL.createObjectURL(imageFile),
-          };
-          console.log("userInfo", userInfo);
+          }));
         },
         "image/jpeg",
         1
       );
-      invalidImage = null;
+      setinvalidImage(null);
     };
     img.onerror = () => {
-      invalidImage = "Invalid image content.";
+      setinvalidImage("Invalid image content.");
       return false;
     };
     //debugger
     img.src = e.target.result;
   };
   reader.readAsDataURL(imageFile);
-  return submit(userInfo.file, user);
 };
 
 const submit = async (file, user) => {
-  console.log("submitfile", file);
   const formdata = new FormData();
   formdata.append("file", file);
   const { data } = await axios.post("/api/upload", formdata, {
@@ -89,11 +77,4 @@ const submit = async (file, user) => {
     },
   });
   return data.secure_url;
-  //   .then((res) => {
-  //     // then print response status
-  //     console.warn(res);
-  //     if (res.data.success === 1) {
-  //       setSuccess("Image upload successfully");
-  //     }
-  //   });
 };
