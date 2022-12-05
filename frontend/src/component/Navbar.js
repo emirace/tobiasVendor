@@ -24,6 +24,7 @@ import { logout } from "../hooks/initFacebookSdk";
 import { BsFillSunFill } from "react-icons/bs";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import secureLocalStorage from "react-secure-storage";
+import RedirectButton from "./RedirectButton";
 
 const Container = styled.div`
   width: 100%;
@@ -948,6 +949,9 @@ export default function Navbar({
                       <Link to="/dashboard">Dashboard</Link>
                     </Li>
                     <li onClick={() => signoutHandler()}>Log Out</li>
+                    <Li>
+                      <RedirectButton />
+                    </Li>
                   </ul>
                 </ProfileMenu>
               )}

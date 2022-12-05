@@ -170,7 +170,7 @@ export default function SigninScreen() {
   const [error, setError] = useState("");
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo, mode } = state;
+  const { userInfo, mode, redirectToken } = state;
 
   const handleCallbackResponse = async (response) => {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -182,7 +182,7 @@ export default function SigninScreen() {
     console.log(data);
     ctxDispatch({ type: "USER_SIGNIN", payload: data });
     localStorage.setItem("userInfo", JSON.stringify(data));
-    window.location.href = `${redirect}?redirect=${redirect}`;
+    window.location.href = `${redirect}?redirecttoken=${redirectToken}`;
   };
   const { innerWidth } = window;
   useEffect(() => {
@@ -221,7 +221,7 @@ export default function SigninScreen() {
     //signin here
     ctxDispatch({ type: "USER_SIGNIN", payload: account });
     localStorage.setItem("userInfo", JSON.stringify(account));
-    window.location.href = `${redirect}?redirect=${redirect}`;
+    window.location.href = `${redirect}?redirecttoken=${redirectToken}`;
   }
   const submitHandler = async () => {
     try {
@@ -234,9 +234,9 @@ export default function SigninScreen() {
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
       if (data.isVerifiedEmail) {
-        window.location.href = `${redirect}?redirect=${redirect}`;
+        window.location.href = `${redirect}?redirecttoken=${redirectToken}`;
       } else {
-        window.location.href = `/verifyemail`;
+        window.location.href = `/verifyemail?redirecttoken=${redirectToken}`;
       }
     } catch (err) {
       ctxDispatch({

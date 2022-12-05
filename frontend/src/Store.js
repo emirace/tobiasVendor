@@ -50,6 +50,7 @@ const initialState = {
   cookies: localStorage.getItem("cookies")
     ? localStorage.getItem("cookies")
     : false,
+  redirectToken: "",
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -188,6 +189,11 @@ function reducer(state, action) {
       return {
         ...state,
         cookies: action.payload,
+      };
+    case "SET_REDIRECT_TOKEN":
+      return {
+        ...state,
+        redirectToken: action.payload,
       };
     default:
       return state;

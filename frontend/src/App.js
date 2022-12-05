@@ -221,25 +221,41 @@ initFacebookSdk().then(App);
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart, userInfo, mode, notifications, cookies } = state;
+  const { userInfo, mode, notifications, cookies } = state;
   const signoutHandler = () => {
     ctxDispatch({ type: "USER_SIGNOUT" });
-    secureLocalStorage.removeItem("userInfo");
+    localStorage.removeItem("userInfo");
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
   };
-  const redirectInUrl = new URLSearchParams(window.location.search).get(
-    "redirect"
+  const token = new URLSearchParams(window.location.search).get(
+    "redirecttoken"
   );
-  const redirect = redirectInUrl ? redirectInUrl : "/";
+  // const redirect = redirectInUrl ? redirectInUrl : "/";
+
+  // const { search } = useLocation();
+  // const sp = new URLSearchParams(search);
+  // const token = sp.get("redirecttoken") || "all";
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkLoacation = async () => {
-      if (!userInfo || userInfo.isAdmin) {
-        setLoading(false);
+      if (token) {
+        const { data } = await axios.put(
+          "/api/redirects",
+          { token: token },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        if (data.success) {
+          setLoading(false);
+          ctxDispatch({ type: "SET_REDIRECT_TOKEN", payload: token });
+        } else {
+          window.location.href = `/`;
+        }
       } else {
         const { data } = await axios.get("/api/locations");
         if (data === "ZA") {
@@ -247,22 +263,19 @@ function App() {
             setLoading(false);
           } else {
             signoutHandler();
-            // alert("redirevting to za");
-            window.location.replace(`https://repeddle.co.za/${redirect}`);
+            window.location.replace(`https://repeddle.co.za`);
           }
         } else {
           if (region() === "ZAR") {
             signoutHandler();
-            // alert("redirevting to com");
-            window.location.replace(`https://repeddle.com/${redirect}`);
+            window.location.replace(`https://repeddle.com`);
           }
           setLoading(false);
         }
-        console.log(data, "checkLocation", region());
       }
     };
     checkLoacation();
-  }, [userInfo]);
+  }, []);
 
   useEffect(() => {
     if (userInfo) {
@@ -296,17 +309,13 @@ function App() {
         const { data } = await axios.get("/api/cartItems", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        console.log("databaseCart1", data);
         const items = data.map((x) => x.item);
-        console.log("databaseCart2", items);
 
         ctxDispatch({ type: "UPDATE_CART", payload: items });
       }
     };
     getCartItems();
   }, [userInfo]);
-
-  console.log("updated noti", notifications);
 
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);

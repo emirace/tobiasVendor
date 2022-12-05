@@ -88,32 +88,32 @@ export default function SignupScreen() {
   const redirectInUrl = new URLSearchParams(search).get("redirect");
   const redirect = redirectInUrl ? redirectInUrl : "/";
 
-  const [loading, setLoading] = useState(true);
-  const [redirectLoc, setRedirectLoc] = useState(false);
+  // const [loading, setLoading] = useState(true);
+  // const [redirectLoc, setRedirectLoc] = useState(false);
 
-  useEffect(() => {
-    const redirectLoc = async () => {
-      const { data } = await axios.get("/api/locations");
-      console.log("locationdate signup", data);
-      if (data === "ZA") {
-        if (region() === "ZAR") {
-          setLoading(false);
-        } else {
-          // alert("redirevting to za");
-          setRedirectLoc(true);
-          window.location.replace(`https://repeddle.co.za/signup/${redirect}`);
-        }
-      } else {
-        if (region() === "ZAR") {
-          // alert("redirevting to com");
-          setRedirectLoc(true);
-          window.location.replace(`https://repeddle.com/signup/${redirect}`);
-        }
-        setLoading(false);
-      }
-    };
-    redirectLoc();
-  }, []);
+  // useEffect(() => {
+  //   const redirectLoc = async () => {
+  //     const { data } = await axios.get("/api/locations");
+  //     console.log("locationdate signup", data);
+  //     if (data === "ZA") {
+  //       if (region() === "ZAR") {
+  //         setLoading(false);
+  //       } else {
+  //         // alert("redirevting to za");
+  //         setRedirectLoc(true);
+  //         window.location.replace(`https://repeddle.co.za/signup/${redirect}`);
+  //       }
+  //     } else {
+  //       if (region() === "ZAR") {
+  //         // alert("redirevting to com");
+  //         setRedirectLoc(true);
+  //         window.location.replace(`https://repeddle.com/signup/${redirect}`);
+  //       }
+  //       setLoading(false);
+  //     }
+  //   };
+  //   redirectLoc();
+  // }, []);
 
   const [input, setInput] = useState({
     username: "",
@@ -143,15 +143,13 @@ export default function SignupScreen() {
   const { innerWidth } = window;
 
   useEffect(() => {
-    if (!loading) {
-      google.accounts.id.renderButton(document.getElementById("signInDiv1"), {
-        theme: "dark",
-        size: "large",
-        width: innerWidth > 992 ? 400 : 300,
-        logo_alignment: "center",
-      });
-    }
-  }, [loading]);
+    google.accounts.id.renderButton(document.getElementById("signInDiv1"), {
+      theme: "dark",
+      size: "large",
+      width: innerWidth > 992 ? 400 : 300,
+      logo_alignment: "center",
+    });
+  }, [innerWidth]);
 
   const handleCallbackResponse = async (response) => {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -285,9 +283,7 @@ export default function SignupScreen() {
       submitHandler();
     }
   };
-  return loading || redirectLoc ? (
-    <LoadingPage />
-  ) : (
+  return (
     <Container className="small-container">
       <Helmet>
         <title>Sign Up</title>
