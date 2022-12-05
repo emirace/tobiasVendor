@@ -242,36 +242,38 @@ function App() {
 
   useEffect(() => {
     const checkLoacation = async () => {
-      if (token) {
-        const { data } = await axios.put(
-          "/api/redirects",
-          { token: token },
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        if (data.success) {
-          setLoading(false);
-          ctxDispatch({ type: "SET_REDIRECT_TOKEN", payload: token });
-        } else {
-          window.location.href = `/`;
-        }
-      } else {
-        const { data } = await axios.get("/api/locations");
-        if (data === "ZA") {
-          if (region() === "ZAR") {
+      console.log(token, "outside");
+      try {
+        if (token) {
+          const { data } = await axios.put("/api/redirects", { token: token });
+          if (data.success) {
+            console.log(token, "i am in ");
             setLoading(false);
+            ctxDispatch({ type: "SET_REDIRECT_TOKEN", payload: token });
           } else {
-            signoutHandler();
-            window.location.replace(`https://repeddle.co.za`);
+            window.location.href = `/`;
           }
         } else {
-          if (region() === "ZAR") {
-            signoutHandler();
-            window.location.replace(`https://repeddle.com`);
+          const { data } = await axios.get("/api/locations");
+          if (data === "ZA") {
+            if (region() === "ZAR") {
+              setLoading(false);
+            } else {
+              signoutHandler();
+              // alert("redirect to coza");
+              window.location.replace(`https://repeddle.co.za`);
+            }
+          } else {
+            if (region() === "ZAR") {
+              // alert("redirect to com");
+              signoutHandler();
+              window.location.replace(`https://repeddle.com`);
+            }
+            setLoading(false);
           }
-          setLoading(false);
         }
+      } catch (err) {
+        console.log(err);
       }
     };
     checkLoacation();

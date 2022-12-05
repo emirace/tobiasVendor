@@ -8,19 +8,11 @@ const redirectRouter = express.Router();
 
 redirectRouter.put(
   "/",
-  isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { token } = req.body;
-    const redirect = await Redirect.findOne({ owner: req.user._id });
+    const redirect = await Redirect.findOne({ token });
     if (redirect) {
-      if (redirect.compareToken(token)) {
-        res.status(200).send({ success: true });
-      } else {
-        res
-          .status(200)
-          .send({ success: false, message: "Invalid redirect token" });
-      }
+      res.status(200).send({ success: true });
     } else {
       res.status(200).send({ success: false, message: "no redirect token" });
     }
