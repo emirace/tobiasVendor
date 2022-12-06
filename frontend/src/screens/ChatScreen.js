@@ -29,6 +29,7 @@ import CropImage from "../component/cropImage/CropImage";
 import { socket } from "../App";
 import LoadingBox from "../component/LoadingBox";
 import useWindowDimensions from "../component/Dimension";
+import { resizeImage } from "../component/ImageUploader";
 
 const Container = styled.div`
   position: fixed;
@@ -812,8 +813,7 @@ export default function ChatScreen() {
   };
 
   const uploadHandler = async (e) => {
-    console.log(e);
-    const file = e.target.files[0];
+    const file = e;
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -848,6 +848,30 @@ export default function ChatScreen() {
       console.log(getError(err));
     }
   };
+
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+          await uploadHandler(resizeImage1.file);
+          setImage(resizeImage1.filepreview);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleImageUpload = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
+  };
+
   const { width } = useWindowDimensions();
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && width > 992) {
@@ -1229,7 +1253,7 @@ export default function ChatScreen() {
                       type="file"
                       id="addimage"
                       style={{ display: "none" }}
-                      onChange={uploadHandler}
+                      onChange={handleImageUpload}
                     />
                     <Message>
                       <TextInput

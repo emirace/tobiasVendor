@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
 import { getError } from "../../utils";
@@ -85,16 +85,6 @@ const Column = styled.div`
   &:hover span {
     display: block;
   }
-  & span {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    padding: 10px;
-    background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
-  }
 
   @media (max-width: 992px) {
     width: 50px;
@@ -154,12 +144,21 @@ export default function WidgetLarge({ refresh }) {
       </Button>
     );
   };
-
+  const [clickItem, setClickItem] = useState("");
   return loadingTrans ? (
     <LoadingBox />
   ) : (
     <Container mode={mode}>
-      <Tittle>Latest transactions</Tittle>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Tittle>Latest transactions </Tittle>
+        <span>{clickItem}</span>
+      </div>
       <Table>
         <Tr>
           <Th>Id</Th>
@@ -172,23 +171,30 @@ export default function WidgetLarge({ refresh }) {
         {transactions.map((t) => (
           <Tr>
             <User>
-              <Column mode={mode}>
+              <Column onClick={() => setClickItem(t._id)} mode={mode}>
                 {t._id}
-                <span>{t._id}</span>
               </Column>
             </User>
             <User>
-              <Column mode={mode}>
+              <Column
+                onClick={() =>
+                  setClickItem(t.metadata ? t.metadata.purpose : "")
+                }
+                mode={mode}
+              >
                 {t.metadata ? t.metadata.purpose : ""}
-                <span>{t.metadata ? t.metadata.purpose : ""}</span>
               </Column>
             </User>
             <Date>
-              <Column mode={mode}>
+              <Column
+                onClick={() =>
+                  setClickItem(
+                    moment(t.createdAt).format("MMM DD YY, h:mm:ss a")
+                  )
+                }
+                mode={mode}
+              >
                 {moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}
-                <span>
-                  {moment(t.createdAt).format("MMM DD YY, h:mm:ss a")}
-                </span>
               </Column>
             </Date>
             <Amount>{t.txnType}</Amount>

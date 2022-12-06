@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
+import MessageImage from "../../MessageImage";
 
 const Container = styled.div`
   flex: 4;
@@ -420,11 +421,7 @@ export default function ReturnPage() {
         <ItemNum>
           {returned.image && (
             <>
-              <img
-                src={returned.image}
-                style={{ maxHeight: "400px", width: "100%" }}
-                alt="img"
-              />
+              <MessageImage url={returned.image} />
             </>
           )}
         </ItemNum>

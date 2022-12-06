@@ -27,6 +27,7 @@ import { useLocation } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import { getError } from "../utils";
 import OneNewMessage from "./OneNewMessage";
+import { resizeImage } from "./ImageUploader";
 
 const Container = styled.div`
   position: fixed;
@@ -476,8 +477,7 @@ export default function Support() {
   };
 
   const uploadHandler = async (e) => {
-    console.log(e);
-    const file = e.target.files[0];
+    const file = e;
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -510,6 +510,29 @@ export default function Support() {
       });
       console.log(getError(err));
     }
+  };
+
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+          await uploadHandler(resizeImage1.file);
+          setImage(resizeImage1.filepreview);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleImageUpload = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
   };
 
   return (
@@ -599,7 +622,7 @@ export default function Support() {
                         type="file"
                         id="addimage"
                         style={{ display: "none" }}
-                        onChange={uploadHandler}
+                        onChange={handleImageUpload}
                       />
                       <FontAwesomeIcon
                         onClick={handleSubmit}

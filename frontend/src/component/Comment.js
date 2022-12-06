@@ -7,6 +7,7 @@ import { format } from "timeago.js";
 import { socket } from "../App";
 import { Store } from "../Store";
 import { getError } from "../utils";
+import MessageImage from "./MessageImage";
 
 const Container = styled.div`
   margin-top: 15px;
@@ -332,7 +333,8 @@ export default function Comment({ commentC, product }) {
             </Action>
           </div>
           <div>
-            {comment.image && <CommentImg src={comment.image} alt="d" />}
+            {comment.image && <MessageImage url={comment.image} />}
+            {/* {comment.image && <CommentImg src={comment.image} alt="d" />}*/}
           </div>
         </Content>
       </Container>

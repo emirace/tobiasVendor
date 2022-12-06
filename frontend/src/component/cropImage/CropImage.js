@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import Cropper from "react-easy-crop";
 import { getCroppedImg, getRotatedImage } from "./cropImage1";
-import { getOrientation } from "get-orientation/browser";
+// import { getOrientation } from "get-orientation/browser";
 
 // import ReactCrop, {
 //   centerCrop,

@@ -11,6 +11,7 @@ import styled from "styled-components";
 import { socket } from "../App";
 import { Store } from "../Store";
 import { deliveryNumber, getError, region } from "../utils";
+import { resizeImage } from "./ImageUploader";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
 
@@ -270,6 +271,28 @@ export default function Return({
       });
       console.log(getError(err));
     }
+  };
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+          await uploadImageHandler(resizeImage1.file);
+          setImage(resizeImage1.filepreview);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleImageUpload = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
   };
 
   const addConversation = async (id, id2) => {
@@ -545,7 +568,7 @@ export default function Return({
                   type="file"
                   id="return"
                   style={{ display: "none" }}
-                  onChange={uploadImageHandler}
+                  onChange={handleImageUpload}
                 />
               </InputCont>
               <Button onClick={loading ? "" : handleReturn}>Submit</Button>
