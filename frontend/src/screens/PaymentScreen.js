@@ -241,8 +241,7 @@ export default function PaymentScreen() {
       {console.log(payment)}
       <Title>Comfirm Payment</Title>
       <SumaryContDetails mode={mode}>
-        <Name>ID</Name>
-        <ItemNum>{payment._id}</ItemNum>
+        <Name>ID</Name> <ItemNum>{payment._id}</ItemNum>
         <hr />
         <Name>Date</Name>
         <ItemNum>

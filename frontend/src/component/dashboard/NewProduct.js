@@ -866,7 +866,7 @@ export default function NewProduct() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Failed uploading image",
+          message: "File size is too large,",
           showStatus: true,
           state1: "visible1 error",
         },

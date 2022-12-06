@@ -11,7 +11,7 @@ import LoadingBox from "../../LoadingBox";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import ModelLogin from "../../ModelLogin";
 import { Link } from "react-router-dom";
-import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import MessageImage from "../../MessageImage";
@@ -89,17 +89,23 @@ const SetStatus = styled.div`
 const TrackingCont = styled.div`
   display: flex;
   align-items: center;
-  & svg {
-    color: var(--orange-color);
-    height: 40px;
-    width: 40px;
-    cursor: pointer;
-    &:hover {
-      color: var(--malon-color);
-    }
-  }
 `;
 
+const IconCont = styled.div`
+  background: var(--orange-color);
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    color: var(--malon-color);
+  }
+`;
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
@@ -107,7 +113,8 @@ const TextInput = styled.input`
       ? "var(--white-color)"
       : "var(--black-color)"};
   border: 1px solid grey;
-  border-radius: 0.2rem;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
   height: 40px;
   padding: 10px;
   margin-left: 20px;
@@ -569,10 +576,12 @@ export default function ReturnPage() {
                         type="text"
                         onChange={(e) => setWaybillNumber(e.target.value)}
                       />
-                      <FontAwesomeIcon
-                        icon={faSquareCheck}
-                        onClick={() => comfirmWaybill(orderitem)}
-                      />
+                      <IconCont style={{ background: "var(--orange-color)" }}>
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          onClick={() => comfirmWaybill(orderitem)}
+                        />
+                      </IconCont>
                     </TrackingCont>
                   ) : (
                     <>

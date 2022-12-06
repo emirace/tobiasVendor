@@ -197,7 +197,8 @@ const Received = styled.div`
   color: var(--white-color);
   padding: 3px 7px;
   height: 30px;
-  margin-right: 20px;
+  border-radius: 0.2rem;
+  margin-right: 30px;
   &:hover {
     background: var(--malon-color);
   }
@@ -209,6 +210,7 @@ const ReturnButton = styled.div`
   color: var(--white-color);
   padding: 3px 7px;
   height: 30px;
+  border-radius: 0.2rem;
   &:hover {
     background: var(--orange-color);
   }
@@ -238,6 +240,17 @@ const SetStatus = styled.div`
 
 const AfterAction = styled.div`
   display: flex;
+  /* @media (max-width: 992px) {
+    flex-direction: column;
+  } */
+`;
+const AfterActionCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 10px;
 `;
 
 const TextInput = styled.input`
@@ -418,6 +431,8 @@ export default function OrderScreen() {
   const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0);
   const [enterwaybil, setEnterwaybil] = useState(false);
   const [waybillNumber, setWaybillNumber] = useState("");
+
+  const [afterAction, setAfterAction] = useState(false);
   function createOrder(data, actions) {
     return actions.order
       .create({
@@ -971,14 +986,23 @@ export default function OrderScreen() {
                       )}
                     {userInfo.isAdmin && (
                       <button
-                        // onClick={() => refund(orderitem)}
+                        onClick={() =>
+                          deliverOrderHandler(
+                            orderitem.deliveryStatus === "Hold"
+                              ? "UnHold"
+                              : "Hold",
+                            orderitem._id
+                          )
+                        }
                         className="btn btn-primary w-100"
                         style={{
                           background: "var(--malon-color)",
                           marginTop: "10px",
                         }}
                       >
-                        Hold
+                        {orderitem.deliveryStatus === "Hold"
+                          ? "UnHold"
+                          : "Hold"}
                       </button>
                     )}
                     {userInfo.isAdmin &&
@@ -1087,36 +1111,52 @@ export default function OrderScreen() {
                 {userInfo &&
                   order.user._id === userInfo._id &&
                   orderitem.deliveryStatus === "Delivered" && (
-                    <div>
-                      <AfterAction>
-                        <Received
-                          onClick={() => {
-                            deliverOrderHandler(
-                              "Received",
-                              orderitem._id,
-                              orderitem
-                            );
-                            paymentRequest(
-                              orderitem.seller._id,
-                              orderitem.actualPrice,
-                              orderitem.currency,
-                              orderitem.seller.image
-                            );
-                          }}
-                        >
-                          Comfirm you have recieved order
-                        </Received>
-                        <ReturnButton onClick={() => setShowReturn(true)}>
-                          Log a return
-                        </ReturnButton>
-                      </AfterAction>
-                      <div style={{ fontSize: "13px", maxWidth: "400px" }}>
-                        Please inspect your order before confirming receipt.
-                        Kindly know that you can't LOG A RETURN after order
-                        receipt confirmation. However, you can re-list your
-                        product for sale at this point
-                      </div>
-                    </div>
+                    <>
+                      <Received onClick={() => setAfterAction(true)}>
+                        Comfirm you have recieved order
+                      </Received>
+                      <ModelLogin
+                        setShowModel={setAfterAction}
+                        showModel={afterAction}
+                      >
+                        <AfterActionCont>
+                          <AfterAction>
+                            <Received
+                              onClick={() => {
+                                deliverOrderHandler(
+                                  "Received",
+                                  orderitem._id,
+                                  orderitem
+                                );
+                                paymentRequest(
+                                  orderitem.seller._id,
+                                  orderitem.actualPrice,
+                                  orderitem.currency,
+                                  orderitem.seller.image
+                                );
+                                setAfterAction(false);
+                              }}
+                            >
+                              Comfirm you have recieved order
+                            </Received>
+                            <ReturnButton
+                              onClick={() => {
+                                setShowReturn(true);
+                                setAfterAction(false);
+                              }}
+                            >
+                              Log a return
+                            </ReturnButton>
+                          </AfterAction>
+                          <div style={{ fontSize: "13px", maxWidth: "400px" }}>
+                            Please inspect your order before confirming receipt.
+                            Kindly know that you can't LOG A RETURN after order
+                            receipt confirmation. However, you can re-list your
+                            product for sale at this point
+                          </div>
+                        </AfterActionCont>
+                      </ModelLogin>
+                    </>
                   )}
                 {orderitem.trackingNumber && (
                   <label style={{ marginRight: "20px" }}>

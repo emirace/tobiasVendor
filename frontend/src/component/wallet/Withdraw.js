@@ -65,6 +65,14 @@ const Button = styled.div`
   }
 `;
 
+const UpdateAccount = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -183,7 +191,9 @@ export default function Withdraw({
   return loading ? (
     <LoadingBox />
   ) : !user.accountName ? (
-    "Update Account Details to request for withdraw"
+    <UpdateAccount>
+      <p>Update Account Details to request for withdraw</p>
+    </UpdateAccount>
   ) : (
     <Container>
       <FontAwesomeIcon size="4x" color="var(--orange-color)" icon={faWallet} />

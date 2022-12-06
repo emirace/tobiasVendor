@@ -447,7 +447,7 @@ orderRouter.put(
       console.log("change status", req.body.deliveryStatus);
 
       switch (req.body.deliveryStatus) {
-        case "Been Processing":
+        case "Processing":
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               sendEmail({

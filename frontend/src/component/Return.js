@@ -63,6 +63,9 @@ const ItemCont = styled.div`
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   }
+  @media (max-width: 992px) {
+    width: auto;
+  }
 `;
 const InputCont = styled.div`
   margin: 10px;
@@ -106,6 +109,10 @@ const Form = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 `;
 const SelectOpt = styled.div`
   background: ${(props) =>
@@ -114,6 +121,12 @@ const SelectOpt = styled.div`
   padding: 10px;
   border-radius: 0.2rem;
   cursor: pointer;
+`;
+const Options = styled.div`
+  width: 40%;
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 `;
 const reducer = (state, action) => {
   switch (action.type) {
@@ -238,7 +251,7 @@ export default function Return({
     }
   };
   const uploadImageHandler = async (e) => {
-    const file = e.target.files[0];
+    const file = e;
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -282,7 +295,6 @@ export default function Return({
       try {
         if (!invalidImage && resizeImage1.filepreview) {
           await uploadImageHandler(resizeImage1.file);
-          setImage(resizeImage1.filepreview);
         }
       } catch (err) {
         console.log(getError(err));
@@ -377,7 +389,7 @@ export default function Return({
               setTab("items")
             )}
             <h4>Preferred Resolution Method</h4>
-            <div style={{ width: "40%" }}>
+            <Options>
               <Link to={`/newproduct?id=${current.slug}`}>
                 <SelectOpt mode={mode}>Re-list and sell my product</SelectOpt>
               </Link>
@@ -392,7 +404,7 @@ export default function Return({
                   Return form
                 </SelectOpt>
               )}
-            </div>
+            </Options>
           </Content>
         );
       case "form":
@@ -558,6 +570,9 @@ export default function Return({
                 <Label1 htmlFor="return">
                   <FontAwesomeIcon icon={faCamera} /> Upload Image
                 </Label1>
+                {invalidImage && (
+                  <div style={{ color: "red" }}>{invalidImage}</div>
+                )}
                 {loadingUpload && <LoadingBox />}
                 {image.length !== 0 && (
                   <span style={{ marginLeft: "10px", fontSize: "14px" }}>

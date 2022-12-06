@@ -13,6 +13,8 @@ import { Store } from "../Store";
 import "../style/StickyNav.css";
 import styled from "styled-components";
 
+import { ReactComponent as Search } from "./../icons/search.svg";
+
 export const Badge = styled.span`
   width: 12px;
   height: 12px;
@@ -32,7 +34,12 @@ const Icon = styled.img`
   width: 25px;
   height: 25px;
 `;
-
+const IconColor = styled.div`
+  fill: var(--malon-color);
+  &.active {
+    fill: var(--orange-color);
+  }
+`;
 export default function StickyNav() {
   const { state, dispatxh: ctxDispatch } = useContext(Store);
   const { userInfo, mode, notifications } = state;
@@ -66,11 +73,9 @@ export default function StickyNav() {
           onClick={() => setCurrentNav("categories")}
           className={`sticky_item ${currentNav === "categories" && "active"}`}
         >
-          {currentNav !== "categories" ? (
-            <Icon src="/images/sesrchiconm.png" />
-          ) : (
-            <Icon src="/images/sesrchicono.png" />
-          )}
+          <IconColor className={currentNav === "categories" && "active"}>
+            <Search height={25} width={25} />
+          </IconColor>
           <div className="stickynav_text">Categories</div>
         </Link>
         <Link

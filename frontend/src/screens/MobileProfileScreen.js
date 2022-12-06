@@ -27,6 +27,7 @@ import secureLocalStorage from "react-secure-storage";
 import { getError } from "../utils";
 import axios from "axios";
 import { logout } from "../hooks/initFacebookSdk";
+import RedirectButton from "../component/RedirectButton";
 
 const Container = styled.div`
   display: none;
@@ -385,6 +386,7 @@ export default function MobileProfileScreen() {
           </Link>
         </>
       )}
+      <RedirectButton />
       <Logout onClick={() => signoutHandler()}>
         <FontAwesomeIcon icon={faRightFromBracket} />
         Logout
