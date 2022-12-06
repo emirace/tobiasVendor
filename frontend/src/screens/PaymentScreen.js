@@ -231,6 +231,14 @@ export default function PaymentScreen() {
       );
       dispatch({ type: "GET_SUCCESS", payload: data });
       //   deliverOrderHandler("Return Declined", payment.productId._id);
+      socket.emit("post_data", {
+        userId: payment.userId._id,
+        itemId: payment._id,
+        notifyType: "payment",
+        msg: `Your order return refunded`,
+        link: `/wallet`,
+        userImage: userInfo.image,
+      });
     } catch (error) {}
   };
 
@@ -255,7 +263,10 @@ export default function PaymentScreen() {
         <Name>Type</Name>
         <ItemNum>{payment.meta.Type}</ItemNum>
         <ItemNum>
-          {payment.meta.typeName} id{" "}
+          <span style={{ marginRight: "20px" }}>
+            {" "}
+            {payment.meta.typeName} id
+          </span>
           <Link to={`/order/${payment.meta.id}`}>{payment.meta.id}</Link>
         </ItemNum>
         <hr />

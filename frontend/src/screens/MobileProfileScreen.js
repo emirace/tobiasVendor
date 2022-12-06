@@ -275,7 +275,11 @@ export default function MobileProfileScreen() {
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/returns">
-        <MobileMenuItem>
+        <MobileMenuItem 
+        // onClick={() => {
+        //                   socket.emit("remove_id_notifications", not._id);
+        //                 ""}}
+                        >
           <FontAwesomeIcon icon={faArrowRotateLeft} />
           My Returns
           {returnNotification.length > 0 && (

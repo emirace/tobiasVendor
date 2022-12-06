@@ -1,3 +1,5 @@
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -51,6 +53,7 @@ const ButtonBackgroud = styled.div`
   color: white;
   cursor: pointer;
   border-radius: 0.2rem;
+  margin-right: 20px;
   &:hover {
     background: var(--malon-color);
   }
@@ -75,6 +78,7 @@ export default function AcceptCookies() {
           MORE INFO
         </ButtonNo>
         <ButtonBackgroud onClick={handleSubmit}>Allow Cookies</ButtonBackgroud>
+        <FontAwesomeIcon icon={faClose} onClick={handleSubmit} />
       </Buttons>
     </Container>
   );

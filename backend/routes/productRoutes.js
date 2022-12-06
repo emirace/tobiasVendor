@@ -17,7 +17,7 @@ const productRouter = express.Router();
 
 productRouter.get("/:region/all", async (req, res) => {
   const { region } = req.params;
-  const products = await Product.find({ region }).populate(
+  const products = await Product.find({ region, active: true }).populate(
     "seller",
     "_id username"
   );
@@ -749,6 +749,7 @@ productRouter.get(
       ...shippingFilter,
       ...patternFilter,
       region,
+      active: true,
     })
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -770,6 +771,7 @@ productRouter.get(
       ...shippingFilter,
       ...patternFilter,
       region,
+      active: true,
     });
     res.send({
       products,

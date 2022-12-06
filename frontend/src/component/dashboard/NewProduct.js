@@ -155,6 +155,18 @@ const ImageRow = styled.div`
   display: flex;
   gap: 5px;
 `;
+const LuxuryImgCont = styled.div`
+  position: relative;
+`;
+const Close = styled.div`
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  border-radius: 50%;
+  background: var(--malon-color);
+`;
 const BigImage = styled.img`
   width: 100%;
   height: 100%;
@@ -1746,7 +1758,12 @@ export default function NewProduct() {
                   <VimageCont>
                     <BigImageC mode={mode}>
                       {luxuryImage ? (
-                        <BigImage src={luxuryImage} alt="product image" />
+                        <LuxuryImgCont>
+                          <Close onClick={() => setLuxuryImage("")}>
+                            <FontAwesomeIcon icon={faClose} />
+                          </Close>
+                          <BigImage src={luxuryImage} alt="product image" />
+                        </LuxuryImgCont>
                       ) : (
                         <AddImage htmlFor="image1">
                           {loadingUpload ? (

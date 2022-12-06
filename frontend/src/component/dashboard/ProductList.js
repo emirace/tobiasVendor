@@ -121,7 +121,7 @@ const reducer = (state, action) => {
 };
 
 export default function ProductList() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const { height, width } = useWindowDimensions();
 
@@ -159,8 +159,19 @@ export default function ProductList() {
     }
   }, [successDelete, userInfo, productsQuery]);
 
-  const deleteHandler = async (product) => {
+  const deleteHandler = async (product, sold) => {
     console.log("params", product);
+    if (sold) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't edit already checkout product",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         dispatch({ type: "DELETE_REQUEST" });
@@ -209,7 +220,9 @@ export default function ProductList() {
                   </Link>
                   {userInfo.isAdmin && (
                     <FontAwesomeIcon
-                      onClick={() => deleteHandler(params.row.id)}
+                      onClick={() =>
+                        deleteHandler(params.row.id, params.row.sold)
+                      }
                       icon={faTrash}
                     />
                   )}
@@ -272,7 +285,9 @@ export default function ProductList() {
                   </Link>
                   {userInfo.isAdmin && (
                     <FontAwesomeIcon
-                      onClick={() => deleteHandler(params.row.id)}
+                      onClick={() =>
+                        deleteHandler(params.row.id, params.row.sold)
+                      }
                       icon={faTrash}
                     />
                   )}
@@ -289,6 +304,7 @@ export default function ProductList() {
     stock: p.countInStock,
     price: `${p.currency}${p.actualPrice}`,
     slug: p.slug,
+    sold: p.sold,
   }));
 
   return (

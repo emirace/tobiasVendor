@@ -450,7 +450,7 @@ export default function ReturnPage() {
           <>
             <div style={{ marginTop: "20px" }}>
               <textarea
-                style={{ width: "50%", height: "150px" }}
+                style={{ width: "50%", height: "150px", padding: "20px" }}
                 onChange={(e) => setReasonText(e.target.value)}
               >
                 Enter Reason for Declince here...
@@ -476,8 +476,20 @@ export default function ReturnPage() {
                     fontSize: "13px",
                   }}
                 >
-                  <div style={{ flex: "1" }}>{key}:</div>
-                  <div style={{ flex: "5" }}>{value}</div>
+                  {key === "cost" ? (
+                    <>
+                      <div style={{ flex: "1" }}>{key}:</div>
+                      <div style={{ flex: "5" }}>
+                        {returned.productId.currency}
+                        {value}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ flex: "1" }}>{key}:</div>
+                      <div style={{ flex: "5" }}>{value}</div>
+                    </>
+                  )}
                 </div>
               ))
             ) : returned.productId.seller._id === userInfo._id ? (
@@ -569,9 +581,9 @@ export default function ReturnPage() {
                     </FormControl>
                   ) : enterwaybil ? (
                     <TrackingCont>
-                      <label>Enter Tracking number </label>
                       <TextInput
                         mode={mode}
+                        placeholder="Enter Tracking number"
                         value={waybillNumber}
                         type="text"
                         onChange={(e) => setWaybillNumber(e.target.value)}
@@ -586,9 +598,9 @@ export default function ReturnPage() {
                   ) : (
                     <>
                       {orderitem.returnTrackingNumber && (
-                        <label style={{ marginRight: "20px" }}>
+                        <div style={{ marginRight: "20px" }}>
                           Tracking Number: {orderitem.returnTrackingNumber}
-                        </label>
+                        </div>
                       )}
                       <FormControl
                         sx={{

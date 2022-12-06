@@ -157,7 +157,9 @@ export default function WidgetLarge({ refresh }) {
         }}
       >
         <Tittle>Latest transactions </Tittle>
-        <span>{clickItem}</span>
+        <span style={{ background: "var(--orange-color", color: "white" }}>
+          {clickItem}
+        </span>
       </div>
       <Table>
         <Tr>

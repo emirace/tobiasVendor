@@ -1,7 +1,9 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import Cropper from "react-easy-crop";
 import { getCroppedImg, getRotatedImage } from "./cropImage1";
+import { getError } from "../../utils";
+import { resizeImage } from "../ImageUploader";
 // import { getOrientation } from "get-orientation/browser";
 
 // import ReactCrop, {
@@ -182,6 +184,29 @@ export default function CropImage({
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      console.log("files", invalidImage, resizeImage1);
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+          await uploadHandler(resizeImage1.file, currentImage);
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleResize = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
+  };
+
   const showCroppedImage = useCallback(async () => {
     try {
       const croppedImage = await getCroppedImg(
@@ -189,8 +214,7 @@ export default function CropImage({
         croppedAreaPixels,
         rotation
       );
-      console.log("donee", { croppedImage });
-      uploadHandler(croppedImage, currentImage);
+      handleResize({ target: { files: [croppedImage] } });
       setShowModel(false);
     } catch (e) {
       console.error(e);

@@ -166,7 +166,7 @@ export default function Withdraw({
           }
         );
         socket.emit("post_data", {
-          userId: userInfo._id,
+          userId: "Admin",
           itemId: paymentData._id,
           notifyType: "payment",
           msg: `Withdrawal request`,
@@ -192,7 +192,13 @@ export default function Withdraw({
     <LoadingBox />
   ) : !user.accountName ? (
     <UpdateAccount>
-      <p>Update Account Details to request for withdraw</p>
+      <div style={{ textAlign: "center" }}>
+        <h5>ADD A BANK ACCOUNT DETAILS</h5>
+        <p>
+          Go to your Profile, Edit and Add your Bank Account to request for a
+          Withdrawal
+        </p>
+      </div>
     </UpdateAccount>
   ) : (
     <Container>

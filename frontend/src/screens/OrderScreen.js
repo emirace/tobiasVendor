@@ -79,6 +79,15 @@ const InvoiceHead = styled.h2`
     display: block;
   }
 `;
+
+const InvoiceLogo = styled.imd`
+  width:200px;
+  display:none;
+
+  @media print {
+    display: block;
+  }
+`;
 const SumaryContDetails = styled.div`
   border-radius: 5px;
   padding: 15px 20px;
@@ -557,6 +566,7 @@ export default function OrderScreen() {
         }
       );
       dispatch({ type: "DELIVER_SUCCESS" });
+      if(deliveryStatus!=='Return Logged'){
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -564,7 +574,7 @@ export default function OrderScreen() {
           showStatus: true,
           state1: "visible1 success",
         },
-      });
+      });}
       if (deliveryStatus === "Received" || deliveryStatus === "Return Logged") {
         socket.emit("post_data", {
           userId: orderitem.seller._id,
@@ -713,6 +723,7 @@ export default function OrderScreen() {
         <title>Order {orderId}</title>
         {console.log(order)}
       </Helmet>
+      <InvoiceLogo src=''/>
       <InvoiceHead>Invoice</InvoiceHead>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header>Order Details</Header>
@@ -1185,6 +1196,25 @@ export default function OrderScreen() {
                   <button className="btn btn-primary w-100">
                     <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                   </button>
+                  {userInfo.isAdmin && (
+                    <button
+                      onClick={() =>
+                        deliverOrderHandler(
+                          orderitem.deliveryStatus === "Hold"
+                            ? "UnHold"
+                            : "Hold",
+                          orderitem._id
+                        )
+                      }
+                      className="btn btn-primary w-100"
+                      style={{
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {orderitem.deliveryStatus === "Hold" ? "UnHold" : "Hold"}
+                    </button>
+                  )}
                 </ActionButton>
               </DetailButton>
               {Object.entries(orderitem.deliverySelect).map(([key, value]) => (

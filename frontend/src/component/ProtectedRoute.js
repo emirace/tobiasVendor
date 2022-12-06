@@ -15,6 +15,15 @@ export function SellerRoute({ children }) {
   const { userInfo } = state;
   return userInfo && userInfo.isSeller ? children : <Navigate to="/" />;
 }
+export function SellerRedirect({ children }) {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  return userInfo && userInfo.isSeller ? (
+    <Navigate to="/newproduct" />
+  ) : (
+    <Navigate to="/sell" />
+  );
+}
 
 export function AdminRoute({ children }) {
   const { state } = useContext(Store);

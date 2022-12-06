@@ -100,6 +100,9 @@ const SalesUp = styled.span`
       props.mode === "pagebodylight" ? "black" : "white"} !important;
   }
 `;
+const InflucerComing = styled.img`
+  width: 100%;
+`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -488,6 +491,9 @@ export default function ProductsScreen() {
             "Coming soon"
           )}
         </Section>
+        {/* <Section>
+          <InflucerComing src=""></InflucerComing>
+        </Section> */}
 
         <section className="discount spad">
           <div className="container">

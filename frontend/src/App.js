@@ -223,8 +223,8 @@ function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode, notifications, cookies } = state;
   const signoutHandler = () => {
-    ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("userInfo");
+    ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
@@ -259,15 +259,15 @@ function App() {
             if (region() === "ZAR") {
               setLoading(false);
             } else {
-              // signoutHandler();
-              alert("redirect to coza");
-              // window.location.replace(`https://repeddle.co.za`);
+              signoutHandler();
+              // alert("redirect to coza");
+              window.location.replace(`https://repeddle.co.za`);
             }
           } else {
             if (region() === "ZAR") {
-              alert("redirect to com");
-              // signoutHandler();
-              // window.location.replace(`https://repeddle.com`);
+              // alert("redirect to com");
+              signoutHandler();
+              window.location.replace(`https://repeddle.com`);
             }
             setLoading(false);
           }
