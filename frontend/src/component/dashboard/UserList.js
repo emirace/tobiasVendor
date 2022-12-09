@@ -270,7 +270,7 @@ export default function UserList() {
     image: u.image,
     date: moment(u.createdAt).format("MMM DD YY, h:mm a"),
     email: u.email,
-    status: "online",
+    status: u.active ? "active" : "banned",
     earnings: `${currency}${u.earnings}`,
   }));
 

@@ -195,16 +195,20 @@ export default function CropImage({
       try {
         if (!invalidImage && resizeImage1.filepreview) {
           await uploadHandler(resizeImage1.file, currentImage);
+          setShowModel(false);
         }
       } catch (err) {
         console.log(getError(err));
       }
     };
     uploadImage();
-  }, [resizeImage1]);
+  }, [invalidImage, resizeImage1]);
 
   const handleResize = async (e) => {
     resizeImage(e, setInvalidImage, setResizeImage);
+    console.log("hhggggghhhh");
+    setResizeImage({ file: ["hello"] });
+    console.log("bbbbbbbb");
   };
 
   const showCroppedImage = useCallback(async () => {
@@ -215,7 +219,7 @@ export default function CropImage({
         rotation
       );
       handleResize({ target: { files: [croppedImage] } });
-      setShowModel(false);
+      // setShowModel(false);
     } catch (e) {
       console.error(e);
     }
@@ -263,6 +267,7 @@ export default function CropImage({
           />
         )}
         <div>
+          {console.log(resizeImage1)}
           <input
             id="inputButton"
             style={{ display: "none" }}

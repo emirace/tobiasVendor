@@ -584,6 +584,7 @@ export default function NewProduct() {
     { name: "Pick up from Seller", value: 0 },
   ]);
   const [showConditionModal, setShowConditionModal] = useState(false);
+  const [showUploadingVideo, setShowUploadingVideo] = useState(false);
   const [showUploadingImage, setShowUploadingImage] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
   const [showComissionModal, setShowComissionModal] = useState(false);
@@ -926,6 +927,7 @@ export default function NewProduct() {
     <NewProductC mode={mode}>
       <Helmet>
         <title>New Product</title>
+        {console.log(resizeImage1)}
       </Helmet>
       <TitleCont>
         <Title>NewProduct</Title>
@@ -1673,6 +1675,11 @@ export default function NewProduct() {
                         setShowModel={setShowUploadingImage}
                       />
                     </ModelLogin>
+
+                    <ModelLogin
+                      setShowModel={setShowUploadingVideo}
+                      showModel={showUploadingVideo}
+                    ></ModelLogin>
                   </SmallImageC>
                 </SmallImageRow>
               </ImageRow>
@@ -1719,7 +1726,10 @@ export default function NewProduct() {
               </TitleDetails>
               <input
                 type="file"
-                onChange={videouploadHandler}
+                onChange={(e) => {
+                  // videouploadHandler(e);
+                  setShowUploadingVideo(true);
+                }}
                 id="video"
                 style={{ display: "none" }}
               />

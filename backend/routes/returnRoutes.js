@@ -223,7 +223,7 @@ returnRouter.put(
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice image name",
+        select: "seller actualPrice image name currency",
         populate: { path: "seller", select: "image username" },
       });
     const transaction = await Transaction.find({
@@ -311,7 +311,7 @@ returnRouter.get(
       })
       .populate({
         path: "productId",
-        select: "seller actualPrice image name slug",
+        select: "seller actualPrice image name slug currency",
         populate: { path: "seller", select: "image username" },
       });
     if (returned) {

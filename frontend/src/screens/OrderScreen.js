@@ -80,9 +80,9 @@ const InvoiceHead = styled.h2`
   }
 `;
 
-const InvoiceLogo = styled.imd`
-  width:200px;
-  display:none;
+const InvoiceLogo = styled.img`
+  width: 100px;
+  display: none;
 
   @media print {
     display: block;
@@ -98,6 +98,10 @@ const SumaryContDetails = styled.div`
 
   @media (max-width: 992px) {
     padding: 10px 15px;
+  }
+  @media print {
+    margin-bottom: 5px;
+    padding: 5px;
   }
 `;
 const SumaryCont = styled.div`
@@ -566,15 +570,16 @@ export default function OrderScreen() {
         }
       );
       dispatch({ type: "DELIVER_SUCCESS" });
-      if(deliveryStatus!=='Return Logged'){
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Delivery status updated",
-          showStatus: true,
-          state1: "visible1 success",
-        },
-      });}
+      if (deliveryStatus !== "Return Logged") {
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Delivery status updated",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+      }
       if (deliveryStatus === "Received" || deliveryStatus === "Return Logged") {
         socket.emit("post_data", {
           userId: orderitem.seller._id,
@@ -723,7 +728,7 @@ export default function OrderScreen() {
         <title>Order {orderId}</title>
         {console.log(order)}
       </Helmet>
-      <InvoiceLogo src=''/>
+      <InvoiceLogo src="/images/logo.png" />
       <InvoiceHead>Invoice</InvoiceHead>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header>Order Details</Header>
@@ -1048,6 +1053,14 @@ export default function OrderScreen() {
                       }}
                     >
                       <DeliveryKey>{key}:</DeliveryKey>
+                      {key === "cost" ? (
+                        <div>
+                          {currency}
+                          {value}
+                        </div>
+                      ) : (
+                        <div>{value}</div>
+                      )}
                       <div>{value}</div>
                     </div>
                   )
@@ -1227,7 +1240,14 @@ export default function OrderScreen() {
                   key={key}
                 >
                   <DeliveryKey>{key}:</DeliveryKey>
-                  <DeliveryValue>{value}</DeliveryValue>
+                  {key === "cost" ? (
+                    <DeliveryValue>
+                      {currency}
+                      {value}
+                    </DeliveryValue>
+                  ) : (
+                    <DeliveryValue>{value}</DeliveryValue>
+                  )}
                 </div>
               ))}
               <div style={{ marginTop: "20px" }}>

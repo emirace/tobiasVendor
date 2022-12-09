@@ -152,10 +152,21 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
         <TelegramIcon size={32} round={true} />
       </TelegramShareButton>
 
-      <PinterestShareButton>
+      <PinterestShareButton
+        url={shareUrl}
+        media={product.image}
+        onShareWindowClose={handleShare}
+        description="Hey! Look what I found on Repeddle "
+      >
         <PinterestIcon size={32} round={true} />
       </PinterestShareButton>
-      <LinkedinShareButton>
+      <LinkedinShareButton
+        title="Hey! Look what I found on Repeddle "
+        url={shareUrl}
+        source={shareUrl}
+        description="Hey! Look what I found on Repeddle "
+        onShareWindowClose={handleShare}
+      >
         <LinkedinIcon size={32} round={true} />
       </LinkedinShareButton>
     </Container>

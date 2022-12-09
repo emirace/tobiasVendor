@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Store } from "../Store";
 import axios from "axios";
@@ -7,7 +7,8 @@ import axios from "axios";
 export function ProtectedRoute({ children }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
-  return userInfo ? children : <Navigate to="/signin" />;
+  const { pathname } = useLocation();
+  return userInfo ? children : <Navigate to={`/signin?redirect=${pathname}`} />;
 }
 
 export function SellerRoute({ children }) {

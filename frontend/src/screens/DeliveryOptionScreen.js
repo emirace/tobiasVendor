@@ -543,6 +543,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     <Plans>
                       <Plan>
                         <Input
+                          mode={mode}
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
@@ -569,6 +570,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       )}
                       <Plan>
                         <Input
+                          mode={mode}
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
@@ -651,6 +653,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.province}</Error>
                         )}
                         {/* <Input
+                        mode={mode}
                         onFocus={()=>setValidationError({...validationError,phone:''})}
                           type="text"
                           onChange={(e) =>
@@ -671,6 +674,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       </a>
                       <Plan>
                         {/* <Input
+                        mode={mode}
                           onFocus={()=>setValidationError({
                             ...validationError,
                             shortName: "",
@@ -732,6 +736,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       </Plan>
                       <Plan>
                         <Input
+                          mode={mode}
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
@@ -884,13 +889,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       </Plan>
                       <Plan>
                         <Input
+                          mode={mode}
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
                               phone: "",
                             })
                           }
-                          mode={mode}
                           type="number"
                           onChange={(e) =>
                             setMeta({ ...meta, phone: e.target.value })

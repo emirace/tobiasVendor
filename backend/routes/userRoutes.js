@@ -952,6 +952,9 @@ userRouter.put(
       user.active = req.body.active || user.active;
       user.badge = req.body.badge || user.badge;
       user.influencer = req.body.influencer || user.influencer;
+      user.bankName = req.body.bankName || user.bankName;
+      user.accountName = req.body.accountName || user.accountName;
+      user.accountNumber = req.body.accountNumber || user.accountNumber;
 
       const updatedUser = await user.save();
       res.send({

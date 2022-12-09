@@ -141,6 +141,7 @@ accountRouter.post(
                   url: user.region === "NGN" ? "com" : "co.za",
                   orderItems: order.orderItems,
                   returnId: returned?._id,
+                  amount: returned.amount,
                 },
               });
             } else {
@@ -381,7 +382,6 @@ accountRouter.post(
         bankName: req.body.bankName,
         accountNumber: req.body.accountNumber,
         accountName: req.body.accountName,
-        
       },
     });
 

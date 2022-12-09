@@ -73,9 +73,19 @@ const Row = styled.div`
   }
 `;
 const Image2 = styled.img`
+  width: 100%;
+  object-fit: contain;
+`;
+const Image2Cont = styled.div`
+  position: relative;
   width: 50%;
   padding: 5px;
-  object-fit: contain;
+`;
+const DownloadCont = styled.img`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40%;
 `;
 
 const List = styled.ul`
@@ -155,18 +165,22 @@ export default function About() {
       <Section>
         <SubHeading>REPEDDLE EXPLAINED: (THE M.G.H.)</SubHeading>
         <Row>
-          <Image2
-            src="https://res.cloudinary.com/emirace/image/upload/v1661221991/cytonn-photography-n95VMLxqM2I-unsplash_zjvrqp.webp"
-            alt="img"
-          />
-          <Image2
-            src={
-              mode === "pagebodydark"
-                ? "https://res.cloudinary.com/emirace/image/upload/v1657405562/yne3ejukoc1glryhx7zk.png"
-                : "https://res.cloudinary.com/emirace/image/upload/v1666953838/Repeddle_Logo-02_ztvmtx.png"
-            }
-            alt="img"
-          />
+          <Image2Cont>
+            <Image2
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221991/cytonn-photography-n95VMLxqM2I-unsplash_zjvrqp.webp"
+              alt="img"
+            />
+          </Image2Cont>
+          <Image2Cont>
+            <Image2
+              src={
+                mode === "pagebodydark"
+                  ? "https://res.cloudinary.com/emirace/image/upload/v1657405562/yne3ejukoc1glryhx7zk.png"
+                  : "https://res.cloudinary.com/emirace/image/upload/v1666953838/Repeddle_Logo-02_ztvmtx.png"
+              }
+              alt="img"
+            />
+          </Image2Cont>
         </Row>
         <Para>
           <b>THE MEANING:</b> Our name <b>REPEDDLE</b> is derived from two words
@@ -204,14 +218,20 @@ export default function About() {
       <Section>
         <SubHeading>NOW, LET'S GO PEDDLE; DOWNLOAD OUR APP</SubHeading>
         <Row>
-          <Image2
-            src="https://res.cloudinary.com/emirace/image/upload/v1661221990/andhika-soreng-XuJ9qu47S2c-unsplash_po2ujf.webp"
-            alt="img"
-          />
-          <Image2
-            src="https://res.cloudinary.com/emirace/image/upload/v1661221991/blubel-TL5JFCvITp4-unsplash_q3ygsq.webp"
-            alt="img"
-          />
+          <Image2Cont>
+            <Image2
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221990/andhika-soreng-XuJ9qu47S2c-unsplash_po2ujf.webp"
+              alt="img"
+            />
+            <DownloadCont src="/images/as.png" alt="playstore" />
+          </Image2Cont>
+          <Image2Cont>
+            <Image2
+              src="https://res.cloudinary.com/emirace/image/upload/v1661221991/blubel-TL5JFCvITp4-unsplash_q3ygsq.webp"
+              alt="img"
+            />
+            <DownloadCont src="/images/gp.png" alt="playstore" />
+          </Image2Cont>
         </Row>
 
         <Link to="/sell">

@@ -299,6 +299,7 @@ const Key = styled.div`
 `;
 const Value = styled.div`
   flex: 2;
+  margin-left: 15px;
 `;
 
 const Textarea = styled.textarea`

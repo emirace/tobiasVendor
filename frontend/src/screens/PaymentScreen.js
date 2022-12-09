@@ -205,10 +205,11 @@ export default function PaymentScreen() {
         await axios.post(
           "/api/accounts/payaccount",
           {
-            account_bank: payment.account_bank,
-            account_number: payment.account_number,
+            bankName: payment.meta.detail.bankName,
+            accountNumber: payment.meta.detail.accountNumber,
+            accountName: payment.meta.detail.accountName,
             amount: payment.amount,
-            currency: payment.currency,
+            currency: payment.meta.currency,
             narration: "Payment for things",
             reference: v4(),
 
@@ -231,14 +232,32 @@ export default function PaymentScreen() {
       );
       dispatch({ type: "GET_SUCCESS", payload: data });
       //   deliverOrderHandler("Return Declined", payment.productId._id);
-      socket.emit("post_data", {
-        userId: payment.userId._id,
-        itemId: payment._id,
-        notifyType: "payment",
-        msg: `Your order return refunded`,
-        link: `/wallet`,
-        userImage: userInfo.image,
-      });
+      payment.meta.Type === "Withdrawal Request"
+        ? socket.emit("post_data", {
+            userId: payment.userId._id,
+            itemId: payment._id,
+            notifyType: "payment",
+            msg: `Your Withdrawal request is been proccessed`,
+            link: `/dashboard/wallet`,
+            userImage: userInfo.image,
+          })
+        : payment.meta.Type === "Order Completed"
+        ? socket.emit("post_data", {
+            userId: payment.userId._id,
+            itemId: payment._id,
+            notifyType: "payment",
+            msg: `Your order paid`,
+            link: `/dashboard/wallet`,
+            userImage: userInfo.image,
+          })
+        : socket.emit("post_data", {
+            userId: payment.userId._id,
+            itemId: payment._id,
+            notifyType: "payment",
+            msg: `Your order return refunded`,
+            link: `/dashboard/wallet`,
+            userImage: userInfo.image,
+          });
     } catch (error) {}
   };
 
@@ -265,7 +284,7 @@ export default function PaymentScreen() {
         <ItemNum>
           <span style={{ marginRight: "20px" }}>
             {" "}
-            {payment.meta.typeName} id
+            {payment.meta.typeName} {payment.meta.id && "id"}
           </span>
           <Link to={`/order/${payment.meta.id}`}>{payment.meta.id}</Link>
         </ItemNum>

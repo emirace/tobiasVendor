@@ -9,11 +9,10 @@ export const resizeImage = (event, setinvalidImage, setuserInfo) => {
     setinvalidImage("Please select image.");
     return false;
   }
-
-  if (!imageFile.name.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG|gif)$/)) {
-    setinvalidImage("Please select valid image JPG,JPEG,PNG");
-    return false;
-  }
+  // if (!imageFile.name.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG|gif)$/)) {
+  //   setinvalidImage("Please select valid image JPG,JPEG,PNG");
+  //   return false;
+  // }
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
@@ -51,6 +50,7 @@ export const resizeImage = (event, setinvalidImage, setuserInfo) => {
             file: file,
             filepreview: URL.createObjectURL(imageFile),
           }));
+          console.log(file);
         },
         "image/jpeg",
         1

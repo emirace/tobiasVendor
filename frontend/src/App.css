@@ -908,8 +908,8 @@ a.font13 {
   box-shadow: none !important;
 }
 .form-check-input:checked {
-  background-color: black !important;
-  border-color: black;
+  background-color: var(--orange-color) !important;
+  border-color: var(--orange-color);
 }
 
 .nav_sell_btn {

@@ -123,7 +123,7 @@ const ColValue = styled.div`
 const DeliveryKey = styled.div`
   flex: 1;
   @media (max-width: 992px) {
-    flex: 2;
+    flex: 3;
   }
 `;
 const reducer = (state, action) => {
@@ -467,7 +467,14 @@ export default function PlaceOrderScreen() {
                         }}
                       >
                         <DeliveryKey>{key}:</DeliveryKey>
-                        <div style={{ flex: "5" }}>{value}</div>
+                        {key === "cost" ? (
+                          <div style={{ flex: "5" }}>
+                            {item.currency}
+                            {value}
+                          </div>
+                        ) : (
+                          <div style={{ flex: "5" }}>{value}</div>
+                        )}
                       </div>
                     ))}
                   </ListGroup.Item>

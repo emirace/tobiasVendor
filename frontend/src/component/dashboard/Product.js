@@ -11,6 +11,7 @@ import { Store } from "../../Store";
 import axios from "axios";
 import { getError } from "../../utils";
 import LoadingBox from "../LoadingBox";
+import MessageImage from "../MessageImage";
 
 const ProductC = styled.div`
   flex: 4;
@@ -1034,6 +1035,15 @@ export default function Product() {
                   4
                 </SelBox>
               </SelBoxGroup>
+              {userInfo.isAdmin ? (
+                product.luxury || product.vintage ? (
+                  <MessageImage src={product.vintageProof} />
+                ) : (
+                  ""
+                )
+              ) : (
+                ""
+              )}
             </div>
             <Button type="submit">Update</Button>
           </FormRight>

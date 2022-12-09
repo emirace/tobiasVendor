@@ -100,24 +100,24 @@ export const sendEmail = (options) => {
   //   },
   // });
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.office365.com",
+  //   port: 587,
 
-    auth: {
-      user: "tobias@repeddle.com",
-      pass: "jH4/&FS-WqJubdK",
-    },
-  });
-
-  // var transporter = nodemailer.createTransport({
-  //   host: "smtp.mailtrap.io",
-  //   port: 2525,
   //   auth: {
-  //     user: "aeef4e04706b4f",
-  //     pass: "1239ac3ae8cd9a",
+  //     user: "tobias@repeddle.com",
+  //     pass: "jH4/&FS-WqJubdK",
   //   },
   // });
+
+  var transporter = nodemailer.createTransport({
+    host: "smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: "aeef4e04706b4f",
+      pass: "1239ac3ae8cd9a",
+    },
+  });
 
   transporter.use(
     "compile",
@@ -125,7 +125,8 @@ export const sendEmail = (options) => {
       viewEngine: {
         extname: ".handlebars",
         partialsDir: path.resolve("./utils/layouts/"),
-        defaultLayout: false,
+        defaultLayout: "main",
+        layoutsDir: path.resolve("./utils/layouts/"),
       },
       viewPath: path.resolve("./utils/layouts/"),
       extName: ".handlebars",

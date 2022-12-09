@@ -66,6 +66,7 @@ const Button = styled.div`
 `;
 
 const UpdateAccount = styled.div`
+  padding: 40px;
   width: 100%;
   height: 100%;
   display: flex;

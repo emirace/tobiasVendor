@@ -100,8 +100,15 @@ const SalesUp = styled.span`
       props.mode === "pagebodylight" ? "black" : "white"} !important;
   }
 `;
+const InflucerComingCont = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 const InflucerComing = styled.img`
-  width: 100%;
+  width: 70%;
+  @media (max-width: 992px) {
+    width: 100%;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -475,7 +482,7 @@ export default function ProductsScreen() {
           </div>
         </AppSection>
 
-        <Section>
+        {/* <Section>
           <div className="product-title">
             <h2 className="product-category1">influencers Block</h2>
           </div>
@@ -490,10 +497,12 @@ export default function ProductsScreen() {
           ) : (
             "Coming soon"
           )}
-        </Section>
-        {/* <Section>
-          <InflucerComing src=""></InflucerComing>
         </Section> */}
+        <Section>
+          <InflucerComingCont>
+            <InflucerComing src="https://res.cloudinary.com/emirace/image/upload/v1670561126/20221127_190952_0000_930_1_ftrpnf.webp" />
+          </InflucerComingCont>
+        </Section>
 
         <section className="discount spad">
           <div className="container">
