@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import {
+  faBolt,
   faCalendarDays,
   faDotCircle,
   faEnvelope,
@@ -409,6 +410,17 @@ const Option = styled.div`
   justify-content: space-between;
 `;
 
+const Status = styled.div`
+  & svg {
+    margin-right: 10px;
+  }
+  &.active {
+    color: var(--orange-color);
+  }
+  &.banned {
+    color: var(--malon-color);
+  }
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -692,6 +704,12 @@ export default function User() {
                 <UserTitle>
                   {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
                 </UserTitle>
+                <Status className="active">
+                  <FontAwesomeIcon icon={faBolt} /> Active
+                </Status>
+                <Status className="banned">
+                  <FontAwesomeIcon icon={faBolt} /> Banned
+                </Status>
               </TopTitle>
             </div>
             <Wallet mode={mode}>

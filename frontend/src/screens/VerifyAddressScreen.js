@@ -37,6 +37,7 @@ export default function VerifyAddressScreen() {
             apartment: input.apartment,
             zipcode: input.zipcode,
           },
+          isSeller: true,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

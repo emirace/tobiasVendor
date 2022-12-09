@@ -382,7 +382,9 @@ export default function Return({
                 <Details1>
                   <Name>{current.name}</Name>
                   <Quantity>QTY: {current.quantity}</Quantity>
-                  <ItemPrice>$ {current.price}</ItemPrice>
+                  <ItemPrice>
+                    {current.currency} {current.actualPrice}
+                  </ItemPrice>
                 </Details1>
               </OrderItem>
             ) : (
@@ -416,7 +418,9 @@ export default function Return({
                 <Details1>
                   <Name>{current.name}</Name>
                   <Quantity>QTY: {current.quantity}</Quantity>
-                  <ItemPrice>$ {current.price}</ItemPrice>
+                  <ItemPrice>
+                    {current.currency} {current.actualPrice}
+                  </ItemPrice>
                 </Details1>
               </OrderItem>
             ) : (

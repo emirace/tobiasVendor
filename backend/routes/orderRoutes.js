@@ -727,6 +727,16 @@ orderRouter.put(
           email_address: req.body.email_address,
         };
         const updateOrder = await order.save();
+        const user = await User.findById(req.user._id);
+        if (user) {
+          if (user.rebundleSellers.find((x) => x.userId === req.user._id)) {
+          } else {
+            sellers.map((seller) => {
+              user.rebundleSellers.push(seller);
+            });
+          }
+          await user.save();
+        }
         sendEmail({
           to: order.user.email,
           subject: "PROCESSING YOUR ORDER",

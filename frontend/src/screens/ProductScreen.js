@@ -58,6 +58,7 @@ import Product from "../component/Product";
 import { socket } from "../App";
 import MagnifyImage from "../component/MagnifyImage";
 import RebundlePoster from "../component/RebundlePoster";
+import RebundleLabel from "../component/RebundleLabel";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -1037,6 +1038,7 @@ export default function ProductScreen() {
       <Helmet>
         <title>{product.name}</title>
       </Helmet>
+      <RebundleLabel userId={product.seller._id} />
       <div className="single_product_container">
         <div className="single_product_left">
           {[product.image, ...product.images].map(
@@ -1124,6 +1126,7 @@ export default function ProductScreen() {
 
         <div className="single_product_right">
           <div className="single_product_seller">
+            {console.log(product)}
             <img src={product.seller.image} alt={product.seller.username} />
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
@@ -1132,7 +1135,7 @@ export default function ProductScreen() {
                 </Link>
               </div>
               <div>
-                {product.seller?.state},
+                {product.seller?.address?.state},
                 {product.seller.region === "NGN" ? "Nigeria" : "South African"}
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>

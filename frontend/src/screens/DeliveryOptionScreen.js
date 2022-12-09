@@ -326,6 +326,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   const validation = (e) => {
     e.preventDefault();
     var valid = true;
+    if (!deliveryOption) {
+      valid = false;
+    }
     if (deliveryOption === "Paxi PEP store") {
       if (!meta.phone) {
         setValidationError({

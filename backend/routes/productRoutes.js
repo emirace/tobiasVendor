@@ -17,10 +17,9 @@ const productRouter = express.Router();
 
 productRouter.get("/:region/all", async (req, res) => {
   const { region } = req.params;
-  const products = await Product.find({ region, active: true }).populate(
-    "seller",
-    "_id username"
-  );
+  const products = await Product.find({ region, active: true })
+    .sort({ createdAt: -1 })
+    .populate("seller", "_id username");
   res.send(products);
 });
 

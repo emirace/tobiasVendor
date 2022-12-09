@@ -91,7 +91,13 @@ userRouter.put(
         if (req.body.password) {
           user.password = bcrypt.hashSync(req.body.password, 8);
         }
+        if (user.address && user.bankName) {
+          user.isSeller = true;
+        } else {
+          user.isSeller = false;
+        }
         const updatedUser = await user.save();
+
         res.send({
           _id: updatedUser._id,
           name: updatedUser.name,
@@ -820,6 +826,7 @@ userRouter.get(
         rating: user.rating,
         phone: user.phone,
         isAdmin: user.isAdmin,
+        isSeller: user.isSeller,
         address: user.address,
         active: user.active,
         isVerifiedEmail: user.isVerifiedEmail,

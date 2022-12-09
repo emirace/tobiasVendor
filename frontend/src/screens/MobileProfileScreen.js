@@ -151,9 +151,9 @@ const Badge = styled.span`
   color: #fff;
   font-size: 10px;
   border-radius: 50%;
-  position: absolute;
+  /* position: absolute;
   right: 20px;
-  top: 5px;
+  top: 5px; */
   cursor: default;
 `;
 
@@ -275,11 +275,11 @@ export default function MobileProfileScreen() {
         </MobileMenuItem>
       </Link>
       <Link to="/dashboard/returns">
-        <MobileMenuItem 
+        <MobileMenuItem
         // onClick={() => {
         //                   socket.emit("remove_id_notifications", not._id);
         //                 ""}}
-                        >
+        >
           <FontAwesomeIcon icon={faArrowRotateLeft} />
           My Returns
           {returnNotification.length > 0 && (

@@ -75,6 +75,7 @@ const Input = styled.input`
   padding: 5px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-1)" : "var(--light-ev1)"};
+  color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
   &:focus-visible {
     outline: none;
   }

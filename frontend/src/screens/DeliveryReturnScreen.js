@@ -212,7 +212,11 @@ export default function DeliveryReturnScreen({
           );
         }
       }
-      const deliverySelect = { deliveryOption, cost: value, ...meta };
+      const deliverySelect = {
+        "delivery Option": deliveryOption,
+        cost: value,
+        ...meta,
+      };
       if (userInfo) {
         const { data } = await axios.put(
           `/api/returns/${returned._id}`,

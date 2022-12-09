@@ -25,6 +25,7 @@ import FeeStructure from "../info/FeeStructure";
 import { Helmet } from "react-helmet-async";
 import DeliveryOption from "./DeliveryOption";
 import { resizeImage } from "../ImageUploader";
+import VideoTrimmer from "../VideoTrimmer";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -157,8 +158,13 @@ const ImageRow = styled.div`
 `;
 const LuxuryImgCont = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
 `;
 const Close = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 30px;
   width: 30px;
   position: absolute;
@@ -202,6 +208,11 @@ const SmallImage = styled.img`
   object-position: top;
   border-radius: 0.2rem;
   object-fit: cover;
+`;
+const ImageCont = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
 `;
 const AddImage = styled.label`
   cursor: pointer;
@@ -1405,7 +1416,6 @@ export default function NewProduct() {
                           <SizeInput
                             placeholder="qty"
                             mode={mode}
-                            value={currentSizeValue}
                             onChange={(e) =>
                               smallSizeHandler(s.size, e.target.value)
                             }
@@ -1574,7 +1584,12 @@ export default function NewProduct() {
               <ImageRow>
                 <BigImageC mode={mode}>
                   {image1 ? (
-                    <BigImage src={image1} alt="product image" />
+                    <ImageCont>
+                      <Close onClick={() => setImage1("")}>
+                        <FontAwesomeIcon icon={faClose} />
+                      </Close>
+                      <BigImage src={image1} alt="product image" />
+                    </ImageCont>
                   ) : (
                     <AddImage
                       onClick={() => {
@@ -1597,7 +1612,12 @@ export default function NewProduct() {
                 </BigImageC>
                 <BigImageC mode={mode}>
                   {image2 ? (
-                    <BigImage src={image2} alt="product image" />
+                    <ImageCont>
+                      <Close onClick={() => setImage2("")}>
+                        <FontAwesomeIcon icon={faClose} />
+                      </Close>
+                      <BigImage src={image2} alt="product image" />
+                    </ImageCont>
                   ) : (
                     <AddImage
                       onClick={() => {
@@ -1621,7 +1641,12 @@ export default function NewProduct() {
                 <SmallImageRow>
                   <SmallImageC mode={mode}>
                     {image3 ? (
-                      <SmallImage src={image3} alt="product image" />
+                      <ImageCont>
+                        <Close onClick={() => setImage3("")}>
+                          <FontAwesomeIcon icon={faClose} />
+                        </Close>
+                        <SmallImage src={image3} alt="product image" />
+                      </ImageCont>
                     ) : (
                       <AddImage
                         onClick={() => {
@@ -1644,7 +1669,12 @@ export default function NewProduct() {
                   </SmallImageC>
                   <SmallImageC mode={mode}>
                     {image4 ? (
-                      <SmallImage src={image4} alt="product image" />
+                      <ImageCont>
+                        <Close onClick={() => setImage4("")}>
+                          <FontAwesomeIcon icon={faClose} />
+                        </Close>
+                        <SmallImage src={image4} alt="product image" />
+                      </ImageCont>
                     ) : (
                       <AddImage
                         onClick={() => {
@@ -1679,7 +1709,9 @@ export default function NewProduct() {
                     <ModelLogin
                       setShowModel={setShowUploadingVideo}
                       showModel={showUploadingVideo}
-                    ></ModelLogin>
+                    >
+                      <VideoTrimmer />
+                    </ModelLogin>
                   </SmallImageC>
                 </SmallImageRow>
               </ImageRow>
@@ -1712,6 +1744,7 @@ export default function NewProduct() {
                     fontWeight: "bold",
                     textTransform: "uppercase",
                   }}
+                  onClick={() => setShowUploadingVideo(true)}
                 >
                   Add a short video
                 </label>
@@ -1724,7 +1757,7 @@ export default function NewProduct() {
                   Please note: Image size should be less than 8MB.
                 </span>
               </TitleDetails>
-              <input
+              {/* <input
                 type="file"
                 onChange={(e) => {
                   // videouploadHandler(e);
@@ -1732,7 +1765,7 @@ export default function NewProduct() {
                 }}
                 id="video"
                 style={{ display: "none" }}
-              />
+              /> */}
               <ImageRow>
                 <VintageCont>
                   <ItemCheck>

@@ -33,6 +33,7 @@ import { socket } from "../App";
 import Model from "../component/Model";
 import DeliveryHistory from "../component/DeliveryHistory";
 import {
+  faCheck,
   faCommentsDollar,
   faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
@@ -41,12 +42,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Main = styled.div`
   margin: 20px;
   padding: 20px 5vw 0 5vw;
-  background: white;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin: 10px;
     padding: 10px 5px 0 5px;
-    background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+  }
+  @media print {
+    background: white;
+    color: black;
   }
 `;
 const Container = styled.div`
@@ -100,6 +104,8 @@ const SumaryContDetails = styled.div`
     padding: 10px 15px;
   }
   @media print {
+    background: white;
+    color: black;
     margin-bottom: 5px;
     padding: 5px;
   }
@@ -109,6 +115,11 @@ const SumaryCont = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+
+  @media print {
+    background: white;
+    color: black;
+  }
 `;
 const OrderId = styled.div`
   font-weight: bold;
@@ -181,6 +192,7 @@ const ActionButton = styled.div`
   flex: 2;
   @media print {
     display: none;
+    margin-bottom: 10px;
   }
 `;
 const DetailButton = styled.div`
@@ -188,6 +200,7 @@ const DetailButton = styled.div`
   justify-content: center;
   @media (max-width: 992px) {
     flex-direction: column;
+    margin-bottom: 10px;
   }
 `;
 
@@ -366,6 +379,22 @@ const SubSumaryContDetails = styled.div`
   width: 100%;
   @media (max-width: 992px) {
     flex-direction: column;
+  }
+`;
+
+const IconCont = styled.div`
+  background: var(--orange-color);
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  &:hover {
+    color: var(--malon-color);
   }
 `;
 
@@ -843,17 +872,21 @@ export default function OrderScreen() {
                     <SetStatus>
                       {enterwaybil ? (
                         <TrackingCont>
-                          <label>Enter Tracking number </label>
                           <TextInput
                             mode={mode}
+                            placeholder="Enter Tracking number"
                             value={waybillNumber}
                             type="text"
                             onChange={(e) => setWaybillNumber(e.target.value)}
                           />
-                          <FontAwesomeIcon
-                            icon={faSquareCheck}
-                            onClick={() => comfirmWaybill(orderitem)}
-                          />
+                          <IconCont
+                            style={{ background: "var(--orange-color)" }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCheck}
+                              onClick={() => comfirmWaybill(orderitem)}
+                            />
+                          </IconCont>
                         </TrackingCont>
                       ) : (
                         <>
@@ -1061,7 +1094,6 @@ export default function OrderScreen() {
                       ) : (
                         <div>{value}</div>
                       )}
-                      <div>{value}</div>
                     </div>
                   )
                 )}

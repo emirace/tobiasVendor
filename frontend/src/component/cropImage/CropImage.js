@@ -62,6 +62,9 @@ const Done = styled.label`
   border-radius: 0.2rem;
   text-transform: capitalize;
   padding: 3px 5px;
+  &:hover {
+    background: var(--malon-color);
+  }
 `;
 
 // const imageMaxSize = 1000000000; // bytes

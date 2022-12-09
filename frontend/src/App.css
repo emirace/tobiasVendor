@@ -1012,3 +1012,8 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+@media (max-width: 992px) {
+  .css-1km1ehz {
+    font-size: 11px !important;
+  }
+}

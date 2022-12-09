@@ -22,6 +22,11 @@ const buyerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const rebundleSellerSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  createdAt: { type: Date, expires: 3600 * 2, default: Date.now() },
+});
+
 const userSchema = new mongoose.Schema(
   {
     username: { type: String, required: true, unique: true },
@@ -43,7 +48,8 @@ const userSchema = new mongoose.Schema(
     activeUpdate: { type: Date, default: Date.now() },
     usernameUpdate: { type: Date },
     reviews: [reviewSchema],
-    buyers: { buyerSchema },
+    buyers: [buyerSchema],
+    rebundleSellers: [rebundleSellerSchema],
     rating: { type: Number, default: 0 },
     wallet: { type: Number, default: 0 },
     accountNumber: { type: Number },
