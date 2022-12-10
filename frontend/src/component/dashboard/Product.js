@@ -88,11 +88,17 @@ const Name = styled.div`
 const InfoItem = styled.div`
   width: 50%;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
-const InfoKey = styled.span``;
+const InfoKey = styled.span`
+  text-transform: capitalize;
+  flex: 1;
+`;
 const InfoValue = styled.span`
   font-weight: 300;
+  text-transform: capitalize;
+  flex: 1;
 `;
 
 const Form = styled.form`
@@ -454,7 +460,7 @@ export default function Product() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (product.sold) {
+    if (product.sold && !userInfo.isAdmin) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -501,7 +507,9 @@ export default function Product() {
           state1: "visible1 success",
         },
       });
-      navigate("/dashboard/productlist");
+      userInfo !== product.seller._id
+        ? navigate("/admin/allProductList/")
+        : navigate("/dashboard/productlist");
     } catch (err) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -648,8 +656,14 @@ export default function Product() {
               </InfoValue>
             </InfoItem>
             <InfoItem>
-              <InfoKey>active:</InfoKey>
-              <InfoValue>{product.active ? "yes" : "no"}</InfoValue>
+              <InfoKey>product status:</InfoKey>
+              <InfoValue
+                style={{
+                  color: product.active ? "green" : "var(--malon-color)",
+                }}
+              >
+                {product.active ? "active" : "not active"}
+              </InfoValue>
             </InfoItem>
             <InfoItem>
               <InfoKey>in stock:</InfoKey>
@@ -1034,10 +1048,11 @@ export default function Product() {
                 <SelBox onClick={() => setCurrentImage("image4")} mode={mode}>
                   4
                 </SelBox>
+                {console.log("i am a", product)}
               </SelBoxGroup>
               {userInfo.isAdmin ? (
                 product.luxury || product.vintage ? (
-                  <MessageImage src={product.vintageProof} />
+                  <MessageImage url={product.luxuryImage} />
                 ) : (
                   ""
                 )

@@ -1135,7 +1135,7 @@ export default function ProductScreen() {
                 </Link>
               </div>
               <div>
-                {product.seller?.address?.state},
+                {product.seller?.address?.state},{" "}
                 {product.seller.region === "NGN" ? "Nigeria" : "South African"}
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>

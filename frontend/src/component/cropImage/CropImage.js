@@ -210,8 +210,6 @@ export default function CropImage({
   const handleResize = async (e) => {
     resizeImage(e, setInvalidImage, setResizeImage);
     console.log("hhggggghhhh");
-    setResizeImage({ file: ["hello"] });
-    console.log("bbbbbbbb");
   };
 
   const showCroppedImage = useCallback(async () => {

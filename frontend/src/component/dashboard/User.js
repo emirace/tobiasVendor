@@ -704,12 +704,15 @@ export default function User() {
                 <UserTitle>
                   {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
                 </UserTitle>
-                <Status className="active">
-                  <FontAwesomeIcon icon={faBolt} /> Active
-                </Status>
-                <Status className="banned">
-                  <FontAwesomeIcon icon={faBolt} /> Banned
-                </Status>
+                {user.active ? (
+                  <Status className="active">
+                    <FontAwesomeIcon icon={faBolt} /> Active
+                  </Status>
+                ) : (
+                  <Status className="banned">
+                    <FontAwesomeIcon icon={faBolt} /> Banned
+                  </Status>
+                )}
               </TopTitle>
             </div>
             <Wallet mode={mode}>

@@ -168,8 +168,8 @@ const Close = styled.div`
   height: 30px;
   width: 30px;
   position: absolute;
-  top: -15px;
-  right: -15px;
+  top: 0;
+  right: 0;
   border-radius: 50%;
   background: var(--malon-color);
 `;
@@ -874,7 +874,7 @@ export default function NewProduct() {
       } else if (fileType === "image4") {
         setImage4(data.secure_url);
       } else if (fileType === "luxury") {
-        setLuxury(data.secure_url);
+        setLuxuryImage(data.secure_url);
       } else {
       }
       ctxDispatch({
@@ -921,7 +921,7 @@ export default function NewProduct() {
       try {
         if (!invalidImage && resizeImage1.filepreview) {
           await uploadHandler(resizeImage1.file, "luxury");
-          setLuxuryImage(resizeImage1.filepreview);
+          // setLuxuryImage(resizeImage1.filepreview);
         }
       } catch (err) {
         console.log(getError(err));

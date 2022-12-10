@@ -56,12 +56,7 @@ const productSchema = new mongoose.Schema(
     active: { type: Boolean },
     vintage: { type: Boolean },
     luxury: { type: Boolean },
-    vintageProof: {
-      shop: { type: String },
-      date: { type: String },
-      image: { type: String },
-      sesrialNumber: { type: String },
-    },
+    luxuryImage: { type: String },
     countInStock: { type: Number, required: true },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
     productId: { type: String },
