@@ -312,8 +312,8 @@ export default function PaymentScreen() {
                   fontSize: "13px",
                 }}
               >
-                <div style={{ flex: "2" }}>{key}:</div>
-                <div style={{ flex: "5" }}>{value}</div>
+                <div style={{ flex: "1" }}>{key}:</div>
+                <div style={{ flex: "1" }}>{value}</div>
               </div>
             ))}
             <hr />

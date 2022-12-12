@@ -9,7 +9,6 @@ import React, {
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
-import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -204,6 +203,16 @@ const Sustainbold = styled.span`
   font-size: 16px;
   font-weight: bold;
 `;
+
+const Imagediv = styled.div`
+  position: relative;
+`;
+
+const Badge = styled.img`
+  width: 20px;
+  object-fit: cover;
+`;
+
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
@@ -1127,7 +1136,14 @@ export default function ProductScreen() {
         <div className="single_product_right">
           <div className="single_product_seller">
             {console.log(product)}
-            <img src={product.seller.image} alt={product.seller.username} />
+            <Imagediv>
+              <img src={product.seller.image} alt={product.seller.username} />
+              {product.seller.badge && (
+                <div className="seller_profile_badge">
+                  <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
+                </div>
+              )}
+            </Imagediv>
             <div className="single_product_seller_detail">
               <div className="single_product_seller_name">
                 <Link to={`/seller/${product.seller._id}`}>
@@ -1136,7 +1152,7 @@ export default function ProductScreen() {
               </div>
               <div>
                 {product.seller?.address?.state},{" "}
-                {product.seller.region === "NGN" ? "Nigeria" : "South African"}
+                {product.seller.region === "NGN" ? "Nigeria" : "South Africa"}
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
@@ -1287,7 +1303,6 @@ export default function ProductScreen() {
                         }  `}
                         onClick={() => sizeHandler(size.size, size.name)}
                       >
-                        {console.log("k")}
                         {size.size}
                       </label>
                     </span>
@@ -1299,7 +1314,6 @@ export default function ProductScreen() {
                   >
                     size chart{" "}
                   </span>
-                  {console.log("hello")}
 
                   <ModelLogin
                     showModel={sizechartModel}
@@ -1357,7 +1371,6 @@ export default function ProductScreen() {
                     <Value>{product.subCategory || "nal"}</Value>
                     <Value>{product.color || "nal"}</Value>
                     <Value>{product.size || "nal"}</Value>
-                    {console.log("hello")}
                   </RightOverview>
                 </Overview>
               </div>
@@ -1403,7 +1416,6 @@ export default function ProductScreen() {
                   shipping ? "active" : ""
                 } sp_detail_section_f`}
               >
-                {console.log("hello")}
                 <div
                   className="sp_detail_title "
                   onClick={() => toggleCollapse("shipping")}

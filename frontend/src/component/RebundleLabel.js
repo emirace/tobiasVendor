@@ -1,9 +1,10 @@
 import { faBoltLightning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import styled from "styled-components";
+import { Store } from "../Store";
 
 const Container = styled.div`
   position: fixed;
@@ -19,16 +20,36 @@ const Container = styled.div`
   font-size: 12px;
 `;
 export default function RebundleLabel({ userId }) {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const [restart, setRestart] = useState(Math.random());
-  const [countdown, setCountdown] = useState(false);
+  const [countdown, setCountdown] = useState(true);
   const [rebundleList, setRebundleList] = useState([]);
+  const [show, setShow] = useState(false);
+  const [seller, setSeller] = useState("");
 
   useEffect(() => {
+    console.log("hello11111");
     const getRebundleList = async () => {
-      const { data } = await axios.get("/api/");
+      console.log("hello");
+      if (userInfo) {
+        console.log("hello2222");
+        try {
+          const { data } = await axios.get(`/api/users/checkbundle/${userId}`, {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          console.log("hello333");
+
+          setShow(data.success);
+          setSeller(data.seller);
+          console.log(data);
+        } catch (err) {
+          console.log(err);
+        }
+      }
     };
     getRebundleList();
-  }, []);
+  }, [userInfo]);
 
   const renderer = ({ hours, minutes, seconds, completed }) => {
     if (completed) {
@@ -45,10 +66,10 @@ export default function RebundleLabel({ userId }) {
     }
   };
 
-  return (
+  return true ? (
     <Container>
       <div>
-        REBUNDLE{" "}
+        REBUNDLE {console.log("hello")}
         <FontAwesomeIcon
           style={{ marginLeft: "10px" }}
           icon={faBoltLightning}
@@ -61,5 +82,7 @@ export default function RebundleLabel({ userId }) {
         renderer={renderer}
       />
     </Container>
+  ) : (
+    ""
   );
 }

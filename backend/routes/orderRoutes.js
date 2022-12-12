@@ -689,35 +689,34 @@ orderRouter.put(
         path: "user",
         select: "email username",
       });
-      const products = [];
-      const sellers = [];
-      order.orderItems.map((i) => products.push(i._id));
-      const records = await Product.find({
-        _id: { $in: products },
-      });
-      order.orderItems.forEach((element) => {
-        if (!sellers.includes(element.seller)) {
-          sellers.push(element.seller);
-        }
-      });
-      console.log(sellers);
-      records.map(async (p) => {
-        p.sold = true;
-        p.countInStock =
-          p.countInStock -
-          order.orderItems.map((x) => {
-            if (p._id.toString() === x._id) return x.quantity;
-          });
-        p.userBuy.push(req.user._id);
-
-        const seller = await User.findById(p.seller);
-        seller.sold.push(p._id);
-        seller.earnings = seller.earnings + p.actualPrice;
-        await seller.save();
-        await p.save();
-      });
-
       if (order) {
+        const products = [];
+        const sellers = [];
+        order.orderItems.map((i) => products.push(i._id));
+        const records = await Product.find({
+          _id: { $in: products },
+        });
+        order.orderItems.forEach((element) => {
+          if (!sellers.includes(element.seller)) {
+            sellers.push(element.seller);
+          }
+        });
+        records.map(async (p) => {
+          p.sold = true;
+          p.countInStock =
+            p.countInStock -
+            order.orderItems.map((x) => {
+              if (p._id.toString() === x._id) return x.quantity;
+            });
+          p.userBuy.push(req.user._id);
+
+          const seller = await User.findById(p.seller);
+          seller.sold.push(p._id);
+          seller.earnings = seller.earnings + p.actualPrice;
+          await seller.save();
+          await p.save();
+        });
+
         order.isPaid = true;
         order.paidAt = Date.now();
         order.paymentResult = {

@@ -1710,7 +1710,10 @@ export default function NewProduct() {
                       setShowModel={setShowUploadingVideo}
                       showModel={showUploadingVideo}
                     >
-                      <VideoTrimmer />
+                      <VideoTrimmer
+                        dispatch={dispatch}
+                        ctxDispatch={ctxDispatch}
+                      />
                     </ModelLogin>
                   </SmallImageC>
                 </SmallImageRow>

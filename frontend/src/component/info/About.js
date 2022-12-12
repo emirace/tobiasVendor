@@ -83,8 +83,8 @@ const Image2Cont = styled.div`
 `;
 const DownloadCont = styled.img`
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 10px;
+  right: 10px;
   width: 40%;
 `;
 

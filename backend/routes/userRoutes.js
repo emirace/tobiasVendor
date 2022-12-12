@@ -67,6 +67,29 @@ userRouter.put(
   })
 );
 
+userRouter.get(
+  "/checkbundle/:seller",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log("rebundle", req.params.seller);
+    const user = await User.findById(req.user._id);
+    console.log("rebundle", req.user);
+    if (user) {
+      console.log("rebundle-ijjji", req.params.seller);
+      console.log(user.rebundleSellers);
+      const exist = user.rebundleSellers.filter(
+        (seller) => seller.userId === req.params.seller
+      );
+
+      if (exist) {
+        res.status(200).send({ success: true, seller: exist[0] });
+      } else {
+        res.status(500).send({ success: false });
+      }
+    }
+  })
+);
+
 userRouter.put(
   "/profile",
   isAuth,
@@ -650,6 +673,7 @@ userRouter.get(
         following: user.following,
         likes: user.likes,
         saved: user.saved,
+        isSeller: user.isSeller,
         sold: user.sold,
         createdAt: user.createdAt,
         numReviews: user.numReviews,
