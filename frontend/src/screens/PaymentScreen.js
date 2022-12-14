@@ -81,6 +81,15 @@ const Image = styled.img`
   border-radius: 50%;
 `;
 
+const BankRow = styled.div`
+  display: flex;
+  text-transform: capitalize;
+  font-size: 13px;
+`;
+const BankKey = styled.div``;
+const BankValue = styled.div`
+  margin-left: 5px;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "GET_REQUEST":
@@ -304,18 +313,18 @@ export default function PaymentScreen() {
         {payment.meta.to === "Account" && (
           <>
             <Name>Bank Account Details</Name>
-            {Object.entries(payment.meta.detail).map(([key, value]) => (
-              <div
-                style={{
-                  display: "flex",
-                  textTransform: "capitalize",
-                  fontSize: "13px",
-                }}
-              >
-                <div style={{ flex: "1" }}>{key}:</div>
-                <div style={{ flex: "1" }}>{value}</div>
-              </div>
-            ))}
+            <BankRow>
+              <BankKey>Account Name:</BankKey>{" "}
+              <BankValue>{payment.meta.detail.accountName}</BankValue>
+            </BankRow>
+            <BankRow>
+              <BankKey>Account Number:</BankKey>{" "}
+              <BankValue>{payment.meta.detail.accountNumber}</BankValue>
+            </BankRow>
+            <BankRow>
+              <BankKey>Bank Name:</BankKey>{" "}
+              <BankValue>{payment.meta.detail.bankName}</BankValue>
+            </BankRow>
             <hr />
           </>
         )}

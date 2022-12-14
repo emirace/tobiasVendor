@@ -114,7 +114,9 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
     <Container>
       {console.log("share", shareUrl)}
       <FacebookShareButton
-        quote={"Hey! Look what I found on Repeddle "}
+        quote={
+          "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
+        }
         hashtag={"#Repeddle"}
         url={shareUrl}
         onShareWindowClose={handleShare}
@@ -123,7 +125,7 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </FacebookShareButton>
       <EmailShareButton
         subject="Repeddle"
-        body="Hey! Look what i found on Repeddle "
+        body="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
         url={shareUrl}
         onShareWindowClose={handleShare}
       >
@@ -131,13 +133,17 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </EmailShareButton>
       <WhatsappShareButton
         url={shareUrl}
-        title={"Hey! Look what I found on Repeddle "}
+        title={
+          "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
+        }
         onShareWindowClose={handleShare}
       >
         <WhatsappIcon size={32} round={true} />
       </WhatsappShareButton>
       <TwitterShareButton
-        title={"Hey! Look what I found on Repeddle "}
+        title={
+          "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
+        }
         hashtags={["Repeddle"]}
         url={shareUrl}
         onShareWindowClose={handleShare}
@@ -146,7 +152,9 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
       </TwitterShareButton>
       <TelegramShareButton
         url={shareUrl}
-        title={"Hey! Look what I found on Repeddle "}
+        title={
+          "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
+        }
         onShareWindowClose={handleShare}
       >
         <TelegramIcon size={32} round={true} />
@@ -156,15 +164,16 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
         url={shareUrl}
         media={product.image}
         onShareWindowClose={handleShare}
-        description="Hey! Look what I found on Repeddle "
+        description="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
       >
         <PinterestIcon size={32} round={true} />
       </PinterestShareButton>
       <LinkedinShareButton
-        title="Hey! Look what I found on Repeddle "
+        title="Repeddle"
         url={shareUrl}
         source={shareUrl}
-        description="Hey! Look what I found on Repeddle "
+        summary="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items"
+        description="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items "
         onShareWindowClose={handleShare}
       >
         <LinkedinIcon size={32} round={true} />

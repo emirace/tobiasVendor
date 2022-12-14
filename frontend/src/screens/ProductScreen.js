@@ -209,8 +209,10 @@ const Imagediv = styled.div`
 `;
 
 const Badge = styled.img`
-  width: 20px;
-  object-fit: cover;
+  width: 20px !important;
+  height: 23px !important;
+  object-fit: cover !important;
+  border-radius: 0 !important;
 `;
 
 export default function ProductScreen() {
@@ -351,7 +353,7 @@ export default function ProductScreen() {
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    if (!selectSize && product?.sizes > 0) {
+    if (!selectSize && product?.sizes.length > 0) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -1047,7 +1049,10 @@ export default function ProductScreen() {
       <Helmet>
         <title>{product.name}</title>
       </Helmet>
-      <RebundleLabel userId={product.seller._id} />
+      <RebundleLabel
+        userId={product.seller._id}
+        active={product.seller.rebundle}
+      />
       <div className="single_product_container">
         <div className="single_product_left">
           {[product.image, ...product.images].map(
@@ -1139,7 +1144,10 @@ export default function ProductScreen() {
             <Imagediv>
               <img src={product.seller.image} alt={product.seller.username} />
               {product.seller.badge && (
-                <div className="seller_profile_badge">
+                <div
+                  className="seller_profile_badge"
+                  style={{ right: "0px", bottom: "0px" }}
+                >
                   <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
                 </div>
               )}

@@ -356,7 +356,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          phone: "Select province",
+          province: "Select province",
         });
         valid = false;
       }
@@ -379,7 +379,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          phone: "Select province",
+          province: "Select province",
         });
         valid = false;
       }
@@ -444,7 +444,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          phone: "Select province",
+          province: "Select province",
         });
         valid = false;
       }

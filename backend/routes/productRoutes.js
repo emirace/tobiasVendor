@@ -793,7 +793,7 @@ productRouter.get("/slug/:slug", async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })
     .populate(
       "seller",
-      "username rebundle email image sold slug rating numReviews address region lastName firstName"
+      "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
     )
     .populate("reviews.name", "username image");
   if (product) {

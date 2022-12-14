@@ -25,6 +25,7 @@ const buyerSchema = new mongoose.Schema(
 const rebundleSellerSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, expires: 3600 * 2, default: Date.now() },
+  count: { type: Number, default: 3 },
 });
 
 const userSchema = new mongoose.Schema(

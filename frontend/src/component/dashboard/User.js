@@ -421,6 +421,15 @@ const Status = styled.div`
     color: var(--malon-color);
   }
 `;
+
+const Imagediv = styled.div`
+  position: relative;
+`;
+
+const Badge = styled.img`
+  width: 20px !important;
+  object-fit: cover !important;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -696,7 +705,17 @@ export default function User() {
         <Show mode={mode}>
           <ShowTop>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <Image src={user.image} alt="p" />
+              <Imagediv>
+                <Image src={user.image} alt="p" />
+                {user.badge && (
+                  <div
+                    className="seller_profile_badge"
+                    style={{ right: "0px", bottom: "0px" }}
+                  >
+                    <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
+                  </div>
+                )}
+              </Imagediv>
               <TopTitle>
                 <Name>
                   {user.name || user.firstName} {user.lastName}

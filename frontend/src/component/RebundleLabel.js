@@ -19,7 +19,7 @@ const Container = styled.div`
   border-bottom-left-radius: 25px;
   font-size: 12px;
 `;
-export default function RebundleLabel({ userId }) {
+export default function RebundleLabel({ userId, active }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [restart, setRestart] = useState(Math.random());
@@ -60,28 +60,33 @@ export default function RebundleLabel({ userId }) {
       return (
         <span>
           {" "}
-          {minutes}min : {seconds}secs
+          {hours}hrs : {minutes}mins : {seconds}secs
         </span>
       );
     }
   };
 
-  return true ? (
-    <Container>
-      <div>
-        REBUNDLE {console.log("hello")}
-        <FontAwesomeIcon
-          style={{ marginLeft: "10px" }}
-          icon={faBoltLightning}
+  return active ? (
+    show ? (
+      <Container>
+        <div>
+          REBUNDLE {console.log("hello")}
+          <FontAwesomeIcon
+            style={{ marginLeft: "10px" }}
+            icon={faBoltLightning}
+          />
+        </div>
+        {console.log(seller.createdAt, Date.now())}
+        <Countdown
+          date={Date.now() + 7200000}
+          key={restart}
+          onComplete={() => setCountdown(false)}
+          renderer={renderer}
         />
-      </div>
-      <Countdown
-        date={Date.now() + 1200000}
-        key={restart}
-        onComplete={() => setCountdown(false)}
-        renderer={renderer}
-      />
-    </Container>
+      </Container>
+    ) : (
+      ""
+    )
   ) : (
     ""
   );

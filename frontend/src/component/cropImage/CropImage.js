@@ -4,6 +4,7 @@ import Cropper from "react-easy-crop";
 import { getCroppedImg, getRotatedImage } from "./cropImage1";
 import { getError } from "../../utils";
 import { resizeImage } from "../ImageUploader";
+import LoadingBox from "../LoadingBox";
 // import { getOrientation } from "get-orientation/browser";
 
 // import ReactCrop, {
@@ -192,16 +193,18 @@ export default function CropImage({
     file: [],
     filepreview: null,
   });
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const uploadImage = async () => {
-      console.log("files", invalidImage, resizeImage1);
       try {
         if (!invalidImage && resizeImage1.filepreview) {
           await uploadHandler(resizeImage1.file, currentImage);
+          setLoading(false);
           setShowModel(false);
         }
       } catch (err) {
         console.log(getError(err));
+        setLoading(false);
       }
     };
     uploadImage();
@@ -209,10 +212,10 @@ export default function CropImage({
 
   const handleResize = async (e) => {
     resizeImage(e, setInvalidImage, setResizeImage);
-    console.log("hhggggghhhh");
   };
 
   const showCroppedImage = useCallback(async () => {
+    setLoading(true);
     try {
       const croppedImage = await getCroppedImg(
         imageSrc,
@@ -313,7 +316,11 @@ export default function CropImage({
           alignItems: "flex-end",
         }}
       >
-        <Done onClick={showCroppedImage}>Done</Done>
+        {loading ? (
+          <LoadingBox />
+        ) : (
+          <Done onClick={showCroppedImage}>Done</Done>
+        )}
       </div>
     </Container>
   );

@@ -731,7 +731,7 @@ orderRouter.put(
           if (user.rebundleSellers.find((x) => x.userId === req.user._id)) {
           } else {
             sellers.map((seller) => {
-              user.rebundleSellers.push(seller);
+              user.rebundleSellers.push({ userId: seller });
             });
           }
           await user.save();

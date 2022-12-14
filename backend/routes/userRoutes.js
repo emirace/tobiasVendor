@@ -78,15 +78,16 @@ userRouter.get(
       console.log("rebundle-ijjji", req.params.seller);
       console.log(user.rebundleSellers);
       const exist = user.rebundleSellers.filter(
-        (seller) => seller.userId === req.params.seller
+        (seller) => seller.userId.toString() === req.params.seller
       );
-
-      if (exist) {
+      console.log("exist", exist);
+      if (exist.length !== 0) {
         res.status(200).send({ success: true, seller: exist[0] });
       } else {
-        res.status(500).send({ success: false });
+        res.send({ success: false });
       }
-    }
+    } else
+      [res.status(404).send({ success: false, message: "User not found" })];
   })
 );
 

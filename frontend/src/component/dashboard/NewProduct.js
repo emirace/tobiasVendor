@@ -566,31 +566,9 @@ export default function NewProduct() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const productId = sp.get("id");
-  const [name, setName] = useState("");
-  const [product, setProduct] = useState("");
-  const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [material, setMaterial] = useState("");
-  const [brand, setBrand] = useState("");
-  const [color, setColor] = useState("");
-  const [luxury, setLuxury] = useState(false);
-  const [luxuryImage, setLuxuryImage] = useState("");
-  const [vintage, setVintage] = useState(false);
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [specification, setSpecification] = useState("");
-  const [feature, setFeature] = useState("");
-  const [image1, setImage1] = useState("");
-  const [image2, setImage2] = useState("");
-  const [image3, setImage3] = useState("");
-  const [image4, setImage4] = useState("");
-  const [price, setPrice] = useState("");
-  const [discount, setDiscount] = useState("");
-  const [condition, setCondition] = useState("New");
   const [tempsize, setTempsize] = useState("");
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState("");
-  const [tag, setTag] = useState(null);
   const [deliveryOption, setDeliveryOption] = useState([
     { name: "Pick up from Seller", value: 0 },
   ]);
@@ -601,6 +579,11 @@ export default function NewProduct() {
   const [showComissionModal, setShowComissionModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [showDelivery, setShowDelivery] = useState(false);
+
+  const [input, setInput] = useState({
+    brand: "",
+  });
+  const [validationError, setValidationError] = useState({});
 
   const [paxi, setPaxi] = useState(true);
   const [gig, setGig] = useState(false);
@@ -634,26 +617,24 @@ export default function NewProduct() {
         try {
           const { data } = await axios.get(`/api/products/slug/${productId}`);
           console.log(data);
-          setName(data.name);
-          setProduct(data.product);
-          setCategory(data.category);
-          setSubCategory(data.subCategory);
-          setMaterial(data.material);
-          setBrand(data.brand);
-          setColor(data.color);
-          setLuxury(data.luxury);
-          setVintage(data.vintage);
-          setLocation(data.shippingLocation);
-          setDescription(data.description);
-          setSpecification(data.specification);
-          setFeature(data.keyFeatures);
-          setImage1(data.image);
-          setImage2(data.images[0]);
-          setImage3(data.images[1]);
-          setImage4(data.images[2]);
-          setPrice(data.actualPrice);
-          setDiscount(data.discount);
-          setCondition(data.condition);
+          setInput(data);
+          // setName(data.name);
+          // setProduct(data.product);
+          // setCategory(data.category);
+          // setSubCategory(data.subCategory);
+          // setMaterial(data.material);
+          // setBrand(data.brand);
+          // setColor(data.color);
+          // setLocation(data.shippingLocation);
+          // setDescription(data.description);
+          // setSpecification(data.specification);
+          // setFeature(data.keyFeatures);
+          // setImage1(data.image);
+          // setImage2(data.images[0]);
+          // setImage3(data.images[1]);
+          // setImage4(data.images[2]);
+          // setPrice(data.actualPrice);
+          // setDiscount(data.discount);
           sizes = data.sizes;
           tags = data.tags;
         } catch (err) {
@@ -706,7 +687,7 @@ export default function NewProduct() {
   const handleTags = (tag) => {
     if (tag.length > 0) {
       tags.push(tag);
-      setTag("");
+      handleOnChange("", "tag");
     }
   };
   const removeTags = (tag) => {
@@ -746,35 +727,35 @@ export default function NewProduct() {
         await axios.post(
           `/api/products/${region()}`,
           {
-            name,
-            image1,
-            image2,
-            image3,
-            image4,
-            video,
-            product,
-            subCategory,
-            category,
-            description,
-            brand,
-            discount,
-            deliveryOption,
-            meta,
-            tags,
-            price,
-            location,
-            specification,
+            name: input.name,
+            image1: input.image1,
+            image2: input.image2,
+            image3: input.image3,
+            image4: input.image4,
+            video: input.video,
+            product: input.product,
+            subCategory: input.subCategory,
+            category: input.category,
+            description: input.description,
+            brand: input.brand,
+            discount: input.discount,
+            deliveryOption: input.deliveryOption,
+            meta: input.meta,
+            tags: input.tags,
+            price: input.price,
+            location: input.location,
+            specification: input.specification,
             sizes: sizes,
-            condition,
-            feature,
-            currency,
-            luxury,
-            vintage,
-            material,
-            color,
-            luxuryImage,
-            addSize,
-            countInStock,
+            condition: input.condition,
+            feature: input.feature,
+            currency: input.currency,
+            luxury: input.luxury,
+            vintage: input.vintage,
+            material: input.material,
+            color: input.color,
+            luxuryImage: input.luxuryImage,
+            addSize: input.addSize,
+            countInStock: input.countInStock,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -803,6 +784,70 @@ export default function NewProduct() {
         dispatch({ type: "CREATE_FAIL" });
       }
     }
+  };
+
+  const validation = (e) => {
+    e.preventDefault();
+    var valid = true;
+    if (!input.name) {
+      handleError("Enter product name", "name");
+      valid = false;
+    }
+
+    if (!input.image1) {
+      handleError("Add at least one image", "image");
+      valid = false;
+    }
+    if (!input.product) {
+      handleError("Select main category", "product");
+      valid = false;
+    }
+    if (!input.subCategory) {
+      handleError("Select sub category", "subCategory");
+      valid = false;
+    }
+    if (!input.category) {
+      handleError("Select category", "category");
+      valid = false;
+    }
+    if (!input.brand) {
+      handleError("Select brand", "brand");
+      valid = false;
+    }
+    if (!input.price) {
+      handleError("Enter a valid price", "price");
+      valid = false;
+    }
+    if (!input.location) {
+      handleError("Select location", "location");
+      valid = false;
+    }
+    if (!input.condition) {
+      handleError("Select condition", "condition");
+      valid = false;
+    }
+
+    if (!input.feature) {
+      handleError("Select feature", "feature");
+      valid = false;
+    }
+    if (!input.color) {
+      handleError("Select color", "color");
+      valid = false;
+    }
+
+    if (valid) {
+      submitHandler();
+    }
+  };
+  const handleOnChange = (text, input) => {
+    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+  };
+  const handleError = (errorMessage, input) => {
+    setValidationError((prevState) => ({
+      ...prevState,
+      [input]: errorMessage,
+    }));
   };
 
   const [currentSizeValue, setCurrentSizeValue] = useState("");
@@ -866,15 +911,15 @@ export default function NewProduct() {
       });
       dispatch({ type: "UPLOAD_SUCCESS" });
       if (fileType === "image1") {
-        setImage1(data.secure_url);
+        handleOnChange(data.secure_url, "image1");
       } else if (fileType === "image2") {
-        setImage2(data.secure_url);
+        handleOnChange(data.secure_url, "image2");
       } else if (fileType === "image3") {
-        setImage3(data.secure_url);
+        handleOnChange(data.secure_url, "image3");
       } else if (fileType === "image4") {
-        setImage4(data.secure_url);
+        handleOnChange(data.secure_url, "image4");
       } else if (fileType === "luxury") {
-        setLuxuryImage(data.secure_url);
+        handleOnChange(data.secure_url, "luxuryImage");
       } else {
       }
       ctxDispatch({
@@ -902,12 +947,12 @@ export default function NewProduct() {
   const [showSelect, setShowSelect] = useState(false);
   let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
   const handleSelect = (b) => {
-    setBrand(b);
+    handleOnChange(b, "brand");
     setShowSelect(false);
   };
-  if (brand) {
+  if (input.brand) {
     brands = brands.filter((i) => {
-      return i.toLowerCase().match(brand);
+      return i.toLowerCase().match(input.brand);
     });
   }
   const [invalidImage, setInvalidImage] = useState("");
@@ -950,16 +995,21 @@ export default function NewProduct() {
         </TitleDetails>
       </TitleCont>
       <Content>
-        <Form noValidate validated={validated} onSubmit={submitHandler}>
+        <Form noValidate validated={validated} onSubmit={validation}>
           <Left>
             <Item>
               <Label>Product Name</Label>
               <TextInput
                 mode={mode}
-                value={name}
+                value={input.name}
                 type="text"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleOnChange(e.target.value, "name")}
               />
+              {validationError.name && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.name}
+                </div>
+              )}
             </Item>
             <Item>
               <Label>Main Category</Label>
@@ -990,8 +1040,8 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={product}
-                  onChange={(e) => setProduct(e.target.value)}
+                  value={input.product}
+                  onChange={(e) => handleOnChange(e.target.value, "product")}
                   displayEmpty
                   inputProps={{
                     "aria-label": "Without label",
@@ -1004,6 +1054,11 @@ export default function NewProduct() {
                     ))}
                 </Select>
               </FormControl>
+              {validationError.product && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.product}
+                </div>
+              )}
             </Item>
             <ItemCont>
               <ItemLeft>
@@ -1036,8 +1091,10 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
+                      value={input.category}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "category")
+                      }
                       displayEmpty
                       inputProps={{
                         "aria-label": "Without label",
@@ -1047,13 +1104,18 @@ export default function NewProduct() {
                       {categories.length > 0 &&
                         categories.map(
                           (cat) =>
-                            cat.name === product &&
+                            cat.name === input.product &&
                             cat.subCategories.map((sub) => (
                               <MenuItem value={sub.name}>{sub.name}</MenuItem>
                             ))
                         )}
                     </Select>
                   </FormControl>
+                  {validationError.category && (
+                    <div style={{ color: "red", fontSize: "12px" }}>
+                      {validationError.category}
+                    </div>
+                  )}
                 </Item>
               </ItemLeft>
               <ItemRight>
@@ -1086,18 +1148,20 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={subCategory}
-                      onChange={(e) => setSubCategory(e.target.value)}
+                      value={input.subCategory}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "subCategory")
+                      }
                       displayEmpty
                     >
                       <MenuItem value="">-- select --</MenuItem>
                       {categories.length > 0 &&
                         categories.map(
                           (cat) =>
-                            cat.name === product &&
+                            cat.name === input.product &&
                             cat.subCategories.map(
                               (sub) =>
-                                sub.name === category &&
+                                sub.name === input.category &&
                                 sub.items.map((item, i) => (
                                   <MenuItem value={item}>{item}</MenuItem>
                                 ))
@@ -1105,6 +1169,11 @@ export default function NewProduct() {
                         )}
                     </Select>
                   </FormControl>
+                  {validationError.subCategory && (
+                    <div style={{ color: "red", fontSize: "12px" }}>
+                      {validationError.subCategory}
+                    </div>
+                  )}
                 </Item>
               </ItemRight>
             </ItemCont>
@@ -1156,8 +1225,8 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={condition}
-                  onChange={(e) => setCondition(e.target.value)}
+                  value={input.condition}
+                  onChange={(e) => handleOnChange(e.target.value, "condition")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1170,6 +1239,11 @@ export default function NewProduct() {
                   <MenuItem value="Fair Condition">Fair Condition</MenuItem>
                 </Select>
               </FormControl>
+              {validationError.condition && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.condition}
+                </div>
+              )}
             </Item>
             <Item>
               <Label>
@@ -1213,8 +1287,8 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={material}
-                  onChange={(e) => setMaterial(e.target.value)}
+                  value={input.material}
+                  onChange={(e) => handleOnChange(e.target.value, "material")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1243,6 +1317,11 @@ export default function NewProduct() {
                   <MenuItem value="Wool">Wool</MenuItem>
                 </Select>
               </FormControl>
+              {validationError.material && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.material}
+                </div>
+              )}
             </Item>
             <Item>
               <Label>Brands</Label>
@@ -1250,12 +1329,12 @@ export default function NewProduct() {
               <TextInput
                 mode={mode}
                 type="text"
-                value={brand.length > 0 ? brand : brandQuery}
+                value={input.brand.length > 0 ? input.brand : brandQuery}
                 onChange={(e) => {
-                  setBrand("");
+                  handleOnChange("", "brand");
                   setBrandQuery(e.target.value);
                 }}
-                onBlur={() => brand.length > 0 && setBrandQuery("")}
+                onBlur={() => input.brand.length > 0 && setBrandQuery("")}
               />
               <BrandList mode={mode}>
                 {searchBrand &&
@@ -1265,15 +1344,20 @@ export default function NewProduct() {
                       key={b._id}
                       mode={mode}
                       onClick={() => {
-                        setBrand(b.name);
+                        handleOnChange(b.name, "brand");
                         setBrandQuery("");
-                        console.log("hello", brand);
+                        console.log("hello", input.brand);
                       }}
                     >
                       {b.name}
                     </BrandListItem>
                   ))}
               </BrandList>
+              {validationError.brand && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.brand}
+                </div>
+              )}
             </Item>
             <Item>
               <Label>
@@ -1321,8 +1405,8 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
+                  value={input.color}
+                  onChange={(e) => handleOnChange(e.target.value, "color")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1333,6 +1417,11 @@ export default function NewProduct() {
                   ))}
                 </Select>
               </FormControl>
+              {validationError.color && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.color}
+                </div>
+              )}
             </Item>
             <div>
               <label style={{ marginRight: "10px", marginTop: "20px" }}>
@@ -1481,14 +1570,21 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
+                      value={input.location}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "location")
+                      }
                       displayEmpty
                     >
                       <MenuItem value="Nigeria">Nigeria</MenuItem>
-                      <MenuItem value="South African">South African</MenuItem>
+                      <MenuItem value="South Africa">South Africa</MenuItem>
                     </Select>
                   </FormControl>
+                  {validationError.location && (
+                    <div style={{ color: "red", fontSize: "12px" }}>
+                      {validationError.location}
+                    </div>
+                  )}
                 </Item>
               </SizeRight>
             </Sizes>
@@ -1510,9 +1606,14 @@ export default function NewProduct() {
                   <TextInput
                     mode={mode}
                     type="number"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    value={input.price}
+                    onChange={(e) => handleOnChange(e.target.value, "price")}
                   />
+                  {validationError.price && (
+                    <div style={{ color: "red", fontSize: "12px" }}>
+                      {validationError.price}
+                    </div>
+                  )}
                 </Item>
                 <Item className="half">
                   <Label>Discount</Label>
@@ -1522,9 +1623,10 @@ export default function NewProduct() {
                       mode={mode}
                       type="number"
                       onChange={(e) => {
-                        if (price) {
-                          const value = (price * (100 - e.target.value)) / 100;
-                          setDiscount(value);
+                        if (input.price) {
+                          const value =
+                            (input.price * (100 - e.target.value)) / 100;
+                          handleOnChange(value, "discount");
                         }
                       }}
                     />
@@ -1535,16 +1637,16 @@ export default function NewProduct() {
               <PriceDisplay>
                 <Offer>
                   {currency}
-                  {discount || price}
+                  {input.discount || input.price}
                 </Offer>
                 <Actual>
                   {currency}
-                  {price}
+                  {input.price}
                 </Actual>
               </PriceDisplay>
             </Price>
             <TitleDetails>
-              <div style={{ color: "red", fontSize: "13px" }}>
+              <div style={{ color: "red", fontSize: "12px", fontSize: "13px" }}>
                 Our Commission
               </div>
               To give you unmatched user experience and support the growth of
@@ -1555,6 +1657,7 @@ export default function NewProduct() {
                 onClick={() => setShowComissionModal(true)}
                 style={{
                   color: "red",
+                  fontSize: "12px",
                   textDecoration: "underline",
                   cursor: "pointer",
                 }}
@@ -1583,12 +1686,12 @@ export default function NewProduct() {
               </Label>
               <ImageRow>
                 <BigImageC mode={mode}>
-                  {image1 ? (
+                  {input.image1 ? (
                     <ImageCont>
-                      <Close onClick={() => setImage1("")}>
+                      <Close onClick={() => handleOnChange("", "image1")}>
                         <FontAwesomeIcon icon={faClose} />
                       </Close>
-                      <BigImage src={image1} alt="product image" />
+                      <BigImage src={input.image1} alt="product image" />
                     </ImageCont>
                   ) : (
                     <AddImage
@@ -1611,12 +1714,12 @@ export default function NewProduct() {
                   )}
                 </BigImageC>
                 <BigImageC mode={mode}>
-                  {image2 ? (
+                  {input.image2 ? (
                     <ImageCont>
-                      <Close onClick={() => setImage2("")}>
+                      <Close onClick={() => handleOnChange("", "image2")}>
                         <FontAwesomeIcon icon={faClose} />
                       </Close>
-                      <BigImage src={image2} alt="product image" />
+                      <BigImage src={input.image2} alt="product image" />
                     </ImageCont>
                   ) : (
                     <AddImage
@@ -1640,12 +1743,12 @@ export default function NewProduct() {
                 </BigImageC>
                 <SmallImageRow>
                   <SmallImageC mode={mode}>
-                    {image3 ? (
+                    {input.image3 ? (
                       <ImageCont>
-                        <Close onClick={() => setImage3("")}>
+                        <Close onClick={() => handleOnChange("", "image3")}>
                           <FontAwesomeIcon icon={faClose} />
                         </Close>
-                        <SmallImage src={image3} alt="product image" />
+                        <SmallImage src={input.image3} alt="product image" />
                       </ImageCont>
                     ) : (
                       <AddImage
@@ -1668,12 +1771,12 @@ export default function NewProduct() {
                     )}
                   </SmallImageC>
                   <SmallImageC mode={mode}>
-                    {image4 ? (
+                    {input.image4 ? (
                       <ImageCont>
-                        <Close onClick={() => setImage4("")}>
+                        <Close onClick={() => handleOnChange("", "image4")}>
                           <FontAwesomeIcon icon={faClose} />
                         </Close>
-                        <SmallImage src={image4} alt="product image" />
+                        <SmallImage src={input.image4} alt="product image" />
                       </ImageCont>
                     ) : (
                       <AddImage
@@ -1774,8 +1877,10 @@ export default function NewProduct() {
                   <ItemCheck>
                     <Checkbox
                       type="checkbox"
-                      checked={luxury}
-                      onChange={(e) => setLuxury(e.target.checked)}
+                      checked={input.luxury}
+                      onChange={(e) =>
+                        handleOnChange(e.target.checked, "luxury")
+                      }
                     />
                     <LuxuryCont>
                       <Label>Luxury</Label>
@@ -1787,9 +1892,11 @@ export default function NewProduct() {
                   </ItemCheck>
                   <ItemCheck>
                     <Checkbox
-                      checked={vintage}
+                      checked={input.vintage}
                       type="checkbox"
-                      onChange={(e) => setVintage(e.target.checked)}
+                      onChange={(e) =>
+                        handleOnChange(e.target.checked, "vintage")
+                      }
                     />
                     <LuxuryCont>
                       <Label>Vintage</Label>
@@ -1800,15 +1907,18 @@ export default function NewProduct() {
                     </LuxuryCont>
                   </ItemCheck>
                 </VintageCont>
-                {vintage || luxury ? (
+                {input.vintage || input.luxury ? (
                   <VimageCont>
                     <BigImageC mode={mode}>
-                      {luxuryImage ? (
+                      {input.luxuryImage ? (
                         <LuxuryImgCont>
-                          <Close onClick={() => setLuxuryImage("")}>
+                          <Close onClick={() => handleOnChange("", "luxury")}>
                             <FontAwesomeIcon icon={faClose} />
                           </Close>
-                          <BigImage src={luxuryImage} alt="product image" />
+                          <BigImage
+                            src={input.luxuryImage}
+                            alt="product image"
+                          />
                         </LuxuryImgCont>
                       ) : (
                         <AddImage htmlFor="image1">
@@ -1824,7 +1934,7 @@ export default function NewProduct() {
                                 onChange={handleLuxury}
                               />
                               {invalidImage && (
-                                <div style={{ color: "red" }}>
+                                <div style={{ color: "red", fontSize: "12px" }}>
                                   {invalidImage}
                                 </div>
                               )}
@@ -1848,9 +1958,16 @@ export default function NewProduct() {
                 <Label>Description</Label>
                 <TextArea
                   mode={mode}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={input.description}
+                  onChange={(e) =>
+                    handleOnChange(e.target.value, "description")
+                  }
                 />
+                {validationError.description && (
+                  <div style={{ color: "red", fontSize: "12px" }}>
+                    {validationError.description}
+                  </div>
+                )}
               </Item>
               <Item>
                 <Label>Specification</Label>
@@ -1861,9 +1978,16 @@ export default function NewProduct() {
                 </TitleDetails>
                 <TextArea
                   mode={mode}
-                  value={specification}
-                  onChange={(e) => setSpecification(e.target.value)}
+                  value={input.specification}
+                  onChange={(e) =>
+                    handleOnChange(e.target.value, "specification")
+                  }
                 />
+                {validationError.specification && (
+                  <div style={{ color: "red", fontSize: "12px" }}>
+                    {validationError.specification}
+                  </div>
+                )}
               </Item>
               <Item>
                 <Label>Key Features: Pattern & Printed</Label>
@@ -1894,8 +2018,8 @@ export default function NewProduct() {
                   size="small"
                 >
                   <Select
-                    value={feature}
-                    onChange={(e) => setFeature(e.target.value)}
+                    value={input.feature}
+                    onChange={(e) => handleOnChange(e.target.value, "feature")}
                     displayEmpty
                   >
                     <MenuItem value="">-- select --</MenuItem>
@@ -1929,6 +2053,11 @@ export default function NewProduct() {
                     <MenuItem value="Other">Other</MenuItem>
                   </Select>
                 </FormControl>
+                {validationError.feature && (
+                  <div style={{ color: "red", fontSize: "12px" }}>
+                    {validationError.feature}
+                  </div>
+                )}
               </Item>
               <Item>
                 <Label>Delivery Option</Label>
@@ -1981,11 +2110,11 @@ export default function NewProduct() {
                   <TagInputCont>
                     <TagInput
                       mode={mode}
-                      value={tag}
+                      value={input.tag}
                       type="text"
-                      onChange={(e) => setTag(e.target.value)}
+                      onChange={(e) => handleOnChange(e.target.value, "tag")}
                     />
-                    <AddTag onClick={() => handleTags(tag)}>Add</AddTag>
+                    <AddTag onClick={() => handleTags(input.tag)}>Add</AddTag>
                   </TagInputCont>
                   <div style={{ display: "flex", flexWrap: "wrap" }}>
                     {tags.map((t, i) => (
