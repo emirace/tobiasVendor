@@ -17,6 +17,7 @@ import dotenv from "dotenv";
 import Flutterwave from "flutterwave-node-v3";
 import Transaction from "../models/transactionModel.js";
 import Return from "../models/returnModel.js";
+import RebundleSeller from "../models/rebuldleSellerModel.js";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -726,16 +727,23 @@ orderRouter.put(
           email_address: req.body.email_address,
         };
         const updateOrder = await order.save();
-        const user = await User.findById(req.user._id);
-        if (user) {
-          if (user.rebundleSellers.find((x) => x.userId === req.user._id)) {
-          } else {
-            sellers.map((seller) => {
-              user.rebundleSellers.push({ userId: seller });
+        sellers.map(async (seller) => {
+          const exist = await RebundleSeller.findOne({
+            userId: req.user._id,
+            sellerId: seller,
+          });
+          if (!exist) {
+            const rebundleSeller = new RebundleSeller({
+              userId: req.user._id,
+              sellerId: seller,
             });
+            await rebundleSeller.save();
+          } else {
+            exist.count -= 1;
+            await exist.save();
           }
-          await user.save();
-        }
+        });
+
         sendEmail({
           to: order.user.email,
           subject: "PROCESSING YOUR ORDER",

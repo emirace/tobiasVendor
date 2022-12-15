@@ -133,6 +133,7 @@
   width: 100%;
   display: flex;
   overflow: auto;
+  overflow: scroll;
 }
 .mobile-image::-webkit-scrollbar {
   display: none;

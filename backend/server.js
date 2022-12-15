@@ -36,6 +36,7 @@ import newsletterRouter from "./routes/newsletterRoutes.js";
 import { sendEmail } from "./utils.js";
 import guestUserRouter from "./routes/guestUserRoutes.js";
 import redirectRouter from "./routes/redirectRoutes.js";
+import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
 
 dotenv.config();
 
@@ -113,6 +114,7 @@ app.use("/api/reportConversation", reportConversionRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/guestusers", guestUserRouter);
 app.use("/api/redirects", redirectRouter);
+app.use("/api/rebundleSellers", rebundleSellerRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));

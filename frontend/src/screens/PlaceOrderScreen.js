@@ -168,8 +168,6 @@ export default function PlaceOrderScreen() {
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
-  calcPrice(cart);
-
   useEffect(() => {
     const loadPaypalScript = async () => {
       const { data: clientId } = await axios.get(

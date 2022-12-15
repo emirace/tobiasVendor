@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import { calcPrice, checkDeliverySelect, getError } from "../utils";
 import ModelLogin from "../component/ModelLogin";
 import DeliveryOptionScreen from "./DeliveryOptionScreen";
+import LoadingBox from "../component/LoadingBox";
 
 const Container = styled.div`
   margin: 20px;
@@ -190,8 +191,16 @@ export default function CartScreen() {
       scrollref.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [wishlist]);
-
-  calcPrice(cart);
+  const [loading, setLoading] = useState(true);
+  const [currentCart, setcurrentCart] = useState(cart);
+  useEffect(() => {
+    const getPrice = async () => {
+      const data = await calcPrice(cart, userInfo);
+      setcurrentCart(data);
+      setLoading(false);
+    };
+    getPrice();
+  }, [cart]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -324,7 +333,9 @@ export default function CartScreen() {
     }
   };
 
-  return (
+  return loading ? (
+    <LoadingBox />
+  ) : (
     <div>
       <Helmet>
         <title>Shopping Cart</title>
@@ -603,7 +614,7 @@ export default function CartScreen() {
                     <Col>Shipping</Col>
                     <Col>
                       {currency}
-                      {cart.shippingPrice.toFixed(2)}
+                      {currentCart.shippingPrice?.toFixed(2)}
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -615,7 +626,7 @@ export default function CartScreen() {
                     <Col>
                       <b>
                         {currency}
-                        {cart.totalPrice.toFixed(2)}
+                        {currentCart.totalPrice.toFixed(2)}
                       </b>
                     </Col>
                   </Row>

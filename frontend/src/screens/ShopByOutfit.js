@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import Card from '../component/Card';
-import { Store } from '../Store';
+import React, { useContext } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import Card from "../component/Card";
+import { Store } from "../Store";
 
 const Container = styled.div`
   margin: 20px;
@@ -31,13 +31,13 @@ const SubCategories = styled.div`
   border-radius: 15px;
   &.active {
     background: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
   }
 `;
 const Content = styled.div`
@@ -49,7 +49,26 @@ const Content = styled.div`
 const CardCont = styled.div`
   width: 23%;
 `;
+const AdsCont = styled.div`
+  display: flex;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
+const AdsImage = styled.img`
+  flex: 1;
+`;
+const Text = styled.div`
+  flex: 1;
+  margin: auto;
+  text-align: center;
+  font-size: 50px;
 
+  font-weight: bold;
+  @media (max-width: 992px) {
+    font-size: 20px;
+  }
+`;
 export default function ShopByOutfit() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -60,36 +79,44 @@ export default function ShopByOutfit() {
         <title>Shop By Outfit</title>
       </Helmet>
       <Name>Shop By Outfit</Name>
+      {true ? (
+        <AdsCont>
+          <AdsImage src="" alt="" />
+          <Text>Coming Soon</Text>
+        </AdsCont>
+      ) : (
+        <>
+          <Banner src="/images/p9.png" alt="outfit" />
+          <Categories>
+            <SubCategories mode={mode}>All</SubCategories>
+            <SubCategories mode={mode}>At the Office</SubCategories>
 
-      <Banner src="/images/p9.png" alt="outfit" />
-      <Categories>
-        <SubCategories mode={mode}>All</SubCategories>
-        <SubCategories mode={mode}>At the Office</SubCategories>
-
-        <SubCategories mode={mode}>
-          <Link to="../createoutfits">Add Outfit</Link>
-        </SubCategories>
-      </Categories>
-      <Content>
-        <CardCont>
-          <Card src="/images/women.png" name="johnnycage" />
-        </CardCont>
-        <CardCont>
-          <Card src="/images/card1.png" name="indianajone" />
-        </CardCont>
-        <CardCont>
-          <Card src="/images/card2.png" name="kareem" />
-        </CardCont>
-        <CardCont>
-          <Card src="/images/p1.jpg" name="fanstatic" />
-        </CardCont>
-        <CardCont>
-          <Card src="/images/card2.png" name="kareem" />
-        </CardCont>
-        <CardCont>
-          <Card src="/images/p1.jpg" name="fanstatic" />
-        </CardCont>
-      </Content>
+            <SubCategories mode={mode}>
+              <Link to="../createoutfits">Add Outfit</Link>
+            </SubCategories>
+          </Categories>
+          <Content>
+            <CardCont>
+              <Card src="/images/women.png" name="johnnycage" />
+            </CardCont>
+            <CardCont>
+              <Card src="/images/card1.png" name="indianajone" />
+            </CardCont>
+            <CardCont>
+              <Card src="/images/card2.png" name="kareem" />
+            </CardCont>
+            <CardCont>
+              <Card src="/images/p1.jpg" name="fanstatic" />
+            </CardCont>
+            <CardCont>
+              <Card src="/images/card2.png" name="kareem" />
+            </CardCont>
+            <CardCont>
+              <Card src="/images/p1.jpg" name="fanstatic" />
+            </CardCont>
+          </Content>
+        </>
+      )}
     </Container>
   );
 }

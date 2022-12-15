@@ -8,10 +8,11 @@ import axios from "axios";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { getError, loginGig, region } from "../utils";
+import { getError, loginGig, rebundleIsActive, region } from "../utils";
 import useGeoLocation from "../hooks/useGeoLocation";
 import LoadingBox from "../component/LoadingBox";
 import { postnet, pudo, states } from "../constant";
+import RebundlePoster from "../component/RebundlePoster";
 
 const Container = styled.div`
   margin: 30px;
@@ -159,6 +160,14 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   });
 
   const [token, setToken] = useState("");
+  const [isRebundle, setIsRebundle] = useState(false);
+  useEffect(() => {
+    const getRebundleList = async () => {
+      const data = await rebundleIsActive(userInfo, item.seller._id);
+      setIsRebundle(data.success);
+    };
+    getRebundleList();
+  }, [userInfo]);
 
   useEffect(() => {
     const fetchStations = async () => {
@@ -515,7 +524,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         </Helmet>
         <h1 className="my-3">Delivery Method</h1>
         {console.log(item)}
-
+        {isRebundle && <RebundlePoster />}
         <Form onSubmit={validation}>
           {item.deliveryOption.map((x) => (
             <div className="mb-3" key={x.name}>
@@ -538,7 +547,21 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     }}
                   />
                   <Label htmlFor={x.name}>
-                    {x.name} {x.value === 0 ? "" : `+ ${currency}${x.value}`}
+                    {x.name}{" "}
+                    {x.value === 0 ? (
+                      ""
+                    ) : isRebundle ? (
+                      <span
+                        style={{
+                          color: "var(--malon-color)",
+                          fontSize: "11px",
+                        }}
+                      >
+                        free
+                      </span>
+                    ) : (
+                      `+ ${currency}${x.value}`
+                    )}
                   </Label>
                 </Option>
                 {deliveryOption === x.name ? (

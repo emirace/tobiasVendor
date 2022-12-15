@@ -198,18 +198,31 @@ export const checkDeliverySelect = (cart) => {
   return success;
 };
 
-export const calcPrice = (cart) => {
+export const calcPrice = async (cart, userInfo, ctxDispatch) => {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.actualPrice, 0)
   );
-  cart.shippingPrice = checkDeliverySelect(cart)
-    ? round2(
-        cart.cartItems.reduce((a, c) => a + Number(c.deliverySelect.cost), 0)
-      )
-    : 0;
+  const ItemShippingFee = async (c) => {
+    const data = await rebundleIsActive(userInfo, c.seller._id);
+    return data.success
+      ? 0
+      : checkDeliverySelect(cart)
+      ? Number(c.deliverySelect.cost)
+      : 0;
+  };
+  console.log("item", await ItemShippingFee(cart.cartItems[0]));
+  cart.shippingPrice = round2(
+    await cart.cartItems.reduce(
+      async (a, c) => a + (await ItemShippingFee(c)),
+      0
+    )
+  );
+
+  console.log(cart.shippingPrice);
   cart.taxPrice = round2(0);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+  return cart;
 };
 export const GOOGLE_CLIENT_ID =
   "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";
@@ -262,4 +275,20 @@ export const loginGig = async () => {
     username: data.Object.UserName,
     userId: data.Object.UserId,
   };
+};
+
+export const rebundleIsActive = async (userInfo, userId) => {
+  if (userInfo) {
+    try {
+      const { data } = await axios.get(
+        `/api/rebundleSellers/checkbundle/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
 };

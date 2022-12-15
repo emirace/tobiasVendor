@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Countdown from "react-countdown";
 import styled from "styled-components";
 import { Store } from "../Store";
+import { rebundleIsActive } from "../utils";
 
 const Container = styled.div`
   position: fixed;
@@ -18,6 +19,7 @@ const Container = styled.div`
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
   font-size: 12px;
+  color: white;
 `;
 export default function RebundleLabel({ userId, active }) {
   const { state } = useContext(Store);
@@ -29,23 +31,15 @@ export default function RebundleLabel({ userId, active }) {
   const [seller, setSeller] = useState("");
 
   useEffect(() => {
-    console.log("hello11111");
     const getRebundleList = async () => {
-      console.log("hello");
-      if (userInfo) {
-        console.log("hello2222");
-        try {
-          const { data } = await axios.get(`/api/users/checkbundle/${userId}`, {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          });
-          console.log("hello333");
-
-          setShow(data.success);
-          setSeller(data.seller);
-          console.log(data);
-        } catch (err) {
-          console.log(err);
-        }
+      const data = await rebundleIsActive(userInfo, userId);
+      setShow(data.success);
+      setSeller(data.seller);
+      console.log(data);
+      if (data.success) {
+        console.log(
+          Number(Date.now()) - Number(Date.parse(data.seller.createdAt))
+        );
       }
     };
     getRebundleList();
@@ -70,15 +64,17 @@ export default function RebundleLabel({ userId, active }) {
     show ? (
       <Container>
         <div>
-          REBUNDLE {console.log("hello")}
           <FontAwesomeIcon
             style={{ marginLeft: "10px" }}
             icon={faBoltLightning}
           />
         </div>
-        {console.log(seller.createdAt, Date.now())}
         <Countdown
-          date={Date.now() + 7200000}
+          date={
+            Date.now() +
+            (7200000 -
+              (Number(Date.now()) - Number(Date.parse(seller.createdAt))))
+          }
           key={restart}
           onComplete={() => setCountdown(false)}
           renderer={renderer}
