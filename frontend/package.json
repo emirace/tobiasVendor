@@ -21,6 +21,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
     "bootstrap": "^5.1.3",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
     "flutterwave-react-v3": "^1.2.1",
     "get-orientation": "^1.1.2",
     "http-proxy-middleware": "^2.0.6",
@@ -55,6 +57,10 @@
     "use-reducer-logger": "^1.0.2",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
+  },
+  "browser": {
+    "crypto": false,
+    "stream": false
   },
   "scripts": {
     "start": "react-scripts start",

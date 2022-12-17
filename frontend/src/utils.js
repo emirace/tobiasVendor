@@ -211,7 +211,11 @@ export const calcPrice = async (cart, userInfo, ctxDispatch) => {
       ? Number(c.deliverySelect.cost)
       : 0;
   };
-  console.log("item", await ItemShippingFee(cart.cartItems[0]));
+  console.log(
+    "item",
+    await ItemShippingFee(cart.cartItems[0]),
+    await ItemShippingFee(cart.cartItems[1])
+  );
   cart.shippingPrice = round2(
     await cart.cartItems.reduce(
       async (a, c) => a + (await ItemShippingFee(c)),

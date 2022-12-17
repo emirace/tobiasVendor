@@ -134,6 +134,7 @@
   display: flex;
   overflow: auto;
   overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 .mobile-image::-webkit-scrollbar {
   display: none;

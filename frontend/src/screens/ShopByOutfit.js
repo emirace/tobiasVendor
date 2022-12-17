@@ -45,6 +45,7 @@ const Content = styled.div`
   gap: 20px;
   padding: 0 25px;
   flex-wrap: wrap;
+  border: 1px solid;
 `;
 const CardCont = styled.div`
   width: 23%;
@@ -56,7 +57,7 @@ const AdsCont = styled.div`
   }
 `;
 const AdsImage = styled.img`
-  flex: 1;
+  height: 600px;
 `;
 const Text = styled.div`
   flex: 1;
@@ -81,7 +82,10 @@ export default function ShopByOutfit() {
       <Name>Shop By Outfit</Name>
       {true ? (
         <AdsCont>
-          <AdsImage src="" alt="" />
+          <AdsImage
+            src="https://res.cloudinary.com/emirace/image/upload/v1671258906/Picture2_gkly49.png"
+            alt=""
+          />
           <Text>Coming Soon</Text>
         </AdsCont>
       ) : (

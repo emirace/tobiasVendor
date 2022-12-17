@@ -53,8 +53,8 @@ export default function RebundleLabel({ userId, active }) {
       // Render a countdown
       return (
         <span>
-          {" "}
-          {hours}hrs : {minutes}mins : {seconds}secs
+          {hours !== 0 && `${hours}hrs : `}
+          {minutes}mins : {seconds}secs
         </span>
       );
     }
@@ -65,9 +65,10 @@ export default function RebundleLabel({ userId, active }) {
       <Container>
         <div>
           <FontAwesomeIcon
-            style={{ marginLeft: "10px" }}
+            style={{ marginRight: "10px" }}
             icon={faBoltLightning}
           />
+          Rebundle is Active
         </div>
         <Countdown
           date={

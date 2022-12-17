@@ -697,10 +697,9 @@ export default function NewProduct() {
     setRefresh(!refresh);
   };
 
-  const submitHandler = async (e) => {
+  const submitHandler = async () => {
     setFormError("");
     console.log("result", sizes.length === 0 && addSize === false);
-    e.preventDefault();
     if (addSize === false && sizes.length === 0) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -712,77 +711,66 @@ export default function NewProduct() {
       });
       return;
     }
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-      setValidated(true);
-      console.log(form.checkValidity());
-      setFormError("Fill all required field *");
-    } else {
-      setFormError("");
-
-      try {
-        dispatch({ type: "CREATE_REQUEST" });
-        await axios.post(
-          `/api/products/${region()}`,
-          {
-            name: input.name,
-            image1: input.image1,
-            image2: input.image2,
-            image3: input.image3,
-            image4: input.image4,
-            video: input.video,
-            product: input.product,
-            subCategory: input.subCategory,
-            category: input.category,
-            description: input.description,
-            brand: input.brand,
-            discount: input.discount,
-            deliveryOption: input.deliveryOption,
-            meta: input.meta,
-            tags: input.tags,
-            price: input.price,
-            location: input.location,
-            specification: input.specification,
-            sizes: sizes,
-            condition: input.condition,
-            feature: input.feature,
-            currency: input.currency,
-            luxury: input.luxury,
-            vintage: input.vintage,
-            material: input.material,
-            color: input.color,
-            luxuryImage: input.luxuryImage,
-            addSize: input.addSize,
-            countInStock: input.countInStock,
-          },
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "Product created successfully",
-            showStatus: true,
-            state1: "visible1 success",
-          },
-        });
-        dispatch({ type: "CREATE_SUCCESS" });
-        navigate(`/dashboard/productlist`);
-      } catch (err) {
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "Error creating product, fill mising fields",
-            showStatus: true,
-            state1: "visible1 error",
-          },
-        });
-        console.log(getError(err));
-        dispatch({ type: "CREATE_FAIL" });
-      }
+    try {
+      dispatch({ type: "CREATE_REQUEST" });
+      await axios.post(
+        `/api/products/${region()}`,
+        {
+          name: input.name,
+          image1: input.image1,
+          image2: input.image2,
+          image3: input.image3,
+          image4: input.image4,
+          video: input.video,
+          product: input.product,
+          subCategory: input.subCategory,
+          category: input.category,
+          description: input.description,
+          brand: input.brand,
+          discount: input.discount,
+          deliveryOption: input.deliveryOption,
+          meta: input.meta,
+          tags: input.tags,
+          price: input.price,
+          location: input.location,
+          specification: input.specification,
+          sizes: sizes,
+          condition: input.condition,
+          feature: input.feature,
+          currency: input.currency,
+          luxury: input.luxury,
+          vintage: input.vintage,
+          material: input.material,
+          color: input.color,
+          luxuryImage: input.luxuryImage,
+          addSize: input.addSize,
+          countInStock: input.countInStock,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Product created successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      dispatch({ type: "CREATE_SUCCESS" });
+      navigate(`/dashboard/productlist`);
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Error creating product, fill mising fields",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      console.log(getError(err));
+      dispatch({ type: "CREATE_FAIL" });
     }
   };
 
@@ -841,7 +829,7 @@ export default function NewProduct() {
     }
   };
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+    setInput((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (errorMessage, input) => {
     setValidationError((prevState) => ({

@@ -57,7 +57,6 @@ userRouter.put(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
-      console.log(req.body.value);
       user.rebundle = req.body.value;
       await user.save();
       res.status(200).send(user.rebundle);
@@ -254,7 +253,6 @@ userRouter.post(
       .createHash("sha256")
       .update(req.params.resetToken)
       .digest("hex");
-    console.log(req.params.resetToken, resetEmailToken);
 
     const user = await User.findOne({
       resetEmailToken,
@@ -299,7 +297,6 @@ userRouter.post(
       user.resetPasswordExpire = Date.now() + 30 * (60 * 1000);
       await user.save();
       const resetUrl = `https://repeddle.${url}/resetpassword/${resetToken}`;
-      console.log(resetToken);
 
       try {
         sendEmail({
@@ -336,7 +333,6 @@ userRouter.post(
 userRouter.post(
   "/resetpassword/:resetToken",
   expressAsyncHandler(async (req, res) => {
-    console.log(req.params.resetToken);
     const resetPasswordToken = crypto
       .createHash("sha256")
       .update(req.params.resetToken)
@@ -494,7 +490,6 @@ userRouter.post(
 userRouter.post(
   "/:region/facebook",
   expressAsyncHandler(async (req, res) => {
-    console.log("accessToken", req.body.accessToken);
     const { region } = req.params;
     const url = region === "NGN" ? "com" : "co.za";
     const { data } = await axios.get(
@@ -592,7 +587,6 @@ userRouter.post(
       };
 
       user.reviews.push(review);
-      console.log(user.reviews);
 
       user.numReviews = user.reviews.length;
       user.rating =
@@ -805,7 +799,6 @@ userRouter.get(
   "/profile/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.user);
     const user = await User.findById(req.user._id);
     if (user) {
       res.send({
@@ -873,7 +866,6 @@ userRouter.get(
             ],
           }
         : {};
-    console.log(queryFilter);
     const users = await User.find({ ...queryFilter, region }).sort({
       createdAt: -1,
     });

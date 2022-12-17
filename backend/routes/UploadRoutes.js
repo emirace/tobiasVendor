@@ -3,7 +3,7 @@ import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
 import { isAdmin, isAuth, isSellerOrAdmin } from "../utils.js";
-import fs from 'fs'
+import fs from "fs";
 
 const upload = multer();
 
@@ -31,8 +31,7 @@ uploadRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   res.send(result);
 });
 
-uploadRouter.post("/video/upload",isAuth, async (req, res) => {
-
+uploadRouter.post("/video/upload", isAuth, async (req, res) => {
   // Get the file name and extension with multer
   const storage = multer.diskStorage({
     filename: (req, file, cb) => {
@@ -115,9 +114,7 @@ uploadRouter.post("/video/upload",isAuth, async (req, res) => {
 });
 
 uploadRouter.delete("/", isAuth, async (req, res) => {
-  await cloudinary.uploader.destroy(req.body.image, function (result) {
-    console.log(result);
-  });
+  await cloudinary.uploader.destroy(req.body.image, function (result) {});
 });
 
 export default uploadRouter;

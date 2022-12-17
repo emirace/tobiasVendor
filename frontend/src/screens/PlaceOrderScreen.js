@@ -19,6 +19,7 @@ import FlutterWave from "../component/FlutterWave";
 import WalletModel from "../component/wallet/WalletModel";
 import PayFund from "../component/wallet/PayFund";
 import { socket } from "../App";
+import PayFast from "../component/PayFast";
 
 const Container = styled.div`
   display: flex;
@@ -644,20 +645,24 @@ export default function PlaceOrderScreen() {
                       Proceed to Payment
                     </Button>
                   ) : cart.paymentMethod === "Credit/Debit card" ? (
-                    <FlutterWave
-                      amount={cart.totalPrice}
-                      currency={currency === "N " ? "NGN" : "ZAR"}
-                      user={
-                        userInfo
-                          ? userInfo
-                          : {
-                              email: cart.shippingAddress.email,
-                              name: cart.shippingAddress.fullName,
-                              phone: cart.shippingAddress.phone,
-                            }
-                      }
-                      onApprove={onApprove}
-                    />
+                    region() === "ZAR" ? (
+                      <PayFast amount={cart.totalPrice} />
+                    ) : (
+                      <FlutterWave
+                        amount={cart.totalPrice}
+                        currency={currency === "N " ? "NGN" : "ZAR"}
+                        user={
+                          userInfo
+                            ? userInfo
+                            : {
+                                email: cart.shippingAddress.email,
+                                name: cart.shippingAddress.fullName,
+                                phone: cart.shippingAddress.phone,
+                              }
+                        }
+                        onApprove={onApprove}
+                      />
+                    )
                   ) : (
                     ""
                   )}

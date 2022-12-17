@@ -339,17 +339,17 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       valid = false;
     }
     if (deliveryOption === "Paxi PEP store") {
-      if (!meta.phone) {
-        setValidationError({
-          ...validationError,
-          phone: "Enter a valid phone number ",
-        });
-        valid = false;
-      }
       if (!meta.shortName) {
         setValidationError({
           ...validationError,
           point: "Select a pick up point ",
+        });
+        valid = false;
+      }
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
@@ -385,6 +385,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         });
         valid = false;
       }
+
       if (!meta.province) {
         setValidationError({
           ...validationError,
@@ -401,45 +402,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       }
     }
     if (deliveryOption === "Aramex Store-to-Door") {
-      if (!meta.phone) {
+      if (!meta.province) {
         setValidationError({
           ...validationError,
-          phone: "Enter a valid phone number ",
-        });
-        valid = false;
-      }
-      if (!meta.name) {
-        setValidationError({
-          ...validationError,
-          name: "Enter your name ",
-        });
-        valid = false;
-      }
-      if (!meta.email) {
-        setValidationError({
-          ...validationError,
-          email: "Enter your email ",
-        });
-        valid = false;
-      }
-      if (!meta.address) {
-        setValidationError({
-          ...validationError,
-          address: "Enter your address ",
-        });
-        valid = false;
-      }
-      if (!meta.suburb) {
-        setValidationError({
-          ...validationError,
-          suburb: "Enter your suburb ",
-        });
-        valid = false;
-      }
-      if (!meta.city) {
-        setValidationError({
-          ...validationError,
-          city: "Enter your city ",
+          province: "Select province",
         });
         valid = false;
       }
@@ -450,26 +416,17 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         });
         valid = false;
       }
-      if (!meta.province) {
+      if (!meta.city) {
         setValidationError({
           ...validationError,
-          province: "Select province",
+          city: "Enter your city ",
         });
         valid = false;
       }
-    }
-    if (deliveryOption === "GIG Logistics") {
-      if (!meta.phone) {
+      if (!meta.suburb) {
         setValidationError({
           ...validationError,
-          phone: "Enter a valid phone number ",
-        });
-        valid = false;
-      }
-      if (!meta.name) {
-        setValidationError({
-          ...validationError,
-          name: "Enter your name ",
+          suburb: "Enter your suburb ",
         });
         valid = false;
       }
@@ -480,10 +437,54 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         });
         valid = false;
       }
+      if (!meta.email) {
+        setValidationError({
+          ...validationError,
+          email: "Enter your email ",
+        });
+        valid = false;
+      }
+      if (!meta.name) {
+        setValidationError({
+          ...validationError,
+          name: "Enter your name ",
+        });
+        valid = false;
+      }
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+    }
+    if (deliveryOption === "GIG Logistics") {
       if (!meta.stationId) {
         setValidationError({
           ...validationError,
           stationId: "Select a station ",
+        });
+        valid = false;
+      }
+      if (!meta.address) {
+        setValidationError({
+          ...validationError,
+          address: "Enter your address ",
+        });
+        valid = false;
+      }
+      if (!meta.name) {
+        setValidationError({
+          ...validationError,
+          name: "Enter your name ",
+        });
+        valid = false;
+      }
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }

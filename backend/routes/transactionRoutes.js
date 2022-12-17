@@ -2,6 +2,8 @@ import express from "express";
 import { isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
+import crypto from "crypto";
+import axios from "axios";
 import Account from "../models/accountModel.js";
 
 const transactionRouter = express.Router();
@@ -68,6 +70,127 @@ transactionRouter.get(
       res.status(201).send(transaction);
     } else {
       res.status(404).send("transaction not found");
+    }
+  })
+);
+
+transactionRouter.put(
+  "/process",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { myData } = req.body;
+    let myData1 = { ...myData };
+
+    const passPhrase = "jt7NOE43FZPn";
+
+    const dataToString = (dataArray) => {
+      // Convert your data array to a string
+      let pfParamString = "";
+      for (let key in dataArray) {
+        if (dataArray.hasOwnProperty(key)) {
+          pfParamString += `${key}=${encodeURIComponent(
+            dataArray[key].trim()
+          ).replace(/%20/g, "+")}&`;
+        }
+      }
+      // Remove last ampersand
+      return pfParamString.slice(0, -1);
+    };
+
+    const generatePaymentIdentifier = async (pfParamString) => {
+      const result = await axios
+        .post(`https://sandbox.payfast.co.za/onsite/process`, pfParamString)
+        .then((res) => {
+          return res.data.uuid || null;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      // console.log("res.data", result);
+      return result;
+    };
+
+    const generateSignature = (data, passPhrase = null) => {
+      // Create parameter string
+      let pfOutput = "";
+      for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (data[key] !== "") {
+            pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(
+              /%20/g,
+              "+"
+            )}&`;
+          }
+        }
+      }
+
+      // Remove last ampersand
+      let getString = pfOutput.slice(0, -1);
+      if (passPhrase !== null) {
+        getString += `&passphrase=${encodeURIComponent(
+          passPhrase.trim()
+        ).replace(/%20/g, "+")}`;
+      }
+
+      return crypto.createHash("md5").update(getString).digest("hex");
+    };
+
+    // Generate signature (see Custom Integration -> Step 2)
+    myData["signature"] = generateSignature(myData, passPhrase);
+
+    // Convert the data array to a string
+    const pfParamString = dataToString(myData);
+    console.log(myData);
+    console.log(pfParamString);
+
+    // Generate payment identifier
+    const identifier = await generatePaymentIdentifier(pfParamString);
+    if (identifier) {
+      console.log(identifier);
+    } else {
+      console.log("same issue");
+    }
+  })
+);
+
+transactionRouter.post(
+  "/signature",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { myData } = req.body;
+    const passPhrase = "jt7NOE43FZPn";
+
+    const generateSignature = (data, passPhrase = null) => {
+      // Create parameter string
+      let pfOutput = "";
+      for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (data[key] !== "") {
+            pfOutput += `${key}=${encodeURIComponent(data[key].trim()).replace(
+              /%20/g,
+              "+"
+            )}&`;
+          }
+        }
+      }
+
+      // Remove last ampersand
+      let getString = pfOutput.slice(0, -1);
+      if (passPhrase !== null) {
+        getString += `&passphrase=${encodeURIComponent(
+          passPhrase.trim()
+        ).replace(/%20/g, "+")}`;
+      }
+
+      return crypto.createHash("md5").update(getString).digest("hex");
+      // return SHA256(getString).toString(enc.Hex);
+    };
+
+    const signature = generateSignature(myData, passPhrase);
+    if (signature) {
+      res.status(200).send(signature);
+    } else {
+      res.status(500).send("No signature");
     }
   })
 );
