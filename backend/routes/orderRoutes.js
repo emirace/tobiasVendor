@@ -828,6 +828,11 @@ orderRouter.put(
             order.orderItems.map((x) => {
               if (p._id.toString() === x._id) return x.quantity;
             });
+          p.sizes = p.sizes.map((size) =>
+            size.size === p.selectSize
+              ? { ...size, value: Number(size.value) - 1 }
+              : size
+          );
           p.userBuy.push(req.user._id);
 
           const seller = await User.findById(p.seller);
@@ -847,15 +852,17 @@ orderRouter.put(
         };
         const updateOrder = await order.save();
         sellers.map(async (seller) => {
+          const userSeller = await User.findById(seller);
           const exist = await RebundleSeller.findOne({
             userId: req.user._id,
             sellerId: seller,
           });
-          if (!exist) {
+          if (!exist && userSeller.rebundle.status) {
             const rebundleSeller = new RebundleSeller({
               userId: req.user._id,
               sellerId: seller,
               createdAt: Date.now(),
+              count: seller.rebundle.count,
             });
             await rebundleSeller.save();
           } else {
@@ -886,6 +893,7 @@ orderRouter.put(
               username: seller.username,
               url: region === "NGN" ? "com" : "co.za",
               buyer: order.user.username,
+              buyerId: order.user._id,
               orderId: order._id,
               sellerId: seller._id,
               orderItems: order.orderItems.filter(
