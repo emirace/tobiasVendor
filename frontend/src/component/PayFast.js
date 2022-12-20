@@ -39,7 +39,7 @@ export default function PayFast({ amount, orderId }) {
   // Transaction details
   // myData["m_payment_id"] = "1234";
   myData["amount"] = 100;
-  myData["item_name"] = "order Id";
+  myData["item_name"] = "orderId";
 
   useEffect(() => {
     const getSignature = async () => {
@@ -77,41 +77,41 @@ export default function PayFast({ amount, orderId }) {
     }
   };
 
-  // return <div onClick={handleSubmit}>Pay now</div>;
+  return <div onClick={handleSubmit}>Pay now</div>;
 
-  return !signature ? (
-    <LoadingBox />
-  ) : (
-    <form action="https://sandbox.payfast.co.za​/eng/process" method="post">
-      {console.log(myData.merchant_id)}
-      <input type="hidden" name="merchant_id" value={myData["merchant_id"]} />
-      <input type="hidden" name="merchant_key" value={myData["merchant_key"]} />
-      <input type="hidden" name="amount" value={myData["amount"]} />
-      <input type="hidden" name="item_name" value={myData["item_name"]}></input>
-      <input
-        type="hidden"
-        name="name_first"
-        value={myData["name_first"]}
-      ></input>
-      <input type="hidden" name="name_last" value={myData["name_last"]}></input>
-      <input
-        type="hidden"
-        name="email_address"
-        value={myData["email_address"]}
-      ></input>
-      <input
-        type="hidden"
-        name="m_payment_id"
-        value={myData["m_payment_id"]}
-      ></input>
-      <input type="hidden" name="return_url" value={myData["return_url"]} />
-      <input type="hidden" name="cancel_url" value={myData["cancel_url"]} />
+  // return !signature ? (
+  //   <LoadingBox />
+  // ) : (
+  //   <form action="https://sandbox.payfast.co.za​/eng/process" method="post">
+  //     {console.log(myData.merchant_id)}
+  //     <input type="hidden" name="merchant_id" value={myData["merchant_id"]} />
+  //     <input type="hidden" name="merchant_key" value={myData["merchant_key"]} />
+  //     <input type="hidden" name="amount" value={myData["amount"]} />
+  //     <input type="hidden" name="item_name" value={myData["item_name"]}></input>
+  //     <input
+  //       type="hidden"
+  //       name="name_first"
+  //       value={myData["name_first"]}
+  //     ></input>
+  //     <input type="hidden" name="name_last" value={myData["name_last"]}></input>
+  //     <input
+  //       type="hidden"
+  //       name="email_address"
+  //       value={myData["email_address"]}
+  //     ></input>
+  //     <input
+  //       type="hidden"
+  //       name="m_payment_id"
+  //       value={myData["m_payment_id"]}
+  //     ></input>
+  //     <input type="hidden" name="return_url" value={myData["return_url"]} />
+  //     <input type="hidden" name="cancel_url" value={myData["cancel_url"]} />
 
-      <input type="hidden" name="notify_url" value={myData["notify_url"]} />
+  //     <input type="hidden" name="notify_url" value={myData["notify_url"]} />
 
-      <Button type="submit">Proceed to payment</Button>
-    </form>
-  );
+  //     <Button type="submit">Proceed to payment</Button>
+  //   </form>
+  // );
 }
 
 const generateSignature = (data, passPhrase = null) => {

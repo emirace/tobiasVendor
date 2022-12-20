@@ -1,4 +1,8 @@
-import { faQuestionCircle, faTruck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faQuestionCircle,
+  faTruck,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,6 +14,7 @@ import Select from "@mui/material/Select";
 import { getError, loginGig, region } from "../../utils";
 import axios from "axios";
 import useGeoLocation from "../../hooks/useGeoLocation";
+import LoadingBox from "../LoadingBox";
 
 const Container = styled.div`
   padding: 30px 15vw;
@@ -176,6 +181,18 @@ const Input = styled.input`
   }
 `;
 
+const Button = styled.div`
+  padding: 5px 7px;
+  cursor: pointer;
+  color: white;
+  text-align: center;
+  background: var(--orange-color);
+  border-radius: 0.2rem;
+  &:hover {
+    background: var(--malon-color);
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_STATIONs_REQUEST":
@@ -199,6 +216,7 @@ const reducer = (state, action) => {
 export default function DeliveryOption({
   setDeliveryOption,
   deliveryOption,
+  setShowModel,
   paxi,
   setPaxi,
   setGig,
@@ -216,7 +234,7 @@ export default function DeliveryOption({
   meta,
   setMeta,
 }) {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
   const handleChange = (e) => {
@@ -298,22 +316,49 @@ export default function DeliveryOption({
       return false;
     }
   };
-
+  const [rebundleStatus, setRebundleStatus] = useState("");
+  const [rebundleCount, setRebundleCount] = useState(0);
+  const [loadingRebundle, setLoadingRebundle] = useState(false);
+  const [rebundleError, setRebundleError] = useState("");
   const handleRebundle = async (value) => {
+    if (value) {
+      const { data } = await axios.put("/api/users/bundle", value, {
+        headers: {
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      setBundle(data.status);
+      return;
+    }
+    if (!rebundleCount) {
+      setRebundleError("Enter the quantity of item(s) for Rebundle");
+      return;
+    }
     try {
+      setLoadingRebundle(true);
       const { data } = await axios.put(
         "/api/users/bundle",
-        { value },
+        { status: rebundleStatus, count: rebundleCount },
         {
           headers: {
             authorization: `Bearer ${userInfo.token}`,
           },
         }
       );
-      setBundle(data);
+      setBundle(data.status);
+      setLoadingRebundle(false);
     } catch (err) {
+      setLoadingRebundle(false);
       console.log(getError(err));
     }
+  };
+
+  const handleClose = () => {
+    if (rebundleStatus & !bundle) {
+      setRebundleError("Click activate to make Rebundle active ");
+      return;
+    }
+    setShowModel(false);
   };
   return (
     <Container>
@@ -808,20 +853,63 @@ export default function DeliveryOption({
           </Label>
           <Switch
             mode={mode}
-            checked={bundle}
+            checked={rebundleStatus}
             onChange={(e) => {
-              setBundle(e.target.checked);
-              handleRebundle(e.target.checked);
+              if (e.target.checked) {
+                setRebundleStatus(e.target.checked);
+              } else {
+                setRebundleStatus(e.target.checked);
+                handleRebundle({ status: false, count: 0 });
+              }
             }}
           ></Switch>
         </Option>
         <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
-        <Plans>
-          <Link to="/rebundle" target="_blank">
-            More on Re:bundle
-          </Link>
-        </Plans>
+        {rebundleStatus && (
+          <Plans>
+            {bundle ? (
+              <div>
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  style={{ color: "var(--orange-color)" }}
+                />
+              </div>
+            ) : (
+              <>
+                <div style={{ fontWeight: "11px" }}>
+                  Please input numbers of how many item(s) you are willing to
+                  pack in delivery bag(s) for a buyer when Rebundle is active
+                </div>
+                <Plan>
+                  <Input
+                    mode={mode}
+                    type="number"
+                    onChange={(e) => {
+                      setRebundleCount(e.target.value);
+                    }}
+                    onFocus={() => setRebundleError("")}
+                  />
+                  {loadingRebundle ? (
+                    <LoadingBox />
+                  ) : (
+                    <Button onClick={() => handleRebundle(null)}>
+                      Activate
+                    </Button>
+                  )}
+                </Plan>
+                {rebundleError && (
+                  <div style={{ color: "red" }}>{rebundleError}</div>
+                )}
+              </>
+            )}
+            <Link to="/rebundle" target="_blank">
+              More on Re:bundle
+            </Link>
+          </Plans>
+        )}
       </OptionCont>
+
+      <Button onClick={handleClose}>Continue</Button>
     </Container>
   );
 }

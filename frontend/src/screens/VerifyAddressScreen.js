@@ -73,8 +73,12 @@ export default function VerifyAddressScreen() {
       handleError("Enter your street", "street");
       valid = false;
     }
-    if (!input.state) {
-      handleError("Select your state", "state");
+    if (!input.apartment) {
+      handleError("Enter your apartment", "apartment");
+      valid = false;
+    }
+    if (!input.province) {
+      handleError("Select your province", "province");
       valid = false;
     }
     if (!input.zipcode) {
@@ -168,6 +172,9 @@ export default function VerifyAddressScreen() {
                   ))}
             </Select>
           </FormControl>
+          {error.province && (
+            <div style={{ color: "red" }}>{error.province}</div>
+          )}
         </Form.Group>
         <Form.Group className="mb-3" controlId="zipcode">
           <Label>Zip Code</Label>

@@ -23,7 +23,7 @@ const Container = styled.div`
 `;
 export default function RebundleLabel({ userId, active }) {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, cart } = state;
   const [restart, setRestart] = useState(Math.random());
   const [countdown, setCountdown] = useState(true);
   const [rebundleList, setRebundleList] = useState([]);
@@ -32,18 +32,14 @@ export default function RebundleLabel({ userId, active }) {
 
   useEffect(() => {
     const getRebundleList = async () => {
-      const data = await rebundleIsActive(userInfo, userId);
+      if (!userInfo) return;
+      const data = await rebundleIsActive(userInfo, userId, cart);
+      console.log("data", data);
       setShow(data.success);
       setSeller(data.seller);
-      console.log(data);
-      if (data.success) {
-        console.log(
-          Number(Date.now()) - Number(Date.parse(data.seller.createdAt))
-        );
-      }
     };
     getRebundleList();
-  }, [userInfo]);
+  }, [userId, userInfo]);
 
   const renderer = ({ hours, minutes, seconds, completed }) => {
     if (completed) {

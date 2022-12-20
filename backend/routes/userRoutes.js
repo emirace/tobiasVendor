@@ -57,7 +57,7 @@ userRouter.put(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
     if (user) {
-      user.rebundle = req.body.value;
+      user.rebundle = { status: req.body.status, count: req.body.count };
       await user.save();
       res.status(200).send(user.rebundle);
     } else {
@@ -126,6 +126,7 @@ userRouter.put(
               .send({ succes: false, message: "User already exist!" });
           }
         }
+        console.log(err);
         return res.status(500).send(err);
       }
     } else {
@@ -696,6 +697,7 @@ userRouter.put(
           message: "Following",
           sold: updatedUser.sold,
           createdAt: updatedUser.createdAt,
+          rebundle: updatedUser.rebundle,
           rating: updatedUser.rating,
           numReviews: updatedUser.numReviews,
         });
@@ -740,6 +742,7 @@ userRouter.put(
         sold: updatedUser.sold,
         rating: updatedUser.rating,
         numReviews: updatedUser.numReviews,
+        rebundle: updatedUser.rebundle,
       });
     } else {
       res.status(404).send({ message: "User Not Found" });

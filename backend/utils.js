@@ -134,7 +134,7 @@ export const sendEmail = (options) => {
   );
 
   const mailOption = {
-    from: "support@repeddle.com",
+    from: { name: "Repeddle", address: "support@repeddle.com" },
     to: options.to,
     subject: options.subject,
     html: options.text,

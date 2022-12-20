@@ -270,7 +270,7 @@ export default function ResetScreen() {
 
       <Form onSubmit={validate}>
         <Form.Group className="mb-3" controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>New Password</Form.Label>
           <Input
             password
             error={error.password}

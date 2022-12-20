@@ -126,12 +126,7 @@ const reducer = (state, action) => {
 
 export default function DeliveryOptionScreen({ setShowModel, item }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {
-    cart: { cartItems },
-    mode,
-    userInfo,
-    currency,
-  } = state;
+  const { cart, mode, userInfo, currency } = state;
   const [deliveryOption, setDeliveryOption] = useState("");
   const [showMap, setShowMap] = useState(false);
   const [meta, setMeta] = useState("");
@@ -163,8 +158,8 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   const [isRebundle, setIsRebundle] = useState(false);
   useEffect(() => {
     const getRebundleList = async () => {
-      const data = await rebundleIsActive(userInfo, item.seller._id);
-      setIsRebundle(data.success);
+      const data = await rebundleIsActive(userInfo, item.seller._id, cart);
+      setIsRebundle(data.countAllow > 0);
     };
     getRebundleList();
   }, [userInfo]);

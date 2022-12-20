@@ -281,7 +281,7 @@ export default function SellerScreen() {
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: `you unfollow ${data.username}`,
+            message: `You unfollow ${data.username}`,
             showStatus: true,
             state1: "visible1 error",
           },
@@ -307,7 +307,7 @@ export default function SellerScreen() {
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: `you follow ${data.username}`,
+            message: `you are following ${data.username}`,
             showStatus: true,
             state1: "visible1 success",
           },
@@ -574,7 +574,7 @@ export default function SellerScreen() {
               >
                 Message Me
               </button>
-              {user.rebundle && <RebundlePoster />}
+              {user.rebundle.status && <RebundlePoster />}
               <div className="seller_profile_detail">
                 <div className="seller_single_detail">
                   <div>

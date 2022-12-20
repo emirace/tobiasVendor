@@ -1025,10 +1025,10 @@ export default function ProductScreen() {
     }
   };
 
-  const sizeHandler = (item, item2) => {
+  const sizeHandler = (item) => {
     const current = product.sizes.filter((s) => s.size === item);
     if (current.length > 0) {
-      setSize(`${item2} ( ${current[0].value} left)`);
+      setSize(`${item} ( ${current[0].value} left)`);
       setSelectSize(item);
     } else {
       setSize("Out of stock");
@@ -1051,7 +1051,7 @@ export default function ProductScreen() {
       </Helmet>
       <RebundleLabel
         userId={product.seller._id}
-        active={product.seller.rebundle}
+        active={product.seller.rebundle.status}
       />
       <div className="single_product_container">
         <div className="single_product_left">
@@ -1180,7 +1180,7 @@ export default function ProductScreen() {
             </div>
             <div className="single_produc_status">online</div>
           </div>
-          {product.seller.rebundle && (
+          {product.seller.rebundle.status && (
             <RebundlePoster style={{ marginTop: "5px" }} />
           )}
 
@@ -1303,18 +1303,21 @@ export default function ProductScreen() {
               <>
                 <div className="select_size_header">select size: {size} </div>
                 <div className="flexSelect">
-                  {product.sizes.map((size) => (
-                    <span key={size.size}>
-                      <label
-                        className={`sp_select_size_btn ${
-                          selectSize === size.size ? "sp_btn_checked" : ""
-                        }  `}
-                        onClick={() => sizeHandler(size.size, size.name)}
-                      >
-                        {size.size}
-                      </label>
-                    </span>
-                  ))}
+                  {product.sizes.map(
+                    (size) =>
+                      size.value > 0 && (
+                        <span key={size.size}>
+                          <label
+                            className={`sp_select_size_btn ${
+                              selectSize === size.size ? "sp_btn_checked" : ""
+                            }  `}
+                            onClick={() => sizeHandler(size.size)}
+                          >
+                            {size.size}
+                          </label>
+                        </span>
+                      )
+                  )}
 
                   <span
                     style={{ textDecoration: "underline", cursor: "pointer" }}

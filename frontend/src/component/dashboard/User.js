@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {
   faBolt,
   faCalendarDays,
+  faCheck,
   faDotCircle,
   faEnvelope,
   faLocationDot,
@@ -430,6 +431,40 @@ const Badge = styled.img`
   width: 20px !important;
   object-fit: cover !important;
 `;
+
+const Input = styled.input`
+  width: 100%;
+  height: 30px;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  background: none;
+  padding-left: 10px;
+  margin-right: 5;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  &:focus {
+    outline: none;
+    border: 1px solid var(--orange-color);
+  }
+  &::placeholder {
+    font-size: 14px;
+  }
+`;
+
+const Button = styled.div`
+  padding: 5px 7px;
+  cursor: pointer;
+  color: white;
+  background: var(--orange-color);
+  border-radius: 0.2rem;
+  &:hover {
+    background: var(--malon-color);
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -498,6 +533,8 @@ export default function User() {
   const [bankName, setBankName] = useState("");
   const [username, setUsername] = useState("");
 
+  const [input, setInput] = useState({});
+
   const [bundle, setBundle] = useState("");
 
   useEffect(() => {
@@ -512,6 +549,7 @@ export default function User() {
             },
           });
           dispatch({ type: "FETCH_SUCCESS", payload: data });
+          setRebundleStatus(data.rebundle.status);
           setActive(`${data.active}`);
           setBadge(`${data.badge}`);
           setInfluencer(`${data.influencer}`);
@@ -525,7 +563,8 @@ export default function User() {
             },
           });
           dispatch({ type: "FETCH_SUCCESS", payload: data });
-          setBundle(data.rebundle);
+          setBundle(data.rebundle.status);
+          setRebundleStatus(data.rebundle.status);
           console.log("userdata", data);
           setAddress(data.address);
         };
@@ -584,6 +623,11 @@ export default function User() {
         if (!confirm) {
           return;
         }
+      }
+
+      if (rebundleStatus && !bundle) {
+        setRebundleError("Click activate to make Rebundle active ");
+        return;
       }
       dispatch({ type: "UPDATE_REQUEST" });
 
@@ -679,19 +723,40 @@ export default function User() {
     user.usernameUpdate &&
     30 - timeDifference(new Date(user.usernameUpdate), new Date());
 
+  const [rebundleStatus, setRebundleStatus] = useState("");
+  const [rebundleCount, setRebundleCount] = useState(0);
+  const [loadingRebundle, setLoadingRebundle] = useState(false);
+  const [rebundleError, setRebundleError] = useState("");
   const handleRebundle = async (value) => {
+    if (value) {
+      const { data } = await axios.put("/api/users/bundle", value, {
+        headers: {
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      setBundle(data.status);
+      return;
+    }
+    if (!rebundleCount) {
+      setRebundleError("Enter the quantity of item(s) for Rebundle");
+      return;
+    }
     try {
+      setLoadingRebundle(true);
       const { data } = await axios.put(
         "/api/users/bundle",
-        { value },
+        { status: rebundleStatus, count: rebundleCount },
         {
           headers: {
             authorization: `Bearer ${userInfo.token}`,
           },
         }
       );
-      setBundle(data);
+      setBundle(data.status);
+      setRebundleStatus(data.status);
+      setLoadingRebundle(false);
     } catch (err) {
+      setLoadingRebundle(false);
       console.log(getError(err));
     }
   };
@@ -1200,10 +1265,14 @@ export default function User() {
                         </Label>
                         <Switch
                           mode={mode}
-                          checked={bundle}
+                          checked={rebundleStatus}
                           onChange={(e) => {
-                            setBundle(e.target.checked);
-                            handleRebundle(e.target.checked);
+                            if (e.target.checked) {
+                              setRebundleStatus(e.target.checked);
+                            } else {
+                              setRebundleStatus(e.target.checked);
+                              handleRebundle({ status: false, count: 0 });
+                            }
                           }}
                         ></Switch>
                       </Option>
@@ -1214,11 +1283,51 @@ export default function User() {
                           background: "#d4d4d4",
                         }}
                       />
-                      <Plans>
-                        <Link to="/rebundle" target="_blank">
-                          More on Re:bundle
-                        </Link>
-                      </Plans>
+                      {rebundleStatus && (
+                        <Plans>
+                          {bundle ? (
+                            <div>
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                style={{ color: "var(--orange-color)" }}
+                              />
+                            </div>
+                          ) : (
+                            <>
+                              <div style={{ fontWeight: "11px" }}>
+                                Please input numbers of how many item(s) you are
+                                willing to pack in delivery bag(s) for a buyer
+                                when Rebundle is active
+                              </div>
+                              <Plan>
+                                <Input
+                                  mode={mode}
+                                  type="number"
+                                  onChange={(e) =>
+                                    setRebundleCount(e.target.value)
+                                  }
+                                  onFocus={() => setRebundleError("")}
+                                />
+                                {loadingRebundle ? (
+                                  <LoadingBox />
+                                ) : (
+                                  <Button onClick={() => handleRebundle(null)}>
+                                    Activate
+                                  </Button>
+                                )}
+                              </Plan>
+                              {rebundleError && (
+                                <div style={{ color: "red" }}>
+                                  {rebundleError}
+                                </div>
+                              )}
+                            </>
+                          )}
+                          <Link to="/rebundle" target="_blank">
+                            More on Re:bundle
+                          </Link>
+                        </Plans>
+                      )}
                     </OptionCont>
                   </>
                 )}

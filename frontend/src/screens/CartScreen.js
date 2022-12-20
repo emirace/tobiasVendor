@@ -195,12 +195,13 @@ export default function CartScreen() {
   const [currentCart, setcurrentCart] = useState(cart);
   useEffect(() => {
     const getPrice = async () => {
-      const data = await calcPrice(cart, userInfo);
+      const data = await calcPrice(cart, userInfo, currentItem);
+      console.log("calcPrice", data);
       setcurrentCart(data);
       setLoading(false);
     };
     getPrice();
-  }, [cart]);
+  }, [cart, currentItem, userInfo]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -613,8 +614,9 @@ export default function CartScreen() {
                   <Row>
                     <Col>Shipping</Col>
                     <Col>
+                      {console.log("check cart", currentCart)}
                       {currency}
-                      {currentCart.shippingPrice?.toFixed(2)}
+                      {currentCart.shippingPrice.toFixed(2)}
                     </Col>
                   </Row>
                 </ListGroup.Item>

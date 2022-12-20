@@ -65,9 +65,9 @@ export default function EmailConfirmationScreen({ email }) {
           password reset link. Follow the link provided to reset your password.
         </Text>
         <Text>
-          If you did not get an email, check your junk or spam folders, and if
-          nothing, try again with an email address linked to your RePeddle
-          account or{" "}
+          If you did not get an email, check your <b>promotion</b>, <b>junk</b>{" "}
+          or <b>spam</b> folders, and if nothing, try again with an email
+          address linked to your RePeddle account or{" "}
           <Link to="/forgetpassword">
             <Bold>Resend email confirmation</Bold>
           </Link>

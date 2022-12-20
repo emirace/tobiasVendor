@@ -198,36 +198,69 @@ export const checkDeliverySelect = (cart) => {
   return success;
 };
 
-export const calcPrice = async (cart, userInfo, ctxDispatch) => {
+export const checkDeliverySelectItem = (cart) => {
+  var success = true;
+  if (!cart.deliverySelect) {
+    success = false;
+  }
+  return success;
+};
+
+var items = [];
+const shippingFee = (item, amount) => {
+  console.log("shippingFee", amount);
+  const exist = items.find((i) => i.id === item._id);
+  items = exist
+    ? items.map((c) =>
+        c.id === item._id ? { ...c, amount: Number(amount) } : c
+      )
+    : [...items, { id: item._id, amount: Number(amount) }];
+  return Number(amount);
+};
+export const calcPrice = async (cart, userInfo, currentCartItem) => {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.actualPrice, 0)
   );
   const ItemShippingFee = async (c) => {
-    const data = await rebundleIsActive(userInfo, c.seller._id);
-    return data.success
-      ? 0
-      : checkDeliverySelect(cart)
-      ? Number(c.deliverySelect.cost)
-      : 0;
+    console.log("text", cart, c);
+    if (cart.cartItems.length !== 0 && c) {
+      const data = await rebundleIsActive(userInfo, c.seller._id, cart);
+      const selectedCartItem = cart.cartItems.find((cc) => cc._id === c._id);
+      console.log(data, selectedCartItem);
+      console.log(
+        "data",
+        checkDeliverySelectItem(c),
+        checkDeliverySelectItem(selectedCartItem),
+        c
+      );
+      return data.countAllow > 0
+        ? shippingFee(selectedCartItem, 0)
+        : checkDeliverySelectItem(selectedCartItem)
+        ? shippingFee(selectedCartItem, selectedCartItem.deliverySelect.cost)
+        : 0;
+    } else {
+      return 0;
+    }
   };
-  console.log(
-    "item",
-    await ItemShippingFee(cart.cartItems[0]),
-    await ItemShippingFee(cart.cartItems[1])
-  );
-  cart.shippingPrice = round2(
-    await cart.cartItems.reduce(
-      async (a, c) => a + (await ItemShippingFee(c)),
-      0
-    )
-  );
+  await ItemShippingFee(currentCartItem);
+  console.log("b4 items", items);
+  cart.shippingPrice = items.reduce((a, c) => a + c.amount, 0);
+  console.log("items", items);
+  console.log("currentCartItem", currentCartItem);
+  // round2(
+  //   await cart.cartItems.reduce(async (a, c) => {
+  //     const b = await a;
+  //     return b + (await ItemShippingFee(c));
+  //   }, currentShippingFee)
+  // );
 
   console.log(cart.shippingPrice);
   cart.taxPrice = round2(0);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
   return cart;
 };
+
 export const GOOGLE_CLIENT_ID =
   "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";
 
@@ -281,18 +314,31 @@ export const loginGig = async () => {
   };
 };
 
-export const rebundleIsActive = async (userInfo, userId) => {
+export const rebundleIsActive = async (userInfo, userId, cart) => {
   if (userInfo) {
     try {
+      const selectedCount = cart.cartItems.reduce(
+        (a, c) => a + (c.deliverySelect ? 1 : 0),
+        0
+      );
+      console.log("selectedCount", selectedCount, cart);
       const { data } = await axios.get(
         `/api/rebundleSellers/checkbundle/${userId}`,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      return data;
+      if (data.success) {
+        const count = data.seller.count - selectedCount;
+        const countAllow = count > 0 ? count : 0;
+        // const success = countAllow > 0 ? true : false;
+        return { ...data, countAllow };
+      } else {
+        return { ...data, countAllow: 0 };
+      }
     } catch (err) {
       console.log(err);
     }
   }
+  return { success: false };
 };

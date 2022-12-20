@@ -68,7 +68,10 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpire: { type: String },
     resetEmailExpire: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
-    rebundle: { type: Boolean, default: false },
+    rebundle: {
+      status: { type: Boolean, default: false },
+      count: { type: Number, defalut: 0 },
+    },
   },
   {
     timestamps: true,

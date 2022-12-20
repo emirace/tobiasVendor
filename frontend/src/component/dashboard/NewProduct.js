@@ -728,23 +728,23 @@ export default function NewProduct() {
           description: input.description,
           brand: input.brand,
           discount: input.discount,
-          deliveryOption: input.deliveryOption,
+          deliveryOption,
           meta: input.meta,
-          tags: input.tags,
+          tags,
           price: input.price,
           location: input.location,
           specification: input.specification,
           sizes: sizes,
           condition: input.condition,
           feature: input.feature,
-          currency: input.currency,
+          currency,
           luxury: input.luxury,
           vintage: input.vintage,
           material: input.material,
           color: input.color,
           luxuryImage: input.luxuryImage,
-          addSize: input.addSize,
-          countInStock: input.countInStock,
+          addSize,
+          countInStock,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -2070,6 +2070,7 @@ export default function NewProduct() {
                   showModel={showDelivery}
                 >
                   <DeliveryOption
+                    setShowModel={setShowDelivery}
                     paxi={paxi}
                     setPaxi={setPaxi}
                     gig={gig}
