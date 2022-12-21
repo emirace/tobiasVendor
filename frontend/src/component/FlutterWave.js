@@ -17,6 +17,9 @@ const Button = styled.div`
   justify-content: center;
   border-radius: 0.2rem;
   height: 40px;
+  &:hover {
+    background: var(--malon-color);
+  }
 `;
 export default function FlutterWave({ amount, currency, user, onApprove }) {
   const { state } = useContext(Store);
@@ -59,7 +62,6 @@ export default function FlutterWave({ amount, currency, user, onApprove }) {
         onClick={() => {
           handleFlutterPayment({
             callback: async (response) => {
-              console.log(response);
               onApprove(response);
               closePaymentModal(); // this will close the modal programmatically
             },

@@ -326,6 +326,7 @@ export default function PlaceOrderScreen() {
       toast.error("no order found");
     }
   };
+
   const onApprove = async (response) => {
     const order1 = await placeOrderHandler();
     if (order1) {
@@ -646,7 +647,10 @@ export default function PlaceOrderScreen() {
                     </Button>
                   ) : cart.paymentMethod === "Credit/Debit card" ? (
                     region() === "ZAR" ? (
-                      <PayFast amount={cart.totalPrice} />
+                      <PayFast
+                        amount={cart.totalPrice}
+                        onApprovePayFast={onApprove}
+                      />
                     ) : (
                       <FlutterWave
                         amount={cart.totalPrice}
