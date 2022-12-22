@@ -648,8 +648,9 @@ export default function PlaceOrderScreen() {
                   ) : cart.paymentMethod === "Credit/Debit card" ? (
                     region() === "ZAR" ? (
                       <PayFast
-                        amount={cart.totalPrice}
-                        onApprovePayFast={onApprove}
+                        userInfo={userInfo}
+                        placeOrderHandler={placeOrderHandler}
+                        totalPrice={cart.totalPrice}
                       />
                     ) : (
                       <FlutterWave

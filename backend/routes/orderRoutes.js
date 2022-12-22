@@ -679,9 +679,6 @@ orderRouter.put(
       } else {
         response = { data: { status: "failed" } };
       }
-    } else if (method === "payfast") {
-      const confirm = await confirmPayfast(req.body.myDate);
-      console.log("confirm", confirm);
     } else {
       if (region === "N ") {
         response = await flw.Transaction.verify({ id: transaction_id });
@@ -802,12 +799,15 @@ orderRouter.put(
 orderRouter.delete(
   "/:id",
   isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
-      await order.remove();
-      res.send({ message: "Order Deleted" });
+      if (req.user._id === order.user || req.user.isAdmin) {
+        await order.remove();
+        res.send({ message: "Order Deleted" });
+      } else {
+        res.status(500).send("Cannot delete order");
+      }
     } else {
       res.status(404).send({ message: "Order Not Found" });
     }
