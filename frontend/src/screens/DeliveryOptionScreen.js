@@ -159,7 +159,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   useEffect(() => {
     const getRebundleList = async () => {
       const data = await rebundleIsActive(userInfo, item.seller._id, cart);
-      setIsRebundle(data.countAllow > 0);
+      setIsRebundle({
+        status: data.countAllow > 0,
+        method: data.deliveryMethod,
+      });
     };
     getRebundleList();
   }, [userInfo]);
@@ -530,7 +533,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         </Helmet>
         <h1 className="my-3">Delivery Method</h1>
         {console.log(item)}
-        {isRebundle && <RebundlePoster />}
+        {isRebundle.status && <RebundlePoster />}
         <Form onSubmit={validation}>
           {item.deliveryOption.map((x) => (
             <div className="mb-3" key={x.name}>
@@ -556,7 +559,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     {x.name}{" "}
                     {x.value === 0 ? (
                       ""
-                    ) : isRebundle ? (
+                    ) : isRebundle.status && isRebundle.method === x.name ? (
                       <span
                         style={{
                           color: "var(--malon-color)",
