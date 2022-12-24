@@ -176,6 +176,10 @@ export default function DeliveryReturnScreen({
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    if (!deliveryOption) {
+      setError1("Select a method of delivery");
+      return;
+    }
     try {
       if (!returned.comfirmDelivery) {
         const { data } = await axios.post(

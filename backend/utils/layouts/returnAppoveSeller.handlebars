@@ -282,7 +282,16 @@
                         <p style="margin: 0">
                           Here’s the return
                           <strong>MRRN </strong>ticket number:
-                          <span style="color: #8a1719">{{returnId}}&nbsp;</span>
+                          <span style="color: #8a1719">
+                            <a
+                              href="https://repeddle.{{url}}/return/{{returnId}}"
+                              target="_blank"
+                              style="
+                                          text-decoration: underline;
+                                          color: #eb9f40;
+                                        "
+                              rel="noopener"
+                            >{{returnId}}</a>&nbsp;</span>
                         </p>
                       </div>
                     </td>

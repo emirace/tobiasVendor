@@ -534,6 +534,7 @@ export default function User() {
   const [username, setUsername] = useState("");
 
   const [input, setInput] = useState({});
+  const [errorInput, setErrorInput] = useState("");
 
   const [bundle, setBundle] = useState("");
 
@@ -681,6 +682,59 @@ export default function User() {
         },
       });
     }
+  };
+
+  const addressValidate = (e) => {
+    e.preventDefault();
+    let valid = true;
+    if (!input.street) {
+      handleError("Enter your street", "street");
+      valid = false;
+    }
+    if (!input.apartment) {
+      handleError("Enter your apartment", "apartment");
+      valid = false;
+    }
+    if (!input.state) {
+      handleError("Select your province", "province");
+      valid = false;
+    }
+    if (!input.zipcode) {
+      handleError("Enter your zip code", "zipcode");
+      valid = false;
+    }
+
+    if (valid) {
+      submitHandler(e);
+    }
+  };
+
+  const accountValidate = (e) => {
+    e.preventDefault();
+    let valid = true;
+    if (!input.accountNumber) {
+      handleError("Enter a valid account number", "accountNumber");
+      valid = false;
+    }
+    if (!input.accountName) {
+      handleError("Enter a valid account name", "accountName");
+      valid = false;
+    }
+    if (!input.bankName) {
+      handleError("Select a valid bank", "bankName");
+      valid = false;
+    }
+
+    if (valid) {
+      submitHandler(e);
+    }
+  };
+
+  const handleOnChange = (text, input) => {
+    setInput((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setErrorInput((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
 
   const uploadHandler = async (e) => {
@@ -886,9 +940,15 @@ export default function User() {
                       name="accountName"
                       placeholder={user.accountName}
                       type="text"
-                      onChange={(e) => setAccountName(e.target.value)}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "accountName")
+                      }
+                      onFocus={() => handleError("", "accountName")}
                     />
                   </Item>
+                  {errorInput.accountName && (
+                    <div style={{ color: "red" }}>{errorInput.accountName}</div>
+                  )}
                   <Item>
                     <Label>Account Number</Label>
                     <TextInput
@@ -896,9 +956,17 @@ export default function User() {
                       placeholder={user.accountNumber}
                       name="accountNumber"
                       type="number"
-                      onChange={(e) => setAccountNumber(e.target.value)}
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "accountNumber")
+                      }
+                      onFocus={() => handleError("", "accountNumber")}
                     />
                   </Item>
+                  {errorInput.accountNumber && (
+                    <div style={{ color: "red" }}>
+                      {errorInput.accountNumber}
+                    </div>
+                  )}
                   <Item>
                     <Label>Bank Name</Label>
                     <FormControl
@@ -928,7 +996,10 @@ export default function User() {
                       size="small"
                     >
                       <Select
-                        onChange={(e) => setBankName(e.target.value)}
+                        onChange={(e) =>
+                          handleOnChange(e.target.value, "bankName")
+                        }
+                        onFocus={() => handleError("", "bankName")}
                         displayEmpty
                       >
                         {region() === "NGN"
@@ -941,7 +1012,10 @@ export default function User() {
                       </Select>
                     </FormControl>
                   </Item>
-                  <UploadButton onClick={submitHandler}>Update</UploadButton>
+                  {errorInput.bankName && (
+                    <div style={{ color: "red" }}>{errorInput.bankName}</div>
+                  )}
+                  <UploadButton onClick={accountValidate}>Update</UploadButton>
                 </Form2>
               </SmallModel>
             </Info>
@@ -972,11 +1046,13 @@ export default function User() {
                     mode={mode}
                     name="street"
                     type="text"
-                    onChange={(e) =>
-                      setAddress({ ...address, street: e.target.value })
-                    }
+                    onChange={(e) => handleOnChange(e.target.value, "street")}
+                    onFocus={() => handleError("", "street")}
                   />
                 </Item>
+                {errorInput.street && (
+                  <div style={{ color: "red" }}>{errorInput.street}</div>
+                )}
                 <Item>
                   <Label>Apartment</Label>
                   <TextInput
@@ -984,10 +1060,14 @@ export default function User() {
                     name="apartment"
                     type="text"
                     onChange={(e) =>
-                      setAddress({ ...address, apartment: e.target.value })
+                      handleOnChange(e.target.value, "apartment")
                     }
+                    onFocus={() => handleError("", "apartment")}
                   />
                 </Item>
+                {errorInput.apartment && (
+                  <div style={{ color: "red" }}>{errorInput.apartment}</div>
+                )}
                 <Item>
                   <Label>{region() === "NGN" ? "State" : "Province"}</Label>
                   <FormControl
@@ -1018,9 +1098,8 @@ export default function User() {
                   >
                     <Select
                       value={address?.state}
-                      onChange={(e) =>
-                        setAddress({ ...address, state: e.target.value })
-                      }
+                      onChange={(e) => handleOnChange(e.target.value, "state")}
+                      onFocus={() => handleError("", "state")}
                       displayEmpty
                     >
                       {region() === "NGN"
@@ -1033,6 +1112,9 @@ export default function User() {
                     </Select>
                   </FormControl>
                 </Item>
+                {errorInput.state && (
+                  <div style={{ color: "red" }}>{errorInput.state}</div>
+                )}
                 <Item>
                   <Label>Zip Code</Label>
                   <TextInput
@@ -1040,12 +1122,14 @@ export default function User() {
                     name="zipcode"
                     value={user?.address?.zipcode}
                     type="number"
-                    onChange={(e) =>
-                      setAddress({ ...address, zipcode: e.target.value })
-                    }
+                    onChange={(e) => handleOnChange(e.target.value, "zipcode")}
+                    onFocus={() => handleError("", "zipcode")}
                   />
                 </Item>
-                <UploadButton onClick={submitHandler}>Update</UploadButton>
+                {errorInput.zipcode && (
+                  <div style={{ color: "red" }}>{errorInput.zipcode}</div>
+                )}
+                <UploadButton onClick={addressValidate}>Update</UploadButton>
               </Form2>
             </SmallModel>
           </ShowBottom>
