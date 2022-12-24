@@ -1076,8 +1076,10 @@ export default function OrderScreen() {
                       )}
                   </ActionButton>
                 </DetailButton>
-                {Object.entries(orderitem.deliverySelect).map(
-                  ([key, value]) => (
+                {Object.entries(orderitem.deliverySelect).map(([key, value]) =>
+                  key === "total" ? (
+                    ""
+                  ) : (
                     <div
                       style={{
                         display: "flex",
@@ -1262,26 +1264,30 @@ export default function OrderScreen() {
                   )}
                 </ActionButton>
               </DetailButton>
-              {Object.entries(orderitem.deliverySelect).map(([key, value]) => (
-                <div
-                  style={{
-                    display: "flex",
-                    textTransform: "capitalize",
-                    fontSize: "13px",
-                  }}
-                  key={key}
-                >
-                  <DeliveryKey>{key}:</DeliveryKey>
-                  {key === "cost" ? (
-                    <DeliveryValue>
-                      {currency}
-                      {value}
-                    </DeliveryValue>
-                  ) : (
-                    <DeliveryValue>{value}</DeliveryValue>
-                  )}
-                </div>
-              ))}
+              {Object.entries(orderitem.deliverySelect).map(([key, value]) =>
+                key === "total" ? (
+                  ""
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      textTransform: "capitalize",
+                      fontSize: "13px",
+                    }}
+                    key={key}
+                  >
+                    <DeliveryKey>{key}:</DeliveryKey>
+                    {key === "cost" ? (
+                      <DeliveryValue>
+                        {currency}
+                        {value}
+                      </DeliveryValue>
+                    ) : (
+                      <DeliveryValue>{value}</DeliveryValue>
+                    )}
+                  </div>
+                )
+              )}
               <div style={{ marginTop: "20px" }}>
                 <div>Seller Information</div>
                 <UserCont>

@@ -20,7 +20,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import { calcPrice, checkDeliverySelect, getError } from "../utils";
+import {
+  calcPrice,
+  checkDeliverySelect,
+  getError,
+  rebundleIsActive,
+} from "../utils";
 import ModelLogin from "../component/ModelLogin";
 import DeliveryOptionScreen from "./DeliveryOptionScreen";
 import LoadingBox from "../component/LoadingBox";
@@ -244,11 +249,25 @@ export default function CartScreen() {
       });
       return;
     }
-    //
-    item.deliverySelect = {
-      ...item.deliverySelect,
-      cost: item.deliverySelect.cost + Number(cart.deliveryMethod.cost),
-    };
+    const quantityguard = item.quantity > quantity ? false : true;
+    const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
+    console.log(allowData);
+    if (allowData.countAllow === 0) {
+      item.deliverySelect = {
+        ...item.deliverySelect,
+        total: {
+          cost: !item.deliverySelect.total.status
+            ? quantityguard
+              ? Number(item.deliverySelect.total.cost) +
+                Number(cart.deliveryMethod.cost)
+              : Number(item.deliverySelect.total.cost) -
+                Number(cart.deliveryMethod.cost)
+            : item.deliverySelect.total.cost,
+          status: !item.deliverySelect.total.status,
+        },
+      };
+    }
+
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: { ...item, quantity },

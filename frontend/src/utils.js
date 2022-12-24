@@ -245,7 +245,8 @@ export const calcPrice = async (cart, userInfo, currentCartItem) => {
   // };
   cart.shippingPrice = cart.cartItems.reduce(
     (a, c) =>
-      a + (checkDeliverySelectItem(c) ? Number(c.deliverySelect.cost) : 0),
+      a +
+      (checkDeliverySelectItem(c) ? Number(c.deliverySelect.total.cost) : 0),
     0
   );
 

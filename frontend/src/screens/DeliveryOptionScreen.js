@@ -301,6 +301,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         "delivery Option": deliveryOption,
         cost: value,
         ...meta,
+        total: { status: true, cost: value },
       };
     }
     if (userInfo) {
@@ -318,7 +319,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     if (allowData.countAllow > 0) {
       deliverySelect = {
         ...deliverySelect,
-        cost: 0,
+        total: { status: true, cost: 0 },
       };
     }
     ctxDispatch({
@@ -326,6 +327,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       payload: {
         ...item,
         deliverySelect,
+        quantity: 1,
       },
     });
     ctxDispatch({ type: "SAVE_DELIVERY_METHOD", payload: deliverySelect });

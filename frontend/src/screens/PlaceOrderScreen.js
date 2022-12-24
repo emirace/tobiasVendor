@@ -459,25 +459,29 @@ export default function PlaceOrderScreen() {
                         {item.actualPrice * item.quantity}
                       </div>
                     </Row>
-                    {Object.entries(item.deliverySelect).map(([key, value]) => (
-                      <div
-                        style={{
-                          display: "flex",
-                          textTransform: "capitalize",
-                          fontSize: "13px",
-                        }}
-                      >
-                        <DeliveryKey>{key}:</DeliveryKey>
-                        {key === "cost" ? (
-                          <div style={{ flex: "5" }}>
-                            {item.currency}
-                            {value}
-                          </div>
-                        ) : (
-                          <div style={{ flex: "5" }}>{value}</div>
-                        )}
-                      </div>
-                    ))}
+                    {Object.entries(item.deliverySelect).map(([key, value]) =>
+                      key === "total" ? (
+                        ""
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            textTransform: "capitalize",
+                            fontSize: "13px",
+                          }}
+                        >
+                          <DeliveryKey>{key}:</DeliveryKey>
+                          {key === "cost" ? (
+                            <div style={{ flex: "5" }}>
+                              {item.currency}
+                              {value}
+                            </div>
+                          ) : (
+                            <div style={{ flex: "5" }}>{value}</div>
+                          )}
+                        </div>
+                      )
+                    )}
                   </ListGroup.Item>
                 ))}
               </ListGroup>
