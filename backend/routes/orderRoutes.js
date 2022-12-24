@@ -746,6 +746,7 @@ orderRouter.put(
               sellerId: seller,
               createdAt: Date.now(),
               count: seller.rebundle.count,
+              deliveryMethod: order.deliveryMethod["delivery Option"],
             });
             await rebundleSeller.save();
           } else {
