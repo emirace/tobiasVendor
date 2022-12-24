@@ -221,6 +221,17 @@ export default function CartScreen() {
     }
   }, [userInfo]);
   const updateCartHandler = async (item, quantity) => {
+    if (!item.deliverySelect) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Slect method of delivery",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
@@ -234,6 +245,10 @@ export default function CartScreen() {
       return;
     }
     //
+    item.deliverySelect = {
+      ...item.deliverySelect,
+      cost: item.deliverySelect.cost * quantity,
+    };
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: { ...item, quantity },

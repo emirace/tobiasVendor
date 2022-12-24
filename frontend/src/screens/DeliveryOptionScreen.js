@@ -219,6 +219,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   const location = useGeoLocation();
   const [locationerror, setLocationerror] = useState("");
   const [loadingGig, setLoadingGig] = useState(false);
+
   const submitHandler = async () => {
     var deliverySelect = {};
 
@@ -313,7 +314,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         }
       );
     }
-    console.log("dtgjjjhgg", deliverySelect);
+    const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
+    if (allowData.countAllow > 0) {
+      deliverySelect = {
+        ...deliverySelect,
+        cost: 0,
+      };
+    }
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: {
@@ -326,6 +333,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     // navigate("/placeorder");
     setLoadingGig(false);
   };
+
   const [validationError, setValidationError] = useState("");
   const validation = (e) => {
     e.preventDefault();

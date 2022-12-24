@@ -206,56 +206,49 @@ export const checkDeliverySelectItem = (cart) => {
   return success;
 };
 
-var items = [];
-const shippingFee = (item, amount) => {
-  console.log("shippingFee", amount);
-  const exist = items.find((i) => i.id === item._id);
-  items = exist
-    ? items.map((c) =>
-        c.id === item._id ? { ...c, amount: Number(amount) } : c
-      )
-    : [...items, { id: item._id, amount: Number(amount) }];
-  return Number(amount);
-};
+// var items = [];
+// const shippingFee = (item, amount) => {
+//   console.log("shippingFee", amount);
+//   const exist = items.find((i) => i.id === item._id);
+//   items = exist
+//     ? items.map((c) =>
+//         c.id === item._id ? { ...c, amount: Number(amount) } : c
+//       )
+//     : [...items, { id: item._id, amount: Number(amount) }];
+//   return Number(amount);
+// };
 export const calcPrice = async (cart, userInfo, currentCartItem) => {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.actualPrice, 0)
   );
-  const ItemShippingFee = async (c) => {
-    console.log("text", cart, c);
-    if (cart.cartItems.length !== 0 && c) {
-      const data = await rebundleIsActive(userInfo, c.seller._id, cart);
-      const selectedCartItem = cart.cartItems.find((cc) => cc._id === c._id);
-      console.log(data, selectedCartItem);
-      console.log(
-        "data",
-        checkDeliverySelectItem(c),
-        checkDeliverySelectItem(selectedCartItem),
-        c
-      );
-      return data.countAllow > 0
-        ? shippingFee(selectedCartItem, 0)
-        : checkDeliverySelectItem(selectedCartItem)
-        ? shippingFee(selectedCartItem, selectedCartItem.deliverySelect.cost)
-        : 0;
-    } else {
-      return 0;
-    }
-  };
-  await ItemShippingFee(currentCartItem);
-  console.log("b4 items", items);
-  cart.shippingPrice = items.reduce((a, c) => a + c.amount, 0);
-  console.log("items", items);
-  console.log("currentCartItem", currentCartItem);
-  // round2(
-  //   await cart.cartItems.reduce(async (a, c) => {
-  //     const b = await a;
-  //     return b + (await ItemShippingFee(c));
-  //   }, currentShippingFee)
-  // );
+  // const ItemShippingFee = async (c) => {
+  //   console.log("text", cart, c);
+  //   if (cart.cartItems.length !== 0 && c) {
+  //     const data = await rebundleIsActive(userInfo, c.seller._id, cart);
+  //     const selectedCartItem = cart.cartItems.find((cc) => cc._id === c._id);
+  //     console.log(data, selectedCartItem);
+  //     console.log(
+  //       "data",
+  //       checkDeliverySelectItem(c),
+  //       checkDeliverySelectItem(selectedCartItem),
+  //       c
+  //     );
+  //     return data.countAllow > 0
+  //       ? shippingFee(selectedCartItem, 0)
+  //       : checkDeliverySelectItem(selectedCartItem)
+  //       ? shippingFee(selectedCartItem, selectedCartItem.deliverySelect.cost)
+  //       : 0;
+  //   } else {
+  //     return 0;
+  //   }
+  // };
+  cart.shippingPrice = cart.cartItems.reduce(
+    (a, c) =>
+      a + (checkDeliverySelectItem(c) ? Number(c.deliverySelect.cost) : 0),
+    0
+  );
 
-  console.log(cart.shippingPrice);
   cart.taxPrice = round2(0);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
   return cart;
