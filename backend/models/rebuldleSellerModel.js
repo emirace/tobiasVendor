@@ -5,6 +5,7 @@ const rebundleSellerSchema = new mongoose.Schema({
   sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, expires: 3600 * 2, default: Date.now() },
   count: { type: Number, default: 3 },
+  deliveryMethod: { type: String },
 });
 
 const RebundleSeller = mongoose.model("rebundleSeller", rebundleSellerSchema);
