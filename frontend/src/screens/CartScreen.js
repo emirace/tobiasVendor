@@ -225,7 +225,7 @@ export default function CartScreen() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Slect method of delivery",
+          message: "Select method of delivery",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -247,7 +247,7 @@ export default function CartScreen() {
     //
     item.deliverySelect = {
       ...item.deliverySelect,
-      cost: item.deliverySelect.cost * quantity,
+      cost: item.deliverySelect.cost + cart.deliveryMethod.cost,
     };
     ctxDispatch({
       type: "CART_ADD_ITEM",
