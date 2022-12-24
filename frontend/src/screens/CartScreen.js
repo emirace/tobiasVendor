@@ -247,7 +247,7 @@ export default function CartScreen() {
     //
     item.deliverySelect = {
       ...item.deliverySelect,
-      cost: item.deliverySelect.cost + cart.deliveryMethod.cost,
+      cost: item.deliverySelect.cost + Number(cart.deliveryMethod.cost),
     };
     ctxDispatch({
       type: "CART_ADD_ITEM",
