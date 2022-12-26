@@ -225,6 +225,7 @@ export default function CartScreen() {
       fetchData();
     }
   }, [userInfo]);
+
   const updateCartHandler = async (item, quantity) => {
     if (!item.deliverySelect) {
       ctxDispatch({
@@ -252,16 +253,31 @@ export default function CartScreen() {
     const quantityguard = item.quantity > quantity ? false : true;
     const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
     console.log(allowData);
-    if (allowData.countAllow === 0) {
+    if (
+      allowData.countAllow > 0 &&
+      allowData.deliveryMethod === item.deliverySelect["delivery Option"]
+    ) {
       item.deliverySelect = {
         ...item.deliverySelect,
         total: {
-          cost: !item.deliverySelect.total.status
-            ? quantityguard
+          cost: item.deliverySelect.total.cost,
+          status: !item.deliverySelect.total.status,
+        },
+      };
+    } else {
+      item.deliverySelect = {
+        ...item.deliverySelect,
+        total: {
+          cost: quantityguard
+            ? !item.deliverySelect.total.status
               ? Number(item.deliverySelect.total.cost) +
                 Number(cart.deliveryMethod.cost)
-              : Number(item.deliverySelect.total.cost) -
+              : item.deliverySelect.total.cost
+            : item.deliverySelect.total.cost > 0
+            ? item.deliverySelect.total.status
+              ? Number(item.deliverySelect.total.cost) -
                 Number(cart.deliveryMethod.cost)
+              : item.deliverySelect.total.cost
             : item.deliverySelect.total.cost,
           status: !item.deliverySelect.total.status,
         },

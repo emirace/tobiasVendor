@@ -140,10 +140,21 @@ transactionRouter.post(
               sellerId: seller,
               createdAt: Date.now(),
               count: seller.rebundle.count,
+              deliveryMethod: order.deliveryMethod["delivery Option"],
             });
             await rebundleSeller.save();
-          } else {
-            exist.count -= 1;
+          } else if (exist) {
+            const selectedCount = order.orderItems.reduce(
+              (a, c) =>
+                a +
+                (c.deliverySelect["delivery Option"] === exist.deliveryMethod
+                  ? 1 * c.quantity
+                  : 0),
+              0
+            );
+            const count = exist.count - selectedCount;
+            const countAllow = count > 0 ? count : 0;
+            exist.count = countAllow;
             await exist.save();
           }
         });

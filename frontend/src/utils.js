@@ -308,21 +308,37 @@ export const loginGig = async () => {
   };
 };
 
-export const rebundleIsActive = async (userInfo, userId, cart) => {
+export const rebundleIsActive = async (
+  userInfo,
+  userId,
+  cart,
+  valid = false
+) => {
   if (userInfo) {
     try {
-      const selectedCount = cart.cartItems.reduce(
-        (a, c) => a + (c.deliverySelect ? 1 : 0),
-        0
-      );
-      console.log("selectedCount", selectedCount, cart);
       const { data } = await axios.get(
         `/api/rebundleSellers/checkbundle/${userId}`,
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
+
       if (data.success) {
+        console.log("hello", data, cart.cartItems);
+        const selectedCount = !valid
+          ? cart.cartItems.reduce(
+              (a, c) =>
+                a +
+                (c.deliverySelect["delivery Option"] ===
+                data.seller.deliveryMethod
+                  ? 1 * c.quantity
+                  : 0),
+              0
+            )
+          : cart.cartItems.reduce(
+              (a, c) => a + (c.deliverySelect ? 1 * c.quantity : 0),
+              0
+            );
         const count = data.seller.count - selectedCount;
         const countAllow = count > 0 ? count : 0;
         // const success = countAllow > 0 ? true : false;

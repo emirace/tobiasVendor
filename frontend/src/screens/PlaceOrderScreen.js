@@ -201,6 +201,7 @@ export default function PlaceOrderScreen() {
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
+          deliveryMethod: cart.deliveryMethod,
         },
         { headers: { authorization: `Bearer ${userInfo.token}` } }
       );

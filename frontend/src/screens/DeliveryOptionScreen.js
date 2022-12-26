@@ -158,10 +158,16 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   const [isRebundle, setIsRebundle] = useState(false);
   useEffect(() => {
     const getRebundleList = async () => {
-      const data = await rebundleIsActive(userInfo, item.seller._id, cart);
+      const valid = true;
+      const data = await rebundleIsActive(
+        userInfo,
+        item.seller._id,
+        cart,
+        valid
+      );
       setIsRebundle({
         status: data.countAllow > 0,
-        method: data.deliveryMethod,
+        method: data.seller.deliveryMethod,
       });
     };
     getRebundleList();
@@ -318,13 +324,24 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         }
       );
     }
-    const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
-    if (allowData.countAllow > 0) {
+    const valid = true;
+    const allowData = await rebundleIsActive(
+      userInfo,
+      item.seller._id,
+      cart,
+      valid
+    );
+    console.log("allow", allowData, deliveryOption);
+    if (
+      allowData?.countAllow > 0 &&
+      allowData?.seller?.deliveryMethod === deliveryOption
+    ) {
       deliverySelect = {
         ...deliverySelect,
         total: { status: true, cost: 0 },
       };
     }
+    console.log("deliverySelect", deliverySelect);
     ctxDispatch({
       type: "CART_ADD_ITEM",
       payload: {
@@ -555,6 +572,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       setMeta("");
                     }}
                   />
+                  {console.log(isRebundle)}
                   <Label htmlFor={x.name}>
                     {x.name}{" "}
                     {x.value === 0 ? (
@@ -564,6 +582,8 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         style={{
                           color: "var(--malon-color)",
                           fontSize: "11px",
+                          fontWeight: "bold",
+                          marginLeft: "10px",
                         }}
                       >
                         free
