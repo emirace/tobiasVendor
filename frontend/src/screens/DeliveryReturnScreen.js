@@ -5,10 +5,14 @@ import Form from "react-bootstrap/Form";
 import { Store } from "../Store";
 import styled from "styled-components";
 import axios from "axios";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import { socket } from "../App";
 import WalletModel from "../component/wallet/WalletModel";
 import AddFund from "../component/wallet/AddFund";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { postnet, pudo, states } from "../constant";
 
 const Container = styled.div`
   margin: 30px;
@@ -379,14 +383,50 @@ export default function DeliveryReturnScreen({
                   ) : deliveryOption === "PUDO Locker-to-Locker" ? (
                     <Plans>
                       <Plan>
-                        <Input
-                          type="text"
-                          onChange={(e) =>
-                            setMeta({ ...meta, province: e.target.value })
-                          }
-                          placeholder="Province"
-                          value={meta.province}
-                        />
+                        <Label>Province</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.province}
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                            }}
+                            displayEmpty
+                          >
+                            {region() === "NGN"
+                              ? states.Nigeria.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))
+                              : states.SouthAfrican.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))}
+                          </Select>
+                        </FormControl>
                       </Plan>
 
                       <a
@@ -398,14 +438,55 @@ export default function DeliveryReturnScreen({
                         Find locker near your location
                       </a>
                       <Plan>
-                        <Input
+                        {/* <Input
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, shortName: e.target.value })
                           }
                           placeholder="Pick Up Locker"
                           value={meta.shortName}
-                        />
+                        /> */}
+
+                        <Label>Pick Up Locker</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.shortName}
+                            onChange={(e) => {
+                              setMeta({ ...meta, shortName: e.target.value });
+                            }}
+                            displayEmpty
+                          >
+                            {pudo[meta.province]?.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Plan>
                       <Plan>
                         <Input
@@ -440,7 +521,7 @@ export default function DeliveryReturnScreen({
                   ) : deliveryOption === "PostNet-to-PostNet" ? (
                     <Plans>
                       <Plan>
-                        <Input
+                        {/* <Input
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -448,7 +529,52 @@ export default function DeliveryReturnScreen({
                           }
                           placeholder="Province"
                           value={meta.province}
-                        />
+                        /> */}
+
+                        <Label>Province</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.province}
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                            }}
+                            displayEmpty
+                          >
+                            {region() === "NGN"
+                              ? states.Nigeria.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))
+                              : states.SouthAfrican.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))}
+                          </Select>
+                        </FormControl>
                       </Plan>
 
                       <a
@@ -460,7 +586,7 @@ export default function DeliveryReturnScreen({
                         Find store near your location
                       </a>
                       <Plan>
-                        <Input
+                        {/* <Input
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -471,7 +597,48 @@ export default function DeliveryReturnScreen({
                           }
                           placeholder="Pick Up Locker"
                           value={meta.pickUp}
-                        />
+                        /> */}
+
+                        <Label>Pick Up Locker</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.pickUp}
+                            onChange={(e) => {
+                              setMeta({ ...meta, pickUp: e.target.value });
+                            }}
+                            displayEmpty
+                          >
+                            {postnet[meta.province]?.map((x) => (
+                              <MenuItem value={x}>{x}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </Plan>
                       <Plan>
                         <Input
@@ -585,7 +752,7 @@ export default function DeliveryReturnScreen({
                         />
                       </Plan>
                       <Plan>
-                        <Input
+                        {/* <Input
                           mode={mode}
                           type="text"
                           onChange={(e) =>
@@ -593,7 +760,52 @@ export default function DeliveryReturnScreen({
                           }
                           placeholder="Province"
                           value={meta.province}
-                        />
+                        /> */}
+
+                        <Label>Province</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.province}
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                            }}
+                            displayEmpty
+                          >
+                            {region() === "NGN"
+                              ? states.Nigeria.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))
+                              : states.SouthAfrican.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))}
+                          </Select>
+                        </FormControl>
                       </Plan>
                       <a
                         className="link"

@@ -211,7 +211,7 @@ export default function ReturnPage() {
       userId: "Admin",
       itemId: paymentData._id,
       notifyType: "payment",
-      msg: `Return Completed`,
+      msg: type,
       link: `/payment/${paymentData._id}`,
       userImage: user.image,
     });
@@ -296,10 +296,9 @@ export default function ReturnPage() {
           if (item._id === returned.productId._id) {
             const amount1 =
               (92.1 / 100) *
-              Number(
-                returned.sending.cost +
-                  returned.productId.actualPrice * item.quantity
-              );
+              (Number(returned.sending.cost) +
+                returned.productId.actualPrice * item.quantity);
+
             await paymentRequest(
               returned.productId.seller,
               amount1,
@@ -491,7 +490,7 @@ export default function ReturnPage() {
                 >
                   {key === "cost" ? (
                     <>
-                      <div style={{ flex: "1" }}>{key}:</div>
+                      <div style={{ flex: "3" }}>{key}:</div>
                       <div style={{ flex: "5" }}>
                         {returned.productId.currency}
                         {value}
@@ -499,7 +498,7 @@ export default function ReturnPage() {
                     </>
                   ) : (
                     <>
-                      <div style={{ flex: "1" }}>{key}:</div>
+                      <div style={{ flex: "3" }}>{key}:</div>
                       <div style={{ flex: "5" }}>{value}</div>
                     </>
                   )}
@@ -676,7 +675,8 @@ export default function ReturnPage() {
                           >
                             <MenuItem
                               disabled={
-                                deliveryNumber(orderitem.deliveryStatus) !== 8
+                                deliveryNumber(orderitem.deliveryStatus) !==
+                                  8 || !returned.returnDelivery
                               }
                               value="Return Dispatched"
                             >

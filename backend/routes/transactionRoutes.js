@@ -1,5 +1,5 @@
 import express from "express";
-import { confirmPayfast, isAdmin, isAuth } from "../utils.js";
+import { confirmPayfast, isAdmin, isAuth, sendEmail } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
 import crypto from "crypto";
@@ -81,118 +81,125 @@ transactionRouter.get(
 transactionRouter.post(
   "/payfastnotify",
   expressAsyncHandler(async (req, res) => {
-    const order = await Order.findById(req.body["item_name"]);
+    const order = await Order.findById(req.body["item_name"]).populate({
+      path: "user",
+      select: "email username",
+    });
     const confirm = await confirmPayfast(req, order.totalPrice);
     if (confirm) {
-      console.log("payment is successful");
-      const user = await User.findOne({ email: req.body["email_address"] });
-      if (order) {
-        const products = [];
-        const sellers = [];
-        order.orderItems.map((i) => products.push(i._id));
-        const records = await Product.find({
-          _id: { $in: products },
-        });
-        order.orderItems.forEach((element) => {
-          if (!sellers.includes(element.seller)) {
-            sellers.push(element.seller);
-          }
-        });
-        records.map(async (p) => {
-          p.sold = true;
-          p.countInStock =
-            p.countInStock -
-            order.orderItems.map((x) => {
-              if (p._id.toString() === x._id) return x.quantity;
-            });
-          p.sizes = p.sizes.map((size) =>
-            size.size === p.selectSize
-              ? { ...size, value: Number(size.value) - 1 }
-              : size
-          );
-          p.userBuy.push(user._id);
-
-          const seller = await User.findById(p.seller);
-          seller.sold.push(p._id);
-          seller.earnings = seller.earnings + p.actualPrice;
-          await seller.save();
-          await p.save();
-        });
-
-        order.isPaid = true;
-        order.paidAt = Date.now();
-        order.paymentResult = {
-          id: req.body["pf_payment_id"],
-          status: req.body["payment_status"],
-          update_time: req.body.update_time,
-          email_address: req.body["email_address"],
-        };
-        const updateOrder = await order.save();
-        sellers.map(async (seller) => {
-          const userSeller = await User.findById(seller);
-          const exist = await RebundleSeller.findOne({
-            userId: user._id,
-            sellerId: seller,
+      try {
+        console.log("payment is successful");
+        const user = await User.findOne({ email: req.body["email_address"] });
+        if (order) {
+          const products = [];
+          const sellers = [];
+          order.orderItems.map((i) => products.push(i._id));
+          const records = await Product.find({
+            _id: { $in: products },
           });
-          if (!exist && userSeller.rebundle.status) {
-            const rebundleSeller = new RebundleSeller({
+          order.orderItems.forEach((element) => {
+            if (!sellers.includes(element.seller)) {
+              sellers.push(element.seller);
+            }
+          });
+          records.map(async (p) => {
+            p.sold = true;
+            p.countInStock =
+              p.countInStock -
+              order.orderItems.map((x) => {
+                if (p._id.toString() === x._id) return x.quantity;
+              });
+            p.sizes = p.sizes.map((size) =>
+              size.size === p.selectSize
+                ? { ...size, value: Number(size.value) - 1 }
+                : size
+            );
+            p.userBuy.push(user._id);
+
+            const seller = await User.findById(p.seller);
+            seller.sold.push(p._id);
+            seller.earnings = seller.earnings + p.actualPrice;
+            await seller.save();
+            await p.save();
+          });
+
+          order.isPaid = true;
+          order.paidAt = Date.now();
+          order.paymentResult = {
+            id: req.body["pf_payment_id"],
+            status: req.body["payment_status"],
+            update_time: req.body.update_time,
+            email_address: req.body["email_address"],
+          };
+          const updateOrder = await order.save();
+          sellers.map(async (seller) => {
+            const userSeller = await User.findById(seller);
+            const exist = await RebundleSeller.findOne({
               userId: user._id,
               sellerId: seller,
-              createdAt: Date.now(),
-              count: seller.rebundle.count,
-              deliveryMethod: order.deliveryMethod["delivery Option"],
             });
-            await rebundleSeller.save();
-          } else if (exist) {
-            const selectedCount = order.orderItems.reduce(
-              (a, c) =>
-                a +
-                (c.deliverySelect["delivery Option"] === exist.deliveryMethod
-                  ? 1 * c.quantity
-                  : 0),
-              0
-            );
-            const count = exist.count - selectedCount;
-            const countAllow = count > 0 ? count : 0;
-            exist.count = countAllow;
-            await exist.save();
-          }
-        });
+            if (!exist && userSeller.rebundle.status) {
+              const rebundleSeller = new RebundleSeller({
+                userId: user._id,
+                sellerId: seller,
+                createdAt: Date.now(),
+                count: seller.rebundle.count,
+                deliveryMethod: order.deliveryMethod["delivery Option"],
+              });
+              await rebundleSeller.save();
+            } else if (exist) {
+              const selectedCount = order.orderItems.reduce(
+                (a, c) =>
+                  a +
+                  (c.deliverySelect["delivery Option"] === exist.deliveryMethod
+                    ? 1 * c.quantity
+                    : 0),
+                0
+              );
+              const count = exist.count - selectedCount;
+              const countAllow = count > 0 ? count : 0;
+              exist.count = countAllow;
+              await exist.save();
+            }
+          });
 
-        sendEmail({
-          to: order.user.email,
-          subject: "PROCESSING YOUR ORDER",
-          template: "processingOrder",
-          context: {
-            username: order.user.username,
-            url: region === "NGN" ? "com" : "co.za",
-            sellers,
-            orderId: order._id,
-            orderItems: order.orderItems,
-            sellerId: order.orderItems[0].seller._id,
-          },
-        });
-        sellers.map((seller) => {
           sendEmail({
-            to: seller.email,
-            subject: "NEW ORDER",
-            template: "processingOrderSeller",
+            to: order.user.email,
+            subject: "PROCESSING YOUR ORDER",
+            template: "processingOrder",
             context: {
-              username: seller.username,
-              url: region === "NGN" ? "com" : "co.za",
-              buyer: order.user.username,
-              buyerId: order.user._id,
+              username: order.user.username,
+              url: "co.za",
+              sellers,
               orderId: order._id,
-              sellerId: seller._id,
-              orderItems: order.orderItems.filter(
-                (x) => x.seller._id === seller._id
-              ),
+              orderItems: order.orderItems,
               sellerId: order.orderItems[0].seller._id,
             },
           });
-        });
-      } else {
-        res.status(404).send({ message: "Order Not Found" });
+          sellers.map((seller) => {
+            sendEmail({
+              to: seller.email,
+              subject: "NEW ORDER",
+              template: "processingOrderSeller",
+              context: {
+                username: seller.username,
+                url: "co.za",
+                buyer: order.user.username,
+                buyerId: order.user._id,
+                orderId: order._id,
+                sellerId: seller._id,
+                orderItems: order.orderItems.filter(
+                  (x) => x.seller._id === seller._id
+                ),
+                sellerId: order.orderItems[0].seller._id,
+              },
+            });
+          });
+        } else {
+          res.status(404).send({ message: "Order Not Found" });
+        }
+      } catch (err) {
+        console.log(err);
       }
     } else {
       console.log("payment failed");
@@ -209,8 +216,8 @@ transactionRouter.put(
     const { myData } = req.body;
     let myData1 = { ...myData };
 
-    const passPhrase = "jt7NOE43FZPn";
-    // const passPhrase = null;
+    // const passPhrase = "jt7NOE43FZPn";
+    const passPhrase = null;
 
     const dataToString = (dataArray) => {
       // Convert your data array to a string
@@ -228,7 +235,7 @@ transactionRouter.put(
 
     const generatePaymentIdentifier = async (pfParamString) => {
       const result = await axios
-        .post(`https://sandbox.payfast.co.za/onsite/process`, pfParamString)
+        .post(`https://www.payfast.co.za/onsite/process`, pfParamString)
         .then((res) => {
           return res.data || null;
         })

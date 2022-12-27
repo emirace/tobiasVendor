@@ -252,7 +252,13 @@ export default function CartScreen() {
     }
     const quantityguard = item.quantity > quantity ? false : true;
     const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
-    console.log(allowData);
+    console.log(
+      allowData,
+      "hello",
+      allowData.countAllow > 0 &&
+        allowData.deliveryMethod === item.deliverySelect["delivery Option"]
+    );
+
     if (
       allowData.countAllow > 0 &&
       allowData.deliveryMethod === item.deliverySelect["delivery Option"]
@@ -269,15 +275,11 @@ export default function CartScreen() {
         ...item.deliverySelect,
         total: {
           cost: quantityguard
-            ? !item.deliverySelect.total.status
-              ? Number(item.deliverySelect.total.cost) +
-                Number(cart.deliveryMethod.cost)
-              : item.deliverySelect.total.cost
+            ? Number(item.deliverySelect.total.cost) +
+              Number(item.deliverySelect.cost)
             : item.deliverySelect.total.cost > 0
-            ? item.deliverySelect.total.status
-              ? Number(item.deliverySelect.total.cost) -
-                Number(cart.deliveryMethod.cost)
-              : item.deliverySelect.total.cost
+            ? Number(item.deliverySelect.total.cost) -
+              Number(item.deliverySelect.cost)
             : item.deliverySelect.total.cost,
           status: !item.deliverySelect.total.status,
         },
