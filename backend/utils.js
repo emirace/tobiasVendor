@@ -222,7 +222,6 @@ export async function debitAccount({
     account.balance = Number(account.balance) - Number(amount);
     account.save();
   }
-  console.log(account.amount);
 
   await Transaction.create({
     txnType: "debit",
@@ -251,9 +250,10 @@ export const generateOTP = () => {
 
 export const confirmPayfast = async (req, cartTotal) => {
   try {
-    const testingMode = true;
+    const testingMode = false;
     const pfHost = testingMode ? "sandbox.payfast.co.za" : "www.payfast.co.za";
-    const passPhrase = "jt7NOE43FZPn";
+    const passPhrase = "/Re01thrift_peddle";
+    // const passPhrase = "jt7NOE43FZPn";
 
     const pfData = JSON.parse(JSON.stringify(req.body));
 
@@ -366,6 +366,6 @@ export const confirmPayfast = async (req, cartTotal) => {
       // Some checks have failed, check payment manually and log for investigation
     }
   } catch (err) {
-    console.log(ert);
+    console.log(err);
   }
 };

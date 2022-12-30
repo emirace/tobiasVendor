@@ -84,7 +84,7 @@ import ForgetScreen from "./screens/ForgetScreen";
 import ResetScreen from "./screens/ResetScreen";
 import VerifyEmailScreen from "./screens/VerifyEmailScreen";
 import EmailConfirmationScreen from "./screens/successPage/EmailConfirmationScreen";
-import initFacebookSdk from "./hooks/initFacebookSdk";
+import initFacebookSdk, { logout } from "./hooks/initFacebookSdk";
 import VerifyAccountScreen from "./screens/VerifyAccountScreen";
 import PaymentScreen from "./screens/PaymentScreen";
 import TransactionScreen from "./screens/TransactionScreen";
@@ -223,6 +223,7 @@ function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode, notifications, cookies } = state;
   const signoutHandler = () => {
+    logout();
     localStorage.removeItem("userInfo");
     ctxDispatch({ type: "USER_SIGNOUT" });
     localStorage.removeItem("cartItems");

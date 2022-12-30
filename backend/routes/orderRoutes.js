@@ -705,17 +705,23 @@ orderRouter.put(
           }
         });
         records.map(async (p) => {
+          var newQuantity;
+          var selectedSize;
+          order.orderItems.map((x) => {
+            if (p._id.toString() === x._id) {
+              newQuantity = x.quantity;
+              selectedSize = x.selectSize;
+            }
+          });
           p.sold = true;
-          p.countInStock =
-            p.countInStock -
-            order.orderItems.map((x) => {
-              if (p._id.toString() === x._id) return x.quantity;
-            });
-          p.sizes = p.sizes.map((size) =>
-            size.size === p.selectSize
-              ? { ...size, value: Number(size.value) - 1 }
-              : size
-          );
+          p.countInStock = p.countInStock - newQuantity;
+
+          p.sizes = p.sizes.map((size) => {
+
+            return size.size === selectedSize
+              ? { ...size, value: `${Number(size.value) - newQuantity}` }
+              : size;
+          });
           p.userBuy.push(req.user._id);
 
           const seller = await User.findById(p.seller);

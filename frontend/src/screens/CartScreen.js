@@ -255,14 +255,15 @@ export default function CartScreen() {
     console.log(
       allowData,
       "hello",
-      allowData.countAllow > 0 &&
-        allowData.deliveryMethod === item.deliverySelect["delivery Option"]
+      allowData.countAllow > 0,
+      allowData.seller.deliveryMethod === item.deliverySelect["delivery Option"]
     );
 
     if (
       allowData.countAllow > 0 &&
-      allowData.deliveryMethod === item.deliverySelect["delivery Option"]
+      allowData.seller.deliveryMethod === item.deliverySelect["delivery Option"]
     ) {
+      console.log("rebundle");
       item.deliverySelect = {
         ...item.deliverySelect,
         total: {
@@ -271,6 +272,8 @@ export default function CartScreen() {
         },
       };
     } else {
+      console.log("no rebundle");
+
       item.deliverySelect = {
         ...item.deliverySelect,
         total: {

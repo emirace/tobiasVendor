@@ -5,8 +5,10 @@ import styled from "styled-components";
 import { Store } from "../../Store";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import axios from "axios";
+import PayFast from "../PayFast";
+import PayFastFund from "../PayFastFund";
 const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Container = styled.div`
@@ -139,20 +141,29 @@ export default function AddFund({
         placeholder="Enter Amount to be Added in Wallet"
         onChange={(e) => setAmount(e.target.value)}
       />
-      <Button
-        onClick={() => {
-          handleFlutterPayment({
-            callback: async (response) => {
-              console.log(response);
-              onApprove(response);
-              closePaymentModal(); // this will close the modal programmatically
-            },
-            onClose: () => {},
-          });
-        }}
-      >
-        Continue
-      </Button>
+      {region() === "" ? (
+        <Button
+          onClick={() => {
+            handleFlutterPayment({
+              callback: async (response) => {
+                console.log(response);
+                onApprove(response);
+                closePaymentModal(); // this will close the modal programmatically
+              },
+              onClose: () => {},
+            });
+          }}
+        >
+          Continue
+        </Button>
+      ) : (
+        <PayFastFund
+          totalPrice={amount}
+          setShowModel={setShowModel}
+          setRefresh={setRefresh}
+          refresh={refresh}
+        />
+      )}
     </Container>
   );
 }

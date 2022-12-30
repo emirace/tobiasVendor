@@ -1,5 +1,12 @@
 import express from "express";
-import { confirmPayfast, isAdmin, isAuth, sendEmail } from "../utils.js";
+import {
+  confirmPayfast,
+  creditAccount,
+  debitAccount,
+  isAdmin,
+  isAuth,
+  sendEmail,
+} from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
 import crypto from "crypto";
@@ -9,6 +16,7 @@ import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
 import RebundleSeller from "../models/rebuldleSellerModel.js";
 import User from "../models/userModel.js";
+import { v4 } from "uuid";
 
 const transactionRouter = express.Router();
 
@@ -103,17 +111,22 @@ transactionRouter.post(
             }
           });
           records.map(async (p) => {
+            var newQuantity;
+            var selectedSize;
+            order.orderItems.map((x) => {
+              if (p._id.toString() === x._id) {
+                newQuantity = x.quantity;
+                selectedSize = x.selectSize;
+              }
+            });
             p.sold = true;
-            p.countInStock =
-              p.countInStock -
-              order.orderItems.map((x) => {
-                if (p._id.toString() === x._id) return x.quantity;
-              });
-            p.sizes = p.sizes.map((size) =>
-              size.size === p.selectSize
-                ? { ...size, value: Number(size.value) - 1 }
-                : size
-            );
+            p.countInStock = p.countInStock - newQuantity;
+
+            p.sizes = p.sizes.map((size) => {
+              return size.size === selectedSize
+                ? { ...size, value: `${Number(size.value) - newQuantity}` }
+                : size;
+            });
             p.userBuy.push(user._id);
 
             const seller = await User.findById(p.seller);
@@ -209,6 +222,72 @@ transactionRouter.post(
   })
 );
 
+transactionRouter.post(
+  "/payfund",
+  expressAsyncHandler(async (req, res) => {
+    console.log(req.body);
+    const confirm = await confirmPayfast(req, req.body["amount_gross"]);
+    if (confirm) {
+      try {
+        console.log("payment is successful");
+        const user = await User.findOne({ email: req.body["email_address"] });
+        console.log(user._id);
+
+        const recipientId = await Account.findOne({ userId: user._id });
+        console.log(recipientId, user._id);
+
+        const admin = await User.findOne({
+          email: "admin@example.com",
+          isAdmin: true,
+        });
+        const senderId = await Account.findOne({ userId: admin._id });
+        const amount = req.body["amount_gross"];
+        const transaction_id = v4();
+
+        if (senderId && recipientId && amount > 0) {
+          try {
+            const purpose = "transfer";
+
+            const debitResult = await debitAccount({
+              amount,
+              accountId: senderId._id,
+              purpose,
+              metadata: {
+                recipientId: recipientId._id,
+                transaction_id,
+                purpose: "Fund wallet",
+              },
+            });
+            if (debitResult.success) {
+              await creditAccount({
+                amount,
+                accountId: recipientId._id,
+                purpose,
+                metadata: {
+                  senderId: senderId._id,
+                  purpose: "Fund wallet",
+                },
+              });
+            } else {
+              throw debitResult;
+            }
+            console.log("funded");
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("enter valid credentials");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      console.log("payment failed");
+    }
+    res.status(200).send("done");
+  })
+);
+
 transactionRouter.put(
   "/process",
   isAuth,
@@ -217,7 +296,7 @@ transactionRouter.put(
     let myData1 = { ...myData };
 
     // const passPhrase = "jt7NOE43FZPn";
-    const passPhrase = null;
+    const passPhrase = "/Re01thrift_peddle";
 
     const dataToString = (dataArray) => {
       // Convert your data array to a string
