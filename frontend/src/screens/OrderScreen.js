@@ -1345,6 +1345,15 @@ export default function OrderScreen() {
           <PaymentDliveryItem>
             <Heading>Payment</Heading>
             <SumaryContDetails mode={mode}>
+              <Name>Payment Status</Name>
+              <ItemNum>
+                {order.isPaid ? (
+                  <div style={{ color: "var(--orange-color)" }}>Paid</div>
+                ) : (
+                  <div style={{ color: "var(--malon-color)" }}>Not Paid</div>
+                )}
+              </ItemNum>
+              <hr />
               <Name>Payment Method</Name>
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />

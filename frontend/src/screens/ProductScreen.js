@@ -1376,7 +1376,10 @@ export default function ProductScreen() {
                     <Key>Size</Key>
                   </LeftOverview>
                   <RightOverview>
-                    <Value>{product.actualPrice}</Value>
+                    <Value>
+                      {product.currency}
+                      {product.actualPrice}
+                    </Value>
                     <Value>{product.brand}</Value>
                     <Value>{product.category}</Value>
                     <Value>{product.subCategory || "nal"}</Value>

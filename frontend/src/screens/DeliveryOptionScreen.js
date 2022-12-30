@@ -168,6 +168,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       setIsRebundle({
         status: data.countAllow > 0,
         method: data.seller.deliveryMethod,
+        count: data.countAllow,
       });
     };
     getRebundleList();
@@ -578,7 +579,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     {x.value === 0 ? (
                       ""
                     ) : isRebundle.status && isRebundle.method === x.name ? (
-                      <span
+                      <div
                         style={{
                           color: "var(--malon-color)",
                           fontSize: "11px",
@@ -586,8 +587,8 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           marginLeft: "10px",
                         }}
                       >
-                        free
-                      </span>
+                        Free delivery for {isRebundle?.count} item
+                      </div>
                     ) : (
                       `+ ${currency}${x.value}`
                     )}

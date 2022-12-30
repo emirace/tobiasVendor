@@ -649,9 +649,9 @@ export default function User() {
           badge,
           about,
           password,
-          accountName,
-          accountNumber,
-          bankName,
+          accountName: input.accountName,
+          accountNumber: input.accountNumber,
+          bankName: input.bankName,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },

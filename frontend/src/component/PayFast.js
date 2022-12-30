@@ -107,6 +107,7 @@ export default function PayFast({ totalPrice, placeOrderHandler }) {
                   Authorization: `Bearer ${userInfo.token}`,
                 },
               });
+              setLoading(false);
             }
           });
         }

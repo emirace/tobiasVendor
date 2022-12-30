@@ -216,7 +216,6 @@ transactionRouter.post(
       }
     } else {
       console.log("payment failed");
-      await order.remove();
     }
     res.status(200).send("done");
   })
