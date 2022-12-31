@@ -84,8 +84,8 @@ userRouter.put(
         user.accountName = req.body.accountName || user.accountName;
         user.accountNumber = req.body.accountNumber || user.accountNumber;
         user.bankName = req.body.bankName || user.bankName;
+        user.address = req.body.address.state ? req.body.address : user.address;
         user.phone = req.body.phone || user.phone;
-        user.address = req.body.address || user.address;
         user.image = req.body.image || user.image;
         if (req.body.password) {
           user.password = bcrypt.hashSync(req.body.password, 8);
@@ -949,7 +949,7 @@ userRouter.put(
       user.activeUpdate =
         req.body.active === "" ? user.activeUpdate : new Date();
       user.phone = req.body.phone || user.phone;
-      user.address = req.body.address || user.address;
+      user.address = req.body.address.state ? req.body.address : user.address;
       user.about = req.body.about || user.about;
       user.image = req.body.image || user.image;
       user.active = req.body.active || user.active;

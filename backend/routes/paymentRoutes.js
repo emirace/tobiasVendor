@@ -42,7 +42,7 @@ paymentRouter.post(
   expressAsyncHandler(async (req, res) => {
     const payment = new Payment({
       userId: req.body.userId,
-      amount: req.body.amount,
+      amount: Math.round(req.body.amount * 100) / 100,
       meta: req.body.meta,
     });
 

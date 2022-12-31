@@ -345,6 +345,7 @@ export default function DeliveryReturnScreen({
                     <Plans>
                       <Plan>
                         <Input
+                          mode={mode}
                           type="text"
                           onClick={() => setShowMap(true)}
                           placeholder="Choose the closest pick up point"
@@ -362,6 +363,7 @@ export default function DeliveryReturnScreen({
                       )}
                       <Plan>
                         <Input
+                          mode={mode}
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, phone: e.target.value })
@@ -439,6 +441,7 @@ export default function DeliveryReturnScreen({
                       </a>
                       <Plan>
                         {/* <Input
+                        mode={mode}
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, shortName: e.target.value })
@@ -490,6 +493,7 @@ export default function DeliveryReturnScreen({
                       </Plan>
                       <Plan>
                         <Input
+                          mode={mode}
                           type="text"
                           onChange={(e) =>
                             setMeta({ ...meta, phone: e.target.value })

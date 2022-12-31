@@ -518,7 +518,6 @@ export default function User() {
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
   const [about, setAbout] = useState("");
   const [image, setImage] = useState("");
   const [active, setActive] = useState("");
@@ -553,6 +552,7 @@ export default function User() {
           setRebundleStatus(data.rebundle.status);
           setActive(`${data.active}`);
           setBadge(`${data.badge}`);
+          setBundle(data.rebundle.status);
           setInfluencer(`${data.influencer}`);
         };
         fetchUser();
@@ -566,8 +566,6 @@ export default function User() {
           dispatch({ type: "FETCH_SUCCESS", payload: data });
           setBundle(data.rebundle.status);
           setRebundleStatus(data.rebundle.status);
-          console.log("userdata", data);
-          setAddress(data.address);
         };
         fetchUser();
       }
@@ -603,7 +601,9 @@ export default function User() {
   }, [userInfo]);
 
   const submitHandler = async (e) => {
+    console.log("alone");
     e.preventDefault();
+
     try {
       if (!id && password !== confirmPassword) {
         ctxDispatch({
@@ -620,16 +620,17 @@ export default function User() {
         const confirm = window.confirm(
           "Are you sure you want to edit your username? The next edit window  will be after 30 days"
         );
-        console.log(confirm);
         if (!confirm) {
           return;
         }
       }
+      console.log(rebundleStatus, bundle);
 
       if (rebundleStatus && !bundle) {
         setRebundleError("Click activate to make Rebundle active ");
         return;
       }
+
       dispatch({ type: "UPDATE_REQUEST" });
 
       const { data } = await axios.put(
@@ -642,7 +643,12 @@ export default function User() {
           dob,
           phone,
           username,
-          address,
+          address: {
+            street: input.street,
+            apartment: input.apartment,
+            state: input.state,
+            zipcode: input.zipcode,
+          },
           image,
           active,
           influencer,
@@ -1097,7 +1103,7 @@ export default function User() {
                     size="small"
                   >
                     <Select
-                      value={address?.state}
+                      value={input.state}
                       onChange={(e) => handleOnChange(e.target.value, "state")}
                       onFocus={() => handleError("", "state")}
                       displayEmpty
@@ -1120,7 +1126,7 @@ export default function User() {
                   <TextInput
                     mode={mode}
                     name="zipcode"
-                    value={user?.address?.zipcode}
+                    value={input.zipcode}
                     type="number"
                     onChange={(e) => handleOnChange(e.target.value, "zipcode")}
                     onFocus={() => handleError("", "zipcode")}

@@ -162,7 +162,10 @@ export default function VerifyAddressScreen() {
           >
             <Select
               value={input.state}
-              onChange={(e) => handleOnChange(e.target.value, "state")}
+              onChange={(e) => {
+                handleOnChange(e.target.value, "state");
+                handleError(null, "state");
+              }}
               displayEmpty
             >
               {region() === "NGN"

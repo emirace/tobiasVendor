@@ -250,12 +250,13 @@ export default function PaymentScreen() {
             link: `/dashboard/wallet`,
             userImage: userInfo.image,
           })
-        : payment.meta.Type === "Order Completed"
+        : payment.meta.Type === "Order Completed" ||
+          payment.meta.Type === "Return Declined"
         ? socket.emit("post_data", {
             userId: payment.userId._id,
             itemId: payment._id,
             notifyType: "payment",
-            msg: `Your order paid`,
+            msg: `Your order is paid`,
             link: `/dashboard/wallet`,
             userImage: userInfo.image,
           })
