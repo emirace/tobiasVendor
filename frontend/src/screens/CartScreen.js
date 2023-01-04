@@ -252,28 +252,39 @@ export default function CartScreen() {
     }
     const quantityguard = item.quantity > quantity ? false : true;
     const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
-    console.log(
-      allowData,
-      "hello",
-      allowData.countAllow > 0,
-      allowData.seller.deliveryMethod === item.deliverySelect["delivery Option"]
-    );
 
-    if (
-      allowData.countAllow > 0 &&
-      allowData.seller.deliveryMethod === item.deliverySelect["delivery Option"]
-    ) {
-      console.log("rebundle");
-      item.deliverySelect = {
-        ...item.deliverySelect,
-        total: {
-          cost: item.deliverySelect.total.cost,
-          status: !item.deliverySelect.total.status,
-        },
-      };
+    if (allowData.success) {
+      if (
+        allowData.countAllow > 0 &&
+        allowData.seller.deliveryMethod ===
+          item.deliverySelect["delivery Option"]
+      ) {
+        console.log("rebundle");
+        item.deliverySelect = {
+          ...item.deliverySelect,
+          total: {
+            cost: item.deliverySelect.total.cost,
+            status: !item.deliverySelect.total.status,
+          },
+        };
+      } else {
+        console.log("no rebundle");
+
+        item.deliverySelect = {
+          ...item.deliverySelect,
+          total: {
+            cost: quantityguard
+              ? Number(item.deliverySelect.total.cost) +
+                Number(item.deliverySelect.cost)
+              : item.deliverySelect.total.cost > 0
+              ? Number(item.deliverySelect.total.cost) -
+                Number(item.deliverySelect.cost)
+              : item.deliverySelect.total.cost,
+            status: !item.deliverySelect.total.status,
+          },
+        };
+      }
     } else {
-      console.log("no rebundle");
-
       item.deliverySelect = {
         ...item.deliverySelect,
         total: {

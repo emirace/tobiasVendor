@@ -107,7 +107,7 @@ export default function AddFund({
     customizations: {
       title: "Repeddle",
       description: "Funding Repeddle Wallet",
-      logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
+      logo: "https://res.cloudinary.com/emirace/image/upload/v1669632933/qepvcjzw8pfl3q8cw9xf.png",
     },
   };
 
@@ -141,7 +141,7 @@ export default function AddFund({
         placeholder="Enter Amount to be Added in Wallet"
         onChange={(e) => setAmount(e.target.value)}
       />
-      {region() === "" ? (
+      {region() === "NGN" ? (
         <Button
           onClick={() => {
             handleFlutterPayment({

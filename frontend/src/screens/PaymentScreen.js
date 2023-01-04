@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Store } from "../Store";
 import { socket } from "../App";
-import { getError } from "../utils";
+import { getError, region } from "../utils";
 import { v4 } from "uuid";
 import LoadingBox from "../component/LoadingBox";
 import { Link } from "react-router-dom";
@@ -212,7 +212,7 @@ export default function PaymentScreen() {
         );
       } else if (payment.meta.to === "Account") {
         await axios.post(
-          "/api/accounts/payaccount",
+          `/api/accounts/${region()}/payaccount`,
           {
             bankName: payment.meta.detail.bankName,
             accountNumber: payment.meta.detail.accountNumber,
@@ -268,7 +268,9 @@ export default function PaymentScreen() {
             link: `/dashboard/wallet`,
             userImage: userInfo.image,
           });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return loading ? (

@@ -356,19 +356,25 @@ accountRouter.post(
 );
 
 accountRouter.post(
-  "/payaccount",
+  "/:region/payaccount",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     console.log("pay account request");
     const details = {
-      account_bank: "044",
-      account_number: "0690000040",
-      amount: 200,
+      account_bank: req.body.bankName,
+      // account_bank: "Access Bank",
+      account_number: req.body.accountNumber,
+      // account_number: "3091906691",
+      amount: req.body.amount,
       currency: "NGN",
-      narration: "Payment for things",
+      narration: "Withdrawal request",
       reference: v4(),
+      // reference: "dfs23fhr7ntg0293039_PMCKDU_1",
     };
+    if (req.params.region === "NGN") {
+      flw.Transfer.initiate(details).then(console.log).catch(console.log);
+    }
     const user = await User.findById(req.body.userId);
     sendEmail({
       to: user.email,
