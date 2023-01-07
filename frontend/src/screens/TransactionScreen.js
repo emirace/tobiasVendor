@@ -4,7 +4,9 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 import { Store } from "../Store";
+import { getError } from "../utils";
 
 const Container = styled.div`
   margin: 0 10vw;
@@ -52,36 +54,24 @@ const reducer = (state, action) => {
     case "GET_SUCCESS":
       return { ...state, loading: false, transaction: action.payload };
     case "GET_FAIL":
-      return { ...state, loading: false };
-    case "DELIVER_REQUEST":
-      return { ...state, loadingDeliver: true };
-    case "DELIVER_SUCCESS":
-      return { ...state, loadingDeliver: false };
-    case "DELIVER_FAIL":
-      return {
-        ...state,
-        loadingDeliver: false,
-        errorDeliver: action.payload,
-      };
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }
 };
 export default function TransactionScreen() {
   const { state } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, currency } = state;
   const params = useParams();
   const { id: transactionId } = params;
 
-  const [{ loading, transaction, loadingDeliver }, dispatch] = useReducer(
-    reducer,
-    {
-      loading: true,
-      transaction: {},
-    }
-  );
+  const [{ loading, transaction, error }, dispatch] = useReducer(reducer, {
+    loading: true,
+    transaction: {},
+  });
   useEffect(() => {
-    const getReturn = async () => {
+    const getTransaction = async () => {
       dispatch({ type: "GET_REQUEST" });
       try {
         const { data } = await axios.get(`/api/transactions/${transactionId}`, {
@@ -90,11 +80,11 @@ export default function TransactionScreen() {
         dispatch({ type: "GET_SUCCESS", payload: data });
         console.log(data);
       } catch (err) {
-        dispatch({ type: "GET_FAIL" });
+        dispatch({ type: "GET_FAIL", payload: getError(err) });
         console.log(err);
       }
     };
-    getReturn();
+    getTransaction();
   }, []);
 
   const [loadingUser, setLoadingUser] = useState(true);
@@ -122,8 +112,11 @@ export default function TransactionScreen() {
       getUser();
     }
   }, [transaction]);
+
   return loading ? (
     <LoadingBox />
+  ) : error ? (
+    <MessageBox>{error}</MessageBox>
   ) : (
     <Container>
       <Content>
@@ -141,7 +134,13 @@ export default function TransactionScreen() {
             </Row>
             <Row>
               <Key>Amount</Key>
-              <Value>{transaction.amount}</Value>
+              <Value>
+                {currency}
+                {transaction.amount}{" "}
+                {transaction?.metadata?.purpose === "Withdrawal Request" && (
+                  <span style={{ color: "red" }}>(fee: {currency}10 )</span>
+                )}
+              </Value>
             </Row>
             <Row>
               <Key>Type</Key>

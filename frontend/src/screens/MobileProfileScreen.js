@@ -295,6 +295,12 @@ export default function MobileProfileScreen() {
           My Wallet
         </MobileMenuItem>
       </Link>
+      <Link to="/dashboard/alltransaction">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faMoneyBill} />
+          All Transactions
+        </MobileMenuItem>
+      </Link>
       <SectionTitle mode={mode}>Quick Menu</SectionTitle>
       <Link to="/dashboard/address">
         <MobileMenuItem>

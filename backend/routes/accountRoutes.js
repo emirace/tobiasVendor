@@ -361,12 +361,19 @@ accountRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     console.log("pay account request");
+    // const details = {
+    //   account_number: "0782648292",
+    //   account_bank: "044",
+    // };
+    // flw.Misc.verify_Account(details).then((response) => console.log(response));
     const details = {
-      account_bank: req.body.bankName,
-      // account_bank: "Access Bank",
-      account_number: req.body.accountNumber,
+      // account_bank: req.body.bankName,
+      account_bank: "011",
+      // account_number: req.body.accountNumber,
       // account_number: "3091906691",
-      amount: req.body.amount,
+      account_number: "3091906691",
+      amount: 100,
+      // amount: req.body.amount,
       currency: "NGN",
       narration: "Withdrawal request",
       reference: v4(),
@@ -375,21 +382,21 @@ accountRouter.post(
     if (req.params.region === "NGN") {
       flw.Transfer.initiate(details).then(console.log).catch(console.log);
     }
-    const user = await User.findById(req.body.userId);
-    sendEmail({
-      to: user.email,
-      subject: "WITHDRAWAL REQUESTED",
-      template: "withdrawalRequest",
-      context: {
-        username: user.username,
-        url: user.region === "NGN" ? "com" : "co.za",
-        amount: req.body.amount,
-        currency: req.body.currency,
-        bankName: req.body.bankName,
-        accountNumber: req.body.accountNumber,
-        accountName: req.body.accountName,
-      },
-    });
+    // const user = await User.findById(req.body.userId);
+    // sendEmail({
+    //   to: user.email,
+    //   subject: "WITHDRAWAL REQUESTED",
+    //   template: "withdrawalRequest",
+    //   context: {
+    //     username: user.username,
+    //     url: user.region === "NGN" ? "com" : "co.za",
+    //     amount: req.body.amount,
+    //     currency: req.body.currency,
+    //     bankName: req.body.bankName,
+    //     accountNumber: req.body.accountNumber,
+    //     accountName: req.body.accountName,
+    //   },
+    // });
 
     // flw.Transfer.initiate(details)
     //   .then(() => {

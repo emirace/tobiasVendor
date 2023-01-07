@@ -49,6 +49,38 @@ transactionRouter.get(
   })
 );
 
+// get all user transaction
+
+transactionRouter.get(
+  "/users",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const searchQuery = query.q;
+    const account = await Account.findOne({ userId: req.user._id });
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const transactions = await Transaction.find({
+      ...queryFilter,
+      accountId: account._id,
+    }).sort({
+      createdAt: -1,
+    });
+    res.send(transactions);
+  })
+);
+
 // delete a transaction
 
 transactionRouter.delete(
@@ -371,11 +403,22 @@ transactionRouter.put(
 transactionRouter.get(
   "/:id",
   isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const account = await Account.findOne({ userId: req.user._id });
     const transaction = await Transaction.findById(req.params.id);
     if (transaction) {
-      res.status(201).send(transaction);
+      console.log(
+        account._id.toString() === transaction.accountId.toString(),
+        req.user.isAdmin
+      );
+      if (
+        req.user.isAdmin ||
+        account._id.toString() === transaction.accountId.toString()
+      ) {
+        res.status(200).send(transaction);
+      } else {
+        res.status(404).send("transaction not found");
+      }
     } else {
       res.status(404).send("transaction not found");
     }

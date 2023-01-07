@@ -164,6 +164,16 @@ export default function Sidebar({ current }) {
                 My Wallet
               </ListItem>
             </Link>
+
+            <Link to="/dashboard/alltransaction">
+              <ListItem
+                mode={mode}
+                className={current === "transactionlist" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faMoneyBill} />
+                All Transactions
+              </ListItem>
+            </Link>
           </List>
         </Menu>
         <Menu>

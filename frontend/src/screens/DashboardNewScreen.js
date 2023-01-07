@@ -27,6 +27,7 @@ import AllReturnsLogs from "../component/dashboard/AllReturnsLogs";
 import Payments from "../component/dashboard/Payments";
 import TransactionList from "../component/dashboard/TransactionList";
 import NewsletterList from "../component/dashboard/NewsletterList";
+import TransactionListUser from "../component/dashboard/TransactionListUser";
 
 const Container = styled.div`
   display: flex;
@@ -86,6 +87,8 @@ export default function DashboardNewScreen() {
         return <Payments />;
       case "transactionlist":
         return <TransactionList />;
+      case "alltransaction":
+        return <TransactionListUser />;
       case "newsletter":
         return <NewsletterList />;
       default:
