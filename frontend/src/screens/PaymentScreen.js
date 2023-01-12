@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Store } from "../Store";
 import { socket } from "../App";
-import { getError, region } from "../utils";
+import { getCode, getError, region } from "../utils";
 import { v4 } from "uuid";
 import LoadingBox from "../component/LoadingBox";
 import { Link } from "react-router-dom";
@@ -214,7 +214,7 @@ export default function PaymentScreen() {
         await axios.post(
           `/api/accounts/${region()}/payaccount`,
           {
-            bankName: payment.meta.detail.bankName,
+            bankName: getCode(payment.meta.detail.bankName),
             accountNumber: payment.meta.detail.accountNumber,
             accountName: payment.meta.detail.accountName,
             amount: payment.amount,

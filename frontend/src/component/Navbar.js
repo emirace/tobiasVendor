@@ -327,12 +327,14 @@ const CategoryGroup = styled.div`
 
 const SubCategoryItem = styled.li`
   white-space: nowrap;
+  /* font-size: 12px; */
   align-self: start;
   font-weight: 500;
 `;
 const SubCategoryItemS = styled.li`
   white-space: nowrap;
   align-self: start;
+  /* font-size: 12px; */
   padding-bottom: 10px;
   font-weight: 500;
   cursor: pointer;
@@ -382,7 +384,7 @@ const SubCategory = styled.ul`
   top: 32px;
   left: 0;
   width: 100vw;
-  height: 350px;
+  height: 600px;
   background: ${(props) => (props.bg ? "#fff" : "#000")};
   display: none;
   flex-direction: column;
@@ -497,6 +499,7 @@ const UList = styled.ul`
   flex-direction: column;
 `;
 const SList = styled.li`
+  font-size: 14px;
   cursor: pointer;
   &:hover {
     color: var(--orange-color);
@@ -748,7 +751,7 @@ export default function Navbar({
           </SliderCont>
         </Center>
         <Right>
-          <Link to="/sell">
+          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <Sell>Sell</Sell>
           </Link>
         </Right>
@@ -860,7 +863,7 @@ export default function Navbar({
               )}
             </Link>
           </MenuItemCart>
-          <Link to="/sell">
+          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <SellButton>Sell</SellButton>
           </Link>
           {userInfo ? (
@@ -975,14 +978,20 @@ export default function Navbar({
                 {c.subCategories.length > 0 &&
                   c.subCategories.map((s) => {
                     if (s.items.length === 0) {
-                      return <SubCategoryItemS>{s.name} </SubCategoryItemS>;
+                      return (
+                        <SubCategoryItemS>
+                          <a href={`/search?query=${s.name}`}>{s.name}</a>
+                        </SubCategoryItemS>
+                      );
                     } else {
                       return (
                         <Group>
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
-                              <SList>{l}</SList>
+                              <a href={`/search?query=${l}`}>
+                                <SList>{l}</SList>
+                              </a>
                             ))}
                           </UList>
                         </Group>

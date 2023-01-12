@@ -6,11 +6,34 @@ import Brand from "../models/brandModel.js";
 const brandRouter = express.Router();
 
 // get all brands
-
+const pageSize = 100;
 brandRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const brands = await Brand.find();
+    const { q, page } = req.query;
+
+    const queryFilter =
+      q && q !== "all"
+        ? {
+            $or: [
+              {
+                name: {
+                  $regex: q,
+                  $options: "i",
+                },
+              },
+              {
+                alpha: {
+                  $regex: q,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const brands = await Brand.find({ ...queryFilter })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send(brands);
   })
 );
@@ -32,6 +55,8 @@ brandRouter.get(
 brandRouter.post(
   "/",
   expressAsyncHandler(async (req, res) => {
+    const exist = await Brand.findOne({ name: req.body.name });
+    if (exist) return res.status(200).send("Done");
     const brand = new Brand({
       name: req.body.name,
       alpha: req.body.alpha,

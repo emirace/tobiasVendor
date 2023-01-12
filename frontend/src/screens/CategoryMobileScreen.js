@@ -117,7 +117,7 @@ export default function CategoryMobileScreen() {
                 >
                   {c.subCategories.length > 0 &&
                     c.subCategories.map((s) => (
-                      <Link to="/search">
+                      <Link to={`/search?query=${s.name}`}>
                         <CateItem>{s.name}</CateItem>
                       </Link>
                     ))}

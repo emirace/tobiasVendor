@@ -182,7 +182,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         setToken(logins);
         if (deliveryOption === "GIG Logistics") {
           const { data } = await axios.get(
-            "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/localStations",
+            "https://thirdparty.gigl-go.com/api/thirdparty/localStations",
             {
               headers: { Authorization: `Bearer ${logins.token}` },
             }
@@ -248,9 +248,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       }
       try {
         setLoadingGig(true);
-
+        console.log("item", item);
         const { data } = await axios.post(
-          "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/price",
+          "https://thirdparty.gigl-go.com/api/thirdparty/price",
           {
             ReceiverAddress: meta.address,
             CustomerCode: token.username,
@@ -276,6 +276,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
               {
                 SpecialPackageId: "0",
                 Quantity: item.quantity,
+                Weight: Math.floor(Math.random() * 10),
                 ItemType: "Normal",
                 ItemName: item.name,
                 Value: item.actualPrice,
@@ -295,6 +296,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
             "delivery Option": deliveryOption,
             cost: data.Object.DeliveryPrice,
             ...meta,
+            lat: location.coordinates.lat,
+            lng: location.coordinates.lng,
+            total: { status: true, cost: data.Object.DeliveryPrice },
           };
         } else {
           setLoadingGig(false);
@@ -305,6 +309,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         }
       } catch (err) {
         setLoadingGig(false);
+        console.log(err);
       }
     } else {
       deliverySelect = {
@@ -314,17 +319,17 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         total: { status: true, cost: value },
       };
     }
-    if (userInfo) {
-      await axios.post(
-        update ? `/api/addresses/${selected}` : "/api/addresses",
-        {
-          meta: deliverySelect,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-    }
+    // if (userInfo) {
+    //   await axios.post(
+    //     update ? `/api/addresses/${selected}` : "/api/addresses",
+    //     {
+    //       meta: deliverySelect,
+    //     },
+    //     {
+    //       headers: { Authorization: `Bearer ${userInfo.token}` },
+    //     }
+    //   );
+    // }
     const valid = true;
     const allowData = await rebundleIsActive(
       userInfo,

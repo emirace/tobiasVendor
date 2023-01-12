@@ -369,3 +369,63 @@ export const confirmPayfast = async (req, cartTotal) => {
     console.log(err);
   }
 };
+
+export const payShippingFee = async (item) => {
+  try {
+    const { data: loginData } = await axios.post(
+      "https://thirdparty.gigl-go.com/api/thirdparty/login",
+      {
+        username: "IND1109425",
+        Password: "1234567",
+        SessionObj: "",
+      }
+    );
+
+    console.log(loginData);
+
+    const { data } = await axios.post(
+      "https://thirdparty.gigl-go.com/api/thirdparty/captureshipment",
+      {
+        ReceiverAddress: item.deliverySelect.address,
+        CustomerCode: loginData.Object.UserName,
+        SenderLocality: item.meta.address,
+        SenderAddress: item.meta.address,
+        ReceiverPhoneNumber: item.deliverySelect.phone,
+        VehicleType: "BIKE",
+        SenderPhoneNumber: item.meta.phone,
+        SenderName: item.meta.name,
+        ReceiverName: item.deliverySelect.name,
+        UserId: data.Object.UserId,
+        ReceiverStationId: item.deliverySelect.stationId,
+        SenderStationId: item.meta.stationId,
+        ReceiverLocation: {
+          Latitude: item.deliverySelect.lat,
+          Longitude: item.deliverySelect.lng,
+        },
+        SenderLocation: {
+          Latitude: item.meta.lat,
+          Longitude: item.meta.lng,
+        },
+        PreShipmentItems: [
+          {
+            SpecialPackageId: "0",
+            Quantity: item.quantity,
+            Weight: Math.floor(Math.random() * 10),
+            ItemType: "Normal",
+            ItemName: item.name,
+            Value: item.actualPrice,
+            ShipmentType: "Regular",
+            Description: item.description,
+            ImageUrl: item.image,
+          },
+        ],
+      },
+      {
+        headers: { Authorization: `Bearer ${loginData.Object.access_token}` },
+      }
+    );
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};

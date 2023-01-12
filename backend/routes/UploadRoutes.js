@@ -60,14 +60,14 @@ uploadRouter.post("/video/upload", isAuth, async (req, res) => {
     storage,
     limits: {
       fieldNameSize: 200,
-      fileSize: 30 * 1024 * 1024,
+      fileSize: 5 * 1024 * 1024,
     },
     fileFilter,
   }).single("file");
 
   upload(req, res, (err) => {
     if (err) {
-      return res.send(err);
+      return res.status(500).send(err);
     }
 
     // SEND FILE TO CLOUDINARY

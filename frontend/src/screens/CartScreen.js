@@ -199,6 +199,7 @@ export default function CartScreen() {
   const [loading, setLoading] = useState(true);
   const [currentCart, setcurrentCart] = useState(cart);
   useEffect(() => {
+    console.log("hellllo");
     const getPrice = async () => {
       const data = await calcPrice(cart, userInfo, currentItem);
       console.log("calcPrice", data);

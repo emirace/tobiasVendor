@@ -1,4 +1,5 @@
 import axios from "axios";
+import { banks } from "./constant";
 
 export const getError = (error) => {
   return error.response && error.response.data.message
@@ -181,10 +182,10 @@ export function displayDeliveryStatus(status) {
 }
 export const region = () => {
   const add =
-    window.location.hostname === "www.repeddle.com" ||
-    window.location.hostname === "repeddle.com"
-      ? "NGN"
-      : "ZAR";
+    window.location.hostname === "www.repeddle.co.za" ||
+    window.location.hostname === "repeddle.co.za"
+      ? "ZAR"
+      : "NGN";
   return add;
 };
 
@@ -243,6 +244,7 @@ export const calcPrice = async (cart, userInfo, currentCartItem) => {
   //     return 0;
   //   }
   // };
+  console.log(cart);
   cart.shippingPrice = cart.cartItems.reduce(
     (a, c) =>
       a +
@@ -294,9 +296,9 @@ export const deliveryNumber = (status) => {
 
 export const loginGig = async () => {
   const { data } = await axios.post(
-    "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/login",
+    "https://thirdparty.gigl-go.com/api/thirdparty/login",
     {
-      username: "ACC001052",
+      username: "IND1109425",
       Password: "1234567",
       SessionObj: "",
     }
@@ -351,4 +353,16 @@ export const rebundleIsActive = async (
     }
   }
   return { success: false };
+};
+
+export const getCode = (name) => {
+  const result = banks.Nigeria.find((bank) => {
+    console.log(bank.name, name);
+    if (bank.name === name) {
+      return bank.code;
+    }
+  });
+  console.log(result.code);
+  console.log(name);
+  return result.code;
 };

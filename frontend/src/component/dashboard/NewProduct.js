@@ -729,7 +729,7 @@ export default function NewProduct() {
           brand: input.brand,
           discount: input.discount,
           deliveryOption,
-          meta: input.meta,
+          meta: meta,
           tags,
           price: input.price,
           location: input.location,
@@ -882,6 +882,14 @@ export default function NewProduct() {
       });
     } catch (error) {
       dispatch({ type: "VIDEO_FAIL" });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -1797,7 +1805,7 @@ export default function NewProduct() {
                       />
                     </ModelLogin>
 
-                    <ModelLogin
+                    {/* <ModelLogin
                       setShowModel={setShowUploadingVideo}
                       showModel={showUploadingVideo}
                     >
@@ -1805,7 +1813,7 @@ export default function NewProduct() {
                         dispatch={dispatch}
                         ctxDispatch={ctxDispatch}
                       />
-                    </ModelLogin>
+                    </ModelLogin> */}
                   </SmallImageC>
                 </SmallImageRow>
               </ImageRow>
@@ -1820,9 +1828,13 @@ export default function NewProduct() {
                     alignItems: "center",
                   }}
                 >
-                  <FontAwesomeIcon icon={faVideo} />
+                  <FontAwesomeIcon
+                    style={{ marginRight: "20px" }}
+                    icon={faVideo}
+                  />
                   <span>Video Uploaded</span>
                   <FontAwesomeIcon
+                    style={{ marginLeft: "20px" }}
                     icon={faClose}
                     onClick={() => dispatch({ type: "REMOVE_VIDEO" })}
                   />
@@ -1838,7 +1850,6 @@ export default function NewProduct() {
                     fontWeight: "bold",
                     textTransform: "uppercase",
                   }}
-                  onClick={() => setShowUploadingVideo(true)}
                 >
                   Add a short video
                 </label>
@@ -1848,18 +1859,18 @@ export default function NewProduct() {
                 Add clear and quality images. Ensure to follow the image uplaod
                 rules.{" "}
                 <span style={{ color: "var(--malon-color)" }}>
-                  Please note: Image size should be less than 8MB.
+                  Please note: Image/Video size should be less than 8MB.
                 </span>
               </TitleDetails>
-              {/* <input
+              <input
                 type="file"
                 onChange={(e) => {
-                  // videouploadHandler(e);
-                  setShowUploadingVideo(true);
+                  videouploadHandler(e);
+                  // setShowUploadingVideo(true);
                 }}
                 id="video"
                 style={{ display: "none" }}
-              /> */}
+              />
               <ImageRow>
                 <VintageCont>
                   <ItemCheck>

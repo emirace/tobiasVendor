@@ -77,7 +77,7 @@ addressRouter.get(
   expressAsyncHandler(async (req, res) => {
     const address = await Address.find({ userId: req.params.id });
     if (address) {
-      res.status(201).send(address);
+      res.status(404).send("address not found");
     } else {
       res.status(404).send("address not found");
     }

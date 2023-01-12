@@ -717,7 +717,6 @@ orderRouter.put(
           p.countInStock = p.countInStock - newQuantity;
 
           p.sizes = p.sizes.map((size) => {
-
             return size.size === selectedSize
               ? { ...size, value: `${Number(size.value) - newQuantity}` }
               : size;
@@ -770,7 +769,11 @@ orderRouter.put(
             await exist.save();
           }
         });
-
+        order.orderItems.map((item) => {
+          if (item.deliverySelect["delivery Option"] === "GIG Logistics") {
+            payShippingFee(item);
+          }
+        });
         sendEmail({
           to: order.user.email,
           subject: "PROCESSING YOUR ORDER",

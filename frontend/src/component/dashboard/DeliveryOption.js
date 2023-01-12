@@ -274,7 +274,7 @@ export default function DeliveryOption({
         const token = await loginGig();
         console.log(token);
         const { data } = await axios.get(
-          "https://giglthirdpartyapitestenv.azurewebsites.net/api/thirdparty/localStations",
+          "https://thirdparty.gigl-go.com/api/thirdparty/localStations",
           {
             headers: { Authorization: `Bearer ${token.token}` },
           }

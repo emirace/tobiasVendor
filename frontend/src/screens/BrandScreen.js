@@ -1,10 +1,17 @@
 import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
 import { Store } from "../Store";
-import { getError } from "../utils";
+import useFetch from "../hooks/useFectch";
+import MessageBox from "../component/MessageBox";
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -40,20 +47,22 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 20px;
-  margin: 20px 0;
+  margin-right: 20px;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 const BrandGroup = styled.div`
-  margin: 0 20px;
+  margin: 20px;
   display: flex;
   width: 100%;
   flex-wrap: wrap;
 `;
 const Brand = styled.div`
+  display: flex;
   width: 25%;
   cursor: pointer;
   margin-bottom: 10px;
+  flex-direction: row;
   &:hover {
     color: var(--orange-color);
   }
@@ -10703,6 +10712,8 @@ const SearchContainer = styled.div`
   width: 100%;
 `;
 
+var headerList = [];
+
 export default function BrandScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -10712,43 +10723,76 @@ export default function BrandScreen() {
   // const brandArray = Brands.split("\n");
 
   const scrollref = useRef(alphabet.map(React.createRef));
-  const [dataBrands, setDataBrands] = useState(null);
-  const [query, setQuery] = useState(null);
+
+  const [query, setQuery] = useState("all");
+  const [pageNum, setPageNum] = useState(1);
+  const {
+    isLoading,
+    error,
+    data: dataBrands,
+    hasMore,
+  } = useFetch(query, pageNum);
+
+  const observer = useRef();
+  const lastBookElementRef = useCallback(
+    (node) => {
+      if (isLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPageNum((prev) => prev + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, hasMore]
+  );
+
+  const handleChange = (e) => {
+    setQuery(e.target.value);
+    setPageNum(1);
+  };
 
   useEffect(() => {
-    const getBrand = async () => {
-      const { data } = await axios.get("/api/brands");
-      setDataBrands(data);
-    };
-    getBrand();
-  }, []);
-
-  const [searchBrand, setSearchBrand] = useState(null);
-  useEffect(() => {
-    console.log(query);
-    const getSearch = async () => {
-      const { data } = await axios.get(`/api/brands/search?q=${query}`);
-      console.log(data);
-      setSearchBrand(data);
-    };
-    getSearch();
-  }, [query]);
+    console.log("hellllooooo");
+    headerList = [];
+  }, [query, isLoading, dataBrands]);
 
   // useEffect(() => {
-  //   const postbrand = () => {
-  //     brandArray.map((y, i) => {
-  //       // console.log(x);
-  //       // if (x === "A") {
-  //       // }
+  //   const getBrand = async () => {
+  //     const { data } = await axios.get("/api/brands");
+  //     setDataBrands(data);
+  //   };
+  //   getBrand();
+  // }, []);
 
-  //       if (y.charAt(0) === "B") {
-  //         // addBrand(y, "B");
-  //         // console.log(y, "B");
-  //       }
-  //     });
+  // const [searchBrand, setSearchBrand] = useState(null);
+  // useEffect(() => {
+  //   console.log(query);
+  //   const getSearch = async () => {
+  //     const { data } = await axios.get(`/api/brands/search?q=${query}`);
+  //     console.log(data);
+  //     setSearchBrand(data);
+  //   };
+  //   getSearch();
+  // }, [query]);
+
+  // const [updateNumber, setUpdateNumber] = useState(1);
+  // const pageSize = 100;
+  // useEffect(() => {
+  //   const postbrand = () => {
+  //     brandArray
+  //       .slice(
+  //         pageSize * (updateNumber - 1),
+  //         pageSize * (updateNumber - 1) + pageSize
+  //       )
+  //       .map((y, i) => {
+  //         // addBrand(y, y.charAt(0));
+  //       });
+  //     console.log(updateNumber);
   //   };
   //   postbrand();
-  // }, []);
+  // }, [updateNumber]);
 
   const scrollToAlpha = (i) =>
     scrollref.current[i].current &&
@@ -10756,60 +10800,107 @@ export default function BrandScreen() {
       top: scrollref.current[i].current.offsetTop,
       behavior: "smooth",
     });
-  const addBrand = async (brand, al) => {
-    try {
-      await axios.post("/api/brands", {
-        name: brand,
-        alpha: al,
-      });
-      console.log(brand);
-    } catch (err) {
-      console.log(getError(err));
+  // const addBrand = async (brand, al) => {
+  //   try {
+  //     await axios.post("/api/brands", {
+  //       name: brand.toLowerCase(),
+  //       alpha: al,
+  //     });
+  //     console.log(brand);
+  //   } catch (err) {
+  //     console.log(getError(err));
+  //   }
+  // };
+  const header = (alpha) => {
+    if (headerList.includes(alpha)) {
+      return;
+    } else {
+      headerList = [...headerList, alpha];
+      return (
+        <Header ref={scrollref.current[headerList.length]} mode={mode}>
+          {alpha}
+        </Header>
+      );
     }
   };
 
   return (
     <Container>
       <Title>Brands</Title>
+      {/* <button onClick={() => setUpdateNumber((prev) => prev + 1)}>
+        upload
+      </button> */}
       <AlphaGroup>
-        {alphabet.map((x, i) => (
+        {[
+          "&",
+          "@",
+          "1",
+          "4",
+          "2",
+          "3",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          ...alphabet,
+        ].map((x, i) => (
           <div key={i} onClick={() => scrollToAlpha(i)}>
             <Alpha>{x}</Alpha>
           </div>
         ))}
       </AlphaGroup>
       <Search>
-        <SearchInput
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search brands"
-        />
-        <SearchContainer mode={mode}>
+        <SearchInput onChange={handleChange} placeholder="Search brands" />
+        {/* <SearchContainer mode={mode}>
           {searchBrand &&
             searchBrand.map((brand) => (
               <Link to={`/Search?brand=${brand.name}`}>
                 <SearchData mode={mode}>{brand.name}</SearchData>
               </Link>
             ))}
-        </SearchContainer>
+        </SearchContainer> */}
       </Search>
 
       <Content>
-        {alphabet.map((x, i) => (
-          <div key={i}>
-            <Header ref={scrollref.current[i]} mode={mode}>
-              {x}
-            </Header>
-            <BrandGroup>
-              {!dataBrands ? (
-                <LoadingBox />
-              ) : (
-                dataBrands.map((y, i) => {
-                  if (y.alpha === x) return <Brand key={i}>{y.name}</Brand>;
-                })
-              )}
-            </BrandGroup>
-          </div>
-        ))}
+        {/* {["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ...alphabet].map(
+          (x, i) => (
+            <div key={i}>
+              <Header ref={scrollref.current[i]} mode={mode}>
+                {x}
+              </Header> */}
+        <BrandGroup>
+          {dataBrands.map((brand, i) => {
+            // console.log(i, brand.name);
+            // if (brand.alpha === x) {
+            if (dataBrands.length === i + 1) {
+              return (
+                <Brand key={i} ref={lastBookElementRef}>
+                  {brand.name}
+                </Brand>
+              );
+            } else {
+              return (
+                <>
+                  <Brand key={i}>
+                    {header(brand.alpha)}
+                    <Link to={`/search?query=${brand.name}`}>
+                      {" "}
+                      {brand.name}
+                    </Link>
+                  </Brand>
+                </>
+              );
+            }
+            // }
+          })}
+
+          <div>{isLoading && <LoadingBox />}</div>
+          <div>{error && <MessageBox>error......</MessageBox>}</div>
+        </BrandGroup>
+        {/* </div>
+          )
+        )} */}
       </Content>
     </Container>
   );

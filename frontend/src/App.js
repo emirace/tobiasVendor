@@ -67,6 +67,7 @@ import {
   IsVerifyBank,
   IsVerifyEmail,
   ProtectedRoute,
+  SellerRedirect,
   SellerRoute,
 } from "./component/ProtectedRoute";
 import ScrollToTop from "./component/ScrollToTop";
@@ -639,7 +640,9 @@ function App() {
                               <IsVerifyEmail>
                                 <IsVerifyBank>
                                   <IsVerifyAddress>
-                                    <NewProduct />
+                                    <SellerRoute>
+                                      <NewProduct />
+                                    </SellerRoute>
                                   </IsVerifyAddress>
                                 </IsVerifyBank>
                               </IsVerifyEmail>

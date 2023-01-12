@@ -19,6 +19,7 @@ import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { getError, region } from "../utils";
 import { Store } from "../Store";
+import OwlCarousel from "react-owl-carousel";
 import "../style/product.css";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import { toast } from "react-toastify";
@@ -1093,38 +1094,41 @@ export default function ProductScreen() {
         </div>
         <div className=" col-sm-12 col-md-6 d-block d-md-none">
           <div className=" row justify-content-center">
-            <div className="moblie-slider">
-              <div
-                onClick={() => sliderHandler("left")}
-                className="mobile-image-arrow-left"
-              >
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </div>
-              <div
-                onClick={() => sliderHandler("right")}
-                className="mobile-image-arrow-right"
-              >
-                <FontAwesomeIcon icon={faAngleRight} />
-              </div>
-              <div className="mobile-image scroll_snap">
-                <img
-                  style={{ transform: sliderstyle }}
-                  src={product.image}
-                  alt="product"
-                ></img>
-                {product.images.map(
-                  (image, index) =>
-                    image && (
+            <OwlCarousel
+              items={1}
+              autoHeight={false}
+              dots={true}
+              autoplayTimeout={10000}
+              autoplaySpeed={3000}
+              autoplay={true}
+              margin={0}
+              autoplayHoverPause={true}
+              className="owl-theme"
+            >
+              {[product.image, ...product.images].map(
+                (image) =>
+                  image && (
+                    <div
+                      key={image}
+                      style={{
+                        width: "100%",
+                        height: "500px",
+                        marginBottom: "20px",
+                      }}
+                    >
                       <img
-                        key={index}
-                        style={{ transform: sliderstyle }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objecFit: "contain",
+                        }}
                         src={image}
                         alt="product"
                       />
-                    )
-                )}
-              </div>
-            </div>
+                    </div>
+                  )
+              )}
+            </OwlCarousel>
           </div>
         </div>
 
