@@ -369,7 +369,7 @@ accountRouter.post(
     const details = {
       account_bank: req.body.bankName,
       // account_bank: "011",
-      account_number: req.body.accountNumber,
+      account_number: `${req.body.accountNumber}`,
       // account_number: "3091906691",
       // account_number: "3091906691",
       // amount: 100,
@@ -379,10 +379,10 @@ accountRouter.post(
       reference: v4(),
       // reference: "dfs23fhr7ntg0293039_PMCKDU_1",
     };
-    console.log(req.body);
-    // if (req.params.region === "NGN") {
-    //   flw.Transfer.initiate(details).then(console.log).catch(console.log);
-    // }
+    console.log(req.body, req.params, details);
+    if (req.params.region === "NGN") {
+      flw.Transfer.initiate(details).then(console.log).catch(console.log);
+    }
     // const user = await User.findById(req.body.userId);
     // sendEmail({
     //   to: user.email,

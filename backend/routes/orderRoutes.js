@@ -6,6 +6,7 @@ import {
   isAuthOrNot,
   sendEmail,
   confirmPayfast,
+  payShippingFee,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";

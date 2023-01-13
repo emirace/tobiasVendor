@@ -547,7 +547,7 @@ export default function SellerScreen() {
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating rating={user.rating} numReviews={user.numReviews} />
               </ReviewsClick>
-              {userInfo._id === sellerId && (
+              {userInfo && userInfo._id === sellerId && (
                 <div
                   style={{ cursor: "pointer" }}
                   onClick={() => setShowWriteReview(true)}

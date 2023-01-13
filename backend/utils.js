@@ -395,7 +395,7 @@ export const payShippingFee = async (item) => {
         SenderPhoneNumber: item.meta.phone,
         SenderName: item.meta.name,
         ReceiverName: item.deliverySelect.name,
-        UserId: data.Object.UserId,
+        UserId: loginData.Object.UserId,
         ReceiverStationId: item.deliverySelect.stationId,
         SenderStationId: item.meta.stationId,
         ReceiverLocation: {

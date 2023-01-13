@@ -721,7 +721,7 @@ export default function NewProduct() {
           image2: input.image2,
           image3: input.image3,
           image4: input.image4,
-          video: input.video,
+          video,
           product: input.product,
           subCategory: input.subCategory,
           category: input.category,

@@ -24,6 +24,7 @@ const Box = styled.div`
   border-radius: 0.2rem;
   padding: 5px 10px;
   font-weight: bold;
+  white-space: nowrap;
   margin: 10px;
   text-transform: uppercase;
   @media (max-width: 992px) {

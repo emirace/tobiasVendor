@@ -1,11 +1,11 @@
-import { faWallet } from "@fortawesome/free-solid-svg-icons";
+import { faQuestionCircle, faWallet } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { Store } from "../../Store";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import axios from "axios";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
@@ -19,17 +19,23 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-const Input = styled.input`
-  width: 40%;
+const InputCont = styled.div`
   height: 45px;
-  padding: 15px;
   margin: 25px 0 0 0;
+  padding: 5px;
   width: 100%;
-  background: none;
   border: 1px solid var(--malon-color);
   border-radius: 5px;
+  display: flex;
+  align-items: center;
+`;
+const Input = styled.input`
+  background: none;
+  flex: 1;
+  border: 0;
+  font-size: 18px;
   &:focus-visible {
-    outline: 1px solid var(--orange-color);
+    outline: none;
   }
   color: ${(props) =>
     props.mode === "pagebodydark"
@@ -49,6 +55,7 @@ const Text = styled.div`
   margin-top: 10px;
 `;
 const Button = styled.div`
+  margin-top: 10px;
   display: flex;
   align-items: center;
   border-radius: 0.2rem;
@@ -102,6 +109,8 @@ export default function Withdraw({
     user: null,
   });
   const [amount, setAmount] = useState("");
+  const [fee, setFee] = useState("");
+  const [errormsg, setErrormsg] = useState("");
   useEffect(() => {
     const getUser = async () => {
       dispatch({ type: "FETCH_REQUEST" });
@@ -189,6 +198,32 @@ export default function Withdraw({
       }
     }
   };
+  const handleChange = (e) => {
+    setAmount(e.target.value);
+    dispatch({ type: "FETCH_FAIL", payload: "" });
+    const fees =
+      region() === "ZAR"
+        ? 10
+        : e.target.value <= 5000
+        ? 10.75
+        : e.target.value > 5000 && e.target.value <= 50000
+        ? 26.88
+        : 53.75;
+    setFee(fees);
+    const totalMoney = Number(e.target.value) + Number(fees);
+    console.log("totalMoney", totalMoney);
+    if (totalMoney > balance.balance) {
+      setErrormsg(
+        "Insufficient funds, Please enter a lower amount to complete your withdrawal"
+      );
+      return;
+    }
+    if (!e.target.value) {
+      setErrormsg("Please enter the amount you want to withdraw");
+      return;
+    }
+    setErrormsg("");
+  };
   return loading ? (
     <LoadingBox />
   ) : !user.accountName ? (
@@ -210,30 +245,47 @@ export default function Withdraw({
         {user.bankName} ({user.accountNumber})
       </div>
       {error && <MessageBox variant="danger">{error}</MessageBox>}
-      <Input
-        type="number"
-        mode={mode}
-        value={amount}
-        placeholder="Enter Amount to Withdraw"
-        onChange={(e) => {
-          setAmount(e.target.value);
-          dispatch({ type: "FETCH_FAIL", payload: "" });
-        }}
-      />
-      <div
-        style={{
-          color: "var(--orange-color)",
-          fontWeight: "bold",
-          marginBottom: "25px",
-          marginLeft: "auto",
-          fontWeight: "13px",
-          cursor: "pointer",
-        }}
-        onClick={() => setAmount(Math.floor(balance.balance * 100) / 100)}
-      >
-        All
-      </div>
-      <Button onClick={handleWithdraw}>Withdraw</Button>
+      <InputCont>
+        <Input
+          type="number"
+          mode={mode}
+          value={amount}
+          placeholder="Enter Amount to Withdraw"
+          onChange={handleChange}
+        />
+        <div
+          style={{
+            color: "var(--orange-color)",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+          onClick={() => setAmount(Math.floor(balance.balance * 100) / 100)}
+        >
+          All
+        </div>
+      </InputCont>
+      {errormsg && (
+        <div
+          style={{
+            color: "red",
+            fontSize: "11px",
+          }}
+        >
+          {errormsg}
+        </div>
+      )}
+      {amount && (
+        <div
+          style={{
+            fontSize: "11px",
+          }}
+        >
+          <FontAwesomeIcon icon={faQuestionCircle} /> You will be charged{" "}
+          {balance.currency}
+          {fee} for payment gateway withdrawal processing fee
+        </div>
+      )}
+      <Button onClick={errormsg ? "" : handleWithdraw}>Withdraw</Button>
     </Container>
   );
 }

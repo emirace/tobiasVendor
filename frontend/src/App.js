@@ -261,15 +261,15 @@ function App() {
             if (region() === "ZAR") {
               setLoading(false);
             } else {
-              // signoutHandler();
-              alert("redirect to coza");
-              // window.location.replace(`https://repeddle.co.za`);
+              signoutHandler();
+              // alert("redirect to coza");
+              window.location.replace(`https://repeddle.co.za`);
             }
           } else {
             if (region() === "ZAR") {
-              alert("redirect to com");
-              // signoutHandler();
-              // window.location.replace(`https://repeddle.com`);
+              // alert("redirect to com");
+              signoutHandler();
+              window.location.replace(`https://repeddle.com`);
             }
             setLoading(false);
           }

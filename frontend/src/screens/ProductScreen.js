@@ -108,7 +108,9 @@ const RightOverview = styled.div`
 const Key = styled.div`
   font-weight: 500;
 `;
-const Value = styled.div``;
+const Value = styled.div`
+  text-transform: capitalize;
+`;
 const Sustain = styled.div`
   margin: 15px 0;
 `;
@@ -1128,6 +1130,11 @@ export default function ProductScreen() {
                     </div>
                   )
               )}
+              {product.video && (
+                <video width="100%" controls muted autoplay>
+                  <source src={product.video} type="video/mp4" />
+                </video>
+              )}
             </OwlCarousel>
           </div>
         </div>
@@ -1388,7 +1395,6 @@ export default function ProductScreen() {
                     <Value>{product.category}</Value>
                     <Value>{product.subCategory || "nal"}</Value>
                     <Value>{product.color || "nal"}</Value>
-                    <Value>{product.size || "nal"}</Value>
                   </RightOverview>
                 </Overview>
               </div>
