@@ -564,6 +564,10 @@ export default function SearchFilter({
                 <Link
                   key={c.id}
                   className={c.name === color ? "text-bold" : ""}
+                  style={{
+                    border:
+                      c.name === color ? "2px solid var(--orange-color)" : "",
+                  }}
                   to={getFilterUrl({ color: c.name })}
                 >
                   <ListItem mode={mode}>

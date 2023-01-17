@@ -10876,7 +10876,7 @@ export default function BrandScreen() {
             if (dataBrands.length === i + 1) {
               return (
                 <Brand key={i} ref={lastBookElementRef}>
-                  {brand.name}
+                  <Link to={`/search?query=${brand.name}`}>{brand.name}</Link>
                 </Brand>
               );
             } else {
@@ -10884,10 +10884,7 @@ export default function BrandScreen() {
                 <>
                   <Brand key={i}>
                     {header(brand.alpha)}
-                    <Link to={`/search?query=${brand.name}`}>
-                      {" "}
-                      {brand.name}
-                    </Link>
+                    <Link to={`/search?query=${brand.name}`}>{brand.name}</Link>
                   </Brand>
                 </>
               );

@@ -288,11 +288,17 @@ export default function Categories() {
     }
     if (!editCatSub) {
       if (currentCatItem === "") {
-        const subCategoriesObject = { name: currentCat, items: [] };
+        const subCategoriesObject = {
+          name: currentCat.toLowerCase(),
+          items: [],
+        };
         subCategories.push(subCategoriesObject);
       } else {
-        const CatArray = currentCatItem.split(",");
-        const subCategoriesObject = { name: currentCat, items: CatArray };
+        const CatArray = currentCatItem.toLowerCase().split(",");
+        const subCategoriesObject = {
+          name: currentCat.toLowerCase(),
+          items: CatArray,
+        };
         subCategories.push(subCategoriesObject);
       }
       setCurrentCat("");
@@ -300,11 +306,17 @@ export default function Categories() {
       setrefresh(!refresh);
     } else {
       if (currentCatItem === "") {
-        const subCategoriesObject = { name: currentCat, items: [] };
+        const subCategoriesObject = {
+          name: currentCat.toLowerCase(),
+          items: [],
+        };
         subCategories[index] = subCategoriesObject;
       } else {
-        const CatArray = currentCatItem.split(",");
-        const subCategoriesObject = { name: currentCat, items: CatArray };
+        const CatArray = currentCatItem.toLowerCase().split(",");
+        const subCategoriesObject = {
+          name: currentCat.toLowerCase(),
+          items: CatArray,
+        };
         subCategories[index] = subCategoriesObject;
       }
       setCurrentCat("");

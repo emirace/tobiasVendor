@@ -276,7 +276,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
               {
                 SpecialPackageId: "0",
                 Quantity: item.quantity,
-                Weight: Math.floor(Math.random() * 10),
+                Weight: 1,
                 ItemType: "Normal",
                 ItemName: item.name,
                 Value: item.actualPrice,

@@ -135,6 +135,7 @@ export default function Withdraw({
       });
     } else {
       try {
+        const totalAmount = Number(amount) + Number(fee);
         const { data } = await axios.post(
           "/api/accounts/transfer",
           { amount, purpose: "Withdrawal Request" },

@@ -1,3 +1,5 @@
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,7 +11,7 @@ import { getError } from "../utils";
 const Container = styled.div`
   position: fixed;
   top: 0;
-  bottom: -55px;
+  bottom: 0;
   left: 0;
   right: 0;
   background: ${(props) => (!props.bg ? "#000" : "#fff")};
@@ -33,37 +35,43 @@ const Searchcont = styled.div`
 `;
 
 const CateContainer = styled.div`
-  & .active {
+  flex-shrink: 0;
+  overflow: auto;
+  padding-bottom: 50px;
+`;
+const Sidebaritem = styled.div`
+  padding: 0.75em 1em;
+  display: block;
+  transition: background-color 0.15s;
+  border-radius: 5px;
+  &.open > .sidebar-title svg {
+    transform: rotate(180deg);
+  }
+  &.open > .sidebar-content {
     height: auto;
   }
 `;
-const CateTitle = styled.div`
-  padding-top: 10px;
+const SidebarTitle = styled.div`
+  display: flex;
+  font-size: 1em;
   text-transform: capitalize;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-  border: 1px solid rgba(99, 91, 91, 0.2);
-  border-radius: 5px;
-  position: relative;
-  &:before {
-    content: "+";
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
+  justify-content: space-between;
+  & svg {
+    transition: transform 0.3s;
   }
 `;
-const CateItemContainer = styled.div`
-  padding-left: 20px;
-  overflow: hidden;
+const SidebarContent = styled.div`
+  padding-top: 0.25em;
   height: 0;
+  overflow: hidden;
 `;
-const CateItem = styled.div`
-  position: relative;
-  margin-bottom: 5px;
-  transition: 0.5s;
+const SidebarItemPlain = styled.div`
+  font-size: 1em;
   text-transform: capitalize;
+  padding: 0.75em 1em;
+  & a {
+    font-weight: 500;
+  }
 `;
 
 export default function CategoryMobileScreen() {
@@ -103,29 +111,49 @@ export default function CategoryMobileScreen() {
 
         <CateContainer>
           {categories &&
-            categories.map((c) => (
-              <>
-                <CateTitle
-                  onClick={() => {
-                    display === c.name ? setDisplay("") : setDisplay(c.name);
-                  }}
-                >
-                  {c.name}
-                </CateTitle>
-                <CateItemContainer
-                  className={display === c.name ? "active" : ""}
-                >
-                  {c.subCategories.length > 0 &&
-                    c.subCategories.map((s) => (
-                      <Link to={`/search?query=${s.name}`}>
-                        <CateItem>{s.name}</CateItem>
-                      </Link>
-                    ))}
-                </CateItemContainer>
-              </>
+            categories.map((item, index) => (
+              <SidebarItem key={index} item={item} />
             ))}
         </CateContainer>
+        <div style={{ height: "55px", width: "100%" }} />
       </Container>
     </>
   );
 }
+
+const SidebarItem = ({ item }) => {
+  const [open, setOpen] = useState(false);
+
+  if (item?.subCategories?.length > 0 || item?.items?.length > 0) {
+    return (
+      <Sidebaritem className={open ? "sidebar-item open" : "sidebar-item"}>
+        <SidebarTitle className="sidebar-title" onClick={() => setOpen(!open)}>
+          <span>{item.name}</span>
+          <FontAwesomeIcon icon={faChevronDown} />
+        </SidebarTitle>
+        {item?.subCategories?.length > 0 && (
+          <SidebarContent className="sidebar-content">
+            {item.subCategories.map((child, index) => (
+              <SidebarItem key={index} item={child} />
+            ))}
+          </SidebarContent>
+        )}
+        {item?.items?.length > 0 && (
+          <SidebarContent className="sidebar-content">
+            {item.items.map((child, index) => (
+              <SidebarItemPlain key={index}>
+                <Link to={`/search?query=${child}`}> {child}</Link>
+              </SidebarItemPlain>
+            ))}
+          </SidebarContent>
+        )}
+      </Sidebaritem>
+    );
+  } else {
+    return (
+      <SidebarItemPlain>
+        <Link to={`/search?query=${item.name}`}> {item.name}</Link>
+      </SidebarItemPlain>
+    );
+  }
+};

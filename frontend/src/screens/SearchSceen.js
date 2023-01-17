@@ -194,6 +194,24 @@ export default function SearchSceen() {
     pattern,
   ]);
 
+  const [rLoading, setRLoading] = useState(true);
+  const [rProducts, setRProducts] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setRLoading(true);
+      try {
+        const { data } = await axios.get(`/api/products/${region()}/all`);
+        setRProducts(data);
+        setRLoading(false);
+      } catch (err) {
+        console.log(getError(err));
+        setRLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const [queryBrand, setQueryBrand] = useState(null);
   const [searchBrand, setSearchBrand] = useState(null);
   useEffect(() => {
@@ -344,7 +362,9 @@ export default function SearchSceen() {
                 </Col>
               </RowCont>
               {products.length === 0 && (
-                <MessageBox>No Product Found</MessageBox>
+                <MessageBox>
+                  🔎Cant't find what you're looking for? Try related products!
+                </MessageBox>
               )}
               <ProductListC>
                 {products.map((product, index) => (
@@ -353,6 +373,17 @@ export default function SearchSceen() {
                   </EachCont>
                 ))}
               </ProductListC>
+              {rLoading ? (
+                <LoadingBox />
+              ) : (
+                <ProductListC>
+                  {rProducts.map((product, index) => (
+                    <EachCont key={product._id}>
+                      <Product product={product}></Product>
+                    </EachCont>
+                  ))}
+                </ProductListC>
+              )}
             </>
           )}
         </Right>

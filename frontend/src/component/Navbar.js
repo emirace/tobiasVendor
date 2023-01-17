@@ -312,7 +312,7 @@ const Category = styled.ul`
 const CategoryItem = styled.li`
   font-weight: 500;
   font-size: 15px;
-  text-transform: capitalize;
+  text-transform: uppercase;
   cursor: pointer;
   &:hover {
     color: var(--orange-color);
@@ -326,16 +326,18 @@ const CategoryGroup = styled.div`
 `;
 
 const SubCategoryItem = styled.li`
+  text-transform: uppercase;
+  font-weight: bold;
   white-space: nowrap;
-  /* font-size: 12px; */
+  font-size: 12px;
   align-self: start;
-  font-weight: 500;
 `;
 const SubCategoryItemS = styled.li`
   white-space: nowrap;
   align-self: start;
-  /* font-size: 12px; */
+  font-size: 12px;
   padding-bottom: 10px;
+  text-transform: uppercase;
   font-weight: 500;
   cursor: pointer;
   &:hover {
@@ -384,12 +386,12 @@ const SubCategory = styled.ul`
   top: 32px;
   left: 0;
   width: 100vw;
-  height: 600px;
+  height: 550px;
   background: ${(props) => (props.bg ? "#fff" : "#000")};
   display: none;
   flex-direction: column;
   align-items: center;
-  padding: 40px 150px;
+  padding: 40px 120px;
   z-index: 9;
   flex-wrap: wrap;
 `;
@@ -499,7 +501,7 @@ const UList = styled.ul`
   flex-direction: column;
 `;
 const SList = styled.li`
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   &:hover {
     color: var(--orange-color);
