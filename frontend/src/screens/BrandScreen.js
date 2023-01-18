@@ -23,6 +23,10 @@ const Alpha = styled.div`
   &:hover {
     color: var(--orange-color);
   }
+  @media (max-width: 992px) {
+    padding: 0;
+    font-size: 12px;
+  }
 `;
 
 const Title = styled.h1`
@@ -39,6 +43,9 @@ const AlphaGroup = styled.div`
 `;
 const Content = styled.div`
   margin: 0 10vw;
+  @media (max-width: 992px) {
+    margin: 0 5vw;
+  }
 `;
 const Header = styled.div`
   width: 30px;
@@ -65,6 +72,9 @@ const Brand = styled.div`
   flex-direction: row;
   &:hover {
     color: var(--orange-color);
+  }
+  @media (max-width: 992px) {
+    width: 50%;
   }
 `;
 
@@ -10675,7 +10685,7 @@ ZYIA
 ZZs`;
 
 const Search = styled.div`
-  margin: 0 10vw;
+  margin: 0 5vw;
   position: relative;
 `;
 const SearchInput = styled.input`

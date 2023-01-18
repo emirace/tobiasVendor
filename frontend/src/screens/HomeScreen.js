@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useReducer, useState } from "react";
 
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Product from "../component/Product";
@@ -22,7 +22,7 @@ import CategoryListing from "../component/CategoryListing";
 import Notification from "../component/Notification";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
 import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
@@ -149,9 +149,29 @@ const AppSection = styled.div`
   border-radius: 0.2rem;
 `;
 
+const BrandSearch = styled.div`
+  display: none;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  &:hover {
+    color: var(--malon-color);
+  }
+  & svg {
+    margin-right: 10px;
+  }
+  @media (max-width: 992px) {
+    display: flex;
+  }
+`;
+
 export default function ProductsScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
+  const navigate = useNavigate();
   const [{ loading, loadingUser, error, sellers, products }, dispatch] =
     useReducer(reducer, {
       products: [],
@@ -339,6 +359,10 @@ export default function ProductsScreen() {
               link="/search"
             />
           </div>
+          <BrandSearch onClick={() => navigate("/categories")}>
+            <FontAwesomeIcon icon={faSearch} />
+            <span>Search all Categories</span>
+          </BrandSearch>
         </section>
         <section className="center-item">
           <div className="container-fluid">
@@ -429,6 +453,10 @@ export default function ProductsScreen() {
               link="/search?brand=alexander%20mcqueen"
             />
           </div>
+          <BrandSearch onClick={() => navigate("/brand")}>
+            <FontAwesomeIcon icon={faSearch} />
+            <span>Search all Brands</span>
+          </BrandSearch>
         </section>
 
         <section className="product1">

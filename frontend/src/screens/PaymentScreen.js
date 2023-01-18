@@ -214,7 +214,10 @@ export default function PaymentScreen() {
         await axios.post(
           `/api/accounts/${region()}/payaccount`,
           {
-            bankName: getCode(payment.meta.detail.bankName),
+            bankName:
+              region() === "NGN"
+                ? getCode(payment.meta.detail.bankName)
+                : payment.meta.detail.bankName,
             accountNumber: payment.meta.detail.accountNumber,
             accountName: payment.meta.detail.accountName,
             amount: payment.amount,

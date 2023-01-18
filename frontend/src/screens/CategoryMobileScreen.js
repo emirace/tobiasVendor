@@ -50,6 +50,9 @@ const Sidebaritem = styled.div`
   &.open > .sidebar-content {
     height: auto;
   }
+  &:hover {
+    background-color: #eb9f4015;
+  }
 `;
 const SidebarTitle = styled.div`
   display: flex;
