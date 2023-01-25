@@ -165,9 +165,11 @@ export default function VerifyAccountScreen() {
               displayEmpty
             >
               {region() === "NGN"
-                ? banks.Nigeria.map((x) => <MenuItem value={x}>{x}</MenuItem>)
+                ? banks.Nigeria.map((x) => (
+                    <MenuItem value={x.name}>{x.name}</MenuItem>
+                  ))
                 : banks.SouthAfrica.map((x) => (
-                    <MenuItem value={x}>{x}</MenuItem>
+                    <MenuItem value={x.name}>{x.name}</MenuItem>
                   ))}
             </Select>
           </FormControl>

@@ -110,7 +110,7 @@ const Bottom = styled.div`
   flex: 5;
   height: 100px;
   @media (max-width: 992px) {
-    height: auto;
+    /* height: auto; */
   }
 `;
 const SmallBox = styled.div`
@@ -676,7 +676,7 @@ export default function Support() {
                       <Input placeholder="Search question" />
                     </SearchCont>
                     <div>
-                      <Li>
+                      {/* <Li>
                         <span>How can i start sell </span> <CgChevronRight />
                       </Li>
                       <Li>
@@ -690,7 +690,7 @@ export default function Support() {
                       </Li>
                       <Li>
                         <span>How can i start sell </span> <CgChevronRight />
-                      </Li>
+                      </Li> */}
                     </div>
                   </SmallBox>
                   <SmallBox>

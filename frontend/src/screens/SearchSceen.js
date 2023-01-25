@@ -136,6 +136,7 @@ export default function SearchSceen() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
+  console.log(sp.get("color"));
   const category = sp.get("category") || "all";
   const query = sp.get("query") || "all";
   const rating = sp.get("rating") || "all";

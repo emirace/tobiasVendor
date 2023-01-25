@@ -187,7 +187,7 @@ export default function PaymentScreen() {
     try {
       if (payment.meta.to === "Wallet") {
         await axios.post(
-          "/api/accounts/withdraw",
+          `/api/accounts/${region()}/withdraw`,
           {
             amount: payment.amount,
             purpose: payment.meta.Type,
@@ -199,7 +199,7 @@ export default function PaymentScreen() {
           }
         );
         await axios.post(
-          "/api/accounts/deposit",
+          `/api/accounts/${region()}/deposit`,
           {
             amount: payment.amount,
             purpose: payment.meta.Type,

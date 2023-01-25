@@ -22,7 +22,11 @@ import CategoryListing from "../component/CategoryListing";
 import Notification from "../component/Notification";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faStar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faSearch,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import { Store } from "../Store";
 import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
@@ -152,16 +156,23 @@ const AppSection = styled.div`
 const BrandSearch = styled.div`
   display: none;
   align-items: center;
-  margin-top: 10px;
+  /* margin-top: 5px; */
   margin-left: 20px;
+  color: var(--orange-color);
   cursor: pointer;
-  font-size: 18px;
+  font-size: 15px;
+  /* text-transform: uppercase; */
+  /* border: 1px solid;
+  border-radius: 0.2rem; */
   font-weight: bold;
+  align-self: flex-end;
+  margin-right: 20px;
+  /* padding: 5px; */
   &:hover {
     color: var(--malon-color);
   }
   & svg {
-    margin-right: 10px;
+    margin-left: 10px;
   }
   @media (max-width: 992px) {
     display: flex;
@@ -334,12 +345,12 @@ export default function ProductsScreen() {
               image="/images/ruan-richard-rodrigues--MCGquf_4mU-unsplash.webp"
               bottom={true}
               title="ACCESSORIZE"
-              link="/accessorize"
+              link="/search?query=accessorize"
             />
             <CategoryListing
               image="/images/julian-hochgesang-sA5wcAu4CBA-unsplash.webp"
               title="SNEAKER-HEAD"
-              link="/shoes"
+              link="/search?query=shoes"
             />
             <CategoryListing
               image="/images/stephen-audu-BkB5T-ZdK88-unsplash.webp"
@@ -360,8 +371,8 @@ export default function ProductsScreen() {
             />
           </div>
           <BrandSearch onClick={() => navigate("/categories")}>
-            <FontAwesomeIcon icon={faSearch} />
-            <span>Search all Categories</span>
+            <span>Search All Categories</span>
+            <FontAwesomeIcon icon={faArrowRight} />
           </BrandSearch>
         </section>
         <section className="center-item">
@@ -454,8 +465,8 @@ export default function ProductsScreen() {
             />
           </div>
           <BrandSearch onClick={() => navigate("/brand")}>
-            <FontAwesomeIcon icon={faSearch} />
-            <span>Search all Brands</span>
+            <span>Search All Brands</span>
+            <FontAwesomeIcon icon={faArrowRight} />
           </BrandSearch>
         </section>
 

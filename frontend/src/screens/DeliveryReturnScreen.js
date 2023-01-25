@@ -187,7 +187,7 @@ export default function DeliveryReturnScreen({
     try {
       if (!returned.comfirmDelivery) {
         const { data } = await axios.post(
-          "/api/accounts/transfer",
+          `/api/accounts/${region()}/transfer`,
           {
             amount: returned.sending.cost,
             purpose: "Return delivery fee",

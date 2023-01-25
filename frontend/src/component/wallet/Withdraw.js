@@ -137,8 +137,8 @@ export default function Withdraw({
       try {
         const totalAmount = Number(amount) + Number(fee);
         const { data } = await axios.post(
-          "/api/accounts/transfer",
-          { amount, purpose: "Withdrawal Request" },
+          `/api/accounts/${region()}/transfer`,
+          { amount: totalAmount, purpose: "Withdrawal Request" },
           {
             headers: { authorization: `Bearer ${userInfo.token}` },
           }

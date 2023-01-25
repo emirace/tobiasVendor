@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../Store";
 import { getError } from "../utils";
@@ -41,6 +42,7 @@ export default function CategoriesLinksButtons() {
   const { state } = useContext(Store);
   const { mode } = state;
   const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     try {
       const fetchCategories = async () => {
@@ -56,7 +58,7 @@ export default function CategoriesLinksButtons() {
   return (
     <Container mode={mode}>
       {categories?.map((cat) => (
-        <Box>{cat.name}</Box>
+        <Box onClick={() => navigate(`/category/${cat.name}`)}>{cat.name}</Box>
       ))}
     </Container>
   );

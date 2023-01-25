@@ -75,6 +75,9 @@ const SidebarItemPlain = styled.div`
   & a {
     font-weight: 500;
   }
+  &:hover {
+    color: var(--orange-color);
+  }
 `;
 
 export default function CategoryMobileScreen() {

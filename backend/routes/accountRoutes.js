@@ -76,14 +76,17 @@ accountRouter.get(
 );
 
 accountRouter.post(
-  "/deposit",
+  "/:region/deposit",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     var account;
     if (req.body.userId === "Admin") {
       const admin = await User.findOne({
-        email: "admin@example.com",
+        email:
+          req.params.region === "ZAR"
+            ? "tobiasrepeddle@gmail.com"
+            : "repeddleng@gmail.com",
         isAdmin: true,
       });
       account = await Account.findOne({ userId: admin._id });
@@ -172,14 +175,17 @@ accountRouter.post(
 );
 
 accountRouter.post(
-  "/withdraw",
+  "/:region/withdraw",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     var account;
     if (req.body.userId === "Admin") {
       const admin = await User.findOne({
-        email: "admin@example.com",
+        email:
+          req.params.region === "ZAR"
+            ? "tobiasrepeddle@gmail.com"
+            : "repeddleng@gmail.com",
         isAdmin: true,
       });
       account = await Account.findOne({ userId: admin._id });
@@ -226,12 +232,15 @@ accountRouter.post(
 );
 
 accountRouter.post(
-  "/transfer",
+  "/:region/transfer",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const senderId = await Account.findOne({ userId: req.user._id });
     const admin = await User.findOne({
-      email: "admin@example.com",
+      email:
+        req.params.region === "ZAR"
+          ? "tobiasrepeddle@gmail.com"
+          : "repeddleng@gmail.com",
       isAdmin: true,
     });
     const recipientId = await Account.findOne({ userId: admin._id });
@@ -285,7 +294,7 @@ accountRouter.post(
   })
 );
 accountRouter.post(
-  "/fundwallet",
+  "/:region/fundwallet",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { transaction_id } = req.body;
@@ -295,7 +304,10 @@ accountRouter.post(
     if (response.data.status === "successful") {
       const recipientId = await Account.findOne({ userId: req.user._id });
       const admin = await User.findOne({
-        email: "admin@example.com",
+        email:
+          req.params.region === "ZAR"
+            ? "tobiasrepeddle@gmail.com"
+            : "repeddleng@gmail.com",
         isAdmin: true,
       });
       const senderId = await Account.findOne({ userId: admin._id });

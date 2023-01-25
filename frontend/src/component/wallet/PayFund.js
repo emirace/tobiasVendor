@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Store } from "../../Store";
 import { useFlutterwave, closePaymentModal } from "flutterwave-react-v3";
 import { v4 } from "uuid";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import axios from "axios";
 import LoadingBox from "../LoadingBox";
 import MessageBox from "../MessageBox";
@@ -102,7 +102,7 @@ export default function PayFund({ setShowModel, amount, onApprove }) {
     dispatch({ type: "FETCH_REQUEST" });
     try {
       const { data } = await axios.post(
-        "/api/accounts/transfer",
+        `/api/accounts/${region()}/transfer`,
         { amount, purpose: "Order Purchased" },
         {
           headers: { authorization: `Bearer ${userInfo.token}` },

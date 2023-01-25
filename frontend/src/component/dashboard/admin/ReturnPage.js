@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { socket } from "../../../App";
 import DeliveryReturnScreen from "../../../screens/DeliveryReturnScreen";
 import { Store } from "../../../Store";
-import { deliveryNumber, getError } from "../../../utils";
+import { deliveryNumber, getError, region } from "../../../utils";
 import DeliveryHistory from "../../DeliveryHistory";
 import LoadingBox from "../../LoadingBox";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -312,7 +312,7 @@ export default function ReturnPage() {
     } else {
       try {
         const { data: withdrawData } = await axios.post(
-          "/api/accounts/withdraw",
+          `/api/accounts/${region()}/withdraw`,
           {
             amount: returned.sending.cost * 2,
             purpose: "Return delivery fee",
@@ -334,7 +334,7 @@ export default function ReturnPage() {
           });
         } else {
           await axios.post(
-            "/api/accounts/deposit",
+            `/api/accounts/${region()}/deposit`,
             {
               amount: returned.sending.cost * 2,
               purpose: "Return delivery fee",

@@ -236,7 +236,7 @@ export default function AddressBook() {
           <LoadingBox />
         ) : error ? (
           <MessageBox>{error}</MessageBox>
-        ) : addresses.length ? (
+        ) : addresses?.length ? (
           addresses.map((address, index) => (
             <Manual key={address._id} mode={mode}>
               <Option>

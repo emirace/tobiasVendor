@@ -268,7 +268,7 @@ transactionRouter.post(
         console.log(recipientId, user._id);
 
         const admin = await User.findOne({
-          email: "admin@example.com",
+          email: "tobiasrepeddle@gmail.com",
           isAdmin: true,
         });
         const senderId = await Account.findOne({ userId: admin._id });

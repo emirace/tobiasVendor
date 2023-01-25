@@ -116,7 +116,7 @@ export default function AddFund({
     dispatch({ type: "FETCH_REQUEST" });
     try {
       const { data } = await axios.post(
-        "/api/accounts/fundwallet",
+        `/api/accounts/${region()}/fundwallet`,
         { ...response, purpose: "Wallet Funded" },
         {
           headers: { authorization: `Bearer ${userInfo.token}` },

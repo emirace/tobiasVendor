@@ -115,6 +115,7 @@ const ListItem = styled.li`
   cursor: pointer;
   display: flex;
   align-items: center;
+  text-transform: capitalize;
   border-radius: 0.2rem;
   &.active,
   &:hover {
@@ -135,7 +136,7 @@ const Color = styled.div`
 
 const color1 = [
   { name: "red", id: 1 },
-  { name: "#383e42", id: 2 },
+  { name: "%23383e42", id: 2 },
   { name: "beige", id: 3 },
   { name: "black", id: 4 },
   { name: "blue", id: 5 },
@@ -267,7 +268,7 @@ export default function SearchFilter({
   pattern,
 }) {
   const { state } = useContext(Store);
-  const { mode, userInfo, currency } = state;
+  const { mode, currency } = state;
 
   const [cateClass, setCateClass] = useState(true);
   const [priceClass, setPriceClass] = useState(true);
@@ -286,16 +287,14 @@ export default function SearchFilter({
   useEffect(() => {
     try {
       const fetchCategories = async () => {
-        const { data } = await axios.get("/api/categories", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get("/api/categories");
         setCategories(data);
       };
       fetchCategories();
     } catch (err) {
       console.log(getError(err));
     }
-  }, [userInfo]);
+  }, []);
   const getFilterUrl = (filter) => {
     const filterPage = filter.page || page;
     const filterCategory = filter.category || category;
@@ -413,7 +412,7 @@ export default function SearchFilter({
                 All
               </ListItem>
             </Link>
-            {categories.length &&
+            {categories.length > 0 &&
               categories.map((c) => (
                 <Link
                   className={c.name === category ? "text-bold" : ""}

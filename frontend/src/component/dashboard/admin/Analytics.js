@@ -280,6 +280,7 @@ export default function Analytics() {
           const { data } = await axios.get(`/api/orders/${region()}/summary`, {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           });
+          console.log(data);
           setUsers2(data);
         } catch (err) {
           console.log(getError(err));
@@ -349,8 +350,8 @@ export default function Analytics() {
               users2.orders.length > 0 && userInfo.isAdmin
                 ? users2.products[0].numProducts
                 : products
-                ? products.products.length
-                : ""
+                ? products?.products?.length
+                : "0"
             }
           />
           <FeatureInfo
@@ -358,7 +359,7 @@ export default function Analytics() {
             number={
               users2.orders.length > 0 && userInfo.isAdmin
                 ? users2.orders[0].numSales
-                : "565"
+                : "0"
             }
           />
         </Widgets>

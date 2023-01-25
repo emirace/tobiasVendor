@@ -435,9 +435,7 @@ export default function Footer() {
                 <Link to="/">FAQ</Link>
               </li>
               <li className="footer_center_listitem">
-                <Link to="/returns" href="/">
-                  Returns & Refund
-                </Link>
+                <Link to="/returns">Returns & Refund</Link>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/contactus">Contact Us</Link>
@@ -446,7 +444,7 @@ export default function Footer() {
                 <Link to="/privacypolicy">Privacy Policy</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/terms">Terms of Use</a>
+                <Link to="/terms">Terms of Use</Link>
               </li>
             </ul>
           </div>
@@ -463,13 +461,15 @@ export default function Footer() {
                 <Link to="/vipshield">Vip Shield</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Blog and News</a>
+                <Link to="/">Blog and News</Link>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/rebundle">Re:Bundle</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Wholesale</a>
+                <Link to="/" href="/#">
+                  Wholesale
+                </Link>
               </li>
             </ul>
           </div>
@@ -478,22 +478,22 @@ export default function Footer() {
 
             <ul className="footer_center_list">
               <li className="footer_center_listitem">
-                <a href="/#">Women</a>
+                <Link to="/category/women">Women</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Men</a>
+                <Link to="/category/men">Men</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Kids</a>
+                <Link to="/category/kids">Kids</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Home</a>
+                <Link to="/category/home">Home</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">More</a>
+                <Link to="/search">More</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Re:Curated</a>
+                <Link to="/recurated">Re:Curated</Link>
               </li>
             </ul>
           </div>
@@ -502,19 +502,21 @@ export default function Footer() {
 
             <ul className="footer_center_list">
               <li className="footer_center_listitem">
-                <a href="/#">Adidas</a>
+                <Link to="/search?query=adidas">Adidas</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Alexander Mcqueen</a>
+                <Link to="/search?query=alexandermcquen">
+                  Alexander Mcqueen
+                </Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Balanciaga</a>
+                <Link to="/search?query=adidas">Balanciaga</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Gucci</a>
+                <Link to="/search?query=adidas">Gucci</Link>
               </li>
               <li className="footer_center_listitem">
-                <a href="/#">Patagonia</a>
+                <Link to="/search?query=adidas">Patagonia</Link>
               </li>
             </ul>
           </div>
@@ -538,9 +540,7 @@ export default function Footer() {
                   <Link to="/">FAQ</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <Link to="/returns" href="/">
-                    Returns & Refund
-                  </Link>
+                  <Link to="/returns">Returns & Refund</Link>
                 </li>
                 <li className="footer_center_listitem">
                   <Link to="/contactus">Contact Us</Link>
@@ -549,7 +549,7 @@ export default function Footer() {
                   <Link to="/privacypolicy">Privacy Policy</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/terms">Terms of Use</a>
+                  <Link to="/terms">Terms of Use</Link>
                 </li>
               </ul>
             )}
@@ -575,13 +575,13 @@ export default function Footer() {
                   <Link to="/vipshield">Vip Shield</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Blog and News</a>
+                  <Link to="/">Blog and News</Link>
                 </li>
                 <li className="footer_center_listitem">
                   <Link to="/rebundle">Re:Bundle</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Wholesale</a>
+                  <Link to="/rebundle">Wholesale</Link>
                 </li>
               </ul>
             )}
@@ -599,22 +599,22 @@ export default function Footer() {
             {footerLinks3 && (
               <ul className="footer_center_list">
                 <li className="footer_center_listitem">
-                  <a href="/#">Women</a>
+                  <Link to="/search?query=women">Women</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Men</a>
+                  <Link to="/search?query=men">Men</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Kids</a>
+                  <Link to="/search?query=kids">Kids</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Home</a>
+                  <Link to="/search?query=home">Home</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">More</a>
+                  <Link to="/search">More</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Re:Curated</a>
+                  <Link to="/recurated">Re:Curated</Link>
                 </li>
               </ul>
             )}
@@ -632,19 +632,21 @@ export default function Footer() {
             {footerLinks4 && (
               <ul className="footer_center_list">
                 <li className="footer_center_listitem">
-                  <a href="/#">Adidas</a>
+                  <Link to="/search?brand=adidas">Adidas</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Alexander Mcqueen</a>
+                  <Link to="/search?brand=alexander mcqueen">
+                    Alexander Mcqueen
+                  </Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Balanciaga</a>
+                  <Link to="/search?brand=balanciags">Balanciaga</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Gucci</a>
+                  <Link to="/search?brand=gucci">Gucci</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <a href="/#">Patagonia</a>
+                  <Link to="/search?brand=patagonia">Patagonia</Link>
                 </li>
               </ul>
             )}
@@ -659,7 +661,7 @@ export default function Footer() {
         platforms.
       </Reserve>
       <CopyRight back={footerMode}>
-        <FontAwesomeIcon icon={faCopyright} /> 2022 Repeddle. All Right
+        <FontAwesomeIcon icon={faCopyright} /> 2023 Repeddle. All Right
         Reserved.
       </CopyRight>
     </>
