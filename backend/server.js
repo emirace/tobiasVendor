@@ -37,6 +37,7 @@ import { sendEmail } from "./utils.js";
 import guestUserRouter from "./routes/guestUserRoutes.js";
 import redirectRouter from "./routes/redirectRoutes.js";
 import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
+import expoPushTokenRouter from "./routes/expoPushTokenRoutes.js";
 
 dotenv.config();
 
@@ -115,6 +116,7 @@ app.use("/api/payments", paymentRouter);
 app.use("/api/guestusers", guestUserRouter);
 app.use("/api/redirects", redirectRouter);
 app.use("/api/rebundleSellers", rebundleSellerRouter);
+app.use("/api/expopushtoken", expoPushTokenRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));
@@ -252,7 +254,7 @@ io.on("connection", (socket) => {
 
   // Add notifications
   socket.on("post_data", async (body) => {
-    const { userId, notifyType, userImage, itemId, msg, link } = body;
+    const { userId, notifyType, userImage, itemId, msg, link, mobile } = body;
     if (userId === "Admin") {
       const admins = await User.find({
         isAdmin: true,
@@ -265,6 +267,7 @@ io.on("connection", (socket) => {
           msg,
           link,
           userImage,
+          mobile,
         });
         await notification.save();
         io.sockets.emit("change_data");
@@ -277,6 +280,7 @@ io.on("connection", (socket) => {
         msg,
         link,
         userImage,
+        mobile,
       });
       await notification.save();
       io.sockets.emit("change_data");

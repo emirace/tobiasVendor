@@ -497,6 +497,7 @@ export default function ProductScreen() {
         msg: `${userInfo.username} gave your product a review`,
         link: `/product/${product.slug}`,
         userImage: userInfo.image,
+        mobile: { path: "Product", id: product.slug },
       });
       setRAting("");
       setComment("");
@@ -551,6 +552,7 @@ export default function ProductScreen() {
         notifyType: "comment",
         msg: `${userInfo.username} commented on your product`,
         link: `/product/${product.slug}`,
+        mobile: { path: "Product", id: product.slug },
         userImage: userInfo.image,
       });
     } catch (err) {
@@ -675,6 +677,7 @@ export default function ProductScreen() {
           notifyType: "like",
           msg: `${userInfo.username} unliked your product`,
           link: `/product/${data.product.slug}`,
+          mobile: { path: "Product", id: data.product.slug },
           userImage: userInfo.image,
         });
       } else {
@@ -701,6 +704,7 @@ export default function ProductScreen() {
           notifyType: "like",
           msg: `${userInfo.username} liked your product`,
           link: `/product/${data.product.slug}`,
+          mobile: { path: "Product", id: data.product.slug },
           userImage: userInfo.image,
         });
       }
@@ -1310,7 +1314,7 @@ export default function ProductScreen() {
             ))}
           </Taglist>
           <div className="">
-            {product.sizes.length && (
+            {product.sizes.length > 0 && (
               <>
                 <div className="select_size_header">select size: {size} </div>
                 <div className="flexSelect">
@@ -1384,7 +1388,6 @@ export default function ProductScreen() {
                     <Key>Category</Key>
                     <Key>Subcategory</Key>
                     <Key>Color</Key>
-                    <Key>Size</Key>
                   </LeftOverview>
                   <RightOverview>
                     <Value>

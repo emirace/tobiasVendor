@@ -308,6 +308,7 @@ export default function PlaceOrderScreen() {
             msg: `${userInfo.username} ordered your product`,
             link: `/order/${order1.order._id}`,
             userImage: userInfo.image,
+            mobile: { path: "OrderScreen", id: order1.order._id },
           });
         });
         navigate(`/order/${data.order._id}`);
@@ -366,6 +367,7 @@ export default function PlaceOrderScreen() {
             notifyType: "sold",
             msg: `${userInfo.username} ordered your product`,
             link: `/order/${order1.order._id}`,
+            mobile: { path: "OrderScreen", id: order1.order._id },
             userImage: userInfo.image,
           });
         });
@@ -373,7 +375,6 @@ export default function PlaceOrderScreen() {
         navigate(`/order/${data.order._id}`);
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: getError(err) });
-        console.log(err, getError(err));
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -384,7 +385,14 @@ export default function PlaceOrderScreen() {
         });
       }
     } else {
-      toast.error("no order found");
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order not found",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 

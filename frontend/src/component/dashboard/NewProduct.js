@@ -460,6 +460,7 @@ const AddTag = styled.div`
   background: var(--malon-color);
   color: var(--white-color);
   margin: 0 5px;
+  cursor: "pointer";
 `;
 const TagItem = styled.div`
   display: flex;

@@ -168,6 +168,7 @@ export default function PaymentScreen() {
         msg: `Order ${deliveryStatus} `,
         link: `/return/${payment._id}`,
         userImage: userInfo.image,
+        mobile: { path: "ReturnScreen", id: payment._id },
       });
       socket.emit("post_data", {
         userId: payment.orderId.user._id,
@@ -175,6 +176,7 @@ export default function PaymentScreen() {
         notifyType: "delivery",
         msg: `Your order ${deliveryStatus} `,
         link: `/return/${payment._id}`,
+        mobile: { path: "ReturnScreen", id: payment._id },
         userImage: userInfo.image,
       });
     } catch (err) {
@@ -251,6 +253,7 @@ export default function PaymentScreen() {
             notifyType: "payment",
             msg: `Your Withdrawal request is been proccessed`,
             link: `/dashboard/wallet`,
+            mobile: { path: "Withdraw", id: "" },
             userImage: userInfo.image,
           })
         : payment.meta.Type === "Order Completed" ||
@@ -261,6 +264,7 @@ export default function PaymentScreen() {
             notifyType: "payment",
             msg: `Your order is paid`,
             link: `/dashboard/wallet`,
+            mobile: { path: "Account", id: "" },
             userImage: userInfo.image,
           })
         : socket.emit("post_data", {
@@ -269,6 +273,7 @@ export default function PaymentScreen() {
             notifyType: "payment",
             msg: `Your order return refunded`,
             link: `/dashboard/wallet`,
+            mobile: { path: "Account", id: "" },
             userImage: userInfo.image,
           });
     } catch (error) {

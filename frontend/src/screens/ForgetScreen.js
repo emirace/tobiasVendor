@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Helmet } from "react-helmet-async";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Store } from "../Store";
-import { toast } from "react-toastify";
-import { getError } from "../utils";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import jwt_decode from "jwt-decode";
-import styled from "styled-components";
-import Input from "../component/Input";
+import React, { useContext, useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { Helmet } from 'react-helmet-async';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Store } from '../Store';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import jwt_decode from 'jwt-decode';
+import styled from 'styled-components';
+import Input from '../component/Input';
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -100,9 +100,9 @@ const SwitchCont = styled.div`
   }
 `;
 const Switch = styled.input.attrs({
-  type: "checkbox",
-  id: "darkmodeSwitch",
-  role: "switch",
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
 })`
   position: relative;
 
@@ -127,7 +127,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -137,7 +137,7 @@ const Switch = styled.input.attrs({
   }
 `;
 const Label = styled.label.attrs({
-  for: "darkmodeSwitch",
+  for: 'darkmodeSwitch',
 })`
   margin-left: 5px;
   @media (max-width: 992px) {
@@ -155,36 +155,33 @@ const ForgetPassword = styled.div`
 export default function ForgetScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get("redirect");
-  const redirect = redirectInUrl ? redirectInUrl : "/";
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl ? redirectInUrl : '/';
 
   const [input, setInput] = useState({
-    email: "",
+    email: '',
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
   const submitHandler = async () => {
     try {
-      const { data } = await axios.post(
-        `/api/users/${window.location.host}/forgetpassword`,
-        {
-          email: input.email,
-        }
-      );
+      const { data } = await axios.post(`/api/users/forgetpassword`, {
+        email: input.email,
+      });
       console.log(data);
       if (data.success) {
-        navigate("/emailsent");
+        navigate('/emailsent');
       }
     } catch (err) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -194,7 +191,7 @@ export default function ForgetScreen() {
     e.preventDefault();
     let valid = true;
     if (!input.email) {
-      handleError("Please enter an email", "email");
+      handleError('Please enter an email', 'email');
       valid = false;
     } else if (
       !input.email
@@ -204,7 +201,7 @@ export default function ForgetScreen() {
         )
     ) {
       valid = false;
-      handleError("Please enter a valid email", "email");
+      handleError('Please enter a valid email', 'email');
     }
 
     if (valid) {
@@ -220,11 +217,11 @@ export default function ForgetScreen() {
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
-      localStorage.setItem("mode", "pagebodydark");
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
+      localStorage.setItem('mode', 'pagebodydark');
     } else {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
-      localStorage.setItem("mode", "pagebodylight");
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
+      localStorage.setItem('mode', 'pagebodylight');
     }
   };
 
@@ -249,9 +246,9 @@ export default function ForgetScreen() {
           <Input
             error={error.email}
             onFocus={() => {
-              handleError(null, "email");
+              handleError(null, 'email');
             }}
-            onChange={(e) => handleOnChange(e.target.value, "email")}
+            onChange={(e) => handleOnChange(e.target.value, 'email')}
           />
         </Form.Group>
         <div className="mb-3">
@@ -260,8 +257,8 @@ export default function ForgetScreen() {
           </button>
         </div>
         <div className="mb-3">
-          Have an account?{"  "}
-          <Link to={`/signin?redirect=${redirect}`}> {"  "}Sign in</Link>
+          Have an account?{'  '}
+          <Link to={`/signin?redirect=${redirect}`}> {'  '}Sign in</Link>
         </div>
       </Form>
     </Container>

@@ -652,7 +652,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
 
                       <a
                         className="link"
-                        href="https://www.paxi.co.za/send"
+                        href="https://www.paxi.co.za/#send-a-parcel"
                         target="_blank"
                         rel="noopener noreferrer"
                       >

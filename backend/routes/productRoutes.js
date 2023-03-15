@@ -16,6 +16,7 @@ const productRouter = express.Router();
 // get all product
 
 productRouter.get("/:region/all", async (req, res) => {
+  console.log("fetching...");
   const { region } = req.params;
   const products = await Product.find({ region, active: true })
     .sort({ createdAt: -1 })

@@ -102,6 +102,7 @@ export default function ShareButton({ url: shareUrl, product, dispatch }) {
             notifyType: "share",
             msg: `${userInfo.username} shared your product`,
             link: `/product/${product.slug}`,
+            mobile: { path: "Product", id: product.slug },
             userImage: userInfo.image,
           });
         }

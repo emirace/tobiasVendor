@@ -703,6 +703,8 @@ export default function ChatScreen() {
             ? "New Support message"
             : `${userInfo.username} sent you a message`,
         link: `/messages?conversation=${currentChat._id}`,
+        mobile: { path: "Conversation", id: "" },
+
         userImage: userInfo.image,
       });
       setNewMessage("");

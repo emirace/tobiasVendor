@@ -182,6 +182,7 @@ export default function Withdraw({
           notifyType: "payment",
           msg: `Withdrawal request`,
           link: `/payment/${paymentData._id}`,
+          mobile: { path: "PaymentScreen", id: paymentData._id },
           userImage: userInfo.image,
         });
         ctxDispatch({

@@ -243,6 +243,8 @@ export default function DeliveryReturnScreen({
           notifyType: "return",
           msg: `Return Address Updated`,
           link: `/return/${returned._id}`,
+          mobile: { path: "ReturnScreen", id: returned._id },
+
           userImage: returned.productId.seller.image,
         });
       }

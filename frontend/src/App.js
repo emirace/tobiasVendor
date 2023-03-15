@@ -1,14 +1,14 @@
-import "./App.css";
-import "./style/button.css";
-import "./style/Cart.css";
-import "./style/CategoryListing.css";
-import "./style/Footer.css";
-import "./style/HomeScreen.css";
-import "./style/Newsletter.css";
-import "./style/ProductScreen.css";
-import "./style/SearchScreen.css";
-import "./style/SellerScreen.css";
-import "./style/StickyNav.css";
+import './App.css';
+import './style/button.css';
+import './style/Cart.css';
+import './style/CategoryListing.css';
+import './style/Footer.css';
+import './style/HomeScreen.css';
+import './style/Newsletter.css';
+import './style/ProductScreen.css';
+import './style/SearchScreen.css';
+import './style/SellerScreen.css';
+import './style/StickyNav.css';
 
 import {
   BrowserRouter,
@@ -17,9 +17,9 @@ import {
   Route,
   Routes,
   useLocation,
-} from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+} from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBagShopping,
   faCircleHalfStroke,
@@ -28,35 +28,35 @@ import {
   faHeart,
   faRightFromBracket,
   faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import Navbar from "./component/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Badge from "react-bootstrap/Badge";
-import Container from "react-bootstrap/Container";
-import { LinkContainer } from "react-router-bootstrap";
-import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
-import { Store } from "./Store";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Button from "react-bootstrap/Button";
-import { baseURL, getError, region } from "./utils";
-import axios from "axios";
-import SearchBox from "./component/SearchBox";
-import Footer from "./component/Footer";
-import DashboardScreen from "./screens/DashboardScreen";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import ProductListScreen from "./screens/ProductListScreen";
-import ProductEditScreen from "./screens/ProductEditScreen";
-import OrderListScreen from "./screens/OrderListScreen";
-import UserListScreen from "./screens/UserListScreen";
-import MyAccountScreen from "./screens/MyAccountScreen";
-import UserEditScreen from "./screens/UserEditScreen";
+} from '@fortawesome/free-solid-svg-icons';
+import Navbar from './component/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Badge from 'react-bootstrap/Badge';
+import Container from 'react-bootstrap/Container';
+import { LinkContainer } from 'react-router-bootstrap';
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
+import { Store } from './Store';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Button from 'react-bootstrap/Button';
+import { baseURL, getError, region } from './utils';
+import axios from 'axios';
+import SearchBox from './component/SearchBox';
+import Footer from './component/Footer';
+import DashboardScreen from './screens/DashboardScreen';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import ProductListScreen from './screens/ProductListScreen';
+import ProductEditScreen from './screens/ProductEditScreen';
+import OrderListScreen from './screens/OrderListScreen';
+import UserListScreen from './screens/UserListScreen';
+import MyAccountScreen from './screens/MyAccountScreen';
+import UserEditScreen from './screens/UserEditScreen';
 
-import ProductCreateScreen from "./screens/ProductCreateScreen";
-import StickyNav from "./component/StickyNav";
-import styled from "styled-components";
+import ProductCreateScreen from './screens/ProductCreateScreen';
+import StickyNav from './component/StickyNav';
+import styled from 'styled-components';
 import {
   AdminRoute,
   CartNotEmpty,
@@ -69,93 +69,94 @@ import {
   ProtectedRoute,
   SellerRedirect,
   SellerRoute,
-} from "./component/ProtectedRoute";
-import ScrollToTop from "./component/ScrollToTop";
-import Notification from "./component/Notification";
-import ToastNotification from "./component/ToastNotification";
-import { io } from "socket.io-client";
-import OrderListAdmin from "./component/dashboard/admin/OrderList";
-import ProductListAdmin from "./component/dashboard/admin/ProductList";
-import OutOfStock from "./component/dashboard/admin/OutOfStock";
+} from './component/ProtectedRoute';
+import ScrollToTop from './component/ScrollToTop';
+import Notification from './component/Notification';
+import ToastNotification from './component/ToastNotification';
+import { io } from 'socket.io-client';
+import OrderListAdmin from './component/dashboard/admin/OrderList';
+import ProductListAdmin from './component/dashboard/admin/ProductList';
+import OutOfStock from './component/dashboard/admin/OutOfStock';
 
-import Bundle from "./component/info/Bundle";
-import useGeoLocation from "./hooks/useGeoLocation";
-import LoadingPage from "./component/LoadingPage";
-import ForgetScreen from "./screens/ForgetScreen";
-import ResetScreen from "./screens/ResetScreen";
-import VerifyEmailScreen from "./screens/VerifyEmailScreen";
-import EmailConfirmationScreen from "./screens/successPage/EmailConfirmationScreen";
-import initFacebookSdk, { logout } from "./hooks/initFacebookSdk";
-import VerifyAccountScreen from "./screens/VerifyAccountScreen";
-import PaymentScreen from "./screens/PaymentScreen";
-import TransactionScreen from "./screens/TransactionScreen";
-import ContactUsPage from "./screens/ContactUsPage";
-import Earning from "./component/dashboard/Earning";
-import Support from "./component/Support";
-import Returns from "./component/info/Returns";
-import VipShield from "./component/info/VipShield";
-import VerifyAddressScreen from "./screens/VerifyAddressScreen";
-import Terms from "./component/info/Terms";
-import BanScreen from "./screens/successPage/BanScreen";
-import VerifyEmailConfirmScreen from "./screens/VerifyEmailConfirmScreen";
-import secureLocalStorage from "react-secure-storage";
-import AcceptCookies from "./component/AcceptCookies";
-import MobileNotificationScreen from "./screens/MobileNotificationScreen";
-import TopSellerList from "./component/dashboard/TopSellerList";
+import Bundle from './component/info/Bundle';
+import useGeoLocation from './hooks/useGeoLocation';
+import LoadingPage from './component/LoadingPage';
+import ForgetScreen from './screens/ForgetScreen';
+import ResetScreen from './screens/ResetScreen';
+import VerifyEmailScreen from './screens/VerifyEmailScreen';
+import EmailConfirmationScreen from './screens/successPage/EmailConfirmationScreen';
+import initFacebookSdk, { logout } from './hooks/initFacebookSdk';
+import VerifyAccountScreen from './screens/VerifyAccountScreen';
+import PaymentScreen from './screens/PaymentScreen';
+import TransactionScreen from './screens/TransactionScreen';
+import ContactUsPage from './screens/ContactUsPage';
+import Earning from './component/dashboard/Earning';
+import Support from './component/Support';
+import Returns from './component/info/Returns';
+import VipShield from './component/info/VipShield';
+import VerifyAddressScreen from './screens/VerifyAddressScreen';
+import Terms from './component/info/Terms';
+import BanScreen from './screens/successPage/BanScreen';
+import VerifyEmailConfirmScreen from './screens/VerifyEmailConfirmScreen';
+import secureLocalStorage from 'react-secure-storage';
+import AcceptCookies from './component/AcceptCookies';
+import MobileNotificationScreen from './screens/MobileNotificationScreen';
+import TopSellerList from './component/dashboard/TopSellerList';
 
-const ProductScreen = lazy(() => import("./screens/ProductScreen"));
+const ProductScreen = lazy(() => import('./screens/ProductScreen'));
 const CategoryMobileScreen = lazy(() =>
-  import("./screens/CategoryMobileScreen")
+  import('./screens/CategoryMobileScreen')
 );
 
-const SellerScreen = lazy(() => import("./screens/SellerScreen"));
-const FashionImpact = lazy(() => import("./component/info/FashionImpact"));
+const SellerScreen = lazy(() => import('./screens/SellerScreen'));
+const FashionImpact = lazy(() => import('./component/info/FashionImpact'));
 
-const CartScreen = lazy(() => import("./screens/CartScreen"));
+const CartScreen = lazy(() => import('./screens/CartScreen'));
+const GigScreen = lazy(() => import('./screens/GigScreen'));
 
-const About = lazy(() => import("./component/info/About"));
-const PolicyScreen = lazy(() => import("./screens/PolicyScreen"));
+const About = lazy(() => import('./component/info/About'));
+const PolicyScreen = lazy(() => import('./screens/PolicyScreen'));
 
-const NewProduct = lazy(() => import("./component/dashboard/NewProduct"));
+const NewProduct = lazy(() => import('./component/dashboard/NewProduct'));
 const SustainabilityImpact = lazy(() =>
-  import("./component/info/SustainabilityImpact")
+  import('./component/info/SustainabilityImpact')
 );
 
-const BuyersPro = lazy(() => import("./component/info/BuyersPro"));
+const BuyersPro = lazy(() => import('./component/info/BuyersPro'));
 
-const SellScreen = lazy(() => import("./screens/SellScreen"));
+const SellScreen = lazy(() => import('./screens/SellScreen'));
 
-const SigninScreen = lazy(() => import("./screens/SigninScreen"));
+const SigninScreen = lazy(() => import('./screens/SigninScreen'));
 const SigninToAddressScreen = lazy(() =>
-  import("./screens/SigninToAddressScreen")
+  import('./screens/SigninToAddressScreen')
 );
-const SignupScreen = lazy(() => import("./screens/SignupScreen"));
-const InfoScreen = lazy(() => import("./screens/InfoScreen"));
-const InfoScreenNonLogin = lazy(() => import("./screens/InfoScreenNonlogin"));
-const CreateOutfitScreen = lazy(() => import("./screens/CreateOutfitScreen"));
+const SignupScreen = lazy(() => import('./screens/SignupScreen'));
+const InfoScreen = lazy(() => import('./screens/InfoScreen'));
+const InfoScreenNonLogin = lazy(() => import('./screens/InfoScreenNonlogin'));
+const CreateOutfitScreen = lazy(() => import('./screens/CreateOutfitScreen'));
 
 const CreateOutfitPicScreen = lazy(() =>
-  import("./screens/CreateOutfitPicScreen")
+  import('./screens/CreateOutfitPicScreen')
 );
-const ChatScreen = lazy(() => import("./screens/ChatScreen"));
-const MobileProfileScreen = lazy(() => import("./screens/MobileProfileScreen"));
+const ChatScreen = lazy(() => import('./screens/ChatScreen'));
+const MobileProfileScreen = lazy(() => import('./screens/MobileProfileScreen'));
 const ShippingAddressScreen = lazy(() =>
-  import("./screens/ShippingAddressScreen")
+  import('./screens/ShippingAddressScreen')
 );
-const PaymentMethodScreen = lazy(() => import("./screens/PaymentMethodScreen"));
-const PlaceOrderScreen = lazy(() => import("./screens/PlaceOrderScreen"));
-const OrderScreen = lazy(() => import("./screens/OrderScreen"));
-const DashboardNewScreen = lazy(() => import("./screens/DashboardNewScreen"));
-const HomeScreen = lazy(() => import("./screens/HomeScreen"));
-const ProductsScreen = lazy(() => import("./screens/ProductsScreen"));
+const PaymentMethodScreen = lazy(() => import('./screens/PaymentMethodScreen'));
+const PlaceOrderScreen = lazy(() => import('./screens/PlaceOrderScreen'));
+const OrderScreen = lazy(() => import('./screens/OrderScreen'));
+const DashboardNewScreen = lazy(() => import('./screens/DashboardNewScreen'));
+const HomeScreen = lazy(() => import('./screens/HomeScreen'));
+const ProductsScreen = lazy(() => import('./screens/ProductsScreen'));
 const DeliveryOptionScreen = lazy(() =>
-  import("./screens/DeliveryOptionScreen")
+  import('./screens/DeliveryOptionScreen')
 );
-const CategorypageScreen = lazy(() => import("./screens/CategorypageScreen"));
-const BrandScreen = lazy(() => import("./screens/BrandScreen"));
-const ShopByOutfit = lazy(() => import("./screens/ShopByOutfit"));
-const SearchSceen = lazy(() => import("./screens/SearchSceen"));
-const ReturnPage = lazy(() => import("./component/dashboard/admin/ReturnPage"));
+const CategorypageScreen = lazy(() => import('./screens/CategorypageScreen'));
+const BrandScreen = lazy(() => import('./screens/BrandScreen'));
+const ShopByOutfit = lazy(() => import('./screens/ShopByOutfit'));
+const SearchSceen = lazy(() => import('./screens/SearchSceen'));
+const ReturnPage = lazy(() => import('./component/dashboard/admin/ReturnPage'));
 // import LogRockect from 'logrocket';
 // LogRockect.init('mzhw6i/tobias');
 
@@ -163,9 +164,9 @@ const NavCont = styled.div`
   position: relation;
 `;
 const Switch = styled.input.attrs({
-  type: "checkbox",
-  id: "darkmodeSwitch",
-  role: "switch",
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
 })`
   position: absolute;
   top: 10px;
@@ -190,7 +191,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -200,7 +201,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: "darkmodeSwitch",
+  for: 'darkmodeSwitch',
 })`
   color: #fff;
   margin-left: 5px;
@@ -213,8 +214,8 @@ const Label = styled.label.attrs({
 `;
 
 const ENDPOINT =
-  window.location.host.indexOf("localhost") >= 0
-    ? "ws://127.0.0.1:5000"
+  window.location.host.indexOf('localhost') >= 0
+    ? 'ws://127.0.0.1:5000'
     : window.location.host;
 
 export const socket = io(ENDPOINT);
@@ -225,14 +226,14 @@ function App() {
   const { userInfo, mode, notifications, cookies } = state;
   const signoutHandler = () => {
     logout();
-    localStorage.removeItem("userInfo");
-    ctxDispatch({ type: "USER_SIGNOUT" });
-    localStorage.removeItem("cartItems");
-    localStorage.removeItem("shippingAddress");
-    localStorage.removeItem("paymentMethod");
+    localStorage.removeItem('userInfo');
+    ctxDispatch({ type: 'USER_SIGNOUT' });
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
   };
   const token = new URLSearchParams(window.location.search).get(
-    "redirecttoken"
+    'redirecttoken'
   );
   // const redirect = redirectInUrl ? redirectInUrl : "/";
 
@@ -244,21 +245,21 @@ function App() {
 
   useEffect(() => {
     const checkLoacation = async () => {
-      console.log(token, "outside");
+      console.log(token, 'outside');
       try {
         if (token) {
-          const { data } = await axios.put("/api/redirects", { token: token });
+          const { data } = await axios.put('/api/redirects', { token: token });
           if (data.success) {
-            console.log(token, "i am in ");
+            console.log(token, 'i am in ');
             setLoading(false);
-            ctxDispatch({ type: "SET_REDIRECT_TOKEN", payload: token });
+            ctxDispatch({ type: 'SET_REDIRECT_TOKEN', payload: token });
           } else {
             window.location.href = `/`;
           }
         } else {
-          const { data } = await axios.get("/api/locations");
-          if (data === "ZA") {
-            if (region() === "ZAR") {
+          const { data } = await axios.get('/api/locations');
+          if (data === 'ZA') {
+            if (region() === 'ZAR') {
               setLoading(false);
             } else {
               signoutHandler();
@@ -266,7 +267,7 @@ function App() {
               window.location.replace(`https://repeddle.co.za`);
             }
           } else {
-            if (region() === "ZAR") {
+            if (region() === 'ZAR') {
               // alert("redirect to com");
               signoutHandler();
               window.location.replace(`https://repeddle.com`);
@@ -283,39 +284,39 @@ function App() {
 
   useEffect(() => {
     if (userInfo) {
-      socket.emit("onlogin", userInfo);
+      socket.emit('onlogin', userInfo);
     }
   }, [userInfo]);
 
   useEffect(() => {
     if (userInfo) {
-      socket.emit("initial_data", { userId: userInfo._id });
-      socket.on("get_data", getData);
-      socket.on("change_data", changeData);
+      socket.emit('initial_data', { userId: userInfo._id });
+      socket.on('get_data', getData);
+      socket.on('change_data', changeData);
       return () => {
-        socket.off("get_data");
-        socket.off("change_data");
+        socket.off('get_data');
+        socket.off('change_data');
       };
     }
   }, [userInfo]);
   const getData = (notification) => {
-    ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
+    ctxDispatch({ type: 'UPDATE_NOTIFICATIONS', payload: notification });
   };
   const changeData = () => {
     if (userInfo) {
-      socket.emit("initial_data", { userId: userInfo._id });
+      socket.emit('initial_data', { userId: userInfo._id });
     }
   };
 
   useEffect(() => {
     const getCartItems = async () => {
       if (userInfo) {
-        const { data } = await axios.get("/api/cartItems", {
+        const { data } = await axios.get('/api/cartItems', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         const items = data.map((x) => x.item);
 
-        ctxDispatch({ type: "UPDATE_CART", payload: items });
+        ctxDispatch({ type: 'UPDATE_CART', payload: items });
       }
     };
     getCartItems();
@@ -327,7 +328,7 @@ function App() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get("/api/products/categories");
+        const { data } = await axios.get('/api/products/categories');
         setCategories(data);
       } catch (err) {
         console.log(getError(err));
@@ -338,11 +339,11 @@ function App() {
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
-      localStorage.setItem("mode", "pagebodydark");
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
+      localStorage.setItem('mode', 'pagebodydark');
     } else {
-      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
-      localStorage.setItem("mode", "pagebodylight");
+      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
+      localStorage.setItem('mode', 'pagebodylight');
     }
   };
 
@@ -378,11 +379,11 @@ function App() {
           {loading ? (
             <LoadingPage />
           ) : (
-            <div className={mode || ""} onClick={closeModel}>
+            <div className={mode || ''} onClick={closeModel}>
               <Notification />
               <ToastNotification />
               <StickyNav />
-              <header style={{ background: "inherit" }}>
+              <header style={{ background: 'inherit' }}>
                 <NavCont>
                   <Navbar
                     menu={menu}
@@ -698,6 +699,14 @@ function App() {
                         element={
                           <AdminRoute>
                             <OrderListAdmin />
+                          </AdminRoute>
+                        }
+                      />
+                      <Route
+                        path="/gig/:id/:item"
+                        element={
+                          <AdminRoute>
+                            <GigScreen />
                           </AdminRoute>
                         }
                       />

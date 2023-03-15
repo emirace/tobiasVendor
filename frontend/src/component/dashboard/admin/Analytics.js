@@ -357,8 +357,8 @@ export default function Analytics() {
           <FeatureInfo
             type="earning"
             number={
-              users2.orders.length > 0 && userInfo.isAdmin
-                ? users2.orders[0].numSales
+              users2.earnings.length > 0 && userInfo.isAdmin
+                ? users2.earnings[0].numSales
                 : "0"
             }
           />

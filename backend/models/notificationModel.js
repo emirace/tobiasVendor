@@ -9,6 +9,7 @@ const notificationSchema = new mongoose.Schema(
     userImage: { type: String },
     msg: { type: String },
     link: { type: String },
+    mobile: { type: Object },
   },
   {
     timestamps: true,

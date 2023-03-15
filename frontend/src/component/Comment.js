@@ -181,6 +181,7 @@ export default function Comment({ commentC, product }) {
           msg: `${userInfo.username} unlike  your comment`,
           link: `/product/${product}`,
           userImage: userInfo.image,
+          mobile: { path: "Product", id: product },
         });
       } catch (err) {
         console.log(getError(err));
@@ -210,6 +211,7 @@ export default function Comment({ commentC, product }) {
           notifyType: "likecomment",
           msg: `${userInfo.username} like  your comment`,
           link: `/product/${product}`,
+          mobile: { path: "Product", id: product },
           userImage: userInfo.image,
         });
       } catch (err) {

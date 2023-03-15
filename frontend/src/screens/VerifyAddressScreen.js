@@ -77,8 +77,8 @@ export default function VerifyAddressScreen() {
       handleError("Enter your apartment", "apartment");
       valid = false;
     }
-    if (!input.province) {
-      handleError("Select your province", "province");
+    if (!input.state) {
+      handleError("Select your state/province", "state");
       valid = false;
     }
     if (!input.zipcode) {
@@ -169,15 +169,13 @@ export default function VerifyAddressScreen() {
               displayEmpty
             >
               {region() === "NGN"
-                ? states.Nigeria.map((x) => <MenuItem value="x">{x}</MenuItem>)
+                ? states.Nigeria.map((x) => <MenuItem value={x}>{x}</MenuItem>)
                 : states.SouthAfrican.map((x) => (
                     <MenuItem value={x}>{x}</MenuItem>
                   ))}
             </Select>
           </FormControl>
-          {error.province && (
-            <div style={{ color: "red" }}>{error.province}</div>
-          )}
+          {error.state && <div style={{ color: "red" }}>{error.state}</div>}
         </Form.Group>
         <Form.Group className="mb-3" controlId="zipcode">
           <Label>Zip Code</Label>

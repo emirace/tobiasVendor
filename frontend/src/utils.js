@@ -299,7 +299,7 @@ export const loginGig = async () => {
     "https://thirdparty.gigl-go.com/api/thirdparty/login",
     {
       username: "IND1109425",
-      Password: "1234567",
+      Password: "RBUVBi9EZs_7t_q@6019",
       SessionObj: "",
     }
   );

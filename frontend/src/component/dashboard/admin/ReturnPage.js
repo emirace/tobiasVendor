@@ -214,6 +214,7 @@ export default function ReturnPage() {
       msg: type,
       link: `/payment/${paymentData._id}`,
       userImage: user.image,
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
   };
 
@@ -247,6 +248,7 @@ export default function ReturnPage() {
           msg: `Order ${deliveryStatus} `,
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
+          mobile: { path: "ReturnScreen", id: returned._id },
         });
       } else {
         socket.emit("post_data", {
@@ -254,6 +256,7 @@ export default function ReturnPage() {
           itemId: returned.orderId._id,
           notifyType: "delivery",
           msg: `Your order ${deliveryStatus} `,
+          mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
         });
@@ -328,6 +331,7 @@ export default function ReturnPage() {
             itemId: returned.orderId._id,
             notifyType: "return",
             msg: `Fund your wallet to complete return`,
+            mobile: { path: "Fund", id: "" },
             link: `/dashboard/wallet`,
             userImage:
               "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",

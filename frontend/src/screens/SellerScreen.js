@@ -294,6 +294,7 @@ export default function SellerScreen() {
           msg: `${userInfo.username} unfollowed you`,
           link: `/seller/${userInfo._id}`,
           userImage: userInfo.image,
+          mobile: { path: "MyAccount", id: userInfo._id },
         });
       } else {
         const { data } = await axios.put(
@@ -318,6 +319,7 @@ export default function SellerScreen() {
           notifyType: "follow",
           msg: `${userInfo.username} started following you`,
           link: `/seller/${userInfo._id}`,
+          mobile: { path: "MyAccount", id: userInfo._id },
           userImage: userInfo.image,
         });
       }

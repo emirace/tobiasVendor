@@ -451,6 +451,7 @@ export default function Support() {
         itemId: currentChat._id,
         notifyType: "support",
         msg: "New support Message",
+        mobile: { path: "Conversation", id: "" },
         link: `/messages?conversation=${currentChat._id}`,
         userImage:
           "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",

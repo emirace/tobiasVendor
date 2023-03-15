@@ -118,6 +118,7 @@ export const ReviewCont = ({ review, userId }) => {
         msg: `${userInfo.username} reply your review`,
         link: `/seller/${userId}`,
         userImage: userInfo.image,
+        mobile: { path: "MyAccount", id: userId },
       });
       setRating("");
       setComment("");

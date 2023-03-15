@@ -97,6 +97,7 @@ export default function PayFast({ totalPrice, placeOrderHandler }) {
                   msg: `${userInfo.username} ordered your product`,
                   link: `/order/${order.order._id}`,
                   userImage: userInfo.image,
+                  mobile: { path: "OrderScreen", id: order.order._id },
                 });
               });
               navigate(`/order/${order.order._id}`);

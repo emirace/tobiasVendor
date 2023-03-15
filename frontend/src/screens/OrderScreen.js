@@ -617,6 +617,7 @@ export default function OrderScreen() {
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
+          mobile: { path: "OrderScreen", id: order._id },
         });
       } else {
         socket.emit("post_data", {
@@ -626,6 +627,7 @@ export default function OrderScreen() {
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
+          mobile: { path: "OrderScreen", id: order._id },
         });
       }
     } catch (err) {
@@ -667,6 +669,7 @@ export default function OrderScreen() {
       notifyType: "payment",
       msg: `Order Completed`,
       link: `/payment/${paymentData._id}`,
+      mobile: { path: "PaymentScreen", id: paymentData._id },
       userImage: sellerImage,
     });
   };
@@ -704,6 +707,7 @@ export default function OrderScreen() {
       msg: `Order Refunded`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
     deliverOrderHandler("Refunded", product._id);
@@ -735,6 +739,7 @@ export default function OrderScreen() {
       msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
     deliverOrderHandler("Payment to Seller Initiated", product._id);

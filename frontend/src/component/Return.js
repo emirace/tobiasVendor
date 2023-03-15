@@ -227,6 +227,7 @@ export default function Return({
         msg: `${userInfo.username} requested a return`,
         link: `/return/${data._id}?orderId=${orderId}`,
         userImage: userInfo.image,
+        mobile: { path: "ReturnScreen", id: data._id, orderId },
       });
       socket.emit("post_data", {
         userId: "Admin",
@@ -235,6 +236,7 @@ export default function Return({
         msg: `${userInfo.username} requested a return`,
         link: `/return/${data._id}?orderId=${orderId}`,
         userImage: userInfo.image,
+        mobile: { path: "ReturnScreen", id: data._id, orderId },
       });
       setImage("");
       setShowReturn(false);
