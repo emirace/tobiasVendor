@@ -17,9 +17,14 @@ const productRouter = express.Router();
 
 productRouter.get("/:region/all", async (req, res) => {
   console.log("fetching...");
+  const { query } = req;
+  const page = query.page || 1;
+  const pageSize = query.pageSize || PAGE_SIZE;
   const { region } = req.params;
   const products = await Product.find({ region, active: true })
+    .skip(pageSize * (page - 1))
     .sort({ createdAt: -1 })
+    .limit(pageSize)
     .populate("seller", "_id username");
   res.send(products);
 });
