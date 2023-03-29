@@ -1,11 +1,12 @@
-import { faDotCircle, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { Store } from "../../Store";
-import { getError } from "../../utils";
+import { faDotCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
+import LoadingBox from '../LoadingBox';
 
 const Container = styled.div`
   flex: 4;
@@ -18,7 +19,7 @@ const Left = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   & .icon {
     margin-left: 10px;
   }
@@ -28,7 +29,7 @@ const Right = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
 `;
 const Content = styled.div`
   display: flex;
@@ -55,10 +56,10 @@ const Label = styled.label`
 const Input = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--white-color)" : "var(--dark-color)"};
+    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
   border: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   border-radius: 0.2rem;
   height: 40px;
   padding: 10px;
@@ -69,10 +70,10 @@ const Input = styled.input`
 const Textarea = styled.textarea`
   background: none;
   color: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--white-color)" : "var(--dark-color)"};
+    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
   border: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   border-radius: 0.2rem;
   width: 80%;
   height: 80px;
@@ -95,7 +96,7 @@ const Button = styled.button`
     margin-top: 0;
     width: 80px;
     background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
     color: var(--orange-color);
   }
 `;
@@ -113,7 +114,7 @@ const CatList = styled.div`
   margin: 5px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 `;
 const SubCat = styled.div`
   display: flex;
@@ -150,7 +151,7 @@ const Delete = styled.button`
   border-radius: 0.2rem;
   font-size: 14px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "#211111" : "#f8d6d6"};
+    props.mode === 'pagebodydark' ? '#211111' : '#f8d6d6'};
   color: var(--red-color);
 `;
 const Edit = styled.button`
@@ -160,17 +161,25 @@ const Edit = styled.button`
   margin-right: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
   color: var(--orange-color);
+`;
+const UploadImage = styled.label`
+  border: 1px solid var(--malon-color);
+  padding: 2px 5px;
+  font-size: 14px;
+  cursor: pointer;
+  /* margin-right: 10px; */
+  border-radius: 0.2rem;
 `;
 
 let subCategories = [];
 export default function Categories() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
-  const [currentCat, setCurrentCat] = useState("");
-  const [currentCatItem, setCurrentCatItem] = useState("");
-  const [name, setName] = useState("");
+  const [currentCat, setCurrentCat] = useState('');
+  const [currentCatItem, setCurrentCatItem] = useState('');
+  const [name, setName] = useState('');
   const [categories, setCategories] = useState([]);
   const [refresh, setrefresh] = useState(false);
   const [editCat, setEditCat] = useState(false);
@@ -181,7 +190,7 @@ export default function Categories() {
   useEffect(() => {
     try {
       const fetchCategory = async () => {
-        const { data } = await axios.get("/api/categories", {
+        const { data } = await axios.get('/api/categories', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setCategories(data);
@@ -198,71 +207,86 @@ export default function Categories() {
         const exist = categories.some((e) => e.name === name);
         if (exist) {
           ctxDispatch({
-            type: "SHOW_TOAST",
+            type: 'SHOW_TOAST',
             payload: {
-              message: "Categories name already exist",
+              message: 'Categories name already exist',
               showStatus: true,
-              state1: "visible1 error",
+              state1: 'visible1 error',
             },
           });
           return;
         }
         if (!name) {
           ctxDispatch({
-            type: "SHOW_TOAST",
+            type: 'SHOW_TOAST',
             payload: {
-              message: "Enter a valid category name",
+              message: 'Enter a valid category name',
               showStatus: true,
-              state1: "visible1 error",
+              state1: 'visible1 error',
+            },
+          });
+          return;
+        }
+
+        if (!imageUpload.image) {
+          ctxDispatch({
+            type: 'SHOW_TOAST',
+            payload: {
+              message: 'Upload a category image',
+              showStatus: true,
+              state1: 'visible1 error',
             },
           });
           return;
         }
         await axios.post(
-          "/api/categories",
+          '/api/categories',
           {
             name,
             subCategories,
+            image: imageUpload.image,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
         ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "Categories Added",
+            message: 'Categories Added',
             showStatus: true,
-            state1: "visible1 success",
+            state1: 'visible1 success',
           },
         });
       } else {
         await axios.put(
-          "/api/categories",
+          '/api/categories',
           {
             id: editCurrentCat._id,
             name,
             subCategories,
+            image: imageUpload.image,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
         ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "Categories Updated",
+            message: 'Categories Updated',
             showStatus: true,
-            state1: "visible1 success",
+            state1: 'visible1 success',
           },
         });
         setEditCat(false);
       }
 
-      setName("");
+      setName('');
       subCategories = [];
-      setCurrentCat("");
-      setCurrentCatItem("");
+      setCurrentCat('');
+      setCurrentCatItem('');
+      setImageUpload({ loading: false, image: '', error: '' });
       setrefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
@@ -280,47 +304,47 @@ export default function Categories() {
       console.log(subCategories);
       subCategories = newsizes;
       console.log(subCategories);
-      setCurrentCatItem("");
-      setCurrentCat("");
+      setCurrentCatItem('');
+      setCurrentCat('');
       setrefresh(!refresh);
 
       return;
     }
     if (!editCatSub) {
-      if (currentCatItem === "") {
+      if (currentCatItem === '') {
         const subCategoriesObject = {
           name: currentCat.toLowerCase(),
           items: [],
         };
         subCategories.push(subCategoriesObject);
       } else {
-        const CatArray = currentCatItem.toLowerCase().split(",");
+        const CatArray = currentCatItem.toLowerCase().split(',');
         const subCategoriesObject = {
           name: currentCat.toLowerCase(),
           items: CatArray,
         };
         subCategories.push(subCategoriesObject);
       }
-      setCurrentCat("");
-      setCurrentCatItem("");
+      setCurrentCat('');
+      setCurrentCatItem('');
       setrefresh(!refresh);
     } else {
-      if (currentCatItem === "") {
+      if (currentCatItem === '') {
         const subCategoriesObject = {
           name: currentCat.toLowerCase(),
           items: [],
         };
         subCategories[index] = subCategoriesObject;
       } else {
-        const CatArray = currentCatItem.toLowerCase().split(",");
+        const CatArray = currentCatItem.toLowerCase().split(',');
         const subCategoriesObject = {
           name: currentCat.toLowerCase(),
           items: CatArray,
         };
         subCategories[index] = subCategoriesObject;
       }
-      setCurrentCat("");
-      setCurrentCatItem("");
+      setCurrentCat('');
+      setCurrentCatItem('');
       setrefresh(!refresh);
       setEditCatSub(false);
       console.log(subCategories);
@@ -328,17 +352,20 @@ export default function Categories() {
   };
 
   const editHandler = (c, type) => {
-    if (type === "cancel") {
-      setName("");
+    if (type === 'cancel') {
+      setName('');
       subCategories = [];
       setEditCat(false);
+      setImageUpload({ loading: false, image: '', error: '' });
       return;
     }
     setName(c.name);
     subCategories = c.subCategories;
     setEditCat(true);
     setEditCurrentCat(c);
+    setImageUpload({ loading: false, image: c.image, error: '' });
   };
+
   const editSubCategories = (sub) => {
     setIndex(sub);
     setEditCatSub(true);
@@ -347,20 +374,74 @@ export default function Categories() {
   };
 
   const deleteHandler = async (c) => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete ${c.name} category, this cannot be undo`
+    );
+    if (!confirm) {
+      return;
+    }
     try {
       await axios.delete(`/api/categories/${c._id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Categories deleted",
+          message: 'Categories deleted',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       setrefresh(!refresh);
     } catch (err) {
+      console.log(getError(err));
+    }
+  };
+
+  const [imageUpload, setImageUpload] = useState({
+    loading: false,
+    image: '',
+    error: '',
+  });
+  const uploadImageHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      setImageUpload((prev) => ({ ...prev, loading: true }));
+      const { data } = await axios.post('/api/upload', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      setImageUpload((prev) => ({
+        ...prev,
+        loading: false,
+        image: data.secure_url,
+      }));
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Image Uploaded',
+          showStatus: true,
+          state1: 'visible1 success',
+        },
+      });
+    } catch (err) {
+      setImageUpload((prev) => ({
+        ...prev,
+        loading: false,
+        error: getError(err),
+      }));
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Failed uploading image',
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
       console.log(getError(err));
     }
   };
@@ -379,6 +460,30 @@ export default function Categories() {
               value={name}
               placeholder="Enter category name"
             />
+          </Item>
+          <Item>
+            <Label>Category Image</Label>
+            {imageUpload.loading ? (
+              <LoadingBox />
+            ) : imageUpload.error ? (
+              <div style={{ color: 'red' }}>{imageUpload.error}</div>
+            ) : imageUpload.image ? (
+              <image
+                src={imageUpload.image}
+                alt="imageupload"
+                style={{ height: 200, objectFit: 'contain', width: 200 }}
+              />
+            ) : (
+              ''
+            )}
+            <input
+              mode={mode}
+              id="uploadimage"
+              style={{ display: 'none' }}
+              type="file"
+              onChange={uploadImageHandler}
+            />
+            <UploadImage htmlFor="uploadimage">Upload</UploadImage>
           </Item>
           <Item>
             <Label>Sub Categories</Label>
@@ -425,16 +530,16 @@ export default function Categories() {
           </SubCont>
 
           <Button onClick={submitHandler}>
-            {editCat ? "Update Category" : "Add Category"}
+            {editCat ? 'Update Category' : 'Add Category'}
           </Button>
           {editCat ? (
             <FontAwesomeIcon
-              onClick={() => editHandler("", "cancel")}
+              onClick={() => editHandler('', 'cancel')}
               className="icon"
               icon={faTimes}
             />
           ) : (
-            ""
+            ''
           )}
         </Left>
         <Right mode={mode}>
@@ -448,7 +553,7 @@ export default function Categories() {
                 {c.name}
               </div>
               <div>
-                <Edit mode={mode} onClick={() => editHandler(c, "edit")}>
+                <Edit mode={mode} onClick={() => editHandler(c, 'edit')}>
                   Edit
                 </Edit>
                 <Delete mode={mode} onClick={() => deleteHandler(c)}>

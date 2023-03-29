@@ -81,7 +81,7 @@
 }
 
 .single_produc_sold svg {
-  margin-right: 10px;
+  margin-right: 5px;
   color: var(--orange-color);
 }
 
@@ -113,7 +113,7 @@
   margin-top: 10px;
   font-size: 25px;
   text-transform: capitalize;
-  font-family: "Absentiasans";
+  font-family: 'Absentiasans';
 }
 
 .select_size_header {
@@ -217,7 +217,7 @@
 }
 
 .sp_detail_title::before {
-  content: " ";
+  content: ' ';
   width: 10px;
   height: 10px;
   border-bottom: 1px solid;
@@ -229,7 +229,7 @@
 }
 
 .sp_detail_section.active .sp_detail_title::before {
-  content: " ";
+  content: ' ';
   transform: rotate(134deg);
 }
 

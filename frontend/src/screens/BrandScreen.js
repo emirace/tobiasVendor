@@ -1,17 +1,18 @@
-import axios from "axios";
+import axios from 'axios';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import LoadingBox from "../component/LoadingBox";
-import { Store } from "../Store";
-import useFetch from "../hooks/useFectch";
-import MessageBox from "../component/MessageBox";
+} from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import LoadingBox from '../component/LoadingBox';
+import { Store } from '../Store';
+import useFetch from '../hooks/useFectch';
+import MessageBox from '../component/MessageBox';
+import { brandA, brandnumbers } from '../constant';
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -56,7 +57,7 @@ const Header = styled.div`
   font-size: 20px;
   margin-right: 20px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
 `;
 const BrandGroup = styled.div`
   margin: 20px;
@@ -10698,9 +10699,9 @@ const SearchInput = styled.input`
     outline: 1px solid var(--orange-color);
   }
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   &::placeholder {
     padding: 10px;
   }
@@ -10711,12 +10712,12 @@ const SearchData = styled.div`
   text-tranform: capitalize;
   &:hover {
     background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
   }
 `;
 const SearchContainer = styled.div`
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   position: absolute;
   top: 50px;
   width: 100%;
@@ -10734,7 +10735,7 @@ export default function BrandScreen() {
 
   const scrollref = useRef(alphabet.map(React.createRef));
 
-  const [query, setQuery] = useState("all");
+  const [query, setQuery] = useState('all');
   const [pageNum, setPageNum] = useState(1);
   const {
     isLoading,
@@ -10764,7 +10765,7 @@ export default function BrandScreen() {
   };
 
   useEffect(() => {
-    console.log("hellllooooo");
+    console.log('hellllooooo');
     headerList = [];
   }, [query, isLoading, dataBrands]);
 
@@ -10808,7 +10809,7 @@ export default function BrandScreen() {
     scrollref.current[i].current &&
     window.scrollTo({
       top: scrollref.current[i].current.offsetTop,
-      behavior: "smooth",
+      behavior: 'smooth',
     });
   // const addBrand = async (brand, al) => {
   //   try {
@@ -10842,17 +10843,17 @@ export default function BrandScreen() {
       </button> */}
       <AlphaGroup>
         {[
-          "&",
-          "@",
-          "1",
-          "4",
-          "2",
-          "3",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
+          '&',
+          '@',
+          '1',
+          '4',
+          '2',
+          '3',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
           ...alphabet,
         ].map((x, i) => (
           <div key={i} onClick={() => scrollToAlpha(i)}>
@@ -10879,7 +10880,7 @@ export default function BrandScreen() {
               <Header ref={scrollref.current[i]} mode={mode}>
                 {x}
               </Header> */}
-        <BrandGroup>
+        {/* <BrandGroup>
           {dataBrands.map((brand, i) => {
             // console.log(i, brand.name);
             // if (brand.alpha === x) {
@@ -10904,11 +10905,40 @@ export default function BrandScreen() {
 
           <div>{isLoading && <LoadingBox />}</div>
           <div>{error && <MessageBox>error......</MessageBox>}</div>
-        </BrandGroup>
+        </BrandGroup> */}
         {/* </div>
           )
         )} */}
+        <Header>0-9</Header>
+        <ButtonList strings={brandnumbers} />
+
+        <Header>A</Header>
+        <ButtonList strings={brandA} />
       </Content>
     </Container>
   );
 }
+
+const ButtonList = ({ strings }) => {
+  return (
+    <div className="button-list">
+      {strings.map((string, index) => (
+        <button key={index}>{string}</button>
+      ))}
+      <style jsx>{`
+        .button-list {
+          display: flex;
+          flex-wrap: wrap;
+        }
+        .button-list button {
+          width: 100%;
+        }
+        @media (min-width: 768px) {
+          .button-list button {
+            width: 33.33%;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};

@@ -175,7 +175,7 @@ export default function GigScreen() {
             alignItems: 'center',
           }}
         >
-          <Button onClick={confirm}>Confirm Delivery Order</Button>
+          <Button onClick={confirm}>Confirm Pending Delivery</Button>
         </div>
       )}
     </Container>

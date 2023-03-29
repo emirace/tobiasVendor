@@ -793,10 +793,7 @@ orderRouter.put(
               await exist.save();
             }
           });
-          const answer = await payShippingFee(order);
-          // if (answer.status !== "200") {
-          //   throw answer;
-          // }
+          // const answer = await payShippingFee(order);
 
           // sendEmail({
           //   to: order.user.email,

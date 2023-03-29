@@ -8,6 +8,7 @@ const subCategoriesSchema = new mongoose.Schema({
 const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    image: { type: String },
     subCategories: [subCategoriesSchema],
   },
   {

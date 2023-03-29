@@ -416,6 +416,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const { region } = req.params;
+    console.log(req.body.tokenId);
     const url = region === 'NGN' ? 'com' : 'co.za';
     const ticket = await client.verifyIdToken({
       idToken: req.body.tokenId,
@@ -423,7 +424,7 @@ userRouter.post(
     });
 
     const response = ticket.getPayload();
-
+    console.log(response);
     if (
       response.iss !== 'accounts.google.com' &&
       response.aud !== process.env.GOOGLE_CLIENT_ID
@@ -438,6 +439,74 @@ userRouter.post(
       lastName: response.family_name,
       isVerifiedEmail: true,
       username: `${response.given_name.toLowerCase()}_${generateOTP()}`,
+      region: req.params.region,
+    };
+    let result = await User.findOne({
+      $or: [{ email: user.email, social_id: user.social_id }],
+    });
+
+    if (!result) {
+      result = await User.create(user);
+      sendEmail({
+        to: result.email,
+        subject: 'WELCOME TO REPEDDLE ',
+        template: 'welcome',
+        context: {
+          username: result.username,
+          url,
+        },
+      });
+    }
+    const account = await Account.findOne({ userId: result._id });
+    if (!account)
+      await Account.create({
+        userId: result._id,
+        balance: 0,
+        currency: req.params.region === 'ZAR' ? 'R ' : 'N ',
+      });
+
+    const token = generateToken(result);
+    const data = {
+      token,
+      _id: result._id,
+      name: result.name,
+      username: result.username,
+      usernameUpdate: result.usernameUpdate,
+      firstName: result.firstName,
+      lastName: result.lastName,
+      region: result.region,
+      email: result.email,
+      isSeller: result.isSeller,
+      isAdmin: result.isAdmin,
+      image: result.image,
+      isVerifiedEmail: result.isVerifiedEmail,
+      address: result.address,
+      active: result.active,
+      bankName: result.bankName,
+      accountNumber: result.accountNumber,
+      accountName: result.accountName,
+    };
+
+    res.status(200).send(data);
+  })
+);
+
+userRouter.post(
+  '/:region/googlemobile',
+  expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
+    const { email, given_name, family_name, picture, id, verified_email } =
+      req.body;
+    const url = region === 'NGN' ? 'com' : 'co.za';
+
+    const user = {
+      email: email,
+      image: picture,
+      social_id: id,
+      firstName: given_name,
+      lastName: family_name,
+      isVerifiedEmail: verified_email || false,
+      username: `${given_name.toLowerCase()}_${generateOTP()}`,
       region: req.params.region,
     };
     let result = await User.findOne({
