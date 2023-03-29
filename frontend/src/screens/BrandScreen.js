@@ -10914,6 +10914,9 @@ export default function BrandScreen() {
 
         <Header>A</Header>
         <ButtonList strings={brandA} />
+
+        <Header>A</Header>
+        <ButtonList strings={brandA} />
       </Content>
     </Container>
   );
