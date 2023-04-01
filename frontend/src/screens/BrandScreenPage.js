@@ -183,19 +183,24 @@ const ButtonList = ({ strings }) => {
   return (
     <div className="div-list">
       {strings.map((string, index) => (
-        <div key={index}>{string.name}</div>
+        <Link key={index} to={`/search?query=${string}`}>
+          {string}
+        </Link>
       ))}
       <style jsx>{`
         .div-list {
           display: flex;
           flex-wrap: wrap;
         }
-        .div-list div {
+        .div-list a {
           width: 100%;
           text-align: left;
           text-transform: capitalize;
-          padding: 5px;
-          border-bottom: 1px solid grey;
+          padding: 10px;
+          border-bottom: 1px solid #00000030;
+        }
+        .div-list a:hover {
+          color: var(--orange-color);
         }
         @media (min-width: 768px) {
           .div-list div {
