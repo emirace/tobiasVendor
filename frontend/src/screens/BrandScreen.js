@@ -202,16 +202,16 @@ export default function BrandScreen() {
   //   getBrand();
   // }, []);
 
-  // const [searchBrand, setSearchBrand] = useState(null);
-  // useEffect(() => {
-  //   console.log(query);
-  //   const getSearch = async () => {
-  //     const { data } = await axios.get(`/api/brands/search?q=${query}`);
-  //     console.log(data);
-  //     setSearchBrand(data);
-  //   };
-  //   getSearch();
-  // }, [query]);
+  const [searchBrand, setSearchBrand] = useState(null);
+  useEffect(() => {
+    console.log(query);
+    const getSearch = async () => {
+      const { data } = await axios.get(`/api/brands/search?q=${query}`);
+      console.log(data);
+      setSearchBrand(data);
+    };
+    getSearch();
+  }, [query]);
 
   // const [updateNumber, setUpdateNumber] = useState(1);
   // const pageSize = 100;
@@ -275,14 +275,14 @@ export default function BrandScreen() {
       </AlphaGroup>
       <Search>
         <SearchInput onChange={handleChange} placeholder="Search brands" />
-        {/* <SearchContainer mode={mode}>
+        <SearchContainer mode={mode}>
           {searchBrand &&
             searchBrand.map((brand) => (
               <Link to={`/Search?brand=${brand.name}`}>
                 <SearchData mode={mode}>{brand.name}</SearchData>
               </Link>
             ))}
-        </SearchContainer> */}
+        </SearchContainer>
       </Search>
 
       <Content>
