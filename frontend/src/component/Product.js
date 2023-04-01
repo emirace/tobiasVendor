@@ -214,7 +214,7 @@ export default function Product(props) {
       <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
           {discount() ? (
-            <span className="discount-tag1 ">{discount().toFixed(2)}% off</span>
+            <span className="discount-tag1 ">{discount().toFixed(0)}% off</span>
           ) : (
             ""
           )}

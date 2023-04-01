@@ -312,6 +312,8 @@ export default function ProductScreen() {
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
 
         console.log(result);
+
+        window.scrollTo(0, 0);
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
@@ -1183,7 +1185,7 @@ export default function ProductScreen() {
                     key={image}
                     style={{
                       width: "100vw",
-                      // height: '500px',
+                      height: "500px",
                       // marginBottom: '20px',
                     }}
                   >

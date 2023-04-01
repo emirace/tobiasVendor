@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 
 const Carousel = ({ children, autoScrollInterval = 5000 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -103,7 +103,7 @@ const Dot = styled.div`
   height: 10px;
   border-radius: 50%;
   background-color: ${(props) =>
-    props.active ? 'var(--orange-color)' : '#ccc'};
+    props.active ? "var(--orange-color)" : "#ccc"};
   margin-right: 8px;
   cursor: pointer;
 `;

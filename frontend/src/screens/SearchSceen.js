@@ -363,9 +363,22 @@ export default function SearchSceen() {
                 </Col>
               </RowCont>
               {products.length === 0 && (
-                <MessageBox>
-                  🔎Cant't find what you're looking for? Try related products!
-                </MessageBox>
+                <>
+                  <MessageBox>
+                    🔎Cant't find what you're looking for? Try related products!
+                  </MessageBox>
+                  {rLoading ? (
+                    <LoadingBox />
+                  ) : (
+                    <ProductListC>
+                      {rProducts.map((product, index) => (
+                        <EachCont key={product._id}>
+                          <Product product={product}></Product>
+                        </EachCont>
+                      ))}
+                    </ProductListC>
+                  )}
+                </>
               )}
               <ProductListC>
                 {products.map((product, index) => (
@@ -374,17 +387,6 @@ export default function SearchSceen() {
                   </EachCont>
                 ))}
               </ProductListC>
-              {rLoading ? (
-                <LoadingBox />
-              ) : (
-                <ProductListC>
-                  {rProducts.map((product, index) => (
-                    <EachCont key={product._id}>
-                      <Product product={product}></Product>
-                    </EachCont>
-                  ))}
-                </ProductListC>
-              )}
             </>
           )}
         </Right>
