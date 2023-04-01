@@ -1,70 +1,76 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
 
 const Carousel = ({ children, autoScrollInterval = 5000 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [activeIndex, setActiveIndex] = useState(0);
   const totalSlides = children.length;
   const intervalRef = useRef(null);
-  const containerRef = useRef(null);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const handlePrevClick = () => {
+    setCurrentSlide(currentSlide - 1);
+  };
+
+  const handleNextClick = () => {
+    setCurrentSlide(currentSlide + 1);
+  };
 
   const handleSlideClick = (index) => {
     setCurrentSlide(index);
   };
 
-  const handleDotClick = (index) => {
-    setCurrentSlide(index);
-    setActiveIndex(index);
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 50) {
+      setCurrentSlide(currentSlide + 1);
+    }
+
+    if (touchStart - touchEnd < -50) {
+      setCurrentSlide(currentSlide - 1);
+    }
   };
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setCurrentSlide((currentSlide + 1) % totalSlides);
-      setActiveIndex((activeIndex + 1) % totalSlides);
     }, autoScrollInterval);
 
     return () => {
       clearInterval(intervalRef.current);
     };
-  }, [currentSlide, autoScrollInterval, totalSlides, activeIndex]);
-
-  const dots = [];
-  for (let i = 0; i < totalSlides; i++) {
-    dots.push(
-      <Dot
-        key={i}
-        active={i === activeIndex}
-        onClick={() => handleDotClick(i)}
-      />
-    );
-  }
+  }, [currentSlide, autoScrollInterval, totalSlides]);
 
   return (
-    <CarouselContainer ref={containerRef}>
+    <CarouselContainer>
       <SlidesContainer
-        style={{
-          transform: `translate(-${currentSlide * 100}%, -0%)`,
-          display: "flex",
-          alignItems: "center",
-          position: "relative",
-          height: "100%",
-        }}
+        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {React.Children.map(children, (child, index) => (
-          <Slide
-            key={index}
-            onClick={() => handleSlideClick(index)}
-            style={{
-              flex: `0 0 ${100 / totalSlides}%`,
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
-            }}
-          >
+          <Slide key={index} onClick={() => handleSlideClick(index)}>
             {child}
           </Slide>
         ))}
       </SlidesContainer>
-      <DotsContainer>{dots}</DotsContainer>
+      <Pagination>
+        {Array.from({ length: totalSlides }, (_, index) => (
+          <Dot
+            key={index}
+            active={currentSlide === index}
+            onClick={() => handleSlideClick(index)}
+          />
+        ))}
+      </Pagination>
     </CarouselContainer>
   );
 };
@@ -73,36 +79,33 @@ const CarouselContainer = styled.div`
   position: relative;
   width: 100%;
   overflow: hidden;
-  height: 100%;
 `;
 
 const SlidesContainer = styled.div`
+  display: flex;
+  width: ${(props) => props.children.length * 100}%;
   transition: transform 1s;
 `;
 
 const Slide = styled.div`
+  flex-shrink: 0;
   width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 `;
 
-const DotsContainer = styled.div`
+const Pagination = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 16px;
 `;
 
 const Dot = styled.div`
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  margin: 0.5rem;
-  cursor: pointer;
   background-color: ${(props) =>
-    props.active ? "var(--orange-color)" : "gray"};
+    props.active ? 'var(--orange-color)' : '#ccc'};
+  margin-right: 8px;
+  cursor: pointer;
 `;
 
 export default Carousel;
