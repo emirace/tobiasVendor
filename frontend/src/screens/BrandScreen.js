@@ -78,8 +78,10 @@ const Content = styled.div`
   }
 `;
 const Header = styled.div`
+  margin-top: 20px;
   font-size: 20px;
   margin-right: 20px;
+  margin-left: 20px;
   background: ${(props) =>
     props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
 `;
@@ -257,10 +259,6 @@ export default function BrandScreen() {
       );
     }
   };
-  const navigate = useNavigate();
-  const goto = (tag) => {
-    navigate(`/brandpage/${tag}`);
-  };
 
   return (
     <Container>
@@ -269,20 +267,7 @@ export default function BrandScreen() {
         upload
       </button> */}
       <AlphaGroup>
-        {[
-          '&',
-          '@',
-          '1',
-          '4',
-          '2',
-          '3',
-          '5',
-          '6',
-          '7',
-          '8',
-          '9',
-          ...alphabet,
-        ].map((x, i) => (
+        {['#', ...alphabet].map((x, i) => (
           <div key={i} onClick={() => scrollToAlpha(i)}>
             <Alpha>{x}</Alpha>
           </div>
@@ -337,115 +322,124 @@ export default function BrandScreen() {
           )
         )} */}
 
-        <Header>A</Header>
-        <ButtonList strings={brandA} />
-        <LoadMore onClick={() => goto('A')}>Load more</LoadMore>
+        <Header ref={scrollref.current['A']}>A</Header>
+        <ButtonList alpha={'A'} strings={brandA} />
 
-        <Header>B</Header>
-        <ButtonList strings={brandB} />
-        <LoadMore onClick={() => goto('B')}>Load more</LoadMore>
-        <Header>C</Header>
-        <ButtonList strings={brandC} />
-        <LoadMore onClick={() => goto('C')}>Load more</LoadMore>
-        <Header>D</Header>
-        <ButtonList strings={brandD} />
-        <LoadMore onClick={() => goto('D')}>Load more</LoadMore>
-        <Header>E</Header>
-        <ButtonList strings={brandE} />
-        <LoadMore onClick={() => goto('E')}>Load more</LoadMore>
-        <Header>F</Header>
-        <ButtonList strings={brandF} />
-        <LoadMore onClick={() => goto('F')}>Load more</LoadMore>
-        <Header>G</Header>
-        <ButtonList strings={brandG} />
-        <LoadMore onClick={() => goto('G')}>Load more</LoadMore>
-        <Header>H</Header>
-        <ButtonList strings={brandH} />
-        <LoadMore onClick={() => goto('H')}>Load more</LoadMore>
-        <Header>I</Header>
-        <ButtonList strings={brandI} />
-        <LoadMore onClick={() => goto('I')}>Load more</LoadMore>
-        <Header>J</Header>
-        <ButtonList strings={brandJ} />
-        <LoadMore onClick={() => goto('J')}>Load more</LoadMore>
-        <Header>K</Header>
-        <ButtonList strings={brandK} />
-        <LoadMore onClick={() => goto('K')}>Load more</LoadMore>
-        <Header>L</Header>
-        <ButtonList strings={brandL} />
-        <LoadMore onClick={() => goto('L')}>Load more</LoadMore>
-        <Header>M</Header>
-        <ButtonList strings={brandM} />
-        <LoadMore onClick={() => goto('M')}>Load more</LoadMore>
-        <Header>N</Header>
-        <ButtonList strings={brandN} />
-        <LoadMore onClick={() => goto('N')}>Load more</LoadMore>
-        <Header>O</Header>
-        <ButtonList strings={brandO} />
-        <LoadMore onClick={() => goto('O')}>Load more</LoadMore>
-        <Header>P</Header>
-        <ButtonList strings={brandP} />
-        <LoadMore onClick={() => goto('P')}>Load more</LoadMore>
-        <Header>Q</Header>
-        <ButtonList strings={brandQ} />
-        <LoadMore onClick={() => goto('Q')}>Load more</LoadMore>
-        <Header>R</Header>
-        <ButtonList strings={brandR} />
-        <LoadMore onClick={() => goto('R')}>Load more</LoadMore>
-        <Header>S</Header>
-        <ButtonList strings={brandS} />
-        <LoadMore onClick={() => goto('S')}>Load more</LoadMore>
-        <Header>T</Header>
-        <ButtonList strings={brandT} />
-        <LoadMore onClick={() => goto('T')}>Load more</LoadMore>
-        <Header>U</Header>
-        <ButtonList strings={brandU} />
-        <LoadMore onClick={() => goto('U')}>Load more</LoadMore>
-        <Header>V</Header>
-        <ButtonList strings={brandV} />
-        <LoadMore onClick={() => goto('V')}>Load more</LoadMore>
-        <Header>W</Header>
-        <ButtonList strings={brandW} />
-        <LoadMore onClick={() => goto('W')}>Load more</LoadMore>
-        <Header>X</Header>
-        <ButtonList strings={brandX} />
-        <LoadMore onClick={() => goto('X')}>Load more</LoadMore>
-        <Header>Y</Header>
-        <ButtonList strings={brandY} />
-        <LoadMore onClick={() => goto('Y')}>Load more</LoadMore>
-        <Header>Z</Header>
-        <ButtonList strings={brandZ} />
-        <LoadMore onClick={() => goto('Z')}>Load more</LoadMore>
-        <Header>#</Header>
-        <ButtonList strings={brandnumbers} />
-        <LoadMore>Load more</LoadMore>
+        <Header ref={scrollref.current['B']}>B</Header>
+        <ButtonList alpha={'B'} strings={brandB} />
+
+        <Header ref={scrollref.current['C']}>C</Header>
+        <ButtonList alpha={'C'} strings={brandC} />
+
+        <Header ref={scrollref.current['D']}>D</Header>
+        <ButtonList alpha={'D'} strings={brandD} />
+
+        <Header ref={scrollref.current['E']}>E</Header>
+        <ButtonList alpha={'E'} strings={brandE} />
+
+        <Header ref={scrollref.current['F']}>F</Header>
+        <ButtonList alpha={'F'} strings={brandF} />
+
+        <Header ref={scrollref.current['G']}>G</Header>
+        <ButtonList alpha={'G'} strings={brandG} />
+
+        <Header ref={scrollref.current['H']}>H</Header>
+        <ButtonList alpha={'H'} strings={brandH} />
+
+        <Header ref={scrollref.current['I']}>I</Header>
+        <ButtonList alpha={'I'} strings={brandI} />
+
+        <Header ref={scrollref.current['J']}>J</Header>
+        <ButtonList alpha={'J'} strings={brandJ} />
+
+        <Header ref={scrollref.current['K']}>K</Header>
+        <ButtonList alpha={'K'} strings={brandK} />
+
+        <Header ref={scrollref.current['L']}>L</Header>
+        <ButtonList alpha={'L'} strings={brandL} />
+
+        <Header ref={scrollref.current['M']}>M</Header>
+        <ButtonList alpha={'M'} strings={brandM} />
+
+        <Header ref={scrollref.current['N']}>N</Header>
+        <ButtonList alpha={'N'} strings={brandN} />
+
+        <Header ref={scrollref.current['O']}>O</Header>
+        <ButtonList alpha={'O'} strings={brandO} />
+
+        <Header ref={scrollref.current['P']}>P</Header>
+        <ButtonList alpha={'P'} strings={brandP} />
+
+        <Header ref={scrollref.current['Q']}>Q</Header>
+        <ButtonList alpha={'Q'} strings={brandQ} />
+
+        <Header ref={scrollref.current['R']}>R</Header>
+        <ButtonList alpha={'R'} strings={brandR} />
+
+        <Header ref={scrollref.current['S']}>S</Header>
+        <ButtonList alpha={'S'} strings={brandS} />
+
+        <Header ref={scrollref.current['T']}>T</Header>
+        <ButtonList alpha={'T'} strings={brandT} />
+
+        <Header ref={scrollref.current['U']}>U</Header>
+        <ButtonList alpha={'U'} strings={brandU} />
+
+        <Header ref={scrollref.current['V']}>V</Header>
+        <ButtonList alpha={'V'} strings={brandV} />
+
+        <Header ref={scrollref.current['W']}>W</Header>
+        <ButtonList alpha={'W'} strings={brandW} />
+
+        <Header ref={scrollref.current['X']}>X</Header>
+        <ButtonList alpha={'X'} strings={brandX} />
+
+        <Header ref={scrollref.current['Y']}>Y</Header>
+        <ButtonList alpha={'Y'} strings={brandY} />
+
+        <Header ref={scrollref.current['Z']}>Z</Header>
+        <ButtonList alpha={'Z'} strings={brandZ} />
+
+        <Header ref={scrollref.current['#']}>#</Header>
+        <ButtonList alpha={'#'} strings={brandnumbers} />
       </Content>
     </Container>
   );
 }
 
-const ButtonList = ({ strings }) => {
+const ButtonList = ({ alpha, strings }) => {
+  const navigate = useNavigate();
+  const goto = (tag) => {
+    navigate(`/brandpage/${tag}`);
+  };
   return (
     <div className="div-list">
       {strings.map((string, index) => (
-        <div key={index}>{string}</div>
+        <Link key={index} to={`/search?query=${string}`}>
+          {string}
+        </Link>
       ))}
-      <div className="seemore">See more...</div>
+      <div className="seemore" onClick={() => goto(alpha)}>
+        See more...
+      </div>
       <style jsx>{`
         .div-list {
           display: flex;
           flex-wrap: wrap;
         }
-        .div-list div {
+        .div-list a {
           width: 100%;
           text-align: left;
           text-transform: capitalize;
-          padding: 5px;
-          border-bottom: 1px solid grey;
+          padding: 10px;
+          border-bottom: 1px solid #00000030;
+        }
+        .div-list a:hover {
+          color: var(--orange-color);
         }
         .seemore {
           font-weight: bold;
-          color: var(--orange-color);
+          cursor: :pointer;
         }
         @media (min-width: 768px) {
           .div-list div {
