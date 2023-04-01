@@ -102,6 +102,7 @@ import secureLocalStorage from 'react-secure-storage';
 import AcceptCookies from './component/AcceptCookies';
 import MobileNotificationScreen from './screens/MobileNotificationScreen';
 import TopSellerList from './component/dashboard/TopSellerList';
+import BrandScreenPage from './screens/BrandScreenPage';
 
 const ProductScreen = lazy(() => import('./screens/ProductScreen'));
 const CategoryMobileScreen = lazy(() =>
@@ -448,6 +449,10 @@ function App() {
                       />
                       <Route path="/signup" element={<SignupScreen />} />
                       <Route path="/delivery" element={<InfoScreen />} />
+                      <Route
+                        path="/brandpage/:id"
+                        element={<BrandScreenPage />}
+                      />
                       <Route
                         path="/delivery2"
                         element={<InfoScreenNonLogin />}

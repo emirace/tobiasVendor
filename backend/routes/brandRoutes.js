@@ -41,12 +41,19 @@ brandRouter.get(
 brandRouter.get(
   '/search',
   expressAsyncHandler(async (req, res) => {
-    const { q } = req.query;
-    const brands = await Brand.find({
-      name: { $regex: q.toLowerCase() },
-      $options: 'i',
-    }).limit(10);
-    res.send(brands);
+    const { q: searchQuery } = req.query;
+
+    const queryFilter =
+      searchQuery && searchQuery !== 'all'
+        ? {
+            name: {
+              $regex: searchQuery,
+              $options: 'i',
+            },
+          }
+        : {};
+    const brands = await Brand.find({ ...queryFilter }).limit(10);
+    res.send(searchQuery === 'all' ? [] : brands);
   })
 );
 
@@ -109,7 +116,7 @@ brandRouter.delete(
 brandRouter.get(
   '/:id',
   expressAsyncHandler(async (req, res) => {
-    const brand = await Brand.find({ userId: req.params.id });
+    const brand = await Brand.find({ alpha: req.params.id });
     if (brand) {
       res.status(201).send(brand);
     } else {

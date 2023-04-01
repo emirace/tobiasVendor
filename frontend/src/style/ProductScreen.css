@@ -33,12 +33,15 @@
 
 .single_product_multi_image {
   width: 100px;
-  border: 0.1rem solid var(--orange-color);
+  padding: 5px;
 }
 
 .single_product_multi_image img {
   width: 100%;
   object-fit: cover;
+}
+.activeImage {
+  border: 0.1rem solid var(--orange-color);
 }
 
 .single_product_seller {

@@ -60,6 +60,7 @@ import { socket } from '../App';
 import MagnifyImage from '../component/MagnifyImage';
 import RebundlePoster from '../component/RebundlePoster';
 import RebundleLabel from '../component/RebundleLabel';
+import CustomCarousel from '../component/CustomCarousel';
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -752,6 +753,15 @@ export default function ProductScreen() {
 
   const handlereport = async (id, id2) => {
     try {
+      if (!userInfo)
+        return ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: getError('Login to report an item'),
+            showStatus: true,
+            state1: 'visible1 error',
+          },
+        });
       const { data } = await axios.post(
         `/api/conversations/`,
         { recieverId: id, productId: id2, type: 'reportProduct' },
@@ -1087,7 +1097,9 @@ export default function ProductScreen() {
               x && (
                 <div
                   key={index}
-                  className="single_product_multi_image"
+                  className={`single_product_multi_image ${
+                    selectedImage === x ? 'activeImage' : ''
+                  }`}
                   onClick={() => setSelectedImage(x)}
                 >
                   <img
@@ -1163,22 +1175,32 @@ export default function ProductScreen() {
           </div>
         </div> */}
         <div className="d-md-none">
-          <Carousel>
-            <div>
-              <img src="assets/1.jpeg" />
-              <p className="legend">Legend 1</p>
-            </div>
-            <div>
-              <img src="assets/2.jpeg" />
-              <p className="legend">Legend 2</p>
-            </div>
-            <div>
-              <img src="assets/3.jpeg" />
-              <p className="legend">Legend 3</p>
-            </div>
-          </Carousel>
+          <CustomCarousel>
+            {[product.image, ...product.images].map(
+              (image) =>
+                image && (
+                  <div
+                    key={image}
+                    style={{
+                      width: '100vw',
+                      height: '500px',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    <img
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                      src={image}
+                      alt="product"
+                    />
+                  </div>
+                )
+            )}
+          </CustomCarousel>
         </div>
-
         <div className="single_product_center">
           {selectedImage === 'video' ? (
             <video width="100%" controls muted autoplay>
