@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect, useRef } from "react";
+import styled from "styled-components";
 
 const Carousel = ({ children, autoScrollInterval = 5000 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -43,11 +43,11 @@ const Carousel = ({ children, autoScrollInterval = 5000 }) => {
     <CarouselContainer ref={containerRef}>
       <SlidesContainer
         style={{
-          transform: `translate(-${currentSlide * (100 / totalSlides)}%, -50%)`,
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative',
-          height: '100%',
+          transform: `translate(-${currentSlide * 100}%, -0%)`,
+          display: "flex",
+          alignItems: "center",
+          position: "relative",
+          height: "100%",
         }}
       >
         {React.Children.map(children, (child, index) => (
@@ -56,8 +56,8 @@ const Carousel = ({ children, autoScrollInterval = 5000 }) => {
             onClick={() => handleSlideClick(index)}
             style={{
               flex: `0 0 ${100 / totalSlides}%`,
-              paddingLeft: '1rem',
-              paddingRight: '1rem',
+              paddingLeft: "1rem",
+              paddingRight: "1rem",
             }}
           >
             {child}
@@ -102,7 +102,7 @@ const Dot = styled.div`
   margin: 0.5rem;
   cursor: pointer;
   background-color: ${(props) =>
-    props.active ? 'var(--orange-color)' : 'gray'};
+    props.active ? "var(--orange-color)" : "gray"};
 `;
 
 export default Carousel;

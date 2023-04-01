@@ -1,18 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { Link, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import LoadingBox from '../component/LoadingBox';
-import { Store } from '../Store';
-import useFetch from '../hooks/useFectch';
-import MessageBox from '../component/MessageBox';
-import { getError } from '../utils';
+} from "react";
+import { Link, useParams } from "react-router-dom";
+import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
+import { Store } from "../Store";
+import useFetch from "../hooks/useFectch";
+import MessageBox from "../component/MessageBox";
+import { getError } from "../utils";
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -58,7 +58,7 @@ const Header = styled.div`
   font-size: 20px;
   margin-right: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 
 const Search = styled.div`
@@ -75,9 +75,9 @@ const SearchInput = styled.input`
     outline: 1px solid var(--orange-color);
   }
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &::placeholder {
     padding: 10px;
   }
@@ -88,12 +88,12 @@ const SearchData = styled.div`
   text-tranform: capitalize;
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   }
 `;
 const SearchContainer = styled.div`
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: absolute;
   top: 50px;
   width: 100%;
@@ -110,10 +110,10 @@ export default function BrandScreenPage() {
   const { state } = useContext(Store);
   const { mode } = state;
 
-  const [query, setQuery] = useState('all');
+  const [query, setQuery] = useState("all");
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const observer = useRef();
 
   const params = useParams();
@@ -127,7 +127,7 @@ export default function BrandScreenPage() {
     setLoading(true);
     const getBrand = async () => {
       try {
-        const { data } = await axios.get(`/api/brands/${id}`);
+        const { data } = await axios.get(`/api/brands/brand/${id}`);
         setBrands(data);
         setLoading(false);
       } catch (error) {
@@ -183,8 +183,8 @@ const ButtonList = ({ strings }) => {
   return (
     <div className="div-list">
       {strings.map((string, index) => (
-        <Link key={index} to={`/search?query=${string}`}>
-          {string}
+        <Link key={index} to={`/search?query=${string.name}`}>
+          {string.name}
         </Link>
       ))}
       <style jsx>{`
@@ -203,7 +203,7 @@ const ButtonList = ({ strings }) => {
           color: var(--orange-color);
         }
         @media (min-width: 768px) {
-          .div-list div {
+          .div-list a {
             width: 33.33%;
             padding: 5px 24px;
             border-bottom: 0;

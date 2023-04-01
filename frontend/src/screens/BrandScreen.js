@@ -1,17 +1,17 @@
-import axios from 'axios';
+import axios from "axios";
 import React, {
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import LoadingBox from '../component/LoadingBox';
-import { Store } from '../Store';
-import useFetch from '../hooks/useFectch';
-import MessageBox from '../component/MessageBox';
+} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
+import { Store } from "../Store";
+import useFetch from "../hooks/useFectch";
+import MessageBox from "../component/MessageBox";
 import {
   brandA,
   brandB,
@@ -40,7 +40,7 @@ import {
   brandY,
   brandZ,
   brandnumbers,
-} from '../constant';
+} from "../constant";
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -54,7 +54,7 @@ const Alpha = styled.div`
   }
   @media (max-width: 992px) {
     padding: 0;
-    font-size: 12px;
+    font-size: 15px;
   }
 `;
 
@@ -80,10 +80,10 @@ const Content = styled.div`
 const Header = styled.div`
   margin-top: 20px;
   font-size: 20px;
-  margin-right: 20px;
-  margin-left: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 const BrandGroup = styled.div`
   margin: 20px;
@@ -119,9 +119,9 @@ const SearchInput = styled.input`
     outline: 1px solid var(--orange-color);
   }
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &::placeholder {
     padding: 10px;
   }
@@ -132,12 +132,12 @@ const SearchData = styled.div`
   text-tranform: capitalize;
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   }
 `;
 const SearchContainer = styled.div`
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: absolute;
   top: 50px;
   width: 100%;
@@ -160,7 +160,7 @@ export default function BrandScreen() {
 
   const scrollref = useRef(alphabet.map(React.createRef));
 
-  const [query, setQuery] = useState('all');
+  const [query, setQuery] = useState("all");
   const [pageNum, setPageNum] = useState(1);
   const {
     isLoading,
@@ -190,7 +190,7 @@ export default function BrandScreen() {
   };
 
   useEffect(() => {
-    console.log('hellllooooo');
+    console.log("hellllooooo");
     headerList = [];
   }, [query, isLoading, dataBrands]);
 
@@ -230,12 +230,16 @@ export default function BrandScreen() {
   //   postbrand();
   // }, [updateNumber]);
 
-  const scrollToAlpha = (i) =>
-    scrollref.current[i].current &&
-    window.scrollTo({
-      top: scrollref.current[i].current.offsetTop,
-      behavior: 'smooth',
-    });
+  const scrollToAlpha = (i) => {
+    console.log("scrollToAlpha", i, scrollref.current[i]);
+    return (
+      scrollref.current[i].current &&
+      window.scrollTo({
+        top: scrollref.current[i].current.offsetTop,
+        behavior: "smooth",
+      })
+    );
+  };
   // const addBrand = async (brand, al) => {
   //   try {
   //     await axios.post("/api/brands", {
@@ -267,7 +271,7 @@ export default function BrandScreen() {
         upload
       </button> */}
       <AlphaGroup>
-        {['#', ...alphabet].map((x, i) => (
+        {["#", ...alphabet].map((x, i) => (
           <div key={i} onClick={() => scrollToAlpha(i)}>
             <Alpha>{x}</Alpha>
           </div>
@@ -322,86 +326,86 @@ export default function BrandScreen() {
           )
         )} */}
 
-        <Header ref={scrollref.current['A']}>A</Header>
-        <ButtonList alpha={'A'} strings={brandA} />
+        <Header ref={scrollref.current["1"]}>A</Header>
+        <ButtonList alpha={"A"} strings={brandA} />
 
-        <Header ref={scrollref.current['B']}>B</Header>
-        <ButtonList alpha={'B'} strings={brandB} />
+        <Header ref={scrollref.current["2"]}>B</Header>
+        <ButtonList alpha={"B"} strings={brandB} />
 
-        <Header ref={scrollref.current['C']}>C</Header>
-        <ButtonList alpha={'C'} strings={brandC} />
+        <Header ref={scrollref.current["3"]}>C</Header>
+        <ButtonList alpha={"C"} strings={brandC} />
 
-        <Header ref={scrollref.current['D']}>D</Header>
-        <ButtonList alpha={'D'} strings={brandD} />
+        <Header ref={scrollref.current["4"]}>D</Header>
+        <ButtonList alpha={"D"} strings={brandD} />
 
-        <Header ref={scrollref.current['E']}>E</Header>
-        <ButtonList alpha={'E'} strings={brandE} />
+        <Header ref={scrollref.current["5"]}>E</Header>
+        <ButtonList alpha={"E"} strings={brandE} />
 
-        <Header ref={scrollref.current['F']}>F</Header>
-        <ButtonList alpha={'F'} strings={brandF} />
+        <Header ref={scrollref.current["6"]}>F</Header>
+        <ButtonList alpha={"F"} strings={brandF} />
 
-        <Header ref={scrollref.current['G']}>G</Header>
-        <ButtonList alpha={'G'} strings={brandG} />
+        <Header ref={scrollref.current["7"]}>G</Header>
+        <ButtonList alpha={"G"} strings={brandG} />
 
-        <Header ref={scrollref.current['H']}>H</Header>
-        <ButtonList alpha={'H'} strings={brandH} />
+        <Header ref={scrollref.current["8"]}>H</Header>
+        <ButtonList alpha={"H"} strings={brandH} />
 
-        <Header ref={scrollref.current['I']}>I</Header>
-        <ButtonList alpha={'I'} strings={brandI} />
+        <Header ref={scrollref.current["9"]}>I</Header>
+        <ButtonList alpha={"I"} strings={brandI} />
 
-        <Header ref={scrollref.current['J']}>J</Header>
-        <ButtonList alpha={'J'} strings={brandJ} />
+        <Header ref={scrollref.current["10"]}>J</Header>
+        <ButtonList alpha={"J"} strings={brandJ} />
 
-        <Header ref={scrollref.current['K']}>K</Header>
-        <ButtonList alpha={'K'} strings={brandK} />
+        <Header ref={scrollref.current["11"]}>K</Header>
+        <ButtonList alpha={"K"} strings={brandK} />
 
-        <Header ref={scrollref.current['L']}>L</Header>
-        <ButtonList alpha={'L'} strings={brandL} />
+        <Header ref={scrollref.current["12"]}>L</Header>
+        <ButtonList alpha={"L"} strings={brandL} />
 
-        <Header ref={scrollref.current['M']}>M</Header>
-        <ButtonList alpha={'M'} strings={brandM} />
+        <Header ref={scrollref.current["13"]}>M</Header>
+        <ButtonList alpha={"M"} strings={brandM} />
 
-        <Header ref={scrollref.current['N']}>N</Header>
-        <ButtonList alpha={'N'} strings={brandN} />
+        <Header ref={scrollref.current["14"]}>N</Header>
+        <ButtonList alpha={"N"} strings={brandN} />
 
-        <Header ref={scrollref.current['O']}>O</Header>
-        <ButtonList alpha={'O'} strings={brandO} />
+        <Header ref={scrollref.current["15"]}>O</Header>
+        <ButtonList alpha={"O"} strings={brandO} />
 
-        <Header ref={scrollref.current['P']}>P</Header>
-        <ButtonList alpha={'P'} strings={brandP} />
+        <Header ref={scrollref.current["16"]}>P</Header>
+        <ButtonList alpha={"P"} strings={brandP} />
 
-        <Header ref={scrollref.current['Q']}>Q</Header>
-        <ButtonList alpha={'Q'} strings={brandQ} />
+        <Header ref={scrollref.current["17"]}>Q</Header>
+        <ButtonList alpha={"Q"} strings={brandQ} />
 
-        <Header ref={scrollref.current['R']}>R</Header>
-        <ButtonList alpha={'R'} strings={brandR} />
+        <Header ref={scrollref.current["18"]}>R</Header>
+        <ButtonList alpha={"R"} strings={brandR} />
 
-        <Header ref={scrollref.current['S']}>S</Header>
-        <ButtonList alpha={'S'} strings={brandS} />
+        <Header ref={scrollref.current["19"]}>S</Header>
+        <ButtonList alpha={"S"} strings={brandS} />
 
-        <Header ref={scrollref.current['T']}>T</Header>
-        <ButtonList alpha={'T'} strings={brandT} />
+        <Header ref={scrollref.current["20"]}>T</Header>
+        <ButtonList alpha={"T"} strings={brandT} />
 
-        <Header ref={scrollref.current['U']}>U</Header>
-        <ButtonList alpha={'U'} strings={brandU} />
+        <Header ref={scrollref.current["21"]}>U</Header>
+        <ButtonList alpha={"U"} strings={brandU} />
 
-        <Header ref={scrollref.current['V']}>V</Header>
-        <ButtonList alpha={'V'} strings={brandV} />
+        <Header ref={scrollref.current["22"]}>V</Header>
+        <ButtonList alpha={"V"} strings={brandV} />
 
-        <Header ref={scrollref.current['W']}>W</Header>
-        <ButtonList alpha={'W'} strings={brandW} />
+        <Header ref={scrollref.current["23"]}>W</Header>
+        <ButtonList alpha={"W"} strings={brandW} />
 
-        <Header ref={scrollref.current['X']}>X</Header>
-        <ButtonList alpha={'X'} strings={brandX} />
+        <Header ref={scrollref.current["24"]}>X</Header>
+        <ButtonList alpha={"X"} strings={brandX} />
 
-        <Header ref={scrollref.current['Y']}>Y</Header>
-        <ButtonList alpha={'Y'} strings={brandY} />
+        <Header ref={scrollref.current["25"]}>Y</Header>
+        <ButtonList alpha={"Y"} strings={brandY} />
 
-        <Header ref={scrollref.current['Z']}>Z</Header>
-        <ButtonList alpha={'Z'} strings={brandZ} />
+        <Header ref={scrollref.current["26"]}>Z</Header>
+        <ButtonList alpha={"Z"} strings={brandZ} />
 
-        <Header ref={scrollref.current['#']}>#</Header>
-        <ButtonList alpha={'#'} strings={brandnumbers} />
+        <Header ref={scrollref.current["0"]}>#</Header>
+        <ButtonList alpha={"other"} strings={brandnumbers} />
       </Content>
     </Container>
   );
@@ -439,13 +443,19 @@ const ButtonList = ({ alpha, strings }) => {
         }
         .seemore {
           font-weight: bold;
-          cursor: :pointer;
+          cursor: pointer;
+          padding-top: 10px;
+          color: var(--orange-color);
         }
         @media (min-width: 768px) {
-          .div-list div {
+          .div-list a {
             width: 33.33%;
             padding: 5px 24px;
             border-bottom: 0;
+          }
+
+          .seemore {
+            padding: 5px 24px;
           }
         }
       `}</style>
