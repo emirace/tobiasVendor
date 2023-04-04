@@ -158,7 +158,7 @@ export default function BrandScreen() {
   const alphabet = alpha.map((x) => String.fromCharCode(x));
   // const brandArray = Brands.split("\n");
 
-  const scrollref = useRef(alphabet.map(React.createRef));
+  const scrollref = useRef(["#", ...alphabet].map(React.createRef));
 
   const [query, setQuery] = useState("all");
   const [pageNum, setPageNum] = useState(1);
@@ -272,7 +272,13 @@ export default function BrandScreen() {
       </button> */}
       <AlphaGroup>
         {["#", ...alphabet].map((x, i) => (
-          <div key={i} onClick={() => scrollToAlpha(i)}>
+          <div
+            key={i}
+            onClick={() => {
+              scrollToAlpha(i);
+              console.log(i);
+            }}
+          >
             <Alpha>{x}</Alpha>
           </div>
         ))}
