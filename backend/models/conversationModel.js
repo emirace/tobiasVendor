@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const conversationSchema = new mongoose.Schema(
   {
-    members: { type: Array, required: true },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     conversationType: { type: String, required: true },
     needRespond: { type: Boolean, default: true },
-    productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     guest: { type: Boolean, default: false },
     guestEmail: { type: String },
   },
@@ -15,5 +15,5 @@ const conversationSchema = new mongoose.Schema(
   }
 );
 
-const Conversation = mongoose.model("Conversation", conversationSchema);
+const Conversation = mongoose.model('Conversation', conversationSchema);
 export default Conversation;
