@@ -163,6 +163,7 @@ export const slugify = (Text) => {
 import { v4 } from 'uuid';
 import Notification from './models/notificationModel.js';
 import User from './models/userModel.js';
+import Conversation from './models/conversationModel.js';
 
 export async function creditAccount({
   amount,
@@ -457,5 +458,31 @@ export const payShippingFee = async (order) => {
   } catch (error) {
     console.log(error);
     return error;
+  }
+};
+
+export const searchConversations = async (searchTerm, currentUser) => {
+  try {
+    console.log(searchTerm, currentUser);
+    const conversations = await Conversation.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'members',
+          foreignField: '_id',
+          as: 'members',
+        },
+      },
+      {
+        $match: {
+          'members.username': { $regex: searchTerm, $options: 'i' },
+          members: currentUser._id,
+        },
+      },
+    ]);
+    console.log('conversations', conversations);
+    return conversations;
+  } catch (error) {
+    console.error(error);
   }
 };
