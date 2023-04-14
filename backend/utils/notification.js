@@ -77,15 +77,16 @@ export const sendPushNotification = (notificationMessage, somePushTokens) => {
       receiptIds.push(ticket.id);
     }
   }
-
+  console.log("helo1");
   let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
   (async () => {
     // Like sending notifications, there are different strategies you could use
     // to retrieve batches of receipts from the Expo service.
     for (let chunk of receiptIdChunks) {
+      console.log("helo2");
       try {
         let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
-        console.log(receipts);
+        console.log("receipts", receipts);
 
         // The receipts specify whether Apple or Google successfully received the
         // notification and information about an error, if one occurred.

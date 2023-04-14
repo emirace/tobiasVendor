@@ -524,7 +524,7 @@ export default function SearchFilter({
             className={reviewClass ? "activate" : ""}
             onClick={() => toggleCollapse("review")}
           >
-            Reviews
+            Rating
           </Title>
           <List className={reviewClass ? "activate" : ""}>
             {ratings.map((r) => (

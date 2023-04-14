@@ -755,15 +755,16 @@ export default function ProductScreen() {
 
   const handlereport = async (id, id2) => {
     try {
-      if (!userInfo)
+      if (!userInfo) {
         return ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: getError("Login to report an item"),
+            message: "SIGN IN or REGISTER to report an item",
             showStatus: true,
             state1: "visible1 error",
           },
         });
+      }
       const { data } = await axios.post(
         `/api/conversations/`,
         { recieverId: id, productId: id2, type: "reportProduct" },

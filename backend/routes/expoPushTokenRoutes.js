@@ -2,6 +2,7 @@ import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import ExpoPushToken from "../models/expoPushTokenModel.js";
 import { isAdmin, isAuth } from "../utils.js";
+import { sendPushNotification } from "../utils/notification.js";
 
 const expoPushTokenRouter = express.Router();
 
@@ -23,6 +24,24 @@ expoPushTokenRouter.put(
       });
       await newToken.save();
       res.status(200).send({ success: true });
+    }
+  })
+);
+
+expoPushTokenRouter.post(
+  "/",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { receiverId, message } = req.body;
+      const expoPushToken = await ExpoPushToken.findOne({ userId: receiverId });
+      if (expoPushToken) {
+        console.log(expoPushToken.token);
+        sendPushNotification(message, [expoPushToken.token]);
+      }
+      res.status(200).send({ success: true });
+    } catch (error) {
+      console.log(error);
     }
   })
 );
