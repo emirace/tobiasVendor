@@ -13,6 +13,8 @@ import { Store } from "../Store";
 import useFetch from "../hooks/useFectch";
 import MessageBox from "../component/MessageBox";
 import { getError } from "../utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 
 const Container = styled.div``;
 const Alpha = styled.div`
@@ -104,6 +106,30 @@ const LoadMore = styled.div`
   cursor: pointer;
 `;
 
+const ScrollToTop = styled.div`
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  z-index: 9;
+  border-radius: 50%;
+  background: ${(props) =>
+    props.mode === "pagebodylight" ? "black" : "white"};
+  display: flex;
+  justify-content: center;
+  color: black;
+  cursor: pointer;
+  align-items: center;
+  & svg {
+    font-size: 20px;
+    color: var(--orange-color);
+  }
+  /* @media (max-width: 992px) {
+    bottom: 65px;
+  } */
+`;
+
 var headerList = [];
 
 export default function BrandScreenPage() {
@@ -130,6 +156,7 @@ export default function BrandScreenPage() {
         const { data } = await axios.get(`/api/brands/brand/${id}`);
         setBrands(data);
         setLoading(false);
+        window.scrollTo(0, 0);
       } catch (error) {
         setLoading(false);
         console.log(error);
@@ -141,8 +168,10 @@ export default function BrandScreenPage() {
 
   const [searchBrand, setSearchBrand] = useState(null);
   useEffect(() => {
-    console.log(query);
     const getSearch = async () => {
+      if (!query) {
+        return setSearchBrand([]);
+      }
       const { data } = await axios.get(`/api/brands/search?q=${query}`);
       console.log(data);
       setSearchBrand(data);
@@ -175,6 +204,13 @@ export default function BrandScreenPage() {
           <ButtonList strings={brands} />
         )}
       </Content>
+
+      <ScrollToTop mode={mode}>
+        <FontAwesomeIcon
+          onClick={() => window.scrollTo(0, 0)}
+          icon={faArrowUp}
+        />
+      </ScrollToTop>
     </Container>
   );
 }

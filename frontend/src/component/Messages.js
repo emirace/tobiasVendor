@@ -49,6 +49,7 @@ const Reporting = styled.div`
 `;
 export default function Messages({ message, own, report, product, support }) {
   const [user, setUser] = useState();
+  console.log(message);
   // useEffect(() => {
   //   const fetchData = async () => {
   //     if (report) {

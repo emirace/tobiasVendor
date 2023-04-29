@@ -38,15 +38,15 @@ const Carousel = ({ children, autoScrollInterval = 5000 }) => {
     }
   };
 
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setCurrentSlide((currentSlide + 1) % totalSlides);
-    }, autoScrollInterval);
+  // useEffect(() => {
+  //   intervalRef.current = setInterval(() => {
+  //     setCurrentSlide((currentSlide + 1) % totalSlides);
+  //   }, autoScrollInterval);
 
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, [currentSlide, autoScrollInterval, totalSlides]);
+  //   return () => {
+  //     clearInterval(intervalRef.current);
+  //   };
+  // }, [currentSlide, autoScrollInterval, totalSlides]);
 
   return (
     <CarouselContainer>

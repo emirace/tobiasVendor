@@ -819,6 +819,7 @@ export default function ChatScreen() {
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
+      console.log("helo");
       dispatch({ type: "UPLOAD_REQUEST" });
       const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
@@ -827,8 +828,9 @@ export default function ChatScreen() {
         },
       });
       dispatch({ type: "UPLOAD_SUCCESS" });
+      console.log("fkkjshdaeldnf", data);
       setImage(data.secure_url);
-      console.log(image);
+      console.log("jkghfgfdsfdgfhjhimage", image);
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -861,7 +863,7 @@ export default function ChatScreen() {
       try {
         if (!invalidImage && resizeImage1.filepreview) {
           await uploadHandler(resizeImage1.file);
-          setImage(resizeImage1.filepreview);
+          // setImage(resizeImage1.filepreview);
         }
       } catch (err) {
         console.log(getError(err));

@@ -536,6 +536,10 @@ export default function Support() {
     resizeImage(e, setInvalidImage, setResizeImage);
   };
 
+  if (CurrentPath === "/brand") return;
+  var pattern = /^\/brandpage\/[A-Z]$/;
+  if (pattern.test(CurrentPath)) return;
+
   return (
     displaySupport && (
       <Container

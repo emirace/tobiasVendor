@@ -1186,8 +1186,8 @@ export default function ProductScreen() {
                     key={image}
                     style={{
                       width: "100vw",
+                      marginLeft: "-20px",
                       height: "500px",
-                      // marginBottom: '20px',
                     }}
                   >
                     <img
