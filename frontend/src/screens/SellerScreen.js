@@ -333,7 +333,9 @@ export default function SellerScreen() {
   useEffect(() => {
     socket.on("getUsers", (users) => {
       setOnlineUser(users);
+      console.log("onlineuser", users);
     });
+    console.log("onlineuser");
   }, [userInfo]);
 
   const isOnlineCon = (c) => {

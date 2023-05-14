@@ -232,13 +232,14 @@ export default function BrandScreen() {
 
   const [searchBrand, setSearchBrand] = useState(null);
   useEffect(() => {
-    if (!query) {
-      return setSearchBrand([]);
-    }
     const getSearch = async () => {
+      if (!query) {
+        setSearchBrand([]);
+        return;
+      }
       const { data } = await axios.get(`/api/brands/search?q=${query}`);
       console.log(data);
-      setSearchBrand(data);
+      query && setSearchBrand(data);
     };
     getSearch();
   }, [query]);
@@ -329,7 +330,8 @@ export default function BrandScreen() {
           placeholder="Search brands"
         />
         <SearchContainer mode={mode}>
-          {searchBrand &&
+          {query &&
+            searchBrand &&
             searchBrand.map((brand) => (
               <Link to={`/Search?brand=${brand.name}`}>
                 <SearchData mode={mode}>{brand.name}</SearchData>
