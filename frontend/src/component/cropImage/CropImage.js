@@ -1,10 +1,10 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import styled from "styled-components";
-import Cropper from "react-easy-crop";
-import { getCroppedImg, getRotatedImage } from "./cropImage1";
-import { getError } from "../../utils";
-import { resizeImage } from "../ImageUploader";
-import LoadingBox from "../LoadingBox";
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import styled from 'styled-components';
+import Cropper from 'react-easy-crop';
+import { getCroppedImg, getRotatedImage } from './cropImage1';
+import { getError } from '../../utils';
+import { resizeImage } from '../ImageUploader';
+import LoadingBox from '../LoadingBox';
 // import { getOrientation } from "get-orientation/browser";
 
 // import ReactCrop, {
@@ -56,12 +56,14 @@ const InputButton = styled.label`
   border-radius: 0.2rem;
   text-transform: capitalize;
   padding: 3px 5px;
+  margin: 5px 0;
 `;
 const Done = styled.label`
   color: var(--white-color);
   background: var(--orange-color);
   border-radius: 0.2rem;
   text-transform: capitalize;
+  margin: 5px 0;
   padding: 3px 5px;
   &:hover {
     background: var(--malon-color);
@@ -182,13 +184,13 @@ export default function CropImage({
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [croppedImage, setCroppedImage] = useState(null);
-  const [imageSrc, setImageSrc] = useState("");
+  const [imageSrc, setImageSrc] = useState('');
 
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
-  const [invalidImage, setInvalidImage] = useState("");
+  const [invalidImage, setInvalidImage] = useState('');
   const [resizeImage1, setResizeImage] = useState({
     file: [],
     filepreview: null,
@@ -248,7 +250,7 @@ export default function CropImage({
   function readFile(file) {
     return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.addEventListener("load", () => resolve(reader.result), false);
+      reader.addEventListener('load', () => resolve(reader.result), false);
       reader.readAsDataURL(file);
     });
   }
@@ -274,7 +276,7 @@ export default function CropImage({
           {console.log(resizeImage1)}
           <input
             id="inputButton"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             type="file"
             accept="image/*"
             onChange={onFileChange}
@@ -311,9 +313,9 @@ export default function CropImage({
       </App>
       <div
         style={{
-          display: "flex",
-          justifyContent: "end",
-          alignItems: "flex-end",
+          display: 'flex',
+          justifyContent: 'end',
+          alignItems: 'flex-end',
         }}
       >
         {loading ? (
