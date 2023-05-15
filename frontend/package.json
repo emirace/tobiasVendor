@@ -30,6 +30,7 @@
     "logrocket": "^3.0.1",
     "moment-jalaali": "^0.9.6",
     "nouislider-react": "^3.4.1",
+    "rc-slider": "^10.1.1",
     "react": "^18.1.0",
     "react-bootstrap": "^2.4.0",
     "react-countdown": "^2.3.3",

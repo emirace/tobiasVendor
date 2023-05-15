@@ -164,6 +164,7 @@ import { v4 } from "uuid";
 import Notification from "./models/notificationModel.js";
 import User from "./models/userModel.js";
 import Conversation from "./models/conversationModel.js";
+import Gig from "./models/gigModel.js";
 
 export async function creditAccount({
   amount,
@@ -438,15 +439,23 @@ export const payShippingFee = async (order) => {
             const admins = await User.find({
               isAdmin: true,
             });
+
+            const newGig = new Gig({
+              orderId: order._id,
+              productId: item._id,
+            });
+
+            const gig = await newGig.save();
+
             admins.map(async (admin) => {
               const notification = new Notification({
                 userId: admin._id,
                 notifyType: "gig",
                 itemId: item._id,
                 msg: `Gig - ${data.ShortDescription}`,
-                link: `/gig/${order._id}/${item._id}`,
+                link: `/gig/${gig._id}`,
                 userImage: item,
-                mobile: { path: "Gig", id: item._id },
+                mobile: { path: "Gig", id: gig._id },
               });
               await notification.save();
             });

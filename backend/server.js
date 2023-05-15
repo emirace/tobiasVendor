@@ -38,6 +38,7 @@ import guestUserRouter from "./routes/guestUserRoutes.js";
 import redirectRouter from "./routes/redirectRoutes.js";
 import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
 import expoPushTokenRouter from "./routes/expoPushTokenRoutes.js";
+import gigRouter from "./routes/gigRoutes.js";
 
 dotenv.config();
 
@@ -117,6 +118,7 @@ app.use("/api/guestusers", guestUserRouter);
 app.use("/api/redirects", redirectRouter);
 app.use("/api/rebundleSellers", rebundleSellerRouter);
 app.use("/api/expopushtoken", expoPushTokenRouter);
+app.use("/api/gigs", gigRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));
