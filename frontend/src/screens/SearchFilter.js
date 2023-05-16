@@ -497,20 +497,6 @@ export default function SearchFilter({
         <Menu>
           <Title onClick={() => toggleCollapse("price")}>Prices</Title>
           <List className={priceClass ? "activate" : ""}>
-            {/* {prices.map((p, index) => (
-              <div key={p.id}>
-                <Link
-                  className={p.value === price ? "text-bold" : ""}
-                  to={getFilterUrl({ price: p.value })}
-                >
-                  <ListItem mode={mode}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    {p.name}
-                  </ListItem>
-                </Link>
-              </div>
-            ))} */}
-
             <div style={{ marginBottom: "5px" }}>
               Minimum Price: {currency}
               {priceRange[0]}
@@ -520,7 +506,7 @@ export default function SearchFilter({
             </div>
             <Slider
               min={0}
-              max={1000}
+              max={currency === "R " ? 100000 : 500000}
               value={priceRange}
               onChange={handlePriceChange}
               onAfterChange={handleAfterPriceChange}

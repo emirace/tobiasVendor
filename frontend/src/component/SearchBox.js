@@ -1,18 +1,18 @@
-import React, { useState, useContext } from 'react';
-import Button from 'react-bootstrap/Button';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
-import { Store } from '../Store';
+import React, { useState, useContext } from "react";
+import Button from "react-bootstrap/Button";
+import InputGroup from "react-bootstrap/InputGroup";
+import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
+import { Store } from "../Store";
 
 export default function SearchBox() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const { state } = useContext(Store);
   const { mode } = state;
   const submitHandler = (e) => {
     e.preventDefault();
-    navigate(query ? `/search/?query=${query}` : '/search');
+    navigate(query ? `/search/?query=${query}` : "/search");
   };
   return (
     <Form className="d-flex me-auto  search-box-size " onSubmit={submitHandler}>
@@ -27,7 +27,7 @@ export default function SearchBox() {
           </button>
         </div>
         <Form.Control
-          type="text"
+          type="search"
           name="q"
           id="q"
           onChange={(e) => setQuery(e.target.value)}
@@ -35,7 +35,7 @@ export default function SearchBox() {
           aria-label="Search Products..."
           aria-describedby="button-search"
           className={`bg-transparent searchbtn border-0 rounded-pill ${
-            mode === 'pagebodydark' ? '' : 'color_black'
+            mode === "pagebodydark" ? "" : "color_black"
           }`}
         />
       </div>

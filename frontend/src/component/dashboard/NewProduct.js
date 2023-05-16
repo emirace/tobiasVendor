@@ -567,7 +567,6 @@ export default function NewProduct() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const productId = sp.get("id");
-  const [tempsize, setTempsize] = useState("");
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState("");
   const [deliveryOption, setDeliveryOption] = useState([
@@ -683,7 +682,7 @@ export default function NewProduct() {
     } else {
       sizes.push({ size: sizenow, value: "0" });
     }
-    setTempsize(sizenow);
+    setInput((prev) => ({ ...prev, selectedSize: "" }));
   };
   const handleTags = (tag) => {
     if (tag.length > 0) {
@@ -1452,9 +1451,10 @@ export default function NewProduct() {
                       <TagInputCont>
                         <TagInput
                           mode={mode}
-                          value={input.tag}
+                          value={input.selectedSize}
                           type="text"
                           maxlength="3"
+                          placeholder="Add more size"
                           onChange={(e) =>
                             handleOnChange(e.target.value, "selectedSize")
                           }

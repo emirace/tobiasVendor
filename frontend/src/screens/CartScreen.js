@@ -29,6 +29,8 @@ import {
 import ModelLogin from "../component/ModelLogin";
 import DeliveryOptionScreen from "./DeliveryOptionScreen";
 import LoadingBox from "../component/LoadingBox";
+import WalletModel from "../component/wallet/WalletModel";
+import AlertComponent from "../component/AlertComponent";
 
 const Container = styled.div`
   margin: 20px;
@@ -188,6 +190,7 @@ export default function CartScreen() {
   const [deliveryOption, setDeliveryOption] = useState(null);
   const [showModel, setShowModel] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  const [remove, setRemove] = useState(false);
 
   const scrollref = useRef();
 
@@ -316,6 +319,7 @@ export default function CartScreen() {
       });
     }
     ctxDispatch({ type: "CART_REMOVE_ITEM", payload: item });
+    setRemove(false);
   };
 
   const addToCartHandler = async (item) => {
@@ -398,6 +402,60 @@ export default function CartScreen() {
       } else {
         navigate("../verifyemail");
       }
+    }
+  };
+
+  const saveItem = async (product) => {
+    if (!userInfo) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "login to add item to wishlist",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    if (product.seller._id === userInfo._id) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't add your product to wishlist",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.put(
+        `/api/products/${product._id}/save`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: data.message,
+          showStatus: true,
+          state1: data.status,
+        },
+      });
+      removeItemHandler(product);
+      setRemove(false);
+      // dispatch({ type: 'REFRESH_PRODUCT', payload: data.user });
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
@@ -533,7 +591,10 @@ export default function CartScreen() {
                         </div>
                         <div className="col-2">
                           <Button
-                            onClick={() => removeItemHandler(item)}
+                            onClick={() => {
+                              setCurrentItem(item);
+                              setRemove(true);
+                            }}
                             variant="none"
                           >
                             <FontAwesomeIcon icon={faTrash} />
@@ -577,6 +638,13 @@ export default function CartScreen() {
                   </MessageBox>
                 </>
               )}
+              <WalletModel setShowModel={setRemove} showModel={remove}>
+                <AlertComponent
+                  message="Are you sure you want to remove item from cart?"
+                  onConfirm={() => removeItemHandler(currentItem)}
+                  onWishlist={() => saveItem(currentItem)}
+                />
+              </WalletModel>
 
               <ModelLogin setShowModel={setShowModel} showModel={showModel}>
                 <DeliveryOptionScreen
