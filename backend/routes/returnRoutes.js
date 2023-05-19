@@ -303,7 +303,7 @@ returnRouter.get(
     const returned = await Return.findById(req.params.id)
       .populate({
         path: "orderId",
-        select: "user orderItems",
+        select: "user orderItems shippingPrice",
         populate: {
           path: "user",
           select: "image username",
