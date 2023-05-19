@@ -143,6 +143,8 @@ let users = [];
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
+
+  console.log(users);
   socket.on("disconnect", () => {
     const user = users.find((x) => x.socketId === socket.id);
     if (user) {
@@ -154,6 +156,10 @@ io.on("connection", (socket) => {
       }
     }
     io.emit("getUsers", users);
+  });
+  socket.on("getAllUsers", () => {
+    io.emit("getUsers", users);
+    console.log("sending");
   });
   socket.on("onlogin", (user) => {
     const updatedUser = {

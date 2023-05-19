@@ -335,7 +335,8 @@ export default function SellerScreen() {
       setOnlineUser(users);
       console.log("onlineuser", users);
     });
-    console.log("onlineuser");
+    socket.emit("getAllUsers");
+    console.log("onlineuser", onlineUser);
   }, [userInfo]);
 
   const isOnlineCon = (c) => {
