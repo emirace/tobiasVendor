@@ -34,6 +34,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "sharp": "^0.32.1",
     "socket.io": "^4.5.1",
     "streamifier": "^0.1.1",
     "uuid": "^8.3.2"

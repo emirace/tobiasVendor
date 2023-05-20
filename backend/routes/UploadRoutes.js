@@ -1,15 +1,16 @@
-import express from "express";
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import streamifier from "streamifier";
-import { isAdmin, isAuth, isSellerOrAdmin } from "../utils.js";
-import fs from "fs";
+import express from 'express';
+import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import streamifier from 'streamifier';
+import { isAdmin, isAuth, isSellerOrAdmin } from '../utils.js';
+import fs from 'fs';
+import sharp from 'sharp';
 
 const upload = multer();
 
 const uploadRouter = express.Router();
 
-uploadRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
+uploadRouter.post('/', isAuth, upload.single('file'), async (req, res) => {
   const streamUpload = () => {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -31,11 +32,11 @@ uploadRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   res.send(result);
 });
 
-uploadRouter.post("/video/upload", isAuth, async (req, res) => {
+uploadRouter.post('/video/upload', isAuth, async (req, res) => {
   // Get the file name and extension with multer
   const storage = multer.diskStorage({
     filename: (req, file, cb) => {
-      const fileExt = file.originalname.split(".").pop();
+      const fileExt = file.originalname.split('.').pop();
       const filename = `${new Date().getTime()}.${fileExt}`;
       cb(null, filename);
     },
@@ -43,12 +44,12 @@ uploadRouter.post("/video/upload", isAuth, async (req, res) => {
 
   // Filter the file to validate if it meets the required video extension
   const fileFilter = (req, file, cb) => {
-    if (file.mimetype === "video/mp4") {
+    if (file.mimetype === 'video/mp4') {
       cb(null, true);
     } else {
       cb(
         {
-          message: "Unsupported File Format",
+          message: 'Unsupported File Format',
         },
         false
       );
@@ -63,7 +64,7 @@ uploadRouter.post("/video/upload", isAuth, async (req, res) => {
       fileSize: 5 * 1024 * 1024,
     },
     fileFilter,
-  }).single("file");
+  }).single('file');
 
   upload(req, res, (err) => {
     if (err) {
@@ -78,42 +79,54 @@ uploadRouter.post("/video/upload", isAuth, async (req, res) => {
     });
     const { path } = req.file; // file becomes available in req at this point
 
-    const fName = req.file.originalname.split(".")[0];
-    cloudinary.uploader.upload(
-      path,
-      {
-        resource_type: "video",
-        public_id: `VideoUploads/${fName}`,
-        chunk_size: 6000000,
-        eager: [
-          {
-            width: 300,
-            height: 300,
-            crop: "pad",
-            audio_codec: "none",
-          },
-          {
-            width: 160,
-            height: 100,
-            crop: "crop",
-            gravity: "south",
-            audio_codec: "none",
-          },
-        ],
-      },
+    const fName = req.file.originalname.split('.')[0];
 
-      // Send cloudinary response or catch error
-      (err, video) => {
-        if (err) return res.send(err);
+    // Use sharp to optimize the video before uploading
+    sharp(path)
+      .resize(1920, 1080) // Resize the video to a desired resolution
+      .toFormat('mp4') // Convert the video to the MP4 format
+      .toBuffer(async (err, buffer) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
 
-        fs.unlinkSync(path);
-        return res.send(video);
-      }
-    );
+        // Upload the optimized video buffer to Cloudinary
+        cloudinary.uploader.upload(
+          buffer,
+          {
+            resource_type: 'video',
+            public_id: `VideoUploads/${fName}`,
+            chunk_size: 6000000,
+            eager: [
+              {
+                width: 300,
+                height: 300,
+                crop: 'pad',
+                audio_codec: 'none',
+              },
+              {
+                width: 160,
+                height: 100,
+                crop: 'crop',
+                gravity: 'south',
+                audio_codec: 'none',
+              },
+            ],
+          },
+          (err, video) => {
+            if (err) {
+              return res.send(err);
+            }
+
+            fs.unlinkSync(path);
+            return res.send(video);
+          }
+        );
+      });
   });
 });
 
-uploadRouter.delete("/", isAuth, async (req, res) => {
+uploadRouter.delete('/', isAuth, async (req, res) => {
   await cloudinary.uploader.destroy(req.body.image, function (result) {});
 });
 
