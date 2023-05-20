@@ -10,13 +10,14 @@ const upload = multer();
 
 const uploadRouter = express.Router();
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 uploadRouter.post('/', isAuth, upload.single('file'), async (req, res) => {
   const streamUpload = () => {
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream((error, result) => {
         if (result) {
@@ -32,99 +33,49 @@ uploadRouter.post('/', isAuth, upload.single('file'), async (req, res) => {
   res.send(result);
 });
 
-uploadRouter.post('/video/upload', isAuth, async (req, res) => {
-  // Get the file name and extension with multer
-  const storage = multer.diskStorage({
-    filename: (req, file, cb) => {
-      const fileExt = file.originalname.split('.').pop();
-      const filename = `${new Date().getTime()}.${fileExt}`;
-      cb(null, filename);
-    },
-  });
-
-  // Filter the file to validate if it meets the required video extension
-  const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'video/mp4') {
-      cb(null, true);
-    } else {
-      cb(
-        {
-          message: 'Unsupported File Format',
-        },
-        false
-      );
-    }
-  };
-
-  // Set the storage, file filter and file size with multer
-  const upload = multer({
-    storage,
-    limits: {
-      fieldNameSize: 200,
-      fileSize: 5 * 1024 * 1024,
-    },
-    fileFilter,
-  }).single('file');
-
-  upload(req, res, (err) => {
-    if (err) {
-      return res.status(500).send(err);
+uploadRouter.post(
+  '/video/upload',
+  isAuth,
+  upload.single('file'),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No video file provided' });
     }
 
-    // SEND FILE TO CLOUDINARY
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-    const { path } = req.file; // file becomes available in req at this point
+    // Check if the file size exceeds the maximum allowed size (e.g., 8MB)
+    const maxSize = 8 * 1024 * 1024; // 8MB
+    if (req.file.size > maxSize) {
+      return res
+        .status(400)
+        .json({ message: 'Video file exceeds the maximum allowed size' });
+    }
 
-    const fName = req.file.originalname.split('.')[0];
+    const stream = streamifier.createReadStream(req.file.buffer);
+    console.log(req.file);
+    console.log(stream);
 
-    // Use sharp to optimize the video before uploading
-    sharp(path)
-      .resize(1920, 1080) // Resize the video to a desired resolution
-      .toFormat('mp4') // Convert the video to the MP4 format
-      .toBuffer(async (err, buffer) => {
-        if (err) {
-          return res.status(500).send(err);
+    // Upload the video stream to Cloudinary
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { resource_type: 'video', public_id: req.file.originalname },
+      (error, result) => {
+        if (error) {
+          console.log('Upload error:', error);
+          return res.status(500).json({ message: 'Video upload failed' });
         }
 
-        // Upload the optimized video buffer to Cloudinary
-        cloudinary.uploader.upload(
-          buffer,
-          {
-            resource_type: 'video',
-            public_id: `VideoUploads/${fName}`,
-            chunk_size: 6000000,
-            eager: [
-              {
-                width: 300,
-                height: 300,
-                crop: 'pad',
-                audio_codec: 'none',
-              },
-              {
-                width: 160,
-                height: 100,
-                crop: 'crop',
-                gravity: 'south',
-                audio_codec: 'none',
-              },
-            ],
-          },
-          (err, video) => {
-            if (err) {
-              return res.send(err);
-            }
+        // The upload was successful
+        console.log('Upload result:', result);
 
-            fs.unlinkSync(path);
-            return res.send(video);
-          }
-        );
-      });
-  });
-});
+        // You can save the secure URL (result.secure_url) to your database or perform any other necessary actions
+
+        res.json({ secure_url: result.secure_url });
+      }
+    );
+
+    // Pipe the MultiStream to the Cloudinary upload stream
+    stream.pipe(uploadStream);
+  }
+);
 
 uploadRouter.delete('/', isAuth, async (req, res) => {
   await cloudinary.uploader.destroy(req.body.image, function (result) {});
