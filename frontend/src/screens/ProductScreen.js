@@ -1065,12 +1065,23 @@ export default function ProductScreen() {
   const [onlineUser, setOnlineUser] = useState([]);
 
   useEffect(() => {
-    socket.on("getUsers", (users) => {
+    socket.emit('initialUsers');
+    socket.on('loadUsers', (users) => {
       setOnlineUser(users);
+      console.log('loadUsers', users);
     });
+    socket.on('getUsers', (users) => {
+      setOnlineUser(users);
+      console.log('onlineuser', users);
+    });
+    console.log('onlineuser', onlineUser);
+    return () => {
+      socket.off('loadUsers');
+      socket.off('getUsers');
+    };
   }, [userInfo]);
 
-  const isOnlineCon = (c) => {
+  const isOnlineCon = (c) => { 
     if (onlineUser.length > 0) {
       let onlineUserList = [];
       onlineUser.map((o) => onlineUserList.push(o._id));

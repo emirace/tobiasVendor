@@ -30,8 +30,8 @@ const ModelWrapper = styled.div`
   z-index: 10;
   border-radius: 10px;
   @media (max-width: 992px) {
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    // height: 100%;
   }
 `;
 

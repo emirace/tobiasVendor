@@ -1,10 +1,8 @@
-import express from 'express';
-import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
-import streamifier from 'streamifier';
-import { isAdmin, isAuth, isSellerOrAdmin } from '../utils.js';
-import fs from 'fs';
-import sharp from 'sharp';
+import express from "express";
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
+import { isAdmin, isAuth, isSellerOrAdmin } from "../utils.js";
 
 const upload = multer();
 
@@ -16,7 +14,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-uploadRouter.post('/', isAuth, upload.single('file'), async (req, res) => {
+uploadRouter.post("/", isAuth, upload.single("file"), async (req, res) => {
   const streamUpload = () => {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream((error, result) => {
@@ -34,12 +32,12 @@ uploadRouter.post('/', isAuth, upload.single('file'), async (req, res) => {
 });
 
 uploadRouter.post(
-  '/video/upload',
+  "/video/upload",
   isAuth,
-  upload.single('file'),
+  upload.single("file"),
   async (req, res) => {
     if (!req.file) {
-      return res.status(400).json({ message: 'No video file provided' });
+      return res.status(400).json({ message: "No video file provided" });
     }
 
     // Check if the file size exceeds the maximum allowed size (e.g., 8MB)
@@ -47,7 +45,7 @@ uploadRouter.post(
     if (req.file.size > maxSize) {
       return res
         .status(400)
-        .json({ message: 'Video file exceeds the maximum allowed size' });
+        .json({ message: "Video file exceeds the maximum allowed size" });
     }
 
     const stream = streamifier.createReadStream(req.file.buffer);
@@ -56,15 +54,15 @@ uploadRouter.post(
 
     // Upload the video stream to Cloudinary
     const uploadStream = cloudinary.uploader.upload_stream(
-      { resource_type: 'video', public_id: req.file.originalname },
+      { resource_type: "video", public_id: req.file.originalname },
       (error, result) => {
         if (error) {
-          console.log('Upload error:', error);
-          return res.status(500).json({ message: 'Video upload failed' });
+          console.log("Upload error:", error);
+          return res.status(500).json({ message: "Video upload failed" });
         }
 
         // The upload was successful
-        console.log('Upload result:', result);
+        console.log("Upload result:", result);
 
         // You can save the secure URL (result.secure_url) to your database or perform any other necessary actions
 
@@ -77,7 +75,7 @@ uploadRouter.post(
   }
 );
 
-uploadRouter.delete('/', isAuth, async (req, res) => {
+uploadRouter.delete("/", isAuth, async (req, res) => {
   await cloudinary.uploader.destroy(req.body.image, function (result) {});
 });
 

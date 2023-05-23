@@ -29,8 +29,8 @@ import {
 import ModelLogin from "../component/ModelLogin";
 import DeliveryOptionScreen from "./DeliveryOptionScreen";
 import LoadingBox from "../component/LoadingBox";
-import WalletModel from "../component/wallet/WalletModel";
 import AlertComponent from "../component/AlertComponent";
+import SmallModel from "../component/SmallModel";
 
 const Container = styled.div`
   margin: 20px;
@@ -540,7 +540,10 @@ export default function CartScreen() {
                               <FontAwesomeIcon icon={faPlus} />
                             </Button>
                             <Button
-                              onClick={() => removeItemHandler(item)}
+                              onClick={() => {
+                                setCurrentItem(item);
+                                setRemove(true);
+                              }}
                               variant="none"
                             >
                               <FontAwesomeIcon icon={faTrash} />
@@ -638,13 +641,13 @@ export default function CartScreen() {
                   </MessageBox>
                 </>
               )}
-              <WalletModel setShowModel={setRemove} showModel={remove}>
+              <SmallModel setShowModel={setRemove} showModel={remove}>
                 <AlertComponent
                   message="Are you sure you want to remove item from cart?"
                   onConfirm={() => removeItemHandler(currentItem)}
                   onWishlist={() => saveItem(currentItem)}
                 />
-              </WalletModel>
+              </SmallModel>
 
               <ModelLogin setShowModel={setShowModel} showModel={showModel}>
                 <DeliveryOptionScreen
