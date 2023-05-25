@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import {
   isAuth,
   isAdmin,
@@ -7,20 +7,20 @@ import {
   sendEmail,
   confirmPayfast,
   payShippingFee,
-} from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import Order from '../models/orderModel.js';
-import User from '../models/userModel.js';
-import Product from '../models/productModel.js';
-import mongoose from 'mongoose';
-import moment from 'moment';
-import axios from 'axios';
-import dotenv from 'dotenv';
-import Flutterwave from 'flutterwave-node-v3';
-import Transaction from '../models/transactionModel.js';
-import Return from '../models/returnModel.js';
-import RebundleSeller from '../models/rebuldleSellerModel.js';
-import crypto from 'crypto';
+} from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import Order from "../models/orderModel.js";
+import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
+import mongoose from "mongoose";
+import moment from "moment";
+import axios from "axios";
+import dotenv from "dotenv";
+import Flutterwave from "flutterwave-node-v3";
+import Transaction from "../models/transactionModel.js";
+import Return from "../models/returnModel.js";
+import RebundleSeller from "../models/rebuldleSellerModel.js";
+import crypto from "crypto";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -28,12 +28,12 @@ const flw = new Flutterwave(
   process.env.FLW_SECRET_KEY
 );
 
-const today = moment().startOf('day');
+const today = moment().startOf("day");
 
 const orderRouter = express.Router();
 
 orderRouter.get(
-  '/:region/admin',
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -43,22 +43,22 @@ orderRouter.get(
     const sort = query.sort;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
     const sortFilter =
-      sort && sort !== 'all'
-        ? sort === 'Progress'
+      sort && sort !== "all"
+        ? sort === "Progress"
           ? {
               $or: [
-                { deliveryStatus: 'Dispatch' },
-                { deliveryStatus: 'In transit' },
-                { deliveryStatus: 'Not yet Dispatched' },
+                { deliveryStatus: "Dispatch" },
+                { deliveryStatus: "In transit" },
+                { deliveryStatus: "Not yet Dispatched" },
               ],
             }
           : {
@@ -67,25 +67,25 @@ orderRouter.get(
         : {};
     const orders = await Order.find({ ...queryFilter, ...sortFilter, region })
       .sort({ createdAt: -1 })
-      .populate('user', 'username')
-      .populate('seller', 'username');
+      .populate("user", "username")
+      .populate("seller", "username");
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/seller/:id',
+  "/seller/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const { from, to } = query;
     const searchQuery = query.q;
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
@@ -99,13 +99,13 @@ orderRouter.get(
       createdAt: { $gte: new Date(from), $lte: new Date(to) },
     })
       .sort({ createdAt: -1 })
-      .populate('user', 'username');
+      .populate("user", "username");
     res.send(orders);
   })
 );
 
 orderRouter.post(
-  '/:region',
+  "/:region",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
@@ -118,10 +118,10 @@ orderRouter.post(
       orderItems: req.body.orderItems.map((x) => ({
         ...x,
         product: x._id,
-        deliveryStatus: 'Pending',
+        deliveryStatus: "Pending",
         deliveredAt: Date.now(),
       })),
-      deliveryStatus: 'Pending',
+      deliveryStatus: "Pending",
       deliveryMethod: req.body.deliveryMethod,
       paymentMethod: req.body.paymentMethod,
       itemsPrice: req.body.itemsPrice,
@@ -134,12 +134,12 @@ orderRouter.post(
     const order = await newOrder.save();
     order.orderId = order._id.toString();
     const neworder = await order.save();
-    res.status(201).send({ message: 'New Order Created', order });
+    res.status(201).send({ message: "New Order Created", order });
   })
 );
 
 orderRouter.get(
-  '/:region/summary',
+  "/:region/summary",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -152,7 +152,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -162,7 +162,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -194,9 +194,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -205,7 +205,7 @@ orderRouter.get(
       { $match: { region } },
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -221,7 +221,7 @@ orderRouter.get(
   })
 );
 orderRouter.get(
-  '/summary/user',
+  "/summary/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
@@ -233,7 +233,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -243,7 +243,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -263,7 +263,7 @@ orderRouter.get(
           seller: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
         },
       },
@@ -284,9 +284,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -298,16 +298,16 @@ orderRouter.get(
           seller: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
           isPaid: true,
         },
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -319,16 +319,16 @@ orderRouter.get(
           user: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
           isPaid: true,
         },
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -344,9 +344,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -361,7 +361,7 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           products: { $sum: 1 },
         },
       },
@@ -372,7 +372,7 @@ orderRouter.get(
       { $match: { seller: seller } },
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -393,55 +393,55 @@ orderRouter.get(
 );
 
 orderRouter.get(
-  '/mine',
+  "/mine",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
 
     const orders = await Order.find({ user: req.user._id, ...queryFilter })
       .sort({ createdAt: -1 })
-      .populate('user', 'name')
-      .limit(searchQuery && searchQuery !== 'all' ? 10 : '');
+      .populate("user", "name")
+      .limit(searchQuery && searchQuery !== "all" ? 10 : "");
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/:id',
+  "/:id",
 
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
-      .populate('orderItems.product')
-      .populate('user', 'image username lastName firstName');
+      .populate("orderItems.product")
+      .populate("user", "image username lastName firstName");
     if (order) {
       res.send(order);
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.put(
-  '/:id/deliver/:productId',
+  "/:id/deliver/:productId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
       .populate({
-        path: 'user',
-        select: 'email username',
+        path: "user",
+        select: "email username",
       })
-      .populate('orderItems.product');
+      .populate("orderItems.product");
     const product = await Product.findById(req.params.productId);
     const isValidUser = req.user.isAdmin
       ? true
@@ -470,19 +470,19 @@ orderRouter.put(
       });
       order.deliveryStatus = req.body.deliveryStatus;
       await order.save();
-      console.log('change status', req.body.deliveryStatus);
+      console.log("change status", req.body.deliveryStatus);
 
       switch (req.body.deliveryStatus) {
-        case 'Processing':
+        case "Processing":
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               sendEmail({
                 to: order.user.email,
-                subject: 'PREPARING ORDER FOR DELIVERY',
-                template: 'preparingOrder',
+                subject: "PREPARING ORDER FOR DELIVERY",
+                template: "preparingOrder",
                 context: {
                   username: order.user.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   orderItems: order.orderItems,
                 },
@@ -490,18 +490,18 @@ orderRouter.put(
             }
           });
           break;
-        case 'Dispatched':
+        case "Dispatched":
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               return sendEmail({
                 to: order.user.email,
-                subject: 'ORDER DISPATCHED',
-                template: 'dispatchOrder',
+                subject: "ORDER DISPATCHED",
+                template: "dispatchOrder",
                 context: {
                   username: order.user.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
-                  deliveryMethod: x.deliverySelect['delivery Option'],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: order.orderItems,
                   trackId: x.trackingNumber,
                 },
@@ -510,19 +510,19 @@ orderRouter.put(
           });
 
           break;
-        case 'In Transit':
-          console.log('change status to transit');
+        case "In Transit":
+          console.log("change status to transit");
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               return sendEmail({
                 to: order.user.email,
-                subject: 'ORDER IN TRANSIT ',
-                template: 'transitOrder',
+                subject: "ORDER IN TRANSIT ",
+                template: "transitOrder",
                 context: {
                   username: order.user.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
-                  deliveryMethod: x.deliverySelect['delivery Option'],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: order.orderItems,
                 },
               });
@@ -530,29 +530,29 @@ orderRouter.put(
           });
 
           break;
-        case 'Delivered':
-          console.log('change status to dilivered');
+        case "Delivered":
+          console.log("change status to dilivered");
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               const address =
-                x.deliverySelect['delivery Option'] === 'Paxi PEP store'
-                  ? x.deliverySelect['shortName']
-                  : x.deliverySelect['delivery Option'] ===
-                    'PUDO Locker-to-Locker'
-                  ? `${x.deliverySelect['shortName']},${x.deliverySelect['province']}`
-                  : x.deliverySelect['delivery Option'] === 'PostNet-to-PostNet'
-                  ? `${x.deliverySelect['pickUp']},${x.deliverySelect['province']}`
-                  : x.deliverySelect['address'];
+                x.deliverySelect["delivery Option"] === "Paxi PEP store"
+                  ? x.deliverySelect["shortName"]
+                  : x.deliverySelect["delivery Option"] ===
+                    "PUDO Locker-to-Locker"
+                  ? `${x.deliverySelect["shortName"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["delivery Option"] === "PostNet-to-PostNet"
+                  ? `${x.deliverySelect["pickUp"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["address"];
               return sendEmail({
                 to: order.user.email,
-                subject: 'ORDER DELIVERED ',
-                template: 'orderDelivered',
+                subject: "ORDER DELIVERED ",
+                template: "orderDelivered",
                 context: {
                   username: order.user.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   address,
-                  deliveryMethod: x.deliverySelect['delivery Option'],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: order.orderItems,
                 },
               });
@@ -560,16 +560,16 @@ orderRouter.put(
           });
 
           break;
-        case 'Received':
+        case "Received":
           order.orderItems.map((x) => {
             if (x._id === req.params.productId) {
               return sendEmail({
                 to: x.seller.email,
-                subject: 'ORDER RECEIVED ',
-                template: 'orderReceive',
+                subject: "ORDER RECEIVED ",
+                template: "orderReceive",
                 context: {
                   username: x.seller.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   orderItems: order.orderItems,
                 },
@@ -578,23 +578,23 @@ orderRouter.put(
           });
 
           break;
-        case 'Return Dispatched':
+        case "Return Dispatched":
           order.orderItems.map(async (x) => {
             if (x._id === req.params.productId) {
               const returned = await Return.findOne({
                 productId: x._id,
                 orderId: order._id,
               });
-              console.log('returned', returned._id);
+              console.log("returned", returned._id);
               return sendEmail({
                 to: x.seller.email,
-                subject: 'ORDER RETURN DISPATCHED',
-                template: 'returnDispatched',
+                subject: "ORDER RETURN DISPATCHED",
+                template: "returnDispatched",
                 context: {
                   username: x.seller.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
-                  deliveryMethod: x.deliverySelect['delivery Option'],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   orderItems: [x],
                   trackId: x.returnTrackingNumber,
                   returnId: returned._id,
@@ -603,33 +603,33 @@ orderRouter.put(
             }
           });
           break;
-        case 'Return Delivered':
+        case "Return Delivered":
           order.orderItems.map(async (x) => {
             if (x._id === req.params.productId) {
               const returned = await Return.findOne({
                 productId: x._id,
                 orderId: order._id,
               });
-              console.log('returned', returned._id);
+              console.log("returned", returned._id);
               const address =
-                x.deliverySelect['delivery Option'] === 'Paxi PEP store'
-                  ? x.deliverySelect['shortName']
-                  : x.deliverySelect['delivery Option'] ===
-                    'PUDO Locker-to-Locker'
-                  ? `${x.deliverySelect['shortName']},${x.deliverySelect['province']}`
-                  : x.deliverySelect['delivery Option'] === 'PostNet-to-PostNet'
-                  ? `${x.deliverySelect['pickUp']},${x.deliverySelect['province']}`
-                  : x.deliverySelect['address'];
+                x.deliverySelect["delivery Option"] === "Paxi PEP store"
+                  ? x.deliverySelect["shortName"]
+                  : x.deliverySelect["delivery Option"] ===
+                    "PUDO Locker-to-Locker"
+                  ? `${x.deliverySelect["shortName"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["delivery Option"] === "PostNet-to-PostNet"
+                  ? `${x.deliverySelect["pickUp"]},${x.deliverySelect["province"]}`
+                  : x.deliverySelect["address"];
               return sendEmail({
                 to: x.seller.email,
-                subject: 'RETURN DELIVERED ',
-                template: 'returnDelivered',
+                subject: "RETURN DELIVERED ",
+                template: "returnDelivered",
                 context: {
                   username: x.seller.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   address,
-                  deliveryMethod: x.deliverySelect['delivery Option'],
+                  deliveryMethod: x.deliverySelect["delivery Option"],
                   returnId: returned._id,
                   orderItems: [x],
                 },
@@ -637,18 +637,18 @@ orderRouter.put(
             }
           });
           break;
-        case 'Return Received':
+        case "Return Received":
           order.orderItems.map(async (x) => {
             const returned = await Return.findOne({ productId: x._id });
-            console.log('returned', returned, returned._id);
+            console.log("returned", returned, returned._id);
             if (x._id === req.params.productId) {
               return sendEmail({
                 to: order.user.email,
-                subject: 'RETURN RECEIVED ',
-                template: 'returnReceived',
+                subject: "RETURN RECEIVED ",
+                template: "returnReceived",
                 context: {
                   username: order.user.username,
-                  url: x.region === 'NGN' ? 'com' : 'co.za',
+                  url: x.region === "NGN" ? "com" : "co.za",
                   orderId: order._id,
                   orderItems: [x],
                   returnId: returned._id,
@@ -662,31 +662,31 @@ orderRouter.put(
         default:
           break;
       }
-      res.send({ message: 'Order Delivery Status changed' });
+      res.send({ message: "Order Delivery Status changed" });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.put(
-  '/:id/status',
+  "/:id/status",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order && order.seller.toString() === req.user._id) {
-      order.status = 'reject';
+      order.status = "reject";
       order.reason = req.body.reason;
       await order.save();
-      res.send({ message: 'Order Status changed' });
+      res.send({ message: "Order Status changed" });
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 orderRouter.put(
-  '/:region/:id/pay',
+  "/:region/:id/pay",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
@@ -694,27 +694,27 @@ orderRouter.put(
     const { method } = req.body;
     var response;
     try {
-      if (method === 'wallet') {
+      if (method === "wallet") {
         const transaction = await Transaction.find({
-          'metadata.transaction_id': transaction_id,
+          "metadata.transaction_id": transaction_id,
         });
         if (transaction) {
-          response = { data: { status: 'successful' } };
+          response = { data: { status: "successful" } };
         } else {
-          response = { data: { status: 'failed' } };
+          response = { data: { status: "failed" } };
         }
       } else {
-        if (region === 'N ') {
+        if (region === "N ") {
           response = await flw.Transaction.verify({ id: transaction_id });
         } else {
           response = await flw.Transaction.verify({ id: transaction_id });
         }
       }
       console.log(response);
-      if (response?.data?.status === 'successful') {
+      if (response?.data?.status === "successful") {
         const order = await Order.findById(req.params.id).populate({
-          path: 'user',
-          select: 'email username',
+          path: "user",
+          select: "email username",
         });
         if (order) {
           const products = [];
@@ -775,14 +775,14 @@ orderRouter.put(
                 sellerId: seller,
                 createdAt: Date.now(),
                 count: seller.rebundle.count,
-                deliveryMethod: order.deliveryMethod['delivery Option'],
+                deliveryMethod: order.deliveryMethod["delivery Option"],
               });
               await rebundleSeller.save();
             } else if (exist) {
               const selectedCount = order.orderItems.reduce(
                 (a, c) =>
                   a +
-                  (c.deliverySelect['delivery Option'] === exist.deliveryMethod
+                  (c.deliverySelect["delivery Option"] === exist.deliveryMethod
                     ? 1 * c.quantity
                     : 0),
                 0
@@ -793,68 +793,68 @@ orderRouter.put(
               await exist.save();
             }
           });
-          // const answer = await payShippingFee(order);
+          const answer = await payShippingFee(order);
 
-          // sendEmail({
-          //   to: order.user.email,
-          //   subject: "PROCESSING YOUR ORDER",
-          //   template: "processingOrder",
-          //   context: {
-          //     username: order.user.username,
-          //     url: region === "NGN" ? "com" : "co.za",
-          //     sellers,
-          //     orderId: order._id,
-          //     orderItems: order.orderItems,
-          //     sellerId: order.orderItems[0].seller._id,
-          //   },
-          // });
-          // sellers.map((seller) => {
-          //   sendEmail({
-          //     to: seller.email,
-          //     subject: "NEW ORDER",
-          //     template: "processingOrderSeller",
-          //     context: {
-          //       username: seller.username,
-          //       url: region === "NGN" ? "com" : "co.za",
-          //       buyer: order.user.username,
-          //       buyerId: order.user._id,
-          //       orderId: order._id,
-          //       sellerId: seller._id,
-          //       orderItems: order.orderItems.filter(
-          //         (x) => x.seller._id === seller._id
-          //       ),
-          //       sellerId: order.orderItems[0].seller._id,
-          //     },
-          //   });
-          // });
-          res.send({ message: 'Order Paid', order: updateOrder });
+          sendEmail({
+            to: order.user.email,
+            subject: "PROCESSING YOUR ORDER",
+            template: "processingOrder",
+            context: {
+              username: order.user.username,
+              url: region === "NGN" ? "com" : "co.za",
+              sellers,
+              orderId: order._id,
+              orderItems: order.orderItems,
+              sellerId: order.orderItems[0].seller._id,
+            },
+          });
+          sellers.map((seller) => {
+            sendEmail({
+              to: seller.email,
+              subject: "NEW ORDER",
+              template: "processingOrderSeller",
+              context: {
+                username: seller.username,
+                url: region === "NGN" ? "com" : "co.za",
+                buyer: order.user.username,
+                buyerId: order.user._id,
+                orderId: order._id,
+                sellerId: seller._id,
+                orderItems: order.orderItems.filter(
+                  (x) => x.seller._id === seller._id
+                ),
+                sellerId: order.orderItems[0].seller._id,
+              },
+            });
+          });
+          res.send({ message: "Order Paid", order: updateOrder });
         } else {
-          res.status(404).send({ message: 'Order Not Found' });
+          res.status(404).send({ message: "Order Not Found" });
         }
       } else {
-        res.send('error making payment');
+        res.send("error making payment");
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
       res.status(error.status).send({ message: error.message });
     }
   })
 );
 
 orderRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
       if (req.user._id === order.user || req.user.isAdmin) {
         await order.remove();
-        res.send({ message: 'Order Deleted' });
+        res.send({ message: "Order Deleted" });
       } else {
-        res.status(500).send('Cannot delete order');
+        res.status(500).send("Cannot delete order");
       }
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
