@@ -28,7 +28,7 @@ gigRouter.put(
     if (gig) {
       gig.status = req.body.status || true;
       await gig.save();
-      res.status(200);
+      res.status(200).send("gig status changed");
     } else {
       res.status(404).send("gig not found");
     }
