@@ -16,6 +16,7 @@ import {
   faMessage,
   faMoneyBill,
   faMoneyBillTransfer,
+  faQuestionCircle,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
@@ -285,6 +286,15 @@ export default function Sidebar({ current }) {
                 >
                   <FontAwesomeIcon icon={faMoneyBill} />
                   Collected Email
+                </ListItem>
+              </Link>
+              <Link to="/dashboard/otherbrand">
+                <ListItem
+                  mode={mode}
+                  className={current === "otherbrand" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                  Other brands
                 </ListItem>
               </Link>
             </List>

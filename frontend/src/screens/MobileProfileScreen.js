@@ -15,6 +15,7 @@ import {
   faMessage,
   faMoneyBill,
   faMoneyBillTransfer,
+  faQuestionCircle,
   faRightFromBracket,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -375,6 +376,12 @@ export default function MobileProfileScreen() {
             <MobileMenuItem>
               <FontAwesomeIcon icon={faMailBulk} />
               Collected Email
+            </MobileMenuItem>
+          </Link>
+          <Link to="/dashboard/otherbrand">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faQuestionCircle} />
+              Other Brand
             </MobileMenuItem>
           </Link>
         </>

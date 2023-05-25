@@ -28,6 +28,7 @@ import Payments from "../component/dashboard/Payments";
 import TransactionList from "../component/dashboard/TransactionList";
 import NewsletterList from "../component/dashboard/NewsletterList";
 import TransactionListUser from "../component/dashboard/TransactionListUser";
+import OtherBrand from "../component/dashboard/OtherBrand";
 
 const Container = styled.div`
   display: flex;
@@ -91,6 +92,8 @@ export default function DashboardNewScreen() {
         return <TransactionListUser />;
       case "newsletter":
         return <NewsletterList />;
+      case "otherbrand":
+        return <OtherBrand />;
       default:
         break;
     }
