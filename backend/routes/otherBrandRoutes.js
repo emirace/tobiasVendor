@@ -2,6 +2,7 @@ import express from "express";
 import { isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import OtherBrand from "../models/otherBrandModel.js";
+import Brand from "../models/brandModel.js";
 
 const otherBrandRouter = express.Router();
 
@@ -59,6 +60,11 @@ otherBrandRouter.put(
     if (brand) {
       brand.isAdded = true;
       await brand.save();
+      const newBrand = new Brand({
+        name: brand.name,
+        alpha: "",
+      });
+      await newBrand.save();
       res.status(200).send("brand status updated");
     } else {
       res.status(404).send("OtherBrand not found");

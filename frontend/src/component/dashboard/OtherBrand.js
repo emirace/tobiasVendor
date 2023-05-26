@@ -168,7 +168,6 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
 
   const handleSave = async () => {
     try {
-      alert("hello");
       await axios.put(
         `/api/otherbrands/save/${brand._id}`,
         {},
