@@ -55,7 +55,6 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "UPDATE_CART":
-      console.log("databaseCart", action.payload);
       return { ...state, cart: { ...state.cart, cartItems: action.payload } };
     case "CART_ADD_ITEM":
       //add to cart
@@ -83,7 +82,7 @@ function reducer(state, action) {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id
       );
-      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      // localStorage.setItem("cartItems", JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case "CART_CLEAR": {

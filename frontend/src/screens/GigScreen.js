@@ -74,11 +74,11 @@ export default function GigScreen() {
 
   const confirm = async () => {
     try {
-      setIsLoading(true);
       console.log("hello1");
-
+      setIsLoading(true);
       order.orderItems.map(async (item) => {
         if (item._id !== itemId) return;
+
         const loginData = await loginGig();
 
         console.log("loginData");
@@ -126,6 +126,7 @@ export default function GigScreen() {
             },
           }
         );
+
         console.log({ status: data.Code, message: data.ShortDescription });
         if (data.Code !== "200") {
           const error = { status: data.Code, message: data.ShortDescription };
@@ -151,7 +152,7 @@ export default function GigScreen() {
           }
         );
         setStatus(true);
-
+        console.log("i am here");
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -160,8 +161,8 @@ export default function GigScreen() {
             state1: "visible1 success",
           },
         });
+        setIsLoading(false);
       });
-      setIsLoading(false);
     } catch (err) {
       console.log(getError(err));
       ctxDispatch({
@@ -186,23 +187,22 @@ export default function GigScreen() {
         <div style={{ marginRight: "20px" }}>Order Id</div>
         <div>{order._id}</div>
       </OrderDetail>
-      {isLoading ? (
-        <LoadingBox />
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {!status ? (
-            <Button onClick={confirm}>Confirm Pending Delivery</Button>
-          ) : (
-            <Button2>Confirmed</Button2>
-          )}
-        </div>
-      )}
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {isLoading ? (
+          <LoadingBox />
+        ) : !status ? (
+          <Button onClick={confirm}>Confirm Pending Delivery</Button>
+        ) : (
+          <Button2>Gig Delivery Confirmed</Button2>
+        )}
+      </div>
     </Container>
   );
 }
