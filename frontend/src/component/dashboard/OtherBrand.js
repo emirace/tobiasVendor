@@ -168,6 +168,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
 
   const handleSave = async () => {
     try {
+      alert("hello");
       await axios.put(
         `/api/otherbrands/save/${brand._id}`,
         {},
@@ -260,7 +261,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
             <Edit mode={mode} onClick={handleEdit}>
               Edit
             </Edit>
-            <Save mode={mode} onCick={handleSave}>
+            <Save mode={mode} onClick={handleSave}>
               Save
             </Save>
             <Delete mode={mode} onClick={deleteHandler}>
