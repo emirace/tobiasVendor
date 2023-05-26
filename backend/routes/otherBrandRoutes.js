@@ -62,7 +62,7 @@ otherBrandRouter.put(
       await brand.save();
       const newBrand = new Brand({
         name: brand.name,
-        alpha: "",
+        alpha: brand.name.charAt(0),
       });
       await newBrand.save();
       res.status(200).send("brand status updated");
