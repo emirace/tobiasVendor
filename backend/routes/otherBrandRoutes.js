@@ -49,6 +49,40 @@ otherBrandRouter.post(
   })
 );
 
+//update a brand
+otherBrandRouter.put(
+  "/save/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const brand = await OtherBrand.findById(req.params.id);
+    if (brand) {
+      brand.name = req.body.name;
+      await brand.save();
+      res.status(200).send("brand name updated");
+    } else {
+      res.status(404).send("OtherBrand not found");
+    }
+  })
+);
+
+otherBrandRouter.put(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    console.log(req.body, req.params);
+    const brand = await OtherBrand.findById(req.params.id);
+    if (brand) {
+      brand.name = req.body.name;
+      await brand.save();
+      res.status(200).send("brand name updated");
+    } else {
+      res.status(404).send("OtherBrand not found");
+    }
+  })
+);
+
 // delete a brand
 otherBrandRouter.delete(
   "/:id",
@@ -58,7 +92,7 @@ otherBrandRouter.delete(
     const brand = await OtherBrand.findById(req.params.id);
     if (brand) {
       await brand.remove();
-      res.send("OtherBrand deleted");
+      res.status(200).send("OtherBrand deleted");
     } else {
       res.status(404).send("OtherBrand not found");
     }

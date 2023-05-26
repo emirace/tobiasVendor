@@ -1,4 +1,8 @@
-import { faDotCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faDotCircle,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -46,7 +50,7 @@ const Delete = styled.button`
     props.mode === "pagebodydark" ? "#211111" : "#f8d6d6"};
   color: var(--red-color);
 `;
-const Edit = styled.button`
+const Save = styled.button`
   border: 0;
   padding: 2px 5px;
   font-size: 14px;
@@ -56,10 +60,41 @@ const Edit = styled.button`
     props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
 `;
+const Edit = styled.button`
+  border: 0;
+  padding: 2px 5px;
+  font-size: 14px;
+  margin-right: 10px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
+  color: grey;
+`;
+const TextInput = styled.input`
+  border: none;
+  width: 250px;
+  height: 30px;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  background: none;
+  padding-left: 10px;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  &:focus {
+    outline: none;
+    border: 1px solid var(--orange-color);
+  }
+  &::placeholder {
+    font-size: 12px;
+  }
+`;
 
 export default function OtherBrand() {
   const { state } = useContext(Store);
-  const { mode, userInfo } = state;
+  const { userInfo } = state;
   const [brands, setBrands] = useState([]);
   const [refresh, setRefresh] = useState(true);
 
@@ -77,29 +112,163 @@ export default function OtherBrand() {
     }
   }, [userInfo, refresh]);
 
-  const handleSave = () => {};
-  const deleteHandler = () => {};
   return (
     <Container>
       <Item>
-        <Label>Categories List</Label>
+        <Label>Brand List</Label>
       </Item>
       {brands.map((c, index) => (
-        <ListTitle key={index}>
-          <div>
-            <FontAwesomeIcon icon={faDotCircle} />
-            {c.name}
-          </div>
-          <div>
-            <Edit mode={mode} onClick={() => handleSave(c)}>
-              Save
-            </Edit>
-            <Delete mode={mode} onClick={() => deleteHandler(c)}>
-              Delete
-            </Delete>
-          </div>
-        </ListTitle>
+        <OtherBrandRow
+          key={index}
+          brand={c}
+          setRefresh={setRefresh}
+          refresh={refresh}
+        />
       ))}
     </Container>
   );
 }
+
+const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { mode, userInfo } = state;
+  const [newName, setNewName] = useState(brand.name);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
+  const handleEditClose = () => {
+    setIsEdit(false);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await axios.put(
+        `/api/otherbrands/${brand._id}`,
+        { name: newName },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setRefresh(!refresh);
+      setIsEdit(false);
+    } catch (err) {
+      console.log(err);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.put(
+        `/api/otherbrands/save/${brand._id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setRefresh(!refresh);
+    } catch (err) {
+      console.log(err);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
+  const deleteHandler = async () => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete ${brand.name} brand, this cannot be undo`
+    );
+    if (!confirm) {
+      return;
+    }
+    try {
+      await axios.delete(`/api/otherbrands/${brand._id}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Categories deleted",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      setRefresh(!refresh);
+    } catch (err) {
+      console.log(getError(err));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+  return (
+    <ListTitle>
+      {isEdit ? (
+        <>
+          <TextInput
+            mode={mode}
+            name="brand"
+            type="text"
+            onChange={(e) => setNewName(e.target.value)}
+            value={newName}
+          />
+          <FontAwesomeIcon
+            style={{ fontSize: "20px", marginLeft: "10px", cursor: "pointer" }}
+            icon={faTimes}
+            onClick={handleEditClose}
+          />
+          <FontAwesomeIcon
+            style={{
+              fontSize: "20px",
+              color: "var(--orange-color)",
+              marginLeft: "10px",
+              cursor: "pointer",
+            }}
+            icon={faCheck}
+            onClick={handleSubmit}
+          />
+        </>
+      ) : (
+        <>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <FontAwesomeIcon icon={faDotCircle} />
+            <div style={{ color: brand.isAdded ? "gray" : "" }}>
+              {brand.name}
+            </div>
+          </div>
+          <div>
+            <Edit mode={mode} onClick={handleEdit}>
+              Edit
+            </Edit>
+            <Save mode={mode} onCick={handleSave}>
+              Save
+            </Save>
+            <Delete mode={mode} onClick={deleteHandler}>
+              Delete
+            </Delete>
+          </div>{" "}
+        </>
+      )}
+    </ListTitle>
+  );
+};
