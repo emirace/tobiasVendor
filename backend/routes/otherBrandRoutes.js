@@ -57,9 +57,9 @@ otherBrandRouter.put(
   expressAsyncHandler(async (req, res) => {
     const brand = await OtherBrand.findById(req.params.id);
     if (brand) {
-      brand.name = req.body.name;
+      brand.isAdded = true;
       await brand.save();
-      res.status(200).send("brand name updated");
+      res.status(200).send("brand status updated");
     } else {
       res.status(404).send("OtherBrand not found");
     }
