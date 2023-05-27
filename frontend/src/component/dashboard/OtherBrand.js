@@ -270,7 +270,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
               style={
                 brand.isAdded && {
                   color: 'gray',
-                  textDecoration: 'underline',
+                  textDecoration: 'line-through',
                 }
               }
             >
