@@ -337,7 +337,7 @@ const BrandList = styled.div`
   position: absolute;
   max-height: 300px;
   overflow: auto;
-  top: 70px;
+  top: 100px;
   z-index: 9;
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
@@ -347,6 +347,7 @@ const BrandList = styled.div`
 const BrandListItem = styled.div`
   padding: 10px 20px;
   font-size: 15px;
+  cursor: pointer;
   &:hover {
     background: ${(props) =>
       props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};

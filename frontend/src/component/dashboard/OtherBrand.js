@@ -169,6 +169,17 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
 
   const handleSave = async () => {
     try {
+      if (brand.isAdded) {
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Brand name already added to brand list",
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+        return;
+      }
       await axios.put(
         `/api/otherbrands/save/${brand._id}`,
         {},
@@ -180,9 +191,9 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "",
+          message: "Brand name added to brand list",
           showStatus: true,
-          state1: "visible1 error",
+          state1: "visible1 success",
         },
       });
     } catch (err) {
@@ -261,16 +272,18 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
         <>
           <div style={{ display: "flex", alignItems: "center" }}>
             <FontAwesomeIcon icon={faDotCircle} />
-            {/* <div
+            <div
               style={
-                brand.isAdded && {
-                  color: 'gray',
-                  textDecoration: 'line-through',
-                }
+                brand.isAdded
+                  ? {
+                      color: "gray",
+                      textDecoration: "line-through",
+                    }
+                  : {}
               }
             >
               {brand.name}
-            </div> */}
+            </div>
           </div>
           <div>
             <Edit mode={mode} onClick={handleEdit}>
