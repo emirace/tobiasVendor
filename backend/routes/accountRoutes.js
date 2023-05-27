@@ -311,12 +311,13 @@ accountRouter.post(
           isAdmin: true,
         });
         const senderId = await Account.findOne({ userId: admin._id });
-        const { amount } = req.body;
+        const { amount } = response.data;
         // const transaction_id = v4();
-
+        console.log(amount);
+        console.log(recipientId._id, senderId._id);
         if (senderId && recipientId && amount > 0) {
           const purpose = 'transfer';
-
+          console.log(amount);
           const debitResult = await debitAccount({
             amount,
             accountId: senderId._id,
@@ -327,6 +328,7 @@ accountRouter.post(
               purpose: req.body.purpose,
             },
           });
+          console.log(debitResult);
           if (debitResult.success) {
             await creditAccount({
               amount,
