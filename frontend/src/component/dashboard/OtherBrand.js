@@ -134,6 +134,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
   const { mode, userInfo } = state;
   const [newName, setNewName] = useState(brand.name);
   const [isEdit, setIsEdit] = useState(false);
+  console.log(brand);
 
   const handleEdit = () => {
     setIsEdit(true);
@@ -179,9 +180,9 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
       ctxDispatch({
         type: 'SHOW_TOAST',
         payload: {
-          message: 'New brand name added to brand list',
+          message: '',
           showStatus: true,
-          state1: 'visible1 success',
+          state1: 'visible1 error',
         },
       });
     } catch (err) {
@@ -211,7 +212,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
       ctxDispatch({
         type: 'SHOW_TOAST',
         payload: {
-          message: 'Brand deleted',
+          message: 'Categories deleted',
           showStatus: true,
           state1: 'visible1 success',
         },
@@ -258,13 +259,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
         </>
       ) : (
         <>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginRight: '20px',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <FontAwesomeIcon icon={faDotCircle} />
             <div
               style={
