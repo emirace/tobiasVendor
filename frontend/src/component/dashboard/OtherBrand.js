@@ -2,13 +2,13 @@ import {
   faCheck,
   faDotCircle,
   faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../../Store';
-import axios from 'axios';
-import { getError } from '../../utils';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../../Store";
+import axios from "axios";
+import { getError } from "../../utils";
 
 const Container = styled.div`
   flex: 4;
@@ -47,7 +47,7 @@ const Delete = styled.button`
   border-radius: 0.2rem;
   font-size: 14px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? '#211111' : '#f8d6d6'};
+    props.mode === "pagebodydark" ? "#211111" : "#f8d6d6"};
   color: var(--red-color);
 `;
 const Save = styled.button`
@@ -57,7 +57,7 @@ const Save = styled.button`
   margin-right: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
 `;
 const Edit = styled.button`
@@ -67,7 +67,7 @@ const Edit = styled.button`
   margin-right: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: grey;
 `;
 const TextInput = styled.input`
@@ -76,13 +76,13 @@ const TextInput = styled.input`
   height: 30px;
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: none;
   padding-left: 10px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &:focus {
     outline: none;
     border: 1px solid var(--orange-color);
@@ -101,7 +101,7 @@ export default function OtherBrand() {
   useEffect(() => {
     try {
       const fetchBrand = async () => {
-        const { data } = await axios.get('/api/otherbrands', {
+        const { data } = await axios.get("/api/otherbrands", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setBrands(data);
@@ -157,11 +157,11 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
     } catch (err) {
       console.log(err);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -178,21 +178,21 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
       );
       setRefresh(!refresh);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: '',
+          message: "",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     } catch (err) {
       console.log(err);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -210,22 +210,22 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Categories deleted',
+          message: "Categories deleted",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
       setRefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -242,16 +242,16 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
             value={newName}
           />
           <FontAwesomeIcon
-            style={{ fontSize: '20px', marginLeft: '10px', cursor: 'pointer' }}
+            style={{ fontSize: "20px", marginLeft: "10px", cursor: "pointer" }}
             icon={faTimes}
             onClick={handleEditClose}
           />
           <FontAwesomeIcon
             style={{
-              fontSize: '20px',
-              color: 'var(--orange-color)',
-              marginLeft: '10px',
-              cursor: 'pointer',
+              fontSize: "20px",
+              color: "var(--orange-color)",
+              marginLeft: "10px",
+              cursor: "pointer",
             }}
             icon={faCheck}
             onClick={handleSubmit}
@@ -259,9 +259,9 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
         </>
       ) : (
         <>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <FontAwesomeIcon icon={faDotCircle} />
-            <div
+            {/* <div
               style={
                 brand.isAdded && {
                   color: 'gray',
@@ -270,7 +270,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
               }
             >
               {brand.name}
-            </div>
+            </div> */}
           </div>
           <div>
             <Edit mode={mode} onClick={handleEdit}>
@@ -282,7 +282,7 @@ const OtherBrandRow = ({ brand, setRefresh, refresh }) => {
             <Delete mode={mode} onClick={deleteHandler}>
               Delete
             </Delete>
-          </div>{' '}
+          </div>{" "}
         </>
       )}
     </ListTitle>
