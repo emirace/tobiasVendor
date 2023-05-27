@@ -35,82 +35,96 @@ productRouter.post(
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
-    const { region } = req.params;
-    const {
-      name,
-      image1,
-      image2,
-      image3,
-      image4,
-      tags,
-      video,
-      product,
-      subCategory,
-      category,
-      description,
-      brand,
-      discount,
-      price,
-      location,
-      specification,
-      meta,
-      sizes: sizes,
-      condition,
-      feature,
-      currency,
-      luxury,
-      vintage,
-      material,
-      color,
-      luxuryImage,
-      deliveryOption,
-    } = req.body;
-    const slugName = slugify(name);
-    const images = [image2, image3, image4];
-    const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
-    const newProduct = new Product({
-      name,
-      seller: req.user._id,
-      sellerName: req.user.username,
-      slug: slugName,
-      image: image1,
-      images: images ? images : [],
-      tags,
-      video: video ? video : "",
-      price,
-      actualPrice: discount,
-      product,
-      currency,
-      meta: meta ? meta : {},
-      category,
-      subCategory,
-      shippingLocation: location,
-      brand: brand ? brand : "other",
-      specification,
-      condition,
-      sizes: sizes,
-      deliveryOption,
-      keyFeatures: feature ? feature : "",
-      rating: 0,
-      numReviews: 0,
-      description,
-      // overview: overview ? overview : '',
-      likes: [],
-      sold: false,
-      active: true,
-      countInStock: req.body.addSize ? req.body.countInStock : countInStock,
-      luxury,
-      vintage,
-      material,
-      color,
-      luxuryImage,
-      region,
-    });
-    const createdProduct = await newProduct.save();
-    createdProduct.productId = createdProduct._id.toString();
-    await createdProduct.save();
+    try {
+      const { region } = req.params;
+      const {
+        name,
+        image1,
+        image2,
+        image3,
+        image4,
+        tags,
+        video,
+        product,
+        subCategory,
+        category,
+        description,
+        brand,
+        discount,
+        price,
+        location,
+        specification,
+        meta,
+        sizes: sizes,
+        condition,
+        feature,
+        currency,
+        luxury,
+        vintage,
+        material,
+        color,
+        luxuryImage,
+        deliveryOption,
+      } = req.body;
+      const slugName = slugify(name);
+      const images = [image2, image3, image4];
+      const countInStock = sizes.reduce((a, b) => (a = a + Number(b.value)), 0);
+      const newProduct = new Product({
+        name,
+        seller: req.user._id,
+        sellerName: req.user.username,
+        slug: slugName,
+        image: image1,
+        images: images ? images : [],
+        tags,
+        video: video ? video : "",
+        price,
+        actualPrice: discount,
+        product,
+        currency,
+        meta: meta ? meta : {},
+        category,
+        subCategory,
+        shippingLocation: location,
+        brand: brand ? brand : "other",
+        specification,
+        condition,
+        sizes: sizes,
+        deliveryOption,
+        keyFeatures: feature ? feature : "",
+        rating: 0,
+        numReviews: 0,
+        description,
+        // overview: overview ? overview : '',
+        likes: [],
+        sold: false,
+        active: true,
+        countInStock: req.body.addSize ? req.body.countInStock : countInStock,
+        luxury,
+        vintage,
+        material,
+        color,
+        luxuryImage,
+        region,
+      });
+      const createdProduct = await newProduct.save();
+      createdProduct.productId = createdProduct._id.toString();
+      await createdProduct.save();
 
-    res.send({ message: "Product Created", createdProduct });
+      res.send({ message: "Product Created", createdProduct });
+    } catch (err) {
+      if (err.name === "MongoServerError" && err.code === 11000) {
+        // Duplicate username
+        return res
+          .status(500)
+          .send({
+            succes: false,
+            message: "Product with this name already exist!",
+          });
+      }
+
+      return res.status(500).send(err);
+    }
   })
 );
 
