@@ -59,13 +59,13 @@ otherBrandRouter.put(
     const brand = await OtherBrand.findById(req.params.id);
     if (brand) {
       brand.isAdded = true;
-      await brand.save();
+      const update = await brand.save();
       const newBrand = new Brand({
         name: brand.name,
         alpha: brand.name.charAt(0),
       });
       await newBrand.save();
-      res.status(200).send("brand status updated");
+      res.status(200).send({ message: "brand status updated", update });
     } else {
       res.status(404).send("OtherBrand not found");
     }

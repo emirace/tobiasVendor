@@ -52,7 +52,7 @@ brandRouter.get(
             },
           }
         : {};
-    const brands = await Brand.find({ ...queryFilter }).limit(10);
+    const brands = await Brand.find({ ...queryFilter }).limit(20);
     res.send(searchQuery === "all" ? [] : brands);
   })
 );
