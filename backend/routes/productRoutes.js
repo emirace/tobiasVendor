@@ -115,12 +115,10 @@ productRouter.post(
     } catch (err) {
       if (err.name === "MongoServerError" && err.code === 11000) {
         // Duplicate username
-        return res
-          .status(500)
-          .send({
-            succes: false,
-            message: "Product with this name already exist!",
-          });
+        return res.status(500).send({
+          succes: false,
+          message: "Product with this name already exist!",
+        });
       }
 
       return res.status(500).send(err);

@@ -72,18 +72,124 @@ export default function GigScreen() {
     fetchOrder();
   }, []);
 
+  // const confirm = async () => {
+  //   try {
+  //     console.log("hello1");
+  //     setIsLoading(true);
+  //     order.orderItems.map(async (item) => {
+  //       if (item._id !== itemId) return;
+
+  //       const loginData = await loginGig();
+
+  //       console.log("loginData");
+
+  //       const { data } = await axios.post(
+  //         "https://thirdparty.gigl-go.com/api/thirdparty/captureshipment",
+  //         {
+  //           ReceiverAddress: item.deliverySelect.address,
+  //           CustomerCode: loginData.username,
+  //           SenderLocality: item.meta.address,
+  //           SenderAddress: item.meta.address,
+  //           ReceiverPhoneNumber: item.deliverySelect.phone,
+  //           VehicleType: "BIKE",
+  //           SenderPhoneNumber: item.meta.phone,
+  //           SenderName: item.meta.name,
+  //           ReceiverName: item.deliverySelect.name,
+  //           UserId: loginData.userId,
+  //           ReceiverStationId: item.deliverySelect.stationId,
+  //           SenderStationId: item.meta.stationId,
+  //           ReceiverLocation: {
+  //             Latitude: item.deliverySelect.lat,
+  //             Longitude: item.deliverySelect.lng,
+  //           },
+  //           SenderLocation: {
+  //             Latitude: item.meta.lat,
+  //             Longitude: item.meta.lng,
+  //           },
+  //           PreShipmentItems: [
+  //             {
+  //               SpecialPackageId: "0",
+  //               Quantity: item.quantity,
+  //               Weight: 1,
+  //               ItemType: "Normal",
+  //               ItemName: item.name,
+  //               Value: item.actualPrice,
+  //               ShipmentType: "Regular",
+  //               Description: item.description,
+  //               ImageUrl: item.image,
+  //             },
+  //           ],
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${loginData.token}`,
+  //           },
+  //         }
+  //       );
+
+  //       console.log({ status: data.Code, message: data.ShortDescription });
+  //       if (data.Code !== "200") {
+  //         const error = { status: data.Code, message: data.ShortDescription };
+
+  //         ctxDispatch({
+  //           type: "SHOW_TOAST",
+  //           payload: {
+  //             message: getError(error),
+  //             showStatus: true,
+  //             state1: "visible1 error",
+  //           },
+  //         });
+  //         throw error;
+  //       }
+
+  //       await axios.put(
+  //         `/api/gigs/${id}`,
+  //         { status: true },
+  //         {
+  //           headers: {
+  //             authorization: `Bearer ${userInfo.token}`,
+  //           },
+  //         }
+  //       );
+  //       setStatus(true);
+  //       console.log("i am here");
+  //       ctxDispatch({
+  //         type: "SHOW_TOAST",
+  //         payload: {
+  //           message: "Order waybill sent",
+  //           showStatus: true,
+  //           state1: "visible1 success",
+  //         },
+  //       });
+  //       setIsLoading(false);
+  //     });
+  //   } catch (err) {
+  //     console.log(getError(err));
+  //     ctxDispatch({
+  //       type: "SHOW_TOAST",
+  //       payload: {
+  //         message: getError(err),
+  //         showStatus: true,
+  //         state1: "visible1 error",
+  //       },
+  //     });
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const confirm = async () => {
     try {
       console.log("hello1");
       setIsLoading(true);
-      order.orderItems.map(async (item) => {
+
+      const promises = order.orderItems.map(async (item) => {
         if (item._id !== itemId) return;
 
         const loginData = await loginGig();
 
         console.log("loginData");
 
-        const { data } = await axios.post(
+        const response = await axios.post(
           "https://thirdparty.gigl-go.com/api/thirdparty/captureshipment",
           {
             ReceiverAddress: item.deliverySelect.address,
@@ -127,18 +233,16 @@ export default function GigScreen() {
           }
         );
 
-        console.log({ status: data.Code, message: data.ShortDescription });
-        if (data.Code !== "200") {
-          const error = { status: data.Code, message: data.ShortDescription };
+        console.log({
+          status: response.data.Code,
+          message: response.data.ShortDescription,
+        });
 
-          ctxDispatch({
-            type: "SHOW_TOAST",
-            payload: {
-              message: getError(error),
-              showStatus: true,
-              state1: "visible1 error",
-            },
-          });
+        if (response.data.Code !== "200") {
+          const error = {
+            status: response.data.Code,
+            message: response.data.ShortDescription,
+          };
           throw error;
         }
 
@@ -151,17 +255,21 @@ export default function GigScreen() {
             },
           }
         );
-        setStatus(true);
+
         console.log("i am here");
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "Order waybill sent",
-            showStatus: true,
-            state1: "visible1 success",
-          },
-        });
-        setIsLoading(false);
+        return item;
+      });
+
+      await Promise.all(promises);
+
+      setStatus(true);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order waybill sent",
+          showStatus: true,
+          state1: "visible1 success",
+        },
       });
     } catch (err) {
       console.log(getError(err));
@@ -173,6 +281,7 @@ export default function GigScreen() {
           state1: "visible1 error",
         },
       });
+    } finally {
       setIsLoading(false);
     }
   };

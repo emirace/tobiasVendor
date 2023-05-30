@@ -1346,6 +1346,7 @@ export default function NewProduct() {
               </TitleDetails>
               <TextInput
                 mode={mode}
+                placeholder="Search Brand"
                 type="text"
                 value={input.brand.length > 0 ? input.brand : brandQuery}
                 onChange={(e) => {
