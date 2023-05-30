@@ -995,6 +995,12 @@ export default function NewProduct() {
     resizeImage(e, setInvalidImage, setResizeImage);
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
   return (
     <NewProductC mode={mode}>
       <Helmet>
@@ -1347,7 +1353,8 @@ export default function NewProduct() {
               <TextInput
                 mode={mode}
                 placeholder="Search Brand"
-                type="text"
+                type="search"
+                onKeyPress={handleKeyPress}
                 value={input.brand.length > 0 ? input.brand : brandQuery}
                 onChange={(e) => {
                   handleOnChange("", "brand");
