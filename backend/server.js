@@ -40,6 +40,7 @@ import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
 import expoPushTokenRouter from "./routes/expoPushTokenRoutes.js";
 import gigRouter from "./routes/gigRoutes.js";
 import otherBrandRouter from "./routes/otherBrandRoutes.js";
+import reviewRouter from "./routes/reviewRoutes.js";
 
 dotenv.config();
 
@@ -121,6 +122,7 @@ app.use("/api/rebundleSellers", rebundleSellerRouter);
 app.use("/api/expopushtoken", expoPushTokenRouter);
 app.use("/api/gigs", gigRouter);
 app.use("/api/otherbrands", otherBrandRouter);
+app.use("/api/reviews", reviewRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));

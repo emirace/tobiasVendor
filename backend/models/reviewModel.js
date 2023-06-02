@@ -1,19 +1,18 @@
 import mongoose from "mongoose";
 
-const returnSchema = new mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    name: { type: String, required: true },
+    buyerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
-    like: { type: String },
-    type: { type: String, required: true },
+    like: { type: Boolean },
+    sellerReply: { type: String },
   },
   {
     timestamps: true,
   }
 );
 
-const Return = mongoose.model("Return", returnSchema);
-export default Return;
+const Review = mongoose.model("Review", reviewSchema);
+export default Review;

@@ -1,12 +1,25 @@
 import express from "express";
-import { isAdmin, isAuth } from "../utils.js";
+import { isAdmin, isAuth, sendEmail } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Newsletters from "../models/newslettersModel.js";
+import User from "../models/userModel.js";
 
 const newsletterRouter = express.Router();
 
-// get all newsletters
+const emailLists = [
+  {
+    name: "welcome",
+    subject: "WELCOME TO REPEDDLE",
+    template: "welcome",
+  },
+  {
+    name: "email verified success",
+    subject: "EMAIL VERIFIED SUCCESSFULLY",
+    template: "successEmail",
+  },
+];
 
+// get all newsletters
 newsletterRouter.get(
   "/newsletter",
   isAuth,
@@ -15,10 +28,11 @@ newsletterRouter.get(
     const newsletters = await Newsletters.find({
       emailType: "Newsletter",
     }).sort({ createdAt: -1 });
-    res.send(newsletters);
+    res.send({ newsletters, emailLists });
   })
 );
 
+// get all rebatch email
 newsletterRouter.get(
   "/rebatch",
   isAuth,
@@ -31,8 +45,7 @@ newsletterRouter.get(
   })
 );
 
-// add a newsletter
-
+// add a email
 newsletterRouter.post(
   "/",
   expressAsyncHandler(async (req, res) => {
@@ -42,58 +55,93 @@ newsletterRouter.post(
     });
 
     const newNewsletter = await newsletter.save();
+    const user = await User.findOne({ email: newNewsletter.email });
+    if (user) {
+      user.newsletter = true;
+      await user.save();
+    }
     res.status(201).send(newNewsletter);
   })
 );
 
-// update a newsletter
-
-// newsletterRouter.post(
-//   "/:id",
-//   isAuth,
-//   expressAsyncHandler(async (req, res) => {
-//     const newsletter = await Newsletters.findById(req.params.id);
-//     if (newsletter.userId !== req.user._id) {
-//       if (newsletter) {
-//         newsletter.meta = req.body.meta;
-//         const newaddress = await newsletter.save();
-//         res.status(200).send(newaddress);
-//       } else {
-//         res.status(404).send("newsletter not found");
-//       }
-//     } else {
-//       res.send("Can't edit address");
-//     }
-//   })
-// );
-
-// delete a address
-
+// delete any email with id
 newsletterRouter.delete(
   "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const newsletter = await Newsletters.findById(req.params.id);
-    if (newsletter) {
-      await newsletter.remove();
-      res.send("Adress deleted");
-    } else {
-      res.status(404).send("Newsletters not found");
+    try {
+      const newsletter = await Newsletters.findByIdAndDelete(req.params.id);
+      if (newsletter) {
+        const user = await User.findOne({ email: newsletter.email });
+        if (user) {
+          user.newsletter = false;
+          await user.save();
+        }
+        res.status(204).send("Email deleted");
+      } else {
+        res.status(404).send("Newsletter not found");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
     }
   })
 );
 
-// get a newsletter
-
-newsletterRouter.get(
-  "/:id",
+newsletterRouter.delete(
+  "/",
+  isAuth,
   expressAsyncHandler(async (req, res) => {
-    const newsletter = await Newsletters.findById(req.params.id);
-    if (newsletter) {
-      res.status(201).send(newsletter);
-    } else {
-      res.status(404).send("newsletter not found");
+    try {
+      const newsletter = await Newsletters.findOneAndDelete({
+        email: req.user.email,
+      });
+      if (newsletter) {
+        const user = await User.findOne({ email: newsletter.email });
+        if (user) {
+          user.newsletter = false;
+          await user.save();
+        }
+        res.status(200).send("Email deleted");
+      } else {
+        res.status(404).send("Newsletter not found");
+      }
+    } catch (error) {
+      res.status(500).send("Internal server error");
+    }
+  })
+);
+
+// send email
+newsletterRouter.post(
+  "/send",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { emails, emailName } = req.body;
+      const emailType = emailLists.find(
+        (emailList) => emailList.name === emailName
+      );
+
+      if (!emailType) {
+        return res.status(400).send("Invalid email name");
+      }
+
+      // Send email using the appropriate template and subject
+      await sendEmail({
+        to: emails,
+        subject: emailType.subject,
+        template: emailType.template,
+        context: {
+          url: "com",
+        },
+      });
+
+      res.status(200).send("Email sent successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Failed to send email");
     }
   })
 );

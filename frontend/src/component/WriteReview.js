@@ -68,8 +68,8 @@ export default function WriteReview({ userId, setShowModel }) {
     try {
       setLoading(true);
       const { data } = await axios.post(
-        `/api/users/${userId}/reviews`,
-        { rating, comment, name: userInfo.username, like, type: "buyer" },
+        `/api/reviews/${userId}`,
+        { rating, comment, like },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -146,14 +146,14 @@ export default function WriteReview({ userId, setShowModel }) {
           <div>Like</div>
           <FontAwesomeIcon
             icon={faThumbsUp}
-            onClick={() => setLike("yes")}
-            color={like === "yes" ? "#eb9f40" : "grey"}
+            onClick={() => setLike(true)}
+            color={like ? "#eb9f40" : "grey"}
           />{" "}
           <div>Dislike</div>
           <FontAwesomeIcon
             icon={faThumbsDown}
-            onClick={() => setLike("no")}
-            color={like === "no" ? "#eb9f40" : "grey"}
+            onClick={() => setLike(false)}
+            color={!like ? "#eb9f40" : "grey"}
           />
         </Thumbs>
         <div className="my-3">
