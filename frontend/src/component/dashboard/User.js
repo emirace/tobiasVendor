@@ -550,6 +550,7 @@ export default function User() {
           });
           dispatch({ type: 'FETCH_SUCCESS', payload: data });
           setRebundleStatus(data.rebundle.status);
+          setNewsletterStatus(data.newsletter);
           setActive(`${data.active}`);
           setBadge(`${data.badge}`);
           setBundle(data.rebundle.status);
@@ -565,6 +566,7 @@ export default function User() {
           });
           dispatch({ type: 'FETCH_SUCCESS', payload: data });
           setBundle(data.rebundle.status);
+          setNewsletterStatus(data.newsletter);
           setRebundleStatus(data.rebundle.status);
         };
         fetchUser();
@@ -624,7 +626,6 @@ export default function User() {
           return;
         }
       }
-      console.log(rebundleStatus, bundle);
 
       if (rebundleStatus && !bundle) {
         setRebundleError('Click activate to make Rebundle active ');
@@ -787,6 +788,9 @@ export default function User() {
   const [rebundleCount, setRebundleCount] = useState(0);
   const [loadingRebundle, setLoadingRebundle] = useState(false);
   const [rebundleError, setRebundleError] = useState('');
+
+  const [newsletterStatus, setNewsletterStatus] = useState(user.newsletter);
+
   const handleRebundle = async (value) => {
     if (value) {
       const { data } = await axios.put('/api/users/bundle', value, {
@@ -818,6 +822,43 @@ export default function User() {
     } catch (err) {
       setLoadingRebundle(false);
       console.log(getError(err));
+    }
+  };
+
+  const handleNewsletter = async () => {
+    try {
+      if (newsletterStatus) {
+        // Unsubscribe from the newsletter
+        await axios.delete('/api/newsletters', {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setNewsletterStatus(false);
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Unsubscribed from newsletter',
+            showStatus: true,
+            state1: 'visible1 error',
+          },
+        });
+      } else {
+        // Subscribe to the newsletter
+        await axios.post('/api/newsletters', {
+          email: user.email,
+          emailType: 'Newsletter',
+        });
+        setNewsletterStatus(true);
+        ctxDispatch({
+          type: 'SHOW_TOAST',
+          payload: {
+            message: 'Subscribed for newsletter',
+            showStatus: true,
+            state1: 'visible1 success',
+          },
+        });
+      }
+    } catch (error) {
+      console.log('Error updating newsletter status:', error);
     }
   };
 
@@ -1343,7 +1384,14 @@ export default function User() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </Item>
-                    {console.log('rebundle', bundle)}
+                    <Option>
+                      <Label>Subscribe Newsletter</Label>
+                      <Switch
+                        mode={mode}
+                        checked={newsletterStatus}
+                        onChange={handleNewsletter}
+                      />
+                    </Option>
                     <OptionCont>
                       <Option>
                         <Label>

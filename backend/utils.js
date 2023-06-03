@@ -93,23 +93,13 @@ export const isSocialAuth = (req, res, next) => {
 };
 
 export const sendEmail = (options) => {
-  // const transporter = nodemailer.createTransport({
-  //   host: "smtpout.secureserver.net",
-  //   port: 80,
-
-  //   auth: {
-  //     user: "tobias@repeddle.com",
-  //     pass: "jH4/&FS-WqJubdK",
-  //   },
-  // });
-
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
     port: 587,
 
     auth: {
-      user: "tobias@repeddle.com",
-      pass: "jH4/&FS-WqJubdK",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 

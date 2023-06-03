@@ -1,20 +1,6 @@
 import mongoose from "mongoose";
 import findOrCreate from "mongoose-findorcreate";
 
-const reviewSchema = new mongoose.Schema(
-  {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    userId: { type: String },
-    name: { type: String, required: true },
-    comment: { type: String, required: true },
-    rating: { type: Number, required: true },
-    like: { type: String },
-    type: { type: String, required: true },
-  },
-  {
-    timestamps: true,
-  }
-);
 const buyerSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -42,7 +28,6 @@ const userSchema = new mongoose.Schema(
     dob: { type: Date },
     activeUpdate: { type: Date, default: Date.now() },
     usernameUpdate: { type: Date },
-    reviews: [reviewSchema],
     buyers: [buyerSchema],
     rating: { type: Number, default: 0 },
     wallet: { type: Number, default: 0 },
@@ -50,6 +35,7 @@ const userSchema = new mongoose.Schema(
     phone: { type: String },
     googleId: { type: String },
     accountName: { type: String },
+    newsletter: { type: Boolean, default: true },
     bankName: { type: String },
     earnings: { type: Number, default: 0 },
     address: {

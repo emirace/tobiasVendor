@@ -13,7 +13,7 @@ const ToastCont = styled.div`
   margin: auto;
   max-width: 400px;
   max-height: 100px;
-  z-index: 10;
+  z-index: 100;
   padding: 6px;
   background: var(--orange-color);
   color: #fff;
