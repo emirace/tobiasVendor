@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
-import styled from "styled-components";
+import React, { useContext, useEffect, useReducer, useState } from 'react';
+import styled from 'styled-components';
 import {
   faBolt,
   faCalendarDays,
@@ -14,19 +14,19 @@ import {
   faTruck,
   faUpload,
   faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Store } from "../../Store";
-import axios from "axios";
-import { getError, region, timeDifference } from "../../utils";
-import LoadingBox from "../LoadingBox";
-import SmallModel from "../SmallModel";
-import moment from "moment";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { banks, states } from "../../constant";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Store } from '../../Store';
+import axios from 'axios';
+import { getError, region, timeDifference } from '../../utils';
+import LoadingBox from '../LoadingBox';
+import SmallModel from '../SmallModel';
+import moment from 'moment';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import { banks, states } from '../../constant';
 
 const Container = styled.div`
   flex: 4;
@@ -61,14 +61,14 @@ const Show = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   border-radius: 0.2rem;
 `;
 const Update = styled.div`
   flex: 2;
   padding: 20px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   border-radius: 0.2rem;
   margin-left: 20px;
   @media (max-width: 992px) {
@@ -168,13 +168,13 @@ const TextInput = styled.input`
   height: 30px;
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   background: none;
   padding-left: 10px;
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   &:focus {
     outline: none;
     border-bottom: 1px solid var(--orange-color);
@@ -221,7 +221,7 @@ const Gender = styled.div`
     &::after {
       width: 15px;
       height: 15px;
-      content: "";
+      content: '';
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -229,15 +229,15 @@ const Gender = styled.div`
       top: -2px;
       left: -1px;
       background-color: ${(props) =>
-        props.mode === "pagebodydark"
-          ? "var(--black-color)"
-          : "var(--white-color)"};
+        props.mode === 'pagebodydark'
+          ? 'var(--black-color)'
+          : 'var(--white-color)'};
       border: 1px solid var(--orange-color);
     }
     &:checked::after {
       width: 15px;
       height: 15px;
-      content: "";
+      content: '';
       display: inline-block;
       visibility: visible;
       border-radius: 15px;
@@ -265,7 +265,7 @@ const Wallet = styled.div`
   border-radius: 0.2rem;
   align-items: center;
   background-color: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   @media (max-width: 992px) {
     padding: 0 10px;
     position: static;
@@ -310,7 +310,7 @@ const Textarea = styled.textarea`
   &:focus-visible {
     outline: none;
     border: 1px solid var(--orange-color);
-    color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
+    color: ${(props) => (props.mode === 'pagebodydark' ? 'white' : 'black')};
   }
 `;
 
@@ -331,9 +331,9 @@ const Plan = styled.div`
 `;
 
 const Switch = styled.input.attrs({
-  type: "checkbox",
-  id: "darkmodeSwitch",
-  role: "switch",
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
 })`
   position: relative;
 
@@ -349,7 +349,7 @@ const Switch = styled.input.attrs({
 
   &:checked {
     background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "#fcf0e0"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : '#fcf0e0'};
     &:before {
       left: 25px;
       background: var(--orange-color);
@@ -359,7 +359,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -372,7 +372,7 @@ const Switch = styled.input.attrs({
 const Tips = styled.span`
   position: relative;
   &:hover::after {
-    content: "${(props) => props.tips}";
+    content: '${(props) => props.tips}';
     width: 400px;
     position: absolute;
     border-radius: 0.5rem;
@@ -385,13 +385,13 @@ const Tips = styled.span`
     font-weight: 400;
     padding: 10px;
     background: ${(props) =>
-      props.mode === "pagebodydark"
-        ? "var(--white-color)"
-        : "var(--black-color)"};
+      props.mode === 'pagebodydark'
+        ? 'var(--white-color)'
+        : 'var(--black-color)'};
     color: ${(props) =>
-      props.mode === "pagebodydark"
-        ? "var(--black-color)"
-        : "var(--white-color)"};
+      props.mode === 'pagebodydark'
+        ? 'var(--black-color)'
+        : 'var(--white-color)'};
     @media (max-width: 992px) {
       font-size: 11px;
       left: -90px;
@@ -437,14 +437,14 @@ const Input = styled.input`
   height: 30px;
   border: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   background: none;
   padding-left: 10px;
   margin-right: 5;
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   &:focus {
     outline: none;
     border: 1px solid var(--orange-color);
@@ -467,23 +467,23 @@ const Button = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "FETCH_REQUEST":
-      return { ...state, loading: true, error: "" };
-    case "FETCH_SUCCESS":
+    case 'FETCH_REQUEST':
+      return { ...state, loading: true, error: '' };
+    case 'FETCH_SUCCESS':
       return { ...state, loading: false, user: action.payload };
-    case "FETCH_FAIL":
+    case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-    case "UPDATE_REQUEST":
+    case 'UPDATE_REQUEST':
       return { ...state, loadingUpdate: true };
-    case "UPDATE_SUCCESS":
+    case 'UPDATE_SUCCESS':
       return { ...state, loadingUpdate: false };
-    case "UPDATE_FAIL":
+    case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
-    case "UPLOAD_REQUEST":
+    case 'UPLOAD_REQUEST':
       return { ...state, loadingUpload: true };
-    case "UPLOAD_SUCCESS":
-      return { ...state, loadingUpload: false, errorUpload: "" };
-    case "UPLOAD_FAIL":
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
       return {
         ...state,
         loadingUpload: false,
@@ -506,40 +506,40 @@ export default function User() {
     dispatch,
   ] = useReducer(reducer, {
     loading: true,
-    error: "",
-    loadingUpdate: "",
+    error: '',
+    loadingUpdate: '',
     user: {},
   });
 
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [dob, setDob] = useState("");
-  const [phone, setPhone] = useState("");
-  const [about, setAbout] = useState("");
-  const [image, setImage] = useState("");
-  const [active, setActive] = useState("");
-  const [badge, setBadge] = useState("");
-  const [influencer, setInfluencer] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [dob, setDob] = useState('');
+  const [phone, setPhone] = useState('');
+  const [about, setAbout] = useState('');
+  const [image, setImage] = useState('');
+  const [active, setActive] = useState('');
+  const [badge, setBadge] = useState('');
+  const [influencer, setInfluencer] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showModel, setShowModel] = useState(false);
   const [showModelAddress, setShowModelAddress] = useState(false);
-  const [accountName, setAccountName] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [username, setUsername] = useState("");
+  const [accountName, setAccountName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [username, setUsername] = useState('');
 
   const [input, setInput] = useState({});
-  const [errorInput, setErrorInput] = useState("");
+  const [errorInput, setErrorInput] = useState('');
 
-  const [bundle, setBundle] = useState("");
+  const [bundle, setBundle] = useState('');
 
   useEffect(() => {
     try {
-      dispatch({ type: "FETCH_REQUEST" });
+      dispatch({ type: 'FETCH_REQUEST' });
 
       if (id) {
         const fetchUser = async () => {
@@ -548,7 +548,7 @@ export default function User() {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
-          dispatch({ type: "FETCH_SUCCESS", payload: data });
+          dispatch({ type: 'FETCH_SUCCESS', payload: data });
           setRebundleStatus(data.rebundle.status);
           setActive(`${data.active}`);
           setBadge(`${data.badge}`);
@@ -563,14 +563,14 @@ export default function User() {
               Authorization: `Bearer ${userInfo.token}`,
             },
           });
-          dispatch({ type: "FETCH_SUCCESS", payload: data });
+          dispatch({ type: 'FETCH_SUCCESS', payload: data });
           setBundle(data.rebundle.status);
           setRebundleStatus(data.rebundle.status);
         };
         fetchUser();
       }
     } catch (err) {
-      dispatch({ type: "FETCH_FAIL" });
+      dispatch({ type: 'FETCH_FAIL' });
       console.log(getError(err));
     }
   }, [id, userInfo]);
@@ -588,7 +588,7 @@ export default function User() {
         getBalance();
       } else {
         const getBalance = async () => {
-          const { data } = await axios.get("/api/accounts/balance", {
+          const { data } = await axios.get('/api/accounts/balance', {
             headers: { authorization: `Bearer ${userInfo.token}` },
           });
           setBalance(data);
@@ -601,24 +601,24 @@ export default function User() {
   }, [userInfo]);
 
   const submitHandler = async (e) => {
-    console.log("alone");
+    console.log('alone');
     e.preventDefault();
 
     try {
       if (!id && password !== confirmPassword) {
         ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "Password do not match",
+            message: 'Password do not match',
             showStatus: true,
-            state1: "visible1 error",
+            state1: 'visible1 error',
           },
         });
         return;
       }
       if (username.length > 0) {
         const confirm = window.confirm(
-          "Are you sure you want to edit your username? The next edit window  will be after 30 days"
+          'Are you sure you want to edit your username? The next edit window  will be after 30 days'
         );
         if (!confirm) {
           return;
@@ -627,11 +627,11 @@ export default function User() {
       console.log(rebundleStatus, bundle);
 
       if (rebundleStatus && !bundle) {
-        setRebundleError("Click activate to make Rebundle active ");
+        setRebundleError('Click activate to make Rebundle active ');
         return;
       }
 
-      dispatch({ type: "UPDATE_REQUEST" });
+      dispatch({ type: 'UPDATE_REQUEST' });
 
       const { data } = await axios.put(
         id ? `/api/users/${user._id}` : `/api/users/profile`,
@@ -664,27 +664,27 @@ export default function User() {
         }
       );
       if (!(id && userInfo.isAdmin)) {
-        ctxDispatch({ type: "USER_SIGNIN", payload: data });
+        ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       }
-      dispatch({ type: "UPDATE_SUCCESS" });
+      dispatch({ type: 'UPDATE_SUCCESS' });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "User Updated",
+          message: 'User Updated',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
-      navigate(id ? "/dashboard/userlist" : `../../seller/${user._id}`);
+      navigate(id ? '/dashboard/userlist' : `../../seller/${user._id}`);
     } catch (err) {
       console.log(getError(err));
-      dispatch({ type: "UPDATE_FAIL" });
+      dispatch({ type: 'UPDATE_FAIL' });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: "visible1 errorr",
+          state1: 'visible1 errorr',
         },
       });
     }
@@ -694,19 +694,19 @@ export default function User() {
     e.preventDefault();
     let valid = true;
     if (!input.street) {
-      handleError("Enter your street", "street");
+      handleError('Enter your street', 'street');
       valid = false;
     }
-    if (!input.apartment) {
-      handleError("Enter your apartment", "apartment");
-      valid = false;
-    }
+    // if (!input.apartment) {
+    //   handleError("Enter your apartment", "apartment");
+    //   valid = false;
+    // }
     if (!input.state) {
-      handleError("Select your province", "province");
+      handleError('Select your province', 'province');
       valid = false;
     }
     if (!input.zipcode) {
-      handleError("Enter your zip code", "zipcode");
+      handleError('Enter your zip code', 'zipcode');
       valid = false;
     }
 
@@ -719,15 +719,15 @@ export default function User() {
     e.preventDefault();
     let valid = true;
     if (!input.accountNumber) {
-      handleError("Enter a valid account number", "accountNumber");
+      handleError('Enter a valid account number', 'accountNumber');
       valid = false;
     }
     if (!input.accountName) {
-      handleError("Enter a valid account name", "accountName");
+      handleError('Enter a valid account name', 'accountName');
       valid = false;
     }
     if (!input.bankName) {
-      handleError("Select a valid bank", "bankName");
+      handleError('Select a valid bank', 'bankName');
       valid = false;
     }
 
@@ -746,33 +746,33 @@ export default function User() {
   const uploadHandler = async (e) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
+    bodyFormData.append('file', file);
     try {
-      dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: "UPLOAD_SUCCESS" });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
       setImage(data.secure_url);
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Image Uploaded",
+          message: 'Image Uploaded',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
     } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Failed uploading image",
+          message: 'Failed uploading image',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       console.log(getError(err));
@@ -783,13 +783,13 @@ export default function User() {
     user.usernameUpdate &&
     30 - timeDifference(new Date(user.usernameUpdate), new Date());
 
-  const [rebundleStatus, setRebundleStatus] = useState("");
+  const [rebundleStatus, setRebundleStatus] = useState('');
   const [rebundleCount, setRebundleCount] = useState(0);
   const [loadingRebundle, setLoadingRebundle] = useState(false);
-  const [rebundleError, setRebundleError] = useState("");
+  const [rebundleError, setRebundleError] = useState('');
   const handleRebundle = async (value) => {
     if (value) {
-      const { data } = await axios.put("/api/users/bundle", value, {
+      const { data } = await axios.put('/api/users/bundle', value, {
         headers: {
           authorization: `Bearer ${userInfo.token}`,
         },
@@ -798,13 +798,13 @@ export default function User() {
       return;
     }
     if (!rebundleCount) {
-      setRebundleError("Enter the quantity of item(s) for Rebundle");
+      setRebundleError('Enter the quantity of item(s) for Rebundle');
       return;
     }
     try {
       setLoadingRebundle(true);
       const { data } = await axios.put(
-        "/api/users/bundle",
+        '/api/users/bundle',
         { status: rebundleStatus, count: rebundleCount },
         {
           headers: {
@@ -829,13 +829,13 @@ export default function User() {
       <UserContainer>
         <Show mode={mode}>
           <ShowTop>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
               <Imagediv>
                 <Image src={user.image} alt="p" />
                 {user.badge && (
                   <div
                     className="seller_profile_badge"
-                    style={{ right: "0px", bottom: "0px" }}
+                    style={{ right: '0px', bottom: '0px' }}
                   >
                     <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
                   </div>
@@ -846,7 +846,7 @@ export default function User() {
                   {user.name || user.firstName} {user.lastName}
                 </Name>
                 <UserTitle>
-                  {user.isAdmin ? "Admin" : user.isSeller ? "Seller" : "Buyer"}
+                  {user.isAdmin ? 'Admin' : user.isSeller ? 'Seller' : 'Buyer'}
                 </UserTitle>
                 {user.active ? (
                   <Status className="active">
@@ -947,13 +947,13 @@ export default function User() {
                       placeholder={user.accountName}
                       type="text"
                       onChange={(e) =>
-                        handleOnChange(e.target.value, "accountName")
+                        handleOnChange(e.target.value, 'accountName')
                       }
-                      onFocus={() => handleError("", "accountName")}
+                      onFocus={() => handleError('', 'accountName')}
                     />
                   </Item>
                   {errorInput.accountName && (
-                    <div style={{ color: "red" }}>{errorInput.accountName}</div>
+                    <div style={{ color: 'red' }}>{errorInput.accountName}</div>
                   )}
                   <Item>
                     <Label>Account Number</Label>
@@ -963,13 +963,13 @@ export default function User() {
                       name="accountNumber"
                       type="number"
                       onChange={(e) =>
-                        handleOnChange(e.target.value, "accountNumber")
+                        handleOnChange(e.target.value, 'accountNumber')
                       }
-                      onFocus={() => handleError("", "accountNumber")}
+                      onFocus={() => handleError('', 'accountNumber')}
                     />
                   </Item>
                   {errorInput.accountNumber && (
-                    <div style={{ color: "red" }}>
+                    <div style={{ color: 'red' }}>
                       {errorInput.accountNumber}
                     </div>
                   )}
@@ -978,37 +978,37 @@ export default function User() {
                     <FormControl
                       sx={{
                         margin: 0,
-                        borderRadius: "0.2rem",
+                        borderRadius: '0.2rem',
                         border: `1px solid ${
-                          mode === "pagebodydark"
-                            ? "var(--dark-ev4)"
-                            : "var(--light-ev4)"
+                          mode === 'pagebodydark'
+                            ? 'var(--dark-ev4)'
+                            : 'var(--light-ev4)'
                         }`,
-                        "& .MuiOutlinedInput-root": {
+                        '& .MuiOutlinedInput-root': {
                           color: `${
-                            mode === "pagebodydark"
-                              ? "var(--white-color)"
-                              : "var(--black-color)"
+                            mode === 'pagebodydark'
+                              ? 'var(--white-color)'
+                              : 'var(--black-color)'
                           }`,
-                          "&:hover": {
-                            outline: "none",
+                          '&:hover': {
+                            outline: 'none',
                             border: 0,
                           },
                         },
-                        "& .MuiOutlinedInput-notchedOutline": {
-                          border: "0 !important",
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          border: '0 !important',
                         },
                       }}
                       size="small"
                     >
                       <Select
                         onChange={(e) =>
-                          handleOnChange(e.target.value, "bankName")
+                          handleOnChange(e.target.value, 'bankName')
                         }
-                        onFocus={() => handleError("", "bankName")}
+                        onFocus={() => handleError('', 'bankName')}
                         displayEmpty
                       >
-                        {region() === "NGN"
+                        {region() === 'NGN'
                           ? banks.Nigeria.map((x) => (
                               <MenuItem value={x.name}>{x.name}</MenuItem>
                             ))
@@ -1019,7 +1019,7 @@ export default function User() {
                     </FormControl>
                   </Item>
                   {errorInput.bankName && (
-                    <div style={{ color: "red" }}>{errorInput.bankName}</div>
+                    <div style={{ color: 'red' }}>{errorInput.bankName}</div>
                   )}
                   <UploadButton onClick={accountValidate}>Update</UploadButton>
                 </Form2>
@@ -1046,69 +1046,73 @@ export default function User() {
               setShowModel={setShowModelAddress}
             >
               <Form2>
+                <p>
+                  The provided address may be use for return should there be a
+                  need. This address is not displayed to buyers.
+                </p>
                 <Item>
-                  <Label>Strret</Label>
+                  <Label>Street</Label>
                   <TextInput
                     mode={mode}
                     name="street"
                     type="text"
-                    onChange={(e) => handleOnChange(e.target.value, "street")}
-                    onFocus={() => handleError("", "street")}
+                    onChange={(e) => handleOnChange(e.target.value, 'street')}
+                    onFocus={() => handleError('', 'street')}
                   />
                 </Item>
                 {errorInput.street && (
-                  <div style={{ color: "red" }}>{errorInput.street}</div>
+                  <div style={{ color: 'red' }}>{errorInput.street}</div>
                 )}
                 <Item>
-                  <Label>Apartment</Label>
+                  <Label>Apartment/Complex</Label>
                   <TextInput
                     mode={mode}
                     name="apartment"
                     type="text"
                     onChange={(e) =>
-                      handleOnChange(e.target.value, "apartment")
+                      handleOnChange(e.target.value, 'apartment')
                     }
-                    onFocus={() => handleError("", "apartment")}
+                    onFocus={() => handleError('', 'apartment')}
                   />
                 </Item>
                 {errorInput.apartment && (
-                  <div style={{ color: "red" }}>{errorInput.apartment}</div>
+                  <div style={{ color: 'red' }}>{errorInput.apartment}</div>
                 )}
                 <Item>
-                  <Label>{region() === "NGN" ? "State" : "Province"}</Label>
+                  <Label>{region() === 'NGN' ? 'State' : 'Province'}</Label>
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: "0.2rem",
+                      borderRadius: '0.2rem',
                       border: `1px solid ${
-                        mode === "pagebodydark"
-                          ? "var(--dark-ev4)"
-                          : "var(--light-ev4)"
+                        mode === 'pagebodydark'
+                          ? 'var(--dark-ev4)'
+                          : 'var(--light-ev4)'
                       }`,
-                      "& .MuiOutlinedInput-root": {
+                      '& .MuiOutlinedInput-root': {
                         color: `${
-                          mode === "pagebodydark"
-                            ? "var(--white-color)"
-                            : "var(--black-color)"
+                          mode === 'pagebodydark'
+                            ? 'var(--white-color)'
+                            : 'var(--black-color)'
                         }`,
-                        "&:hover": {
-                          outline: "none",
+                        '&:hover': {
+                          outline: 'none',
                           border: 0,
                         },
                       },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "0 !important",
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: '0 !important',
                       },
                     }}
                     size="small"
                   >
                     <Select
                       value={input.state}
-                      onChange={(e) => handleOnChange(e.target.value, "state")}
-                      onFocus={() => handleError("", "state")}
+                      onChange={(e) => handleOnChange(e.target.value, 'state')}
+                      onFocus={() => handleError('', 'state')}
                       displayEmpty
                     >
-                      {region() === "NGN"
+                      {region() === 'NGN'
                         ? states.Nigeria.map((x) => (
                             <MenuItem value={x}>{x}</MenuItem>
                           ))
@@ -1119,7 +1123,7 @@ export default function User() {
                   </FormControl>
                 </Item>
                 {errorInput.state && (
-                  <div style={{ color: "red" }}>{errorInput.state}</div>
+                  <div style={{ color: 'red' }}>{errorInput.state}</div>
                 )}
                 <Item>
                   <Label>Zip Code</Label>
@@ -1128,12 +1132,12 @@ export default function User() {
                     name="zipcode"
                     value={input.zipcode}
                     type="number"
-                    onChange={(e) => handleOnChange(e.target.value, "zipcode")}
-                    onFocus={() => handleError("", "zipcode")}
+                    onChange={(e) => handleOnChange(e.target.value, 'zipcode')}
+                    onFocus={() => handleError('', 'zipcode')}
                   />
                 </Item>
                 {errorInput.zipcode && (
-                  <div style={{ color: "red" }}>{errorInput.zipcode}</div>
+                  <div style={{ color: 'red' }}>{errorInput.zipcode}</div>
                 )}
                 <UploadButton onClick={addressValidate}>Update</UploadButton>
               </Form2>
@@ -1148,13 +1152,13 @@ export default function User() {
                 <Label>Username</Label>
                 {daydiff > 0 && (
                   <div
-                    style={{ fontSize: "12px", color: "var(--malon-color)" }}
+                    style={{ fontSize: '12px', color: 'var(--malon-color)' }}
                   >
                     updated {moment(user.usernameUpdate).fromNow()}, next update
                     in {daydiff} days
                   </div>
                 )}
-                {console.log("daydiff", daydiff)}
+                {console.log('daydiff', daydiff)}
                 <TextInput
                   mode={mode}
                   disabled={daydiff > 0}
@@ -1231,7 +1235,7 @@ export default function User() {
                         ? image
                         : user.image
                         ? user.image
-                        : "/images/pimage.png"
+                        : '/images/pimage.png'
                     }
                     alt=""
                   />
@@ -1250,13 +1254,13 @@ export default function User() {
                   <>
                     <Label>Active</Label>
                     <div
-                      style={{ fontSize: "12px", color: "var(--malon-color)" }}
+                      style={{ fontSize: '12px', color: 'var(--malon-color)' }}
                     >
                       updated {moment(user.activeUpdate).fromNow()}
                     </div>
                     <Gender mode={mode}>
                       <input
-                        checked={active === "true"}
+                        checked={active === 'true'}
                         type="radio"
                         name="gender"
                         id="yes"
@@ -1265,7 +1269,7 @@ export default function User() {
                       />
                       <Label htmlFor="yes">Yes</Label>
                       <input
-                        checked={active === "false"}
+                        checked={active === 'false'}
                         type="radio"
                         name="gender"
                         id="no"
@@ -1277,7 +1281,7 @@ export default function User() {
                     <Label>Badge</Label>
                     <Gender mode={mode}>
                       <input
-                        checked={badge === "true"}
+                        checked={badge === 'true'}
                         type="radio"
                         name="badge"
                         id="badgeyes"
@@ -1286,7 +1290,7 @@ export default function User() {
                       />
                       <Label htmlFor="badgeyes">Yes</Label>
                       <input
-                        checked={badge === "false"}
+                        checked={badge === 'false'}
                         type="radio"
                         name="badge"
                         id="badgeno"
@@ -1298,17 +1302,17 @@ export default function User() {
                     <Label>Influencer</Label>
                     <Gender mode={mode}>
                       <input
-                        checked={influencer === "true"}
+                        checked={influencer === 'true'}
                         type="radio"
                         name="influencer"
                         id="influenceryes"
                         value={true}
                         onClick={(e) => setInfluencer(e.target.value)}
                       />
-                      {console.log("influencer", influencer)}
+                      {console.log('influencer', influencer)}
                       <Label htmlFor="influenceryes">Yes</Label>
                       <input
-                        checked={influencer === "false"}
+                        checked={influencer === 'false'}
                         type="radio"
                         name="influencer"
                         id="influencerno"
@@ -1339,7 +1343,7 @@ export default function User() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </Item>
-                    {console.log("rebundle", bundle)}
+                    {console.log('rebundle', bundle)}
                     <OptionCont>
                       <Option>
                         <Label>
@@ -1368,9 +1372,9 @@ export default function User() {
                       </Option>
                       <div
                         style={{
-                          width: "100%",
-                          height: "1px",
-                          background: "#d4d4d4",
+                          width: '100%',
+                          height: '1px',
+                          background: '#d4d4d4',
                         }}
                       />
                       {rebundleStatus && (
@@ -1379,12 +1383,12 @@ export default function User() {
                             <div>
                               <FontAwesomeIcon
                                 icon={faCheck}
-                                style={{ color: "var(--orange-color)" }}
+                                style={{ color: 'var(--orange-color)' }}
                               />
                             </div>
                           ) : (
                             <>
-                              <div style={{ fontWeight: "11px" }}>
+                              <div style={{ fontWeight: '11px' }}>
                                 Please input numbers of how many item(s) you are
                                 willing to pack in delivery bag(s) for a buyer
                                 when Rebundle is active
@@ -1396,7 +1400,7 @@ export default function User() {
                                   onChange={(e) =>
                                     setRebundleCount(e.target.value)
                                   }
-                                  onFocus={() => setRebundleError("")}
+                                  onFocus={() => setRebundleError('')}
                                 />
                                 {loadingRebundle ? (
                                   <LoadingBox />
@@ -1407,7 +1411,7 @@ export default function User() {
                                 )}
                               </Plan>
                               {rebundleError && (
-                                <div style={{ color: "red" }}>
+                                <div style={{ color: 'red' }}>
                                   {rebundleError}
                                 </div>
                               )}
@@ -1423,7 +1427,7 @@ export default function User() {
                 )}
               </div>
               <UploadButton type="submit">Update</UploadButton>
-              {loadingUpdate ? <LoadingBox></LoadingBox> : ""}
+              {loadingUpdate ? <LoadingBox></LoadingBox> : ''}
             </Right>
           </Form>
         </Update>
