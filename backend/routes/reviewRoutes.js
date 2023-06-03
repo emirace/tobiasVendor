@@ -93,13 +93,15 @@ reviewRouter.put(
   expressAsyncHandler(async (req, res) => {
     try {
       const { comment } = req.body;
-      const review = await Review.findById(req.params.id);
+      const review = await Review.findById(req.params.id)
+        .populate("sellerId", "image username")
+        .populate("buyerId", "image username");
 
       if (!review) {
         return res.status(404).send({ message: "Review not found" });
       }
 
-      if (review.sellerId.toString() !== req.user._id) {
+      if (review.sellerId._id.toString() !== req.user._id) {
         return res
           .status(400)
           .send({ message: "You can't reply to this review" });

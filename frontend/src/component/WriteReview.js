@@ -88,7 +88,7 @@ export default function WriteReview({ userId, setShowModel }) {
         userId: userId,
         itemId: userId,
         notifyType: "review",
-        msg: `${userInfo.username} gave you a review`,
+        msg: `${userInfo.username} left you a review`,
         mobile: { path: "MyAccount", id: userId },
         link: `/seller/${userId}`,
         userImage: userInfo.image,

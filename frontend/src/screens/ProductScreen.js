@@ -1065,23 +1065,23 @@ export default function ProductScreen() {
   const [onlineUser, setOnlineUser] = useState([]);
 
   useEffect(() => {
-    socket.emit('initialUsers');
-    socket.on('loadUsers', (users) => {
+    socket.emit("initialUsers");
+    socket.on("loadUsers", (users) => {
       setOnlineUser(users);
-      console.log('loadUsers', users);
+      console.log("loadUsers", users);
     });
-    socket.on('getUsers', (users) => {
+    socket.on("getUsers", (users) => {
       setOnlineUser(users);
-      console.log('onlineuser', users);
+      console.log("onlineuser", users);
     });
-    console.log('onlineuser', onlineUser);
+    console.log("onlineuser", onlineUser);
     return () => {
-      socket.off('loadUsers');
-      socket.off('getUsers');
+      socket.off("loadUsers");
+      socket.off("getUsers");
     };
   }, [userInfo]);
 
-  const isOnlineCon = (c) => { 
+  const isOnlineCon = (c) => {
     if (onlineUser.length > 0) {
       let onlineUserList = [];
       onlineUser.map((o) => onlineUserList.push(o._id));
@@ -1259,7 +1259,10 @@ export default function ProductScreen() {
                 />
               </ReviewsClick>
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>
-                <ReviewLists userId={product.seller._id} />
+                <ReviewLists
+                  userId={product.seller._id}
+                  setShowModel={setShowModel}
+                />
               </ModelLogin>
             </div>
           </div>

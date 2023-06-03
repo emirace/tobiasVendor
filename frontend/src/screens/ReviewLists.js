@@ -6,41 +6,16 @@ import Rating from "../component/Rating";
 import { getError } from "../utils";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFaceSmile,
-  faThumbsDown,
-  faThumbsUp,
-} from "@fortawesome/free-solid-svg-icons";
+import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import MessageBox from "../component/MessageBox";
 import moment from "moment";
+import { socket } from "../App";
 
-const reviews1 = [
-  {
-    id: 1,
-    reviewerName: "John Doe",
-    reviewerImage:
-      "https://res.cloudinary.com/emirace/image/upload/v1675795105/ndksunuy8k2xdsc6wr56.webp",
-    rating: 4.5,
-    review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    time: "2 days ago",
-    sellerReply: "Thank you for your review!",
-  },
-  {
-    id: 2,
-    reviewerName: "Jane Smith",
-    reviewerImage:
-      "https://res.cloudinary.com/emirace/image/upload/v1675795105/ndksunuy8k2xdsc6wr56.webp",
-    rating: 3.8,
-    review: "Nullam tempor ex vel quam consequat aliquam.",
-    time: "5 days ago",
-  },
-  // Add more review objects as needed
-];
-
-const ReviewLists = ({ userId }) => {
+const ReviewLists = ({ userId, setShowModel }) => {
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
   const [error, setError] = useState("");
+  console.log(setShowModel);
 
   useEffect(() => {
     const getReviews = async () => {
@@ -64,14 +39,14 @@ const ReviewLists = ({ userId }) => {
       <ReviewList>
         {reviews.length === 0 && <MessageBox>There is no reviews</MessageBox>}
         {reviews.map((item) => (
-          <ReviewItem item={item} />
+          <ReviewItem item={item} setShowModel={setShowModel} />
         ))}
       </ReviewList>
     </Container>
   );
 };
 
-const ReviewItem = ({ item }) => {
+const ReviewItem = ({ item, setShowModel }) => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
   const [replyVisible, setReplyVisible] = useState(false);
@@ -115,6 +90,15 @@ const ReviewItem = ({ item }) => {
           state1: "visible1 success",
         },
       });
+      socket.emit("post_data", {
+        userId: currentReview.buyerId._id,
+        itemId: currentReview._id,
+        notifyType: "review",
+        msg: `${userInfo.username} responded to your review`,
+        mobile: { path: "MyAccount", id: currentReview.sellerId._id },
+        link: `/seller/${currentReview.sellerId._id}`,
+        userImage: userInfo.image,
+      });
       setLoading(false);
     } catch (error) {
       ctxDispatch({
@@ -131,9 +115,17 @@ const ReviewItem = ({ item }) => {
   return (
     <ReviewContainer>
       <ReviewerInfoContainer>
-        <ReviewerImage src={currentReview?.buyerId?.image} alt="Reviewer" />
+        <Link
+          to={`/seller/${currentReview?.buyerId?._id}`}
+          onClick={() => setShowModel(false)}
+        >
+          <ReviewerImage src={currentReview?.buyerId?.image} alt="Reviewer" />
+        </Link>
         <Info>
-          <Link to={`/seller/${currentReview?.buyerId?._id}`}>
+          <Link
+            to={`/seller/${currentReview?.buyerId?._id}`}
+            onClick={() => setShowModel(false)}
+          >
             <ReviewerName>{currentReview?.buyerId?.username}</ReviewerName>
           </Link>
           <ReviewTime>{moment(currentReview.createdAt).fromNow()}</ReviewTime>
@@ -152,6 +144,20 @@ const ReviewItem = ({ item }) => {
         <ReviewText>{currentReview.comment}</ReviewText>
         {currentReview.sellerReply && (
           <SellerReplyContainer mode={mode}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "5px",
+              }}
+              onClick={() => setShowModel(false)}
+            >
+              <ReviewerImageSmall
+                src={currentReview?.sellerId?.image}
+                alt="Reviewer"
+              />
+              <SellerName>{currentReview?.sellerId?.username}</SellerName>
+            </div>
             {currentReview.sellerReply}
           </SellerReplyContainer>
         )}
@@ -211,6 +217,13 @@ const ReviewerImage = styled.img`
   border-radius: 25px;
   margin-right: 0 !important;
 `;
+const ReviewerImageSmall = styled.img`
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 25px;
+  margin-right: 10px !important;
+`;
+
 const Info = styled.div`
   display: flex;
   flex-direction: column;
@@ -221,6 +234,12 @@ const Info = styled.div`
 const ReviewerName = styled.div`
   font-weight: bold;
   font-size: 16px;
+  color: var(--malon-color);
+`;
+
+const SellerName = styled.div`
+  font-size: 12px;
+  color: var(--malon-color);
 `;
 
 const ReviewTime = styled.div`
