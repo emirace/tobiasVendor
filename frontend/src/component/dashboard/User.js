@@ -1385,7 +1385,7 @@ export default function User() {
                       />
                     </Item>
                     <Option>
-                      <Label>Subscribe Newsletter</Label>
+                      <Label>Subscribe to Newsletter</Label>
                       <Switch
                         mode={mode}
                         checked={newsletterStatus}

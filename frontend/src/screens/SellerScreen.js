@@ -598,7 +598,7 @@ export default function SellerScreen() {
               )}
 
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>
-                <ReviewLists userId={sellerId} />
+                <ReviewLists userId={sellerId} setShowModel={setShowModel} />
               </ModelLogin>
               <ModelLogin
                 showModel={showWriteReview}

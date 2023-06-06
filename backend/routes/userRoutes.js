@@ -493,7 +493,11 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-
+    const newsletter = new Newsletters({
+      email: result.email,
+      emailType: "Newsletter",
+    });
+    await newsletter.save();
     res.status(200).send(data);
   })
 );
@@ -561,7 +565,11 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-
+    const newsletter = new Newsletters({
+      email: result.email,
+      emailType: "Newsletter",
+    });
+    await newsletter.save();
     res.status(200).send(data);
   })
 );
@@ -631,7 +639,11 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-
+    const newsletter = new Newsletters({
+      email: result.email,
+      emailType: "Newsletter",
+    });
+    await newsletter.save();
     res.status(200).send(data1);
   })
 );

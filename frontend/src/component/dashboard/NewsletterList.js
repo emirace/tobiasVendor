@@ -129,6 +129,33 @@ const Button = styled.button`
     background: var(--malon-color);
   }
 `;
+const TextInput = styled.input`
+  background: none;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
+  border-radius: 0.2rem;
+  height: 40px;
+  padding: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  &:focus-visible {
+    outline: 1px solid var(--orange-color);
+  }
+  &.half {
+    width: 100px;
+    margin-right: 5px;
+  }
+  &:invalid {
+    /* outline: 1px solid var(--red-color); */
+  }
+  @media (max-width: 992px) {
+  }
+`;
 
 export default function NewsletterList() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -150,6 +177,8 @@ export default function NewsletterList() {
   const [emailName, setEmailName] = useState("");
   const [emailLists, setEmailLists] = useState([]);
   const [loadingSend, setLoadingSend] = useState(false);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+  const [inputEmail, setInputEmail] = useState("");
 
   useEffect(() => {
     const fetchNewsletter = async () => {
@@ -293,6 +322,42 @@ export default function NewsletterList() {
     setSelectAll(!selectAll);
   };
 
+  const handleAddEmail = async () => {
+    try {
+      setLoadingAdd(true);
+      const { data } = await axios.post(
+        "/api/newsletters",
+        {
+          email: inputEmail,
+          emailType: "Newsletter",
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setNewsletters([data, ...newsletters]);
+      setLoadingAdd(false);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Emails added successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      setInputEmail("");
+    } catch (error) {
+      setLoadingAdd(false);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
   return (
     <ProductLists mode={mode}>
       <Container>
@@ -356,6 +421,17 @@ export default function NewsletterList() {
             <Button onClick={sendEmails}>Send Email</Button>
           )}
         </ListItem1>
+        <TextInput
+          mode={mode}
+          value={inputEmail}
+          type="text"
+          onChange={(e) => setInputEmail(e.target.value.trim())}
+        />
+        {loadingAdd ? (
+          <LoadingBox />
+        ) : (
+          <Button onClick={handleAddEmail}>Add Email</Button>
+        )}
 
         <List>
           {loadingNewsletters && <LoadingBox />}
@@ -374,7 +450,7 @@ export default function NewsletterList() {
               <FontAwesomeIcon
                 onClick={() => deleteHandler(newsletter._id)}
                 icon={faTrash}
-                style={{ color: "red", cursor: "pointer" }}
+                style={{ color: "red", cursor: "pointer", marginLeft: "10px" }}
               />
             </ListItem>
           ))}
@@ -404,7 +480,7 @@ export default function NewsletterList() {
               <FontAwesomeIcon
                 onClick={() => deleteHandler(rebatch._id)}
                 icon={faTrash}
-                style={{ color: "red", cursor: "pointer" }}
+                style={{ color: "red", cursor: "pointer", marginLeft: 10 }}
               />
             </ListItem>
           ))}
