@@ -51,6 +51,7 @@ const productSchema = new mongoose.Schema(
     shares: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     reviews: [reviewSchema],
     sold: { type: Boolean },
+    soldAll: { type: Boolean, default: false },
     badge: { type: Boolean },
     meta: {},
     active: { type: Boolean },

@@ -1,4 +1,10 @@
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faCheckCircle,
+  faQuestionCircle,
+  faTimes,
+  faUpload,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useState, useEffect, useReducer } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -12,6 +18,12 @@ import axios from "axios";
 import { getError } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import MessageImage from "../MessageImage";
+import ModelLogin from "../ModelLogin";
+import Condition from "../Condition";
+import SmallModel from "../SmallModel";
+import AddOtherBrand from "../AddOtherBrand";
+import FeeStructure from "../info/FeeStructure";
+import DeliveryOption from "./DeliveryOption";
 
 const ProductC = styled.div`
   flex: 4;
@@ -216,6 +228,7 @@ const Gender = styled.div`
   }
 `;
 const Item = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -302,8 +315,7 @@ const Discount = styled.div`
 `;
 const PriceDisplay = styled.div`
   display: flex;
-  justify-content: center;
-  margin: 55px 0 0 30px;
+  margin: 10px;
 `;
 const Offer = styled.div`
   font-size: 25px;
@@ -352,16 +364,191 @@ const SmallItems = styled.div`
   flex-wrap: wrap;
 `;
 
-const ItemCont = styled.div`
+const SoldAdd = styled.div`
+  color: white;
+  padding: 5px;
+  border-radius: 0.2rem;
+  margin: 10px 0;
+  width: 50%;
   display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Tips = styled.span`
+  position: relative;
+  &:hover::after {
+    content: "${(props) => props.tips}";
+    width: 350px;
+    position: absolute;
+    border-radius: 0.5rem;
+    left: 30px;
+    text-align: justify;
+    font-size: 14px;
+    z-index: 2;
+    line-height: 1.2;
+    font-weight: 400;
+    padding: 10px;
+    background: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
+    color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+    @media (max-width: 992px) {
+      width: 250px;
+      font-size: 11px;
+      top: 20px;
+      left: -20px;
+    }
+  }
+`;
+const LinkTo = styled.span`
+  text-decoration: underline;
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 400;
+  cursor: pointer;
+  &:hover {
+    color: var(--orange-color);
+  }
+`;
+const TitleDetails = styled.span`
+  width: 70%;
+  font-size: 14px;
+  line-height: 1.2;
+  margin-bottom: 5px;
+  @media (max-width: 992px) {
+    width: auto;
+  }
+`;
+
+const BrandList = styled.div`
+  position: absolute;
+  max-height: 300px;
+  overflow: auto;
+  top: 120px;
+  z-index: 9;
+  border-bottom-left-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+`;
+const BrandListItem = styled.div`
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+  }
+`;
+
+const Checkbox = styled.input`
+  margin-bottom: 10px;
+  margin-right: 10px;
+  &::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+    border: 1px solid var(--orange-color);
+  }
+  &:checked::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: var(--orange-color);
+    border: 1px solid var(--orange-color);
+  }
+`;
+
+const Sizes = styled.div`
+  display: flex;
+  margin: 20px 0;
   gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+  }
 `;
-const ItemLeft = styled.div`
+
+const TagInputCont = styled.div`
+  display: flex;
+  align-items: center;
+  border: 1px solid
+    ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
+  border-radius: 0.2rem;
+  height: 40px;
+`;
+const TagInput = styled.input`
+  flex: 1;
+  background: none;
+  color: ${(props) =>
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
+  border: 0;
+  height: 40px;
+  padding: 10px;
+  &:focus-visible {
+    outline: none;
+  }
+`;
+const AddTag = styled.div`
+  padding: 2px 5px;
+  background: var(--malon-color);
+  color: var(--white-color);
+  margin: 0 5px;
+  cursor: pointer;
+`;
+const SizeLeft = styled.div`
   flex: 1;
 `;
-const ItemRight = styled.div`
+const SizeRight = styled.div`
+  display: flex;
   flex: 1;
 `;
+const Deliv = styled.div`
+  display: flex;
+  align-items: center;
+  & svg {
+    margin-right: 10px;
+    color: var(--orange-color);
+  }
+`;
+const TagItem = styled.div`
+  display: flex;
+  padding: 2px 5px;
+  margin: 5px;
+  align-items: center;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+  & svg {
+    margin-left: 10px;
+    font-size: 11px;
+  }
+`;
+
+const TagCont = styled.div``;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -394,6 +581,33 @@ const reducer = (state, action) => {
 };
 
 let sizes = [];
+let tags = [];
+
+const color1 = [
+  "red",
+  "anthracite",
+  "beige",
+  "black",
+  "blue",
+  "brown",
+  "burgubdy",
+  "camel",
+  "ecru",
+  "gold",
+  "green",
+  "grey",
+  "khaki",
+  "metallic",
+  "multiculour",
+  "navy",
+  "orange",
+  "pink",
+  "purple",
+  "silver",
+  "turquoise",
+  "white",
+  "yellow",
+];
 
 export default function Product() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -408,23 +622,39 @@ export default function Product() {
       error: "",
     });
 
-  const [name, setName] = useState("");
   const [active, setActive] = useState("");
   const [badge, setBadge] = useState("");
   const [image1, setImage1] = useState("");
   const [image2, setImage2] = useState("");
   const [image3, setImage3] = useState("");
   const [image4, setImage4] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
-  const [brand, setBrand] = useState("");
-  const [tempsize, setTempsize] = useState("");
-  const [specification, setSpecification] = useState("");
-  const [feature, setFeature] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [mainCate, setMainCate] = useState("");
+
+  const [showConditionModal, setShowConditionModal] = useState(false);
+  const [validationError, setValidationError] = useState({});
+  const [showOtherBrand, setShowOtherBrand] = useState(false);
+  const [showComissionModal, setShowComissionModal] = useState(false);
+  const [showDelivery, setShowDelivery] = useState(false);
+  const [countInStock, setCountInStock] = useState(1);
+  const [addSize, setAddSize] = useState(sizes.length < 1);
+  const [searchBrand, setSearchBrand] = useState(null);
+  const [brandQuery, setBrandQuery] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState([
+    { name: "Pick up from Seller", value: 0 },
+  ]);
+  const [input, setInput] = useState({
+    brand: "",
+  });
+
+  const [paxi, setPaxi] = useState(true);
+  const [gig, setGig] = useState(false);
+  const [pudo, setPudo] = useState(false);
+  const [postnet, setPostnet] = useState(false);
+  const [aramex, setAramex] = useState(false);
+  const [pickup, setPickup] = useState(true);
+  const [bundle, setBundle] = useState(false);
+  const [meta, setMeta] = useState({});
 
   const navigate = useNavigate();
 
@@ -434,32 +664,95 @@ export default function Product() {
         const { data } = await axios.get(`/api/products/${id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        console.log(data);
         setProduct(data);
-        setName(data.name);
         data.active ? setActive("yes") : setActive("no");
         data.badge ? setBadge("yes") : setBadge("no");
         setImage1(data.image);
         setImage2(data.images[0]);
         setImage3(data.images[1]);
         setImage4(data.images[2]);
-        setCategory(data.category);
-        setDescription(data.description);
         setPrice(data.price);
         setDiscount(data.actualPrice);
-        setBrand(data.brand);
-        setSpecification(data.specification);
-        setFeature(data.keyFeatures);
-        setMainCate(data.product);
-        setSubCategory(data.subCategory);
+        setDeliveryOption(data.deliveryOption);
         sizes = data.sizes;
+        tags = data.tags;
+        setInput(data);
       };
       fetchProduct();
     }
   }, [id, userInfo]);
 
-  const submitHandler = async (e) => {
+  useEffect(() => {
+    const getSearch = async () => {
+      const { data } = await axios.get(`/api/brands/search?q=${brandQuery}`);
+      console.log(data);
+      setSearchBrand(data);
+    };
+    getSearch();
+  }, [brandQuery]);
+
+  const validation = (e) => {
     e.preventDefault();
+    var valid = true;
+    if (!input.name) {
+      handleError("Enter product name", "name");
+      valid = false;
+    }
+
+    if (!image1) {
+      handleError("Add at least one image", "image");
+      valid = false;
+    }
+    if (!input.product) {
+      handleError("Select main category", "product");
+      valid = false;
+    }
+    if (!input.subCategory) {
+      handleError("Select sub category", "subCategory");
+      valid = false;
+    }
+    if (!input.category) {
+      handleError("Select category", "category");
+      valid = false;
+    }
+    if (!input.brand) {
+      handleError("Select brand", "brand");
+      valid = false;
+    }
+    if (!price) {
+      handleError("Enter a valid price", "price");
+      valid = false;
+    }
+    if (!input.condition) {
+      handleError("Select condition", "condition");
+      valid = false;
+    }
+
+    if (!input.keyFeatures) {
+      handleError("Select feature", "keyFeatures");
+      valid = false;
+    }
+    if (!input.color) {
+      handleError("Select color", "color");
+      valid = false;
+    }
+    if (addSize) {
+      if (countInStock < 1) {
+        handleError("Enter count in stock", "sizes");
+        valid = false;
+      }
+    } else {
+      if (!sizes.length) {
+        handleError("Enter a valid size and quantity available", "sizes");
+        valid = false;
+      }
+    }
+
+    if (valid) {
+      submitHandler();
+    }
+  };
+  const submitHandler = async () => {
     if (product.sold && !userInfo.isAdmin) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -476,7 +769,7 @@ export default function Product() {
       await axios.put(
         `/api/products/${id}`,
         {
-          name,
+          name: input.name,
           price,
           image1,
           badge,
@@ -484,15 +777,22 @@ export default function Product() {
           image2,
           image3,
           image4,
-          mainCate,
-          subCategory,
-          category,
-          brand,
-          specification,
+          tags,
+          mainCate: input.mainCate,
+          subCategory: input.subCategory,
+          category: input.category,
+          brand: input.brand,
+          specification: input.specification,
           sizes: sizes,
-          description,
-          feature,
+          description: input.description,
+          condition: input.condition,
+          color: input.color,
+          material: input.material,
+          feature: input.keyFeatures,
+          addSize,
           discount,
+          countInStock,
+          deliveryOption,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -600,7 +900,6 @@ export default function Product() {
     } else {
       sizes.push({ size: sizenow, value: "0" });
     }
-    setTempsize(sizenow);
   };
 
   const productData = [
@@ -626,6 +925,71 @@ export default function Product() {
 
   const percentage =
     ((product.price - product.actualPrice) / product.price) * 100;
+
+  const handleSold = async () => {
+    try {
+      const response = await axios.put(
+        `/api/admins/soldAll/${id}`,
+        {
+          // Add any additional request body parameters if needed
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+
+      // Assuming the API returns the updated product in the response body
+      const updatedProduct = response.data;
+      setProduct(updatedProduct);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Marked as sold",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (error) {
+      console.error("Error marking product as sold:", getError(error));
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
+  const handleOnChange = (text, input) => {
+    setInput((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setValidationError((prevState) => ({
+      ...prevState,
+      [input]: errorMessage,
+    }));
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.target.blur();
+    }
+  };
+
+  const handleTags = (tag) => {
+    if (tag.length > 0) {
+      tags.push(tag);
+      handleOnChange("", "tag");
+    }
+  };
+  const removeTags = (tag) => {
+    console.log(tag);
+    const newtags = tags.filter((data) => data != tag);
+    tags = newtags;
+  };
+
   return (
     <ProductC>
       <ProductTitleCont>
@@ -651,7 +1015,6 @@ export default function Product() {
             <InfoItem>
               <InfoKey>seller:</InfoKey>
               <InfoValue>
-                {console.log("pro", product)}
                 {product ? product.seller.username : "loading..."}
               </InfoValue>
             </InfoItem>
@@ -676,14 +1039,14 @@ export default function Product() {
         </TopRight>
       </Top>
       <Bottom mode={mode}>
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={validation}>
           <FormLeft>
             <Label>Product Name</Label>
             <Input
               type="text"
-              placeholder={name}
+              value={input.name}
               mode={mode}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => handleOnChange(e.target.value, "name")}
             />
             {userInfo.isAdmin && (
               <>
@@ -694,8 +1057,8 @@ export default function Product() {
                     name="active"
                     id="active"
                     value="yes"
-                    checked={active === "yes" ? true : false}
-                    onChange={(e) => setActive(e.target.value)}
+                    checked={input.active === "yes" ? true : false}
+                    onChange={(e) => handleOnChange(e.target.value, "active")}
                   />
                   <Label htmlFor="active">Yes</Label>
                   <Input
@@ -703,8 +1066,8 @@ export default function Product() {
                     name="active"
                     id="active2"
                     value="no"
-                    checked={active === "no" ? true : false}
-                    onChange={(e) => setActive(e.target.value)}
+                    checked={input.active === "no" ? true : false}
+                    onChange={(e) => handleOnChange(e.target.value, "active")}
                   />
                   <Label htmlFor="active2">No</Label>
                 </Gender>
@@ -715,8 +1078,8 @@ export default function Product() {
                     name="badge"
                     id="badgeyes"
                     value="yes"
-                    checked={badge === "yes" ? true : false}
-                    onChange={(e) => setBadge(e.target.value)}
+                    checked={input.badge === "yes" ? true : false}
+                    onChange={(e) => handleOnChange(e.target.value, "badge")}
                   />
                   <Label htmlFor="badgeyes">Yes</Label>
                   <Input
@@ -724,12 +1087,30 @@ export default function Product() {
                     name="badge"
                     id="badgeno"
                     value="no"
-                    checked={badge === "no" ? true : false}
-                    onChange={(e) => setBadge(e.target.value)}
+                    checked={input.badge === "no" ? true : false}
+                    onChange={(e) => handleOnChange(e.target.value, "badge")}
                   />
                   <Label htmlFor="badgeno">No</Label>
                 </Gender>
               </>
+            )}
+            {userInfo.isAdmin && (
+              <SoldAdd
+                onClick={!product.soldAll && handleSold}
+                style={{
+                  background: product.soldAll
+                    ? "var(--malon-color"
+                    : "var(--orange-color)",
+                  cursor: product.soldAll ? "not-allowed" : "pointer",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  style={{ marginRight: "5px" }}
+                />{" "}
+                Mark
+                {product.soldAll ? "ed" : ""} as sold
+              </SoldAdd>
             )}
             <Item>
               <Label>Main Category</Label>
@@ -760,8 +1141,8 @@ export default function Product() {
                 size="small"
               >
                 <Select
-                  value={mainCate}
-                  onChange={(e) => setMainCate(e.target.value)}
+                  renderValue={() => input.product}
+                  onChange={(e) => handleOnChange(e.target.value, "product")}
                   displayEmpty
                   inputProps={{
                     "aria-label": "Without label",
@@ -804,8 +1185,8 @@ export default function Product() {
                 size="small"
               >
                 <Select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  renderValue={() => input.category}
+                  onChange={(e) => handleOnChange(e.target.value, "category")}
                   displayEmpty
                   inputProps={{
                     "aria-label": "Without label",
@@ -814,7 +1195,7 @@ export default function Product() {
                   {categories.length > 0 &&
                     categories.map(
                       (cat) =>
-                        cat.name === mainCate &&
+                        cat.name === input.mainCate &&
                         cat.subCategories.map((sub) => (
                           <MenuItem value={sub.name}>{sub.name}</MenuItem>
                         ))
@@ -852,17 +1233,19 @@ export default function Product() {
                 size="small"
               >
                 <Select
-                  value={subCategory}
-                  onChange={(e) => setSubCategory(e.target.value)}
+                  renderValue={() => input.subCategory}
+                  onChange={(e) =>
+                    handleOnChange(e.target.value, "subCategory")
+                  }
                   displayEmpty
                 >
                   {categories.length > 0 &&
                     categories.map(
                       (cat) =>
-                        cat.name === mainCate &&
+                        cat.name === input.mainCate &&
                         cat.subCategories.map(
                           (sub) =>
-                            sub.name === category &&
+                            sub.name === input.category &&
                             sub.items.map((item, i) => (
                               <MenuItem value={item}>{item}</MenuItem>
                             ))
@@ -871,23 +1254,235 @@ export default function Product() {
                 </Select>
               </FormControl>
             </Item>
-
             <Item>
-              <Label>Brand</Label>
-              <TextInput
-                mode={mode}
-                type="text"
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-              />
+              <Label>
+                Condition{" "}
+                <Tips
+                  mode={mode}
+                  tips={`What happens if I’m not certain of my product condition?
+                      Should you not be certain which condition your product falls under when listing, we suggest you choose between the last three option depending on what you see (if your product isn’t NEW or with TAG) and take very clear visible photos indicating every little details. Also, to avoid returns and help you sell fast, give every possible information in your product description so as to clearly inform buyer about your product’s condition.
+                      `}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>{" "}
+                <LinkTo onClick={() => setShowConditionModal(true)}>
+                  help?
+                </LinkTo>
+              </Label>
+              <ModelLogin
+                setShowModel={setShowConditionModal}
+                showModel={showConditionModal}
+              >
+                <Condition />
+              </ModelLogin>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                {console.log("input on edit page ", input)}
+                <Select
+                  renderValue={() => input.condition}
+                  onChange={(e) => handleOnChange(e.target.value, "condition")}
+                  displayEmpty
+                >
+                  <MenuItem value="">-- select --</MenuItem>
+                  <MenuItem value="New with Tags">New with Tags</MenuItem>
+                  <MenuItem value="New with No Tags">New with No Tags</MenuItem>
+                  <MenuItem value="Excellent Condition">
+                    Excellent Condition
+                  </MenuItem>
+                  <MenuItem value="Good Condition">Good Condition</MenuItem>
+                  <MenuItem value="Fair Condition">Fair Condition</MenuItem>
+                </Select>
+              </FormControl>
+              {validationError.condition && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.condition}
+                </div>
+              )}
             </Item>
+            <Item>
+              <Label>
+                Material/Fabric
+                <Tips
+                  mode={mode}
+                  tips={`How do I know what the primary material of the product is?
+                      This information is mostly indicated on the Product
+                      labels, please refer to the label detailing the
+                      composition of your Product.`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+
+              <TitleDetails>Specify Product's primary material.</TitleDetails>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  renderValue={() => input.material}
+                  onChange={(e) => handleOnChange(e.target.value, "material")}
+                  displayEmpty
+                >
+                  <MenuItem value="">-- select --</MenuItem>
+                  <MenuItem value="Acrylic">Acrylic</MenuItem>
+                  <MenuItem value="Cashmere">Cashmere</MenuItem>
+                  <MenuItem value="Cloth">Cloth</MenuItem>
+                  <MenuItem value="Cotton">Cotton</MenuItem>
+                  <MenuItem value="Exotic leathers">Exotic leathers</MenuItem>
+                  <MenuItem value="Faux fur">Faux fur</MenuItem>
+                  <MenuItem value="Fur">Fur</MenuItem>
+                  <MenuItem value="Leather">Leather</MenuItem>
+                  <MenuItem value="Linen">Linen</MenuItem>
+                  <MenuItem value="Polyester">Polyester</MenuItem>
+                  <MenuItem value="Polyurethane">Polyurethane</MenuItem>
+                  <MenuItem value="Pony-style calfskin">
+                    Pony-style calfskin
+                  </MenuItem>
+                  <MenuItem value="Suede">Suede</MenuItem>
+                  <MenuItem value="Silk">Silk</MenuItem>
+                  <MenuItem value="Rayon">Rayon</MenuItem>
+                  <MenuItem value="Synthetic">Synthetic</MenuItem>
+                  <MenuItem value="Spandex">Spandex</MenuItem>
+                  <MenuItem value="Tweed">Tweed</MenuItem>
+                  <MenuItem value="Vegan leather">Vegan leather</MenuItem>
+                  <MenuItem value="Velvet">Velvet</MenuItem>
+                  <MenuItem value="Wool">Wool</MenuItem>
+                </Select>
+              </FormControl>
+              {validationError.material && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.material}
+                </div>
+              )}
+            </Item>
+
             <Item>
               <Label>Description</Label>
               <TextArea
-                value={description}
+                value={input.description}
                 mode={mode}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => handleOnChange(e.target.value, "description")}
               />
+            </Item>
+
+            <Item>
+              <Label>Delivery Option</Label>
+              {deliveryOption.map((d) => (
+                <Deliv key={d.name}>
+                  <FontAwesomeIcon icon={faCheck} />
+                  {d.name}
+                </Deliv>
+              ))}
+              <div
+                style={{
+                  color: "var(--orange-color)",
+                  cursor: "pointer",
+                  textAlign: "center",
+                }}
+                onClick={() => setShowDelivery(true)}
+              >
+                Add delivery option
+              </div>
+              <ModelLogin
+                setShowModel={setShowDelivery}
+                showModel={showDelivery}
+              >
+                <DeliveryOption
+                  setShowModel={setShowDelivery}
+                  paxi={paxi}
+                  setPaxi={setPaxi}
+                  gig={gig}
+                  setGig={setGig}
+                  pudo={pudo}
+                  setPudo={setPudo}
+                  aramex={aramex}
+                  setAramex={setAramex}
+                  postnet={postnet}
+                  setPostnet={setPostnet}
+                  pickup={pickup}
+                  setPickup={setPickup}
+                  bundle={bundle}
+                  setBundle={setBundle}
+                  setDeliveryOption={setDeliveryOption}
+                  meta={meta}
+                  setMeta={setMeta}
+                  deliveryOption={deliveryOption}
+                />
+                {console.log(deliveryOption)}
+              </ModelLogin>
+            </Item>
+
+            <Item>
+              <Label>Add Tags #</Label>
+              <TagCont>
+                <TagInputCont>
+                  <TagInput
+                    mode={mode}
+                    value={input.tag}
+                    placeholder="Add tags"
+                    type="text"
+                    onChange={(e) => handleOnChange(e.target.value, "tag")}
+                  />
+                  <AddTag onClick={() => handleTags(input.tag)}>Add</AddTag>
+                </TagInputCont>
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                  {tags.map((t, i) => (
+                    <TagItem mode={mode} key={i}>
+                      {t}
+                      <FontAwesomeIcon
+                        onClick={() => removeTags(t)}
+                        icon={faTimes}
+                      />
+                    </TagItem>
+                  ))}
+                </div>
+              </TagCont>
             </Item>
           </FormLeft>
           <FormCenter>
@@ -919,19 +1514,115 @@ export default function Product() {
                   <span>%</span>
                 </Discount>
               </Item>
-              <PriceDisplay>
-                <Offer>
-                  {currency}
-                  {discount || price}
-                </Offer>
-                <Actual>
-                  {currency}
-                  {price}
-                </Actual>
-              </PriceDisplay>
-            </Price>
+            </Price>{" "}
+            <PriceDisplay>
+              <Offer>
+                {currency}
+                {discount || price}
+              </Offer>
+              <Actual>
+                {currency}
+                {price}
+              </Actual>
+            </PriceDisplay>
+            <TitleDetails>
+              <div style={{ color: "red", fontSize: "12px", fontSize: "13px" }}>
+                Our Commission
+              </div>
+              To give you unmatched user experience and support the growth of
+              your business as part of our community, you will not be charged
+              Repeddle commission fee. To understand how our fee works after the
+              grace period, please have a look at our fee structure{" "}
+              <span
+                onClick={() => setShowComissionModal(true)}
+                style={{
+                  color: "red",
+                  fontSize: "12px",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+              >
+                here{" "}
+              </span>
+            </TitleDetails>
+            <ModelLogin
+              setShowModel={setShowComissionModal}
+              showModel={showComissionModal}
+            >
+              <FeeStructure />
+            </ModelLogin>
             <Item>
-              <Label>Add Size</Label>
+              <Label>Brands</Label>
+              <TitleDetails>
+                Can't find the brand you're listing? Search & use Other
+              </TitleDetails>
+              <TextInput
+                mode={mode}
+                placeholder="Search Brand"
+                type="search"
+                onKeyPress={handleKeyPress}
+                value={input.brand.length > 0 ? input.brand : brandQuery}
+                onChange={(e) => {
+                  handleOnChange("", "brand");
+                  setBrandQuery(e.target.value);
+                }}
+                onBlur={() => input.brand.length > 0 && setBrandQuery("")}
+              />
+              <BrandList mode={mode}>
+                {searchBrand &&
+                  brandQuery.length > 0 &&
+                  [...searchBrand, { name: "Other" }].map((b) => (
+                    <BrandListItem
+                      key={b._id}
+                      mode={mode}
+                      onClick={() => {
+                        if (b.name === "Other") {
+                          setShowOtherBrand(true);
+                        } else {
+                          handleOnChange(b.name, "brand");
+                        }
+                        setBrandQuery("");
+                      }}
+                    >
+                      {b.name}
+                    </BrandListItem>
+                  ))}
+              </BrandList>
+
+              <SmallModel
+                setShowModel={setShowOtherBrand}
+                showModel={showOtherBrand}
+              >
+                <AddOtherBrand
+                  setShowOtherBrand={setShowOtherBrand}
+                  handleOnChange={handleOnChange}
+                />
+              </SmallModel>
+              {validationError.brand && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.brand}
+                </div>
+              )}
+            </Item>
+            <Item>
+              <Label>
+                Color
+                <Tips
+                  mode={mode}
+                  tips={`How can I ensure that colour of the 
+                  product is clear? For you to get accuracy in 
+                  colour. Please take photos using a good source 
+                  of natural light to ensure clear colour. The 
+                  best and 
+                  accurate photos always sale 95% faster`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <TitleDetails>
+                Specify the main colour of the product (choose 2 colours
+                minimum)
+              </TitleDetails>
               <FormControl
                 sx={{
                   margin: 0,
@@ -959,49 +1650,133 @@ export default function Product() {
                 size="small"
               >
                 <Select
-                  value={tempsize}
-                  onChange={(e) => sizeHandler(e.target.value)}
+                  renderValue={() => input.color}
+                  onChange={(e) => handleOnChange(e.target.value, "color")}
                   displayEmpty
                 >
-                  <MenuItem value="S">S</MenuItem>
-                  <MenuItem value="M">M</MenuItem>
-                  <MenuItem value="L">L</MenuItem>
-                  <MenuItem value="XL">XL</MenuItem>
-                  <MenuItem value="XXL">XXL</MenuItem>
+                  <MenuItem value="">-- select --</MenuItem>
+                  {color1.map((c) => (
+                    <MenuItem key={c} value={c}>
+                      {c}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
+              {validationError.color && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.color}
+                </div>
+              )}
             </Item>
-            <SmallItems>
-              {sizes.map((s, index) => (
-                <SmallItem key={index}>
-                  <Label>{s.size}</Label>:
-                  <SizeInput
-                    placeholder={s.value}
-                    mode={mode}
-                    onChange={(e) => smallSizeHandler(s.size, e.target.value)}
-                  />
-                  {/* <FontAwesomeIcon
+            <div>
+              <label style={{ marginRight: "10px", marginTop: "20px" }}>
+                Item do not require size
+              </label>
+              <Checkbox
+                type="checkbox"
+                checked={addSize}
+                onChange={(e) => setAddSize(e.target.checked)}
+              />
+            </div>
+            <Sizes style={{ marginTop: "0" }}>
+              {!addSize ? (
+                <SizeLeft>
+                  <>
+                    <Item style={{ marginTop: "0" }}>
+                      <Label>
+                        Add Size
+                        <Tips
+                          mode={mode}
+                          tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+                  Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size.`}
+                        >
+                          <FontAwesomeIcon icon={faQuestionCircle} />
+                        </Tips>
+                      </Label>
+
+                      <TagInputCont>
+                        <TagInput
+                          mode={mode}
+                          value={input.selectedSize}
+                          type="text"
+                          maxlength="3"
+                          placeholder="Add size"
+                          onChange={(e) =>
+                            handleOnChange(e.target.value, "selectedSize")
+                          }
+                        />
+                        <AddTag onClick={() => sizeHandler(input.selectedSize)}>
+                          Add
+                        </AddTag>
+                      </TagInputCont>
+                    </Item>
+                    <SmallItems>
+                      <TitleDetails>
+                        Provide the exact size as indicated on your product's
+                        label.
+                      </TitleDetails>
+                      {sizes.map((s) => (
+                        <SmallItem>
+                          <Label>{s.size}</Label>:
+                          <SizeInput
+                            placeholder="qty"
+                            mode={mode}
+                            onChange={(e) =>
+                              smallSizeHandler(s.size, e.target.value)
+                            }
+                          />
+                          {/* <FontAwesomeIcon
                         onClick={() => deleteSizeHandler(s.size)}
                         icon={faTimes}
                       /> */}
-                </SmallItem>
-              ))}
-            </SmallItems>
+                        </SmallItem>
+                      ))}
+                    </SmallItems>
+                  </>
+                </SizeLeft>
+              ) : (
+                <Item style={{ marginTop: "0" }}>
+                  <Label>Count in stock</Label>
+                  <TextInput
+                    mode={mode}
+                    type="number"
+                    value={countInStock}
+                    onChange={(e) => setCountInStock(e.target.value)}
+                  />
+                </Item>
+              )}
+            </Sizes>
+            {validationError.sizes && (
+              <div style={{ color: "red", fontSize: "12px" }}>
+                {validationError.sizes}
+              </div>
+            )}
             <Item>
-              <Label>Specification</Label>
+              <Label>Specification</Label>{" "}
+              <TitleDetails>
+                FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
+                brackets as shown on the label of clothes/shoes
+              </TitleDetails>
               <TextArea
                 mode={mode}
-                value={specification}
-                onChange={(e) => setSpecification(e.target.value)}
+                value={input.specification}
+                onChange={(e) =>
+                  handleOnChange(e.target.value, "specification")
+                }
               />
             </Item>
             <Item>
               <Label>Key Features</Label>
               <TextArea
-                value={feature}
+                value={input.keyFeatures}
                 mode={mode}
-                onChange={(e) => setFeature(e.target.value)}
+                onChange={(e) => handleOnChange(e.target.value, "keyFeatures")}
               />
+              {validationError.keyFeatures && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.keyFeatures}
+                </div>
+              )}
             </Item>
           </FormCenter>
           <FormRight>
@@ -1048,8 +1823,12 @@ export default function Product() {
                 <SelBox onClick={() => setCurrentImage("image4")} mode={mode}>
                   4
                 </SelBox>
-                {console.log("i am a", product)}
               </SelBoxGroup>
+              {validationError.image && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.image}
+                </div>
+              )}
               {userInfo.isAdmin ? (
                 product.luxury || product.vintage ? (
                   <MessageImage url={product.luxuryImage} />

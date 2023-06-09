@@ -1494,7 +1494,7 @@ export default function NewProduct() {
                           value={input.selectedSize}
                           type="text"
                           maxlength="3"
-                          placeholder="Add more size"
+                          placeholder="Add  size"
                           onChange={(e) =>
                             handleOnChange(e.target.value, "selectedSize")
                           }

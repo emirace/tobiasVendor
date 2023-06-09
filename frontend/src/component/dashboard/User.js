@@ -27,6 +27,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { banks, states } from "../../constant";
+import { signoutHandler } from "../Navbar";
 
 const Container = styled.div`
   flex: 4;
@@ -543,18 +544,22 @@ export default function User() {
 
       if (id) {
         const fetchUser = async () => {
-          const { data } = await axios.get(`/api/users/seller/${id}`, {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          });
-          dispatch({ type: "FETCH_SUCCESS", payload: data });
-          setRebundleStatus(data.rebundle.status);
-          setNewsletterStatus(data.newsletter);
-          setActive(`${data.active}`);
-          setBadge(`${data.badge}`);
-          setBundle(data.rebundle.status);
-          setInfluencer(`${data.influencer}`);
+          try {
+            const { data } = await axios.get(`/api/users/seller/${id}`, {
+              headers: {
+                Authorization: `Bearer ${userInfo.token}`,
+              },
+            });
+            dispatch({ type: "FETCH_SUCCESS", payload: data });
+            setRebundleStatus(data.rebundle.status);
+            setNewsletterStatus(data.newsletter);
+            setActive(`${data.active}`);
+            setBadge(`${data.badge}`);
+            setBundle(data.rebundle.status);
+            setInfluencer(`${data.influencer}`);
+          } catch (error) {
+            signoutHandler();
+          }
         };
         fetchUser();
       } else {
@@ -973,6 +978,9 @@ export default function User() {
                   <FontAwesomeIcon icon={faPlus} />
                 </AccButton>
               )}
+              <Tips mode={mode} tips={``}>
+                <FontAwesomeIcon icon={faQuestionCircle} />
+              </Tips>
               <SmallModel showModel={showModel} setShowModel={setShowModel}>
                 <Form2>
                   <p>
@@ -1396,7 +1404,7 @@ export default function User() {
                       <Switch
                         mode={mode}
                         checked={newsletterStatus}
-                        // onChange={handleNewsletter}
+                        onChange={handleNewsletter}
                       />
                     </Option>
                     <OptionCont>

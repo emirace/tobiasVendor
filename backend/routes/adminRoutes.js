@@ -34,4 +34,34 @@ adminRouter.get(
   })
 );
 
+adminRouter.put(
+  "/soldAll/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    console.log("Marking as sold");
+    const { id } = req.params;
+
+    try {
+      const product = await Product.findById(id).populate("seller", "username");
+
+      if (!product) {
+        return res.status(404).send({ error: "Product not found" });
+      }
+
+      product.soldAll = true;
+      product.countInStock = 0;
+      product.sizes = [];
+      product.sold = true;
+      const updatedProduct = await product.save();
+
+      res.status(200).send(updatedProduct);
+    } catch (error) {
+      res
+        .status(500)
+        .send({ error: "An error occurred while updating the product" });
+    }
+  })
+);
+
 export default adminRouter;

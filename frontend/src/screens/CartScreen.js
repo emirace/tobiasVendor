@@ -20,17 +20,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import { toast } from "react-toastify";
-import {
-  calcPrice,
-  checkDeliverySelect,
-  getError,
-  rebundleIsActive,
-} from "../utils";
+import { calcPrice, checkDeliverySelect, getError } from "../utils";
 import ModelLogin from "../component/ModelLogin";
 import DeliveryOptionScreen from "./DeliveryOptionScreen";
 import LoadingBox from "../component/LoadingBox";
 import AlertComponent from "../component/AlertComponent";
 import SmallModel from "../component/SmallModel";
+import CartItem from "../component/CartItem";
 
 const Container = styled.div`
   margin: 20px;
@@ -111,49 +107,6 @@ const CustomMessage = styled.div`
     }
   }
 `;
-const CartItemCont = styled.div`
-  display: none;
-  @media (max-width: 768px) {
-    display: flex;
-  }
-`;
-
-const UserCont = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-const UserImg = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-`;
-const UserName = styled.div`
-  font-weight: bold;
-  margin: 0 20px;
-`;
-
-const SelectDelivery = styled.div`
-  margin-left: 20px;
-  color: var(--orange-color);
-  font-size: 15px;
-  cursor: pointer;
-  &:hover {
-    color: var(--malon-color);
-  }
-`;
-
-const SelectDeliveryButton = styled.div`
-  background: var(--orange-color);
-  color: white;
-  cursor: pointer;
-  padding: 3px 7px;
-  border-radius: 0.2rem;
-  &:hover {
-    background: var(--malon-color);
-  }
-`;
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -202,10 +155,8 @@ export default function CartScreen() {
   const [loading, setLoading] = useState(true);
   const [currentCart, setcurrentCart] = useState(cart);
   useEffect(() => {
-    console.log("hellllo");
     const getPrice = async () => {
       const data = await calcPrice(cart, userInfo, currentItem);
-      console.log("calcPrice", data);
       setcurrentCart(data);
       setLoading(false);
     };
@@ -229,86 +180,6 @@ export default function CartScreen() {
       fetchData();
     }
   }, [userInfo]);
-
-  const updateCartHandler = async (item, quantity) => {
-    if (!item.deliverySelect) {
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Select method of delivery",
-          showStatus: true,
-          state1: "visible1 error",
-        },
-      });
-      return;
-    }
-    const { data } = await axios.get(`/api/products/${item._id}`);
-    if (data.countInStock < quantity) {
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Sorry. Product is out of stock",
-          showStatus: true,
-          state1: "visible1 error",
-        },
-      });
-      return;
-    }
-    const quantityguard = item.quantity > quantity ? false : true;
-    const allowData = await rebundleIsActive(userInfo, item.seller._id, cart);
-
-    if (allowData.success) {
-      if (
-        allowData.countAllow > 0 &&
-        allowData.seller.deliveryMethod ===
-          item.deliverySelect["delivery Option"]
-      ) {
-        console.log("rebundle");
-        item.deliverySelect = {
-          ...item.deliverySelect,
-          total: {
-            cost: item.deliverySelect.total.cost,
-            status: !item.deliverySelect.total.status,
-          },
-        };
-      } else {
-        console.log("no rebundle");
-
-        item.deliverySelect = {
-          ...item.deliverySelect,
-          total: {
-            cost: quantityguard
-              ? Number(item.deliverySelect.total.cost) +
-                Number(item.deliverySelect.cost)
-              : item.deliverySelect.total.cost > 0
-              ? Number(item.deliverySelect.total.cost) -
-                Number(item.deliverySelect.cost)
-              : item.deliverySelect.total.cost,
-            status: !item.deliverySelect.total.status,
-          },
-        };
-      }
-    } else {
-      item.deliverySelect = {
-        ...item.deliverySelect,
-        total: {
-          cost: quantityguard
-            ? Number(item.deliverySelect.total.cost) +
-              Number(item.deliverySelect.cost)
-            : item.deliverySelect.total.cost > 0
-            ? Number(item.deliverySelect.total.cost) -
-              Number(item.deliverySelect.cost)
-            : item.deliverySelect.total.cost,
-          status: !item.deliverySelect.total.status,
-        },
-      };
-    }
-
-    ctxDispatch({
-      type: "CART_ADD_ITEM",
-      payload: { ...item, quantity },
-    });
-  };
 
   const removeItemHandler = async (item) => {
     if (userInfo) {
@@ -487,152 +358,13 @@ export default function CartScreen() {
               ) : (
                 <>
                   {cart.cartItems.map((item) => (
-                    <Item key={item._id} mode={mode}>
-                      <UserCont>
-                        <UserImg src={item.seller.image} alt="img" />
-                        <UserName>
-                          <Link to={`/seller/${item.seller._id}`}>
-                            {item.sellerName}
-                          </Link>
-                        </UserName>
-                      </UserCont>
-                      <hr />
-                      <CartItemCont>
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="img-fluid rounded img-thumbnail"
-                        ></img>
-                        <div
-                          className="cart_item_detail "
-                          style={{ justifyContent: "space-between" }}
-                        >
-                          <div>
-                            <Link to={`/product/${item.slug}`}>
-                              {item.name}
-                            </Link>
-
-                            <div>
-                              {" "}
-                              {item.currency}
-                              {item.actualPrice}
-                            </div>
-                            <span>Size: {item.selectSize}</span>
-                          </div>
-                          <div className="col-3 d-flex align-items-center">
-                            <Button
-                              variant="none"
-                              onClick={() =>
-                                updateCartHandler(item, item.quantity - 1)
-                              }
-                              disabled={item.quantity === 1}
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </Button>{" "}
-                            <span>{item.quantity}</span>{" "}
-                            <Button
-                              variant="none"
-                              onClick={() =>
-                                updateCartHandler(item, item.quantity + 1)
-                              }
-                              disabled={item.quantity === item.countInStock}
-                            >
-                              <FontAwesomeIcon icon={faPlus} />
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                setCurrentItem(item);
-                                setRemove(true);
-                              }}
-                              variant="none"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                          </div>
-                        </div>
-                      </CartItemCont>
-                      <Row className="align-items-center d-none d-md-flex justify-content-between">
-                        <div className="col-5 d-flex  align-items-center">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="img-fluid rounded img-thumbnail"
-                          ></img>{" "}
-                          <div className="cart_item_detail">
-                            <Link to={`/product/${item.slug}`}>
-                              {item.name}
-                            </Link>
-
-                            <div>
-                              {" "}
-                              {item.currency}
-                              {item.actualPrice}
-                            </div>
-                            <span>Size: {item.selectSize}</span>
-                          </div>
-                        </div>
-                        <div className="col-3 d-flex align-items-center">
-                          <Button
-                            variant="none"
-                            onClick={() =>
-                              updateCartHandler(item, item.quantity - 1)
-                            }
-                            disabled={item.quantity === 1}
-                          >
-                            <FontAwesomeIcon icon={faMinus} />
-                          </Button>{" "}
-                          <span>{item.quantity}</span>{" "}
-                          <Button
-                            variant="none"
-                            onClick={() =>
-                              updateCartHandler(item, item.quantity + 1)
-                            }
-                            disabled={item.quantity === item.countInStock}
-                          >
-                            <FontAwesomeIcon icon={faPlus} />
-                          </Button>
-                        </div>
-                        <div className="col-2">
-                          <Button
-                            onClick={() => {
-                              setCurrentItem(item);
-                              setRemove(true);
-                            }}
-                            variant="none"
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                          </Button>
-                        </div>
-                      </Row>
-                      <div style={{ marginTop: "20px", display: "flex" }}>
-                        <div>
-                          Delivery:{" "}
-                          {item.deliverySelect ? (
-                            <span style={{ marginLeft: "20px" }}>
-                              {item.deliverySelect["delivery Option"]} +{" "}
-                              {currency}
-                              {item.deliverySelect.cost}
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        <SelectDelivery
-                          onClick={() => {
-                            setCurrentItem(item);
-                            setShowModel(true);
-                          }}
-                        >
-                          {!item.deliverySelect ? (
-                            <SelectDeliveryButton>
-                              Select delivery option
-                            </SelectDeliveryButton>
-                          ) : (
-                            "Change"
-                          )}
-                        </SelectDelivery>
-                      </div>
-                    </Item>
+                    <CartItem
+                      key={item._id}
+                      item={item}
+                      setCurrentItem={setCurrentItem}
+                      setRemove={setRemove}
+                      setShowModel={setShowModel}
+                    />
                   ))}
                   <MessageBox>
                     <CustomMessage>

@@ -1,24 +1,24 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { getError, region } from '../utils';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { Helmet } from 'react-helmet-async';
-import Row from 'react-bootstrap/Row';
-import LinkContainer from 'react-router-bootstrap/LinkContainer';
-import Rating from '../component/Rating';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import Product from '../component/Product';
-import Button from 'react-bootstrap/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleDot, faTimes } from '@fortawesome/free-solid-svg-icons';
-import '../style/SearchScreen.css';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import SearchBox from '../component/SearchBox';
-import SearchFilter from './SearchFilter';
-import { BiFilter } from 'react-icons/bi';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { getError, region } from "../utils";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
+import Row from "react-bootstrap/Row";
+import LinkContainer from "react-router-bootstrap/LinkContainer";
+import Rating from "../component/Rating";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import Product from "../component/Product";
+import Button from "react-bootstrap/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleDot, faTimes } from "@fortawesome/free-solid-svg-icons";
+import "../style/SearchScreen.css";
+import styled from "styled-components";
+import { Store } from "../Store";
+import SearchBox from "../component/SearchBox";
+import SearchFilter from "./SearchFilter";
+import { BiFilter } from "react-icons/bi";
 
 const Container = styled.div`
   display: flex;
@@ -28,14 +28,14 @@ const Left = styled.div`
   flex: 1;
   height: calc(100vh-168px);
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: sticky;
   border-radius: 0.2rem;
   margin-bottom: 20px;
   top: 168px;
   @media (max-width: 992px) {
-    left: ${(props) => (props.showFilter ? 0 : '-100vw')};
-    display: ${(props) => (props.showFilter ? 'block' : 'none')};
+    left: ${(props) => (props.showFilter ? 0 : "-100vw")};
+    display: ${(props) => (props.showFilter ? "block" : "none")};
     transition: left 2s;
     z-index: 9;
     position: absolute;
@@ -51,7 +51,7 @@ const Right = styled.div`
   margin-bottom: 20px;
 
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin: 0;
     padding: 10px;
@@ -110,9 +110,9 @@ const Filters = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_REQUEST':
+    case "FETCH_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_SUCCESS':
+    case "FETCH_SUCCESS":
       return {
         ...state,
         products: action.payload.products,
@@ -121,7 +121,7 @@ const reducer = (state, action) => {
         countProducts: action.payload.countProducts,
         loading: false,
       };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
 
     default:
@@ -136,31 +136,31 @@ export default function SearchSceen() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  console.log(sp.get('color'));
-  const category = sp.get('category') || 'all';
-  const query = sp.get('query') || 'all';
-  const rating = sp.get('rating') || 'all';
-  const maxPrice = sp.get('maxPrice') || 1000;
-  const minPrice = sp.get('minPrice') || 0;
-  const order = sp.get('order') || 'newest';
-  const page = sp.get('page') || 1;
-  const color = sp.get('color') || 'all';
-  const brand = sp.get('brand') || 'all';
-  const size = sp.get('size') || 'all';
-  const deal = sp.get('deal') || 'all';
-  const shipping = sp.get('shipping') || 'all';
-  const condition = sp.get('condition') || 'all';
-  const availability = sp.get('availability') || 'all';
-  const type = sp.get('type') || 'all';
-  const pattern = sp.get('pattern') || 'all';
+  console.log(sp.get("color"));
+  const category = sp.get("category") || "all";
+  const query = sp.get("query") || "all";
+  const rating = sp.get("rating") || "all";
+  const maxPrice = sp.get("maxPrice") || 1000;
+  const minPrice = sp.get("minPrice") || 0;
+  const order = sp.get("order") || "newest";
+  const page = sp.get("page") || 1;
+  const color = sp.get("color") || "all";
+  const brand = sp.get("brand") || "all";
+  const size = sp.get("size") || "all";
+  const deal = sp.get("deal") || "all";
+  const shipping = sp.get("shipping") || "all";
+  const condition = sp.get("condition") || "all";
+  const availability = sp.get("availability") || "all";
+  const type = sp.get("type") || "all";
+  const pattern = sp.get("pattern") || "all";
 
   const [{ loading, error, products, pages, countProducts }, dispatch] =
     useReducer(reducer, {
       loading: true,
-      error: '',
+      error: "",
     });
 
-  let brands = ['Nike', 'Gucci', 'Rolex', 'Louis Vuitto', 'Adidas', 'Dior'];
+  let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,10 +169,10 @@ export default function SearchSceen() {
           `/api/products/${region()}/search?page=${page}&query=${query}&category=${category}&maxPrice=${maxPrice}&minPrice=${minPrice}&rating=${rating}&order=${order}&color=${color}&size=${size}&brand=${brand}&deal=${deal}&shipping=${shipping}&condition=${condition}&availability=${availability}&type=${type}&pattern=${pattern}`
         );
         console.log(data);
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({
-          type: 'FETCH_FAIL',
+          type: "FETCH_FAIL",
           payload: getError(err),
         });
       }
@@ -199,12 +199,6 @@ export default function SearchSceen() {
 
   const [rLoading, setRLoading] = useState(true);
   const [rProducts, setRProducts] = useState(null);
-
-  useEffect(() => {
-    if (userInfo && userInfo.isSeller) {
-      navigate('/newProduct');
-    }
-  }, [navigate, userInfo]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -254,7 +248,7 @@ export default function SearchSceen() {
 
   const [filterSidebar, setFilterSidebar] = useState(false);
 
-  const [brandInput, setBrandInput] = useState('');
+  const [brandInput, setBrandInput] = useState("");
 
   if (brandInput.length > 0) {
     brands = brands.filter((i) => {
@@ -309,34 +303,34 @@ export default function SearchSceen() {
                   <BiFilter /> Filters
                 </Filters>
                 <Result>
-                  {countProducts === 0 ? 'No' : countProducts} Results
-                  {query !== 'all' && ' : ' + query}
-                  {category !== 'all' && ' : ' + category}
-                  {brand !== 'all' && '  Brand: ' + brand}
-                  {color !== 'all' && '  Brand: ' + color}
-                  {condition !== 'all' && '  Brand: ' + condition}
-                  {availability !== 'all' && '  Brand: ' + availability}
-                  {pattern !== 'all' && '  Brand: ' + pattern}
-                  {size !== 'all' && '  Brand: ' + size}
-                  {shipping !== 'all' && '  Brand: ' + shipping}
-                  {rating !== 'all' && '  Rating:' + rating + ' & up'}
-                  {query !== 'all' ||
-                  category !== 'all' ||
-                  rating !== 'all' ||
-                  brand !== 'all' ||
-                  color !== 'all' ||
-                  condition !== 'all' ||
-                  availability !== 'all' ||
-                  pattern !== 'all' ||
-                  shipping !== 'all' ||
-                  size !== 'all' ? (
-                    <Button variant="none" onClick={() => navigate('/search')}>
+                  {countProducts === 0 ? "No" : countProducts} Results
+                  {query !== "all" && " : " + query}
+                  {category !== "all" && " : " + category}
+                  {brand !== "all" && "  Brand: " + brand}
+                  {color !== "all" && "  Brand: " + color}
+                  {condition !== "all" && "  Brand: " + condition}
+                  {availability !== "all" && "  Brand: " + availability}
+                  {pattern !== "all" && "  Brand: " + pattern}
+                  {size !== "all" && "  Brand: " + size}
+                  {shipping !== "all" && "  Brand: " + shipping}
+                  {rating !== "all" && "  Rating:" + rating + " & up"}
+                  {query !== "all" ||
+                  category !== "all" ||
+                  rating !== "all" ||
+                  brand !== "all" ||
+                  color !== "all" ||
+                  condition !== "all" ||
+                  availability !== "all" ||
+                  pattern !== "all" ||
+                  shipping !== "all" ||
+                  size !== "all" ? (
+                    <Button variant="none" onClick={() => navigate("/search")}>
                       <i className="fas fa-times-circle"></i>
                     </Button>
                   ) : null}
                 </Result>
                 <Col>
-                  Sort by{'  '}
+                  Sort by{"  "}
                   <select
                     className="search_sortBy"
                     value={order}
@@ -344,28 +338,28 @@ export default function SearchSceen() {
                       navigate(getFilterUrl({ order: e.target.value }));
                     }}
                   >
-                    <option className={mode || ''} value="newest">
+                    <option className={mode || ""} value="newest">
                       Newly Arrived
                     </option>
-                    <option className={mode || ''} value="shared">
+                    <option className={mode || ""} value="shared">
                       Just Shared
                     </option>
-                    <option className={mode || ''} value="likes">
+                    <option className={mode || ""} value="likes">
                       Likes
                     </option>
                     {/* <option className={mode || ""} value="prices">
                       Recent Prices Drop
                     </option> */}
-                    <option className={mode || ''} value="relevance">
+                    <option className={mode || ""} value="relevance">
                       Relevance
                     </option>
-                    <option className={mode || ''} value="lowest">
+                    <option className={mode || ""} value="lowest">
                       Price: Low to High
                     </option>
-                    <option className={mode || ''} value="highest">
+                    <option className={mode || ""} value="highest">
                       Price: High to Low
                     </option>
-                    <option className={mode || ''} value="toprated">
+                    <option className={mode || ""} value="toprated">
                       Avg. Customer Reviews
                     </option>
                   </select>

@@ -226,9 +226,10 @@ export default function NewsletterList() {
   const deleteHandler = async (id) => {
     if (window.confirm("Are you sure to delete")) {
       try {
-        await axios.delete(`/api/newsletters/${id}`, {
+        const { data } = await axios.delete(`/api/newsletters/${id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
+        console.log(data);
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
@@ -237,8 +238,8 @@ export default function NewsletterList() {
             state1: "visible1 error",
           },
         });
-        const filteredNewsletter = newsletters.filter(
-          (newsletter) => newsletter._id !== id
+        const filteredNewsletter = newsletters.map((newsletter) =>
+          newsletter._id === id ? data : newsletter
         );
         setNewsletters(filteredNewsletter);
       } catch (err) {
@@ -305,11 +306,14 @@ export default function NewsletterList() {
     }
   };
 
-  const handleEmailSelection = (email) => {
-    if (selectedEmails.includes(email)) {
-      setSelectedEmails(selectedEmails.filter((e) => e !== email));
+  const handleEmailSelection = (newsletter) => {
+    if (newsletter.isDeleted) {
+      return;
+    }
+    if (selectedEmails.includes(newsletter.email)) {
+      setSelectedEmails(selectedEmails.filter((e) => e !== newsletter.email));
     } else {
-      setSelectedEmails([...selectedEmails, email]);
+      setSelectedEmails([...selectedEmails, newsletter.email]);
     }
   };
 
@@ -442,9 +446,17 @@ export default function NewsletterList() {
                   type="checkbox"
                   mode={mode}
                   checked={selectedEmails.includes(newsletter.email)}
-                  onChange={() => handleEmailSelection(newsletter.email)}
+                  onChange={() => handleEmailSelection(newsletter)}
                 />
-                <Email>{newsletter.email}</Email>
+                <Email
+                  style={
+                    newsletter.isDeleted
+                      ? { color: "gray", textDecoration: "line-through" }
+                      : {}
+                  }
+                >
+                  {newsletter.email}
+                </Email>
               </SubListItem>
               <Date>{moment(newsletter.createdAt).format("LLL")}</Date>
               <FontAwesomeIcon

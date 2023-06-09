@@ -7,13 +7,13 @@ import {
   faMessage,
   faMoneyBill,
   faShield,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Store } from '../Store';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../Store";
 
 const Container = styled.div`
   margin: 0 10vw;
@@ -137,7 +137,7 @@ const Step = styled.div`
   margin: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   padding: 10px;
   &.small {
@@ -166,7 +166,7 @@ const Section = styled.section`
   margin: 40px 0;
   &.back {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
     padding: 20px;
     border-radius: 0.2rem;
   }
@@ -220,13 +220,13 @@ const Input = styled.input`
   border: 0;
   height: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   color: ${(props) =>
-    props.mode === 'pagebodylight'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodylight"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   &:focus-visible {
     outline: none;
   }
@@ -256,7 +256,7 @@ const GetStart = styled.div`
 const Line = styled.div`
   display: none;
   opacity: 0.2;
-  background: ${(props) => (props.mode === 'pagebodydark' ? 'white' : 'black')};
+  background: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
   width: 100%;
   height: 1px;
   @media (max-width: 992px) {
@@ -312,35 +312,43 @@ const ButtonText = styled.div`
 
 export default function SellScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode } = state;
-  const [input, setInput] = useState('');
+  const { mode, userInfo } = state;
+
+  const navigate = useNavigate();
+
+  const [input, setInput] = useState("");
   const [sent, setSent] = useState(false);
 
+  useEffect(() => {
+    if (userInfo && userInfo.isSeller) {
+      navigate("/newProduct");
+    }
+  }, [navigate, userInfo]);
   const handlesubmit = async () => {
     if (!input.length) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Please enter your email to get updates',
+          message: "Please enter your email to get updates",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     try {
-      const { data } = await axios.post('/api/newsletters/', {
+      const { data } = await axios.post("/api/newsletters/", {
         email: input,
-        emailType: 'Rebatch',
+        emailType: "Rebatch",
       });
-      setInput('');
+      setInput("");
       setSent(true);
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: ' Thank You For Submiting Your Email',
+          message: " Thank You For Submiting Your Email",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
@@ -351,7 +359,7 @@ export default function SellScreen() {
   return (
     <Container>
       <Section>
-        <Header2 style={{ fontSize: '30px' }}>
+        <Header2 style={{ fontSize: "30px" }}>
           LET YOUR WARDROBE LIVE IN YOUR POCKET, ITS FAST
         </Header2>
         <Row>
@@ -378,12 +386,12 @@ export default function SellScreen() {
         </Row>
         <Row>
           <SubHeadingMalon>SNAP</SubHeadingMalon>
-          <SubHeading style={{ fontSize: '1.5rem', margin: '0px' }}>
+          <SubHeading style={{ fontSize: "1.5rem", margin: "0px" }}>
             - LIST -
           </SubHeading>
           <SubHeadingOrange>CASH-OUT.</SubHeadingOrange>
         </Row>
-        <Row className="mobile" style={{ width: '80%' }}>
+        <Row className="mobile" style={{ width: "80%" }}>
           <Sides>
             <PhoneImg
               src="https://res.cloudinary.com/emirace/image/upload/v1660107093/phonescreen_opkx9a.png"
@@ -406,7 +414,7 @@ export default function SellScreen() {
                 Listing is easier than you think. With <b>10,400 brand</b> names
                 to choose from our database, it's just a click away! List and
                 describe your item with all information buyer needs to know, set
-                your price and share to help buyers discover your listing.{' '}
+                your price and share to help buyers discover your listing.{" "}
               </Text>
             </Step>
             <Step mode={mode} className="small">
@@ -429,14 +437,14 @@ export default function SellScreen() {
           <SubHeading>THRIFT - BUY - SELL - CHAT - CASHOUT - REPEAT</SubHeading>
           <Row>
             <FontAwesomeIcon icon={faCircle} />
-            <Header2 style={{ color: 'var(--malon-color)' }}>ALL IN</Header2>
+            <Header2 style={{ color: "var(--malon-color)" }}>ALL IN</Header2>
             <Header2>ONE</Header2>
-            <Header2 style={{ color: 'var(--orange-color)' }}>PLACE</Header2>
+            <Header2 style={{ color: "var(--orange-color)" }}>PLACE</Header2>
             <FontAwesomeIcon icon={faCircle} />
           </Row>
         </div>
       </Section>
-      <Section className="back" mode={mode} style={{ padding: '10px' }}>
+      <Section className="back" mode={mode} style={{ padding: "10px" }}>
         <SubHeading>WHAT TO SELL?</SubHeading>
         <Text>
           FASHION - BEAUTY - FINE JEWLERY - HOME & ARTS - PET - CARE & GROOMING
@@ -444,7 +452,7 @@ export default function SellScreen() {
         </Text>
         <Text>
           We accept all your pre-loved precious Items our community are
-          constantly looking for, willing to love, and give a warm home.{' '}
+          constantly looking for, willing to love, and give a warm home.{" "}
         </Text>
 
         <Row className="gap scroll">
@@ -478,11 +486,11 @@ export default function SellScreen() {
       </Section>
       <Section>
         <Header2>RE:BATCH</Header2>
-        <Row className="mobile width" style={{ width: '70%' }}>
-          <SubHeading className="mobileshow" style={{ fontSize: '18px' }}>
+        <Row className="mobile width" style={{ width: "70%" }}>
+          <SubHeading className="mobileshow" style={{ fontSize: "18px" }}>
             COMING SOON!!!
           </SubHeading>
-          <SubHeading className="mobileshow" style={{ fontSize: '18px' }}>
+          <SubHeading className="mobileshow" style={{ fontSize: "18px" }}>
             WANTS TO CONSIGN WITH US?
           </SubHeading>
           <RebatchImg
@@ -490,24 +498,24 @@ export default function SellScreen() {
             alt="img"
           />
           <div>
-            <Text style={{ textAlign: 'left', textAlign: 'justify' }}>
+            <Text style={{ textAlign: "left", textAlign: "justify" }}>
               Repeddle Batch is a consignment option that offers a personalized
               service to our community members that wish to transfer their
               pre-loved items to a new loving home but don’t like the admin.
             </Text>
-            <Text style={{ textAlign: 'left', textAlign: 'justify' }}>
+            <Text style={{ textAlign: "left", textAlign: "justify" }}>
               Consigning your garment is part of the steps you take to reduce
               fashion foot print on our environment. Save our planet by
               recycling garments instead of dumping them to landfills.
             </Text>
             {/* <div style={{ height: "30px" }} /> */}
-            <SubHeading className="nomobileshow" style={{ fontSize: '18px' }}>
+            <SubHeading className="nomobileshow" style={{ fontSize: "18px" }}>
               COMING SOON!!!
             </SubHeading>
-            <SubHeading className="nomobileshow" style={{ fontSize: '18px' }}>
+            <SubHeading className="nomobileshow" style={{ fontSize: "18px" }}>
               WANTS TO CONSIGN WITH US?
             </SubHeading>
-            <Text style={{ textAlign: 'left' }}>
+            <Text style={{ textAlign: "left" }}>
               Drop Your email and we will let you know once we start accepting
               consignment
             </Text>
@@ -520,7 +528,7 @@ export default function SellScreen() {
                 onChange={(e) => setInput(e.target.value)}
               />
               <div
-                style={{ cursor: 'pointer', flex: 1 }}
+                style={{ cursor: "pointer", flex: 1 }}
                 onClick={handlesubmit}
               >
                 SUBMIT
@@ -531,13 +539,13 @@ export default function SellScreen() {
       </Section>
       <Section className="bottom">
         <Header2>BULK n SLOT</Header2>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: "relative" }}>
           <MainImage
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             src={
-              mode === 'pagebodylight'
-                ? 'https://res.cloudinary.com/emirace/image/upload/v1665979415/png_20221014_165106_0000_288__pg6wxw.webp'
-                : 'https://res.cloudinary.com/emirace/image/upload/v1665979442/png_20221014_164522_0000_287__vlarrx.webp'
+              mode === "pagebodylight"
+                ? "https://res.cloudinary.com/emirace/image/upload/v1665979415/png_20221014_165106_0000_288__pg6wxw.webp"
+                : "https://res.cloudinary.com/emirace/image/upload/v1665979442/png_20221014_164522_0000_287__vlarrx.webp"
             }
             alt="image"
           />
@@ -545,14 +553,14 @@ export default function SellScreen() {
             <GetStart>GET STARTED</GetStart>
           </Link>
         </div>
-        <Text style={{ textAlign: 'justify' }}>
+        <Text style={{ textAlign: "justify" }}>
           Repeddle BULK n SLOT offers opportunity to either retailers who are
           clearing out a large amount of items as clearance, or wholesalers who
           are selling items in bulk or slots also known as BALES. These option
           gives you the benefit to list a minimum of ten items in a bag/box and
           you can list as much items as you are able to deliver.
         </Text>
-        <Text style={{ textAlign: 'justify' }}>
+        <Text style={{ textAlign: "justify" }}>
           We initiated this solution to provide a self <b>B2B</b> services to
           our community members who may be in need to buy in bulk from fellow
           community members. If you’re a retailer and would prefer to buy items
@@ -561,9 +569,9 @@ export default function SellScreen() {
           this service is also tailored made for you.
         </Text>
         <SubHeading>THREE EASY STEPS TO USE BULK n SLOT</SubHeading>
-        <Row style={{ alignItems: 'flex-start', marginTop: '10px' }}>
-          <b style={{ marginRight: '10px' }}>1.</b>
-          <Text style={{ textAlign: 'justify' }}>
+        <Row style={{ alignItems: "flex-start", marginTop: "10px" }}>
+          <b style={{ marginRight: "10px" }}>1.</b>
+          <Text style={{ textAlign: "justify" }}>
             <b>TAKE A PIC/VIDEO:</b> Make sure to pack up to Ten (10) minimum
             items, you want to sell in a bag/box, snap a photo of your Bulk or
             Slot bag/box and take extra clear detailed photos or make a short
@@ -573,9 +581,9 @@ export default function SellScreen() {
           </Text>
         </Row>
 
-        <Row style={{ alignItems: 'flex-start' }}>
-          <b style={{ marginRight: '10px' }}>2.</b>
-          <Text style={{ textAlign: 'justify' }}>
+        <Row style={{ alignItems: "flex-start" }}>
+          <b style={{ marginRight: "10px" }}>2.</b>
+          <Text style={{ textAlign: "justify" }}>
             <b>LIST:</b> Ensure to describe in details the conditions of your
             items as per our condition guidelines before listing your Bulk or
             Slot bag/box, give full details of items in the description and if
@@ -588,9 +596,9 @@ export default function SellScreen() {
           </Text>
         </Row>
 
-        <Row style={{ alignItems: 'flex-start' }}>
-          <b style={{ marginRight: '10px' }}>3.</b>
-          <Text style={{ textAlign: 'justify' }}>
+        <Row style={{ alignItems: "flex-start" }}>
+          <b style={{ marginRight: "10px" }}>3.</b>
+          <Text style={{ textAlign: "justify" }}>
             <b>SHARE AND CASH-OUT:</b> After a successful upload, be sure to
             share your listing, both on Repeddle’s platforms and social medias
             to help buyers discover your items. You can cash-out by either
@@ -607,8 +615,8 @@ export default function SellScreen() {
       <Line />
       <Section mode={mode} className="top">
         <Header2>WHY SELL WITH REPEDDLE?</Header2>
-        <Row style={{ width: '90vw' }} className="mobile">
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+        <Row style={{ width: "90vw" }} className="mobile">
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>MAKE A CHANGE</SubHeading>
             <Text>
               We’re changing the way (secondhand) fashion is perceived in Africa
@@ -618,8 +626,8 @@ export default function SellScreen() {
               this great cause.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
-            <SubHeading style={{ textAlign: 'center' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
+            <SubHeading style={{ textAlign: "center" }}>
               EASY SELLING & ORDER MANAGEMENT
             </SubHeading>
             <Text>
@@ -628,7 +636,7 @@ export default function SellScreen() {
               analytics to make selling experience and engagement effortless.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>EASY DELIVERY OPTIONS</SubHeading>
             <Text>
               Variety of delivery options to choose from. Base on your
@@ -636,7 +644,7 @@ export default function SellScreen() {
               option you would like to offer buyers. All within your control.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <SubHeading>GROWING COMMUNINTY</SubHeading>
             <Text>
               Access to a vast community of open minded, yet environmentally
@@ -649,60 +657,60 @@ export default function SellScreen() {
       </Section>
       <Section mode={mode}>
         <Header2>WHAT YOU WILL GET</Header2>
-        <Row style={{ width: '80vw' }} className="mobile">
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+        <Row style={{ width: "80vw" }} className="mobile">
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <FontAwesomeIcon
               size="4x"
               icon={faMessage}
-              color={'var(--orange-color)'}
+              color={"var(--orange-color)"}
             />
             <Text>
               Real-time notification on transactions, Repeddle community
-              engagements with{' '}
-              <b style={{ color: 'var(--malon-color)' }}>
+              engagements with{" "}
+              <b style={{ color: "var(--malon-color)" }}>
                 DIRECT IN APP/MESSAGE SYSTEM
-              </b>{' '}
+              </b>{" "}
               for you and your buyers to make sale communication easy and fast.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <FontAwesomeIcon
               size="4x"
               icon={faShield}
-              color={'var(--orange-color)'}
+              color={"var(--orange-color)"}
             />
             <Text>
               Protected transactions for sellers and buyers with (
-              <b style={{ color: 'var(--malon-color)' }}>
+              <b style={{ color: "var(--malon-color)" }}>
                 REPEDDLE BUYER & SELLERS PROTECTION
               </b>
               ), a personalized wallet and world class secured payment system.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <FontAwesomeIcon
               size="4x"
               icon={faMoneyBill}
-              color={'var(--orange-color)'}
+              color={"var(--orange-color)"}
             />
             <Text>
-              Coupons and campaigns:{' '}
-              <b style={{ color: 'var(--malon-color)' }}>
+              Coupons and campaigns:{" "}
+              <b style={{ color: "var(--malon-color)" }}>
                 ACCESS TO DISCOUNT, GIFT CARD, PROMOTION AND FREE DELIVERY.
-              </b>{' '}
+              </b>{" "}
               Offering creating tools to drive sales for your store.
             </Text>
           </Step>
-          <Step mode={mode} style={{ margin: '10px', height: '220px' }}>
+          <Step mode={mode} style={{ margin: "10px", height: "220px" }}>
             <FontAwesomeIcon
               size="4x"
               icon={faChartColumn}
-              color={'var(--orange-color)'}
+              color={"var(--orange-color)"}
             />
             <Text>
               Customized marketing tools and algorithm to help your listing get
-              the popularity it needs and sell fast, including{' '}
-              <b style={{ color: 'var(--malon-color)' }}>
+              the popularity it needs and sell fast, including{" "}
+              <b style={{ color: "var(--malon-color)" }}>
                 REPEDDLE VIP VERIFICATION SHIELD.
               </b>
             </Text>
@@ -718,30 +726,30 @@ export default function SellScreen() {
       <Section
         style={{
           backgroundImage:
-            'url(https://res.cloudinary.com/emirace/image/upload/v1666772704/charlesdeluvio-1-nx1QR5dTE-unsplash_dzdawl.jpg)',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          position: 'relative',
+            "url(https://res.cloudinary.com/emirace/image/upload/v1666772704/charlesdeluvio-1-nx1QR5dTE-unsplash_dzdawl.jpg)",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+          position: "relative",
         }}
       >
         <ButtonRow>
           <Wondering>WONDERING WHAT TO BUY?</Wondering>
-          <Link to="/search" style={{ marginLeft: 'auto' }}>
-            <ButtonShow style={{ background: 'var(--malon-color)' }}>
+          <Link to="/search" style={{ marginLeft: "auto" }}>
+            <ButtonShow style={{ background: "var(--malon-color)" }}>
               <ButtonText>SHOP NOW</ButtonText>
             </ButtonShow>
           </Link>
         </ButtonRow>
         <div
           style={{
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            opacity: '0.4',
-            background: 'var(--malon-color)',
-            width: '100%',
-            height: '100%',
+            position: "absolute",
+            left: "0",
+            top: "0",
+            opacity: "0.4",
+            background: "var(--malon-color)",
+            width: "100%",
+            height: "100%",
           }}
         ></div>
       </Section>

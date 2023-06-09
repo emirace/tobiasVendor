@@ -31,6 +31,17 @@ const ConImg = styled.div`
   height: 100%;
 `;
 
+const SoldAll = styled.div`
+  position: absolute;
+  background: grey;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+  right: 10px;
+  top: 10px;
+  text-transform: uppercase;
+`;
+
 export default function Product(props) {
   const { product: p1 } = props;
 
@@ -213,7 +224,9 @@ export default function Product(props) {
       </Model>
       <div className="product-image1">
         <Link to={`/product/${product.slug}`}>
-          {discount() ? (
+          {product.soldAll ? (
+            <SoldAll>sold</SoldAll>
+          ) : discount() ? (
             <span className="discount-tag1 ">{discount().toFixed(0)}% off</span>
           ) : (
             ""

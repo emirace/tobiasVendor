@@ -159,6 +159,11 @@ productRouter.put(
         product.description = req.body.description || product.description;
         product.specification = req.body.specification || product.specification;
         product.keyFeatures = req.body.feature || product.keyFeatures;
+        product.condition = req.body.condition || product.condition;
+        product.material = req.body.material || product.material;
+        product.deliveryOption =
+          req.body.deliveryOption || product.deliveryOption;
+        product.color = req.body.color || product.color;
         product.badge = req.user.isAdmin
           ? req.body.badge === ""
             ? req.user.badge

@@ -1444,7 +1444,7 @@ export default function ProductScreen() {
                 </button>
               ) : (
                 <button
-                  style={{ backgroundColor: "grey" }}
+                  style={{ backgroundColor: "grey", cursor: "not-allowed" }}
                   className="sp_cart_btn"
                 >
                   sold out

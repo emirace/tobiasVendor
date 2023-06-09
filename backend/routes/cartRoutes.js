@@ -47,9 +47,9 @@ cartItemRouter.post(
     const cartItem = await CartItem.findById(req.params.id);
     if (cartItem.userId !== req.user._id) {
       if (cartItem) {
-        cartItem.meta = req.body.meta;
-        const newaddress = await cartItem.save();
-        res.status(200).send(newaddress);
+        cartItem.item = req.body.meta;
+        const newCart = await cartItem.save();
+        res.status(200).send(newCart);
       } else {
         res.status(404).send("cartItem not found");
       }
