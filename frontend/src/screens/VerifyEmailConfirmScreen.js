@@ -94,7 +94,15 @@ export default function VerifyEmailConfirmScreen({ email }) {
   ) : (
     <Container mode={mode}>
       {error ? (
-        <MessageBox>{error}</MessageBox>
+        <MessageBox>
+          {error}
+          <Link
+            to={window.location.hostname}
+            style={{ color: "var(--orange-color)" }}
+          >
+            Repeddle
+          </Link>
+        </MessageBox>
       ) : (
         <Content>
           <FontAwesomeIcon

@@ -288,7 +288,10 @@ userRouter.post(
         .status(201)
         .send({ success: true, message: "Email verified successfuly" });
     } else {
-      res.status(400).send({ message: "Invalid Verification Token" });
+      res.status(400).send({
+        message:
+          "Invalid Verification Token, please resend verification email from your account.",
+      });
     }
   })
 );

@@ -180,6 +180,7 @@ const Button = styled.button`
   background: var(--orange-color);
   color: var(--white-color);
   cursor: pointer;
+  margin-top: 10px;
 `;
 const UploadInput = styled.input`
   display: none;
@@ -778,7 +779,7 @@ export default function Product() {
           image3,
           image4,
           tags,
-          mainCate: input.mainCate,
+          mainCate: input.product,
           subCategory: input.subCategory,
           category: input.category,
           brand: input.brand,
@@ -790,7 +791,7 @@ export default function Product() {
           material: input.material,
           feature: input.keyFeatures,
           addSize,
-          discount,
+          discount: discount || price,
           countInStock,
           deliveryOption,
         },
@@ -1195,7 +1196,7 @@ export default function Product() {
                   {categories.length > 0 &&
                     categories.map(
                       (cat) =>
-                        cat.name === input.mainCate &&
+                        cat.name === input.product &&
                         cat.subCategories.map((sub) => (
                           <MenuItem value={sub.name}>{sub.name}</MenuItem>
                         ))
@@ -1242,7 +1243,7 @@ export default function Product() {
                   {categories.length > 0 &&
                     categories.map(
                       (cat) =>
-                        cat.name === input.mainCate &&
+                        cat.name === input.product &&
                         cat.subCategories.map(
                           (sub) =>
                             sub.name === input.category &&
@@ -1325,7 +1326,7 @@ export default function Product() {
             </Item>
             <Item>
               <Label>
-                Material/Fabric
+                Material/Fabric{" "}
                 <Tips
                   mode={mode}
                   tips={`How do I know what the primary material of the product is?
@@ -1606,7 +1607,7 @@ export default function Product() {
             </Item>
             <Item>
               <Label>
-                Color
+                Color{" "}
                 <Tips
                   mode={mode}
                   tips={`How can I ensure that colour of the 
@@ -1684,7 +1685,7 @@ export default function Product() {
                   <>
                     <Item style={{ marginTop: "0" }}>
                       <Label>
-                        Add Size
+                        Add Size{" "}
                         <Tips
                           mode={mode}
                           tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?

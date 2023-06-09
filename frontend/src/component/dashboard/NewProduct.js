@@ -731,7 +731,7 @@ export default function NewProduct() {
           category: input.category,
           description: input.description,
           brand: input.brand,
-          discount: input.discount,
+          discount: input.discount || input.price,
           deliveryOption,
           meta: meta,
           tags,

@@ -1380,10 +1380,12 @@ export default function ProductScreen() {
               {product.currency}
               {product.actualPrice}
             </div>
-            <div className="sp_discount_price">
-              {product.currenncy}
-              {product.price}
-            </div>
+            {product.actualPrice === product.price ? (
+              <div className="sp_discount_price">
+                {product.currenncy}
+                {product.price}
+              </div>
+            ) : null}
             {discount() ? (
               <div className="sp_discount">
                 ({discount().toString().substring(0, 5)}% )

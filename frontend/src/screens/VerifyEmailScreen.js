@@ -14,6 +14,7 @@ import jwt_decode from "jwt-decode";
 import styled from "styled-components";
 import Input from "../component/Input";
 import Countdown from "react-countdown";
+import { signoutHandler } from "../component/Navbar";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -291,6 +292,12 @@ export default function VerifyEmailScreen() {
           />
         </div>
       )}
+      <Para>
+        If you have already verify your email,{" "}
+        <span onClick={signoutHandler} style={{ color: "var(--orange-color)" }}>
+          Login again
+        </span>
+      </Para>
     </Container>
   );
 }

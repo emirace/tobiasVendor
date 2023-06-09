@@ -140,7 +140,7 @@ export default function SearchSceen() {
   const category = sp.get("category") || "all";
   const query = sp.get("query") || "all";
   const rating = sp.get("rating") || "all";
-  const maxPrice = sp.get("maxPrice") || 1000;
+  const maxPrice = sp.get("maxPrice") || currency === "R " ? 100000 : 500000;
   const minPrice = sp.get("minPrice") || 0;
   const order = sp.get("order") || "newest";
   const page = sp.get("page") || 1;
