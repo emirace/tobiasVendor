@@ -264,7 +264,7 @@ export default function Product(props) {
           {product.currency}
           {product.actualPrice}
         </span>
-        {product.price === product.actualPrice ? (
+        {product.price !== product.actualPrice ? (
           <span className="actual-price1">
             {product.currency}
             {product.price}

@@ -103,6 +103,7 @@ import AcceptCookies from "./component/AcceptCookies";
 import MobileNotificationScreen from "./screens/MobileNotificationScreen";
 import TopSellerList from "./component/dashboard/TopSellerList";
 import BrandScreenPage from "./screens/BrandScreenPage";
+import BuyerProtection from "./component/info/BuyerProtection";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -407,6 +408,10 @@ function App() {
                       <Route path="/seller/:id" element={<SellerScreen />} />
                       <Route path="/earning" element={<Earning />} />
                       <Route path="/returns" element={<Returns />} />
+                      <Route
+                        path="/buyerprotection"
+                        element={<BuyerProtection />}
+                      />
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />

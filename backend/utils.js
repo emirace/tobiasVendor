@@ -246,7 +246,7 @@ export const confirmPayfast = async (req, cartTotal) => {
   try {
     const testingMode = false;
     const pfHost = testingMode ? "sandbox.payfast.co.za" : "www.payfast.co.za";
-    const passPhrase = "/Re01thrift_peddle";
+    const passPhrase = "Re01thriftpeddle";
     // const passPhrase = "jt7NOE43FZPn";
 
     const pfData = JSON.parse(JSON.stringify(req.body));

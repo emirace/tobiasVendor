@@ -19,6 +19,7 @@ const emailLists = [
     template: "successEmail",
   },
   { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
+  { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
 ];
 
 // get all newsletters
@@ -134,7 +135,7 @@ newsletterRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     try {
-      const { emails, emailName } = req.body;
+      const { emails, emailName, url } = req.body;
       console.log(emails, emailName);
       const emailType = emailLists.find(
         (emailList) => emailList.name === emailName
@@ -165,14 +166,16 @@ newsletterRouter.post(
         }
       } else {
         // Send email using the appropriate template and subject
-        sendEmail({
-          to: emails,
-          subject: emailType.subject,
-          template: emailType.template,
-          context: {
-            url: "com",
-          },
-        });
+        for (const email of emails) {
+          sendEmail({
+            to: email,
+            subject: emailType.subject,
+            template: emailType.template,
+            context: {
+              url,
+            },
+          });
+        }
       }
 
       res.status(200).send("Email sent successfully");

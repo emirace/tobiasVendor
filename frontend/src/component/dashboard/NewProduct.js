@@ -1616,6 +1616,7 @@ export default function NewProduct() {
                   <TextInput
                     mode={mode}
                     type="number"
+                    placeholder="Actual price"
                     value={input.price}
                     onChange={(e) => handleOnChange(e.target.value, "price")}
                   />
@@ -1632,11 +1633,16 @@ export default function NewProduct() {
                       className="half"
                       mode={mode}
                       type="number"
+                      placeholder="Discount in %"
                       onChange={(e) => {
-                        if (input.price) {
-                          const value =
-                            (input.price * (100 - e.target.value)) / 100;
-                          handleOnChange(value, "discount");
+                        if (e.target.value) {
+                          if (input.price) {
+                            const value =
+                              (input.price * (100 - e.target.value)) / 100;
+                            handleOnChange(value, "discount");
+                          }
+                        } else {
+                          handleOnChange("", "discount");
                         }
                       }}
                     />
@@ -1651,7 +1657,7 @@ export default function NewProduct() {
                 </Offer>
                 <Actual>
                   {currency}
-                  {input.price}
+                  {input.discount ? input.price : null}
                 </Actual>
               </PriceDisplay>
             </Price>

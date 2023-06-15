@@ -212,8 +212,17 @@ export default function SignupScreen() {
   }, [navigate, redirect, userInfo]);
 
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+    setInput((prevState) => {
+      let updatedState = { ...prevState };
+      if (input === "email") {
+        updatedState[input] = text.trim().toLowerCase();
+      } else {
+        updatedState[input] = text.trim();
+      }
+      return updatedState;
+    });
   };
+
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };

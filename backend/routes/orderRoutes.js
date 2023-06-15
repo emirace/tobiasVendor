@@ -685,228 +685,66 @@ orderRouter.put(
   })
 );
 
-orderRouter.put(
-  "/:region/:id/pay",
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const { region, id } = req.params;
-    const { transaction_id, method } = req.body;
-
-    try {
-      let response;
-
-      if (method === "wallet") {
-        const transaction = await Transaction.findOne({
-          "metadata.transaction_id": transaction_id,
-        });
-        response = transaction
-          ? { data: { status: "successful" } }
-          : { data: { status: "failed" } };
-      } else {
-        response = await flw.Transaction.verify({ id: transaction_id });
-      }
-
-      if (response?.data?.status === "successful") {
-        const order = await Order.findById(id).populate({
-          path: "user",
-          select: "email username",
-        });
-
-        if (order) {
-          const products = order.orderItems.map((i) => i._id);
-          const records = await Product.find({ _id: { $in: products } });
-          const sellers = Array.from(
-            new Set(order.orderItems.map((i) => i.seller))
-          );
-
-          for (const product of records) {
-            const orderItem = order.orderItems.find((i) =>
-              i._id.equals(product._id)
-            );
-            const newQuantity = orderItem.quantity;
-            const selectedSize = orderItem.selectSize;
-
-            product.sold = true;
-            product.countInStock -= newQuantity;
-            product.soldAll = product.countInStock < 1;
-
-            product.sizes = product.sizes.map((size) => {
-              return size.size === selectedSize
-                ? { ...size, value: `${Number(size.value) - newQuantity}` }
-                : size;
-            });
-
-            product.userBuy.push(req.user._id);
-
-            const seller = await User.findById(product.seller);
-            seller.sold.push(product._id);
-            seller.earnings += product.actualPrice;
-
-            await seller.save();
-            await product.save();
-          }
-
-          order.isPaid = true;
-          order.paidAt = Date.now();
-          order.paymentResult = {
-            id: req.body.id,
-            status: req.body.status,
-            update_time: req.body.update_time,
-            email_address: req.body.email_address,
-          };
-
-          const updateOrder = await order.save();
-
-          for (const seller of sellers) {
-            const userSeller = await User.findById(seller);
-            const exist = await RebundleSeller.findOne({
-              userId: req.user._id,
-              sellerId: seller,
-            });
-
-            if (!exist && userSeller.rebundle.status) {
-              const rebundleSeller = new RebundleSeller({
-                userId: req.user._id,
-                sellerId: seller,
-                createdAt: Date.now(),
-                count: seller.rebundle.count,
-                deliveryMethod: order.deliveryMethod["delivery Option"],
-              });
-
-              await rebundleSeller.save();
-            } else if (exist) {
-              const selectedCount = order.orderItems.reduce((total, item) => {
-                const deliveryMethod = item.deliverySelect["delivery Option"];
-                return (
-                  total +
-                  (deliveryMethod === exist.deliveryMethod ? item.quantity : 0)
-                );
-              }, 0);
-
-              exist.count = Math.max(exist.count - selectedCount, 0);
-              await exist.save();
-            }
-          }
-
-          await payShippingFee(order);
-
-          sendEmail({
-            to: order.user.email,
-            subject: "PROCESSING YOUR ORDER",
-            template: "processingOrder",
-            context: {
-              username: order.user.username,
-              url: region === "NGN" ? "com" : "co.za",
-              sellers,
-              orderId: order._id,
-              orderItems: order.orderItems,
-              sellerId: order.orderItems[0].seller._id,
-            },
-          });
-
-          for (const seller of sellers) {
-            sendEmail({
-              to: seller.email,
-              subject: "NEW ORDER",
-              template: "processingOrderSeller",
-              context: {
-                username: seller.username,
-                url: region === "NGN" ? "com" : "co.za",
-                buyer: order.user.username,
-                buyerId: order.user._id,
-                orderId: order._id,
-                sellerId: seller._id,
-                orderItems: order.orderItems.filter(
-                  (x) => x.seller._id === seller._id
-                ),
-                sellerId: order.orderItems[0].seller._id,
-              },
-            });
-          }
-
-          res.status(200).send({ message: "Order Paid", order: updateOrder });
-        } else {
-          res.status(404).send({ message: "Order Not Found" });
-        }
-      } else {
-        res.status(400).send({ message: "Error making payment" });
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      res
-        .status(500)
-        .send({ message: "An error occurred while processing the order" });
-    }
-  })
-);
-
 // orderRouter.put(
 //   "/:region/:id/pay",
 //   isAuth,
 //   expressAsyncHandler(async (req, res) => {
-//     const { region } = req.params;
-//     const { transaction_id } = req.body;
-//     const { method } = req.body;
-//     var response;
+//     const { region, id } = req.params;
+//     const { transaction_id, method } = req.body;
+
 //     try {
+//       let response;
+
 //       if (method === "wallet") {
-//         const transaction = await Transaction.find({
+//         const transaction = await Transaction.findOne({
 //           "metadata.transaction_id": transaction_id,
 //         });
-//         if (transaction) {
-//           response = { data: { status: "successful" } };
-//         } else {
-//           response = { data: { status: "failed" } };
-//         }
+//         response = transaction
+//           ? { data: { status: "successful" } }
+//           : { data: { status: "failed" } };
 //       } else {
-//         if (region === "N ") {
-//           response = await flw.Transaction.verify({ id: transaction_id });
-//         } else {
-//           response = await flw.Transaction.verify({ id: transaction_id });
-//         }
+//         response = await flw.Transaction.verify({ id: transaction_id });
 //       }
+
 //       if (response?.data?.status === "successful") {
-//         const order = await Order.findById(req.params.id).populate({
+//         const order = await Order.findById(id).populate({
 //           path: "user",
 //           select: "email username",
 //         });
-//         if (order) {
-//           const products = [];
-//           const sellers = [];
-//           order.orderItems.map((i) => products.push(i._id));
-//           const records = await Product.find({
-//             _id: { $in: products },
-//           });
-//           order.orderItems.forEach((element) => {
-//             if (!sellers.includes(element.seller)) {
-//               sellers.push(element.seller);
-//             }
-//           });
-//           records.map(async (p) => {
-//             var newQuantity;
-//             var selectedSize;
-//             order.orderItems.map((x) => {
-//               if (p._id.toString() === x._id) {
-//                 newQuantity = x.quantity;
-//                 selectedSize = x.selectSize;
-//               }
-//             });
-//             p.sold = true;
-//             p.countInStock = p.countInStock - newQuantity;
 
-//             p.sizes = p.sizes.map((size) => {
+//         if (order) {
+//           const products = order.orderItems.map((i) => i._id);
+//           const records = await Product.find({ _id: { $in: products } });
+//           const sellers = Array.from(
+//             new Set(order.orderItems.map((i) => i.seller))
+//           );
+
+//           for (const product of records) {
+//             const orderItem = order.orderItems.find((i) =>
+//               i._id.equals(product._id)
+//             );
+//             const newQuantity = orderItem.quantity;
+//             const selectedSize = orderItem.selectSize;
+
+//             product.sold = true;
+//             product.countInStock -= newQuantity;
+//             product.soldAll = product.countInStock < 1;
+
+//             product.sizes = product.sizes.map((size) => {
 //               return size.size === selectedSize
 //                 ? { ...size, value: `${Number(size.value) - newQuantity}` }
 //                 : size;
 //             });
-//             p.userBuy.push(req.user._id);
 
-//             const seller = await User.findById(p.seller);
-//             seller.sold.push(p._id);
-//             seller.earnings = seller.earnings + p.actualPrice;
+//             product.userBuy.push(req.user._id);
+
+//             const seller = await User.findById(product.seller);
+//             seller.sold.push(product._id);
+//             seller.earnings += product.actualPrice;
+
 //             await seller.save();
-//             await p.save();
-//           });
+//             await product.save();
+//           }
 
 //           order.isPaid = true;
 //           order.paidAt = Date.now();
@@ -916,13 +754,16 @@ orderRouter.put(
 //             update_time: req.body.update_time,
 //             email_address: req.body.email_address,
 //           };
+
 //           const updateOrder = await order.save();
-//           sellers.map(async (seller) => {
+
+//           for (const seller of sellers) {
 //             const userSeller = await User.findById(seller);
 //             const exist = await RebundleSeller.findOne({
 //               userId: req.user._id,
 //               sellerId: seller,
 //             });
+
 //             if (!exist && userSeller.rebundle.status) {
 //               const rebundleSeller = new RebundleSeller({
 //                 userId: req.user._id,
@@ -931,23 +772,23 @@ orderRouter.put(
 //                 count: seller.rebundle.count,
 //                 deliveryMethod: order.deliveryMethod["delivery Option"],
 //               });
+
 //               await rebundleSeller.save();
 //             } else if (exist) {
-//               const selectedCount = order.orderItems.reduce(
-//                 (a, c) =>
-//                   a +
-//                   (c.deliverySelect["delivery Option"] === exist.deliveryMethod
-//                     ? 1 * c.quantity
-//                     : 0),
-//                 0
-//               );
-//               const count = exist.count - selectedCount;
-//               const countAllow = count > 0 ? count : 0;
-//               exist.count = countAllow;
+//               const selectedCount = order.orderItems.reduce((total, item) => {
+//                 const deliveryMethod = item.deliverySelect["delivery Option"];
+//                 return (
+//                   total +
+//                   (deliveryMethod === exist.deliveryMethod ? item.quantity : 0)
+//                 );
+//               }, 0);
+
+//               exist.count = Math.max(exist.count - selectedCount, 0);
 //               await exist.save();
 //             }
-//           });
-//           const answer = await payShippingFee(order);
+//           }
+
+//           await payShippingFee(order);
 
 //           sendEmail({
 //             to: order.user.email,
@@ -962,7 +803,8 @@ orderRouter.put(
 //               sellerId: order.orderItems[0].seller._id,
 //             },
 //           });
-//           sellers.map((seller) => {
+
+//           for (const seller of sellers) {
 //             sendEmail({
 //               to: seller.email,
 //               subject: "NEW ORDER",
@@ -980,20 +822,178 @@ orderRouter.put(
 //                 sellerId: order.orderItems[0].seller._id,
 //               },
 //             });
-//           });
-//           res.send({ message: "Order Paid", order: updateOrder });
+//           }
+
+//           res.status(200).send({ message: "Order Paid", order: updateOrder });
 //         } else {
 //           res.status(404).send({ message: "Order Not Found" });
 //         }
 //       } else {
-//         res.send("error making payment");
+//         res.status(400).send({ message: "Error making payment" });
 //       }
 //     } catch (error) {
-//       console.log("error", error);
-//       res.status(error.status).send({ message: error.message });
+//       console.error("Error:", error);
+//       res
+//         .status(500)
+//         .send({ message: "An error occurred while processing the order" });
 //     }
 //   })
 // );
+
+orderRouter.put(
+  "/:region/:id/pay",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
+    const { transaction_id } = req.body;
+    const { method } = req.body;
+    var response;
+    try {
+      if (method === "wallet") {
+        const transaction = await Transaction.find({
+          "metadata.transaction_id": transaction_id,
+        });
+        if (transaction) {
+          response = { data: { status: "successful" } };
+        } else {
+          response = { data: { status: "failed" } };
+        }
+      } else {
+        if (region === "N ") {
+          response = await flw.Transaction.verify({ id: transaction_id });
+        } else {
+          response = await flw.Transaction.verify({ id: transaction_id });
+        }
+      }
+      if (response?.data?.status === "successful") {
+        const order = await Order.findById(req.params.id).populate({
+          path: "user",
+          select: "email username",
+        });
+        if (order) {
+          const products = [];
+          const sellers = [];
+          order.orderItems.map((i) => products.push(i._id));
+          const records = await Product.find({
+            _id: { $in: products },
+          });
+          order.orderItems.forEach((element) => {
+            if (!sellers.includes(element.seller)) {
+              sellers.push(element.seller);
+            }
+          });
+          records.map(async (p) => {
+            var newQuantity;
+            var selectedSize;
+            order.orderItems.map((x) => {
+              if (p._id.toString() === x._id) {
+                newQuantity = x.quantity;
+                selectedSize = x.selectSize;
+              }
+            });
+            p.sold = true;
+            p.countInStock = p.countInStock - newQuantity;
+
+            p.sizes = p.sizes.map((size) => {
+              return size.size === selectedSize
+                ? { ...size, value: `${Number(size.value) - newQuantity}` }
+                : size;
+            });
+            p.userBuy.push(req.user._id);
+
+            const seller = await User.findById(p.seller);
+            seller.sold.push(p._id);
+            seller.earnings = seller.earnings + p.actualPrice;
+            await seller.save();
+            await p.save();
+          });
+
+          order.isPaid = true;
+          order.paidAt = Date.now();
+          order.paymentResult = {
+            id: req.body.id,
+            status: req.body.status,
+            update_time: req.body.update_time,
+            email_address: req.body.email_address,
+          };
+          const updateOrder = await order.save();
+          sellers.map(async (seller) => {
+            const userSeller = await User.findById(seller);
+            const exist = await RebundleSeller.findOne({
+              userId: req.user._id,
+              sellerId: seller,
+            });
+            if (!exist && userSeller.rebundle.status) {
+              const rebundleSeller = new RebundleSeller({
+                userId: req.user._id,
+                sellerId: seller,
+                createdAt: Date.now(),
+                count: seller.rebundle.count,
+                deliveryMethod: order.deliveryMethod["delivery Option"],
+              });
+              await rebundleSeller.save();
+            } else if (exist) {
+              const selectedCount = order.orderItems.reduce(
+                (a, c) =>
+                  a +
+                  (c.deliverySelect["delivery Option"] === exist.deliveryMethod
+                    ? 1 * c.quantity
+                    : 0),
+                0
+              );
+              const count = exist.count - selectedCount;
+              const countAllow = count > 0 ? count : 0;
+              exist.count = countAllow;
+              await exist.save();
+            }
+          });
+          const answer = await payShippingFee(order);
+
+          sendEmail({
+            to: order.user.email,
+            subject: "PROCESSING YOUR ORDER",
+            template: "processingOrder",
+            context: {
+              username: order.user.username,
+              url: region === "NGN" ? "com" : "co.za",
+              sellers,
+              orderId: order._id,
+              orderItems: order.orderItems,
+              sellerId: order.orderItems[0].seller._id,
+            },
+          });
+          sellers.map((seller) => {
+            sendEmail({
+              to: seller.email,
+              subject: "NEW ORDER",
+              template: "processingOrderSeller",
+              context: {
+                username: seller.username,
+                url: region === "NGN" ? "com" : "co.za",
+                buyer: order.user.username,
+                buyerId: order.user._id,
+                orderId: order._id,
+                sellerId: seller._id,
+                orderItems: order.orderItems.filter(
+                  (x) => x.seller._id === seller._id
+                ),
+                sellerId: order.orderItems[0].seller._id,
+              },
+            });
+          });
+          res.send({ message: "Order Paid", order: updateOrder });
+        } else {
+          res.status(404).send({ message: "Order Not Found" });
+        }
+      } else {
+        res.send("error making payment");
+      }
+    } catch (error) {
+      console.log("error", error);
+      res.status(error.status).send({ message: error.message });
+    }
+  })
+);
 
 orderRouter.delete(
   "/:id",

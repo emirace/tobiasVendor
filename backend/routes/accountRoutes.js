@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import {
   creditAccount,
   debitAccount,
@@ -6,17 +6,17 @@ import {
   isAuth,
   isAuthOrNot,
   sendEmail,
-} from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import Transaction from '../models/transactionModel.js';
-import { v4 } from 'uuid';
-import Account from '../models/accountModel.js';
-import axios from 'axios';
-import dotenv from 'dotenv';
-import Flutterwave from 'flutterwave-node-v3';
-import User from '../models/userModel.js';
-import Return from '../models/returnModel.js';
-import Order from '../models/orderModel.js';
+} from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import Transaction from "../models/transactionModel.js";
+import { v4 } from "uuid";
+import Account from "../models/accountModel.js";
+import axios from "axios";
+import dotenv from "dotenv";
+import Flutterwave from "flutterwave-node-v3";
+import User from "../models/userModel.js";
+import Return from "../models/returnModel.js";
+import Order from "../models/orderModel.js";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -26,20 +26,20 @@ const flw = new Flutterwave(
 const accountRouter = express.Router();
 
 accountRouter.get(
-  '/balance',
+  "/balance",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const account = await Account.findOne({ userId: req.user._id });
     if (account) {
       res.status(200).send(account);
     } else {
-      res.status(404).send('account not found');
+      res.status(404).send("account not found");
     }
   })
 );
 
 accountRouter.get(
-  '/balance/:id',
+  "/balance/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -47,13 +47,13 @@ accountRouter.get(
     if (account) {
       res.status(200).send(account);
     } else {
-      res.status(404).send('account not found');
+      res.status(404).send("account not found");
     }
   })
 );
 
 accountRouter.get(
-  '/finduser/:id',
+  "/finduser/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const account = await Account.findById(req.params.id);
@@ -67,26 +67,26 @@ accountRouter.get(
           lastName: user.lastName,
         });
       } else {
-        res.status(404).send('user not found');
+        res.status(404).send("user not found");
       }
     } else {
-      res.status(404).send('account not found');
+      res.status(404).send("account not found");
     }
   })
 );
 
 accountRouter.post(
-  '/:region/deposit',
+  "/:region/deposit",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     var account;
-    if (req.body.userId === 'Admin') {
+    if (req.body.userId === "Admin") {
       const admin = await User.findOne({
         email:
-          req.params.region === 'ZAR'
-            ? 'tobiasrepeddle@gmail.com'
-            : 'repeddleng@gmail.com',
+          req.params.region === "ZAR"
+            ? "tobiasrepeddle@gmail.com"
+            : "repeddleng@gmail.com",
         isAdmin: true,
       });
       account = await Account.findOne({ userId: admin._id });
@@ -102,7 +102,7 @@ accountRouter.post(
         const creditResult = await creditAccount({
           accountId,
           amount,
-          purpose: 'deposit',
+          purpose: "deposit",
           metadata: {
             transaction_id,
             purpose: req.body.purpose,
@@ -113,35 +113,35 @@ accountRouter.post(
           throw creditResult;
         }
         if (
-          req.body.purpose === 'Order Completed' ||
-          req.body.purpose === 'Return Completed'
+          req.body.purpose === "Order Completed" ||
+          req.body.purpose === "Return Completed"
         ) {
           const user = await User.findById(req.body.userId);
           const order = await Order.findById(req.body.orderId);
 
-          if (req.body.purpose === 'Order Completed') {
+          if (req.body.purpose === "Order Completed") {
             sendEmail({
               to: user.email,
-              subject: 'ORDER COMPLETED',
-              template: 'ordercCompleted',
+              subject: "ORDER COMPLETED",
+              template: "ordercCompleted",
               context: {
                 username: user.username,
-                url: user.region === 'NGN' ? 'com' : 'co.za',
+                url: user.region === "NGN" ? "com" : "co.za",
                 orderItems: order.orderItems,
               },
             });
           }
-          if (req.body.purpose === 'Return Completed') {
+          if (req.body.purpose === "Return Completed") {
             const returned = await Return.findOne({ orderId: order._id });
             if (returned) {
-              console.log('gddddfg return complete 222');
+              console.log("gddddfg return complete 222");
               sendEmail({
                 to: user.email,
-                subject: 'RETURN REFUNDED',
-                template: 'returnRefunded',
+                subject: "RETURN REFUNDED",
+                template: "returnRefunded",
                 context: {
                   username: user.username,
-                  url: user.region === 'NGN' ? 'com' : 'co.za',
+                  url: user.region === "NGN" ? "com" : "co.za",
                   orderItems: order.orderItems,
                   returnId: returned?._id,
                   amount: returned.amount,
@@ -150,14 +150,14 @@ accountRouter.post(
             } else {
               throw {
                 success: false,
-                error: 'return not found',
+                error: "return not found",
               };
             }
           }
         }
         res.status(200).send({
           success: true,
-          message: 'deposit successful',
+          message: "deposit successful",
         });
       } catch (error) {
         res.status(500).send({
@@ -168,24 +168,24 @@ accountRouter.post(
     } else {
       res.status(500).send({
         success: false,
-        error: 'enter valid credentials',
+        error: "enter valid credentials",
       });
     }
   })
 );
 
 accountRouter.post(
-  '/:region/withdraw',
+  "/:region/withdraw",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     var account;
-    if (req.body.userId === 'Admin') {
+    if (req.body.userId === "Admin") {
       const admin = await User.findOne({
         email:
-          req.params.region === 'ZAR'
-            ? 'tobiasrepeddle@gmail.com'
-            : 'repeddleng@gmail.com',
+          req.params.region === "ZAR"
+            ? "tobiasrepeddle@gmail.com"
+            : "repeddleng@gmail.com",
         isAdmin: true,
       });
       account = await Account.findOne({ userId: admin._id });
@@ -200,7 +200,7 @@ accountRouter.post(
         const creditResult = await debitAccount({
           accountId,
           amount,
-          purpose: 'withdrawal',
+          purpose: "withdrawal",
           metadata: {
             transaction_id,
             purpose: req.body.purpose,
@@ -213,7 +213,7 @@ accountRouter.post(
 
         res.status(200).send({
           success: true,
-          message: 'withdrawal successful',
+          message: "withdrawal successful",
           transaction_id,
         });
       } catch (error) {
@@ -225,22 +225,22 @@ accountRouter.post(
     } else {
       res.status(500).send({
         success: false,
-        error: 'enter valid credentials',
+        error: "enter valid credentials",
       });
     }
   })
 );
 
 accountRouter.post(
-  '/:region/transfer',
+  "/:region/transfer",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const senderId = await Account.findOne({ userId: req.user._id });
     const admin = await User.findOne({
       email:
-        req.params.region === 'ZAR'
-          ? 'tobiasrepeddle@gmail.com'
-          : 'repeddleng@gmail.com',
+        req.params.region === "ZAR"
+          ? "tobiasrepeddle@gmail.com"
+          : "repeddleng@gmail.com",
       isAdmin: true,
     });
     const recipientId = await Account.findOne({ userId: admin._id });
@@ -249,7 +249,7 @@ accountRouter.post(
 
     if (senderId && recipientId && amount > 0) {
       try {
-        const purpose = 'transfer';
+        const purpose = "transfer";
 
         const debitResult = await debitAccount({
           amount,
@@ -277,7 +277,7 @@ accountRouter.post(
 
         res.status(200).send({
           success: true,
-          message: 'transfer successful',
+          message: "transfer successful",
           transaction_id,
         });
       } catch (error) {
@@ -288,26 +288,26 @@ accountRouter.post(
     } else {
       res.status(500).send({
         success: false,
-        error: 'enter valid credentials',
+        error: "enter valid credentials",
       });
     }
   })
 );
 accountRouter.post(
-  '/:region/fundwallet',
+  "/:region/fundwallet",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
       const { transaction_id } = req.body;
       const response = await flw.Transaction.verify({ id: transaction_id });
       console.log(response);
-      if (response.data.status === 'successful') {
+      if (response.data.status === "successful") {
         const recipientId = await Account.findOne({ userId: req.user._id });
         const admin = await User.findOne({
           email:
-            req.params.region === 'ZAR'
-              ? 'tobiasrepeddle@gmail.com'
-              : 'repeddleng@gmail.com',
+            req.params.region === "ZAR"
+              ? "tobiasrepeddle@gmail.com"
+              : "repeddleng@gmail.com",
           isAdmin: true,
         });
         const senderId = await Account.findOne({ userId: admin._id });
@@ -316,7 +316,7 @@ accountRouter.post(
         console.log(amount);
         console.log(recipientId._id, senderId._id);
         if (senderId && recipientId && amount > 0) {
-          const purpose = 'transfer';
+          const purpose = "transfer";
           console.log(amount);
           const debitResult = await debitAccount({
             amount,
@@ -345,19 +345,19 @@ accountRouter.post(
 
           res.status(200).send({
             success: true,
-            message: 'transfer successful',
+            message: "transfer successful",
             transaction_id,
           });
         } else {
           res.status(500).send({
             success: false,
-            error: 'enter valid credentials',
+            error: "enter valid credentials",
           });
         }
       } else {
         res.status(500).send({
           success: false,
-          error: 'error funding account, try again later',
+          error: "error funding account, try again later",
         });
       }
     } catch (error) {
@@ -370,11 +370,11 @@ accountRouter.post(
 );
 
 accountRouter.post(
-  '/:region/payaccount',
+  "/:region/payaccount",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    console.log('pay account request');
+    console.log("pay account request");
     // const details = {
     //   account_number: "0782648292",
     //   account_bank: "044",
@@ -388,13 +388,13 @@ accountRouter.post(
       // account_number: "3091906691",
       // amount: 100,
       amount: req.body.amount,
-      currency: 'NGN',
-      narration: 'Withdrawal request',
+      currency: "NGN",
+      narration: "Withdrawal request",
       reference: v4(),
       // reference: "dfs23fhr7ntg0293039_PMCKDU_1",
     };
     console.log(req.body, req.params, details);
-    if (req.params.region === 'NGN') {
+    if (req.params.region === "NGN") {
       flw.Transfer.initiate(details).then(console.log).catch(console.log);
     }
     // const user = await User.findById(req.body.userId);
@@ -430,25 +430,25 @@ accountRouter.post(
 
     res.status(200).send({
       success: true,
-      message: 'transfer successful',
+      message: "transfer successful",
     });
   })
 );
 
 accountRouter.post(
-  '/reversal',
+  "/reversal",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { reference } = req.body;
 
     const txnReference = v4();
-    const purpose = 'reversal';
+    const purpose = "reversal";
 
     try {
       const transaction = await Transaction.findOne({ reference });
       if (transaction) {
         const reversalResult =
-          transaction.txnType === 'debit'
+          transaction.txnType === "debit"
             ? await creditAccount({
                 amount: transaction.amount,
                 accountId: transaction.accountId,
@@ -475,15 +475,15 @@ accountRouter.post(
 
         res.status(200).send({
           success: true,
-          message: 'Reversal successful',
+          message: "Reversal successful",
         });
       } else {
-        res.status(500).send('no transaction found');
+        res.status(500).send("no transaction found");
       }
     } catch (error) {
       return {
         success: false,
-        error: 'Internal server error',
+        error: "Internal server error",
       };
     }
   })

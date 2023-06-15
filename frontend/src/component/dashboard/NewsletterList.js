@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import { Store } from "../../Store";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -278,6 +278,7 @@ export default function NewsletterList() {
         {
           emails: selectedEmails,
           emailName,
+          url: region() === "ZAR" ? "co.za" : "com",
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -321,7 +322,11 @@ export default function NewsletterList() {
     if (selectAll) {
       setSelectedEmails([]);
     } else {
-      setSelectedEmails(newsletters.map((newsletter) => newsletter.email));
+      setSelectedEmails(
+        newsletters.map((newsletter) =>
+          !newsletter.isDeleted ? newsletter.email : null
+        )
+      );
     }
     setSelectAll(!selectAll);
   };

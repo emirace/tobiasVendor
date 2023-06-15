@@ -327,7 +327,7 @@ transactionRouter.put(
     let myData1 = { ...myData };
 
     // const passPhrase = "jt7NOE43FZPn";
-    const passPhrase = "/Re01thrift_peddle";
+    const passPhrase = "Re01thriftpeddle";
 
     const dataToString = (dataArray) => {
       // Convert your data array to a string

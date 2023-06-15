@@ -978,7 +978,10 @@ export default function User() {
                   <FontAwesomeIcon icon={faPlus} />
                 </AccButton>
               )}
-              <Tips mode={mode} tips={``}>
+              <Tips
+                mode={mode}
+                tips={`Note: Your Account details cannot be changed once saved, please contact admin or support  center to make any change`}
+              >
                 <FontAwesomeIcon icon={faQuestionCircle} />
               </Tips>
               <SmallModel showModel={showModel} setShowModel={setShowModel}>
