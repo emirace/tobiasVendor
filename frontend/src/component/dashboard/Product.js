@@ -743,7 +743,7 @@ export default function Product() {
         valid = false;
       }
     } else {
-      if (!sizes.length) {
+      if (!sizes.length || sizes.some((obj) => !obj.value)) {
         handleError("Enter a valid size and quantity available", "sizes");
         valid = false;
       }
