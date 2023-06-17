@@ -364,10 +364,12 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "username image sold"
-    );
+    const product = await Product.findById(productId)
+      .populate(
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+      )
+      .populate("reviews.name", "username image");
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -397,10 +399,12 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "username image sold"
-    );
+    const product = await Product.findById(productId)
+      .populate(
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+      )
+      .populate("reviews.name", "username image");
     if (product) {
       const exist = product.shares.filter(
         (x) => x._id.toString() === req.user._id
@@ -427,10 +431,12 @@ productRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate(
-      "seller",
-      "username image sold"
-    );
+    const product = await Product.findById(productId)
+      .populate(
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+      )
+      .populate("reviews.name", "username image");
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -821,7 +827,7 @@ productRouter.get("/slug/:slug", async (req, res) => {
   if (product) {
     res.send(product);
   } else {
-    res.status(404).send({ message: "Product Not Found" });
+    res.status(404).send({ message: "SORRY, PRODUCT NOT LONGER AVAILABLE" });
   }
 });
 

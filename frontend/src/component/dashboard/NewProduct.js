@@ -404,7 +404,7 @@ const Tips = styled.span`
   position: relative;
   &:hover::after {
     content: "${(props) => props.tips}";
-    width: 350px;
+    width: 340px;
     position: absolute;
     border-radius: 0.5rem;
     left: 30px;
@@ -1337,6 +1337,7 @@ export default function NewProduct() {
                   <MenuItem value="Vegan leather">Vegan leather</MenuItem>
                   <MenuItem value="Velvet">Velvet</MenuItem>
                   <MenuItem value="Wool">Wool</MenuItem>
+                  <MenuItem value="Wool">Other</MenuItem>
                 </Select>
               </FormControl>
               {validationError.material && (
@@ -1355,7 +1356,7 @@ export default function NewProduct() {
                 placeholder="Search Brand"
                 type="search"
                 onKeyPress={handleKeyPress}
-                value={input.brand.length > 0 ? input.brand : brandQuery}
+                value={input.brand.length ? input.brand : brandQuery}
                 onChange={(e) => {
                   handleOnChange("", "brand");
                   setBrandQuery(e.target.value);
