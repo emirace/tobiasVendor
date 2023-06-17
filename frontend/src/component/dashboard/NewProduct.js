@@ -1946,7 +1946,9 @@ export default function NewProduct() {
                 Add clear and quality images. Ensure to follow the image uplaod
                 rules.{" "}
                 <span style={{ color: "var(--malon-color)" }}>
-                  Please note: Image/Video size should be less than 8MB.
+                  Please note: Make sure the image you're uploaing is in
+                  portrait format and not landscape. Image/Video size should be
+                  less than 8MB.
                 </span>
               </TitleDetails>
               <input
@@ -2045,6 +2047,9 @@ export default function NewProduct() {
                 <TextArea
                   mode={mode}
                   value={input.description}
+                  placeholder="Describe your product by giving buyers more information. Start with Headline, Condition, Material, Style & Size.
+
+                  Be concise and only use relevant keywords."
                   onChange={(e) =>
                     handleOnChange(e.target.value, "description")
                   }
@@ -2057,14 +2062,11 @@ export default function NewProduct() {
               </Item>
               <Item>
                 <Label>Specification</Label>
-
-                <TitleDetails>
-                  FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
-                  brackets as shown on the label of clothes/shoes
-                </TitleDetails>
                 <TextArea
                   mode={mode}
                   value={input.specification}
+                  placeholder="FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
+                  brackets as shown on the label of clothes/shoes"
                   onChange={(e) =>
                     handleOnChange(e.target.value, "specification")
                   }

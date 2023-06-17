@@ -83,7 +83,7 @@
   height: 2px;
   width: 100%;
   background-color: var(--orange-color);
-  content: '';
+  content: "";
 }
 
 .main-item-text .search-btn1 {
@@ -110,7 +110,7 @@
 
 .new-product .section-title h4:after {
   position: absolute;
-  content: '';
+  content: "";
   left: 0;
   bottom: -4px;
   height: 2px;
@@ -346,7 +346,7 @@ a {
   height: 2px;
   width: 100%;
   background: var(--orange-color);
-  content: '';
+  content: "";
 }
 
 .banner_slider {
@@ -469,7 +469,7 @@ ls {
 
 .product-category1::after {
   position: absolute;
-  content: '';
+  content: "";
   left: 10vw;
   bottom: -4px;
   height: 2px;
@@ -568,7 +568,7 @@ ls {
   text-overflow: ellipsis;
 }
 .product-brand1 a {
-  font-family: 'Absentiasans';
+  font-family: "Absentiasans";
 }
 
 .product-short-desc1 {
@@ -699,12 +699,10 @@ sm-product1 {
 
 .overlay {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   background-color: rgba(0, 0, 0, 0.1);
   z-index: 2;
   cursor: pointer;
@@ -745,7 +743,7 @@ sm-product1 {
 }
 
 .discount_text .discount_text_title:after {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: -38px;
@@ -884,7 +882,7 @@ form .mb-3 a:hover,
   position: absolute;
   width: 100%;
   height: 100%;
-  content: '';
+  content: "";
   background: inherit;
   z-index: -1;
   top: 0;
@@ -910,7 +908,7 @@ form .mb-3 a:hover,
   position: absolute;
   width: 100%;
   height: 100%;
-  content: '';
+  content: "";
   background: inherit;
   z-index: -1;
   top: 0;
@@ -937,7 +935,7 @@ form .mb-3 a:hover,
   }
   .product-card1 {
     width: 162px;
-    height: 338px;
+    height: 342px;
     margin-right: 10px;
   }
   .center-item {
@@ -970,6 +968,11 @@ form .mb-3 a:hover,
 
   .product-image1 {
     height: 270px;
+  }
+  .product-thumb1 {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
   }
   .center-item .main-item {
     height: 325px;

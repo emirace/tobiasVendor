@@ -1408,6 +1408,9 @@ export default function Product() {
               <TextArea
                 value={input.description}
                 mode={mode}
+                placeholder="Describe your product by giving buyers more information. Start with Headline, Condition, Material, Style & Size.
+
+                Be concise and only use relevant keywords."
                 onChange={(e) => handleOnChange(e.target.value, "description")}
               />
             </Item>
@@ -1685,7 +1688,7 @@ export default function Product() {
                   <>
                     <Item style={{ marginTop: "0" }}>
                       <Label>
-                        Add Size{" "}
+                        Add Size
                         <Tips
                           mode={mode}
                           tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
@@ -1702,9 +1705,10 @@ export default function Product() {
                           type="text"
                           maxlength="3"
                           placeholder="Add size"
-                          onChange={(e) =>
-                            handleOnChange(e.target.value, "selectedSize")
-                          }
+                          onChange={(e) => {
+                            handleOnChange(e.target.value, "selectedSize");
+                            handleError("", "sizes");
+                          }}
                         />
                         <AddTag onClick={() => sizeHandler(input.selectedSize)}>
                           Add
@@ -1722,9 +1726,10 @@ export default function Product() {
                           <SizeInput
                             placeholder="qty"
                             mode={mode}
-                            onChange={(e) =>
-                              smallSizeHandler(s.size, e.target.value)
-                            }
+                            onChange={(e) => {
+                              smallSizeHandler(s.size, e.target.value);
+                              handleError("", "sizes");
+                            }}
                           />
                           {/* <FontAwesomeIcon
                         onClick={() => deleteSizeHandler(s.size)}
@@ -1753,14 +1758,12 @@ export default function Product() {
               </div>
             )}
             <Item>
-              <Label>Specification</Label>{" "}
-              <TitleDetails>
-                FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
-                brackets as shown on the label of clothes/shoes
-              </TitleDetails>
+              <Label>Specification</Label>
               <TextArea
                 mode={mode}
                 value={input.specification}
+                placeholder="FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
+                brackets as shown on the label of clothes/shoes"
                 onChange={(e) =>
                   handleOnChange(e.target.value, "specification")
                 }

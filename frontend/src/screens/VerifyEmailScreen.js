@@ -175,42 +175,42 @@ export default function VerifyEmailScreen() {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
-  useEffect(() => {
-    resendEmail();
-  }, [userInfo]);
+  // useEffect(() => {
+  //   resendEmail();
+  // }, [userInfo]);
 
-  const submitHandler = async () => {
-    try {
-      const { data } = await axios.post(
-        `/api/users/verifyemail`,
-        {
-          otp: input.number,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Email Verified Successfully",
-          showStatus: true,
-          state1: "visible1 success",
-        },
-      });
-      window.location.href = redirect || "/";
-    } catch (err) {
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: getError(err),
-          showStatus: true,
-          state1: "visible1 error",
-        },
-      });
-      console.log(err);
-    }
-  };
+  // const submitHandler = async () => {
+  //   try {
+  //     const { data } = await axios.post(
+  //       `/api/users/verifyemail`,
+  //       {
+  //         otp: input.number,
+  //       },
+  //       {
+  //         headers: { Authorization: `Bearer ${userInfo.token}` },
+  //       }
+  //     );
+  //     ctxDispatch({
+  //       type: "SHOW_TOAST",
+  //       payload: {
+  //         message: "Email Verified Successfully",
+  //         showStatus: true,
+  //         state1: "visible1 success",
+  //       },
+  //     });
+  //     window.location.href = redirect || "/";
+  //   } catch (err) {
+  //     ctxDispatch({
+  //       type: "SHOW_TOAST",
+  //       payload: {
+  //         message: getError(err),
+  //         showStatus: true,
+  //         state1: "visible1 error",
+  //       },
+  //     });
+  //     console.log(err);
+  //   }
+  // };
 
   const resendEmail = async () => {
     setRestart(Math.random());
@@ -262,7 +262,7 @@ export default function VerifyEmailScreen() {
       </Helmet>
 
       <h3 className="my-3">Verify Your Email Address</h3>
-      <Para>You're almost there! We sent an email to </Para>
+      <Para>You're almost there! We will send an email to </Para>
       <Para>
         <b>{userInfo.email}</b>
       </Para>
@@ -292,11 +292,20 @@ export default function VerifyEmailScreen() {
           />
         </div>
       )}
-      <Para>
+      <Para style={{ display: "flex", alignItems: "center" }}>
         If you have already verify your email,{" "}
-        <span onClick={signoutHandler} style={{ color: "var(--orange-color)" }}>
-          Login again
-        </span>
+        <button
+          onClick={signoutHandler}
+          style={{
+            color: "var(--orange-color)",
+            fontWeight: "bold",
+            background: "none",
+            border: 0,
+            marginLeft: "5px",
+          }}
+        >
+          Login Again
+        </button>
       </Para>
     </Container>
   );
