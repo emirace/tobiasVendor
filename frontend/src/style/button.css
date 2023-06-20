@@ -699,8 +699,8 @@ sm-product1 {
 
 .overlay {
   position: absolute;
-  width: 95%;
-  height: 95%;
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.1);
@@ -926,6 +926,17 @@ form .mb-3 a:hover,
   .center-item .main-item-text {
     left: 10px;
   }
+  .overlay {
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    cursor: pointer;
+  }
+
   .center-item .main-item img {
     object-position: left;
     left: 10px;

@@ -95,13 +95,24 @@ export default function VerifyEmailConfirmScreen({ email }) {
     <Container mode={mode}>
       {error ? (
         <MessageBox>
-          {error}
-          <Link
-            to={window.location.hostname}
-            style={{ color: "var(--orange-color)" }}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
           >
-            Repeddle
-          </Link>
+            <div style={{ textAlign: "center" }}>{error}</div>
+            <div>
+              <Link
+                to={"/verifyemail"}
+                style={{ color: "var(--orange-color)" }}
+              >
+                Resend
+              </Link>
+            </div>
+          </div>
         </MessageBox>
       ) : (
         <Content>

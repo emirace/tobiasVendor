@@ -893,6 +893,7 @@ orderRouter.put(
             });
             p.sold = true;
             p.countInStock = p.countInStock - newQuantity;
+            product.soldAll = product.countInStock < 1;
 
             p.sizes = p.sizes.map((size) => {
               return size.size === selectedSize

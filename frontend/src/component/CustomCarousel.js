@@ -8,13 +8,13 @@ const Carousel = ({ children, autoScrollInterval = 5000 }) => {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  const handlePrevClick = () => {
-    setCurrentSlide(currentSlide - 1);
-  };
+  // const handlePrevClick = () => {
+  //   setCurrentSlide(currentSlide - 1);
+  // };
 
-  const handleNextClick = () => {
-    setCurrentSlide(currentSlide + 1);
-  };
+  // const handleNextClick = () => {
+  //   setCurrentSlide(currentSlide + 1);
+  // };
 
   const handleSlideClick = (index) => {
     setCurrentSlide(index);
@@ -29,11 +29,11 @@ const Carousel = ({ children, autoScrollInterval = 5000 }) => {
   };
 
   const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 50) {
+    if (touchStart - touchEnd > 50 && currentSlide < totalSlides - 1) {
       setCurrentSlide(currentSlide + 1);
     }
 
-    if (touchStart - touchEnd < -50) {
+    if (touchStart - touchEnd < -50 && currentSlide > 0) {
       setCurrentSlide(currentSlide - 1);
     }
   };

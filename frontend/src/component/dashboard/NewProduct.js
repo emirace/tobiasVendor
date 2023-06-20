@@ -1320,7 +1320,7 @@ export default function NewProduct() {
             </Item>
             <Item>
               <Label>
-                Material/Fabric
+                Material
                 <Tips
                   mode={mode}
                   tips={`How do I know what the primary material of the product is?
@@ -1552,7 +1552,7 @@ export default function NewProduct() {
                           mode={mode}
                           value={input.selectedSize}
                           type="text"
-                          maxlength="3"
+                          maxlength={4}
                           placeholder="Add  size"
                           onChange={(e) => {
                             handleOnChange(e.target.value, "selectedSize");
@@ -1576,8 +1576,10 @@ export default function NewProduct() {
                             placeholder="qty"
                             mode={mode}
                             value={s.value}
+                            maxLength={4}
                             onChange={(e) => {
-                              smallSizeHandler(s.size, e.target.value);
+                              const inputValue = e.target.value.slice(0, 4);
+                              smallSizeHandler(s.size, inputValue);
                               handleError("", "sizes");
                             }}
                           />

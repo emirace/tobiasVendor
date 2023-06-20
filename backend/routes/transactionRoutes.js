@@ -153,6 +153,7 @@ transactionRouter.post(
             });
             p.sold = true;
             p.countInStock = p.countInStock - newQuantity;
+            p.soldAll = p.countInStock < 1;
 
             p.sizes = p.sizes.map((size) => {
               return size.size === selectedSize

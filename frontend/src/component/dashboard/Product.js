@@ -402,7 +402,7 @@ const Tips = styled.span`
       width: 250px;
       font-size: 11px;
       top: 20px;
-      left: -20px;
+      left: -30px;
     }
   }
 `;
@@ -608,6 +608,7 @@ const color1 = [
   "turquoise",
   "white",
   "yellow",
+  "other",
 ];
 
 export default function Product() {
@@ -1326,7 +1327,7 @@ export default function Product() {
             </Item>
             <Item>
               <Label>
-                Material/Fabric{" "}
+                Material{" "}
                 <Tips
                   mode={mode}
                   tips={`How do I know what the primary material of the product is?
@@ -1378,6 +1379,7 @@ export default function Product() {
                   <MenuItem value="Exotic leathers">Exotic leathers</MenuItem>
                   <MenuItem value="Faux fur">Faux fur</MenuItem>
                   <MenuItem value="Fur">Fur</MenuItem>
+                  <MenuItem value="Faux Leather">Faux Leather</MenuItem>
                   <MenuItem value="Leather">Leather</MenuItem>
                   <MenuItem value="Linen">Linen</MenuItem>
                   <MenuItem value="Polyester">Polyester</MenuItem>
@@ -1394,6 +1396,7 @@ export default function Product() {
                   <MenuItem value="Vegan leather">Vegan leather</MenuItem>
                   <MenuItem value="Velvet">Velvet</MenuItem>
                   <MenuItem value="Wool">Wool</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
                 </Select>
               </FormControl>
               {validationError.material && (
@@ -1703,7 +1706,7 @@ export default function Product() {
                           mode={mode}
                           value={input.selectedSize}
                           type="text"
-                          maxlength="3"
+                          maxLength={4}
                           placeholder="Add size"
                           onChange={(e) => {
                             handleOnChange(e.target.value, "selectedSize");
@@ -1726,6 +1729,7 @@ export default function Product() {
                           <SizeInput
                             placeholder="qty"
                             mode={mode}
+                            maxLength={4}
                             onChange={(e) => {
                               smallSizeHandler(s.size, e.target.value);
                               handleError("", "sizes");
@@ -1770,12 +1774,71 @@ export default function Product() {
               />
             </Item>
             <Item>
-              <Label>Key Features</Label>
-              <TextArea
-                value={input.keyFeatures}
-                mode={mode}
-                onChange={(e) => handleOnChange(e.target.value, "keyFeatures")}
-              />
+              <Label>Key Features: Pattern & Printed</Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  value={input.feature}
+                  onChange={(e) =>
+                    handleOnChange(e.target.value, "keyFeatures")
+                  }
+                  displayEmpty
+                >
+                  <MenuItem value="">-- select --</MenuItem>
+                  <MenuItem value="Abstract">Abstract</MenuItem>
+                  <MenuItem value="Argyle">Argyle</MenuItem>
+                  <MenuItem value="Camo">Camo</MenuItem>
+                  <MenuItem value="Checked">Checked</MenuItem>
+                  <MenuItem value="Chevron & Herringbone">
+                    Chevron & Herringbone
+                  </MenuItem>
+                  <MenuItem value="Color Block">Color Block</MenuItem>
+                  <MenuItem value="Crocodile">Crocodile</MenuItem>
+                  <MenuItem value="Floral">Floral</MenuItem>
+                  <MenuItem value="Gingham">Gingham</MenuItem>
+                  <MenuItem value="Graphic">Graphic</MenuItem>
+                  <MenuItem value="Houndstooth">Houndstooth</MenuItem>
+                  <MenuItem value="Leopard">Leopard</MenuItem>
+                  <MenuItem value="Metalic">Metalic</MenuItem>
+                  <MenuItem value="Paisley">Paisley</MenuItem>
+                  <MenuItem value="Plain">Plain</MenuItem>
+                  <MenuItem value="Polkadot">Polkadot</MenuItem>
+                  <MenuItem value="Snakeskin">Snakeskin</MenuItem>
+                  <MenuItem value="Stripes">Stripes</MenuItem>
+                  <MenuItem value="Stars">Stars</MenuItem>
+                  <MenuItem value="Solid">Solid</MenuItem>
+                  <MenuItem value="Tartan">Tartan</MenuItem>
+                  <MenuItem value="Tie-Dye">Tie-Dye</MenuItem>
+                  <MenuItem value="Tropical">Tropical</MenuItem>
+                  <MenuItem value="Tweed">Tweed</MenuItem>
+                  <MenuItem value="Zebra">Zebra</MenuItem>
+                  <MenuItem value="Other">Other</MenuItem>
+                </Select>
+              </FormControl>
               {validationError.keyFeatures && (
                 <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.keyFeatures}

@@ -262,7 +262,7 @@ export default function VerifyEmailScreen() {
       </Helmet>
 
       <h3 className="my-3">Verify Your Email Address</h3>
-      <Para>You're almost there! We will send an email to </Para>
+      <Para>You're almost there! We sent an email to </Para>
       <Para>
         <b>{userInfo.email}</b>
       </Para>

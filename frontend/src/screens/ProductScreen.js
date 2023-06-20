@@ -113,6 +113,18 @@ const Key = styled.div`
 const Value = styled.div`
   text-transform: capitalize;
 `;
+const Table = styled.table`
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 20px 20px 20px;
+`;
+
+const TableRow = styled.tr``;
+
+const TableCell = styled.td`
+  // padding: 8px;
+  // border: 1px solid #ddd;
+`;
 const Sustain = styled.div`
   margin: 15px 0;
 `;
@@ -1472,7 +1484,36 @@ export default function ProductScreen() {
                 >
                   Overview
                 </div>
-                <Overview className="sp_detail_contail">
+                <div className="sp_detail_contail">
+                  <Table>
+                    <tbody>
+                      <TableRow mode={mode}>
+                        <TableCell>Price</TableCell>
+                        <TableCell>
+                          {product.currency}
+                          {product.actualPrice}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow mode={mode}>
+                        <TableCell>Brand</TableCell>
+                        <TableCell>{product.brand}</TableCell>
+                      </TableRow>
+                      <TableRow mode={mode}>
+                        <TableCell>Category</TableCell>
+                        <TableCell>{product.category}</TableCell>
+                      </TableRow>
+                      <TableRow mode={mode}>
+                        <TableCell>Subcategory</TableCell>
+                        <TableCell>{product.subCategory || "nal"}</TableCell>
+                      </TableRow>
+                      <TableRow mode={mode}>
+                        <TableCell>Color</TableCell>
+                        <TableCell>{product.color || "nal"}</TableCell>
+                      </TableRow>
+                    </tbody>
+                  </Table>
+                </div>
+                {/* <Overview className="sp_detail_contail">
                   <LeftOverview>
                     <Key>Price</Key>
                     <Key>Brand</Key>
@@ -1490,7 +1531,7 @@ export default function ProductScreen() {
                     <Value>{product.subCategory || "nal"}</Value>
                     <Value>{product.color || "nal"}</Value>
                   </RightOverview>
-                </Overview>
+                </Overview> */}
               </div>
               <div
                 className={`sp_detail_section ${
