@@ -10,7 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import LoadingBox from "../LoadingBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Container = styled.div`
   max-width: 600px;
@@ -461,6 +461,11 @@ export default function NewsletterList() {
                 >
                   {newsletter.email}
                 </Email>
+                <FontAwesomeIcon
+                  icon={faCheckCircle}
+                  color="var(--green-color)"
+                  style={{ background: "white", borderRadius: "50%" }}
+                />
               </SubListItem>
               <Date>{moment(newsletter.createdAt).format("LLL")}</Date>
               <FontAwesomeIcon
