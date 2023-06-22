@@ -6,6 +6,8 @@ import hbs from "nodemailer-express-handlebars";
 import crypto from "crypto";
 import dns from "dns";
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
 import path from "path";
 
@@ -92,40 +94,29 @@ export const isSocialAuth = (req, res, next) => {
   }
 };
 
-export const sendEmail = (options) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASSWORD,
+const transporter = nodemailer.createTransport({
+  host: "smtp.office365.com",
+  port: 587,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+transporter.use(
+  "compile",
+  hbs({
+    viewEngine: {
+      extname: ".handlebars",
+      partialsDir: path.resolve("./utils/layouts/"),
+      defaultLayout: "main",
+      layoutsDir: path.resolve("./utils/layouts/"),
     },
-  });
+    viewPath: path.resolve("./utils/layouts/"),
+    extName: ".handlebars",
+  })
+);
 
-  // var transporter = nodemailer.createTransport({
-  //   host: "smtp.mailtrap.io",
-  //   port: 2525,
-  //   auth: {
-  //     user: "aeef4e04706b4f",
-  //     pass: "1239ac3ae8cd9a",
-  //   },
-  // });
-
-  transporter.use(
-    "compile",
-    hbs({
-      viewEngine: {
-        extname: ".handlebars",
-        partialsDir: path.resolve("./utils/layouts/"),
-        defaultLayout: "main",
-        layoutsDir: path.resolve("./utils/layouts/"),
-      },
-      viewPath: path.resolve("./utils/layouts/"),
-      extName: ".handlebars",
-    })
-  );
-
+export const sendEmail = async (options) => {
   const mailOption = {
     from: { name: "Repeddle", address: "support@repeddle.com" },
     to: options.to,
@@ -135,13 +126,12 @@ export const sendEmail = (options) => {
     context: options.context,
   };
 
-  transporter.sendMail(mailOption, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
-    }
-  });
+  try {
+    await transporter.sendMail(mailOption);
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Failed to send email:", error);
+  }
 };
 
 export const slugify = (Text) => {

@@ -278,7 +278,6 @@ export default function NewsletterList() {
         {
           emails: selectedEmails,
           emailName,
-          url: region() === "ZAR" ? "co.za" : "com",
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -335,7 +334,7 @@ export default function NewsletterList() {
     try {
       setLoadingAdd(true);
       const { data } = await axios.post(
-        "/api/newsletters",
+        `/api/newsletters/${region()}`,
         {
           email: inputEmail,
           emailType: "Newsletter",
