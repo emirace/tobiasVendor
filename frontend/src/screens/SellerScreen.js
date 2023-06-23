@@ -31,6 +31,7 @@ import { socket } from "../App";
 import WriteReview from "../component/WriteReview";
 import RebundlePoster from "../component/RebundlePoster";
 import { signoutHandler } from "../component/Navbar";
+import { logout } from "../hooks/initFacebookSdk";
 
 const Right = styled.div`
   flex: 7;
@@ -229,7 +230,13 @@ export default function SellerScreen() {
         );
         dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
       } catch (err) {
-        signoutHandler();
+        logout();
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("cartItems");
+        localStorage.removeItem("shippingAddress");
+        localStorage.removeItem("useraddress");
+        localStorage.removeItem("paymentMethod");
+        window.location.href = "/deleted";
       }
     };
     fetchData();
