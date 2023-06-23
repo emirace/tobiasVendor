@@ -291,7 +291,7 @@ userRouter.post(
     } else {
       res.status(400).send({
         message:
-          "Invalid Verification Token, please resend verification email from your account.",
+          "Invalid Verification or Expired Token, please resend verification email from your account.",
       });
     }
   })

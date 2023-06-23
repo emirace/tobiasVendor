@@ -322,23 +322,23 @@ function App() {
       }
       const localCart = JSON.parse(localStorage.getItem("cartItems"));
       if (localCart) {
-        // localCart.map((product) => {
-        //   if (userInfo) {
-        //     axios.post(
-        //       "/api/cartItems",
-        //       {
-        //         ...product,
-        //         quantity: product.quantity,
-        //         selectSize: product.selectSize,
-        //       },
-        //       {
-        //         headers: {
-        //           Authorization: `Bearer ${userInfo.token}`,
-        //         },
-        //       }
-        //     );
-        //   }
-        // });
+        localCart.map((product) => {
+          if (userInfo) {
+            axios.post(
+              "/api/cartItems",
+              {
+                ...product,
+                quantity: product.quantity,
+                selectSize: product.selectSize,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${userInfo.token}`,
+                },
+              }
+            );
+          }
+        });
         // console.log(localCart);
         items = [...items, ...localCart];
       }

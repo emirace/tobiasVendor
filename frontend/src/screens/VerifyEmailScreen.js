@@ -262,7 +262,7 @@ export default function VerifyEmailScreen() {
       </Helmet>
 
       <h3 className="my-3">Verify Your Email Address</h3>
-      <Para>You're almost there! We sent an email to </Para>
+      <Para>You're almost there! We will send an email to </Para>
       <Para>
         <b>{userInfo.email}</b>
       </Para>
@@ -270,7 +270,6 @@ export default function VerifyEmailScreen() {
         Just click on the link in that email to verify your email. If you don't
         see it, you may need to <b>check your spam</b> folder.
       </Para>
-      <Para>Still can't find the email?</Para>
       <div>
         <button
           disabled={countdown}
@@ -278,7 +277,7 @@ export default function VerifyEmailScreen() {
           style={{ padding: "7px 25px", fontSize: "15px" }}
           className="search-btn1"
         >
-          Resend Email
+          Send Email
         </button>
       </div>
       {countdown && (

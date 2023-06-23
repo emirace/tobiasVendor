@@ -1,4 +1,4 @@
-import { faBan } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -52,7 +52,7 @@ export default function DeletedScreen() {
           }}
           size="6x"
           color="var(--malon-color)"
-          icon={faBan}
+          icon={faTrash}
         />
         <Title>Account Deleted</Title>
         <Text

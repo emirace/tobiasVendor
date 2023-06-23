@@ -310,12 +310,6 @@ export default function NewsletterList() {
     if (newsletter.isDeleted) {
       return;
     }
-    if (
-      emailName &&
-      newsletter?.sent.some((obj) => obj.emailName === emailName)
-    ) {
-      return;
-    }
     if (selectedEmails.includes(newsletter.email)) {
       setSelectedEmails(selectedEmails.filter((e) => e !== newsletter.email));
     } else {
@@ -324,6 +318,17 @@ export default function NewsletterList() {
   };
 
   const handleSelectAll = () => {
+    if (!emailName) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Select an email from the list",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      return;
+    }
     if (selectAll) {
       setSelectedEmails([]);
     } else {

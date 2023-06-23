@@ -24,6 +24,7 @@ import SmallModel from "../SmallModel";
 import AddOtherBrand from "../AddOtherBrand";
 import FeeStructure from "../info/FeeStructure";
 import DeliveryOption from "./DeliveryOption";
+import CropImage from "../cropImage/CropImage";
 
 const ProductC = styled.div`
   flex: 4;
@@ -633,6 +634,8 @@ export default function Product() {
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
 
+  const [showUploadingImage, setShowUploadingImage] = useState(false);
+
   const [showConditionModal, setShowConditionModal] = useState(false);
   const [validationError, setValidationError] = useState({});
   const [showOtherBrand, setShowOtherBrand] = useState(false);
@@ -839,8 +842,7 @@ export default function Product() {
     fetchCategories();
   }, [dispatch]);
 
-  const uploadHandler = async (e, fileType) => {
-    const file = e.target.files[0];
+  const uploadHandler = async (file, fileType) => {
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -1868,15 +1870,20 @@ export default function Product() {
                   <LoadingBox />
                 )}
 
-                <Label htmlFor="file">
+                <Label onClick={(e) => setShowUploadingImage(true)}>
                   <FontAwesomeIcon icon={faUpload} />
                 </Label>
-                <UploadInput
-                  type="file"
-                  id="file"
-                  onChange={(e) => uploadHandler(e, currentImage)}
-                />
               </Upload>
+              <ModelLogin
+                setShowModel={setShowUploadingImage}
+                showModel={showUploadingImage}
+              >
+                <CropImage
+                  currentImage={currentImage}
+                  uploadHandler={uploadHandler}
+                  setShowModel={setShowUploadingImage}
+                />
+              </ModelLogin>
               <SelBoxGroup>
                 <SelBox onClick={() => setCurrentImage("image1")} mode={mode}>
                   1

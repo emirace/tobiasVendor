@@ -50,6 +50,7 @@ const SelectDelivery = styled.button`
   font-size: 15px;
   border: 0;
   cursor: pointer;
+  background: none;
   &:hover {
     color: var(--malon-color);
   }
@@ -337,7 +338,7 @@ export default function CartItem({
           {!item.deliverySelect ? (
             <SelectDeliveryButton>Select delivery option</SelectDeliveryButton>
           ) : (
-            "Change"
+            <div style={{ fontWeight: "bold" }}>Change</div>
           )}
         </SelectDelivery>
       </div>
