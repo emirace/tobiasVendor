@@ -291,10 +291,13 @@ export default function SigninScreen() {
       localStorage.setItem("mode", "pagebodylight");
     }
   };
-
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+    setInput((prevState) => ({
+      ...prevState,
+      [input]: (input === "email") ? text.trim().toLowerCase() : text.trim()
+    }));
   };
+  
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };

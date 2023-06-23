@@ -1,17 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Helmet } from "react-helmet-async";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Store } from "../Store";
-import { toast } from "react-toastify";
-import styled from "styled-components";
-import { getError, GOOGLE_CLIENT_ID, region } from "../utils";
-import jwt_decode from "jwt-decode";
-import Input from "../component/Input";
-import LoadingPage from "../component/LoadingPage";
+import React, { useContext, useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { Helmet } from 'react-helmet-async';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Store } from '../Store';
+import { toast } from 'react-toastify';
+import styled from 'styled-components';
+import { getError, GOOGLE_CLIENT_ID, region } from '../utils';
+import jwt_decode from 'jwt-decode';
+import Input from '../component/Input';
+import LoadingPage from '../component/LoadingPage';
 
 const SocialLogin = styled.button`
   border: 0;
@@ -24,7 +24,7 @@ const SocialLogin = styled.button`
   padding: 8px;
   margin: 15px;
   border-radius: 5px;
-  font-family: "Google Sans", arial, sans-serif;
+  font-family: 'Google Sans', arial, sans-serif;
   font-size: 14px;
   @media (max-width: 992px) {
     width: 300px;
@@ -85,8 +85,8 @@ const Orgroup = styled.div`
 export default function SignupScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get("redirect");
-  const redirect = redirectInUrl ? redirectInUrl : "/";
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl ? redirectInUrl : '/';
 
   // const [loading, setLoading] = useState(true);
   // const [redirectLoc, setRedirectLoc] = useState(false);
@@ -116,16 +116,16 @@ export default function SignupScreen() {
   // }, []);
 
   const [input, setInput] = useState({
-    username: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    phone: "",
-    confirmPassword: "",
+    username: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    phone: '',
+    confirmPassword: '',
   });
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const [showForm, setShowForm] = useState(false);
 
@@ -134,7 +134,7 @@ export default function SignupScreen() {
 
   useEffect(() => {
     /* global google*/
-    console.log("google", google);
+    console.log('google', google);
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: handleCallbackResponse,
@@ -143,24 +143,24 @@ export default function SignupScreen() {
   const { innerWidth } = window;
 
   useEffect(() => {
-    google.accounts.id.renderButton(document.getElementById("signInDiv1"), {
-      theme: "dark",
-      size: "large",
+    google.accounts.id.renderButton(document.getElementById('signInDiv1'), {
+      theme: 'dark',
+      size: 'large',
       width: innerWidth > 992 ? 400 : 300,
-      logo_alignment: "center",
+      logo_alignment: 'center',
     });
   }, [innerWidth]);
 
   const handleCallbackResponse = async (response) => {
-    console.log("Encoded JWT ID token: " + response.credential);
+    console.log('Encoded JWT ID token: ' + response.credential);
     var userObject = jwt_decode(response.credential);
     console.log(userObject);
     const { data } = await axios.post(`/api/users/${region()}/google`, {
       tokenId: response.credential,
     });
     console.log(data);
-    ctxDispatch({ type: "USER_SIGNIN", payload: data });
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+    localStorage.setItem('userInfo', JSON.stringify(data));
     window.location.href = `${redirect}?redirect=${redirect}`;
   };
 
@@ -170,7 +170,7 @@ export default function SignupScreen() {
         console.log(response.authResponse);
         apiAuthenticate(response.authResponse.accessToken);
       },
-      { scope: "public_profile,email", return_scopes: true }
+      { scope: 'public_profile,email', return_scopes: true }
     );
   };
 
@@ -183,8 +183,8 @@ export default function SignupScreen() {
     const account = response.data;
     console.log(account);
     //signin here
-    ctxDispatch({ type: "USER_SIGNIN", payload: account });
-    localStorage.setItem("userInfo", JSON.stringify(account));
+    ctxDispatch({ type: 'USER_SIGNIN', payload: account });
+    localStorage.setItem('userInfo', JSON.stringify(account));
     window.location.href = `${redirect}?redirect=${redirect}`;
   }
   const submitHandler = async () => {
@@ -197,8 +197,8 @@ export default function SignupScreen() {
         password: input.password,
         phone: input.phone,
       });
-      ctxDispatch({ type: "USER_SIGNIN", payload: data });
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+      localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(`/verifyemail?redirect=${redirect}`);
     } catch (err) {
       toast.error(getError(err));
@@ -212,15 +212,10 @@ export default function SignupScreen() {
   }, [navigate, redirect, userInfo]);
 
   const handleOnChange = (text, input) => {
-    setInput((prevState) => {
-      let updatedState = { ...prevState };
-      if (input === "email") {
-        updatedState[input] = text.trim().toLowerCase();
-      } else {
-        updatedState[input] = text.trim();
-      }
-      return updatedState;
-    });
+    setInput((prevState) => ({
+      ...prevState,
+      [input]: input === 'email' ? text.trim().toLowerCase() : text.trim(),
+    }));
   };
 
   const handleError = (errorMessage, input) => {
@@ -230,30 +225,30 @@ export default function SignupScreen() {
     e.preventDefault();
     let valid = true;
     if (!input.username) {
-      handleError("Please enter your username", "username");
+      handleError('Please enter your username', 'username');
       valid = false;
     }
     if (!input.firstName) {
-      handleError("Please enter your firstname", "firstName");
+      handleError('Please enter your firstname', 'firstName');
       valid = false;
     }
     if (!input.lastName) {
-      handleError("Please enter your lastname", "lastName");
+      handleError('Please enter your lastname', 'lastName');
       valid = false;
     }
     if (!input.phone) {
-      handleError("Please enter your phone number", "phone");
+      handleError('Please enter your phone number', 'phone');
       valid = false;
     }
     if (!input.confirmPassword) {
-      handleError("Please confirm your password", "confirmPassword");
+      handleError('Please confirm your password', 'confirmPassword');
       valid = false;
     } else if (input.password !== input.confirmPassword) {
-      handleError("Passwords do not match", "confirmPassword");
+      handleError('Passwords do not match', 'confirmPassword');
       valid = false;
     }
     if (!input.email) {
-      handleError("Please enter an email", "email");
+      handleError('Please enter an email', 'email');
       valid = false;
     } else if (
       !input.email
@@ -263,28 +258,28 @@ export default function SignupScreen() {
         )
     ) {
       valid = false;
-      handleError("Please input a valid email", "email");
+      handleError('Please input a valid email', 'email');
     }
     if (!input.password) {
-      handleError("Please enter password", "password");
+      handleError('Please enter password', 'password');
       valid = false;
     } else if (input.password.length < 6) {
       valid = false;
-      handleError("Your password must be at least 6 characters", "password");
+      handleError('Your password must be at least 6 characters', 'password');
     } else if (input.password.search(/[a-z]/i) < 0) {
       handleError(
-        "Password must contain at least 1 lowercase alphabetical character",
-        "password"
+        'Password must contain at least 1 lowercase alphabetical character',
+        'password'
       );
       valid = false;
     } else if (input.password.search(/[A-Z]/) < 0) {
       handleError(
-        "Password must contain at least 1 uppercase alphabetical character",
-        "password"
+        'Password must contain at least 1 uppercase alphabetical character',
+        'password'
       );
       valid = false;
     } else if (input.password.search(/[0-9]/) < 0) {
-      handleError("Password must contain at least 1 digit", "password");
+      handleError('Password must contain at least 1 digit', 'password');
       valid = false;
     }
 
@@ -319,9 +314,9 @@ export default function SignupScreen() {
           <Input
             error={error.username}
             onFocus={() => {
-              handleError(null, "username");
+              handleError(null, 'username');
             }}
-            onChange={(e) => handleOnChange(e.target.value, "username")}
+            onChange={(e) => handleOnChange(e.target.value, 'username')}
           />
         </Form.Group>
         {showForm && (
@@ -331,9 +326,9 @@ export default function SignupScreen() {
               <Input
                 error={error.firstName}
                 onFocus={() => {
-                  handleError(null, "firstName");
+                  handleError(null, 'firstName');
                 }}
-                onChange={(e) => handleOnChange(e.target.value, "firstName")}
+                onChange={(e) => handleOnChange(e.target.value, 'firstName')}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="name">
@@ -341,9 +336,9 @@ export default function SignupScreen() {
               <Input
                 error={error.lastName}
                 onFocus={() => {
-                  handleError(null, "lastName");
+                  handleError(null, 'lastName');
                 }}
-                onChange={(e) => handleOnChange(e.target.value, "lastName")}
+                onChange={(e) => handleOnChange(e.target.value, 'lastName')}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
@@ -351,9 +346,9 @@ export default function SignupScreen() {
               <Input
                 error={error.email}
                 onFocus={() => {
-                  handleError(null, "email");
+                  handleError(null, 'email');
                 }}
-                onChange={(e) => handleOnChange(e.target.value, "email")}
+                onChange={(e) => handleOnChange(e.target.value, 'email')}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="phone">
@@ -361,9 +356,9 @@ export default function SignupScreen() {
               <Input
                 error={error.phone}
                 onFocus={() => {
-                  handleError(null, "phone");
+                  handleError(null, 'phone');
                 }}
-                onChange={(e) => handleOnChange(e.target.value, "phone")}
+                onChange={(e) => handleOnChange(e.target.value, 'phone')}
                 type="number"
               />
             </Form.Group>
@@ -372,9 +367,9 @@ export default function SignupScreen() {
               <Input
                 error={error.password}
                 onFocus={() => {
-                  handleError(null, "password");
+                  handleError(null, 'password');
                 }}
-                onChange={(e) => handleOnChange(e.target.value, "password")}
+                onChange={(e) => handleOnChange(e.target.value, 'password')}
                 password
               />
             </Form.Group>
@@ -383,10 +378,10 @@ export default function SignupScreen() {
               <Input
                 error={error.confirmPassword}
                 onFocus={() => {
-                  handleError(null, "confirmPassword");
+                  handleError(null, 'confirmPassword');
                 }}
                 onChange={(e) =>
-                  handleOnChange(e.target.value, "confirmPassword")
+                  handleOnChange(e.target.value, 'confirmPassword')
                 }
                 password
               />
@@ -400,7 +395,7 @@ export default function SignupScreen() {
           </button>
         </div>
         <div className="mb-3">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link to={`/signin?redirect=${redirect}`}>Sign-In</Link>
         </div>
       </Form>
