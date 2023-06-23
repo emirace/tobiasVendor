@@ -206,6 +206,7 @@ userRouter.post(
       const newsletter = new Newsletters({
         email: user.email,
         emailType: "Newsletter",
+        url,
       });
       await newsletter.save();
 
@@ -499,6 +500,7 @@ userRouter.post(
     const newsletter = new Newsletters({
       email: result.email,
       emailType: "Newsletter",
+      url,
     });
     await newsletter.save();
     res.status(200).send(data);
@@ -571,6 +573,7 @@ userRouter.post(
     const newsletter = new Newsletters({
       email: result.email,
       emailType: "Newsletter",
+      url,
     });
     await newsletter.save();
     res.status(200).send(data);
@@ -645,6 +648,7 @@ userRouter.post(
     const newsletter = new Newsletters({
       email: result.email,
       emailType: "Newsletter",
+      url,
     });
     await newsletter.save();
     res.status(200).send(data1);

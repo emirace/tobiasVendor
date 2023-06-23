@@ -310,6 +310,12 @@ export default function NewsletterList() {
     if (newsletter.isDeleted) {
       return;
     }
+    if (
+      emailName &&
+      newsletter?.sent.some((obj) => obj.emailName === emailName)
+    ) {
+      return;
+    }
     if (selectedEmails.includes(newsletter.email)) {
       setSelectedEmails(selectedEmails.filter((e) => e !== newsletter.email));
     } else {
@@ -321,11 +327,15 @@ export default function NewsletterList() {
     if (selectAll) {
       setSelectedEmails([]);
     } else {
-      setSelectedEmails(
-        newsletters.map((newsletter) =>
-          !newsletter.isDeleted ? newsletter.email : null
-        )
+      const selectedEmailSet = new Set(
+        newsletters
+          .filter(
+            (newsletter) =>
+              !newsletter.isDeleted && !hasMatchingEmailName(newsletter)
+          )
+          .map((newsletter) => newsletter.email)
       );
+      setSelectedEmails([...selectedEmailSet]);
     }
     setSelectAll(!selectAll);
   };
@@ -366,6 +376,13 @@ export default function NewsletterList() {
       });
     }
   };
+
+  const hasMatchingEmailName = (newsletter) => {
+    return (
+      emailName && newsletter.sent.some((obj) => obj.emailName === emailName)
+    );
+  };
+
   return (
     <ProductLists mode={mode}>
       <Container>
@@ -461,11 +478,20 @@ export default function NewsletterList() {
                 >
                   {newsletter.email}
                 </Email>
-                <FontAwesomeIcon
-                  icon={faCheckCircle}
-                  color="var(--green-color)"
-                  style={{ background: "white", borderRadius: "50%" }}
-                />
+                {emailName &&
+                  newsletter?.sent.some(
+                    (obj) => obj.emailName === emailName
+                  ) && (
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      color="var(--green-color)"
+                      style={{
+                        background: "white",
+                        borderRadius: "50%",
+                        marginLeft: "10px",
+                      }}
+                    />
+                  )}
               </SubListItem>
               <Date>{moment(newsletter.createdAt).format("LLL")}</Date>
               <FontAwesomeIcon

@@ -30,6 +30,7 @@ import Report from "../component/Report";
 import { socket } from "../App";
 import WriteReview from "../component/WriteReview";
 import RebundlePoster from "../component/RebundlePoster";
+import { signoutHandler } from "../component/Navbar";
 
 const Right = styled.div`
   flex: 7;
@@ -227,7 +228,16 @@ export default function SellerScreen() {
           `/api/users/seller/${sellerId}`
         );
         dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
+      } catch (err) {
+        signoutHandler();
+      }
+    };
+    fetchData();
+  }, [page, sellerId]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
         dispatch({ type: "FETCH_PRODUCT_REQUEST" });
         const { data: dataProduct } = await axios.get(
           `/api/products/seller/${sellerId}?page=${page}`
@@ -238,7 +248,6 @@ export default function SellerScreen() {
         });
       } catch (err) {
         dispatch({ type: "FETCH_PRODUCT_FAIL", error: getError(err) });
-        toast.error(getError(err));
       }
     };
     fetchData();

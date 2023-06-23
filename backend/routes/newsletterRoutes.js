@@ -20,6 +20,11 @@ const emailLists = [
   },
   { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
   { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
+  {
+    name: "Hack",
+    subject: "Hacks on How to Make Your First Repeddle Sale!",
+    template: "hack",
+  },
 ];
 
 // get all newsletters

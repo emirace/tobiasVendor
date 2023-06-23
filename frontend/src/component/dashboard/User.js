@@ -848,7 +848,7 @@ export default function User() {
         });
       } else {
         // Subscribe to the newsletter
-        await axios.post("/api/newsletters", {
+        await axios.post(`/api/newsletters/${region()}`, {
           email: user.email,
           emailType: "Newsletter",
         });

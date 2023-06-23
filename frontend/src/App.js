@@ -104,6 +104,7 @@ import MobileNotificationScreen from "./screens/MobileNotificationScreen";
 import TopSellerList from "./component/dashboard/TopSellerList";
 import BrandScreenPage from "./screens/BrandScreenPage";
 import BuyerProtection from "./component/info/BuyerProtection";
+import DeletedScreen from "./screens/successPage/DeleteScreen";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -312,15 +313,38 @@ function App() {
 
   useEffect(() => {
     const getCartItems = async () => {
+      let items = [];
       if (userInfo) {
         const { data } = await axios.get("/api/cartItems", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        const items = data.map((x) => x.item);
-
-        ctxDispatch({ type: "UPDATE_CART", payload: items });
+        items = data.map((x) => x.item);
       }
+      const localCart = JSON.parse(localStorage.getItem("cartItems"));
+      if (localCart) {
+        // localCart.map((product) => {
+        //   if (userInfo) {
+        //     axios.post(
+        //       "/api/cartItems",
+        //       {
+        //         ...product,
+        //         quantity: product.quantity,
+        //         selectSize: product.selectSize,
+        //       },
+        //       {
+        //         headers: {
+        //           Authorization: `Bearer ${userInfo.token}`,
+        //         },
+        //       }
+        //     );
+        //   }
+        // });
+        // console.log(localCart);
+        items = [...items, ...localCart];
+      }
+      ctxDispatch({ type: "UPDATE_CART", payload: items });
     };
+
     getCartItems();
   }, [userInfo]);
 
@@ -533,6 +557,7 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
+                      <Route path="/deleted" element={<DeletedScreen />} />
                       {/* <Route
                       path="/account"
                       element={
