@@ -250,6 +250,25 @@ export default function ReturnPage() {
           userImage: userInfo.image,
           mobile: { path: "ReturnScreen", id: returned._id },
         });
+      } else if (deliveryStatus === "Return Approved") {
+        socket.emit("post_data", {
+          userId: returned.productId.seller._id,
+          itemId: returned.orderId._id,
+          notifyType: "delivery",
+          msg: `Order return request approved `,
+          mobile: { path: "ReturnScreen", id: returned._id },
+          link: `/return/${returned._id}`,
+          userImage: userInfo.image,
+        });
+        socket.emit("post_data", {
+          userId: returned.orderId.user._id,
+          itemId: returned.orderId._id,
+          notifyType: "delivery",
+          msg: `Your order ${deliveryStatus} `,
+          mobile: { path: "ReturnScreen", id: returned._id },
+          link: `/return/${returned._id}`,
+          userImage: userInfo.image,
+        });
       } else {
         socket.emit("post_data", {
           userId: returned.orderId.user._id,
@@ -314,47 +333,51 @@ export default function ReturnPage() {
       }
     } else {
       try {
-        const { data: withdrawData } = await axios.post(
-          `/api/accounts/${region()}/withdraw`,
-          {
-            amount: returned.sending.cost * 2,
-            purpose: "Return delivery fee",
-            userId: returned.productId.seller._id,
-          },
-          {
-            headers: { authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        if (!withdrawData.success) {
-          socket.emit("post_data", {
-            userId: returned.productId.seller._id,
-            itemId: returned.orderId._id,
-            notifyType: "return",
-            msg: `Fund your wallet to complete return`,
-            mobile: { path: "Fund", id: "" },
-            link: `/dashboard/wallet`,
-            userImage:
-              "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",
-          });
-        } else {
-          await axios.post(
-            `/api/accounts/${region()}/deposit`,
+        let transactionId = "";
+        if (returned.sending["delivery Option"] !== "Pick up from Seller") {
+          const { data: withdrawData } = await axios.post(
+            `/api/accounts/${region()}/withdraw`,
             {
               amount: returned.sending.cost * 2,
               purpose: "Return delivery fee",
-              userId: "Admin",
+              userId: returned.productId.seller._id,
             },
             {
-              headers: { Authorization: `Bearer ${userInfo.token}` },
+              headers: { authorization: `Bearer ${userInfo.token}` },
             }
           );
+          transactionId = withdrawData.transaction_id;
+          if (!withdrawData.success) {
+            socket.emit("post_data", {
+              userId: returned.productId.seller._id,
+              itemId: returned.orderId._id,
+              notifyType: "return",
+              msg: `Fund your wallet to complete return`,
+              mobile: { path: "Fund", id: "" },
+              link: `/dashboard/wallet`,
+              userImage:
+                "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",
+            });
+          } else {
+            await axios.post(
+              `/api/accounts/${region()}/deposit`,
+              {
+                amount: returned.sending.cost * 2,
+                purpose: "Return delivery fee",
+                userId: "Admin",
+              },
+              {
+                headers: { Authorization: `Bearer ${userInfo.token}` },
+              }
+            );
+          }
         }
 
         const { data } = await axios.put(
           `/api/returns/admin/${returnId}`,
           {
             status: "Approved",
-            transaction_id: withdrawData.transaction_id || null,
+            transaction_id: transactionId,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -393,7 +416,9 @@ export default function ReturnPage() {
             }}
           />
           <Link to={`/product/${returned.productId.slug}`}>
-            <div style={{ marginLeft: "20px" }}>{returned.productId.name}</div>
+            <div style={{ marginLeft: "20px", color: "var(--malon-color)" }}>
+              {returned.productId.name}
+            </div>
           </Link>
         </div>
         <hr />
