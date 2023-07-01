@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema(
     status: { type: String },
     reason: { type: String },
     deliveredAt: { type: Date },
-    orderId: { type: String },
+    // orderId: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {

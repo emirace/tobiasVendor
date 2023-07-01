@@ -169,6 +169,7 @@ export default function PlaceOrderScreen() {
   const placeOrderHandler = async () => {
     try {
       dispatch({ type: "CREATE_REQUEST" });
+
       const { data } = await axios.post(
         `/api/orders/${region()}`,
         {
@@ -181,19 +182,29 @@ export default function PlaceOrderScreen() {
         },
         { headers: { authorization: `Bearer ${userInfo.token}` } }
       );
+
+      console.log(data);
+
       dispatch({ type: "CREATE_SUCCESS", payload: data });
-      cart.cartItems.map(async (x) => {
-        await axios.put(
-          `/api/products/${x._id}/unsave`,
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-      });
+
+      await Promise.all(
+        cart.cartItems.map((x) =>
+          axios.put(
+            `/api/products/${x._id}/unsave`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${userInfo.token}` },
+            }
+          )
+        )
+      );
+
       return data;
     } catch (err) {
+      console.log(err);
+
       dispatch({ type: "CREATE_FAIL" });
+
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -204,6 +215,7 @@ export default function PlaceOrderScreen() {
       });
     }
   };
+
   const saveOrderHandler = async () => {
     try {
       const data = await placeOrderHandler();
@@ -231,136 +243,136 @@ export default function PlaceOrderScreen() {
     }
   };
 
-  function createOrder(data, actions) {
-    return actions.order
-      .create({
-        purchase_units: [
-          {
-            amount: { value: cart.totalPrice },
-          },
-        ],
-      })
-      .then((orderID) => {
-        return orderID;
-      });
-  }
+  // const WalletSuccess = async (response) => {
+  //   const order1 = await placeOrderHandler();
+  //   if (order1) {
+  //     try {
+  //       dispatch({ type: "PAY_REQUEST" });
+  //       const { data } = await axios.put(
+  //         `/api/orders/${region()}/${order1.order._id}/pay`,
+  //         response,
+  //         { headers: { authorization: `Bearer ${userInfo.token}` } }
+  //       );
+  //       dispatch({ type: "PAY_SUCCESS", payload: data });
+  //       order1.order.seller.map(async (x) => {
+  //         await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
+  //       });
+  //       ctxDispatch({
+  //         type: "SHOW_TOAST",
+  //         payload: {
+  //           message: "Order is paid",
+  //           showStatus: true,
+  //           state1: "visible1 success",
+  //         },
+  //       });
+  //       localStorage.removeItem("cartItems");
+  //       ctxDispatch({ type: "CART_CLEAR" });
+  //       if (userInfo) {
+  //         await axios.delete(`/api/cartItems/`, {
+  //           headers: {
+  //             Authorization: `Bearer ${userInfo.token}`,
+  //           },
+  //         });
+  //       }
+  //       order1.order.seller.map((s) => {
+  //         socket.emit("post_data", {
+  //           userId: s,
+  //           itemId: order1.order._id,
+  //           notifyType: "sold",
+  //           msg: `${userInfo.username} ordered your product`,
+  //           link: `/order/${order1.order._id}`,
+  //           userImage: userInfo.image,
+  //           mobile: { path: "OrderScreen", id: order1.order._id },
+  //         });
+  //       });
+  //       navigate(`/order/${data.order._id}`);
+  //     } catch (err) {
+  //       dispatch({ type: "PAY_FAIL", payload: getError(err) });
+  //       console.log(err, getError(err));
+  //       ctxDispatch({
+  //         type: "SHOW_TOAST",
+  //         payload: {
+  //           message: `${getError(err)}`,
+  //           showStatus: true,
+  //           state1: "visible1 error",
+  //         },
+  //       });
+  //     }
+  //   } else {
+  //     toast.error("no order found");
+  //   }
+  // };
 
-  const WalletSuccess = async (response) => {
+  // const onApprove = async (response) => {
+  //   const order1 = await placeOrderHandler();
+  //   if (order1) {
+  //     try {
+  //       dispatch({ type: "PAY_REQUEST" });
+  //       const { data } = await axios.put(
+  //         `/api/orders/${region()}/${order1.order._id}/pay`,
+  //         response,
+  //         { headers: { authorization: `Bearer ${userInfo.token}` } }
+  //       );
+  //       dispatch({ type: "PAY_SUCCESS", payload: data });
+  //       order1.order.seller.map(async (x) => {
+  //         await axios.put(`api/bestsellers/${region()}/${x}`);
+  //       });
+  //       ctxDispatch({
+  //         type: "SHOW_TOAST",
+  //         payload: {
+  //           message: "Order is paid",
+  //           showStatus: true,
+  //           state1: "visible1 success",
+  //         },
+  //       });
+  //       localStorage.removeItem("cartItems");
+  //       ctxDispatch({ type: "CART_CLEAR" });
+  //       if (userInfo) {
+  //         await axios.delete(`/api/cartItems/`, {
+  //           headers: {
+  //             Authorization: `Bearer ${userInfo.token}`,
+  //           },
+  //         });
+  //       }
+  //       order1.order.seller.map((s) => {
+  //         socket.emit("post_data", {
+  //           userId: s,
+  //           itemId: order1.order._id,
+  //           notifyType: "sold",
+  //           msg: `${userInfo.username} ordered your product`,
+  //           link: `/order/${order1.order._id}`,
+  //           mobile: { path: "OrderScreen", id: order1.order._id },
+  //           userImage: userInfo.image,
+  //         });
+  //       });
+
+  //       navigate(`/order/${data.order._id}`);
+  //     } catch (err) {
+  //       dispatch({ type: "PAY_FAIL", payload: getError(err) });
+  //       ctxDispatch({
+  //         type: "SHOW_TOAST",
+  //         payload: {
+  //           message: `${getError(err)}`,
+  //           showStatus: true,
+  //           state1: "visible1 error",
+  //         },
+  //       });
+  //     }
+  //   } else {
+  //     ctxDispatch({
+  //       type: "SHOW_TOAST",
+  //       payload: {
+  //         message: "Order not found",
+  //         showStatus: true,
+  //         state1: "visible1 error",
+  //       },
+  //     });
+  //   }
+  // };
+
+  const processOrder = async (response) => {
     const order1 = await placeOrderHandler();
-    if (order1) {
-      try {
-        dispatch({ type: "PAY_REQUEST" });
-        const { data } = await axios.put(
-          `/api/orders/${region()}/${order1.order._id}/pay`,
-          response,
-          { headers: { authorization: `Bearer ${userInfo.token}` } }
-        );
-        dispatch({ type: "PAY_SUCCESS", payload: data });
-        order1.order.seller.map(async (x) => {
-          await axios.put(`api/bestsellers/${region()}/${order1.order.seller}`);
-        });
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "Order is paid",
-            showStatus: true,
-            state1: "visible1 success",
-          },
-        });
-        localStorage.removeItem("cartItems");
-        ctxDispatch({ type: "CART_CLEAR" });
-        if (userInfo) {
-          await axios.delete(`/api/cartItems/`, {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          });
-        }
-        order1.order.seller.map((s) => {
-          socket.emit("post_data", {
-            userId: s,
-            itemId: order1.order._id,
-            notifyType: "sold",
-            msg: `${userInfo.username} ordered your product`,
-            link: `/order/${order1.order._id}`,
-            userImage: userInfo.image,
-            mobile: { path: "OrderScreen", id: order1.order._id },
-          });
-        });
-        navigate(`/order/${data.order._id}`);
-      } catch (err) {
-        dispatch({ type: "PAY_FAIL", payload: getError(err) });
-        console.log(err, getError(err));
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: `${getError(err)}`,
-            showStatus: true,
-            state1: "visible1 error",
-          },
-        });
-      }
-    } else {
-      toast.error("no order found");
-    }
-  };
-
-  const onApprove = async (response) => {
-    const order1 = await placeOrderHandler();
-    if (order1) {
-      try {
-        dispatch({ type: "PAY_REQUEST" });
-        const { data } = await axios.put(
-          `/api/orders/${region()}/${order1.order._id}/pay`,
-          response,
-          { headers: { authorization: `Bearer ${userInfo.token}` } }
-        );
-        dispatch({ type: "PAY_SUCCESS", payload: data });
-        order1.order.seller.map(async (x) => {
-          await axios.put(`api/bestsellers/${region()}/${x}`);
-        });
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: "Order is paid",
-            showStatus: true,
-            state1: "visible1 success",
-          },
-        });
-        localStorage.removeItem("cartItems");
-        ctxDispatch({ type: "CART_CLEAR" });
-        if (userInfo) {
-          await axios.delete(`/api/cartItems/`, {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          });
-        }
-        order1.order.seller.map((s) => {
-          socket.emit("post_data", {
-            userId: s,
-            itemId: order1.order._id,
-            notifyType: "sold",
-            msg: `${userInfo.username} ordered your product`,
-            link: `/order/${order1.order._id}`,
-            mobile: { path: "OrderScreen", id: order1.order._id },
-            userImage: userInfo.image,
-          });
-        });
-
-        navigate(`/order/${data.order._id}`);
-      } catch (err) {
-        dispatch({ type: "PAY_FAIL", payload: getError(err) });
-        ctxDispatch({
-          type: "SHOW_TOAST",
-          payload: {
-            message: `${getError(err)}`,
-            showStatus: true,
-            state1: "visible1 error",
-          },
-        });
-      }
-    } else {
+    if (!order1) {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -369,12 +381,78 @@ export default function PlaceOrderScreen() {
           state1: "visible1 error",
         },
       });
+      return;
+    }
+
+    try {
+      dispatch({ type: "PAY_REQUEST" });
+      const { data } = await axios.put(
+        `/api/orders/${region()}/${order1.order._id}/pay`,
+        response,
+        { headers: { authorization: `Bearer ${userInfo.token}` } }
+      );
+      dispatch({ type: "PAY_SUCCESS", payload: data });
+
+      await Promise.all(
+        order1.order.seller.map((x) =>
+          axios.put(`api/bestsellers/${region()}/${x}`)
+        )
+      );
+
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order is paid",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+
+      localStorage.removeItem("cartItems");
+      ctxDispatch({ type: "CART_CLEAR" });
+
+      if (userInfo) {
+        await axios.delete(`/api/cartItems/`, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        });
+      }
+
+      order1.order.seller.forEach((s) => {
+        socket.emit("post_data", {
+          userId: s,
+          itemId: order1.order._id,
+          notifyType: "sold",
+          msg: `${userInfo.username} ordered your product`,
+          link: `/order/${order1.order._id}`,
+          mobile: { path: "OrderScreen", id: order1.order._id },
+          userImage: userInfo.image,
+        });
+      });
+
+      navigate(`/order/${data.order._id}`);
+    } catch (err) {
+      dispatch({ type: "PAY_FAIL", payload: getError(err) });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: `${getError(err)}`,
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
     }
   };
 
-  function onError(err) {
-    toast.error(getError(err));
-  }
+  const WalletSuccess = async (response) => {
+    await processOrder(response);
+  };
+
+  const onApprove = async (response) => {
+    await processOrder(response);
+  };
+
   const handleCoupon = async () => {
     try {
       const { data } = await axios.get(`/api/coupons/${code}`, {
@@ -386,9 +464,11 @@ export default function PlaceOrderScreen() {
       console.log(getError(err));
     }
   };
+
   const removeCoupon = () => {
     setCoupon(null);
   };
+
   const discount = coupon ? couponDiscount(coupon, cart.totalPrice) : 0;
 
   return (
@@ -613,18 +693,6 @@ export default function PlaceOrderScreen() {
                   </CouponCont>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {/* {isPending ? (
-                    <LoadingBox />
-                  ) : (
-                    <div>
-                      <PayPalButtons
-                        createOrder={createOrder}
-                        onApprove={onApprove}
-                        onError={onError}
-                      ></PayPalButtons>
-                    </div>
-                  )} */}
-
                   {loadingPay ? (
                     <LoadingBox />
                   ) : cart.paymentMethod === "Wallet" ? (

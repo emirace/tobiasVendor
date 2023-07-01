@@ -474,18 +474,16 @@ export const checkStatus = (status, currentStatus) => {
   return statusOrderValue < currentStatusValue ? false : true;
 };
 
-import Order from "./models/Order";
-
 export const setTimer = async (orderId, productId, days, message) => {
   // Access the global 'io' object to emit the event
   const socketIO = global.io;
 
   const order = await Order.findById(orderId);
-  const orderItemIndex = order.orderItems.findIndex((x) =>
-    x._id.equals(productId)
+  const orderItemIndex = order.orderItems.findIndex(
+    (x) => x._id.toString() === productId.toString()
   );
-
   const orderItem = order.orderItems[orderItemIndex];
+  console.log(orderItem);
 
   // Clear the existing timer if it exists
   if (orderItem.timeoutId) {

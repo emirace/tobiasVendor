@@ -106,37 +106,78 @@ orderRouter.get(
   })
 );
 
+// orderRouter.post(
+//   "/:region",
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const { region } = req.params;
+//     var seller = [];
+//     req.body.orderItems.map((i) => {
+//       seller = [...new Set([...seller, i.seller])];
+//     });
+//     const newOrder = new Order({
+//       seller,
+//       orderItems: req.body.orderItems.map((x) => ({
+//         ...x,
+//         product: x._id,
+//         deliveryStatus: "Pending",
+//         deliveredAt: Date.now(),
+//       })),
+//       deliveryStatus: "Pending",
+//       deliveryMethod: req.body.deliveryMethod,
+//       paymentMethod: req.body.paymentMethod,
+//       itemsPrice: req.body.itemsPrice,
+//       shippingPrice: req.body.shippingPrice,
+//       taxPrice: req.body.taxPrice,
+//       totalPrice: req.body.totalPrice,
+//       user: req.user._id,
+//       region,
+//     });
+//     const order = await newOrder.save();
+//     order.orderId = order._id.toString();
+//     const neworder = await order.save();
+//     res.status(201).send({ message: "New Order Created", order });
+//   })
+// );
+
 orderRouter.post(
   "/:region",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const { region } = req.params;
-    var seller = [];
-    req.body.orderItems.map((i) => {
-      seller = [...new Set([...seller, i.seller])];
-    });
-    const newOrder = new Order({
-      seller,
-      orderItems: req.body.orderItems.map((x) => ({
-        ...x,
-        product: x._id,
+    try {
+      const { region } = req.params;
+      const sellerSet = new Set();
+      req.body.orderItems.forEach((item) => {
+        sellerSet.add(item.seller);
+      });
+      const seller = Array.from(sellerSet);
+
+      const newOrder = new Order({
+        seller,
+        orderItems: req.body.orderItems.map((x) => ({
+          ...x,
+          product: x._id,
+          deliveryStatus: "Pending",
+          deliveredAt: Date.now(),
+        })),
         deliveryStatus: "Pending",
-        deliveredAt: Date.now(),
-      })),
-      deliveryStatus: "Pending",
-      deliveryMethod: req.body.deliveryMethod,
-      paymentMethod: req.body.paymentMethod,
-      itemsPrice: req.body.itemsPrice,
-      shippingPrice: req.body.shippingPrice,
-      taxPrice: req.body.taxPrice,
-      totalPrice: req.body.totalPrice,
-      user: req.user._id,
-      region,
-    });
-    const order = await newOrder.save();
-    order.orderId = order._id.toString();
-    const neworder = await order.save();
-    res.status(201).send({ message: "New Order Created", order });
+        deliveryMethod: req.body.deliveryMethod,
+        paymentMethod: req.body.paymentMethod,
+        itemsPrice: req.body.itemsPrice,
+        shippingPrice: req.body.shippingPrice,
+        taxPrice: req.body.taxPrice,
+        totalPrice: req.body.totalPrice,
+        user: req.user._id,
+        region,
+      });
+
+      const order = await newOrder.save();
+      res.status(201).send({ message: "New Order Created", order });
+    } catch (err) {
+      res
+        .status(500)
+        .send({ message: "Error creating order", error: err.message });
+    }
   })
 );
 
@@ -1096,33 +1137,21 @@ orderRouter.put(
           select: "email username",
         });
         if (order) {
-          const products = [];
           const sellers = [];
-          order.orderItems.map((i) => products.push(i._id));
-          const records = await Product.find({
-            _id: { $in: products },
-          });
           order.orderItems.forEach((element) => {
             if (!sellers.includes(element.seller)) {
               sellers.push(element.seller);
             }
           });
-          records.map(async (p) => {
-            var newQuantity;
-            var selectedSize;
-            order.orderItems.map((x) => {
-              if (p._id.toString() === x._id) {
-                newQuantity = x.quantity;
-                selectedSize = x.selectSize;
-              }
-            });
+          order.orderItems.map(async (product) => {
+            const p = await Product.findById(product._id);
             p.sold = true;
-            p.countInStock = p.countInStock - newQuantity;
-            product.soldAll = product.countInStock < 1;
+            p.countInStock = p.countInStock - product.quantity;
+            p.soldAll = p.countInStock < 1;
 
             p.sizes = p.sizes.map((size) => {
-              return size.size === selectedSize
-                ? { ...size, value: `${Number(size.value) - newQuantity}` }
+              return size.size === product.selectSize
+                ? { ...size, value: `${Number(size.value) - product.quantity}` }
                 : size;
             });
             p.userBuy.push(req.user._id);
@@ -1138,6 +1167,31 @@ orderRouter.put(
               3,
               "You are running out of time to dispatch"
             );
+
+            const exist = await RebundleSeller.findOne({
+              userId: req.user._id,
+              sellerId: p.seller,
+            });
+            if (!exist && seller.rebundle.status) {
+              const rebundleSeller = new RebundleSeller({
+                userId: req.user._id,
+                sellerId: seller._id,
+                createdAt: Date.now(),
+                count: seller.rebundle.count,
+                deliveryMethod: product.deliverySelect["delivery Option"],
+              });
+              await rebundleSeller.save();
+            } else if (exist) {
+              const selectedCount =
+                product.deliverySelect["delivery Option"] ===
+                exist.deliveryMethod
+                  ? 1 * c.quantity
+                  : 0;
+              const count = exist.count - selectedCount;
+              const countAllow = count > 0 ? count : 0;
+              exist.count = countAllow;
+              await exist.save();
+            }
           });
 
           order.isPaid = true;
@@ -1149,36 +1203,7 @@ orderRouter.put(
             email_address: req.body.email_address,
           };
           const updateOrder = await order.save();
-          sellers.map(async (seller) => {
-            const userSeller = await User.findById(seller);
-            const exist = await RebundleSeller.findOne({
-              userId: req.user._id,
-              sellerId: seller,
-            });
-            if (!exist && userSeller.rebundle.status) {
-              const rebundleSeller = new RebundleSeller({
-                userId: req.user._id,
-                sellerId: seller,
-                createdAt: Date.now(),
-                count: seller.rebundle.count,
-                deliveryMethod: order.deliveryMethod["delivery Option"],
-              });
-              await rebundleSeller.save();
-            } else if (exist) {
-              const selectedCount = order.orderItems.reduce(
-                (a, c) =>
-                  a +
-                  (c.deliverySelect["delivery Option"] === exist.deliveryMethod
-                    ? 1 * c.quantity
-                    : 0),
-                0
-              );
-              const count = exist.count - selectedCount;
-              const countAllow = count > 0 ? count : 0;
-              exist.count = countAllow;
-              await exist.save();
-            }
-          });
+
           const answer = await payShippingFee(order);
 
           sendEmail({
@@ -1194,6 +1219,7 @@ orderRouter.put(
               sellerId: order.orderItems[0].seller._id,
             },
           });
+          console.log(sellers);
           sellers.map((seller) => {
             sendEmail({
               to: seller.email,
