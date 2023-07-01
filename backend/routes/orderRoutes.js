@@ -518,8 +518,8 @@ orderRouter.put(
 
       const isValidUser =
         req.user.isAdmin ||
-        req.user._id.equals(order.user._id) ||
-        req.user._id.equals(product.seller);
+        String(req.user._id) === String(order.user._id) ||
+        String(req.user._id) === String(product.seller);
 
       if (!isValidUser) {
         return res.status(403).send({ message: "Access denied" });
