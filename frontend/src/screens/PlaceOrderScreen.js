@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
 import styled from "styled-components";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import FlutterWave from "../component/FlutterWave";
@@ -167,28 +166,6 @@ export default function PlaceOrderScreen() {
   const [coupon, setCoupon] = useState(null);
   const [showModel, setShowModel] = useState(false);
 
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-
-  useEffect(() => {
-    const loadPaypalScript = async () => {
-      const { data: clientId } = await axios.get(
-        "/api/keys/paypal",
-        userInfo
-          ? { headers: { authorization: `Bearer ${userInfo.token}` } }
-          : {}
-      );
-      paypalDispatch({
-        type: "resetOptions",
-        value: {
-          "client-id": clientId,
-          currency: "USD",
-        },
-      });
-      paypalDispatch({ type: "useLoadingStatus", value: "pending" });
-    };
-    loadPaypalScript();
-  }, [userInfo, paypalDispatch]);
-
   const placeOrderHandler = async () => {
     try {
       dispatch({ type: "CREATE_REQUEST" });
@@ -201,7 +178,6 @@ export default function PlaceOrderScreen() {
           shippingPrice: cart.shippingPrice,
           taxPrice: cart.taxPrice,
           totalPrice: cart.totalPrice,
-          deliveryMethod: cart.deliveryMethod,
         },
         { headers: { authorization: `Bearer ${userInfo.token}` } }
       );

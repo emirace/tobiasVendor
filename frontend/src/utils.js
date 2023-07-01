@@ -223,28 +223,6 @@ export const calcPrice = async (cart, userInfo, currentCartItem) => {
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.actualPrice, 0)
   );
-  // const ItemShippingFee = async (c) => {
-  //   console.log("text", cart, c);
-  //   if (cart.cartItems.length !== 0 && c) {
-  //     const data = await rebundleIsActive(userInfo, c.seller._id, cart);
-  //     const selectedCartItem = cart.cartItems.find((cc) => cc._id === c._id);
-  //     console.log(data, selectedCartItem);
-  //     console.log(
-  //       "data",
-  //       checkDeliverySelectItem(c),
-  //       checkDeliverySelectItem(selectedCartItem),
-  //       c
-  //     );
-  //     return data.countAllow > 0
-  //       ? shippingFee(selectedCartItem, 0)
-  //       : checkDeliverySelectItem(selectedCartItem)
-  //       ? shippingFee(selectedCartItem, selectedCartItem.deliverySelect.cost)
-  //       : 0;
-  //   } else {
-  //     return 0;
-  //   }
-  // };
-  console.log(cart);
   cart.shippingPrice = cart.cartItems.reduce(
     (a, c) =>
       a +
@@ -261,37 +239,23 @@ export const GOOGLE_CLIENT_ID =
   "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";
 
 export const deliveryNumber = (status) => {
-  switch (status) {
-    case "Processing":
-      return 1;
-    case "Dispatched":
-      return 2;
-    case "In Transit":
-      return 3;
-    case "Delivered":
-      return 4;
-    case "Received":
-      return 5;
-    case "Return Logged":
-      return 6;
-    case "Return Approved":
-      return 8;
-    case "Return Declined":
-      return 7;
-    case "Return Dispatched":
-      return 9;
-    case "Return Delivered":
-      return 10;
-    case "Return Received":
-      return 11;
-    case "Refunded":
-      return 12;
-    case "Payment to Seller Initiated":
-      return 13;
+  const deliveryStatusMap = {
+    Processing: 1,
+    Dispatched: 2,
+    "In Transit": 3,
+    Delivered: 4,
+    Received: 5,
+    "Return Logged": 6,
+    "Return Approved": 8,
+    "Return Declined": 7,
+    "Return Dispatched": 9,
+    "Return Delivered": 10,
+    "Return Received": 11,
+    Refunded: 12,
+    "Payment to Seller Initiated": 13,
+  };
 
-    default:
-      return 0;
-  }
+  return deliveryStatusMap[status] || 0;
 };
 
 export const loginGig = async () => {
@@ -316,44 +280,93 @@ export const rebundleIsActive = async (
   cart,
   valid = false
 ) => {
-  if (userInfo) {
-    try {
-      const { data } = await axios.get(
-        `/api/rebundleSellers/checkbundle/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-
-      if (data.success) {
-        console.log("hello", data, cart.cartItems);
-        const selectedCount = !valid
-          ? cart.cartItems.reduce(
-              (a, c) =>
-                a +
-                (c.deliverySelect["delivery Option"] ===
-                data.seller.deliveryMethod
-                  ? 1 * c.quantity
-                  : 0),
-              0
-            )
-          : cart.cartItems.reduce(
-              (a, c) => a + (c.deliverySelect ? 1 * c.quantity : 0),
-              0
-            );
-        const count = data.seller.count - selectedCount;
-        const countAllow = count > 0 ? count : 0;
-        // const success = countAllow > 0 ? true : false;
-        return { ...data, countAllow };
-      } else {
-        return { ...data, countAllow: 0 };
-      }
-    } catch (err) {
-      console.log(err);
-    }
+  if (!userInfo) {
+    return { success: false };
   }
-  return { success: false };
+
+  try {
+    const { data } = await axios.get(
+      `/api/rebundleSellers/checkbundle/${userId}`,
+      {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+
+    const countAllow = calculateCountAllow(data, cart, valid);
+    return { ...data, countAllow };
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+const calculateCountAllow = (data, cart, valid) => {
+  if (!data.success) {
+    return 0;
+  }
+
+  console.log("hello", data, cart.cartItems);
+  const selectedCount = cart.cartItems.reduce((a, c) => {
+    if (!valid) {
+      return (
+        a +
+        (c.deliverySelect["delivery Option"] === data.seller.deliveryMethod
+          ? 1 * c.quantity
+          : 0)
+      );
+    } else {
+      return a + (c.deliverySelect ? 1 * c.quantity : 0);
+    }
+  }, 0);
+
+  const count = data.seller.count - selectedCount;
+  const countAllow = count > 0 ? count : 0;
+  return countAllow;
+};
+
+// export const rebundleIsActive = async (
+//   userInfo,
+//   userId,
+//   cart,
+//   valid = false
+// ) => {
+//   if (userInfo) {
+//     try {
+//       const { data } = await axios.get(
+//         `/api/rebundleSellers/checkbundle/${userId}`,
+//         {
+//           headers: { Authorization: `Bearer ${userInfo.token}` },
+//         }
+//       );
+
+//       if (data.success) {
+//         console.log("hello", data, cart.cartItems);
+//         const selectedCount = !valid
+//           ? cart.cartItems.reduce(
+//               (a, c) =>
+//                 a +
+//                 (c.deliverySelect["delivery Option"] ===
+//                 data.seller.deliveryMethod
+//                   ? 1 * c.quantity
+//                   : 0),
+//               0
+//             )
+//           : cart.cartItems.reduce(
+//               (a, c) => a + (c.deliverySelect ? 1 * c.quantity : 0),
+//               0
+//             );
+//         const count = data.seller.count - selectedCount;
+//         const countAllow = count > 0 ? count : 0;
+//         // const success = countAllow > 0 ? true : false;
+//         return { ...data, countAllow };
+//       } else {
+//         return { ...data, countAllow: 0 };
+//       }
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
+//   return { success: false };
+// };
 
 export const getCode = (name) => {
   const result = banks.Nigeria.find((bank) => {

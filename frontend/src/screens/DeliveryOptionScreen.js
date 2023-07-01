@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
-import Form from 'react-bootstrap/Form';
-import { Store } from '../Store';
-import styled from 'styled-components';
-import axios from 'axios';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { getError, loginGig, rebundleIsActive, region } from '../utils';
-import useGeoLocation from '../hooks/useGeoLocation';
-import LoadingBox from '../component/LoadingBox';
-import { postnet, pudo, states } from '../constant';
-import RebundlePoster from '../component/RebundlePoster';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import { Store } from "../Store";
+import styled from "styled-components";
+import axios from "axios";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { getError, loginGig, rebundleIsActive, region } from "../utils";
+import useGeoLocation from "../hooks/useGeoLocation";
+import LoadingBox from "../component/LoadingBox";
+import { postnet, pudo, states } from "../constant";
+import RebundlePoster from "../component/RebundlePoster";
 
 const Container = styled.div`
   margin: 30px;
@@ -35,7 +35,7 @@ const Radio = styled.input`
     left: -1px;
     position: relative;
     background-color: var(--orange-color);
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     border: 2px solid white;
@@ -49,7 +49,7 @@ const Plans = styled.div`
   border-radius: 0.2rem;
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   margin: 5px;
   padding: 10px;
   & a.link {
@@ -74,13 +74,13 @@ const Input = styled.input`
   height: 30px;
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: none;
   padding-left: 10px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &:focus {
     outline: none;
     border-bottom: 1px solid var(--orange-color);
@@ -96,28 +96,28 @@ const Error = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_ADDRESS_REQUEST':
+    case "FETCH_ADDRESS_REQUEST":
       return { ...state, loadingAddress: true };
-    case 'FETCH_ADDRESS_SUCCESS':
+    case "FETCH_ADDRESS_SUCCESS":
       return {
         ...state,
         loadingAddress: false,
         addresses: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_STATIONs_REQUEST':
+    case "FETCH_STATIONs_REQUEST":
       return { ...state, loadingStations: true };
-    case 'FETCH_STATIONs_SUCCESS':
+    case "FETCH_STATIONs_SUCCESS":
       return {
         ...state,
         loadingStations: false,
         stations: action.payload,
-        error: '',
+        error: "",
       };
 
-    case 'FETCH_STATIONs_FAILED':
+    case "FETCH_STATIONs_FAILED":
       return { ...state, loadingStations: false };
-    case 'FETCH_ADDRESS_FAILED':
+    case "FETCH_ADDRESS_FAILED":
       return { ...state, loadingAddress: false, error: action.payload };
     default:
       return state;
@@ -127,10 +127,10 @@ const reducer = (state, action) => {
 export default function DeliveryOptionScreen({ setShowModel, item }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, mode, userInfo, currency } = state;
-  const [deliveryOption, setDeliveryOption] = useState('');
+  const [deliveryOption, setDeliveryOption] = useState("");
   const [showMap, setShowMap] = useState(false);
-  const [meta, setMeta] = useState('');
-  const [value, setValue] = useState('');
+  const [meta, setMeta] = useState("");
+  const [value, setValue] = useState("");
   const [update, setUpdate] = useState(false);
 
   // useEffect(() => {
@@ -149,12 +149,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     dispatch,
   ] = useReducer(reducer, {
     loadingAddress: true,
-    error: '',
+    error: "",
     addresses: null,
     loadingStations: true,
   });
 
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const [isRebundle, setIsRebundle] = useState(false);
   useEffect(() => {
     const getRebundleList = async () => {
@@ -177,41 +177,41 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   useEffect(() => {
     const fetchStations = async () => {
       try {
-        dispatch({ type: 'FETCH_STATIONs_REQUEST' });
+        dispatch({ type: "FETCH_STATIONs_REQUEST" });
         const logins = await loginGig();
         setToken(logins);
-        if (deliveryOption === 'GIG Logistics') {
+        if (deliveryOption === "GIG Logistics") {
           const { data } = await axios.get(
-            'https://thirdparty.gigl-go.com/api/thirdparty/localStations',
+            "https://thirdparty.gigl-go.com/api/thirdparty/localStations",
             {
               headers: { Authorization: `Bearer ${logins.token}` },
             }
           );
-          dispatch({ type: 'FETCH_STATIONs_SUCCESS', payload: data.Object });
+          dispatch({ type: "FETCH_STATIONs_SUCCESS", payload: data.Object });
         }
       } catch (error) {
-        dispatch({ type: 'FETCH_STATIONs_FAIL' });
+        dispatch({ type: "FETCH_STATIONs_FAIL" });
       }
     };
     fetchStations();
   }, [deliveryOption]);
 
   useEffect(() => {
-    dispatch({ type: 'FETCH_ADDRESS_REQUEST' });
+    dispatch({ type: "FETCH_ADDRESS_REQUEST" });
     const getAddress = async () => {
       try {
         const { data } = await axios.get(`/api/addresses/${userInfo._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'FETCH_ADDRESS_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_ADDRESS_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: 'FETCH_ADDRESS_FAILED' });
+        dispatch({ type: "FETCH_ADDRESS_FAILED" });
         console.log(getError(err));
       }
     };
     getAddress();
   }, []);
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState("");
   useEffect(() => {
     console.log(addresses);
     if (addresses && addresses.length > 0) {
@@ -227,37 +227,37 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
     }
   }, [addresses, deliveryOption]);
   const location = useGeoLocation();
-  const [locationerror, setLocationerror] = useState('');
+  const [locationerror, setLocationerror] = useState("");
   const [loadingGig, setLoadingGig] = useState(false);
 
   const submitHandler = async () => {
     var deliverySelect = {};
 
-    if (deliveryOption === 'GIG Logistics') {
+    if (deliveryOption === "GIG Logistics") {
       if (location.error) {
-        setLocationerror('Location is require for proper delivery');
+        setLocationerror("Location is require for proper delivery");
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Location is require for proper delivery',
+            message: "Location is require for proper delivery",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         return;
       }
       try {
         setLoadingGig(true);
-        console.log('item', item);
+        console.log("item", item);
         const { data } = await axios.post(
-          'https://thirdparty.gigl-go.com/api/thirdparty/price',
+          "https://thirdparty.gigl-go.com/api/thirdparty/price",
           {
             ReceiverAddress: meta.address,
             CustomerCode: token.username,
             SenderLocality: item.meta.address,
             SenderAddress: item.meta.address,
             ReceiverPhoneNumber: meta.phone,
-            VehicleType: 'BIKE',
+            VehicleType: "BIKE",
             SenderPhoneNumber: item.meta.phone,
             SenderName: item.meta.name,
             ReceiverName: meta.name,
@@ -274,13 +274,13 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
             },
             PreShipmentItems: [
               {
-                SpecialPackageId: '0',
+                SpecialPackageId: "0",
                 Quantity: item.quantity,
                 Weight: 1,
-                ItemType: 'Normal',
+                ItemType: "Normal",
                 ItemName: item.name,
                 Value: item.actualPrice,
-                ShipmentType: 'Regular',
+                ShipmentType: "Regular",
                 Description: item.description,
                 ImageUrl: item.image,
               },
@@ -293,7 +293,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         console.log(data);
         if (data.Object) {
           deliverySelect = {
-            'delivery Option': deliveryOption,
+            "delivery Option": deliveryOption,
             cost: data.Object.DeliveryPrice,
             ...meta,
             lat: location.coordinates.lat,
@@ -303,7 +303,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         } else {
           setLoadingGig(false);
           setLocationerror(
-            'Error selecting delivery method, try again later or try other delivery method'
+            "Error selecting delivery method, try again later or try other delivery method"
           );
           return;
         }
@@ -313,7 +313,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       }
     } else {
       deliverySelect = {
-        'delivery Option': deliveryOption,
+        "delivery Option": deliveryOption,
         cost: value,
         ...meta,
         total: { status: true, cost: value },
@@ -337,7 +337,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       cart,
       valid
     );
-    console.log('allow', allowData, deliveryOption);
+    console.log("allow", allowData, deliveryOption);
     if (
       allowData?.countAllow > 0 &&
       allowData?.seller?.deliveryMethod === deliveryOption
@@ -347,72 +347,71 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         total: { status: true, cost: 0 },
       };
     }
-    console.log('deliverySelect', deliverySelect);
+    console.log("deliverySelect", deliverySelect);
     ctxDispatch({
-      type: 'CART_ADD_ITEM',
+      type: "CART_ADD_ITEM",
       payload: {
         ...item,
         deliverySelect,
         quantity: 1,
       },
     });
-    ctxDispatch({ type: 'SAVE_DELIVERY_METHOD', payload: deliverySelect });
     setShowModel(false);
     // navigate("/placeorder");
     setLoadingGig(false);
   };
 
-  const [validationError, setValidationError] = useState('');
+  const [validationError, setValidationError] = useState("");
   const validation = (e) => {
     e.preventDefault();
     var valid = true;
     if (!deliveryOption) {
       valid = false;
     }
-    if (deliveryOption === 'Paxi PEP store') {
+    if (deliveryOption === "Paxi PEP store") {
       if (!meta.shortName) {
         setValidationError({
           ...validationError,
-          point: 'Select a pick up point ',
+          point: "Select a pick up point ",
         });
         valid = false;
       }
       if (!meta.phone) {
         setValidationError({
           ...validationError,
-          phone: 'Enter a valid phone number ',
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
     }
-    if (deliveryOption === 'PUDO Locker-to-Locker') {
+    if (deliveryOption === "PUDO Locker-to-Locker") {
       if (!meta.phone) {
         setValidationError({
           ...validationError,
-          phone: 'Enter a valid phone number ',
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          province: 'Select province',
+          province: "Select province",
         });
         valid = false;
       }
       if (!meta.shortName) {
         setValidationError({
           ...validationError,
-          shortName: 'Select a pick up point ',
+          shortName: "Select a pick up point ",
         });
         valid = false;
       }
     }
-    if (deliveryOption === 'PostNet-to-PostNet') {
+    if (deliveryOption === "PostNet-to-PostNet") {
       if (!meta.phone) {
         setValidationError({
           ...validationError,
-          phone: 'Enter a valid phone number ',
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
@@ -420,102 +419,102 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          province: 'Select province',
+          province: "Select province",
         });
         valid = false;
       }
       if (!meta.pickUp) {
         setValidationError({
           ...validationError,
-          pickUp: 'Select a pick up locker ',
+          pickUp: "Select a pick up locker ",
         });
         valid = false;
       }
     }
-    if (deliveryOption === 'Aramex Store-to-Door') {
+    if (deliveryOption === "Aramex Store-to-Door") {
       if (!meta.province) {
         setValidationError({
           ...validationError,
-          province: 'Select province',
+          province: "Select province",
         });
         valid = false;
       }
       if (!meta.postalcode) {
         setValidationError({
           ...validationError,
-          postalcode: 'Enter your postal code ',
+          postalcode: "Enter your postal code ",
         });
         valid = false;
       }
       if (!meta.city) {
         setValidationError({
           ...validationError,
-          city: 'Enter your city ',
+          city: "Enter your city ",
         });
         valid = false;
       }
       if (!meta.suburb) {
         setValidationError({
           ...validationError,
-          suburb: 'Enter your suburb ',
+          suburb: "Enter your suburb ",
         });
         valid = false;
       }
       if (!meta.address) {
         setValidationError({
           ...validationError,
-          address: 'Enter your address ',
+          address: "Enter your address ",
         });
         valid = false;
       }
       if (!meta.email) {
         setValidationError({
           ...validationError,
-          email: 'Enter your email ',
+          email: "Enter your email ",
         });
         valid = false;
       }
       if (!meta.name) {
         setValidationError({
           ...validationError,
-          name: 'Enter your name ',
+          name: "Enter your name ",
         });
         valid = false;
       }
       if (!meta.phone) {
         setValidationError({
           ...validationError,
-          phone: 'Enter a valid phone number ',
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
     }
-    if (deliveryOption === 'GIG Logistics') {
+    if (deliveryOption === "GIG Logistics") {
       if (!meta.stationId) {
         setValidationError({
           ...validationError,
-          stationId: 'Select a station ',
+          stationId: "Select a station ",
         });
         valid = false;
       }
       if (!meta.address) {
         setValidationError({
           ...validationError,
-          address: 'Enter your address ',
+          address: "Enter your address ",
         });
         valid = false;
       }
       if (!meta.name) {
         setValidationError({
           ...validationError,
-          name: 'Enter your name ',
+          name: "Enter your name ",
         });
         valid = false;
       }
       if (!meta.phone) {
         setValidationError({
           ...validationError,
-          phone: 'Enter a valid phone number ',
+          phone: "Enter a valid phone number ",
         });
         valid = false;
       }
@@ -527,9 +526,9 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
   };
   function receiveMessage(message) {
     if (
-      message.origin == 'https://map.paxi.co.za' &&
+      message.origin == "https://map.paxi.co.za" &&
       message.data &&
-      message.data.trg === 'paxi'
+      message.data.trg === "paxi"
     ) {
       var point = message.data.point;
       /* Modify the code below for your application */
@@ -541,10 +540,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
 
   useEffect(() => {
     if (window.addEventListener) {
-      window.addEventListener('message', receiveMessage, false);
+      window.addEventListener("message", receiveMessage, false);
     } else {
       /* support for older browsers (IE 8) */
-      window.attachEvent('onmessage', receiveMessage);
+      window.attachEvent("onmessage", receiveMessage);
     }
   }, []);
 
@@ -570,26 +569,26 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                     onChange={(e) => {
                       setMeta({
                         ...meta,
-                        'delivery Option': e.target.value,
+                        "delivery Option": e.target.value,
                         cost: x.value,
                       });
                       setDeliveryOption(e.target.value);
                       setValue(x.value);
-                      setMeta('');
+                      setMeta("");
                     }}
                   />
                   {console.log(isRebundle)}
                   <Label htmlFor={x.name}>
-                    {x.name}{' '}
+                    {x.name}{" "}
                     {x.value === 0 ? (
-                      ''
+                      ""
                     ) : isRebundle.status && isRebundle.method === x.name ? (
                       <div
                         style={{
-                          color: 'var(--malon-color)',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
-                          marginLeft: '10px',
+                          color: "var(--malon-color)",
+                          fontSize: "11px",
+                          fontWeight: "bold",
+                          marginLeft: "10px",
                         }}
                       >
                         Free delivery for {isRebundle?.count} item
@@ -600,7 +599,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                   </Label>
                 </Option>
                 {deliveryOption === x.name ? (
-                  deliveryOption === 'Paxi PEP store' ? (
+                  deliveryOption === "Paxi PEP store" ? (
                     <Plans>
                       <Plan>
                         <Input
@@ -608,7 +607,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              shortName: '',
+                              shortName: "",
                             })
                           }
                           type="text"
@@ -635,7 +634,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              phone: '',
+                              phone: "",
                             })
                           }
                           type="text"
@@ -659,33 +658,33 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         How Paxi works
                       </a>
                     </Plans>
-                  ) : deliveryOption === 'PUDO Locker-to-Locker' ? (
+                  ) : deliveryOption === "PUDO Locker-to-Locker" ? (
                     <Plans>
                       <Plan>
                         <Label>Province</Label>
                         <FormControl
                           sx={{
                             margin: 0,
-                            width: '100%',
-                            borderRadius: '0.2rem',
+                            width: "100%",
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -696,12 +695,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, province: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                province: '',
+                                province: "",
                               });
                             }}
                             displayEmpty
                           >
-                            {region() === 'NGN'
+                            {region() === "NGN"
                               ? states.Nigeria.map((x) => (
                                   <MenuItem value={x}>{x}</MenuItem>
                                 ))
@@ -751,26 +750,26 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         <FormControl
                           sx={{
                             margin: 0,
-                            width: '100%',
-                            borderRadius: '0.2rem',
+                            width: "100%",
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -781,7 +780,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, shortName: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                shortName: '',
+                                shortName: "",
                               });
                             }}
                             displayEmpty
@@ -801,7 +800,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              phone: '',
+                              phone: "",
                             })
                           }
                           type="text"
@@ -835,33 +834,33 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         </a>
                       </Plan>
                     </Plans>
-                  ) : deliveryOption === 'PostNet-to-PostNet' ? (
+                  ) : deliveryOption === "PostNet-to-PostNet" ? (
                     <Plans>
                       <Plan>
                         <Label>Province</Label>
                         <FormControl
                           sx={{
                             margin: 0,
-                            width: '100%',
-                            borderRadius: '0.2rem',
+                            width: "100%",
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -872,12 +871,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, province: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                province: '',
+                                province: "",
                               });
                             }}
                             displayEmpty
                           >
-                            {region() === 'NGN'
+                            {region() === "NGN"
                               ? states.Nigeria.map((x) => (
                                   <MenuItem value={x}>{x}</MenuItem>
                                 ))
@@ -904,26 +903,26 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         <FormControl
                           sx={{
                             margin: 0,
-                            width: '100%',
-                            borderRadius: '0.2rem',
+                            width: "100%",
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -934,7 +933,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, pickUp: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                pickUp: '',
+                                pickUp: "",
                               });
                             }}
                             displayEmpty
@@ -954,7 +953,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              phone: '',
+                              phone: "",
                             })
                           }
                           type="number"
@@ -977,14 +976,14 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         How PostNet works
                       </a>
                     </Plans>
-                  ) : deliveryOption === 'Aramex Store-to-Door' ? (
+                  ) : deliveryOption === "Aramex Store-to-Door" ? (
                     <Plans>
                       <Plan>
                         <Input
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              name: '',
+                              name: "",
                             })
                           }
                           mode={mode}
@@ -1005,7 +1004,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              phone: '',
+                              phone: "",
                             })
                           }
                           mode={mode}
@@ -1025,7 +1024,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              email: '',
+                              email: "",
                             })
                           }
                           mode={mode}
@@ -1045,7 +1044,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              company: '',
+                              company: "",
                             })
                           }
                           mode={mode}
@@ -1065,7 +1064,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              address: '',
+                              address: "",
                             })
                           }
                           mode={mode}
@@ -1085,7 +1084,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              suburb: '',
+                              suburb: "",
                             })
                           }
                           mode={mode}
@@ -1105,7 +1104,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              city: '',
+                              city: "",
                             })
                           }
                           mode={mode}
@@ -1125,7 +1124,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              postalcode: '',
+                              postalcode: "",
                             })
                           }
                           mode={mode}
@@ -1145,26 +1144,26 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         <FormControl
                           sx={{
                             margin: 0,
-                            width: '100%',
-                            borderRadius: '0.2rem',
+                            width: "100%",
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -1175,12 +1174,12 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, province: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                province: '',
+                                province: "",
                               });
                             }}
                             displayEmpty
                           >
-                            {region() === 'NGN'
+                            {region() === "NGN"
                               ? states.Nigeria.map((x) => (
                                   <MenuItem value={x}>{x}</MenuItem>
                                 ))
@@ -1203,10 +1202,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         How Aramex works
                       </a>
                     </Plans>
-                  ) : deliveryOption === 'GIG Logistics' ? (
+                  ) : deliveryOption === "GIG Logistics" ? (
                     <Plans>
                       {locationerror && (
-                        <div style={{ color: 'red', textAlign: 'center' }}>
+                        <div style={{ color: "red", textAlign: "center" }}>
                           {locationerror}
                         </div>
                       )}
@@ -1215,7 +1214,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              name: '',
+                              name: "",
                             })
                           }
                           mode={mode}
@@ -1235,7 +1234,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              phone: '',
+                              phone: "",
                             })
                           }
                           mode={mode}
@@ -1255,7 +1254,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           onFocus={() =>
                             setValidationError({
                               ...validationError,
-                              address: '',
+                              address: "",
                             })
                           }
                           mode={mode}
@@ -1270,40 +1269,40 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.address}</Error>
                         )}
                       </Plan>
-                      <Plan style={{ justifyContent: 'unset' }}>
+                      <Plan style={{ justifyContent: "unset" }}>
                         <div
                           style={{
-                            fontSize: '14px',
-                            marginLeft: '20px',
-                            marginRight: '20px',
-                            color: 'grey',
+                            fontSize: "14px",
+                            marginLeft: "20px",
+                            marginRight: "20px",
+                            color: "grey",
                           }}
                         >
                           Select Station
                         </div>
                         <FormControl
                           sx={{
-                            width: '80%',
+                            width: "80%",
                             margin: 0,
-                            borderRadius: '0.2rem',
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -1313,7 +1312,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                               setMeta({ ...meta, stationId: e.target.value });
                               setValidationError({
                                 ...validationError,
-                                stationId: '',
+                                stationId: "",
                               });
                             }}
                             displayEmpty
@@ -1343,10 +1342,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         How GIG works
                       </a>
                     </Plans>
-                  ) : deliveryOption === 'Pick up from Seller' ? (
+                  ) : deliveryOption === "Pick up from Seller" ? (
                     <Plans>
                       <Plan>
-                        <div style={{ fontSize: '12px' }}>
+                        <div style={{ fontSize: "12px" }}>
                           When using Pick Up From Seller, our system is
                           unfortunately not able to record the delivery process.
                           This means (you) the buyer makes arrangement with the
@@ -1358,10 +1357,10 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                       </Plan>
                     </Plans>
                   ) : (
-                    ''
+                    ""
                   )
                 ) : (
-                  ''
+                  ""
                 )}
               </OptionCont>
             </div>
@@ -1370,7 +1369,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
             <button
               disabled={loadingGig}
               className="search-btn1"
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               type="submit"
             >
               Continue

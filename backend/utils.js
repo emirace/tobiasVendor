@@ -145,6 +145,7 @@ import Notification from "./models/notificationModel.js";
 import User from "./models/userModel.js";
 import Conversation from "./models/conversationModel.js";
 import Gig from "./models/gigModel.js";
+import Order from "./models/orderModel.js";
 
 export async function creditAccount({
   amount,
@@ -448,4 +449,72 @@ export const payShippingFee = async (order) => {
     console.log(error);
     return error;
   }
+};
+
+export const checkStatus = (status, currentStatus) => {
+  const statusOrder = {
+    Processing: 1,
+    Dispatched: 2,
+    "In Transit": 3,
+    Delivered: 4,
+    Received: 5,
+    "Return Logged": 6,
+    "Return Approved": 8,
+    "Return Declined": 7,
+    "Return Dispatched": 9,
+    "Return Delivered": 10,
+    "Return Received": 11,
+    Refunded: 12,
+    "Payment to Seller Initiated": 13,
+  };
+
+  const statusOrderValue = statusOrder[status] || 0;
+  const currentStatusValue = statusOrder[currentStatus] || 0;
+
+  return statusOrderValue < currentStatusValue ? false : true;
+};
+
+import Order from "./models/Order";
+
+export const setTimer = async (orderId, productId, days, message) => {
+  // Access the global 'io' object to emit the event
+  const socketIO = global.io;
+
+  const order = await Order.findById(orderId);
+  const orderItemIndex = order.orderItems.findIndex((x) =>
+    x._id.equals(productId)
+  );
+
+  const orderItem = order.orderItems[orderItemIndex];
+
+  // Clear the existing timer if it exists
+  if (orderItem.timeoutId) {
+    clearTimeout(orderItem.timeoutId);
+    orderItem.timeoutId = null;
+  }
+
+  // Schedule a new timer
+  const milliseconds = days * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+  orderItem.timeoutId = setTimeout(() => {
+    console.log(message);
+
+    // Implement your notification logic here
+    // For example, send an email to the seller or perform any desired action
+    socketIO.emit("post_data", {
+      userId: orderItem.seller,
+      itemId: orderId,
+      notifyType: "remindOrder",
+      msg: message,
+      link: `/order/${orderId}`,
+      userImage: userInfo.image,
+      mobile: { path: "OrderScreen", id: orderId },
+    });
+
+    // Clear the timer after the specified days
+    orderItem.timeoutId = null;
+    order.save();
+  }, milliseconds);
+
+  // Update the order in the database with the new timeout ID
+  await order.save();
 };

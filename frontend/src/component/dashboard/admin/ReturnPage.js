@@ -690,7 +690,11 @@ export default function ReturnPage() {
 
                           <Select
                             onChange={(e) => {
-                              if (e.target.value === "Return Dispatched") {
+                              if (
+                                e.target.value === "Return Dispatched" &&
+                                returned.sending["delivery Option"] !==
+                                  "Pick up from Seller"
+                              ) {
                                 setEnterwaybil(true);
                               } else {
                                 deliverOrderHandler(

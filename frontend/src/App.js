@@ -130,12 +130,8 @@ const BuyersPro = lazy(() => import("./component/info/BuyersPro"));
 const SellScreen = lazy(() => import("./screens/SellScreen"));
 
 const SigninScreen = lazy(() => import("./screens/SigninScreen"));
-const SigninToAddressScreen = lazy(() =>
-  import("./screens/SigninToAddressScreen")
-);
+
 const SignupScreen = lazy(() => import("./screens/SignupScreen"));
-const InfoScreen = lazy(() => import("./screens/InfoScreen"));
-const InfoScreenNonLogin = lazy(() => import("./screens/InfoScreenNonlogin"));
 const CreateOutfitScreen = lazy(() => import("./screens/CreateOutfitScreen"));
 
 const CreateOutfitPicScreen = lazy(() =>
@@ -472,19 +468,10 @@ function App() {
                         path="/resetpassword/:token"
                         element={<ResetScreen />}
                       />
-                      <Route
-                        path="/continuesignin"
-                        element={<SigninToAddressScreen />}
-                      />
                       <Route path="/signup" element={<SignupScreen />} />
-                      <Route path="/delivery" element={<InfoScreen />} />
                       <Route
                         path="/brandpage/:id"
                         element={<BrandScreenPage />}
-                      />
-                      <Route
-                        path="/delivery2"
-                        element={<InfoScreenNonLogin />}
                       />
                       <Route path="/outfits" element={<CreateOutfitScreen />} />
                       <Route
