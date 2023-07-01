@@ -525,8 +525,8 @@ orderRouter.put(
         return res.status(403).send({ message: "Access denied" });
       }
 
-      const orderItemIndex = order.orderItems.findIndex((x) =>
-        x._id.equals(productId)
+      const orderItemIndex = order.orderItems.findIndex(
+        (x) => String(x._id) === String(productId)
       );
       if (orderItemIndex === -1) {
         return res.status(404).send({ message: "Order item not found" });
