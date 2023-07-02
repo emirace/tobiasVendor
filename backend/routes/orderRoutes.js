@@ -533,9 +533,9 @@ orderRouter.put(
       }
 
       const orderItem = order.orderItems[orderItemIndex];
-
-      if (checkStatus(deliveryStatus, orderItem.deliveryStatus)) {
-        throw new Error(`You cannot ${deliveryStatus} again`);
+      console.log(deliveryStatus, orderItem.deliveryStatus);
+      if (!checkStatus(deliveryStatus, orderItem.deliveryStatus)) {
+        throw new Error(`Status cannot be ${deliveryStatus} again`);
       }
 
       orderItem.deliveryStatus = deliveryStatus;

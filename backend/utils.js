@@ -453,6 +453,7 @@ export const payShippingFee = async (order) => {
 
 export const checkStatus = (status, currentStatus) => {
   const statusOrder = {
+    Pending: 0,
     Processing: 1,
     Dispatched: 2,
     "In Transit": 3,
@@ -470,7 +471,7 @@ export const checkStatus = (status, currentStatus) => {
 
   const statusOrderValue = statusOrder[status] || 0;
   const currentStatusValue = statusOrder[currentStatus] || 0;
-
+  console.log(statusOrderValue < currentStatusValue);
   return statusOrderValue < currentStatusValue ? false : true;
 };
 
