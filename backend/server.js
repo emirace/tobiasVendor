@@ -41,6 +41,8 @@ import expoPushTokenRouter from "./routes/expoPushTokenRoutes.js";
 import gigRouter from "./routes/gigRoutes.js";
 import otherBrandRouter from "./routes/otherBrandRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
+import Product from "./models/productModel.js";
+import fs from "fs";
 
 dotenv.config();
 
@@ -126,6 +128,34 @@ app.use("/api/reviews", reviewRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../frontend/build")));
+app.get("/product/:slug", async (req, res) => {
+  const slug = req.params.slug;
+
+  try {
+    const product = await Product.findOne({ slug });
+
+    if (!product) {
+      return res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+    }
+
+    const filePath = path.join(__dirname, "../frontend/build/index.html");
+    let htmlData = await fs.promises.readFile(filePath, "utf8");
+
+    // Append meta tags to the existing header
+    const metaTags = `
+      <meta name="og:title" content="${product.name}" />
+      <meta name="og:description" content="${product.description}" />
+      <meta name="og:image" content="${product.image}" />
+    `;
+    const modifiedHtmlData = htmlData.replace("</head>", `${metaTags}</head>`);
+
+    return res.send(modifiedHtmlData);
+  } catch (error) {
+    console.error("Error during file reading or database query:", error);
+    return res.status(500).end();
+  }
+});
+
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "../frontend/build/index.html"))
 );
@@ -144,6 +174,9 @@ const io = new Server(httpServer, {
 });
 
 let users = [];
+
+// Make the 'io' object available globally
+global.io = io;
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);

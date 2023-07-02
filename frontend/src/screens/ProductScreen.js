@@ -45,7 +45,6 @@ import {
 import "../style/ProductScreen.css";
 import styled from "styled-components";
 import IconsTooltips from "../component/IconsTooltips";
-import ShareButton from "../component/ShareButton";
 import ReviewLists from "./ReviewLists";
 import Model from "../component/Model";
 import ModelLogin from "../component/ModelLogin";
@@ -61,6 +60,7 @@ import MagnifyImage from "../component/MagnifyImage";
 import RebundlePoster from "../component/RebundlePoster";
 import RebundleLabel from "../component/RebundleLabel";
 import CustomCarousel from "../component/CustomCarousel";
+import ShareModal from "../component/ShareButton";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -1111,16 +1111,6 @@ export default function ProductScreen() {
     <div>
       <Helmet>
         <title>{product.name}</title>
-        <meta property="og:title" content={product.name} />
-        <meta
-          property="og:description"
-          content="Check out what i found on Repeddle"
-        />
-        <meta property="og:image" content={product.image} />
-        <meta
-          property="og:url"
-          content={`${window.location.href}/product/${product._id}`}
-        />
       </Helmet>
       <RebundleLabel
         userId={product.seller._id}
@@ -1358,7 +1348,7 @@ export default function ProductScreen() {
               />
               <IconsTooltips tips="Message Seller " />
             </IconContainer>
-            <IconContainer>
+            {/* <IconContainer>
               <FontAwesomeIcon
                 onClick={() => {
                   setShare(!share);
@@ -1366,17 +1356,13 @@ export default function ProductScreen() {
                 icon={faShareNodes}
               />
               <IconsTooltips className="tiptools" tips="Share " />
-            </IconContainer>
-            <span
-              onClick={() => setShare(!share)}
-              className={share ? "active2" : ""}
-            >
-              <ShareButton
-                url={window.location.href}
-                product={product}
-                dispatch={dispatch}
-              />
-            </span>
+            </IconContainer> */}
+
+            <ShareModal
+              url={window.location.href}
+              product={product}
+              dispatch={dispatch}
+            />
           </div>
           <div style={{ display: "flex" }}>
             <div style={{ marginRight: "50px" }}>

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { createContext, useReducer } from "react";
 import secureLocalStorage from "react-secure-storage";
 
@@ -17,9 +16,6 @@ const initialState = {
     cartItems: [],
     paymentMethod: localStorage.getItem("paymentMethod")
       ? localStorage.getItem("paymentMethod")
-      : "",
-    deliveryMethod: localStorage.getItem("deliveryMethod")
-      ? JSON.parse(localStorage.getItem("deliveryMethod"))
       : "",
     shippingAddress: localStorage.getItem("shippingAddress")
       ? JSON.parse(localStorage.getItem("shippingAddress"))
@@ -90,16 +86,7 @@ function reducer(state, action) {
         userInfo: null,
         cart: {
           cartItems: [],
-          shippingAddress: {},
           paymentMethod: [],
-        },
-      };
-    case "SAVE_SHIPPING_ADDRESS":
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          shippingAddress: action.payload,
         },
       };
     case "SAVE_USER_ADDRESS":
@@ -113,14 +100,6 @@ function reducer(state, action) {
         cart: {
           ...state.cart,
           paymentMethod: action.payload,
-        },
-      };
-    case "SAVE_DELIVERY_METHOD":
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          deliveryMethod: action.payload,
         },
       };
     case "CHANGE_MODE":

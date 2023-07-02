@@ -555,9 +555,9 @@ export default function Return({
                     displayEmpty
                     id="deliveryStatus"
                   >
-                    <MenuItem value="Refund to my original payment method">
+                    {/* <MenuItem value="Refund to my original payment method">
                       Refund to my original payment method
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem value="Credit my Repeddle wallet">
                       Credit my Repeddle wallet
                     </MenuItem>

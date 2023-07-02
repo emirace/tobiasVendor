@@ -638,7 +638,7 @@ export default function NewProduct() {
   const [meta, setMeta] = useState({});
   const [showOtherBrand, setShowOtherBrand] = useState(false);
 
-  const [addSize, setAddSize] = useState(false);
+  const [addSize, setAddSize] = useState(sizes.length < 1);
   const [countInStock, setCountInStock] = useState(1);
 
   const navigate = useNavigate();
@@ -661,24 +661,15 @@ export default function NewProduct() {
         try {
           const { data } = await axios.get(`/api/products/slug/${productId}`);
           console.log(data);
-          setInput(data);
-          // setName(data.name);
-          // setProduct(data.product);
-          // setCategory(data.category);
-          // setSubCategory(data.subCategory);
-          // setMaterial(data.material);
-          // setBrand(data.brand);
-          // setColor(data.color);
-          // setLocation(data.shippingLocation);
-          // setDescription(data.description);
-          // setSpecification(data.specification);
-          // setFeature(data.keyFeatures);
-          // setImage1(data.image);
-          // setImage2(data.images[0]);
-          // setImage3(data.images[1]);
-          // setImage4(data.images[2]);
-          // setPrice(data.actualPrice);
-          // setDiscount(data.discount);
+          setInput((prev) => ({
+            ...data,
+            image1: data.image,
+            image2: data.images[0],
+            image3: data.images[1],
+            image4: data.images[2],
+            discount: data.actualPrice,
+          }));
+          setDeliveryOption(data.deliveryOption);
           sizes = data.sizes;
           tags = data.tags;
         } catch (err) {
@@ -687,7 +678,7 @@ export default function NewProduct() {
       }
     };
     fetchProduct();
-  }, []);
+  }, [productId]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -1113,7 +1104,7 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={input.product}
+                  renderValue={() => input.product}
                   onChange={(e) => handleOnChange(e.target.value, 'product')}
                   displayEmpty
                   inputProps={{
@@ -1164,7 +1155,7 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={input.category}
+                      renderValue={() => input.category}
                       onChange={(e) =>
                         handleOnChange(e.target.value, 'category')
                       }
@@ -1221,7 +1212,7 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={input.subCategory}
+                      renderValue={() => input.subCategory}
                       onChange={(e) =>
                         handleOnChange(e.target.value, 'subCategory')
                       }
@@ -1298,7 +1289,7 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={input.condition}
+                  renderValue={() => input.condition}
                   onChange={(e) => handleOnChange(e.target.value, 'condition')}
                   displayEmpty
                 >
@@ -1360,7 +1351,7 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={input.material}
+                  renderValue={() => input.material}
                   onChange={(e) => handleOnChange(e.target.value, 'material')}
                   displayEmpty
                 >
@@ -1496,7 +1487,7 @@ export default function NewProduct() {
                 size="small"
               >
                 <Select
-                  value={input.color}
+                  renderValue={() => input.color}
                   onChange={(e) => handleOnChange(e.target.value, 'color')}
                   displayEmpty
                 >
@@ -1652,7 +1643,7 @@ export default function NewProduct() {
                     size="small"
                   >
                     <Select
-                      value={input.location}
+                      renderValue={() => input.location}
                       onChange={(e) =>
                         handleOnChange(e.target.value, 'location')
                       }
@@ -2111,7 +2102,7 @@ export default function NewProduct() {
                   size="small"
                 >
                   <Select
-                    value={input.feature}
+                    renderValue={() => input.feature}
                     onChange={(e) => handleOnChange(e.target.value, 'feature')}
                     displayEmpty
                   >

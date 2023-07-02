@@ -347,7 +347,6 @@ export default function CartScreen() {
               or price. We only reserve the stock for your order once payment is
               received.
             </div>
-            {console.log(cart)}
             <Top mode={mode}>
               {cart.cartItems.length === 0 ? (
                 <MessageBox>
@@ -517,27 +516,7 @@ export default function CartScreen() {
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
-            <Summary>
-              {/* <div>
-              <h4 style={{ marginTop: "30px" }}>
-                Subtotal ({cart.cartItems.reduce((a, c) => a + c.quantity, 0)}{" "}
-                items) : {currency}
-                {cart.cartItems.reduce((a, c) => a + c.price * c.quantity, 0)}
-              </h4>
-            </div> */}
-              {/* <div>
-              <div className="d-grid" style={{ marginTop: "30px" }}>
-                <button
-                  type="button"
-                  className="search-btn1"
-                  onClick={checkoutHandler}
-                  variant="primary"
-                >
-                  Proceed to Checkout
-                </button>
-              </div>
-            </div> */}
-            </Summary>
+            <Summary></Summary>
           </RightCorner>
         </CartCont>
       </Container>

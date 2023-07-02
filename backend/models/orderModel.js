@@ -1,11 +1,21 @@
 import mongoose from "mongoose";
 
+// const orderItemSchema = new mongoose.Schema({
+//   productId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+//   quantity: { type: Number, required: true },
+//   selectSize: { type: String },
+//   deliverySelect: {
+//     'delivery Option': { type: String, required: true },
+//     cost: { type: Number, required: true },
+//     total: { type: Number, required: true },
+//   },
+// });
 const orderSchema = new mongoose.Schema(
   {
     orderItems: [{}],
     deliveryMethod: Object,
     paymentMethod: { type: String, required: true },
-    paymentReslt: {
+    paymentResult: {
       id: String,
       status: String,
       update_time: String,
@@ -23,7 +33,7 @@ const orderSchema = new mongoose.Schema(
     status: { type: String },
     reason: { type: String },
     deliveredAt: { type: Date },
-    orderId: { type: String },
+    // orderId: { type: String },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
   },
   {

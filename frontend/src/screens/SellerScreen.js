@@ -639,7 +639,9 @@ export default function SellerScreen() {
                     <FontAwesomeIcon icon={faTag} /> Sold
                   </div>
                   <div className="seller_single_right">
-                    {user.sold && user.sold.length}
+                    {user.sold && user.sold.length < 5
+                      ? "< 5"
+                      : user?.sold?.length}
                   </div>
                 </div>
 

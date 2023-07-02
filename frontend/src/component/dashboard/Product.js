@@ -550,6 +550,45 @@ const TagItem = styled.div`
   }
 `;
 
+const Switch = styled.input.attrs({
+  type: 'checkbox',
+  id: 'darkmodeSwitch',
+  role: 'switch',
+})`
+  position: relative;
+
+  width: 40px;
+  height: 15px;
+  -webkit-appearance: none;
+  background: #d4d4d4;
+  border-radius: 20px;
+  outline: none;
+  transition: 0.5s;
+  @media (max-width: 992px) {
+  }
+
+  &:checked {
+    background: ${(props) =>
+      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : '#fcf0e0'};
+    &:before {
+      left: 25px;
+      background: var(--orange-color);
+    }
+  }
+  &:before {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    background: grey;
+    transition: 0.5s;
+  }
+`;
+
 const TagCont = styled.div``;
 
 const reducer = (state, action) => {
@@ -1677,12 +1716,19 @@ export default function Product() {
                 </div>
               )}
             </Item>
-            <div>
-              <label style={{ marginRight: '10px', marginTop: '20px' }}>
+            <div
+              style={{
+                display: 'flex',
+                marginTop: '20px',
+                marginBottom: '10px',
+                alignItems: 'center',
+              }}
+            >
+              <label style={{ marginRight: '10px' }}>
                 Item do not require size
               </label>
-              <Checkbox
-                type="checkbox"
+              <Switch
+                mode={mode}
                 checked={addSize}
                 onChange={(e) => setAddSize(e.target.checked)}
               />

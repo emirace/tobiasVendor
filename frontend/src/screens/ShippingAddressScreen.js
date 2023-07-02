@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import { useNavigate } from 'react-router-dom';
-import { Store } from '../Store';
-import CheckoutSteps from '../component/CheckoutSteps';
-import SelectOPtion from '../component/SelectOPtion';
+import React, { useContext, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import InputGroup from "react-bootstrap/InputGroup";
+import { useNavigate } from "react-router-dom";
+import { Store } from "../Store";
+import CheckoutSteps from "../component/CheckoutSteps";
+import SelectOPtion from "../component/SelectOPtion";
 
 export default function ShippingAddressScreen() {
   const navigate = useNavigate();
@@ -19,19 +19,19 @@ export default function ShippingAddressScreen() {
     useraddress,
     cart: { shippingAddress },
   } = state;
-  const [validated, setValidated] = useState('');
-  const [firstname, setFirstname] = useState(shippingAddress.fullName || '');
-  const [lastname, setLastname] = useState(shippingAddress.fullName || '');
-  const [email, setEmail] = useState(shippingAddress.email || '');
-  const [address, setAddress] = useState(shippingAddress.address || '');
-  const [city, setCity] = useState(shippingAddress.city || '');
-  const [code, setCode] = useState(shippingAddress.code || '');
-  const [phone, setPhone] = useState(shippingAddress.code || '');
-  const [state1, setState1] = useState(shippingAddress.state1 || '');
+  const [validated, setValidated] = useState("");
+  const [firstname, setFirstname] = useState(shippingAddress.fullName || "");
+  const [lastname, setLastname] = useState(shippingAddress.fullName || "");
+  const [email, setEmail] = useState(shippingAddress.email || "");
+  const [address, setAddress] = useState(shippingAddress.address || "");
+  const [city, setCity] = useState(shippingAddress.city || "");
+  const [code, setCode] = useState(shippingAddress.code || "");
+  const [phone, setPhone] = useState(shippingAddress.code || "");
+  const [state1, setState1] = useState(shippingAddress.state1 || "");
   const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || ''
+    shippingAddress.postalCode || ""
   );
-  const [country, setCountry] = useState(shippingAddress.country || '');
+  const [country, setCountry] = useState(shippingAddress.country || "");
 
   const [confirmAddress, setConfirmAdress] = useState(false);
   useEffect(() => {});
@@ -47,7 +47,7 @@ export default function ShippingAddressScreen() {
           const useraddress1 = useraddress;
           return useraddress1;
         } else {
-          const fullName = firstname + ' ' + lastname;
+          const fullName = firstname + " " + lastname;
           const useraddress1 = {
             fullName,
             email,
@@ -62,10 +62,9 @@ export default function ShippingAddressScreen() {
           return useraddress1;
         }
       };
-      ctxDispatch({ type: 'SAVE_SHIPPING_ADDRESS', payload: data() });
-      localStorage.setItem('useraddress', JSON.stringify(data()));
-      localStorage.setItem('shippingAddress', JSON.stringify(data()));
-      navigate('/payment');
+      localStorage.setItem("useraddress", JSON.stringify(data()));
+      localStorage.setItem("shippingAddress", JSON.stringify(data()));
+      navigate("/payment");
     }
 
     setValidated(true);
@@ -109,7 +108,7 @@ export default function ShippingAddressScreen() {
                     onChange={(e) => setFirstname(e.target.value)}
                     type="text"
                     defaultValue={firstname}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="First name"
                   />
                   <Form.Control.Feedback type="invalid">
@@ -123,7 +122,7 @@ export default function ShippingAddressScreen() {
                     onChange={(e) => setLastname(e.target.value)}
                     type="text"
                     defaultValue={lastname}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="First name"
                   />
                   <Form.Control.Feedback type="invalid">
@@ -137,7 +136,7 @@ export default function ShippingAddressScreen() {
                   <Form.Control
                     type="email"
                     defaultValue={email}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter email"
                     required
@@ -154,13 +153,13 @@ export default function ShippingAddressScreen() {
                       id="input-group-dropdown-1"
                     >
                       <option
-                        selected={code === '+27' ? true : false}
+                        selected={code === "+27" ? true : false}
                         value="+27"
                       >
                         +27
                       </option>
                       <option
-                        selected={code === '+234' ? true : false}
+                        selected={code === "+234" ? true : false}
                         value="+234"
                       >
                         +234
@@ -171,7 +170,7 @@ export default function ShippingAddressScreen() {
                       type="tel"
                       defaultValue={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className={mode === 'pagebodylight' ? 'lightform' : ''}
+                      className={mode === "pagebodylight" ? "lightform" : ""}
                       placeholder="Enter phone number"
                     />
                     <Form.Control.Feedback type="invalid">
@@ -186,7 +185,7 @@ export default function ShippingAddressScreen() {
                   required
                   defaultValue={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className={mode === 'pagebodylight' ? 'lightform' : ''}
+                  className={mode === "pagebodylight" ? "lightform" : ""}
                   type="text"
                   placeholder="Address"
                 />
@@ -201,7 +200,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     defaultValue={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="City"
                     required
                   />
@@ -215,7 +214,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     defaultValue={state1}
                     onChange={(e) => setState1(e.target.value)}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="State"
                     required
                   />
@@ -229,7 +228,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     defaultValue={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="Country"
                     required
                   />
@@ -243,7 +242,7 @@ export default function ShippingAddressScreen() {
                     type="text"
                     defaultValue={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
-                    className={mode === 'pagebodylight' ? 'lightform' : ''}
+                    className={mode === "pagebodylight" ? "lightform" : ""}
                     placeholder="Postal code"
                     required
                   />
