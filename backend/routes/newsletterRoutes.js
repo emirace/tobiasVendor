@@ -15,6 +15,11 @@ const emailLists = [
     subject: 'Hacks on How to Make Your First Repeddle Sale!',
     template: 'hack',
   },
+  {
+    name: 'Pricing Your Listing',
+    subject: 'PRICING YOUR LISTING',
+    template: 'pricing',
+  },
 ];
 
 // get all newsletters
