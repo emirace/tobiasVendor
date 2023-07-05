@@ -20,6 +20,11 @@ const emailLists = [
     subject: 'PRICING YOUR LISTING',
     template: 'pricing',
   },
+  {
+    name: 'Let Our Community',
+    subject: 'Let Our Community Get To Know You!',
+    template: 'community',
+  },
 ];
 
 // get all newsletters
@@ -90,6 +95,34 @@ newsletterRouter.post(
               url: existUser.region === 'NGN' ? 'com' : 'co.za',
               user: existUser.username,
               time: moment(existUser.createdAt).fromNow(true),
+            },
+          });
+        }
+      } else if (emailName === 'Let Our Community') {
+        const existUsers = await User.find({ email: { $in: emails } });
+
+        const bulkEmailOperations = existUsers.map((existUser) => {
+          const email = existUser.email;
+          return {
+            updateOne: {
+              filter: { email: email },
+              update: {
+                $push: { sent: { emailName: emailName } },
+              },
+            },
+          };
+        });
+
+        await Newsletters.bulkWrite(bulkEmailOperations);
+
+        for (const existUser of existUsers) {
+          sendEmail({
+            to: existUser.email,
+            subject: emailType.subject,
+            template: emailType.template,
+            context: {
+              url: existUser.region === 'NGN' ? 'com' : 'co.za',
+              username: existUser.username,
             },
           });
         }
