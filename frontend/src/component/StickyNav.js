@@ -16,6 +16,8 @@ import styled from "styled-components";
 import { ReactComponent as Search } from "./../icons/search.svg";
 
 export const Badge = styled.span`
+  // min-width: 12px;
+  // min-height: 12px;
   width: 12px;
   height: 12px;
   display: flex;

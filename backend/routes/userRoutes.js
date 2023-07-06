@@ -204,11 +204,18 @@ userRouter.post(
 
       const user = await newUser.save();
 
-      const newsletter = new Newsletters({
-        email: user.email,
-        emailType: "Newsletter",
-        url,
-      });
+      let newsletter = await Newsletters.findOne({ email: user.email });
+
+      if (newsletter) {
+        newsletter.isDeleted = false;
+        newsletter.url = url;
+      } else {
+        newsletter = new Newsletters({
+          email: user.email,
+          emailType: "Newsletter",
+          url,
+        });
+      }
       await newsletter.save();
 
       sendEmail({
@@ -498,11 +505,19 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-    const newsletter = new Newsletters({
-      email: result.email,
-      emailType: "Newsletter",
-      url,
-    });
+
+    let newsletter = await Newsletters.findOne({ email: result.email });
+
+    if (newsletter) {
+      newsletter.isDeleted = false;
+      newsletter.url = url;
+    } else {
+      newsletter = new Newsletters({
+        email: result.email,
+        emailType: "Newsletter",
+        url,
+      });
+    }
     await newsletter.save();
     res.status(200).send(data);
   })
@@ -571,11 +586,19 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-    const newsletter = new Newsletters({
-      email: result.email,
-      emailType: "Newsletter",
-      url,
-    });
+
+    let newsletter = await Newsletters.findOne({ email: user.email });
+
+    if (newsletter) {
+      newsletter.isDeleted = false;
+      newsletter.url = url;
+    } else {
+      newsletter = new Newsletters({
+        email: user.email,
+        emailType: "Newsletter",
+        url,
+      });
+    }
     await newsletter.save();
     res.status(200).send(data);
   })
@@ -646,12 +669,21 @@ userRouter.post(
       accountNumber: result.accountNumber,
       accountName: result.accountName,
     };
-    const newsletter = new Newsletters({
-      email: result.email,
-      emailType: "Newsletter",
-      url,
-    });
+
+    let newsletter = await Newsletters.findOne({ email: user.email });
+
+    if (newsletter) {
+      newsletter.isDeleted = false;
+      newsletter.url = url;
+    } else {
+      newsletter = new Newsletters({
+        email: user.email,
+        emailType: "Newsletter",
+        url,
+      });
+    }
     await newsletter.save();
+
     res.status(200).send(data1);
   })
 );

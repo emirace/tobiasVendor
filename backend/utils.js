@@ -129,9 +129,9 @@ export const sendEmail = async (options) => {
 
   try {
     await transporter.sendMail(mailOption);
-    console.log("Email sent successfully");
+    console.log("Email sent successfully", options.to);
   } catch (error) {
-    console.error("Failed to send email:", error);
+    console.error("Failed to send email:", options.to, error);
   }
 };
 
@@ -477,6 +477,7 @@ export const checkStatus = (status, currentStatus) => {
 };
 
 export const setTimer = async (
+  io,
   receiver,
   orderId,
   productId,
@@ -485,8 +486,6 @@ export const setTimer = async (
   adminMessage,
   returnId
 ) => {
-  const socketIO = global.io;
-
   try {
     const order = await Order.findById(orderId);
     const orderItemIndex = order.orderItems.findIndex(
@@ -506,10 +505,13 @@ export const setTimer = async (
     }
 
     // Convert days to milliseconds
-    const milliseconds = days * 24 * 60 * 60 * 1000;
-    const beforeTime = 12 * 60 * 60 * 1000;
+    // const milliseconds = days * 24 * 60 * 60 * 1000;
+    // const beforeTime = 12 * 60 * 60 * 1000;
+    const milliseconds = 3 * 60 * 1000;
+    const beforeTime = 1 * 60 * 1000;
 
     const admins = await User.find({ isAdmin: true });
+
     orderItem.timeoutId = setTimeout(async () => {
       const sellerNotification = new Notification({
         userId: receiver,
@@ -524,58 +526,67 @@ export const setTimer = async (
       });
 
       // Prepare an array of notifications to save
-      // const notificationsToSave = admins.map((admin) => {
-      //   return new Notification({
-      //     userId: receiver,
-      //     itemId: orderId,
-      //     notifyType: "remindOrder",
-      //     msg: message,
-      // link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
-      // userImage: orderItem.image,
-      // mobile: returnId
-      //   ? { path: "ReturnScreen", id: returnId }
-      //   : { path: "OrderScreen", id: orderId },
-      //   });
-      // });
+      const notificationsToSave = admins.map((admin) => {
+        return new Notification({
+          userId: admin._id,
+          itemId: orderId,
+          notifyType: "remindOrder",
+          msg: message,
+          link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
+          userImage: orderItem.image,
+          mobile: returnId
+            ? { path: "ReturnScreen", id: returnId }
+            : { path: "OrderScreen", id: orderId },
+        });
+      });
 
       // Save seller notification and admin notifications in parallel
-      await Promise.all([sellerNotification.save()]);
-      // await Promise.all([sellerNotification.save(), ...notificationsToSave]);
+      const savePromises = [
+        sellerNotification.save(),
+        ...notificationsToSave.map((notification) => notification.save()),
+      ];
+      await Promise.all(savePromises);
 
       // Emit Socket.IO event for real-time data update
-      socketIO.sockets.emit("change_data");
+      io.emit("change_data");
 
       // Clear the timer after the specified days
       orderItem.timeoutId = null;
-      console.log("timer excuted");
-    }, 30000);
-    // }, milliseconds - beforeTime);
+      console.log("first timer excuted");
+    }, milliseconds - beforeTime);
 
-    // orderItem.adminTimeoutId = setTimeout(async () => {
-    //   // Prepare an array of notifications to save
-    //   const notificationsToSave = admins.map((admin) => {
-    //     return new Notification({
-    //       userId: admin._id,
-    //       itemId: orderId,
-    //       notifyType: "remindOrder",
-    //       msg: adminMessage,
-    // link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
-    //     userImage: orderItem.image,
-    //     mobile: returnId
-    //       ? { path: "ReturnScreen", id: returnId }
-    //       : { path: "OrderScreen", id: orderId },
-    //     });
-    //   });
-    //   notificationsToSave.save();
+    orderItem.adminTimeoutId = setTimeout(async () => {
+      // Prepare an array of notifications to save
+      const notificationsToSave = admins.map((admin) => {
+        return new Notification({
+          userId: admin._id,
+          itemId: orderId,
+          notifyType: "remindOrder",
+          msg: adminMessage,
+          link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
+          userImage: orderItem.image,
+          mobile: returnId
+            ? { path: "ReturnScreen", id: returnId }
+            : { path: "OrderScreen", id: orderId },
+        });
+      });
+      const savePromises = notificationsToSave.map((notification) =>
+        notification.save()
+      );
+      await Promise.all(savePromises);
 
-    //   // Emit Socket.IO event for real-time data update
-    //   socketIO.sockets.emit("change_data");
+      // Emit Socket.IO event for real-time data update
+      io.emit("change_data");
 
-    //   // Clear the timer after the specified days
-    //   orderItem.adminTimeoutId = null;
-    // }, milliseconds);
+      // Clear the timer after the specified days
+      orderItem.adminTimeoutId = null;
+      console.log("second timer excuted");
+    }, milliseconds);
 
-    // Update the order in the database with the new timeout ID
+    // console.log(orderItem);
+    // console.log("ended timer", orderItem.timeoutId, orderItem.adminTimeoutId);
+    // // Update the order in the database with the new timeout ID
+    // order.orderItems[orderItemIndex] = orderItem;
     await order.save();
   } catch (error) {
     // Handle any errors that occur during the process

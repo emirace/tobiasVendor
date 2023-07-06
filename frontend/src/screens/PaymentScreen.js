@@ -268,6 +268,16 @@ export default function PaymentScreen() {
             mobile: { path: "Account", id: "" },
             userImage: userInfo.image,
           })
+        : payment.meta.Type === "Pay Seller"
+        ? socket.emit("post_data", {
+            userId: payment.userId._id,
+            itemId: payment._id,
+            notifyType: "payment",
+            msg: `Order payment settled`,
+            link: `/dashboard/wallet`,
+            mobile: { path: "Account", id: "" },
+            userImage: userInfo.image,
+          })
         : socket.emit("post_data", {
             userId: payment.userId._id,
             itemId: payment._id,
@@ -351,7 +361,7 @@ export default function PaymentScreen() {
           </>
         ) : (
           <>
-            <Button onClick={() => handlePayment()}>Comfirm Payment</Button>
+            <Button onClick={() => handlePayment()}>Confirm Payment</Button>
           </>
         )}
       </SumaryContDetails>

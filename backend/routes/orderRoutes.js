@@ -496,6 +496,7 @@ orderRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
+      const io = req.app.get("io");
       const orderId = req.params.id;
       const productId = req.params.productId;
       const { deliveryStatus, trackingNumber, returnTrackingNumber } = req.body;
@@ -592,6 +593,7 @@ orderRouter.put(
             trackId: orderItem.trackingNumber,
           };
           setTimer(
+            io,
             orderItem.seller._id,
             order._id,
             orderItem._id,
@@ -625,6 +627,7 @@ orderRouter.put(
             orderItems: order.orderItems,
           };
           setTimer(
+            io,
             order.user._id,
             order._id,
             orderItem._id,
@@ -668,6 +671,7 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
           };
           setTimer(
+            io,
             order.user._id,
             order._id,
             orderItem._id,
@@ -691,6 +695,7 @@ orderRouter.put(
             orderItems: [orderItem],
           };
           setTimer(
+            io,
             orderItem.seller._id,
             order._id,
             orderItem._id,
@@ -724,12 +729,14 @@ orderRouter.put(
           break;
 
         case "Refunded":
+          console.log("i am at refunded");
           emailOptions.to = order.user.email;
           emailOptions.subject = "Purchased Order Not Processed";
           emailOptions.template = "refundOrder";
           emailOptions.context = {
             url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
+            user: order.user.username,
           };
           // Clear the existing timer if it exists
           if (orderItem.timeoutId) {
@@ -747,9 +754,9 @@ orderRouter.put(
           break;
       }
 
-      // if (emailOptions.to) {
-      //   await sendEmail(emailOptions);
-      // }
+      if (emailOptions.to) {
+        await sendEmail(emailOptions);
+      }
       console.log(deliveryStatus);
 
       res.send({ message: "Order delivery status changed" });
@@ -1189,6 +1196,7 @@ orderRouter.put(
     const { method } = req.body;
     var response;
     try {
+      const io = req.app.get("io");
       if (method === "wallet") {
         const transaction = await Transaction.find({
           "metadata.transaction_id": transaction_id,
@@ -1236,6 +1244,7 @@ orderRouter.put(
             await seller.save();
             await p.save();
             setTimer(
+              io,
               p.seller,
               order._id,
               p._id,
@@ -1261,7 +1270,7 @@ orderRouter.put(
               const selectedCount =
                 product.deliverySelect["delivery Option"] ===
                 exist.deliveryMethod
-                  ? 1 * c.quantity
+                  ? 1 * p.quantity
                   : 0;
               const count = exist.count - selectedCount;
               const countAllow = count > 0 ? count : 0;
@@ -1282,39 +1291,39 @@ orderRouter.put(
 
           const answer = await payShippingFee(order);
 
-          sendEmail({
-            to: order.user.email,
-            subject: "PROCESSING YOUR ORDER",
-            template: "processingOrder",
-            context: {
-              username: order.user.username,
-              url: region === "NGN" ? "com" : "co.za",
-              sellers,
-              orderId: order._id,
-              orderItems: order.orderItems,
-              sellerId: order.orderItems[0].seller._id,
-            },
-          });
-          console.log(sellers);
-          sellers.map((seller) => {
-            sendEmail({
-              to: seller.email,
-              subject: "NEW ORDER",
-              template: "processingOrderSeller",
-              context: {
-                username: seller.username,
-                url: region === "NGN" ? "com" : "co.za",
-                buyer: order.user.username,
-                buyerId: order.user._id,
-                orderId: order._id,
-                sellerId: seller._id,
-                orderItems: order.orderItems.filter(
-                  (x) => x.seller._id === seller._id
-                ),
-                sellerId: order.orderItems[0].seller._id,
-              },
-            });
-          });
+          // sendEmail({
+          //   to: order.user.email,
+          //   subject: "PROCESSING YOUR ORDER",
+          //   template: "processingOrder",
+          //   context: {
+          //     username: order.user.username,
+          //     url: region === "NGN" ? "com" : "co.za",
+          //     sellers,
+          //     orderId: order._id,
+          //     orderItems: order.orderItems,
+          //     sellerId: order.orderItems[0].seller._id,
+          //   },
+          // });
+          // console.log(sellers);
+          // sellers.map((seller) => {
+          //   sendEmail({
+          //     to: seller.email,
+          //     subject: "NEW ORDER",
+          //     template: "processingOrderSeller",
+          //     context: {
+          //       username: seller.username,
+          //       url: region === "NGN" ? "com" : "co.za",
+          //       buyer: order.user.username,
+          //       buyerId: order.user._id,
+          //       orderId: order._id,
+          //       sellerId: seller._id,
+          //       orderItems: order.orderItems.filter(
+          //         (x) => x.seller._id === seller._id
+          //       ),
+          //       sellerId: order.orderItems[0].seller._id,
+          //     },
+          //   });
+          // });
           res.send({ message: "Order Paid", order: updateOrder });
         } else {
           res.status(404).send({ message: "Order Not Found" });

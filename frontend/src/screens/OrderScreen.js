@@ -603,7 +603,12 @@ export default function OrderScreen() {
         ctxDispatch({
           type: "SHOW_TOAST",
           payload: {
-            message: "Delivery status updated",
+            message:
+              deliveryStatus === "Refunded"
+                ? "Order payment refunded"
+                : deliveryStatus === "Payment to Seller Initiated"
+                ? "Payment to Seller Initiated"
+                : "Delivery status updated",
             showStatus: true,
             state1: "visible1 success",
           },
@@ -705,7 +710,7 @@ export default function OrderScreen() {
       notifyType: "refund",
       msg: `Purchased Order Not Processed`,
       link: `/order/${order._id}`,
-      userImage: "/images/pimage.png",
+      userImage: userInfo.image,
       mobile: { path: "OrderScreen", id: order._id },
     });
 
@@ -715,17 +720,17 @@ export default function OrderScreen() {
       notifyType: "refund",
       msg: `Purchased Order Refunded`,
       link: `/order/${order._id}`,
-      userImage: "/images/pimage.png",
+      userImage:userInfo.image,
       mobile: { path: "OrderScreen", id: order._id },
     });
 
     socket.emit("post_data", {
-      userId: userInfo._id,
+      userId: "Admin",
       itemId: product._id,
       notifyType: "payment",
-      msg: `Order Refunded`,
+      msg: `Order refund initiated, please confirm`,
       link: `/payment/${paymentData._id}`,
-      userImage: "/images/pimage.png",
+      userImage: userInfo.image,
       mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
@@ -757,7 +762,16 @@ export default function OrderScreen() {
       notifyType: "payment",
       msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
-      userImage: "/images/pimage.png",
+      userImage:userInfo.image,
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+    });
+    socket.emit("post_data", {
+      userId: product.seller._id,
+      itemId: product._id,
+      notifyType: "payseller",
+      msg: `Order Payment Initiated`,
+      link: `/order/${order._id}`,
+      userImage:userInfo.image,
       mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
@@ -1292,6 +1306,20 @@ export default function OrderScreen() {
                   <button className="btn btn-primary w-100">
                     <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                   </button>
+                  {userInfo.isAdmin &&
+                    daydiff(orderitem.deliveredAt, 3) <= 0 &&
+                    deliveryNumber(orderitem.deliveryStatus) < 4 && (
+                      <button
+                        onClick={() => refund(orderitem)}
+                        className="btn btn-primary w-100"
+                        style={{
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Refund
+                      </button>
+                    )}
                   {userInfo.isAdmin && (
                     <button
                       onClick={() => toggleOrderHoldStatus(orderitem._id)}
@@ -1304,6 +1332,26 @@ export default function OrderScreen() {
                       {orderitem.onHold ? "UnHold" : "Hold"}
                     </button>
                   )}
+                  {userInfo.isAdmin &&
+                    daydiff(orderitem.deliveredAt, 3) <= 0 &&
+                    deliveryNumber(orderitem.deliveryStatus) === 4 && (
+                      <button
+                        onClick={() => {
+                          paySeller(orderitem);
+                          deliverOrderHandler(
+                            "Payment To Seller Initiated",
+                            orderitem._id
+                          );
+                        }}
+                        className="btn btn-primary w-100"
+                        style={{
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
+                        }}
+                      >
+                        Pay Seller
+                      </button>
+                    )}
                 </ActionButton>
               </DetailButton>
               {Object.entries(orderitem.deliverySelect).map(([key, value]) =>

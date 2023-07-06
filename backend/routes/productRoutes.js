@@ -413,7 +413,6 @@ productRouter.put(
       const exist = product.shares.filter(
         (x) => x._id.toString() === req.user._id
       );
-      console.log("exist", exist.length, exist === [], [], "[]");
       if (exist.length > 0) {
         res.status(500).send({ message: "Already shared product" });
       } else {
@@ -460,6 +459,39 @@ productRouter.put(
       }
     } else {
       res.status(404).send({ message: "Product Not Found" });
+    }
+  })
+);
+
+productRouter.put(
+  "/:id/viewcount",
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const productId = req.params.id;
+      const hashed = req.body.hashed;
+      const product = await Product.findById(productId)
+        .populate(
+          "seller",
+          "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+        )
+        .populate("reviews.name", "username image");
+      if (!product) {
+        return res.status(404).send({ message: "Product Not Found" });
+      }
+      const exist = product.viewcount.filter((x) => x?._id === hashed);
+      if (exist.length > 0) {
+        res.status(500).send({ message: "Already viewed product" });
+      } else {
+        product.viewcount.push(hashed);
+        const updatedProduct = await product.save();
+        res.status(200).send({
+          message: "Product Shared",
+          product: updatedProduct,
+        });
+      }
+    } catch (error) {
+      res.status(500).send({ message: "Internal server error" });
+      console.log(error);
     }
   })
 );

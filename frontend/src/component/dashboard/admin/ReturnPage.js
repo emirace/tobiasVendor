@@ -425,7 +425,7 @@ export default function ReturnPage() {
       userId: returned.orderId.user,
       itemId: product._id,
       notifyType: "refund",
-      msg: `Purchased Order Not Processed`,
+      msg: `Refund for return initiated`,
       link: `/order/${returned.orderId._id}`,
       userImage: "/images/pimage.png",
       mobile: { path: "OrderScreen", id: returned.orderId._id },
@@ -435,7 +435,7 @@ export default function ReturnPage() {
       userId: product.seller._id,
       itemId: product._id,
       notifyType: "refund",
-      msg: `Purchased Order Refunded`,
+      msg: `Purchased return refunded`,
       link: `/order/${returned.orderId._id}`,
       userImage: "/images/pimage.png",
       mobile: { path: "OrderScreen", id: returned.orderId._id },
@@ -445,7 +445,7 @@ export default function ReturnPage() {
       userId: userInfo._id,
       itemId: product._id,
       notifyType: "payment",
-      msg: `Order Refunded`,
+      msg: `Refund for return initiated`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
       mobile: { path: "PaymentScreen", id: paymentData._id },
@@ -474,12 +474,21 @@ export default function ReturnPage() {
       }
     );
     socket.emit("post_data", {
-      userId: userInfo._id,
+      userId: "Admin",
       itemId: product._id,
       notifyType: "payment",
       msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
       userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+    });
+    socket.emit("post_data", {
+      userId: product.seller._id,
+      itemId: product._id,
+      notifyType: "payseller",
+      msg: `Order Payment Initiated`,
+      link: `/order/${returned.orderId._id}`,
+      userImage: userInfo.image,
       mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 

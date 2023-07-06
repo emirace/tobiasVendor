@@ -31,6 +31,7 @@ import {
   faBookmark,
   faCirclePlay,
   faCloud,
+  faEye,
   faFaceSmile,
   faHeart,
   faLightbulb,
@@ -61,6 +62,7 @@ import RebundlePoster from "../component/RebundlePoster";
 import RebundleLabel from "../component/RebundleLabel";
 import CustomCarousel from "../component/CustomCarousel";
 import ShareModal from "../component/ShareButton";
+import { MD5 } from "crypto-js";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -315,6 +317,35 @@ export default function ProductScreen() {
     };
     viewItem();
   }, []);
+
+  useEffect(() => {
+    const retrieveDeviceInfo = () => {
+      if (!product) {
+        return;
+      }
+      const userAgent = navigator.userAgent;
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
+
+      // Concatenate and hash the device information
+      const combinedInfo = userAgent + screenWidth + screenHeight;
+      const hashed = MD5(combinedInfo).toString();
+      console.log("combinedInfo", hashed);
+      axios
+        .put(`/api/products/${product?._id}/viewcount`, { hashed })
+        .then((response) => {
+          console.log(response.data);
+          // dispatch({ type: "FETCH_SUCCESS", payload: response.data.product });
+          // Perform any additional actions after successful response
+        })
+        .catch((error) => {
+          console.log(error);
+          // Handle any errors that occur during the request
+        });
+    };
+
+    retrieveDeviceInfo();
+  }, [product]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -1156,50 +1187,7 @@ export default function ProductScreen() {
             </div>
           )}
         </div>
-        {/* <div className=" d-md-none">
-          <div className=" " style={{ position: 'relative' }}>
-            <OwlCarousel
-              items={1}
-              autoHeight={false}
-              dots={true}
-              autoplayTimeout={10000}
-              autoplaySpeed={3000}
-              autoplay={true}
-              margin={0}
-              autoplayHoverPause={true}
-              className="owl-theme"
-            >
-              {[product.image, ...product.images].map(
-                (image) =>
-                  image && (
-                    <div
-                      key={image}
-                      style={{
-                        width: '100%',
-                        height: '500px',
-                        marginBottom: '20px',
-                      }}
-                    >
-                      <img
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objecFit: 'contain',
-                        }}
-                        src={image}
-                        alt="product"
-                      />
-                    </div>
-                  )
-              )}
-              {product.video && (
-                <video width="100%" controls muted autoplay>
-                  <source src={product.video} type="video/mp4" />
-                </video>
-              )}
-            </OwlCarousel>
-          </div>
-        </div> */}
+
         <div className="d-md-none mb-4">
           <CustomCarousel>
             {[product.image, ...product.images]
@@ -1287,6 +1275,10 @@ export default function ProductScreen() {
                 ? "< 5"
                 : product.seller.sold.length}{" "}
               sold
+              <span>
+                <FontAwesomeIcon icon={faEye} style={{ marginLeft: "10px" }} />
+                {product.viewcount.length}
+              </span>
             </div>
             {isOnlineCon(product.seller._id) ? (
               <div className="single_produc_status">online</div>
@@ -1368,8 +1360,11 @@ export default function ProductScreen() {
             <div style={{ marginRight: "50px" }}>
               <b>{product.likes.length} </b> Likes
             </div>
-            <div>
+            <div style={{ marginRight: "50px" }}>
               <b>{product.shares.length} </b> Shares
+            </div>
+            <div>
+              <b>{product.viewcount.length || 0} </b> Views
             </div>
           </div>
           <div>Listed {format(product.createdAt)}</div>

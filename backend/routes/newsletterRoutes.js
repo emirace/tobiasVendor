@@ -115,7 +115,6 @@ newsletterRouter.post(
         });
 
         await Newsletters.bulkWrite(bulkEmailOperations);
-
         for (const existUser of existUsers) {
           await sendEmail({
             to: existUser.email,

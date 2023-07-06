@@ -176,7 +176,7 @@ const io = new Server(httpServer, {
 let users = [];
 
 // Make the 'io' object available globally
-global.io = io;
+app.set("io", io);
 
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
