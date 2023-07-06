@@ -5,6 +5,7 @@ const returnSchema = new mongoose.Schema(
     orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
     sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    buyerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     reason: { type: String },
     returnId: { type: String, required: true },
     sending: { type: Object, required: true },

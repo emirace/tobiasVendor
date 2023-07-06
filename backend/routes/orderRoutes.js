@@ -533,9 +533,9 @@ orderRouter.put(
       }
 
       const orderItem = order.orderItems[orderItemIndex];
-      console.log(deliveryStatus, orderItem.deliveryStatus);
+
       if (!checkStatus(deliveryStatus, orderItem.deliveryStatus)) {
-        throw new Error(`Status cannot be ${deliveryStatus} again`);
+        throw new Error(`Status cannot be change to ${deliveryStatus} again`);
       }
 
       orderItem.deliveryStatus = deliveryStatus;
@@ -583,10 +583,12 @@ orderRouter.put(
             trackId: orderItem.trackingNumber,
           };
           setTimer(
+            orderItem.seller._id,
             order._id,
             orderItem._id,
             7,
-            "You are running out of time to deliver"
+            "Undelivered Order, 6hrs Left To Mark Order as delivered.",
+            "Order Delivery Unfulfilled, Refund Buyer."
           );
           break;
         case "In Transit":
@@ -613,6 +615,14 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
+          setTimer(
+            order.user._id,
+            order._id,
+            orderItem._id,
+            3,
+            "Unreceived Order, 12hrs Left To Mark Order as received.",
+            "Unreceived Order, Pay Seller."
+          );
           break;
         case "Received":
           emailOptions.to = orderItem.seller.email;
@@ -624,6 +634,16 @@ orderRouter.put(
             orderId: order._id,
             orderItems: order.orderItems,
           };
+          // Clear the existing timer if it exists
+          if (orderItem.timeoutId) {
+            clearTimeout(orderItem.timeoutId);
+            orderItem.timeoutId = null;
+          }
+
+          if (orderItem.adminTimeoutId) {
+            clearTimeout(orderItem.adminTimeoutId);
+            orderItem.adminTimeoutId = null;
+          }
           break;
         case "Return Dispatched":
           const returned = await Return.findOne({
@@ -643,6 +663,15 @@ orderRouter.put(
             trackId: orderItem.returnTrackingNumber,
             returnId: returned ? returned._id : "",
           };
+          setTimer(
+            order.user._id,
+            order._id,
+            orderItem._id,
+            7,
+            "Undelivered Return, 6hrs Left To Mark Return as delivered.",
+            "Return Delivery Unfulfilled, Pay Seller.",
+            returned._id
+          );
           break;
         case "Return Delivered":
           emailOptions.to = orderItem.seller.email;
@@ -657,6 +686,15 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
             orderItems: [orderItem],
           };
+          setTimer(
+            orderItem.seller._id,
+            order._id,
+            orderItem._id,
+            3,
+            "Unreceived Return, 12hrs Left To Mark Return as received.",
+            "Unreceived Return, Refund Buyer.",
+            returned._id
+          );
           break;
         case "Return Received":
           emailOptions.to = order.user.email;
@@ -669,7 +707,38 @@ orderRouter.put(
             orderItems: [orderItem],
             returnId: returned ? returned._id : "",
           };
+          // Clear the existing timer if it exists
+          if (orderItem.timeoutId) {
+            clearTimeout(orderItem.timeoutId);
+            orderItem.timeoutId = null;
+          }
+
+          if (orderItem.adminTimeoutId) {
+            clearTimeout(orderItem.adminTimeoutId);
+            orderItem.adminTimeoutId = null;
+          }
           break;
+
+        case "Refunded":
+          emailOptions.to = order.user.email;
+          emailOptions.subject = "Purchased Order Not Processed";
+          emailOptions.template = "refundOrder";
+          emailOptions.context = {
+            url: orderItem.region === "NGN" ? "com" : "co.za",
+            orderId: order._id,
+          };
+          // Clear the existing timer if it exists
+          if (orderItem.timeoutId) {
+            clearTimeout(orderItem.timeoutId);
+            orderItem.timeoutId = null;
+          }
+
+          if (orderItem.adminTimeoutId) {
+            clearTimeout(orderItem.adminTimeoutId);
+            orderItem.adminTimeoutId = null;
+          }
+          break;
+
         default:
           break;
       }
@@ -677,6 +746,7 @@ orderRouter.put(
       if (emailOptions.to) {
         await sendEmail(emailOptions);
       }
+      console.log(deliveryStatus);
 
       res.send({ message: "Order delivery status changed" });
     } catch (error) {
@@ -1162,10 +1232,12 @@ orderRouter.put(
             await seller.save();
             await p.save();
             setTimer(
+              p.seller,
               order._id,
               p._id,
               3,
-              "You are running out of time to dispatch"
+              "Unattended Order, 12hrs Left For You To Dispatch.",
+              "Order Dispatch Unfulfilled, Refund Buyer."
             );
 
             const exist = await RebundleSeller.findOne({

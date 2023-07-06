@@ -170,7 +170,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function MyReturns() {
+export default function PurchaseReturn() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -189,9 +189,12 @@ export default function MyReturns() {
     const fetchReturns = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
-        const { data } = await axios.get(`/api/returns/user?q=${salesQurrey}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/returns/buyer?q=${salesQurrey}`,
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
         console.log("kell", data);
 
         dispatch({ type: "USERS_SUCCESS", payload: data });

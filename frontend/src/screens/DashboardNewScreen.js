@@ -22,13 +22,14 @@ import Coupon from "../component/dashboard/Coupon";
 import Earning from "../component/dashboard/admin/Earning";
 import AllMessages from "../component/dashboard/admin/AllMessages";
 import AllReturns from "../component/dashboard/AllReturns";
-import MyReturns from "../component/dashboard/MyReturns";
+import SoldReturn from "../component/dashboard/SoldReturn";
 import AllReturnsLogs from "../component/dashboard/AllReturnsLogs";
 import Payments from "../component/dashboard/Payments";
 import TransactionList from "../component/dashboard/TransactionList";
 import NewsletterList from "../component/dashboard/NewsletterList";
 import TransactionListUser from "../component/dashboard/TransactionListUser";
 import OtherBrand from "../component/dashboard/OtherBrand";
+import PurchaseReturn from "../component/dashboard/PurchaseReturn";
 
 const Container = styled.div`
   display: flex;
@@ -80,8 +81,10 @@ export default function DashboardNewScreen() {
         return <AllMessages />;
       case "allreturns":
         return <AllReturns />;
-      case "returns":
-        return <MyReturns />;
+      case "sellerreturns":
+        return <SoldReturn />;
+      case "buyerreturns":
+        return <PurchaseReturn />;
       case "logreturns":
         return <AllReturnsLogs />;
       case "payments":

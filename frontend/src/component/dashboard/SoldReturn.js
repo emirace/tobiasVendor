@@ -18,10 +18,6 @@ const ProductLists = styled.div`
   border-radius: 0.2rem;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
-  @media (max-width: 992px) {
-    margin: 0 10px;
-    margin-bottom: 20px;
-  }
 `;
 const Title = styled.h1`
   padding: 20px 20px 0 20px;
@@ -174,7 +170,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function AllReturnsLogs() {
+export default function SoldReturn() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
@@ -190,11 +186,11 @@ export default function AllReturnsLogs() {
   const [reason, setReason] = useState("");
   const [salesQurrey, setSalesQurrey] = useState("all");
   useEffect(() => {
-    const fetchAllProduct = async () => {
+    const fetchReturns = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/returns/${region()}/admin/query?q=${salesQurrey}`,
+          `/api/returns/seller?q=${salesQurrey}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -203,13 +199,14 @@ export default function AllReturnsLogs() {
 
         dispatch({ type: "USERS_SUCCESS", payload: data });
       } catch (err) {
+        dispatch({ type: "USERS_FAIL" });
         console.log(getError(err));
       }
     };
     if (successDelete) {
       dispatch({ type: "DELETE_RESET" });
     } else {
-      fetchAllProduct();
+      fetchReturns();
     }
   }, [successDelete, userInfo, salesQurrey]);
 
@@ -260,7 +257,6 @@ export default function AllReturnsLogs() {
       console.log(getError(err));
     }
   };
-
   const { height, width } = useWindowDimensions();
 
   const columns =
@@ -269,7 +265,7 @@ export default function AllReturnsLogs() {
           {
             field: "name",
             headerName: "Product",
-            width: 130,
+            width: 110,
             renderCell: (params) => {
               return (
                 <Product>
@@ -284,12 +280,12 @@ export default function AllReturnsLogs() {
           {
             field: "date",
             headerName: "Date",
-            width: 100,
+            width: 90,
           },
           {
             field: "action",
             headerName: "Action",
-            width: 90,
+            width: 80,
             renderCell: (params) => {
               return (
                 <ActionSec>
@@ -327,23 +323,7 @@ export default function AllReturnsLogs() {
             renderCell: (params) => {
               return (
                 <Product>
-                  <Link to={`/seller/${params.row.user}`}>
-                    {params.row.user}
-                  </Link>
-                </Product>
-              );
-            },
-          },
-          {
-            field: "seller",
-            headerName: "Seller",
-            width: 100,
-            renderCell: (params) => {
-              return (
-                <Product>
-                  <Link to={`/seller/${params.row.user}`}>
-                    {params.row.user}
-                  </Link>
+                  <Link to={`/seller/${params.row.id}`}>{params.row.user}</Link>
                 </Product>
               );
             },
@@ -389,7 +369,6 @@ export default function AllReturnsLogs() {
     products.map((p) => ({
       id: p._id,
       name: p.productId.name,
-      seller: p.productId.sellerName,
       image: p.productId.image,
       slug: p.productId.slug,
       date: moment(p.createdAt).format("MMM DD YY, h:mm a"),
@@ -399,7 +378,7 @@ export default function AllReturnsLogs() {
 
   return (
     <ProductLists mode={mode}>
-      <Title>All Logged Returns</Title>
+      <Title>My Returns</Title>
       <SearchCont>
         <SearchInput
           onChange={(e) => setSalesQurrey(e.target.value)}
@@ -480,6 +459,7 @@ export default function AllReturnsLogs() {
         disableSelectionOnClick
         pageSize={10}
         rowsPerPageOptions={[5]}
+        checkboxSelection
       />
     </ProductLists>
   );

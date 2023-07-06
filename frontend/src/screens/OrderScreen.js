@@ -623,7 +623,7 @@ export default function OrderScreen() {
         socket.emit("post_data", {
           userId: order.user,
           itemId: order._id,
-          notifyType: "delivery",
+          notifyType: "buyerreturn",
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
@@ -673,9 +673,8 @@ export default function OrderScreen() {
       userImage: sellerImage,
     });
   };
-  const daydiff = (x) =>
-    order.createdAt &&
-    x - timeDifference(new window.Date(order.createdAt), new window.Date());
+  const daydiff = (start, end) =>
+    start && end - timeDifference(new window.Date(start), new window.Date());
 
   var itemsPrice = 0;
   var shippingPrice = 0;
@@ -700,6 +699,26 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
+    socket.emit("post_data", {
+      userId: order.user,
+      itemId: product._id,
+      notifyType: "refund",
+      msg: `Purchased Order Not Processed`,
+      link: `/order/${order._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: order._id },
+    });
+
+    socket.emit("post_data", {
+      userId: product.seller._id,
+      itemId: product._id,
+      notifyType: "refund",
+      msg: `Purchased Order Refunded`,
+      link: `/order/${order._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: order._id },
+    });
+
     socket.emit("post_data", {
       userId: userInfo._id,
       itemId: product._id,
@@ -795,14 +814,16 @@ export default function OrderScreen() {
         >
           <Heading>Items in your order</Heading>
           {!isSeller &&
-            daydiff(3) > 0 &&
+            daydiff(order.createdAt, 10) <= 0 &&
             deliveryNumber(order.deliveryStatus) > 3 && (
               <div
                 style={{ cursor: "pointer" }}
                 onClick={() => setShowReturn(true)}
               >
                 <b>Log a return</b>
-                <div style={{ color: "red" }}>{daydiff(3)} days left</div>
+                <div style={{ color: "red" }}>
+                  {daydiff(order.createdAt, 13)} days left
+                </div>
               </div>
             )}
           <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
@@ -1025,7 +1046,7 @@ export default function OrderScreen() {
                       <Link to={`/product/${orderitem.slug}`}>Buy Again</Link>
                     </button>
                     {userInfo.isAdmin &&
-                      daydiff(13) <= 0 &&
+                      daydiff(orderitem.deliveredAt, 3) <= 0 &&
                       deliveryNumber(orderitem.deliveryStatus) < 4 && (
                         <button
                           onClick={() => refund(orderitem)}
@@ -1060,7 +1081,7 @@ export default function OrderScreen() {
                       </button>
                     )}
                     {userInfo.isAdmin &&
-                      daydiff(13) <= 0 &&
+                      daydiff(orderitem.deliveredAt, 3) <= 0 &&
                       deliveryNumber(orderitem.deliveryStatus) === 4 && (
                         <button
                           onClick={() => {

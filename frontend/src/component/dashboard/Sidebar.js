@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRotateLeft,
+  faArrowRotateRight,
   faBasketShopping,
   faBell,
   faChartBar,
@@ -74,20 +75,22 @@ export default function Sidebar({ current }) {
   const { state } = useContext(Store);
   const { mode, userInfo, notifications } = state;
 
-  const messageNotification = [];
-  //notifications.filter(
-  //(x) => x.notifyType === "message"
-  //);
-  const purchaseNotification = [];
-  //notifications.filter(
-  //(x) => x.notifyType === "purchase"
-  //);
-  const soldNotification = [];
-  //notifications.filter((x) => x.notifyType === "sold");
-  const productNotification = [];
-  // notifications.filter(
-  // (x) => x.notifyType === "product"
-  //);
+  const messageNotification = notifications.filter(
+    (x) => x.notifyType === "message"
+  );
+  const purchaseNotification = notifications.filter(
+    (x) => x.notifyType === "purchase"
+  );
+  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const sellerReturnNotification = notifications.filter(
+    (x) => x.notifyType === "sellerreturn"
+  );
+  const buyerReturnNotification = notifications.filter(
+    (x) => x.notifyType === "buyerreturn"
+  );
+  const productNotification = notifications.filter(
+    (x) => x.notifyType === "product"
+  );
   return (
     <Container mode={mode}>
       <Wrapper>
@@ -143,15 +146,30 @@ export default function Sidebar({ current }) {
               </ListItem>
             </Link>
 
-            <Link to="/dashboard/returns">
+            <Link to="/dashboard/sellerreturns">
               <ListItem
                 mode={mode}
                 className={current === "returns" ? "active" : ""}
               >
-                <FontAwesomeIcon icon={faArrowRotateLeft} /> Returns
-                {soldNotification.length > 0 && (
+                <FontAwesomeIcon icon={faArrowRotateLeft} />
+                Sold Returns
+                {sellerReturnNotification.length > 0 && (
                   <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
-                    <span>{soldNotification.length}</span>
+                    <span>{sellerReturnNotification.length}</span>
+                  </Badge>
+                )}
+              </ListItem>
+            </Link>
+            <Link to="/dashboard/buyerreturns">
+              <ListItem
+                mode={mode}
+                className={current === "returns" ? "active" : ""}
+              >
+                <FontAwesomeIcon icon={faArrowRotateRight} />
+                Purchase Returns
+                {buyerReturnNotification.length > 0 && (
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
+                    <span>{buyerReturnNotification.length}</span>
                   </Badge>
                 )}
               </ListItem>

@@ -134,6 +134,7 @@ export default function PaymentScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: "GET_SUCCESS", payload: data });
+        window.scrollTo(0, 0);
       } catch (err) {
         dispatch({ type: "GET_FAIL" });
         console.log(err);
@@ -301,7 +302,7 @@ export default function PaymentScreen() {
         <hr />
         <Name>Type</Name>
         <ItemNum>{payment.meta.Type}</ItemNum>
-        <ItemNum>
+        <ItemNum style={{ color: "var(--malon-color)" }}>
           <span style={{ marginRight: "20px" }}>
             {" "}
             {payment.meta.typeName} {payment.meta.id && "id"}

@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { socket } from "../App";
 import { Store } from "../Store";
-import { deliveryNumber, getError, region } from "../utils";
+import { deliveryNumber, getError, region, timeDifference } from "../utils";
 import { resizeImage } from "./ImageUploader";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
@@ -223,7 +223,7 @@ export default function Return({
       socket.emit("post_data", {
         userId: current.seller,
         itemId: current._id,
-        notifyType: "return",
+        notifyType: "sellerreturn",
         msg: `${userInfo.username} requested a return`,
         link: `/return/${data._id}?orderId=${orderId}`,
         userImage: userInfo.image,
@@ -342,37 +342,45 @@ export default function Return({
     }
   };
 
+  const daydiff = (start, end) =>
+    start && end - timeDifference(new window.Date(start), new window.Date());
   const displayTab = (tab) => {
     switch (tab) {
       case "items":
         return (
           <Content>
             <h4>Select a Product to Return</h4>
-            {orderItems.map((orderitem) => (
-              <>
-                <ItemCont
-                  key={orderitem._id}
-                  onClick={() => {
-                    setTab("option");
-                    setCurrent(orderitem);
-                  }}
-                >
-                  <OrderItem>
-                    <Image src={orderitem.image} alt={orderitem.name} />
-                    <Details1>
-                      <Name>{orderitem.name}</Name>
-                      <Quantity>QTY: {orderitem.quantity}</Quantity>
-                      <ItemPrice>
-                        {orderitem.currency}{" "}
-                        {orderitem.quantity * orderitem.actualPrice}
-                      </ItemPrice>
-                    </Details1>
-                  </OrderItem>
-                  <FontAwesomeIcon size={"2x"} icon={faChevronCircleRight} />
-                </ItemCont>
-                <hr />
-              </>
-            ))}
+            {orderItems.map(
+              (orderitem) =>
+                daydiff(orderitem.deliveredAt, 7) <= 0 && (
+                  <>
+                    <ItemCont
+                      key={orderitem._id}
+                      onClick={() => {
+                        setTab("option");
+                        setCurrent(orderitem);
+                      }}
+                    >
+                      <OrderItem>
+                        <Image src={orderitem.image} alt={orderitem.name} />
+                        <Details1>
+                          <Name>{orderitem.name}</Name>
+                          <Quantity>QTY: {orderitem.quantity}</Quantity>
+                          <ItemPrice>
+                            {orderitem.currency}{" "}
+                            {orderitem.quantity * orderitem.actualPrice}
+                          </ItemPrice>
+                        </Details1>
+                      </OrderItem>
+                      <FontAwesomeIcon
+                        size={"2x"}
+                        icon={faChevronCircleRight}
+                      />
+                    </ItemCont>
+                    <hr />
+                  </>
+                )
+            )}
           </Content>
         );
       case "option":

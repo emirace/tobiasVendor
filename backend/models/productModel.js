@@ -61,6 +61,7 @@ const productSchema = new mongoose.Schema(
     countInStock: { type: Number, required: true },
     region: { type: String, enum: ["NGN", "ZAR"], required: true },
     productId: { type: String },
+    viewcount: { type: Number, default: 0 },
   },
   {
     timestamps: true,

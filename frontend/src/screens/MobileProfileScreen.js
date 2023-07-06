@@ -204,8 +204,11 @@ export default function MobileProfileScreen() {
   const soldNotification = notifications.filter(
     (x) => x.notifyType === "sold" && x.read === false
   );
-  const returnNotification = notifications.filter(
-    (x) => x.notifyType === "return" && x.read === false
+  const buyerReturnNotification = notifications.filter(
+    (x) => x.notifyType === "buyerreturn" && x.read === false
+  );
+  const sellerReturnNotification = notifications.filter(
+    (x) => x.notifyType === "sellerreturn" && x.read === false
   );
 
   return (
@@ -275,17 +278,24 @@ export default function MobileProfileScreen() {
           </span>
         </MobileMenuItem>
       </Link>
-      <Link to="/dashboard/returns">
-        <MobileMenuItem
-        // onClick={() => {
-        //                   socket.emit("remove_id_notifications", not._id);
-        //                 ""}}
-        >
+      <Link to="/dashboard/sellerreturns">
+        <MobileMenuItem>
           <FontAwesomeIcon icon={faArrowRotateLeft} />
-          My Returns
-          {returnNotification.length > 0 && (
+          Sold Returns
+          {sellerReturnNotification.length > 0 && (
             <Badge>
-              <span>{returnNotification.length}</span>
+              <span>{sellerReturnNotification.length}</span>
+            </Badge>
+          )}
+        </MobileMenuItem>
+      </Link>
+      <Link to="/dashboard/buyerreturns">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faArrowRotateLeft} />
+          Purchase Returns
+          {buyerReturnNotification.length > 0 && (
+            <Badge>
+              <span>{buyerReturnNotification.length}</span>
             </Badge>
           )}
         </MobileMenuItem>

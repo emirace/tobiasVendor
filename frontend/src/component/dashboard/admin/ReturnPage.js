@@ -5,7 +5,12 @@ import styled from "styled-components";
 import { socket } from "../../../App";
 import DeliveryReturnScreen from "../../../screens/DeliveryReturnScreen";
 import { Store } from "../../../Store";
-import { deliveryNumber, getError, region } from "../../../utils";
+import {
+  deliveryNumber,
+  getError,
+  region,
+  timeDifference,
+} from "../../../utils";
 import DeliveryHistory from "../../DeliveryHistory";
 import LoadingBox from "../../LoadingBox";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -244,7 +249,7 @@ export default function ReturnPage() {
         socket.emit("post_data", {
           userId: returned.productId.seller._id,
           itemId: returned.orderId._id,
-          notifyType: "delivery",
+          notifyType: "sellerreturn",
           msg: `Order ${deliveryStatus} `,
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
@@ -254,7 +259,7 @@ export default function ReturnPage() {
         socket.emit("post_data", {
           userId: returned.productId.seller._id,
           itemId: returned.orderId._id,
-          notifyType: "delivery",
+          notifyType: "sellerreturn",
           msg: `Order return request approved `,
           mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
@@ -263,7 +268,7 @@ export default function ReturnPage() {
         socket.emit("post_data", {
           userId: returned.orderId.user._id,
           itemId: returned.orderId._id,
-          notifyType: "delivery",
+          notifyType: "buyerreturn",
           msg: `Your order ${deliveryStatus} `,
           mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
@@ -273,7 +278,7 @@ export default function ReturnPage() {
         socket.emit("post_data", {
           userId: returned.orderId.user._id,
           itemId: returned.orderId._id,
-          notifyType: "delivery",
+          notifyType: "buyerreturn",
           msg: `Your order ${deliveryStatus} `,
           mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
@@ -396,6 +401,94 @@ export default function ReturnPage() {
     setEnterwaybil(false);
   };
 
+  const refund = async (product) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: returned.orderId.user,
+        amount:
+          Number(product.deliverySelect.cost) + Number(product.actualPrice),
+        meta: {
+          Type: "Order Refund",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
+          id: orderId,
+          currency: product.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: returned.orderId.user,
+      itemId: product._id,
+      notifyType: "refund",
+      msg: `Purchased Order Not Processed`,
+      link: `/order/${returned.orderId._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: returned.orderId._id },
+    });
+
+    socket.emit("post_data", {
+      userId: product.seller._id,
+      itemId: product._id,
+      notifyType: "refund",
+      msg: `Purchased Order Refunded`,
+      link: `/order/${returned.orderId._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: returned.orderId._id },
+    });
+
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: product._id,
+      notifyType: "payment",
+      msg: `Order Refunded`,
+      link: `/payment/${paymentData._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+    });
+
+    deliverOrderHandler("Refunded", product._id);
+  };
+
+  const paySeller = async (product) => {
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: product.seller._id,
+        amount: (92.1 / 100) * product.actualPrice,
+        meta: {
+          Type: "Pay Seller",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
+          id: orderId,
+          currency: product.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: userInfo._id,
+      itemId: product._id,
+      notifyType: "payment",
+      msg: `Payment to Seller Initiated`,
+      link: `/payment/${paymentData._id}`,
+      userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+    });
+
+    deliverOrderHandler("Payment to Seller Initiated", product._id);
+  };
+
+  const daydiff = (start, end) =>
+    start && end - timeDifference(new window.Date(start), new window.Date());
+
   return loading ? (
     <LoadingBox />
   ) : (
@@ -424,7 +517,9 @@ export default function ReturnPage() {
         <hr />
         <Name>Order ID</Name>
         <Link to={`/order/${returned.orderId._id}`}>
-          <ItemNum>{returned.orderId._id}</ItemNum>
+          <ItemNum style={{ color: "var(--malon-color)" }}>
+            {returned.orderId._id}
+          </ItemNum>
         </Link>
         <hr />
         <Name>Date</Name>
@@ -433,7 +528,7 @@ export default function ReturnPage() {
         </ItemNum>
         <hr />
         <Name>Buyer</Name>
-        <ItemNum>
+        <ItemNum style={{ color: "var(--malon-color)" }}>
           <Link to={`/seller/${returned.orderId.user._id}`}>
             {returned.orderId.user.username}
           </Link>
@@ -547,10 +642,80 @@ export default function ReturnPage() {
             )}
           </>
         )}
+
         {returned.orderId.orderItems.map(
           (orderitem) =>
             orderitem._id === returned.productId._id && (
               <>
+                {userInfo.isAdmin &&
+                  daydiff(orderitem.deliveredAt, 3) <= 0 &&
+                  deliveryNumber(orderitem.deliveryStatus) < 9 &&
+                  deliveryNumber(orderitem.deliveryStatus) > 8 &&
+                  !returned.returnDelivery && (
+                    <button
+                      onClick={() => refund(orderitem)}
+                      className="btn btn-primary w-100"
+                      style={{
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Refund
+                    </button>
+                  )}
+
+                {userInfo.isAdmin &&
+                  daydiff(orderitem.deliveredAt, 3) <= 0 &&
+                  deliveryNumber(orderitem.deliveryStatus) < 11 &&
+                  deliveryNumber(orderitem.deliveryStatus) > 10 && (
+                    <button
+                      onClick={() => refund(orderitem)}
+                      className="btn btn-primary w-100"
+                      style={{
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Refund
+                    </button>
+                  )}
+
+                {userInfo.isAdmin &&
+                  daydiff(orderitem.deliveredAt, 3) <= 0 &&
+                  deliveryNumber(orderitem.deliveryStatus) < 9 &&
+                  deliveryNumber(orderitem.deliveryStatus) > 8 &&
+                  returned.returnDelivery && (
+                    <button
+                      onClick={() => {
+                        paySeller(orderitem);
+                      }}
+                      className="btn btn-primary w-100"
+                      style={{
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Pay Seller
+                    </button>
+                  )}
+                {userInfo.isAdmin &&
+                  daydiff(orderitem.deliveredAt, 7) <= 0 &&
+                  deliveryNumber(orderitem.deliveryStatus) < 10 &&
+                  deliveryNumber(orderitem.deliveryStatus) > 9 &&
+                  returned.returnDelivery && (
+                    <button
+                      onClick={() => {
+                        paySeller(orderitem);
+                      }}
+                      className="btn btn-primary w-100"
+                      style={{
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Pay Seller
+                    </button>
+                  )}
                 <SetStatus>
                   {returned.productId.seller._id === userInfo._id ? (
                     <FormControl

@@ -1,5 +1,5 @@
 import express from "express";
-import { isAdmin, isAuth, sendEmail } from "../utils.js";
+import { isAdmin, isAuth, sendEmail, setTimer } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Return from "../models/returnModel.js";
 import Product from "../models/productModel.js";
@@ -8,7 +8,6 @@ import Transaction from "../models/transactionModel.js";
 const returnRouter = express.Router();
 
 // get all returns
-
 returnRouter.get(
   "/:region/admin",
   isAuth,
@@ -42,12 +41,45 @@ returnRouter.get(
   })
 );
 
+// get all returns querry
+returnRouter.get(
+  "/:region/admin/query",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const { region } = req.params;
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const returns = await Return.find({ region, ...queryFilter })
+      .sort({ createdAt: -1 })
+      .populate("productId")
+      .populate({
+        path: "orderId",
+        select: "user orderItems",
+        populate: [{ path: "user", select: "username" }],
+      });
+    res.send(returns);
+  })
+);
+
 // get returns for a user
 returnRouter.get(
-  "/user",
+  "/seller",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log("user returns");
     const { query } = req;
     const searchQuery = query.q;
     const queryFilter =
@@ -78,6 +110,41 @@ returnRouter.get(
   })
 );
 
+// get returns for a user
+returnRouter.get(
+  "/buyer",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const searchQuery = query.q;
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                returnId: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const returns = await Return.find({
+      buyerId: req.user._id,
+      ...queryFilter,
+    })
+      .sort({ createdAt: -1 })
+      .populate("productId")
+      .populate({
+        path: "orderId",
+        select: "user orderItems",
+        populate: [{ path: "user", select: "username" }],
+      });
+    res.send(returns);
+  })
+);
+
 // add a returned
 
 returnRouter.post(
@@ -93,6 +160,7 @@ returnRouter.post(
       orderId: req.body.orderId,
       productId: req.body.productId,
       sellerId: product.seller._id,
+      buyerId: req.user._id,
       reason: req.body.reason,
       resolution: req.body.resolution,
       sending: req.body.sending,
@@ -196,6 +264,15 @@ returnRouter.put(
               url,
             },
           });
+          setTimer(
+            returned.productId.seller._id,
+            returned.orderId._id,
+            returned.productId._id,
+            3,
+            "12hrs Left To Provide Return Receiving Address,",
+            "Return Receipt Address Not Provided, Refund Buyer.",
+            returned._id
+          );
           break;
 
         default:
@@ -232,10 +309,18 @@ returnRouter.put(
     if (transaction) {
       if (returned) {
         const product = await Product.findById(returned.productId);
-        console.log(product.seller.toString(), req.user._id);
         if (product.seller.toString() === req.user._id) {
           returned.returnDelivery = req.body.meta;
           const newReturn = await returned.save();
+          setTimer(
+            returned.orderId.user._id,
+            returned.orderId._id,
+            product._id,
+            3,
+            "12hrs Left To Mark Return As Dispatched.",
+            "Return Not Dispatched, Pay Seller.",
+            returned._id
+          );
           res.status(200).send(newReturn);
         }
       } else {
