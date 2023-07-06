@@ -185,7 +185,10 @@ export default function DeliveryReturnScreen({
       return;
     }
     try {
-      if (!returned.comfirmDelivery) {
+      if (
+        !returned.comfirmDelivery &&
+        returned.sending["delivery Option"] !== "Pick up from Seller"
+      ) {
         const { data } = await axios.post(
           `/api/accounts/${region()}/transfer`,
           {
