@@ -534,6 +534,10 @@ orderRouter.put(
 
       const orderItem = order.orderItems[orderItemIndex];
 
+      if (orderItem.onHold) {
+        return res.status(403).send({ message: "Order placed on Hold" });
+      }
+
       if (!checkStatus(deliveryStatus, orderItem.deliveryStatus)) {
         throw new Error(`Status cannot be change to ${deliveryStatus} again`);
       }
@@ -743,9 +747,9 @@ orderRouter.put(
           break;
       }
 
-      if (emailOptions.to) {
-        await sendEmail(emailOptions);
-      }
+      // if (emailOptions.to) {
+      //   await sendEmail(emailOptions);
+      // }
       console.log(deliveryStatus);
 
       res.send({ message: "Order delivery status changed" });
@@ -1321,6 +1325,47 @@ orderRouter.put(
     } catch (error) {
       console.log("error", error);
       res.status(error.status).send({ message: error.message });
+    }
+  })
+);
+
+orderRouter.put(
+  "/hold/:orderId/:productId",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { orderId, productId } = req.params;
+
+      const order = await Order.findById(orderId)
+        .populate({
+          path: "user",
+          select: "email username",
+        })
+        .populate("orderItems.product");
+
+      if (!order) {
+        return res.status(404).send("Order not found");
+      }
+
+      const orderItem = order.orderItems.find(
+        (item) => String(item._id) === productId
+      );
+
+      if (!orderItem) {
+        return res.status(404).send({ message: "Order item not found" });
+      }
+
+      orderItem.onHold = !orderItem.onHold;
+
+      await order.save();
+
+      res
+        .status(200)
+        .send({ message: "Order hold status changed successfully", order });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server encountered an error");
     }
   })
 );

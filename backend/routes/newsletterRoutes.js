@@ -21,9 +21,9 @@ const emailLists = [
     template: "pricing",
   },
   {
-    name: 'Let Our Community',
-    subject: 'Let Our Community Get To Know You!',
-    template: 'community',
+    name: "Let Our Community",
+    subject: "Let Our Community Get To Know You!",
+    template: "community",
   },
 ];
 
@@ -99,7 +99,7 @@ newsletterRouter.post(
             },
           });
         }
-      } else if (emailName === 'Let Our Community') {
+      } else if (emailName === "Let Our Community") {
         const existUsers = await User.find({ email: { $in: emails } });
 
         const bulkEmailOperations = existUsers.map((existUser) => {
@@ -117,12 +117,12 @@ newsletterRouter.post(
         await Newsletters.bulkWrite(bulkEmailOperations);
 
         for (const existUser of existUsers) {
-          sendEmail({
+          await sendEmail({
             to: existUser.email,
             subject: emailType.subject,
             template: emailType.template,
             context: {
-              url: existUser.region === 'NGN' ? 'com' : 'co.za',
+              url: existUser.region === "NGN" ? "com" : "co.za",
               username: existUser.username,
             },
           });
@@ -136,7 +136,7 @@ newsletterRouter.post(
             updateOne: {
               filter: { email: email },
               update: {
-                $pull: { sent: { emailName: emailName } },
+                $push: { sent: { emailName: emailName } },
               },
             },
           };

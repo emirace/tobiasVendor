@@ -771,6 +771,38 @@ export default function OrderScreen() {
     setEnterwaybil(false);
   };
 
+  function toggleOrderHoldStatus(productId) {
+    axios
+      .put(`/order/hold/${orderId}/${productId}`, {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      })
+      .then((response) => {
+        console.log(response.data);
+        // Perform any additional actions after successful response
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data.order });
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Hold status updated",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: getError(error),
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+        // Handle any errors that occur during the request
+      });
+  }
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -923,9 +955,9 @@ export default function OrderScreen() {
                           )}
                           <FormControl
                             disabled={
-                              order.deliveryStatus === "Hold" ||
-                              order.deliveryStatus === "Received" ||
-                              order.deliveryStatus === "Return Logged"
+                              orderitem.onHold ||
+                              orderitem.deliveryStatus === "Received" ||
+                              orderitem.deliveryStatus === "Return Logged"
                             }
                             sx={{
                               minWidth: "220px",
@@ -1061,23 +1093,14 @@ export default function OrderScreen() {
                       )}
                     {userInfo.isAdmin && (
                       <button
-                        onClick={() =>
-                          deliverOrderHandler(
-                            orderitem.deliveryStatus === "Hold"
-                              ? "UnHold"
-                              : "Hold",
-                            orderitem._id
-                          )
-                        }
+                        onClick={() => toggleOrderHoldStatus(orderitem._id)}
                         className="btn btn-primary w-100"
                         style={{
                           background: "var(--malon-color)",
                           marginTop: "10px",
                         }}
                       >
-                        {orderitem.deliveryStatus === "Hold"
-                          ? "UnHold"
-                          : "Hold"}
+                        {orderitem.onHold ? "UnHold" : "Hold"}
                       </button>
                     )}
                     {userInfo.isAdmin &&
@@ -1271,21 +1294,14 @@ export default function OrderScreen() {
                   </button>
                   {userInfo.isAdmin && (
                     <button
-                      onClick={() =>
-                        deliverOrderHandler(
-                          orderitem.deliveryStatus === "Hold"
-                            ? "UnHold"
-                            : "Hold",
-                          orderitem._id
-                        )
-                      }
+                      onClick={() => toggleOrderHoldStatus(orderitem._id)}
                       className="btn btn-primary w-100"
                       style={{
                         background: "var(--malon-color)",
                         marginTop: "10px",
                       }}
                     >
-                      {orderitem.deliveryStatus === "Hold" ? "UnHold" : "Hold"}
+                      {orderitem.onHold ? "UnHold" : "Hold"}
                     </button>
                   )}
                 </ActionButton>

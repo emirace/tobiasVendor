@@ -342,45 +342,37 @@ export default function Return({
     }
   };
 
-  const daydiff = (start, end) =>
-    start && end - timeDifference(new window.Date(start), new window.Date());
   const displayTab = (tab) => {
     switch (tab) {
       case "items":
         return (
           <Content>
             <h4>Select a Product to Return</h4>
-            {orderItems.map(
-              (orderitem) =>
-                daydiff(orderitem.deliveredAt, 7) <= 0 && (
-                  <>
-                    <ItemCont
-                      key={orderitem._id}
-                      onClick={() => {
-                        setTab("option");
-                        setCurrent(orderitem);
-                      }}
-                    >
-                      <OrderItem>
-                        <Image src={orderitem.image} alt={orderitem.name} />
-                        <Details1>
-                          <Name>{orderitem.name}</Name>
-                          <Quantity>QTY: {orderitem.quantity}</Quantity>
-                          <ItemPrice>
-                            {orderitem.currency}{" "}
-                            {orderitem.quantity * orderitem.actualPrice}
-                          </ItemPrice>
-                        </Details1>
-                      </OrderItem>
-                      <FontAwesomeIcon
-                        size={"2x"}
-                        icon={faChevronCircleRight}
-                      />
-                    </ItemCont>
-                    <hr />
-                  </>
-                )
-            )}
+            {orderItems.map((orderitem) => (
+              <>
+                <ItemCont
+                  key={orderitem._id}
+                  onClick={() => {
+                    setTab("option");
+                    setCurrent(orderitem);
+                  }}
+                >
+                  <OrderItem>
+                    <Image src={orderitem.image} alt={orderitem.name} />
+                    <Details1>
+                      <Name>{orderitem.name}</Name>
+                      <Quantity>QTY: {orderitem.quantity}</Quantity>
+                      <ItemPrice>
+                        {orderitem.currency}{" "}
+                        {orderitem.quantity * orderitem.actualPrice}
+                      </ItemPrice>
+                    </Details1>
+                  </OrderItem>
+                  <FontAwesomeIcon size={"2x"} icon={faChevronCircleRight} />
+                </ItemCont>
+                <hr />
+              </>
+            ))}
           </Content>
         );
       case "option":

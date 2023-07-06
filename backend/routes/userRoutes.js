@@ -22,6 +22,7 @@ import { passwordReset } from "../utils/mailTempleter/passwordReset.js";
 import { resetConfirmation } from "../utils/mailTempleter/resetConfirmation.js";
 import { resetSuccess } from "../utils/mailTempleter/resetSuccess.js";
 import Newsletters from "../models/newslettersModel.js";
+import mongoose from "mongoose";
 dotenv.config();
 
 const userRouter = express.Router();
@@ -655,51 +656,86 @@ userRouter.post(
   })
 );
 
+// userRouter.get(
+//   "/seller/:idorusername",
+//   expressAsyncHandler(async (req, res) => {
+//     const { idorusername } = req.params;
+//     const user = await User.findOne(
+//       { _id: idorusername } || { username: idorusername }
+//     )
+//       .populate("likes")
+//       .populate({
+//         path: "saved",
+//         populate: [{ path: "seller", select: "username image" }],
+//       });
+
+//     if (user) {
+//       res.send({
+//         _id: user._id,
+//         usernameUpdate: user.usernameUpdate,
+//         activeUpdate: user.activeUpdate,
+//         username: user.username,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         email: user.email,
+//         image: user.image,
+//         about: user.about,
+//         followers: user.followers,
+//         following: user.following,
+//         likes: user.likes,
+//         saved: user.saved,
+//         isSeller: user.isSeller,
+//         sold: user.sold,
+//         createdAt: user.createdAt,
+//         numReviews: user.numReviews,
+//         rating: user.rating,
+//         phone: user.phone,
+//         isAdmin: user.isAdmin,
+//         newsletter: user.newsletter,
+//         address: user.address,
+//         active: user.active,
+//         influencer: user.influencer,
+//         badge: user.badge,
+//         dob: user.dob,
+//         accountName: user.accountName,
+//         accountNumber: user.accountNumber,
+//         bankName: user.bankName,
+//         rebundle: user.rebundle,
+//         buyers: user.buyers,
+//       });
+//     } else {
+//       res.status(404).send({ message: "User Not Found" });
+//     }
+//   })
+// );
+
 userRouter.get(
-  "/seller/:id",
+  "/seller/:idorusername",
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id)
-      .populate("likes")
+    const { idorusername } = req.params;
+    console.log(idorusername);
+    let query = {};
+
+    if (mongoose.Types.ObjectId.isValid(idorusername)) {
+      query = { _id: idorusername };
+    } else {
+      query = { username: idorusername };
+    }
+    const user = await User.findOne(query)
+      .populate({
+        path: "likes",
+        populate: { path: "seller", select: "username image" },
+      })
       .populate({
         path: "saved",
-        populate: [{ path: "seller", select: "username image" }],
-      });
+        populate: { path: "seller", select: "username image" },
+      })
+      .select(
+        "_id usernameUpdate activeUpdate username firstName lastName email image about followers following likes saved isSeller createdAt numReviews rating phone isAdmin newsletter address active influencer badge dob accountName accountNumber bankName rebundle buyers "
+      );
 
     if (user) {
-      res.send({
-        _id: user._id,
-        name: user.name,
-        usernameUpdate: user.usernameUpdate,
-        activeUpdate: user.activeUpdate,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        image: user.image,
-        about: user.about,
-        followers: user.followers,
-        following: user.following,
-        likes: user.likes,
-        saved: user.saved,
-        isSeller: user.isSeller,
-        sold: user.sold,
-        createdAt: user.createdAt,
-        numReviews: user.numReviews,
-        rating: user.rating,
-        phone: user.phone,
-        isAdmin: user.isAdmin,
-        newsletter: user.newsletter,
-        address: user.address,
-        active: user.active,
-        influencer: user.influencer,
-        badge: user.badge,
-        dob: user.dob,
-        accountName: user.accountName,
-        accountNumber: user.accountNumber,
-        bankName: user.bankName,
-        rebundle: user.rebundle,
-        buyers: user.buyers,
-      });
+      res.send(user);
     } else {
       res.status(404).send({ message: "User Not Found" });
     }

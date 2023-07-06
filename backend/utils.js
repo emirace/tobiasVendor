@@ -547,6 +547,7 @@ export const setTimer = async (
 
       // Clear the timer after the specified days
       orderItem.timeoutId = null;
+      console.log("timer excuted");
     }, 30000);
     // }, milliseconds - beforeTime);
 

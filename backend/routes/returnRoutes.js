@@ -225,45 +225,45 @@ returnRouter.put(
       const newReturn = await returned.save();
       switch (newReturn.status) {
         case "Decline":
-          sendEmail({
-            to: returned.orderId.user.email,
-            subject: "ORDER RETURN DECLINED",
-            template: "returnDeclineBuyer",
-            context: {
-              username: returned.orderId.user.username,
-              orderId: returned.orderId._id,
-              reason: returned.reason,
-              returnId: returned._id,
-              declineReason: req.body.adminReason,
-              url,
-            },
-          });
+          // sendEmail({
+          //   to: returned.orderId.user.email,
+          //   subject: "ORDER RETURN DECLINED",
+          //   template: "returnDeclineBuyer",
+          //   context: {
+          //     username: returned.orderId.user.username,
+          //     orderId: returned.orderId._id,
+          //     reason: returned.reason,
+          //     returnId: returned._id,
+          //     declineReason: req.body.adminReason,
+          //     url,
+          //   },
+          // });
           break;
         case "Approved":
-          sendEmail({
-            to: returned.orderId.user.email,
-            subject: "ORDER RETURN APPROVED",
-            template: "returnAppoveBuyer",
-            context: {
-              username: returned.orderId.user.username,
-              orderId: returned.orderId._id,
-              returnId: returned._id,
-              url,
-            },
-          });
+          // sendEmail({
+          //   to: returned.orderId.user.email,
+          //   subject: "ORDER RETURN APPROVED",
+          //   template: "returnAppoveBuyer",
+          //   context: {
+          //     username: returned.orderId.user.username,
+          //     orderId: returned.orderId._id,
+          //     returnId: returned._id,
+          //     url,
+          //   },
+          // });
 
-          sendEmail({
-            to: returned.productId.seller.email,
-            subject: "ORDER RETURN APPROVED",
-            template: "returnAppoveSeller",
-            context: {
-              username: returned.productId.seller.username,
-              orderId: returned.orderId._id,
-              returnId: returned._id,
-              reason: returned.reason,
-              url,
-            },
-          });
+          // sendEmail({
+          //   to: returned.productId.seller.email,
+          //   subject: "ORDER RETURN APPROVED",
+          //   template: "returnAppoveSeller",
+          //   context: {
+          //     username: returned.productId.seller.username,
+          //     orderId: returned.orderId._id,
+          //     returnId: returned._id,
+          //     reason: returned.reason,
+          //     url,
+          //   },
+          // });
           setTimer(
             returned.productId.seller._id,
             returned.orderId._id,
@@ -350,15 +350,26 @@ returnRouter.put(
         select: "seller actualPrice image name",
         populate: { path: "seller", select: "image username" },
       });
-    if (returned) {
-      const product = await Product.findById(returned.productId);
-      if (product.seller.toString() === req.user._id) {
-        returned.comfirmDelivery = req.body.transaction_id;
-        const newReturn = await returned.save();
-        res.status(200).send(newReturn);
-      }
-    } else {
-      res.status(404).send("returned not found");
+
+    if (!returned) {
+      return res.status(404).send("returned not found");
+    }
+
+    const transaction = await Transaction.find({
+      "metadata.transaction_id": req.body.transaction_id,
+    });
+    if (
+      !transaction &&
+      returned.sending["delivery Option"] !== "Pick up from Seller"
+    ) {
+      return res.status(404).send("Invalid transaction id");
+    }
+
+    const product = await Product.findById(returned.productId);
+    if (product.seller.toString() === req.user._id) {
+      returned.comfirmDelivery = req.body.transaction_id;
+      const newReturn = await returned.save();
+      res.status(200).send(newReturn);
     }
   })
 );

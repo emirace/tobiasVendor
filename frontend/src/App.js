@@ -425,7 +425,9 @@ function App() {
                         path="/product/:slug"
                         element={<ProductScreen />}
                       />
-                      <Route path="/seller/:id" element={<SellerScreen />} />
+                      <Route path="/seller/:slug" element={<SellerScreen />} />
+                      <Route path="/za/:slug" element={<SellerScreen />} />
+                      <Route path="/ng/:slug" element={<SellerScreen />} />
                       <Route path="/earning" element={<Earning />} />
                       <Route path="/returns" element={<Returns />} />
                       <Route

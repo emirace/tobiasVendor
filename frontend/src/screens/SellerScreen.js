@@ -195,11 +195,12 @@ const reducer = (state, action) => {
 
 export default function SellerScreen() {
   const params = useParams();
-  const { id: sellerId } = params;
+  const { slug } = params;
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
 
+  const [sellerId, setSellerId] = useState(null);
   const [displayTab, setDisplayTab] = useState("all");
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
@@ -219,15 +220,15 @@ export default function SellerScreen() {
       loadingUser: true,
       error: "",
       user: {},
+      products: [],
     });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: "FETCH_USER_REQUEST" });
-        const { data: dataUser } = await axios.get(
-          `/api/users/seller/${sellerId}`
-        );
+        const { data: dataUser } = await axios.get(`/api/users/seller/${slug}`);
+        setSellerId(dataUser._id);
         dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
       } catch (err) {
         logout();
@@ -240,11 +241,12 @@ export default function SellerScreen() {
       }
     };
     fetchData();
-  }, [page, sellerId]);
+  }, [page, slug]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!sellerId) return;
         dispatch({ type: "FETCH_PRODUCT_REQUEST" });
         const { data: dataProduct } = await axios.get(
           `/api/products/seller/${sellerId}?page=${page}`
