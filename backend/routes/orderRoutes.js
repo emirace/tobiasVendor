@@ -562,6 +562,11 @@ orderRouter.put(
         context: {},
       };
 
+      const returned = await Return.findOne({
+        productId: orderItem._id,
+        orderId: order._id,
+      });
+
       switch (deliveryStatus) {
         case "Processing":
           emailOptions.to = order.user.email;
@@ -650,11 +655,6 @@ orderRouter.put(
           }
           break;
         case "Return Dispatched":
-          const returned = await Return.findOne({
-            productId: orderItem._id,
-            orderId: order._id,
-          });
-
           emailOptions.to = orderItem.seller.email;
           emailOptions.subject = "ORDER RETURN DISPATCHED";
           emailOptions.template = "returnDispatched";
