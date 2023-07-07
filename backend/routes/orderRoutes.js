@@ -754,10 +754,9 @@ orderRouter.put(
           break;
       }
 
-      if (emailOptions.to) {
-        await sendEmail(emailOptions);
-      }
-      console.log(deliveryStatus);
+      // if (emailOptions.to) {
+      //   await sendEmail(emailOptions);
+      // }
 
       res.send({ message: "Order delivery status changed" });
     } catch (error) {

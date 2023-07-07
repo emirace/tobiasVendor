@@ -10,6 +10,7 @@ const notificationSchema = new mongoose.Schema(
     msg: { type: String },
     link: { type: String },
     mobile: { type: Object },
+    showTime: { type: Date, default: null },
   },
   {
     timestamps: true,

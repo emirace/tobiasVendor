@@ -478,7 +478,7 @@ productRouter.put(
       if (!product) {
         return res.status(404).send({ message: "Product Not Found" });
       }
-      const exist = product.viewcount.filter((x) => x?._id === hashed);
+      const exist = product.viewcount.filter((x) => x === hashed);
       if (exist.length > 0) {
         res.status(500).send({ message: "Already viewed product" });
       } else {

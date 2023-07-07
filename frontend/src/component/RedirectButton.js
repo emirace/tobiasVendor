@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { logout } from "../hooks/initFacebookSdk";
 import { Store } from "../Store";
@@ -13,6 +13,9 @@ const Container = styled.div`
   cursor: pointer;
   &:hover {
     background: var(--malon-color);
+  }
+  @media (max-width: 992px) {
+    padding: 10px;
   }
 `;
 export default function RedirectButton() {
