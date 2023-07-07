@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     sellerName: { type: String },
-    seller: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     slug: { type: String, required: true, unique: true },
     image: { type: String, required: true },
     images: [String],
@@ -43,12 +43,12 @@ const productSchema = new mongoose.Schema(
     rating: { type: Number, required: true },
     currency: {
       type: String,
-      enum: ["N ", "R "],
+      enum: ['N ', 'R '],
       required: true,
     },
     numReviews: { type: Number, required: true },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    shares: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    shares: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     reviews: [reviewSchema],
     sold: { type: Boolean },
     soldAll: { type: Boolean, default: false },
@@ -59,14 +59,14 @@ const productSchema = new mongoose.Schema(
     luxury: { type: Boolean },
     luxuryImage: { type: String },
     countInStock: { type: Number, required: true },
-    region: { type: String, enum: ["NGN", "ZAR"], required: true },
+    region: { type: String, enum: ['NGN', 'ZAR'], required: true },
     productId: { type: String },
-    viewcount: [{ type: String }],
+    viewcount: [{ hashed: { type: String }, time: { type: Date } }],
   },
   {
     timestamps: true,
   }
 );
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model('Product', productSchema);
 export default Product;
