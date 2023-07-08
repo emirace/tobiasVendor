@@ -14,6 +14,7 @@ import {
   faCirclePlus,
   faGlobe,
   faHeart,
+  faLink,
   faLocationDot,
   faMessage,
   faPen,
@@ -157,6 +158,12 @@ const Sold = styled.div`
 const Badge = styled.img`
   width: 20px;
   object-fit: cover;
+`;
+
+const ProfileUrl = styled.div`
+  color: var(--malon-color);
+  cursor: pointer;
+  text-decoration: underline;
 `;
 
 const reducer = (state, action) => {
@@ -534,6 +541,23 @@ export default function SellerScreen() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: "Repeddle",
+        text:
+          window.location.protocol +
+          "//" +
+          window.location.hostname +
+          "/ng/" +
+          user.username,
+      });
+      console.log("Shared successfully");
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
   return (
     <div className="seller_main_container">
       <div className="seller_left">
@@ -627,6 +651,26 @@ export default function SellerScreen() {
                   setShowModel={setShowWriteReview}
                 />
               </ModelLogin>
+              <button
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "10px 0",
+                  border: "0",
+                  background: "none",
+                }}
+                onClick={handleShare}
+              >
+                <ProfileUrl>
+                  {window.location.hostname}/ng/{user.username}
+                </ProfileUrl>
+                <FontAwesomeIcon
+                  icon={faLink}
+                  size="sm"
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
+                  color="var(--malon-color)"
+                />
+              </button>
               <button
                 onClick={() => addConversation(user._id, "user")}
                 type="buton"

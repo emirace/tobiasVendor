@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import {
   isAuth,
   isAdmin,
@@ -9,20 +9,20 @@ import {
   payShippingFee,
   checkStatus,
   setTimer,
-} from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import Order from '../models/orderModel.js';
-import User from '../models/userModel.js';
-import Product from '../models/productModel.js';
-import mongoose from 'mongoose';
-import moment from 'moment';
-import axios from 'axios';
-import dotenv from 'dotenv';
-import Flutterwave from 'flutterwave-node-v3';
-import Transaction from '../models/transactionModel.js';
-import Return from '../models/returnModel.js';
-import RebundleSeller from '../models/rebuldleSellerModel.js';
-import crypto from 'crypto';
+} from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import Order from "../models/orderModel.js";
+import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
+import mongoose from "mongoose";
+import moment from "moment";
+import axios from "axios";
+import dotenv from "dotenv";
+import Flutterwave from "flutterwave-node-v3";
+import Transaction from "../models/transactionModel.js";
+import Return from "../models/returnModel.js";
+import RebundleSeller from "../models/rebuldleSellerModel.js";
+import crypto from "crypto";
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -30,12 +30,12 @@ const flw = new Flutterwave(
   process.env.FLW_SECRET_KEY
 );
 
-const today = moment().startOf('day');
+const today = moment().startOf("day");
 
 const orderRouter = express.Router();
 
 orderRouter.get(
-  '/:region/admin',
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -45,22 +45,22 @@ orderRouter.get(
     const sort = query.sort;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
     const sortFilter =
-      sort && sort !== 'all'
-        ? sort === 'Progress'
+      sort && sort !== "all"
+        ? sort === "Progress"
           ? {
               $or: [
-                { deliveryStatus: 'Dispatch' },
-                { deliveryStatus: 'In transit' },
-                { deliveryStatus: 'Not yet Dispatched' },
+                { deliveryStatus: "Dispatch" },
+                { deliveryStatus: "In transit" },
+                { deliveryStatus: "Not yet Dispatched" },
               ],
             }
           : {
@@ -69,25 +69,25 @@ orderRouter.get(
         : {};
     const orders = await Order.find({ ...queryFilter, ...sortFilter, region })
       .sort({ createdAt: -1 })
-      .populate('user', 'username')
-      .populate('seller', 'username');
+      .populate("user", "username")
+      .populate("seller", "username");
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/seller/:id',
+  "/seller/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const { from, to } = query;
     const searchQuery = query.q;
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
@@ -101,7 +101,7 @@ orderRouter.get(
       createdAt: { $gte: new Date(from), $lte: new Date(to) },
     })
       .sort({ createdAt: -1 })
-      .populate('user', 'username');
+      .populate("user", "username");
     res.send(orders);
   })
 );
@@ -141,7 +141,7 @@ orderRouter.get(
 // );
 
 orderRouter.post(
-  '/:region',
+  "/:region",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
@@ -157,10 +157,10 @@ orderRouter.post(
         orderItems: req.body.orderItems.map((x) => ({
           ...x,
           product: x._id,
-          deliveryStatus: 'Pending',
+          deliveryStatus: "Pending",
           deliveredAt: Date.now(),
         })),
-        deliveryStatus: 'Pending',
+        deliveryStatus: "Pending",
         deliveryMethod: req.body.deliveryMethod,
         paymentMethod: req.body.paymentMethod,
         itemsPrice: req.body.itemsPrice,
@@ -172,17 +172,17 @@ orderRouter.post(
       });
 
       const order = await newOrder.save();
-      res.status(201).send({ message: 'New Order Created', order });
+      res.status(201).send({ message: "New Order Created", order });
     } catch (err) {
       res
         .status(500)
-        .send({ message: 'Error creating order', error: err.message });
+        .send({ message: "Error creating order", error: err.message });
     }
   })
 );
 
 orderRouter.get(
-  '/:region/summary',
+  "/:region/summary",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -195,7 +195,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -205,7 +205,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -237,9 +237,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -248,7 +248,7 @@ orderRouter.get(
       { $match: { region } },
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -264,7 +264,7 @@ orderRouter.get(
   })
 );
 orderRouter.get(
-  '/summary/user',
+  "/summary/user",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
@@ -276,7 +276,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -286,7 +286,7 @@ orderRouter.get(
         $group: {
           _id: null,
           numOrders: { $sum: 1 },
-          numSales: { $sum: '$totalPrice' },
+          numSales: { $sum: "$totalPrice" },
         },
       },
     ]);
@@ -306,7 +306,7 @@ orderRouter.get(
           seller: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
         },
       },
@@ -327,9 +327,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -341,16 +341,16 @@ orderRouter.get(
           seller: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
           isPaid: true,
         },
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -362,16 +362,16 @@ orderRouter.get(
           user: seller,
           createdAt: {
             $gte: today.toDate(),
-            $lte: moment(today).endOf('day').toDate(),
+            $lte: moment(today).endOf("day").toDate(),
           },
           isPaid: true,
         },
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -387,9 +387,9 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           orders: { $sum: 1 },
-          sales: { $sum: '$totalPrice' },
+          sales: { $sum: "$totalPrice" },
         },
       },
       { $sort: { _id: 1 } },
@@ -404,7 +404,7 @@ orderRouter.get(
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           products: { $sum: 1 },
         },
       },
@@ -415,7 +415,7 @@ orderRouter.get(
       { $match: { seller: seller } },
       {
         $group: {
-          _id: '$category',
+          _id: "$category",
           count: { $sum: 1 },
         },
       },
@@ -436,55 +436,55 @@ orderRouter.get(
 );
 
 orderRouter.get(
-  '/mine',
+  "/mine",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             orderId: {
               $regex: searchQuery,
-              $options: 'i',
+              $options: "i",
             },
           }
         : {};
 
     const orders = await Order.find({ user: req.user._id, ...queryFilter })
       .sort({ createdAt: -1 })
-      .populate('user', 'name')
-      .limit(searchQuery && searchQuery !== 'all' ? 10 : '');
+      .populate("user", "name")
+      .limit(searchQuery && searchQuery !== "all" ? 10 : "");
     res.send(orders);
   })
 );
 
 orderRouter.get(
-  '/:id',
+  "/:id",
 
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id)
-      .populate('orderItems.product')
-      .populate('user', 'image username lastName firstName');
+      .populate("orderItems.product")
+      .populate("user", "image username lastName firstName");
     if (order) {
       res.send(order);
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );
 
 // Helper function to retrieve the address based on the delivery options
 const getAddress = (orderItem) => {
-  const deliveryOption = orderItem.deliverySelect['delivery Option'];
+  const deliveryOption = orderItem.deliverySelect["delivery Option"];
   const address = orderItem.deliverySelect.address;
 
-  if (deliveryOption === 'Paxi PEP store') {
+  if (deliveryOption === "Paxi PEP store") {
     return orderItem.deliverySelect.shortName;
-  } else if (deliveryOption === 'PUDO Locker-to-Locker') {
+  } else if (deliveryOption === "PUDO Locker-to-Locker") {
     return `${orderItem.deliverySelect.shortName}, ${orderItem.deliverySelect.province}`;
-  } else if (deliveryOption === 'PostNet-to-PostNet') {
+  } else if (deliveryOption === "PostNet-to-PostNet") {
     return `${orderItem.deliverySelect.pickUp}, ${orderItem.deliverySelect.province}`;
   }
 
@@ -492,29 +492,29 @@ const getAddress = (orderItem) => {
 };
 
 orderRouter.put(
-  '/:id/deliver/:productId',
+  "/:id/deliver/:productId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
-      const io = req.app.get('io');
+      const io = req.app.get("io");
       const orderId = req.params.id;
       const productId = req.params.productId;
       const { deliveryStatus, trackingNumber, returnTrackingNumber } = req.body;
 
       const order = await Order.findById(orderId)
         .populate({
-          path: 'user',
-          select: 'email username',
+          path: "user",
+          select: "email username",
         })
-        .populate('orderItems.product');
+        .populate("orderItems.product");
 
       if (!order) {
-        return res.status(404).send({ message: 'Order not found' });
+        return res.status(404).send({ message: "Order not found" });
       }
 
       const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).send({ message: 'Product not found' });
+        return res.status(404).send({ message: "Product not found" });
       }
 
       const isValidUser =
@@ -523,20 +523,20 @@ orderRouter.put(
         String(req.user._id) === String(product.seller);
 
       if (!isValidUser) {
-        return res.status(403).send({ message: 'Access denied' });
+        return res.status(403).send({ message: "Access denied" });
       }
 
       const orderItemIndex = order.orderItems.findIndex(
         (x) => String(x._id) === String(productId)
       );
       if (orderItemIndex === -1) {
-        return res.status(404).send({ message: 'Order item not found' });
+        return res.status(404).send({ message: "Order item not found" });
       }
 
       const orderItem = order.orderItems[orderItemIndex];
 
       if (orderItem.onHold) {
-        return res.status(403).send({ message: 'Order placed on Hold' });
+        return res.status(403).send({ message: "Order placed on Hold" });
       }
 
       if (!checkStatus(deliveryStatus, orderItem.deliveryStatus)) {
@@ -554,12 +554,12 @@ orderRouter.put(
 
       await order.save();
 
-      console.log('Change status:', deliveryStatus);
+      console.log("Change status:", deliveryStatus);
 
       const emailOptions = {
-        to: '',
-        subject: '',
-        template: '',
+        to: "",
+        subject: "",
+        template: "",
         context: {},
       };
 
@@ -569,26 +569,26 @@ orderRouter.put(
       });
 
       switch (deliveryStatus) {
-        case 'Processing':
+        case "Processing":
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'PREPARING ORDER FOR DELIVERY';
-          emailOptions.template = 'preparingOrder';
+          emailOptions.subject = "PREPARING ORDER FOR DELIVERY";
+          emailOptions.template = "preparingOrder";
           emailOptions.context = {
             username: order.user.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             orderItems: order.orderItems,
           };
           break;
-        case 'Dispatched':
+        case "Dispatched":
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'ORDER DISPATCHED';
-          emailOptions.template = 'dispatchOrder';
+          emailOptions.subject = "ORDER DISPATCHED";
+          emailOptions.template = "dispatchOrder";
           emailOptions.context = {
             username: order.user.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
-            deliveryMethod: orderItem.deliverySelect['delivery Option'],
+            deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
             trackId: orderItem.trackingNumber,
           };
@@ -598,32 +598,32 @@ orderRouter.put(
             order._id,
             orderItem._id,
             7,
-            'Undelivered Order, 6hrs Left To Mark Order as delivered.',
-            'Order Delivery Unfulfilled, Refund Buyer.'
+            "Undelivered Order, 6hrs Left To Mark Order as delivered.",
+            "Order Delivery Unfulfilled, Refund Buyer."
           );
           break;
-        case 'In Transit':
+        case "In Transit":
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'ORDER IN TRANSIT';
-          emailOptions.template = 'transitOrder';
+          emailOptions.subject = "ORDER IN TRANSIT";
+          emailOptions.template = "transitOrder";
           emailOptions.context = {
             username: order.user.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
-            deliveryMethod: orderItem.deliverySelect['delivery Option'],
+            deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
           break;
-        case 'Delivered':
+        case "Delivered":
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'ORDER DELIVERED';
-          emailOptions.template = 'orderDelivered';
+          emailOptions.subject = "ORDER DELIVERED";
+          emailOptions.template = "orderDelivered";
           emailOptions.context = {
             username: order.user.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             address: getAddress(orderItem),
-            deliveryMethod: orderItem.deliverySelect['delivery Option'],
+            deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
           setTimer(
@@ -632,17 +632,17 @@ orderRouter.put(
             order._id,
             orderItem._id,
             3,
-            'Unreceived Order, 12hrs Left To Mark Order as received.',
-            'Unreceived Order, Pay Seller.'
+            "Unreceived Order, 12hrs Left To Mark Order as received.",
+            "Unreceived Order, Pay Seller."
           );
           break;
-        case 'Received':
+        case "Received":
           emailOptions.to = orderItem.seller.email;
-          emailOptions.subject = 'ORDER RECEIVED';
-          emailOptions.template = 'orderReceive';
+          emailOptions.subject = "ORDER RECEIVED";
+          emailOptions.template = "orderReceive";
           emailOptions.context = {
             username: orderItem.seller.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             orderItems: order.orderItems,
           };
@@ -657,18 +657,18 @@ orderRouter.put(
           }
 
           break;
-        case 'Return Dispatched':
+        case "Return Dispatched":
           emailOptions.to = orderItem.seller.email;
-          emailOptions.subject = 'ORDER RETURN DISPATCHED';
-          emailOptions.template = 'returnDispatched';
+          emailOptions.subject = "ORDER RETURN DISPATCHED";
+          emailOptions.template = "returnDispatched";
           emailOptions.context = {
             username: orderItem.seller.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
-            deliveryMethod: orderItem.deliverySelect['delivery Option'],
+            deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: [orderItem],
             trackId: orderItem.returnTrackingNumber,
-            returnId: returned ? returned._id : '',
+            returnId: returned ? returned._id : "",
           };
           setTimer(
             io,
@@ -676,22 +676,22 @@ orderRouter.put(
             order._id,
             orderItem._id,
             7,
-            'Undelivered Return, 6hrs Left To Mark Return as delivered.',
-            'Return Delivery Unfulfilled, Pay Seller.',
+            "Undelivered Return, 6hrs Left To Mark Return as delivered.",
+            "Return Delivery Unfulfilled, Pay Seller.",
             returned._id
           );
           break;
-        case 'Return Delivered':
+        case "Return Delivered":
           emailOptions.to = orderItem.seller.email;
-          emailOptions.subject = 'RETURN DELIVERED';
-          emailOptions.template = 'returnDelivered';
+          emailOptions.subject = "RETURN DELIVERED";
+          emailOptions.template = "returnDelivered";
           emailOptions.context = {
             username: orderItem.seller.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             address: getAddress(orderItem),
-            deliveryMethod: orderItem.deliverySelect['delivery Option'],
-            returnId: returned ? returned._id : '',
+            deliveryMethod: orderItem.deliverySelect["delivery Option"],
+            returnId: returned ? returned._id : "",
             orderItems: [orderItem],
           };
           setTimer(
@@ -700,21 +700,21 @@ orderRouter.put(
             order._id,
             orderItem._id,
             3,
-            'Unreceived Return, 12hrs Left To Mark Return as received.',
-            'Unreceived Return, Refund Buyer.',
+            "Unreceived Return, 12hrs Left To Mark Return as received.",
+            "Unreceived Return, Refund Buyer.",
             returned._id
           );
           break;
-        case 'Return Received':
+        case "Return Received":
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'RETURN RECEIVED';
-          emailOptions.template = 'returnReceived';
+          emailOptions.subject = "RETURN RECEIVED";
+          emailOptions.template = "returnReceived";
           emailOptions.context = {
             username: order.user.username,
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             orderItems: [orderItem],
-            returnId: returned ? returned._id : '',
+            returnId: returned ? returned._id : "",
           };
 
           // Clear the existing timer if it exists
@@ -728,13 +728,13 @@ orderRouter.put(
 
           break;
 
-        case 'Refunded':
-          console.log('i am at refunded');
+        case "Refunded":
+          console.log("i am at refunded");
           emailOptions.to = order.user.email;
-          emailOptions.subject = 'Purchased Order Not Processed';
-          emailOptions.template = 'refundOrder';
+          emailOptions.subject = "Purchased Order Not Processed";
+          emailOptions.template = "refundOrder";
           emailOptions.context = {
-            url: orderItem.region === 'NGN' ? 'com' : 'co.za',
+            url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             user: order.user.username,
           };
@@ -758,7 +758,7 @@ orderRouter.put(
         await sendEmail(emailOptions);
       }
 
-      res.send({ message: 'Order delivery status changed' });
+      res.send({ message: "Order delivery status changed" });
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -1187,7 +1187,7 @@ orderRouter.put(
 // );
 
 orderRouter.put(
-  '/:region/:id/pay',
+  "/:region/:id/pay",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
@@ -1195,27 +1195,27 @@ orderRouter.put(
     const { method } = req.body;
     var response;
     try {
-      const io = req.app.get('io');
-      if (method === 'wallet') {
+      const io = req.app.get("io");
+      if (method === "wallet") {
         const transaction = await Transaction.find({
-          'metadata.transaction_id': transaction_id,
+          "metadata.transaction_id": transaction_id,
         });
         if (transaction) {
-          response = { data: { status: 'successful' } };
+          response = { data: { status: "successful" } };
         } else {
-          response = { data: { status: 'failed' } };
+          response = { data: { status: "failed" } };
         }
       } else {
-        if (region === 'N ') {
+        if (region === "N ") {
           response = await flw.Transaction.verify({ id: transaction_id });
         } else {
           response = await flw.Transaction.verify({ id: transaction_id });
         }
       }
-      if (response?.data?.status === 'successful') {
+      if (response?.data?.status === "successful") {
         const order = await Order.findById(req.params.id).populate({
-          path: 'user',
-          select: 'email username',
+          path: "user",
+          select: "email username",
         });
         if (order) {
           const sellers = [];
@@ -1248,8 +1248,8 @@ orderRouter.put(
               order._id,
               p._id,
               3,
-              'Unattended Order, 12hrs Left For You To Dispatch.',
-              'Order Dispatch Unfulfilled, Refund Buyer.'
+              "Unattended Order, 12hrs Left For You To Dispatch.",
+              "Order Dispatch Unfulfilled, Refund Buyer."
             );
 
             const exist = await RebundleSeller.findOne({
@@ -1262,12 +1262,12 @@ orderRouter.put(
                 sellerId: seller._id,
                 createdAt: Date.now(),
                 count: seller.rebundle.count,
-                deliveryMethod: product.deliverySelect['delivery Option'],
+                deliveryMethod: product.deliverySelect["delivery Option"],
               });
               await rebundleSeller.save();
             } else if (exist) {
               const selectedCount =
-                product.deliverySelect['delivery Option'] ===
+                product.deliverySelect["delivery Option"] ===
                 exist.deliveryMethod
                   ? 1 * p.quantity
                   : 0;
@@ -1323,22 +1323,22 @@ orderRouter.put(
           //     },
           //   });
           // });
-          res.send({ message: 'Order Paid', order: updateOrder });
+          res.send({ message: "Order Paid", order: updateOrder });
         } else {
-          res.status(404).send({ message: 'Order Not Found' });
+          res.status(404).send({ message: "Order Not Found" });
         }
       } else {
-        res.send('error making payment');
+        res.send("error making payment");
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
       res.status(error.status).send({ message: error.message });
     }
   })
 );
 
 orderRouter.put(
-  '/hold/:orderId/:productId',
+  "/hold/:orderId/:productId",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -1347,51 +1347,56 @@ orderRouter.put(
 
       const order = await Order.findById(orderId)
         .populate({
-          path: 'user',
-          select: 'email username',
+          path: "user",
+          select: "email username",
         })
-        .populate('orderItems.product');
+        .populate("orderItems.product");
 
       if (!order) {
-        return res.status(404).send('Order not found');
+        return res.status(404).send("Order not found");
       }
 
-      const orderItem = order.orderItems.find(
-        (item) => String(item._id) === productId
+      const orderItemIndex = order.orderItems.findIndex(
+        (item) => String(item._id) === String(productId)
       );
 
-      if (!orderItem) {
-        return res.status(404).send({ message: 'Order item not found' });
+      if (orderItemIndex === -1) {
+        return res.status(404).send({ message: "Order item not found" });
       }
+
+      const orderItem = order.orderItems[orderItemIndex];
 
       orderItem.onHold = !orderItem.onHold;
 
-      await order.save();
+      order.orderItems[orderItemIndex] = orderItem;
 
-      res
-        .status(200)
-        .send({ message: 'Order hold status changed successfully', order });
+      const savedOrder = await order.save();
+
+      res.status(200).send({
+        message: "Order hold status changed successfully",
+        savedOrder,
+      });
     } catch (error) {
       console.error(error);
-      res.status(500).send('Server encountered an error');
+      res.status(500).send("Server encountered an error");
     }
   })
 );
 
 orderRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
       if (req.user._id === order.user || req.user.isAdmin) {
         await order.remove();
-        res.send({ message: 'Order Deleted' });
+        res.send({ message: "Order Deleted" });
       } else {
-        res.status(500).send('Cannot delete order');
+        res.status(500).send("Cannot delete order");
       }
     } else {
-      res.status(404).send({ message: 'Order Not Found' });
+      res.status(404).send({ message: "Order Not Found" });
     }
   })
 );

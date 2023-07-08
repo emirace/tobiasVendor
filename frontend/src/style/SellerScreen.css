@@ -120,7 +120,7 @@
   background: var(--orange-color);
   color: white;
   border-radius: 5px;
-  margin: 20px 0;
+  margin-bottom: 20px;
   padding: 4px 0;
   border: 0;
 }
