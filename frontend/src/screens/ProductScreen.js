@@ -169,6 +169,7 @@ const reducer = (state, action) => {
 
 const IconContainer = styled.div`
   position: relative;
+  margin-right: 30px;
   &:hover div {
     opacity: 1;
   }
@@ -1102,6 +1103,7 @@ export default function ProductScreen() {
   };
 
   const discount = () => {
+    if (product.price < product.actualPrice) return null;
     return ((product.price - product.actualPrice) / product.price) * 100;
   };
 
@@ -1257,7 +1259,7 @@ export default function ProductScreen() {
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
                   rating={product.seller.rating}
-                  numReviews={product.numReviews}
+                  numReviews={product.seller?.numReviews}
                 />
               </ReviewsClick>
               <ModelLogin showModel={showModel} setShowModel={setShowModel}>
@@ -1297,6 +1299,7 @@ export default function ProductScreen() {
 
           <div className="single_product_actions">
             <IconContainer>
+              {product.likes.length}
               <FontAwesomeIcon
                 className={
                   userInfo && product.likes.find((x) => x === userInfo._id)
@@ -1305,10 +1308,15 @@ export default function ProductScreen() {
                 }
                 onClick={toggleLikes}
                 icon={faThumbsUp}
+                style={{ marginLeft: "5px" }}
               />
               <IconsTooltips tips="Like Product " />
             </IconContainer>
-
+            <ShareModal
+              url={window.location.href}
+              product={product}
+              dispatch={dispatch}
+            />
             <IconContainer>
               <FontAwesomeIcon
                 className={
@@ -1340,32 +1348,6 @@ export default function ProductScreen() {
               />
               <IconsTooltips tips="Message Seller " />
             </IconContainer>
-            {/* <IconContainer>
-              <FontAwesomeIcon
-                onClick={() => {
-                  setShare(!share);
-                }}
-                icon={faShareNodes}
-              />
-              <IconsTooltips className="tiptools" tips="Share " />
-            </IconContainer> */}
-
-            <ShareModal
-              url={window.location.href}
-              product={product}
-              dispatch={dispatch}
-            />
-          </div>
-          <div style={{ display: "flex" }}>
-            <div style={{ marginRight: "50px" }}>
-              <b>{product.likes.length} </b> Likes
-            </div>
-            <div style={{ marginRight: "50px" }}>
-              <b>{product.shares.length} </b> Shares
-            </div>
-            <div>
-              <b>{product.viewcount.length || 0} </b> Views
-            </div>
           </div>
           <div>Listed {format(product.createdAt)}</div>
 

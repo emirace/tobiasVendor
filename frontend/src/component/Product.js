@@ -209,6 +209,7 @@ export default function Product(props) {
   };
 
   const discount = () => {
+    if (product.price < product.actualPrice) return null;
     return ((product.price - product.actualPrice) / product.price) * 100;
   };
 
@@ -264,12 +265,13 @@ export default function Product(props) {
           {product.currency}
           {product.actualPrice}
         </span>
-        {product.price !== product.actualPrice ? (
-          <span className="actual-price1">
-            {product.currency}
-            {product.price}
-          </span>
-        ) : null}
+        {product.price &&
+          (product.price > product.actualPrice ? (
+            <span className="actual-price1">
+              {product.currency}
+              {product.price}
+            </span>
+          ) : null)}
       </div>
     </div>
   );

@@ -1290,39 +1290,39 @@ orderRouter.put(
 
           const answer = await payShippingFee(order);
 
-          // sendEmail({
-          //   to: order.user.email,
-          //   subject: "PROCESSING YOUR ORDER",
-          //   template: "processingOrder",
-          //   context: {
-          //     username: order.user.username,
-          //     url: region === "NGN" ? "com" : "co.za",
-          //     sellers,
-          //     orderId: order._id,
-          //     orderItems: order.orderItems,
-          //     sellerId: order.orderItems[0].seller._id,
-          //   },
-          // });
-          // console.log(sellers);
-          // sellers.map((seller) => {
-          //   sendEmail({
-          //     to: seller.email,
-          //     subject: "NEW ORDER",
-          //     template: "processingOrderSeller",
-          //     context: {
-          //       username: seller.username,
-          //       url: region === "NGN" ? "com" : "co.za",
-          //       buyer: order.user.username,
-          //       buyerId: order.user._id,
-          //       orderId: order._id,
-          //       sellerId: seller._id,
-          //       orderItems: order.orderItems.filter(
-          //         (x) => x.seller._id === seller._id
-          //       ),
-          //       sellerId: order.orderItems[0].seller._id,
-          //     },
-          //   });
-          // });
+          sendEmail({
+            to: order.user.email,
+            subject: "PROCESSING YOUR ORDER",
+            template: "processingOrder",
+            context: {
+              username: order.user.username,
+              url: region === "NGN" ? "com" : "co.za",
+              sellers,
+              orderId: order._id,
+              orderItems: order.orderItems,
+              sellerId: order.orderItems[0].seller._id,
+            },
+          });
+          console.log(sellers);
+          sellers.map((seller) => {
+            sendEmail({
+              to: seller.email,
+              subject: "NEW ORDER",
+              template: "processingOrderSeller",
+              context: {
+                username: seller.username,
+                url: region === "NGN" ? "com" : "co.za",
+                buyer: order.user.username,
+                buyerId: order.user._id,
+                orderId: order._id,
+                sellerId: seller._id,
+                orderItems: order.orderItems.filter(
+                  (x) => x.seller._id === seller._id
+                ),
+                sellerId: order.orderItems[0].seller._id,
+              },
+            });
+          });
           res.send({ message: "Order Paid", order: updateOrder });
         } else {
           res.status(404).send({ message: "Order Not Found" });

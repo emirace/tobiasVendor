@@ -763,7 +763,7 @@ userRouter.get(
         populate: { path: "seller", select: "username image" },
       })
       .select(
-        "_id usernameUpdate activeUpdate username firstName lastName email image about followers following likes saved isSeller createdAt numReviews rating phone isAdmin newsletter address active influencer badge dob accountName accountNumber bankName rebundle buyers "
+        "_id usernameUpdate activeUpdate username firstName lastName email image about followers following likes saved sold isSeller region createdAt numReviews rating phone isAdmin newsletter address active influencer badge dob accountName accountNumber bankName rebundle buyers "
       );
 
     if (user) {

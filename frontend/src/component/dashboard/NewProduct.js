@@ -1666,7 +1666,7 @@ export default function NewProduct() {
               <div style={{ diplay: "flex", alignItems: "center" }}>
                 <Item className="half">
                   <Label>
-                    Price{" "}
+                    Cost Price{" "}
                     <Tips
                       mode={mode}
                       tips={`
@@ -1679,7 +1679,7 @@ export default function NewProduct() {
                   <TextInput
                     mode={mode}
                     type="number"
-                    placeholder="Actual price"
+                    placeholder="Cost price"
                     value={input.price}
                     onChange={(e) => handleOnChange(e.target.value, "price")}
                   />
@@ -1690,26 +1690,17 @@ export default function NewProduct() {
                   )}
                 </Item>
                 <Item className="half">
-                  <Label>Discount</Label>
+                  <Label>Selling Price</Label>
                   <Discount>
                     <TextInput
                       className="half"
                       mode={mode}
                       type="number"
-                      placeholder="Discount in %"
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          if (input.price) {
-                            const value =
-                              (input.price * (100 - e.target.value)) / 100;
-                            handleOnChange(value, "discount");
-                          }
-                        } else {
-                          handleOnChange("", "discount");
-                        }
-                      }}
+                      placeholder="Actual Price"
+                      onChange={(e) =>
+                        handleOnChange(e.target.value, "discount")
+                      }
                     />
-                    <span>%</span>
                   </Discount>
                 </Item>
               </div>
@@ -1719,8 +1710,11 @@ export default function NewProduct() {
                   {input.discount || input.price}
                 </Offer>
                 <Actual>
-                  {currency}
-                  {input.discount ? input.price : null}
+                  {input.discount
+                    ? input.discount < input.price
+                      ? `${currency}${input.price}`
+                      : null
+                    : null}
                 </Actual>
               </PriceDisplay>
             </Price>

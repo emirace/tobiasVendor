@@ -510,6 +510,16 @@ export default function SellerScreen() {
 
   const addConversation = async (id, type) => {
     try {
+      if (!userInfo) {
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "You must be a login user to send message",
+            showStatus: true,
+            state1: "visible1 error",
+          },
+        });
+      }
       const { data } = await axios.post(
         `/api/conversations`,
         { recieverId: id, type: type },
@@ -545,12 +555,12 @@ export default function SellerScreen() {
     try {
       await navigator.share({
         title: "Repeddle",
-        text:
-          window.location.protocol +
-          "//" +
-          window.location.hostname +
-          "/ng/" +
-          user.username,
+        text: ` ${window.location.protocol}//${window.location.hostname}${
+          user.region === "NGN" ? "/ng/" : "/za/"
+        }${user.username}`,
+        url: ` ${window.location.protocol}//${window.location.hostname}${
+          user.region === "NGN" ? "/ng/" : "/za/"
+        }${user.username}`,
       });
       console.log("Shared successfully");
     } catch (error) {
@@ -662,7 +672,9 @@ export default function SellerScreen() {
                 onClick={handleShare}
               >
                 <ProfileUrl>
-                  {window.location.hostname}/ng/{user.username}
+                  {window.location.hostname}
+                  {user.region === "NGN" ? "/ng/" : "/za/"}
+                  {user.username}
                 </ProfileUrl>
                 <FontAwesomeIcon
                   icon={faLink}
@@ -685,6 +697,7 @@ export default function SellerScreen() {
                     <FontAwesomeIcon icon={faTag} /> Sold
                   </div>
                   <div className="seller_single_right">
+                    {console.log(user)}
                     {user.sold && user.sold.length < 5
                       ? "< 5"
                       : user?.sold?.length}

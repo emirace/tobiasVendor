@@ -20,7 +20,7 @@ import styled, { keyframes } from "styled-components";
 import { socket } from "../App";
 import { Store } from "../Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShare } from "@fortawesome/free-solid-svg-icons";
+import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import IconsTooltips from "./IconsTooltips";
 
 const Container = styled.div`
@@ -114,6 +114,7 @@ const Background = styled.div`
 `;
 const IconContainer = styled.div`
   position: relative;
+  margin-right: 30px;
   &:hover div {
     opacity: 1;
   }
@@ -289,7 +290,14 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
   return (
     <Container>
       <IconContainer>
-        <FontAwesomeIcon onClick={toggleDropdown} icon={faShare} />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {product.shares.length}
+          <FontAwesomeIcon
+            onClick={toggleDropdown}
+            icon={faShareNodes}
+            style={{ marginLeft: "5px" }}
+          />
+        </div>
         <IconsTooltips className="tiptools" tips="Share " />
       </IconContainer>
       {isDropdownOpen && <Background onClick={toggleDropdown} />}
@@ -300,7 +308,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
               <>{button}</>
             ))}
             <ShareButton onClick={handleShare2} mode={mode}>
-              <FontAwesomeIcon icon={faShare} size={25} />
+              <FontAwesomeIcon icon={faShareNodes} size={25} />
               <ShareButtonText mode={mode}>More...</ShareButtonText>
             </ShareButton>
           </ShareButtonsContainer>
