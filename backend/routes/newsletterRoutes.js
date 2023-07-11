@@ -1,40 +1,40 @@
-import express from "express";
-import { isAdmin, isAuth, sendEmail } from "../utils.js";
-import expressAsyncHandler from "express-async-handler";
-import Newsletters from "../models/newslettersModel.js";
-import User from "../models/userModel.js";
-import moment from "moment/moment.js";
+import express from 'express';
+import { isAdmin, isAuth, sendEmail } from '../utils.js';
+import expressAsyncHandler from 'express-async-handler';
+import Newsletters from '../models/newslettersModel.js';
+import User from '../models/userModel.js';
+import moment from 'moment/moment.js';
 
 const newsletterRouter = express.Router();
 
 const emailLists = [
-  { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
-  { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
+  { name: 'Congrats 01', subject: 'CONGRATULATION', template: 'congrants01' },
+  { name: 'Did you know', subject: 'DID YOU KNOW', template: 'doyouknow' },
   {
-    name: "Hack",
-    subject: "Hacks on How to Make Your First Repeddle Sale!",
-    template: "hack",
+    name: 'Hack',
+    subject: 'Hacks on How to Make Your First Repeddle Sale!',
+    template: 'hack',
   },
   {
-    name: "Pricing Your Listing",
-    subject: "PRICING YOUR LISTING",
-    template: "pricing",
+    name: 'Pricing Your Listing',
+    subject: 'PRICING YOUR LISTING',
+    template: 'pricing',
   },
   {
-    name: "Let Our Community",
-    subject: "Let Our Community Get To Know You!",
-    template: "community",
+    name: 'Let Our Community',
+    subject: 'Let Our Community Get To Know You!',
+    template: 'community',
   },
 ];
 
 // get all newsletters
 newsletterRouter.get(
-  "/newsletter",
+  '/newsletter',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const newsletters = await Newsletters.find({
-      emailType: "Newsletter",
+      emailType: 'Newsletter',
     }).sort({ createdAt: -1 });
     res.send({ newsletters, emailLists });
   })
@@ -42,11 +42,11 @@ newsletterRouter.get(
 
 // get all rebatch email
 newsletterRouter.get(
-  "/rebatch",
+  '/rebatch',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const rebatchs = await Newsletters.find({ emailType: "Rebatch" }).sort({
+    const rebatchs = await Newsletters.find({ emailType: 'Rebatch' }).sort({
       createdAt: -1,
     });
     res.send(rebatchs);
@@ -55,7 +55,7 @@ newsletterRouter.get(
 
 // send email
 newsletterRouter.post(
-  "/send",
+  '/send',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -67,10 +67,10 @@ newsletterRouter.post(
       );
 
       if (!emailType) {
-        return res.status(400).send("Invalid email name");
+        return res.status(400).send('Invalid email name');
       }
 
-      if (emailName === "Congrats 01") {
+      if (emailName === 'Congrats 01') {
         const existUsers = await User.find({ email: { $in: emails } });
 
         const bulkEmailOperations = existUsers.map((existUser) => {
@@ -93,36 +93,9 @@ newsletterRouter.post(
             subject: emailType.subject,
             template: emailType.template,
             context: {
-              url: existUser.region === "NGN" ? "com" : "co.za",
+              url: existUser.region === 'NGN' ? 'com' : 'co.za',
               user: existUser.username,
               time: moment(existUser.createdAt).fromNow(true),
-            },
-          });
-        }
-      } else if (emailName === "Let Our Community") {
-        const existUsers = await User.find({ email: { $in: emails } });
-
-        const bulkEmailOperations = existUsers.map((existUser) => {
-          const email = existUser.email;
-          return {
-            updateOne: {
-              filter: { email: email },
-              update: {
-                $push: { sent: { emailName: emailName } },
-              },
-            },
-          };
-        });
-
-        await Newsletters.bulkWrite(bulkEmailOperations);
-        for (const existUser of existUsers) {
-          await sendEmail({
-            to: existUser.email,
-            subject: emailType.subject,
-            template: emailType.template,
-            context: {
-              url: existUser.region === "NGN" ? "com" : "co.za",
-              username: existUser.username,
             },
           });
         }
@@ -140,7 +113,7 @@ newsletterRouter.post(
             },
           };
         });
-        console.log("hellp");
+        console.log('hellp');
         await Newsletters.bulkWrite(bulkEmailOperations);
 
         for (const existEmail of existEmails) {
@@ -155,17 +128,17 @@ newsletterRouter.post(
         }
       }
 
-      res.status(200).send("Emails sent successfully");
+      res.status(200).send('Emails sent successfully');
     } catch (error) {
-      console.error("Failed to send emails:", error);
-      res.status(500).send("Failed to send emails");
+      console.error('Failed to send emails:', error);
+      res.status(500).send('Failed to send emails');
     }
   })
 );
 
 // add a email
 newsletterRouter.post(
-  "/:region",
+  '/:region',
   expressAsyncHandler(async (req, res) => {
     const { email, emailType } = req.body;
     const { region } = req.params;
@@ -174,12 +147,12 @@ newsletterRouter.post(
 
     if (newsletter) {
       newsletter.isDeleted = false;
-      newsletter.url = region === "NGN" ? "com" : "co.za";
+      newsletter.url = region === 'NGN' ? 'com' : 'co.za';
     } else {
       newsletter = new Newsletters({
         email,
         emailType,
-        url: region === "NGN" ? "com" : "co.za",
+        url: region === 'NGN' ? 'com' : 'co.za',
       });
     }
 
@@ -198,7 +171,7 @@ newsletterRouter.post(
 
 // delete any email with id
 newsletterRouter.delete(
-  "/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -215,17 +188,17 @@ newsletterRouter.delete(
         console.log(deletedNewsletter);
         res.status(200).send(deletedNewsletter);
       } else {
-        res.status(404).send("Newsletter not found");
+        res.status(404).send('Newsletter not found');
       }
     } catch (error) {
       console.log(error);
-      res.status(500).send("Internal server error");
+      res.status(500).send('Internal server error');
     }
   })
 );
 
 newsletterRouter.delete(
-  "/",
+  '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
@@ -242,10 +215,10 @@ newsletterRouter.delete(
         }
         res.status(200).send(newsletter);
       } else {
-        res.status(404).send("Newsletter not found");
+        res.status(404).send('Newsletter not found');
       }
     } catch (error) {
-      res.status(500).send("Internal server error");
+      res.status(500).send('Internal server error');
     }
   })
 );

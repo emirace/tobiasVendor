@@ -503,7 +503,10 @@ export const setTimer = async (
 
     // Convert days to milliseconds
     const milliseconds = days * 24 * 60 * 60 * 1000;
-    const beforeTime = 12 * 24 * 60 * 60 * 1000;
+    const beforeTime = 12 * 60 * 60 * 1000;
+
+    console.log(new Date(Date.now() + milliseconds - beforeTime));
+    console.log(new Date(Date.now() + milliseconds));
 
     const admins = await User.find({ isAdmin: true });
 
@@ -520,7 +523,7 @@ export const setTimer = async (
       createdAt: new Date(Date.now() + milliseconds - beforeTime),
     });
 
-    // Prepare an array of notifications to save
+    // // Prepare an array of notifications to save
     const notificationsToSave = admins.map((admin) => {
       return new Notification({
         userId: admin._id,
@@ -536,7 +539,7 @@ export const setTimer = async (
       });
     });
 
-    // Prepare an array of notifications to save
+    // // Prepare an array of notifications to save
     const notificationsToSave2 = admins.map((admin) => {
       return new Notification({
         userId: admin._id,
