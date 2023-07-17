@@ -77,3 +77,5 @@ const EditorComponent = () => {
     </div>
   );
 };
+
+export default EditorComponent;
