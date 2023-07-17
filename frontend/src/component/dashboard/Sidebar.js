@@ -252,6 +252,15 @@ export default function Sidebar({ current }) {
                 </ListItem>
               </Link>
 
+              <Link to="/dashboard/articles">
+                <ListItem
+                  mode={mode}
+                  className={current === "articles" ? "active" : ""}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} /> Articles
+                </ListItem>
+              </Link>
+
               <Link to="/dashboard/messages">
                 <ListItem
                   mode={mode}

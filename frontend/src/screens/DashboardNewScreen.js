@@ -30,6 +30,7 @@ import NewsletterList from "../component/dashboard/NewsletterList";
 import TransactionListUser from "../component/dashboard/TransactionListUser";
 import OtherBrand from "../component/dashboard/OtherBrand";
 import PurchaseReturn from "../component/dashboard/PurchaseReturn";
+import Articles from "../component/dashboard/Articles";
 
 const Container = styled.div`
   display: flex;
@@ -57,6 +58,8 @@ export default function DashboardNewScreen() {
         return <User />;
       case "categories":
         return <Categories />;
+      case "articles":
+        return <Articles />;
       case "newproduct":
         return <NewProduct />;
       case "productlist":

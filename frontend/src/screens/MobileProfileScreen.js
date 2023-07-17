@@ -15,6 +15,7 @@ import {
   faMessage,
   faMoneyBill,
   faMoneyBillTransfer,
+  faQuestion,
   faQuestionCircle,
   faRightFromBracket,
   faUser,
@@ -351,7 +352,13 @@ export default function MobileProfileScreen() {
               <FontAwesomeIcon icon={faListCheck} />
               Categories
             </MobileMenuItem>
-          </Link>{" "}
+          </Link>
+          <Link to="/dashboard/articles">
+            <MobileMenuItem>
+              <FontAwesomeIcon icon={faQuestion} />
+              Articles
+            </MobileMenuItem>
+          </Link>
           <Link to="/dashboard/messages">
             <MobileMenuItem>
               <FontAwesomeIcon icon={faEnvelope} />
