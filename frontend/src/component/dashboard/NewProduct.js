@@ -742,6 +742,17 @@ export default function NewProduct() {
       });
       return;
     }
+    if (tags.length > 5) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't add more five tags ",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     if (tag.length > 0) {
       tags.push(tag);
       handleOnChange("", "tag");
