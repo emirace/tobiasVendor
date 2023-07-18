@@ -209,8 +209,12 @@ export default function Product(props) {
   };
 
   const discount = () => {
-    if (product.price < product.actualPrice) return null;
-    return ((product.price - product.actualPrice) / product.price) * 100;
+    if (parseInt(product.price) < parseInt(product.actualPrice)) return null;
+    return (
+      ((parseInt(product.price) - parseInt(product.actualPrice)) /
+        parseInt(product.price)) *
+      100
+    );
   };
 
   return (
@@ -263,13 +267,13 @@ export default function Product(props) {
         <p className="product-short-desc1">{product.brand}</p>
         <span className="price1">
           {product.currency}
-          {product.actualPrice}
+          {parseInt(product.actualPrice)}
         </span>
-        {product.price &&
-          (product.price > product.actualPrice ? (
+        {parseInt(product.price) &&
+          (parseInt(product.price) > parseInt(product.actualPrice) ? (
             <span className="actual-price1">
               {product.currency}
-              {product.price}
+              {parseInt(product.price)}
             </span>
           ) : null)}
       </div>

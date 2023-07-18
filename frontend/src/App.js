@@ -118,6 +118,8 @@ const CartScreen = lazy(() => import("./screens/CartScreen"));
 const GigScreen = lazy(() => import("./screens/GigScreen"));
 
 const About = lazy(() => import("./component/info/About"));
+const ArticleListScreen = lazy(() => import("./screens/ArticleListScreen"));
+const ArticleScreen = lazy(() => import("./screens/ArticleScreen"));
 const PolicyScreen = lazy(() => import("./screens/PolicyScreen"));
 
 const NewProduct = lazy(() => import("./component/dashboard/NewProduct"));
@@ -437,6 +439,8 @@ function App() {
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />
+                      <Route path="/articles" element={<ArticleListScreen />} />
+                      <Route path="/article/:id" element={<ArticleScreen />} />
                       <Route path="/privacypolicy" element={<PolicyScreen />} />
                       <Route
                         path="/emailsent"

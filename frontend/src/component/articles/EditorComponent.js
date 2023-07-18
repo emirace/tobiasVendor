@@ -1,26 +1,75 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
 import {
   faEdit,
   faTrash,
   faImage,
   faLink,
   faParagraph,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { Store } from "../../Store";
+import { getError } from "../../utils";
 
-const EditorComponent = () => {
-  const [content, setContent] = useState([]);
+const EditorComponent = ({ topic, switchScreen, question }) => {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
+  const [content, setContent] = useState([
+    { type: "paragraph", content: "", id: Date.now().toString() },
+  ]);
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [linkText, setLinkText] = useState('');
-  const [linkUrl, setLinkUrl] = useState('');
-  const [editingLinkId, setEditingLinkId] = useState('');
+  const [linkText, setLinkText] = useState("");
+  const [linkUrl, setLinkUrl] = useState("");
+  const [editingLinkId, setEditingLinkId] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      // Make the POST request to the backend API
+      const { data } = await axios.post(
+        "/api/articles",
+        {
+          topic,
+          content,
+          question,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+
+      // Handle the response as needed
+      console.log(data);
+      // Do something with the response data, such as showing a success message
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Article created Successfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      switchScreen("list");
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.log(error);
+      // Show an error message or perform error handling
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
 
   const handleAddParagraph = () => {
     const newContent = [...content];
     newContent.push({
-      type: 'paragraph',
-      content: '',
+      type: "paragraph",
+      content: "",
       id: Date.now().toString(),
     });
     setContent(newContent);
@@ -32,8 +81,8 @@ const EditorComponent = () => {
 
   const handleLinkModalClose = () => {
     setShowLinkModal(false);
-    setLinkText('');
-    setLinkUrl('');
+    setLinkText("");
+    setLinkUrl("");
   };
   const handleLinkModalSubmit = () => {
     if (editingLinkId) {
@@ -48,7 +97,7 @@ const EditorComponent = () => {
       const newContent = [
         ...content,
         {
-          type: 'link',
+          type: "link",
           content: linkText,
           url: linkUrl,
           id: Date.now().toString(),
@@ -58,16 +107,16 @@ const EditorComponent = () => {
     }
 
     setShowLinkModal(false);
-    setLinkText('');
-    setLinkUrl('');
+    setLinkText("");
+    setLinkUrl("");
     setEditingLinkId(null);
   };
 
   const handleAddImage = () => {
     const newContent = [...content];
     newContent.push({
-      type: 'image',
-      content: '',
+      type: "image",
+      content: "",
       id: Date.now().toString(),
     });
     setContent(newContent);
@@ -82,7 +131,7 @@ const EditorComponent = () => {
     });
 
     const filteredContent = updatedContent.filter(
-      (item) => item.type !== 'paragraph' || item.content.trim() !== ''
+      (item) => item.type !== "paragraph" || item.content.trim() !== ""
     );
 
     setContent(filteredContent);
@@ -106,7 +155,7 @@ const EditorComponent = () => {
 
   const renderContent = () => {
     return content.map((item) => {
-      if (item.type === 'paragraph') {
+      if (item.type === "paragraph") {
         return (
           <p key={item.id}>
             <StyledTextarea
@@ -114,14 +163,14 @@ const EditorComponent = () => {
               value={item.content}
               onChange={(event) => handleParagraphChange(event, item.id)}
               onInput={(event) => {
-                event.target.style.height = 'auto';
-                event.target.style.height = event.target.scrollHeight + 'px';
+                event.target.style.height = "auto";
+                event.target.style.height = event.target.scrollHeight + "px";
               }}
             />
           </p>
         );
       }
-      if (item.type === 'link') {
+      if (item.type === "link") {
         return (
           <LinkWrapper key={item.id}>
             <StyledLink href={item.url}>{item.content}</StyledLink>
@@ -137,7 +186,7 @@ const EditorComponent = () => {
         );
       }
 
-      if (item.type === 'image') {
+      if (item.type === "image") {
         return <img key={item.id} src={item.content} alt="Preview" />;
       }
       return null;
@@ -146,6 +195,33 @@ const EditorComponent = () => {
 
   return (
     <Wrapper>
+      <ContentWrapper>
+        <h2>{question}</h2>
+        {renderContent()}
+      </ContentWrapper>
+      {showLinkModal && (
+        <ModalContainer>
+          <Modal>
+            <h3>{editingLinkId ? "Edit Link" : "Add Link"}</h3>
+            <TextInput
+              placeholder="Enter link text"
+              value={linkText}
+              onChange={(event) => setLinkText(event.target.value)}
+            />
+            <TextInput
+              placeholder="Enter link URL"
+              value={linkUrl}
+              onChange={(event) => setLinkUrl(event.target.value)}
+            />
+            <ButtonContainer>
+              <CancelButton onClick={handleLinkModalClose}>Cancel</CancelButton>
+              <AddButton onClick={handleLinkModalSubmit}>
+                {editingLinkId ? "Update" : "Add"}
+              </AddButton>
+            </ButtonContainer>
+          </Modal>
+        </ModalContainer>
+      )}
       <ButtonContainer>
         <Button onClick={handleAddParagraph}>
           <FontAwesomeIcon icon={faParagraph} />
@@ -160,33 +236,9 @@ const EditorComponent = () => {
           Add Image
         </Button>
       </ButtonContainer>
-      <ContentWrapper>
-        <h2>Live Preview:</h2>
-        {renderContent()}
-      </ContentWrapper>
-      {showLinkModal && (
-        <ModalContainer>
-          <Modal>
-            <h3>{editingLinkId ? 'Edit Link' : 'Add Link'}</h3>
-            <TextInput
-              placeholder="Enter link text"
-              value={linkText}
-              onChange={(event) => setLinkText(event.target.value)}
-            />
-            <TextInput
-              placeholder="Enter link URL"
-              value={linkUrl}
-              onChange={(event) => setLinkUrl(event.target.value)}
-            />
-            <ButtonContainer>
-              <CancelButton onClick={handleLinkModalClose}>Cancel</CancelButton>
-              <AddButton onClick={handleLinkModalSubmit}>
-                {editingLinkId ? 'Update' : 'Add'}
-              </AddButton>
-            </ButtonContainer>
-          </Modal>
-        </ModalContainer>
-      )}
+      <div>
+        <Button onClick={handleSubmit}>Create Article</Button>
+      </div>
     </Wrapper>
   );
 };
@@ -198,7 +250,7 @@ const Wrapper = styled.div`
 `;
 
 const Button = styled.button`
-  background-color: #4caf50;
+  background-color: var(--orange-color);
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -285,7 +337,7 @@ const CancelButton = styled.button`
 `;
 
 const AddButton = styled.button`
-  background-color: #4caf50;
+  background-color: var(--orange-color);
   color: #fff;
   padding: 8px 16px;
   border: none;

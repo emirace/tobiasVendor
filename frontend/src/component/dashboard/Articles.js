@@ -1,17 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import EditorComponent from "../EditorComponent";
+import ArticleListScreen from "../articles/ArticleListScreen";
+import CreateScreen from "../articles/CreateScreen";
+import NewTopicScreen from "../articles/NewTopicScreen";
+import EditorComponent from "../articles/EditorComponent";
 
 const Container = styled.div`
   flex: 4;
+  padding: 0 20px;
 `;
 
 export default function Articles() {
+  const [currentScreen, setCurrentScreen] = useState("list");
+  const [topic, setTopic] = useState("");
+  const [question, setQuestion] = useState("");
+
+  const switchScreen = (screen) => {
+    setCurrentScreen(screen);
+  };
+
   return (
     <Container>
-      <div>Articles</div>
-
-      <EditorComponent />
+      {currentScreen === "list" && (
+        <ArticleListScreen switchScreen={switchScreen} />
+      )}
+      {currentScreen === "create" && (
+        <CreateScreen switchScreen={switchScreen} />
+      )}
+      {currentScreen === "newtopic" && (
+        <NewTopicScreen
+          switchScreen={switchScreen}
+          topic={topic}
+          setTopic={setTopic}
+          question={question}
+          setQuestion={setQuestion}
+        />
+      )}
+      {currentScreen === "new" && (
+        <EditorComponent
+          switchScreen={switchScreen}
+          topic={topic}
+          question={question}
+        />
+      )}
     </Container>
   );
 }

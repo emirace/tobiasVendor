@@ -5,25 +5,25 @@ import {
   faHandshake,
   faHashtag,
   faTruckFast,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import '../style/Footer.css';
-import Newletter from './Newletter';
-import { ReactComponent as FacebookIcon } from './../icons/Icons-19.svg';
-import { ReactComponent as Twitter } from './../icons/Icons-21.svg';
-import { ReactComponent as InstagramIcon } from './../icons/Icons-20.svg';
-import { Link } from 'react-router-dom';
-import { ReactComponent as Phone } from './../icons/Icons-02.svg';
-import { ReactComponent as Mail } from './../icons/Icons-04.svg';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../Store";
+import "../style/Footer.css";
+import Newletter from "./Newletter";
+import { ReactComponent as FacebookIcon } from "./../icons/Icons-19.svg";
+import { ReactComponent as Twitter } from "./../icons/Icons-21.svg";
+import { ReactComponent as InstagramIcon } from "./../icons/Icons-20.svg";
+import { Link } from "react-router-dom";
+import { ReactComponent as Phone } from "./../icons/Icons-02.svg";
+import { ReactComponent as Mail } from "./../icons/Icons-04.svg";
 
 const CopyRight = styled.div`
-  background: ${(props) => (props.back ? '#000' : '#fff')};
+  background: ${(props) => (props.back ? "#000" : "#fff")};
   display: flex;
   justify-content: center;
-  color: ${(props) => (props.back ? '#fff' : '#000')};
+  color: ${(props) => (props.back ? "#fff" : "#000")};
   height: 50px;
   align-items: center;
   font-size: 14px;
@@ -39,7 +39,7 @@ const CopyRight = styled.div`
 const SmDetail = styled.p`
   display: none;
   position: relative;
-  height: ${(props) => (props.show ? 'auto' : 0)};
+  height: ${(props) => (props.show ? "auto" : 0)};
   overflow: hidden;
   transition: 0.5s;
   @media (max-width: 992px) {
@@ -55,12 +55,12 @@ const SmTitle = styled.div`
   position: relative;
   cursor: pointer;
   &::before {
-    content: ' ';
+    content: " ";
     width: 10px;
     height: 10px;
     border-bottom: 1px solid;
     border-left: 1px solid;
-    transform: rotate(${(props) => (!props.show ? '-45deg' : '135deg')})
+    transform: rotate(${(props) => (!props.show ? "-45deg" : "135deg")})
       translateY(-50%);
     position: absolute;
     top: 50%;
@@ -111,7 +111,7 @@ const Reserve = styled.div`
 const MFooterCenter = styled.div`
   display: none;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   padding: 20px;
   margin: 10px 0;
   @media (max-width: 992px) {
@@ -128,7 +128,7 @@ const DFooterCenter = styled.div`
 const About = styled.p`
   @media (max-width: 992px) {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   }
 `;
 
@@ -139,12 +139,12 @@ const NavHeader = styled.h3`
   line-height: 1.83;
   margin-bottom: 15px;
   &::before {
-    content: ' ';
+    content: " ";
     width: 10px;
     height: 10px;
     border-bottom: 1px solid;
     border-left: 1px solid;
-    transform: rotate(${(props) => (!props.show ? '-45deg' : '135deg')})
+    transform: rotate(${(props) => (!props.show ? "-45deg" : "135deg")})
       translateY(-50%);
     position: absolute;
     right: 20px;
@@ -155,7 +155,7 @@ export default function Footer() {
   const { state } = useContext(Store);
   const { mode } = state;
   const backMode = (mode) => {
-    if (mode === 'pagebodydark') {
+    if (mode === "pagebodydark") {
       mode = false;
     } else {
       mode = true;
@@ -176,16 +176,16 @@ export default function Footer() {
 
   const toggleCollapse = (type) => {
     switch (type) {
-      case 'shipMethod1':
+      case "shipMethod1":
         setShippingMethod1(!shipMethod1);
         break;
-      case 'shipMethod2':
+      case "shipMethod2":
         setShippingMethod2(!shipMethod2);
         break;
-      case 'shipMethod3':
+      case "shipMethod3":
         setShippingMethod3(!shipMethod3);
         break;
-      case 'shipMethod4':
+      case "shipMethod4":
         setShippingMethod4(!shipMethod4);
         break;
       default:
@@ -201,7 +201,7 @@ export default function Footer() {
           alt=""
         ></img>
         <div className="bg_malon">
-          <div className="container " style={{ margin: '5px 0' }}>
+          <div className="container " style={{ margin: "5px 0" }}>
             <div className="row d-flex justify-content-between ">
               <div className="col-lg-3 col-md-6 col-sm-12">
                 <div className="single-method ">
@@ -211,17 +211,17 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod1}
-                    onClick={() => toggleCollapse('shipMethod1')}
+                    onClick={() => toggleCollapse("shipMethod1")}
                   >
                     <FontAwesomeIcon icon={faTruckFast} />
                     Free Shipping with RE:BUNDLE
                   </SmTitle>
                   <SmDetail show={shipMethod1}>
                     Get free shipping when you shop on Repeddle App or Website,
-                    using Re:Bundle. Discover{' '}
+                    using Re:Bundle. Discover{" "}
                     <Link
                       to="rebundle"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       how
                     </Link>
@@ -231,10 +231,10 @@ export default function Footer() {
                   </h6>
                   <p className="d-none d-lg-block">
                     Get free shipping when you shop on Repeddle App or Website,
-                    using Re:Bundle. Discover{' '}
+                    using Re:Bundle. Discover{" "}
                     <Link
                       to="rebundle"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       how
                     </Link>
@@ -249,17 +249,17 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod2}
-                    onClick={() => toggleCollapse('shipMethod2')}
+                    onClick={() => toggleCollapse("shipMethod2")}
                   >
                     <FontAwesomeIcon icon={faCreditCard} />
                     Secure, Easy and Protected Payments
                   </SmTitle>
                   <SmDetail show={shipMethod2}>
                     With every item you buy using the complete checkout on our
-                    App or Website, you are guaranteed 100% money back. Find out{' '}
+                    App or Website, you are guaranteed 100% money back. Find out{" "}
                     <Link
                       to="protections"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       more
                     </Link>
@@ -269,10 +269,10 @@ export default function Footer() {
                   </h6>
                   <p className="d-none d-lg-block">
                     With every item you buy using the complete CHECKOUT on our
-                    App or Website, you are guaranteed 100% money back. Find out{' '}
+                    App or Website, you are guaranteed 100% money back. Find out{" "}
                     <Link
                       to="protections"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       more
                     </Link>
@@ -287,7 +287,7 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod3}
-                    onClick={() => toggleCollapse('shipMethod3')}
+                    onClick={() => toggleCollapse("shipMethod3")}
                   >
                     <FontAwesomeIcon icon={faHandshake} />
                     Community Engagement
@@ -320,7 +320,7 @@ export default function Footer() {
                   />
                   <SmTitle
                     show={shipMethod3}
-                    onClick={() => toggleCollapse('shipMethod4')}
+                    onClick={() => toggleCollapse("shipMethod4")}
                   >
                     <FontAwesomeIcon icon={faGlobe} />
                     Repeddle Sustainability Impact
@@ -330,10 +330,10 @@ export default function Footer() {
                     and polluting industry in the world. With the help of our
                     community, we can drastically reduce this impact in Africa
                     and make our environment and planet, a more livable place.
-                    Learn{' '}
+                    Learn{" "}
                     <Link
                       to="/sustainability"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       more
                     </Link>
@@ -346,10 +346,10 @@ export default function Footer() {
                     and polluting industry in the world. With the help of our
                     community, we can drastically reduce this impact in Africa
                     and make our environment and planet, a more livable place.
-                    Learn{' '}
+                    Learn{" "}
                     <Link
                       to="/sustainability"
-                      style={{ color: 'var(--orange-color)' }}
+                      style={{ color: "var(--orange-color)" }}
                     >
                       how
                     </Link>
@@ -392,9 +392,9 @@ export default function Footer() {
             <Link to="/">
               <LogoImage
                 src={
-                  mode === 'pagebodydark'
-                    ? 'https://res.cloudinary.com/emirace/image/upload/v1659377710/Repeddle-White_pani6a.gif'
-                    : 'https://res.cloudinary.com/emirace/image/upload/v1659377672/Repeddle-Black_eko2g5.gif'
+                  mode === "pagebodydark"
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1659377710/Repeddle-White_pani6a.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1659377672/Repeddle-Black_eko2g5.gif"
                 }
               />
             </Link>
@@ -409,7 +409,7 @@ export default function Footer() {
             one loving home at a time. Let’s peddle and thrift.
           </About>
           <div className="footer_connect">
-            <b style={{ textTransform: 'uppercase' }}>Connect with us: </b>
+            <b style={{ textTransform: "uppercase" }}>Connect with us: </b>
             <span> We're Social, Let's Make It Media:</span>
           </div>
           <div className="footer_social">
@@ -447,7 +447,7 @@ export default function Footer() {
                 <Link to="/">Support Center</Link>
               </li>
               <li className="footer_center_listitem">
-                <Link to="/">FAQ</Link>
+                <Link to="/articles">FAQ</Link>
               </li>
               <li className="footer_center_listitem">
                 <Link to="/returns">Returns & Refund</Link>
@@ -552,7 +552,7 @@ export default function Footer() {
                   <Link to="/">Support Center</Link>
                 </li>
                 <li className="footer_center_listitem">
-                  <Link to="/">FAQ</Link>
+                  <Link to="/articles">FAQ</Link>
                 </li>
                 <li className="footer_center_listitem">
                   <Link to="/returns">Returns & Refund</Link>

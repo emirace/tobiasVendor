@@ -208,6 +208,7 @@ const Tag = styled.div`
   border: 1px solid;
   padding: 0 10px;
   border-radius: 10px;
+  margin: 2px;
 `;
 
 const SustainCont = styled.div`
@@ -1103,8 +1104,12 @@ export default function ProductScreen() {
   };
 
   const discount = () => {
-    if (product.price < product.actualPrice) return null;
-    return ((product.price - product.actualPrice) / product.price) * 100;
+    if (parseInt(product.price) < parseInt(product.actualPrice)) return null;
+    return (
+      ((parseInt(product.price) - parseInt(product.actualPrice)) /
+        parseInt(product.price)) *
+      100
+    );
   };
 
   const [onlineUser, setOnlineUser] = useState([]);
@@ -1368,12 +1373,12 @@ export default function ProductScreen() {
           <div className="sp_price_detail">
             <div className="sp_actual_price">
               {product.currency}
-              {product.actualPrice}
+              {parseInt(product.actualPrice)}
             </div>
-            {product.actualPrice !== product.price ? (
+            {parseInt(product.actualPrice) < parseInt(product.price) ? (
               <div className="sp_discount_price">
                 {product.currenncy}
-                {product.price}
+                {parseInt(product.price)}
               </div>
             ) : null}
             {discount() ? (
@@ -1386,11 +1391,13 @@ export default function ProductScreen() {
           </div>
           <Taglist>
             Tags:
-            {product.tags.map((t) => (
-              <Link to={`/search?query=${t}`}>
-                <Tag>{t}</Tag>
-              </Link>
-            ))}
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {product.tags.map((t) => (
+                <Link to={`/search?query=${t}`}>
+                  <Tag>{t}</Tag>
+                </Link>
+              ))}
+            </div>
           </Taglist>
           <div className="">
             {product.sizes.length > 0 && (
@@ -1467,7 +1474,7 @@ export default function ProductScreen() {
                         <TableCell>Price</TableCell>
                         <TableCell>
                           {product.currency}
-                          {product.actualPrice}
+                          {parseInt(product.actualPrice)}
                         </TableCell>
                       </TableRow>
                       <TableRow mode={mode}>
@@ -1500,7 +1507,7 @@ export default function ProductScreen() {
                   <RightOverview>
                     <Value>
                       {product.currency}
-                      {product.actualPrice}
+                      {parseInt(product.actualPrice)}
                     </Value>
                     <Value>{product.brand}</Value>
                     <Value>{product.category}</Value>

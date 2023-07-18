@@ -706,6 +706,17 @@ export default function NewProduct() {
   }, [brandQuery]);
 
   const sizeHandler = (sizenow) => {
+    if (!sizenow) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please enter size",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     const exist = sizes.filter((s) => {
       return s.size === sizenow;
     });
@@ -720,6 +731,17 @@ export default function NewProduct() {
     setInput((prev) => ({ ...prev, selectedSize: "" }));
   };
   const handleTags = (tag) => {
+    if (tag.includes(" ")) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Please remove unnecessary space",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     if (tag.length > 0) {
       tags.push(tag);
       handleOnChange("", "tag");
@@ -1044,8 +1066,12 @@ export default function NewProduct() {
   };
 
   const discount = () => {
-    if (input.price < input.discount) return null;
-    return ((input.price - input.discount) / input.price) * 100;
+    if (parseInt(input.price) < parseInt(input.discount)) return null;
+    return (
+      ((parseInt(input.price) - parseInt(input.discount)) /
+        parseInt(input.price)) *
+      100
+    );
   };
 
   return (
@@ -1707,7 +1733,9 @@ export default function NewProduct() {
                       }
                     />
                     {discount() ? (
-                      <span className=" ">{discount().toFixed(0)}%</span>
+                      <span style={{ fontSize: "11px" }}>
+                        {discount().toFixed(0)}% discount
+                      </span>
                     ) : null}
                   </Discount>
                 </Item>
@@ -1719,7 +1747,7 @@ export default function NewProduct() {
                 </Offer>
                 <Actual>
                   {input.discount
-                    ? input.discount < input.price
+                    ? parseInt(input.discount) < parseInt(input.price)
                       ? `${currency}${input.price}`
                       : null
                     : null}
@@ -2192,7 +2220,7 @@ export default function NewProduct() {
                 </ModelLogin>
               </Item>
               <Item>
-                <Label>Add Tags #</Label>
+                <Label>Add Tags</Label>
                 <TagCont>
                   <TagInputCont>
                     <TagInput
