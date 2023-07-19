@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components";
-import { Store } from "../../Store";
+import React, { useContext, useState } from 'react';
+import styled from 'styled-components';
+import { Store } from '../../Store';
 
 const Container = styled.div`
   max-width: 800px;
@@ -91,34 +91,34 @@ const NewTopicScreen = ({
     e.preventDefault();
     if (!topic || !question) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Fill all fields",
+          message: 'Fill all fields',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     // Save the new topic and perform necessary actions
     // Redirect to the desired screen
-    switchScreen("new");
+    switchScreen('new');
   };
 
   const handleCancel = () => {
     if (editId) {
-      setTopic("");
-      setQuestion("");
+      setTopic('');
+      setQuestion('');
       setEditId(null);
-      switchScreen("list");
+      switchScreen('list');
     } else {
-      switchScreen("create");
+      switchScreen('create');
     }
   };
 
   return (
     <Container>
-      <Title>Create New Topic</Title>
+      <Title>Create Article</Title>
       <Form onSubmit={handleSubmit}>
         <Label>Topic</Label>
         <Input
@@ -127,7 +127,7 @@ const NewTopicScreen = ({
           onChange={handleTitleChange}
           placeholder="Enter the topic this article belongs to"
         />
-        <Label>Title</Label>
+        <Label>Question</Label>
         <Input
           type="text"
           value={question}
@@ -136,7 +136,7 @@ const NewTopicScreen = ({
         />
         <ButtonGroup>
           <CreateButton type="submit">Create</CreateButton>
-          <CancelButton onClick={handleCancel}>Cancel</CancelButton>
+          <CancelButton onClick={handleCancel}>Back</CancelButton>
         </ButtonGroup>
       </Form>
     </Container>

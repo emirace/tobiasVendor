@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
-import { useParams, Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import { useParams, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
   max-width: 800px;
@@ -93,6 +93,10 @@ const SearchBox = styled.input`
     margin-bottom: 0;
     margin-left: 10px;
   }
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const ArticleScreen = () => {
@@ -116,11 +120,76 @@ const ArticleScreen = () => {
     return <div>Loading...</div>;
   }
 
+  const renderContent = () => {
+    let renderedContent = [];
+
+    for (let i = 0; i < article.content.length; i++) {
+      const item = article.content[i];
+
+      if (item.type === 'paragraph') {
+        renderedContent.push(<p key={i}>{item.content}</p>);
+      } else if (item.type === 'link') {
+        let linkContent = item.text;
+
+        // Check if the previous item and next item are paragraphs
+        const prevItem = article.content[i - 1];
+        const nextItem = article.content[i + 1];
+
+        if (
+          prevItem &&
+          prevItem.type === 'paragraph' &&
+          nextItem &&
+          nextItem.type === 'paragraph'
+        ) {
+          // Add the link content within the previous paragraph
+          renderedContent[renderedContent.length - 1] = (
+            <p key={i}>
+              {prevItem.content}
+              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                {linkContent}
+              </a>
+              {nextItem.content}
+            </p>
+          );
+        } else if (
+          prevItem &&
+          prevItem.type === 'paragraph' &&
+          nextItem &&
+          nextItem.type !== 'paragraph'
+        ) {
+          // Add the link content within the previous paragraph
+          renderedContent[renderedContent.length - 1] = (
+            <p key={i}>
+              {prevItem.content}
+              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                {linkContent}
+              </a>
+              {/* {nextItem ? nextItem.content : ""} */}
+            </p>
+          );
+        } else {
+          // Render the link as a separate paragraph
+          renderedContent.push(
+            <p key={i}>
+              <a href={item.url} target="_blank" rel="noopener noreferrer">
+                {linkContent}
+              </a>
+            </p>
+          );
+        }
+      } else if (item.type === 'image') {
+        renderedContent.push(<img key={i} src={item.url} alt={item.alt} />);
+      }
+    }
+
+    return renderedContent;
+  };
+
   return (
     <Container>
       <TopRow>
         <Breadcrumbs>
-          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{" "}
+          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{' '}
           {article.topic}
         </Breadcrumbs>
         <SearchBoxContainer>
@@ -129,25 +198,7 @@ const ArticleScreen = () => {
         </SearchBoxContainer>
       </TopRow>
       <Title>{article.question}</Title>
-      <Content>
-        {article.content.map((item, index) => {
-          if (item.type === "paragraph") {
-            return <p key={index}>{item.content}</p>;
-          } else if (item.type === "link") {
-            return (
-              <p key={index}>
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  {item.text}
-                </a>
-              </p>
-            );
-          } else if (item.type === "image") {
-            return <img key={index} src={item.url} alt={item.alt} />;
-          } else {
-            return null;
-          }
-        })}
-      </Content>
+      <Content>{renderContent()}</Content>
     </Container>
   );
 };

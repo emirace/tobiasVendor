@@ -10,15 +10,17 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
 import { Store } from '../../Store';
-import { getError } from '../../utils';
+import { compressImageUpload, getError } from '../../utils';
 import { resizeImage } from '../ImageUploader';
 
-const EditorComponent = ({ topic, switchScreen, question }) => {
+const EditorComponent = ({ topic, switchScreen, question, editId }) => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo, mode } = state;
-  const [content, setContent] = useState([
-    { type: 'paragraph', content: '', id: Date.now().toString() },
-  ]);
+  const [content, setContent] = useState(
+    editId
+      ? editId.content
+      : [{ type: 'paragraph', content: '', id: Date.now().toString() }]
+  );
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkText, setLinkText] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
@@ -66,6 +68,47 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
     }
   };
 
+  const handleUpdate = async () => {
+    try {
+      // Make the POST request to the backend API
+      const { data } = await axios.put(
+        `/api/articles/${editId._id}`,
+        {
+          topic,
+          content,
+          question,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+
+      // Handle the response as needed
+      console.log(data);
+      // Do something with the response data, such as showing a success message
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: 'Article created Successfully',
+          showStatus: true,
+          state1: 'visible1 success',
+        },
+      });
+      switchScreen('list');
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.log(error);
+      // Show an error message or perform error handling
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+    }
+  };
   const handleAddParagraph = () => {
     const newContent = [...content];
     newContent.push({
@@ -113,27 +156,6 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
     setEditingLinkId(null);
   };
 
-  const [invalidImage, setInvalidImage] = useState('');
-  const [resizeImage1, setResizeImage] = useState({
-    file: [],
-    filepreview: null,
-  });
-  useEffect(() => {
-    const uploadImage = async () => {
-      try {
-        if (!invalidImage && resizeImage1.filepreview) {
-        }
-      } catch (err) {
-        console.log(getError(err));
-      }
-    };
-    uploadImage();
-  }, [resizeImage1]);
-
-  const handleImageUpload = async (e) => {
-    resizeImage(e, setInvalidImage, setResizeImage);
-  };
-
   const handleAddImage = async () => {
     try {
       const fileInput = document.createElement('input');
@@ -142,18 +164,8 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
       fileInput.onchange = async (event) => {
         const file = event.target.files[0];
 
-        const formData = new FormData();
-        formData.append('image', file);
-
         try {
-          const { data } = await axios.post('/api/upload', formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${userInfo.token}`,
-            },
-          });
-
-          const imageUrl = data.url;
+          const imageUrl = await compressImageUpload(file, 1024);
           const newContent = [
             ...content,
             {
@@ -323,7 +335,11 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
         {renderButton(handleAddImage, faImage, 'Add Image')}
       </ButtonContainer>
       <div>
-        <Button onClick={handleSubmit}>Create Article</Button>
+        {editId ? (
+          <Button onClick={handleUpdate}>Update Article</Button>
+        ) : (
+          <Button onClick={handleSubmit}>Create Article</Button>
+        )}
       </div>
     </Wrapper>
   );

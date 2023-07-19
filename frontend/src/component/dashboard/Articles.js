@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import ArticleListScreen from "../articles/ArticleListScreen";
-import CreateScreen from "../articles/CreateScreen";
-import NewTopicScreen from "../articles/NewTopicScreen";
-import EditorComponent from "../articles/EditorComponent";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import ArticleListScreen from '../articles/ArticleListScreen';
+import CreateScreen from '../articles/CreateScreen';
+import NewTopicScreen from '../articles/NewTopicScreen';
+import EditorComponent from '../articles/EditorComponent';
+import TopicScreen from '../articles/TopicScreen';
 
 const Container = styled.div`
   flex: 4;
@@ -11,9 +12,9 @@ const Container = styled.div`
 `;
 
 export default function Articles() {
-  const [currentScreen, setCurrentScreen] = useState("list");
-  const [topic, setTopic] = useState("");
-  const [question, setQuestion] = useState("");
+  const [currentScreen, setCurrentScreen] = useState('list');
+  const [topic, setTopic] = useState('');
+  const [question, setQuestion] = useState('');
   const [editId, setEditId] = useState(null);
 
   const switchScreen = (screen) => {
@@ -22,7 +23,7 @@ export default function Articles() {
 
   return (
     <Container>
-      {currentScreen === "list" && (
+      {currentScreen === 'list' && (
         <ArticleListScreen
           switchScreen={switchScreen}
           setTopic={setTopic}
@@ -30,10 +31,10 @@ export default function Articles() {
           setEditId={setEditId}
         />
       )}
-      {currentScreen === "create" && (
+      {currentScreen === 'create' && (
         <CreateScreen switchScreen={switchScreen} />
       )}
-      {currentScreen === "newtopic" && (
+      {currentScreen === 'newtopic' && (
         <NewTopicScreen
           switchScreen={switchScreen}
           topic={topic}
@@ -44,13 +45,16 @@ export default function Articles() {
           setEditId={setEditId}
         />
       )}
-      {currentScreen === "new" && (
+      {currentScreen === 'new' && (
         <EditorComponent
           switchScreen={switchScreen}
           topic={topic}
           question={question}
           editId={editId}
         />
+      )}
+      {currentScreen === 'selecttopic' && (
+        <TopicScreen switchScreen={switchScreen} setTopic={setTopic} />
       )}
     </Container>
   );
