@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
 const Container = styled.div`
   max-width: 800px;
@@ -21,6 +21,9 @@ const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const OptionButton = styled.button`
@@ -29,8 +32,8 @@ const OptionButton = styled.button`
   font-size: 16px;
   margin: 0 10px;
   background-color: ${({ selected }) =>
-    selected ? "var(--malon-color)" : "#fff"};
-  color: ${({ selected }) => (selected ? "#fff" : "var(--malon-color)")};
+    selected ? 'var(--malon-color)' : '#fff'};
+  color: ${({ selected }) => (selected ? '#fff' : 'var(--malon-color)')};
   border: 1px solid var(--malon-color);
   border-radius: 4px;
   cursor: pointer;
@@ -78,38 +81,38 @@ const CancelButton = styled.button`
 
 const options = [
   {
-    value: "new",
-    label: "Create from New Topic",
-    description: "Create a new article based on a completely new topic.",
+    value: 'new',
+    label: 'Create from New Topic',
+    description: 'Create a new article based on a completely new topic.',
     details:
-      "Start from scratch and create an article on a topic that does not exist in the system.",
+      'Start from scratch and create an article on a topic that does not exist in the system.',
   },
   {
-    value: "existing",
-    label: "Create from Existing Topic",
-    description: "Create a new article based on an existing topic.",
+    value: 'existing',
+    label: 'Create from Existing Topic',
+    description: 'Create a new article based on an existing topic.',
     details:
-      "Choose a topic that already exists in the system and create an article related to it.",
+      'Choose a topic that already exists in the system and create an article related to it.',
   },
 ];
 
 const CreateScreen = ({ switchScreen }) => {
-  const [createOption, setCreateOption] = useState("");
+  const [createOption, setCreateOption] = useState('');
 
   const handleOptionSelect = (option) => {
     setCreateOption(option);
   };
 
   const handleContinue = () => {
-    if (createOption === "new") {
-      switchScreen("newtopic");
-    } else if (createOption === "existing") {
-      switchScreen("list");
+    if (createOption === 'new') {
+      switchScreen('newtopic');
+    } else if (createOption === 'existing') {
+      switchScreen('list');
     }
   };
 
   const handleCancel = () => {
-    switchScreen("list");
+    switchScreen('list');
   };
 
   const renderOptionDetails = (option) => {

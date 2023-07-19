@@ -1,33 +1,34 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components";
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   faEdit,
   faTrash,
   faImage,
   faLink,
   faParagraph,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import { Store } from "../../Store";
-import { getError } from "../../utils";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import { Store } from '../../Store';
+import { getError } from '../../utils';
+import { resizeImage } from '../ImageUploader';
 
 const EditorComponent = ({ topic, switchScreen, question }) => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
+  const { userInfo, mode } = state;
   const [content, setContent] = useState([
-    { type: "paragraph", content: "", id: Date.now().toString() },
+    { type: 'paragraph', content: '', id: Date.now().toString() },
   ]);
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [linkText, setLinkText] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
-  const [editingLinkId, setEditingLinkId] = useState("");
+  const [linkText, setLinkText] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const [editingLinkId, setEditingLinkId] = useState('');
 
   const handleSubmit = async () => {
     try {
       // Make the POST request to the backend API
       const { data } = await axios.post(
-        "/api/articles",
+        '/api/articles',
         {
           topic,
           content,
@@ -42,24 +43,24 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
       console.log(data);
       // Do something with the response data, such as showing a success message
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Article created Successfully",
+          message: 'Article created Successfully',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
-      switchScreen("list");
+      switchScreen('list');
     } catch (error) {
       // Handle any errors that occur during the request
       console.log(error);
       // Show an error message or perform error handling
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(error),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -68,8 +69,8 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
   const handleAddParagraph = () => {
     const newContent = [...content];
     newContent.push({
-      type: "paragraph",
-      content: "",
+      type: 'paragraph',
+      content: '',
       id: Date.now().toString(),
     });
     setContent(newContent);
@@ -81,8 +82,8 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
 
   const handleLinkModalClose = () => {
     setShowLinkModal(false);
-    setLinkText("");
-    setLinkUrl("");
+    setLinkText('');
+    setLinkUrl('');
   };
   const handleLinkModalSubmit = () => {
     if (editingLinkId) {
@@ -97,7 +98,7 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
       const newContent = [
         ...content,
         {
-          type: "link",
+          type: 'link',
           content: linkText,
           url: linkUrl,
           id: Date.now().toString(),
@@ -107,19 +108,86 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
     }
 
     setShowLinkModal(false);
-    setLinkText("");
-    setLinkUrl("");
+    setLinkText('');
+    setLinkUrl('');
     setEditingLinkId(null);
   };
 
-  const handleAddImage = () => {
-    const newContent = [...content];
-    newContent.push({
-      type: "image",
-      content: "",
-      id: Date.now().toString(),
-    });
-    setContent(newContent);
+  const [invalidImage, setInvalidImage] = useState('');
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage = async () => {
+      try {
+        if (!invalidImage && resizeImage1.filepreview) {
+        }
+      } catch (err) {
+        console.log(getError(err));
+      }
+    };
+    uploadImage();
+  }, [resizeImage1]);
+
+  const handleImageUpload = async (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
+  };
+
+  const handleAddImage = async () => {
+    try {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
+      fileInput.onchange = async (event) => {
+        const file = event.target.files[0];
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const { data } = await axios.post('/api/upload', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          });
+
+          const imageUrl = data.url;
+          const newContent = [
+            ...content,
+            {
+              type: 'image',
+              content: imageUrl,
+              id: Date.now().toString(),
+            },
+          ];
+          setContent(newContent);
+        } catch (error) {
+          console.log(error);
+          ctxDispatch({
+            type: 'SHOW_TOAST',
+            payload: {
+              message: getError(error),
+              showStatus: true,
+              state1: 'visible1 error',
+            },
+          });
+        }
+      };
+
+      fileInput.click();
+    } catch (error) {
+      console.log(error);
+      ctxDispatch({
+        type: 'SHOW_TOAST',
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: 'visible1 error',
+        },
+      });
+    }
   };
 
   const handleParagraphChange = (event, id) => {
@@ -131,7 +199,7 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
     });
 
     const filteredContent = updatedContent.filter(
-      (item) => item.type !== "paragraph" || item.content.trim() !== ""
+      (item) => item.type !== 'paragraph' || item.content.trim() !== ''
     );
 
     setContent(filteredContent);
@@ -155,22 +223,24 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
 
   const renderContent = () => {
     return content.map((item) => {
-      if (item.type === "paragraph") {
+      if (item.type === 'paragraph') {
         return (
           <p key={item.id}>
             <StyledTextarea
+              mode={mode}
               autoFocus
+              placeholder="Start typing"
               value={item.content}
               onChange={(event) => handleParagraphChange(event, item.id)}
               onInput={(event) => {
-                event.target.style.height = "auto";
-                event.target.style.height = event.target.scrollHeight + "px";
+                event.target.style.height = 'auto';
+                event.target.style.height = event.target.scrollHeight + 'px';
               }}
             />
           </p>
         );
       }
-      if (item.type === "link") {
+      if (item.type === 'link') {
         return (
           <LinkWrapper key={item.id}>
             <StyledLink href={item.url}>{item.content}</StyledLink>
@@ -186,11 +256,36 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
         );
       }
 
-      if (item.type === "image") {
+      if (item.type === 'image') {
         return <img key={item.id} src={item.content} alt="Preview" />;
       }
       return null;
     });
+  };
+
+  // Function to determine if the current screen is mobile
+  const isMobileScreen = () => {
+    // Adjust the maximum width value according to your specific breakpoint
+    return window.innerWidth <= 768;
+  };
+
+  // Function to render a button with or without text based on screen size
+  const renderButton = (onClick, icon, text) => {
+    if (isMobileScreen()) {
+      return (
+        <Button onClick={onClick}>
+          <FontAwesomeIcon icon={icon} />
+        </Button>
+      );
+    } else {
+      return (
+        <Button onClick={onClick}>
+          <FontAwesomeIcon icon={icon} />
+          text
+          {text}
+        </Button>
+      );
+    }
   };
 
   return (
@@ -202,7 +297,7 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
       {showLinkModal && (
         <ModalContainer>
           <Modal>
-            <h3>{editingLinkId ? "Edit Link" : "Add Link"}</h3>
+            <h3>{editingLinkId ? 'Edit Link' : 'Add Link'}</h3>
             <TextInput
               placeholder="Enter link text"
               value={linkText}
@@ -216,25 +311,16 @@ const EditorComponent = ({ topic, switchScreen, question }) => {
             <ButtonContainer>
               <CancelButton onClick={handleLinkModalClose}>Cancel</CancelButton>
               <AddButton onClick={handleLinkModalSubmit}>
-                {editingLinkId ? "Update" : "Add"}
+                {editingLinkId ? 'Update' : 'Add'}
               </AddButton>
             </ButtonContainer>
           </Modal>
         </ModalContainer>
       )}
       <ButtonContainer>
-        <Button onClick={handleAddParagraph}>
-          <FontAwesomeIcon icon={faParagraph} />
-          Add Paragraph
-        </Button>
-        <Button onClick={handleAddLink}>
-          <FontAwesomeIcon icon={faLink} />
-          Add Link
-        </Button>
-        <Button onClick={handleAddImage}>
-          <FontAwesomeIcon icon={faImage} />
-          Add Image
-        </Button>
+        {renderButton(handleAddParagraph, faParagraph, 'Add Paragraph')}
+        {renderButton(handleAddLink, faLink, 'Add Link')}
+        {renderButton(handleAddImage, faImage, 'Add Image')}
       </ButtonContainer>
       <div>
         <Button onClick={handleSubmit}>Create Article</Button>
@@ -280,10 +366,14 @@ const StyledTextarea = styled.textarea`
   resize: none;
   width: 100%;
   transition: box-shadow 0.2s ease-in-out;
+  color: ${(props) =>
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
 
   &:focus {
     outline: none;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 3px grey;
   }
 `;
 
