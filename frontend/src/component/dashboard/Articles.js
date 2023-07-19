@@ -41,6 +41,7 @@ export default function Articles() {
           question={question}
           setQuestion={setQuestion}
           editId={editId}
+          setEditId={setEditId}
         />
       )}
       {currentScreen === "new" && (
