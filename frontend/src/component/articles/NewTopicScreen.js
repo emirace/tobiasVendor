@@ -87,6 +87,7 @@ const NewTopicScreen = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(!topic "")
     // Save the new topic and perform necessary actions
     // Redirect to the desired screen
     switchScreen("new");
@@ -94,8 +95,8 @@ const NewTopicScreen = ({
 
   const handleCancel = () => {
     if (editId) {
-      setTopic(null);
-      setQuestion(null);
+      setTopic("");
+      setQuestion("");
       setEditId(null);
       switchScreen("list");
     } else {
