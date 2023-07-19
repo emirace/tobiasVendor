@@ -165,7 +165,11 @@ const EditorComponent = ({ topic, switchScreen, question, editId }) => {
         const file = event.target.files[0];
 
         try {
-          const imageUrl = await compressImageUpload(file, 1024);
+          const imageUrl = await compressImageUpload(
+            file,
+            1024,
+            userInfo.token
+          );
           const newContent = [
             ...content,
             {

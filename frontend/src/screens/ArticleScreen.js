@@ -125,12 +125,12 @@ const ArticleScreen = () => {
 
     for (let i = 0; i < article.content.length; i++) {
       const item = article.content[i];
+      console.log(item);
 
       if (item.type === 'paragraph') {
         renderedContent.push(<p key={i}>{item.content}</p>);
       } else if (item.type === 'link') {
         let linkContent = item.text;
-
         // Check if the previous item and next item are paragraphs
         const prevItem = article.content[i - 1];
         const nextItem = article.content[i + 1];

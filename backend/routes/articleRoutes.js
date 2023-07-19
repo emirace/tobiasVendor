@@ -1,10 +1,11 @@
-import express from "express";
-import Article from "../models/articlesModel.js";
+import express from 'express';
+import Article from '../models/articlesModel.js';
+import { isAuth, isAdmin } from '../utils.js';
 
 const articleRouter = express.Router();
 
 // Create an article
-articleRouter.post("/", async (req, res) => {
+articleRouter.post('/', isAuth, isAdmin, async (req, res) => {
   try {
     const { content, topic, question } = req.body;
     const article = await new Article({
@@ -15,12 +16,12 @@ articleRouter.post("/", async (req, res) => {
     const savedArticles = await article.save();
     res.status(201).json(savedArticles);
   } catch (error) {
-    res.status(500).json({ error: "Failed to create the article" });
+    res.status(500).json({ error: 'Failed to create the article' });
   }
 });
 
 // Read all articles or search articles
-articleRouter.get("/", async (req, res) => {
+articleRouter.get('/', async (req, res) => {
   try {
     const { search } = req.query;
     let articles;
@@ -28,8 +29,8 @@ articleRouter.get("/", async (req, res) => {
       // If a search query is provided, perform the search
       articles = await Article.find({
         $or: [
-          { topic: { $regex: search, $options: "i" } },
-          { question: { $regex: search, $options: "i" } },
+          { topic: { $regex: search, $options: 'i' } },
+          { question: { $regex: search, $options: 'i' } },
         ],
       });
     } else {
@@ -38,35 +39,35 @@ articleRouter.get("/", async (req, res) => {
     }
     res.json(articles);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve articles" });
+    res.status(500).json({ error: 'Failed to retrieve articles' });
   }
 });
 
 // Read all topics
-articleRouter.get("/topics", async (req, res) => {
+articleRouter.get('/topics', async (req, res) => {
   try {
-    const topics = await Article.distinct("topic");
+    const topics = await Article.distinct('topic');
     res.json(topics);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve topics" });
+    res.status(500).json({ error: 'Failed to retrieve topics' });
   }
 });
 
 // Read a single article
-articleRouter.get("/:id", async (req, res) => {
+articleRouter.get('/:id', async (req, res) => {
   try {
     const article = await Article.findById(req.params.id);
     if (!article) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: 'Article not found' });
     }
     res.json(article);
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve the article" });
+    res.status(500).json({ error: 'Failed to retrieve the article' });
   }
 });
 
 // Update an article
-articleRouter.put("/:id", async (req, res) => {
+articleRouter.put('/:id', isAuth, isAdmin, async (req, res) => {
   try {
     const { content, topic } = req.body;
     const article = await Article.findByIdAndUpdate(
@@ -79,24 +80,24 @@ articleRouter.put("/:id", async (req, res) => {
       { new: true }
     );
     if (!article) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: 'Article not found' });
     }
     res.json(article);
   } catch (error) {
-    res.status(500).json({ error: "Failed to update the article" });
+    res.status(500).json({ error: 'Failed to update the article' });
   }
 });
 
 // Delete an article
-articleRouter.delete("/:id", async (req, res) => {
+articleRouter.delete('/:id', isAuth, isAdmin, async (req, res) => {
   try {
     const article = await Article.findByIdAndDelete(req.params.id);
     if (!article) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: 'Article not found' });
     }
     res.sendStatus(204);
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete the article" });
+    res.status(500).json({ error: 'Failed to delete the article' });
   }
 });
 

@@ -380,7 +380,7 @@ export const getCode = (name) => {
   return result.code;
 };
 
-export const compressImageUpload = async (file, maxSize, image) => {
+export const compressImageUpload = async (file, maxSize, token, image = '') => {
   // Create an HTMLImageElement to get the original dimensions of the image
   const img = new Image();
   img.src = URL.createObjectURL(file);
@@ -431,7 +431,9 @@ export const compressImageUpload = async (file, maxSize, image) => {
   formData.append('image', file);
   image && formData.append('deleteImage', image);
   try {
-    const response = await axios.post('/api/upload', formData);
+    const response = await axios.post('/api/upload', formData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = response.data;
     return data.secure_url;
   } catch (error) {
