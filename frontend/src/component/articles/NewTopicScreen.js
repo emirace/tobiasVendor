@@ -74,6 +74,8 @@ const NewTopicScreen = ({
   setTopic,
   question,
   setQuestion,
+  editId,
+  setEditId,
 }) => {
   const handleTitleChange = (e) => {
     setTopic(e.target.value);
@@ -91,7 +93,14 @@ const NewTopicScreen = ({
   };
 
   const handleCancel = () => {
-    switchScreen("create");
+    if (editId) {
+      setTopic(null);
+      setQuestion(null);
+      setEditId(null);
+      switchScreen("list");
+    } else {
+      switchScreen("create");
+    }
   };
 
   return (
