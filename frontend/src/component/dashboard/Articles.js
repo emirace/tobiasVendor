@@ -14,6 +14,7 @@ export default function Articles() {
   const [currentScreen, setCurrentScreen] = useState("list");
   const [topic, setTopic] = useState("");
   const [question, setQuestion] = useState("");
+  const [editId, setEditId] = useState(null);
 
   const switchScreen = (screen) => {
     setCurrentScreen(screen);
@@ -22,7 +23,12 @@ export default function Articles() {
   return (
     <Container>
       {currentScreen === "list" && (
-        <ArticleListScreen switchScreen={switchScreen} />
+        <ArticleListScreen
+          switchScreen={switchScreen}
+          setTopic={setTopic}
+          setQuestion={setQuestion}
+          setEditId={setEditId}
+        />
       )}
       {currentScreen === "create" && (
         <CreateScreen switchScreen={switchScreen} />
@@ -34,6 +40,7 @@ export default function Articles() {
           setTopic={setTopic}
           question={question}
           setQuestion={setQuestion}
+          editId={editId}
         />
       )}
       {currentScreen === "new" && (
@@ -41,6 +48,7 @@ export default function Articles() {
           switchScreen={switchScreen}
           topic={topic}
           question={question}
+          editId={editId}
         />
       )}
     </Container>

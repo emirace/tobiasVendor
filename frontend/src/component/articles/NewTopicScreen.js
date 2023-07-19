@@ -87,7 +87,8 @@ const NewTopicScreen = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(!topic "")
+    if (!topic || !question) {
+    }
     // Save the new topic and perform necessary actions
     // Redirect to the desired screen
     switchScreen("new");

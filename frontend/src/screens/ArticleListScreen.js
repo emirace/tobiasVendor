@@ -67,25 +67,29 @@ const Content = styled.p`
   font-size: 16px;
 `;
 
-const TopicsList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
-const TopicItem = styled.li`
-  font-size: 16px;
-  margin-bottom: 10px;
-
-  a {
-    color: #007bff;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+const TopicsList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 `;
+
+const TopicItem = styled.h3`
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 2px 2px 10px -2px grey;
+  text-align: center;
+  text-transform: capitalize;
+  &:hover {
+    color: var(--orange-color);
+  }
+`;
+
 const Section = styled.div`
   margin: 0 auto;
   max-width: 800px;
@@ -164,7 +168,7 @@ const ArticleListScreen = () => {
         <ArticleItemContainer>
           {filteredArticles.map((article) => (
             <ArticleItem key={article._id}>
-              <Link to={`/articles/${article._id}`}>
+              <Link to={`/article/${article._id}`}>
                 <Topic>{article.question}</Topic>
                 <Content>
                   {getFirstParagraphContent(article.content)}...
@@ -173,12 +177,12 @@ const ArticleListScreen = () => {
             </ArticleItem>
           ))}
         </ArticleItemContainer>
-        <SectionTitle>All Topics</SectionTitle>
+        <SectionTitle>Learn More</SectionTitle>
         <TopicsList>
           {topics.map((topic) => (
-            <TopicItem key={topic}>
-              <Link to={`/topics/${topic}`}>{topic}</Link>
-            </TopicItem>
+            <Link key={topic} to={`/topics/${topic}`}>
+              <TopicItem>{topic}</TopicItem>
+            </Link>
           ))}
         </TopicsList>
       </Section>

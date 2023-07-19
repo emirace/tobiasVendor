@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Store } from '../../Store';
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Store } from "../../Store";
 import {
   faCheck,
   faClose,
@@ -9,25 +9,25 @@ import {
   faQuestionCircle,
   faTimes,
   faVideo,
-} from '@fortawesome/free-solid-svg-icons';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import axios from 'axios';
-import { getError, region } from '../../utils';
-import LoadingBox from '../LoadingBox';
-import { useLocation, useNavigate } from 'react-router-dom';
-import IconsTooltips from '../IconsTooltips';
-import ModelLogin from '../ModelLogin';
-import Condition from '../Condition';
-import CropImage from '../cropImage/CropImage';
-import FeeStructure from '../info/FeeStructure';
-import { Helmet } from 'react-helmet-async';
-import DeliveryOption from './DeliveryOption';
-import { resizeImage } from '../ImageUploader';
-import VideoTrimmer from '../VideoTrimmer';
-import SmallModel from '../SmallModel';
-import AddOtherBrand from '../AddOtherBrand';
+} from "@fortawesome/free-solid-svg-icons";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import axios from "axios";
+import { getError, region } from "../../utils";
+import LoadingBox from "../LoadingBox";
+import { useLocation, useNavigate } from "react-router-dom";
+import IconsTooltips from "../IconsTooltips";
+import ModelLogin from "../ModelLogin";
+import Condition from "../Condition";
+import CropImage from "../cropImage/CropImage";
+import FeeStructure from "../info/FeeStructure";
+import { Helmet } from "react-helmet-async";
+import DeliveryOption from "./DeliveryOption";
+import { resizeImage } from "../ImageUploader";
+import VideoTrimmer from "../VideoTrimmer";
+import SmallModel from "../SmallModel";
+import AddOtherBrand from "../AddOtherBrand";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -35,7 +35,7 @@ const NewProductC = styled.div`
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
@@ -90,12 +90,12 @@ const Item = styled.div`
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 40px;
   padding: 10px;
@@ -143,16 +143,16 @@ const TextArea = styled.textarea`
   border-radius: 0.2rem;
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   padding: 10px;
   &:focus-visible {
     outline: 1px solid var(--orange-color);
   }
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const ImageRow = styled.div`
   display: flex;
@@ -189,7 +189,7 @@ const BigImageC = styled.div`
   height: 150px;
   border: 1px dashed
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const SmallImageRow = styled.div`
   flex: 1;
@@ -202,7 +202,7 @@ const SmallImageC = styled.div`
   border-radius: 0.2rem;
   border: 1px dashed
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
 `;
 const SmallImage = styled.img`
   width: 100%;
@@ -254,12 +254,12 @@ const SizeInput = styled.input`
   background: none;
   font-size: 12px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 20px;
   width: 40px;
@@ -342,7 +342,7 @@ const BrandList = styled.div`
   border-bottom-left-radius: 0.2rem;
   border-bottom-right-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const BrandListItem = styled.div`
   padding: 10px 20px;
@@ -350,7 +350,7 @@ const BrandListItem = styled.div`
   cursor: pointer;
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   }
 `;
 
@@ -360,22 +360,22 @@ const Checkbox = styled.input`
   &::after {
     width: 15px;
     height: 15px;
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     position: relative;
     top: -2px;
     left: -1px;
     background-color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
     border: 1px solid var(--orange-color);
   }
   &:checked::after {
     width: 15px;
     height: 15px;
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     position: relative;
@@ -394,7 +394,7 @@ const ItemCheck = styled.div`
 const VimageCont = styled.div`
   flex: 1;
   width: 150px;
-  height: 150px;
+  // height: 150px;
   margin-top: 20px;
 `;
 const VintageCont = styled.div`
@@ -403,7 +403,7 @@ const VintageCont = styled.div`
 const Tips = styled.span`
   position: relative;
   &:hover::after {
-    content: '${(props) => props.tips}';
+    content: "${(props) => props.tips}";
     width: 340px;
     position: absolute;
     border-radius: 0.5rem;
@@ -415,13 +415,13 @@ const Tips = styled.span`
     font-weight: 400;
     padding: 10px;
     background: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
     @media (max-width: 992px) {
       width: 250px;
       font-size: 11px;
@@ -440,7 +440,7 @@ const TagInputCont = styled.div`
   align-items: center;
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   border-radius: 0.2rem;
   height: 40px;
 `;
@@ -448,9 +448,9 @@ const TagInput = styled.input`
   flex: 1;
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 0;
   height: 40px;
   padding: 10px;
@@ -472,7 +472,7 @@ const TagItem = styled.div`
   align-items: center;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   & svg {
     margin-left: 10px;
     font-size: 11px;
@@ -499,9 +499,9 @@ const Deliv = styled.div`
 `;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
 
@@ -517,7 +517,7 @@ const Switch = styled.input.attrs({
 
   &:checked {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : '#fcf0e0'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "#fcf0e0"};
     &:before {
       left: 25px;
       background: var(--orange-color);
@@ -527,7 +527,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -539,30 +539,30 @@ const Switch = styled.input.attrs({
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CREATE_REQUEST':
+    case "CREATE_REQUEST":
       return { ...state, loading: true };
-    case 'CREATE_SUCCESS':
-      return { ...state, loading: false, error: '' };
-    case 'CREATE_FAIL':
+    case "CREATE_SUCCESS":
+      return { ...state, loading: false, error: "" };
+    case "CREATE_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'UPLOAD_REQUEST':
+    case "UPLOAD_REQUEST":
       return { ...state, loadingUpload: true };
-    case 'UPLOAD_SUCCESS':
-      return { ...state, loadingUpload: false, errorUpload: '' };
-    case 'UPLOAD_FAIL':
+    case "UPLOAD_SUCCESS":
+      return { ...state, loadingUpload: false, errorUpload: "" };
+    case "UPLOAD_FAIL":
       return { ...state, loadingUpload: false, errorUpload: action.payload };
-    case 'VIDEO_REQUEST':
+    case "VIDEO_REQUEST":
       return { ...state, loadingVideo: true };
-    case 'VIDEO_SUCCESS':
+    case "VIDEO_SUCCESS":
       return {
         ...state,
         loadingVideo: false,
         video: action.payload,
-        errorUpload: '',
+        errorUpload: "",
       };
-    case 'REMOVE_VIDEO':
-      return { ...state, video: '' };
-    case 'VIDEO_FAIL':
+    case "REMOVE_VIDEO":
+      return { ...state, video: "" };
+    case "VIDEO_FAIL":
       return {
         ...state,
         loadingVideo: false,
@@ -578,30 +578,30 @@ let sizes = [];
 let tags = [];
 
 const color1 = [
-  'red',
-  'anthracite',
-  'beige',
-  'black',
-  'blue',
-  'brown',
-  'burgubdy',
-  'camel',
-  'ecru',
-  'gold',
-  'green',
-  'grey',
-  'khaki',
-  'metallic',
-  'multiculour',
-  'navy',
-  'orange',
-  'pink',
-  'purple',
-  'silver',
-  'turquoise',
-  'white',
-  'yellow',
-  'other',
+  "red",
+  "anthracite",
+  "beige",
+  "black",
+  "blue",
+  "brown",
+  "burgubdy",
+  "camel",
+  "ecru",
+  "gold",
+  "green",
+  "grey",
+  "khaki",
+  "metallic",
+  "multiculour",
+  "navy",
+  "orange",
+  "pink",
+  "purple",
+  "silver",
+  "turquoise",
+  "white",
+  "yellow",
+  "other",
 ];
 export default function NewProduct() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -609,22 +609,22 @@ export default function NewProduct() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const productId = sp.get('id');
+  const productId = sp.get("id");
   const [validated, setValidated] = useState(false);
-  const [formError, setFormError] = useState('');
+  const [formError, setFormError] = useState("");
   const [deliveryOption, setDeliveryOption] = useState([
-    { name: 'Pick up from Seller', value: 0 },
+    { name: "Pick up from Seller", value: 0 },
   ]);
   const [showConditionModal, setShowConditionModal] = useState(false);
   const [showUploadingVideo, setShowUploadingVideo] = useState(false);
   const [showUploadingImage, setShowUploadingImage] = useState(false);
-  const [currentImage, setCurrentImage] = useState('');
+  const [currentImage, setCurrentImage] = useState("");
   const [showComissionModal, setShowComissionModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [showDelivery, setShowDelivery] = useState(false);
 
   const [input, setInput] = useState({
-    brand: '',
+    brand: "",
   });
   const [validationError, setValidationError] = useState({});
 
@@ -648,9 +648,9 @@ export default function NewProduct() {
     dispatch,
   ] = useReducer(reducer, {
     loading: false,
-    error: '',
+    error: "",
     loadingUpload: false,
-    errorUpload: '',
+    errorUpload: "",
     video: null,
   });
 
@@ -694,7 +694,7 @@ export default function NewProduct() {
   }, [dispatch]);
 
   const [searchBrand, setSearchBrand] = useState(null);
-  const [brandQuery, setBrandQuery] = useState('');
+  const [brandQuery, setBrandQuery] = useState("");
   useEffect(() => {
     console.log(brandQuery);
     const getSearch = async () => {
@@ -708,11 +708,11 @@ export default function NewProduct() {
   const sizeHandler = (sizenow) => {
     if (!sizenow) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Please enter size',
+          message: "Please enter size",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -726,36 +726,36 @@ export default function NewProduct() {
       });
       sizes = newsizes;
     } else {
-      sizes.push({ size: sizenow, value: '1' });
+      sizes.push({ size: sizenow, value: "1" });
     }
-    setInput((prev) => ({ ...prev, selectedSize: '' }));
+    setInput((prev) => ({ ...prev, selectedSize: "" }));
   };
   const handleTags = (tag) => {
-    if (tag.includes(' ')) {
+    if (tag.includes(" ")) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Please remove unnecessary space',
+          message: "Please remove unnecessary space",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     if (tags.length > 5) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't add more five tags ",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     if (tag.length > 0) {
       tags.push(tag);
-      handleOnChange('', 'tag');
+      handleOnChange("", "tag");
     }
   };
   const removeTags = (tag) => {
@@ -766,21 +766,21 @@ export default function NewProduct() {
   };
 
   const submitHandler = async () => {
-    setFormError('');
-    console.log('result', sizes.length === 0 && addSize === false);
+    setFormError("");
+    console.log("result", sizes.length === 0 && addSize === false);
     if (addSize === false && sizes.length === 0) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Please add size',
+          message: "Please add size",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     try {
-      dispatch({ type: 'CREATE_REQUEST' });
+      dispatch({ type: "CREATE_REQUEST" });
       await axios.post(
         `/api/products/${region()}`,
         {
@@ -819,26 +819,26 @@ export default function NewProduct() {
         }
       );
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Product created successfully',
+          message: "Product created successfully",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
-      dispatch({ type: 'CREATE_SUCCESS' });
+      dispatch({ type: "CREATE_SUCCESS" });
       navigate(`/dashboard/productlist`);
     } catch (err) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Error creating product, fill mising fields',
+          message: "Error creating product, fill mising fields",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
-      dispatch({ type: 'CREATE_FAIL' });
+      dispatch({ type: "CREATE_FAIL" });
     }
   };
 
@@ -846,40 +846,40 @@ export default function NewProduct() {
     e.preventDefault();
     var valid = true;
     if (!input.name) {
-      handleError('Enter product name', 'name');
+      handleError("Enter product name", "name");
       valid = false;
     }
 
     if (!input.image1) {
-      handleError('Add at least one image', 'image');
+      handleError("Add at least one image", "image");
       valid = false;
     }
     if (!input.product) {
-      handleError('Select main category', 'product');
+      handleError("Select main category", "product");
       valid = false;
     }
     if (!input.subCategory) {
-      handleError('Select sub category', 'subCategory');
+      handleError("Select sub category", "subCategory");
       valid = false;
     }
     if (!input.category) {
-      handleError('Select category', 'category');
+      handleError("Select category", "category");
       valid = false;
     }
     if (!input.brand) {
-      handleError('Select brand', 'brand');
+      handleError("Select brand", "brand");
       valid = false;
     }
     if (!input.price) {
-      handleError('Enter a valid price', 'price');
+      handleError("Enter a valid price", "price");
       valid = false;
     }
     if (!input.location) {
-      handleError('Select location', 'location');
+      handleError("Select location", "location");
       valid = false;
     }
     if (!input.condition) {
-      handleError('Select condition', 'condition');
+      handleError("Select condition", "condition");
       valid = false;
     }
 
@@ -888,18 +888,18 @@ export default function NewProduct() {
     //   valid = false;
     // }
     if (!input.color) {
-      handleError('Select color', 'color');
+      handleError("Select color", "color");
       valid = false;
     }
 
     if (addSize) {
       if (countInStock < 1) {
-        handleError('Enter count in stock', 'sizes');
+        handleError("Enter count in stock", "sizes");
         valid = false;
       }
     } else {
       if (!sizes.length || sizes.some((obj) => !obj.value)) {
-        handleError('Enter a valid size and quantity available', 'sizes');
+        handleError("Enter a valid size and quantity available", "sizes");
         valid = false;
       }
     }
@@ -918,7 +918,7 @@ export default function NewProduct() {
     }));
   };
 
-  const [currentSizeValue, setCurrentSizeValue] = useState('');
+  const [currentSizeValue, setCurrentSizeValue] = useState("");
   const smallSizeHandler = (label, value) => {
     const sizeIndex = sizes.findIndex((x) => x.size === label);
     sizes[sizeIndex].value = value;
@@ -939,50 +939,50 @@ export default function NewProduct() {
     if (file.size > maxSize) {
       // Show an error message or perform any necessary action
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "Request Failed: Video shouldn't be more than 8mb",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
 
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
 
     try {
-      dispatch({ type: 'VIDEO_REQUEST' });
+      dispatch({ type: "VIDEO_REQUEST" });
       const { data } = await axios.post(
-        '/api/upload/video/upload',
+        "/api/upload/video/upload",
         bodyFormData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
             authorization: `Bearer ${userInfo.token}`,
           },
         }
       );
       console.log(data);
-      dispatch({ type: 'VIDEO_SUCCESS', payload: data.secure_url });
+      dispatch({ type: "VIDEO_SUCCESS", payload: data.secure_url });
 
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Video Uploaded',
+          message: "Video Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (error) {
-      dispatch({ type: 'VIDEO_FAIL' });
+      dispatch({ type: "VIDEO_FAIL" });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(error),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -990,44 +990,44 @@ export default function NewProduct() {
 
   const uploadHandler = async (file, fileType) => {
     const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    bodyFormData.append("file", file);
     try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      dispatch({ type: "UPLOAD_REQUEST" });
+      const { data } = await axios.post("/api/upload", bodyFormData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-      if (fileType === 'image1') {
-        handleOnChange(data.secure_url, 'image1');
-      } else if (fileType === 'image2') {
-        handleOnChange(data.secure_url, 'image2');
-      } else if (fileType === 'image3') {
-        handleOnChange(data.secure_url, 'image3');
-      } else if (fileType === 'image4') {
-        handleOnChange(data.secure_url, 'image4');
-      } else if (fileType === 'luxury') {
-        handleOnChange(data.secure_url, 'luxuryImage');
+      dispatch({ type: "UPLOAD_SUCCESS" });
+      if (fileType === "image1") {
+        handleOnChange(data.secure_url, "image1");
+      } else if (fileType === "image2") {
+        handleOnChange(data.secure_url, "image2");
+      } else if (fileType === "image3") {
+        handleOnChange(data.secure_url, "image3");
+      } else if (fileType === "image4") {
+        handleOnChange(data.secure_url, "image4");
+      } else if (fileType === "luxury") {
+        handleOnChange(data.secure_url, "luxuryImage");
       } else {
       }
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'File size is too large,',
+          message: "File size is too large,",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
@@ -1035,9 +1035,9 @@ export default function NewProduct() {
   };
 
   const [showSelect, setShowSelect] = useState(false);
-  let brands = ['Nike', 'Gucci', 'Rolex', 'Louis Vuitto', 'Adidas', 'Dior'];
+  let brands = ["Nike", "Gucci", "Rolex", "Louis Vuitto", "Adidas", "Dior"];
   const handleSelect = (b) => {
-    handleOnChange(b, 'brand');
+    handleOnChange(b, "brand");
     setShowSelect(false);
   };
   if (input.brand) {
@@ -1045,17 +1045,17 @@ export default function NewProduct() {
       return i.toLowerCase().match(input.brand);
     });
   }
-  const [invalidImage, setInvalidImage] = useState('');
+  const [invalidImage, setInvalidImage] = useState("");
   const [resizeImage1, setResizeImage] = useState({
     file: [],
     filepreview: null,
   });
   useEffect(() => {
     const uploadImage = async () => {
-      console.log('files', invalidImage, resizeImage1);
+      console.log("files", invalidImage, resizeImage1);
       try {
         if (!invalidImage && resizeImage1.filepreview) {
-          await uploadHandler(resizeImage1.file, 'luxury');
+          await uploadHandler(resizeImage1.file, "luxury");
           // setLuxuryImage(resizeImage1.filepreview);
         }
       } catch (err) {
@@ -1070,7 +1070,7 @@ export default function NewProduct() {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.target.blur();
     }
   };
@@ -1094,22 +1094,25 @@ export default function NewProduct() {
       <TitleCont>
         <Title>NewProduct</Title>
         <div
-          style={{ color: 'red', textAlign: 'center', cursor: 'pointer' }}
+          style={{ color: "red", textAlign: "center", cursor: "pointer" }}
           onClick={() => setShowTopInfo(!showTopInfo)}
         >
           How to add an item?
         </div>
-        <TitleDetails
+        <div
           style={{
-            height: showTopInfo ? '100px' : '0px',
-            transition: 'height ease-in-out 2s',
+            height: showTopInfo ? "auto" : "0",
+            transition: "height ease-in-out 0.5s",
+            overflow: "hidden",
+            fontSize: "14px",
+            marginBottom: "5px",
           }}
         >
           When adding product, do not ignore to fill all relevant fields and
           following the product adding rules. Always remember; The best picture
           and descriptions sells faster. Ensure to upload high quality product
           photos with all details showing.
-        </TitleDetails>
+        </div>
       </TitleCont>
       <Content>
         <Form noValidate validated={validated} onSubmit={validation}>
@@ -1120,10 +1123,10 @@ export default function NewProduct() {
                 mode={mode}
                 value={input.name}
                 type="text"
-                onChange={(e) => handleOnChange(e.target.value, 'name')}
+                onChange={(e) => handleOnChange(e.target.value, "name")}
               />
               {validationError.name && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.name}
                 </div>
               )}
@@ -1133,35 +1136,35 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
+                    "&:hover": {
                       outline: 0,
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
               >
                 <Select
                   renderValue={() => input.product}
-                  onChange={(e) => handleOnChange(e.target.value, 'product')}
+                  onChange={(e) => handleOnChange(e.target.value, "product")}
                   displayEmpty
                   inputProps={{
-                    'aria-label': 'Without label',
+                    "aria-label": "Without label",
                   }}
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1172,7 +1175,7 @@ export default function NewProduct() {
                 </Select>
               </FormControl>
               {validationError.product && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.product}
                 </div>
               )}
@@ -1184,25 +1187,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
+                        "&:hover": {
                           outline: 0,
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1210,11 +1213,11 @@ export default function NewProduct() {
                     <Select
                       renderValue={() => input.category}
                       onChange={(e) =>
-                        handleOnChange(e.target.value, 'category')
+                        handleOnChange(e.target.value, "category")
                       }
                       displayEmpty
                       inputProps={{
-                        'aria-label': 'Without label',
+                        "aria-label": "Without label",
                       }}
                     >
                       <MenuItem value="">-- select --</MenuItem>
@@ -1229,7 +1232,7 @@ export default function NewProduct() {
                     </Select>
                   </FormControl>
                   {validationError.category && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>
+                    <div style={{ color: "red", fontSize: "12px" }}>
                       {validationError.category}
                     </div>
                   )}
@@ -1241,25 +1244,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1267,7 +1270,7 @@ export default function NewProduct() {
                     <Select
                       renderValue={() => input.subCategory}
                       onChange={(e) =>
-                        handleOnChange(e.target.value, 'subCategory')
+                        handleOnChange(e.target.value, "subCategory")
                       }
                       displayEmpty
                     >
@@ -1287,7 +1290,7 @@ export default function NewProduct() {
                     </Select>
                   </FormControl>
                   {validationError.subCategory && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>
+                    <div style={{ color: "red", fontSize: "12px" }}>
                       {validationError.subCategory}
                     </div>
                   )}
@@ -1296,7 +1299,7 @@ export default function NewProduct() {
             </ItemCont>
             <Item>
               <Label>
-                Condition{' '}
+                Condition{" "}
                 <Tips
                   mode={mode}
                   tips={`What happens if I’m not certain of my product condition?
@@ -1304,7 +1307,7 @@ export default function NewProduct() {
                       `}
                 >
                   <FontAwesomeIcon icon={faQuestionCircle} />
-                </Tips>{' '}
+                </Tips>{" "}
                 <LinkTo onClick={() => setShowConditionModal(true)}>
                   help?
                 </LinkTo>
@@ -1318,32 +1321,32 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
               >
                 <Select
                   renderValue={() => input.condition}
-                  onChange={(e) => handleOnChange(e.target.value, 'condition')}
+                  onChange={(e) => handleOnChange(e.target.value, "condition")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1357,7 +1360,7 @@ export default function NewProduct() {
                 </Select>
               </FormControl>
               {validationError.condition && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.condition}
                 </div>
               )}
@@ -1380,32 +1383,32 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
               >
                 <Select
                   renderValue={() => input.material}
-                  onChange={(e) => handleOnChange(e.target.value, 'material')}
+                  onChange={(e) => handleOnChange(e.target.value, "material")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1436,7 +1439,7 @@ export default function NewProduct() {
                 </Select>
               </FormControl>
               {validationError.material && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.material}
                 </div>
               )}
@@ -1453,25 +1456,25 @@ export default function NewProduct() {
                 onKeyPress={handleKeyPress}
                 value={input.brand.length ? input.brand : brandQuery}
                 onChange={(e) => {
-                  handleOnChange('', 'brand');
+                  handleOnChange("", "brand");
                   setBrandQuery(e.target.value);
                 }}
-                onBlur={() => input.brand.length > 0 && setBrandQuery('')}
+                onBlur={() => input.brand.length > 0 && setBrandQuery("")}
               />
               <BrandList mode={mode}>
                 {searchBrand &&
                   brandQuery.length > 0 &&
-                  [...searchBrand, { name: 'Other' }].map((b) => (
+                  [...searchBrand, { name: "Other" }].map((b) => (
                     <BrandListItem
                       key={b._id}
                       mode={mode}
                       onClick={() => {
-                        if (b.name === 'Other') {
+                        if (b.name === "Other") {
                           setShowOtherBrand(true);
                         } else {
-                          handleOnChange(b.name, 'brand');
+                          handleOnChange(b.name, "brand");
                         }
-                        setBrandQuery('');
+                        setBrandQuery("");
                       }}
                     >
                       {b.name}
@@ -1489,7 +1492,7 @@ export default function NewProduct() {
                 />
               </SmallModel>
               {validationError.brand && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.brand}
                 </div>
               )}
@@ -1516,32 +1519,32 @@ export default function NewProduct() {
               <FormControl
                 sx={{
                   margin: 0,
-                  borderRadius: '0.2rem',
+                  borderRadius: "0.2rem",
                   border: `1px solid ${
-                    mode === 'pagebodydark'
-                      ? 'var(--dark-ev4)'
-                      : 'var(--light-ev4)'
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
                   }`,
-                  '& .MuiOutlinedInput-root': {
+                  "& .MuiOutlinedInput-root": {
                     color: `${
-                      mode === 'pagebodydark'
-                        ? 'var(--white-color)'
-                        : 'var(--black-color)'
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
                     }`,
-                    '&:hover': {
-                      outline: 'none',
+                    "&:hover": {
+                      outline: "none",
                       border: 0,
                     },
                   },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: '0 !important',
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
                   },
                 }}
                 size="small"
               >
                 <Select
                   renderValue={() => input.color}
-                  onChange={(e) => handleOnChange(e.target.value, 'color')}
+                  onChange={(e) => handleOnChange(e.target.value, "color")}
                   displayEmpty
                 >
                   <MenuItem value="">-- select --</MenuItem>
@@ -1553,20 +1556,20 @@ export default function NewProduct() {
                 </Select>
               </FormControl>
               {validationError.color && (
-                <div style={{ color: 'red', fontSize: '12px' }}>
+                <div style={{ color: "red", fontSize: "12px" }}>
                   {validationError.color}
                 </div>
               )}
             </Item>
             <div
               style={{
-                display: 'flex',
-                marginTop: '20px',
-                marginBottom: '10px',
-                alignItems: 'center',
+                display: "flex",
+                marginTop: "20px",
+                marginBottom: "10px",
+                alignItems: "center",
               }}
             >
-              <label style={{ marginRight: '10px' }}>
+              <label style={{ marginRight: "10px" }}>
                 Item do not require size
               </label>
               <Switch
@@ -1578,11 +1581,11 @@ export default function NewProduct() {
                 }}
               />
             </div>
-            <Sizes style={{ marginTop: '0' }}>
+            <Sizes style={{ marginTop: "0" }}>
               <SizeLeft>
                 {!addSize ? (
                   <>
-                    <Item style={{ marginTop: '0' }}>
+                    <Item style={{ marginTop: "0" }}>
                       <Label>
                         Add Size
                         <Tips
@@ -1604,9 +1607,9 @@ export default function NewProduct() {
                           onChange={(e) => {
                             handleOnChange(
                               e.target.value.slice(0, 4),
-                              'selectedSize'
+                              "selectedSize"
                             );
-                            handleError('', 'sizes');
+                            handleError("", "sizes");
                           }}
                         />
                         <AddTag onClick={() => sizeHandler(input.selectedSize)}>
@@ -1630,7 +1633,7 @@ export default function NewProduct() {
                             onChange={(e) => {
                               const inputValue = e.target.value.slice(0, 4);
                               smallSizeHandler(s.size, inputValue);
-                              handleError('', 'sizes');
+                              handleError("", "sizes");
                             }}
                           />
                           {/* <FontAwesomeIcon
@@ -1642,7 +1645,7 @@ export default function NewProduct() {
                     </SmallItems>
                   </>
                 ) : (
-                  <Item style={{ marginTop: '0' }}>
+                  <Item style={{ marginTop: "0" }}>
                     <Label>Count in stock</Label>
                     <TextInput
                       mode={mode}
@@ -1653,14 +1656,14 @@ export default function NewProduct() {
                   </Item>
                 )}
                 {validationError.sizes && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
+                  <div style={{ color: "red", fontSize: "12px" }}>
                     {validationError.sizes}
                   </div>
                 )}
               </SizeLeft>
 
               <SizeRight>
-                <Item style={{ marginTop: '0' }}>
+                <Item style={{ marginTop: "0" }}>
                   <Label>
                     Shipping Location
                     <Tips
@@ -1675,25 +1678,25 @@ export default function NewProduct() {
                   <FormControl
                     sx={{
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1701,7 +1704,7 @@ export default function NewProduct() {
                     <Select
                       renderValue={() => input.location}
                       onChange={(e) =>
-                        handleOnChange(e.target.value, 'location')
+                        handleOnChange(e.target.value, "location")
                       }
                       displayEmpty
                     >
@@ -1710,7 +1713,7 @@ export default function NewProduct() {
                     </Select>
                   </FormControl>
                   {validationError.location && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>
+                    <div style={{ color: "red", fontSize: "12px" }}>
                       {validationError.location}
                     </div>
                   )}
@@ -1719,10 +1722,10 @@ export default function NewProduct() {
             </Sizes>
 
             <Price>
-              <div style={{ diplay: 'flex', alignItems: 'center' }}>
+              <div style={{ diplay: "flex", alignItems: "center" }}>
                 <Item className="half">
                   <Label>
-                    Cost Price{' '}
+                    Cost Price{" "}
                     <Tips
                       mode={mode}
                       tips={`
@@ -1737,10 +1740,10 @@ export default function NewProduct() {
                     type="number"
                     placeholder="Cost price"
                     value={input.price}
-                    onChange={(e) => handleOnChange(e.target.value, 'price')}
+                    onChange={(e) => handleOnChange(e.target.value, "price")}
                   />
                   {validationError.price && (
-                    <div style={{ color: 'red', fontSize: '12px' }}>
+                    <div style={{ color: "red", fontSize: "12px" }}>
                       {validationError.price}
                     </div>
                   )}
@@ -1754,11 +1757,11 @@ export default function NewProduct() {
                       type="number"
                       placeholder="Actual Price"
                       onChange={(e) =>
-                        handleOnChange(e.target.value, 'discount')
+                        handleOnChange(e.target.value, "discount")
                       }
                     />
                     {discount() ? (
-                      <span style={{ fontSize: '11px' }}>
+                      <span style={{ fontSize: "11px" }}>
                         {discount().toFixed(0)}% discount
                       </span>
                     ) : null}
@@ -1783,10 +1786,10 @@ export default function NewProduct() {
               <div
                 onClick={() => setShowComissionModal(true)}
                 style={{
-                  color: 'red',
-                  fontSize: '12px',
-                  textDecoration: 'underline',
-                  cursor: 'pointer',
+                  color: "red",
+                  fontSize: "12px",
+                  textDecoration: "underline",
+                  cursor: "pointer",
                 }}
               >
                 Our Commission
@@ -1803,7 +1806,7 @@ export default function NewProduct() {
           <Right>
             <Top>
               <Label>
-                Product Image{' '}
+                Product Image{" "}
                 <Tips
                   mode={mode}
                   tips={`
@@ -1816,7 +1819,7 @@ export default function NewProduct() {
                 <BigImageC mode={mode}>
                   {input.image1 ? (
                     <ImageCont>
-                      <Close onClick={() => handleOnChange('', 'image1')}>
+                      <Close onClick={() => handleOnChange("", "image1")}>
                         <FontAwesomeIcon icon={faClose} />
                       </Close>
                       <BigImage src={input.image1} alt="product image" />
@@ -1824,7 +1827,7 @@ export default function NewProduct() {
                   ) : (
                     <AddImage
                       onClick={() => {
-                        setCurrentImage('image1');
+                        setCurrentImage("image1");
                         setShowUploadingImage(true);
                       }}
                     >
@@ -1844,7 +1847,7 @@ export default function NewProduct() {
                 <BigImageC mode={mode}>
                   {input.image2 ? (
                     <ImageCont>
-                      <Close onClick={() => handleOnChange('', 'image2')}>
+                      <Close onClick={() => handleOnChange("", "image2")}>
                         <FontAwesomeIcon icon={faClose} />
                       </Close>
                       <BigImage src={input.image2} alt="product image" />
@@ -1852,7 +1855,7 @@ export default function NewProduct() {
                   ) : (
                     <AddImage
                       onClick={() => {
-                        setCurrentImage('image2');
+                        setCurrentImage("image2");
                         setShowUploadingImage(true);
                       }}
                     >
@@ -1873,7 +1876,7 @@ export default function NewProduct() {
                   <SmallImageC mode={mode}>
                     {input.image3 ? (
                       <ImageCont>
-                        <Close onClick={() => handleOnChange('', 'image3')}>
+                        <Close onClick={() => handleOnChange("", "image3")}>
                           <FontAwesomeIcon icon={faClose} />
                         </Close>
                         <SmallImage src={input.image3} alt="product image" />
@@ -1881,7 +1884,7 @@ export default function NewProduct() {
                     ) : (
                       <AddImage
                         onClick={() => {
-                          setCurrentImage('image3');
+                          setCurrentImage("image3");
                           setShowUploadingImage(true);
                         }}
                       >
@@ -1901,7 +1904,7 @@ export default function NewProduct() {
                   <SmallImageC mode={mode}>
                     {input.image4 ? (
                       <ImageCont>
-                        <Close onClick={() => handleOnChange('', 'image4')}>
+                        <Close onClick={() => handleOnChange("", "image4")}>
                           <FontAwesomeIcon icon={faClose} />
                         </Close>
                         <SmallImage src={input.image4} alt="product image" />
@@ -1909,7 +1912,7 @@ export default function NewProduct() {
                     ) : (
                       <AddImage
                         onClick={() => {
-                          setCurrentImage('image4');
+                          setCurrentImage("image4");
                           setShowUploadingImage(true);
                         }}
                       >
@@ -1955,39 +1958,39 @@ export default function NewProduct() {
               ) : video ? (
                 <div
                   style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <FontAwesomeIcon
-                    style={{ marginRight: '20px' }}
+                    style={{ marginRight: "20px" }}
                     icon={faVideo}
                   />
                   <span>Video Uploaded</span>
                   <FontAwesomeIcon
-                    style={{ marginLeft: '20px' }}
+                    style={{ marginLeft: "20px" }}
                     icon={faClose}
-                    onClick={() => dispatch({ type: 'REMOVE_VIDEO' })}
+                    onClick={() => dispatch({ type: "REMOVE_VIDEO" })}
                   />
                 </div>
               ) : (
                 <label
                   htmlFor="video"
                   style={{
-                    display: 'block',
-                    cursor: 'pointer',
-                    color: 'var(--orange-color)',
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
+                    display: "block",
+                    cursor: "pointer",
+                    color: "var(--orange-color)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    textTransform: "uppercase",
                   }}
                 >
                   Add a short video
                 </label>
               )}
               <TitleDetails>
-                <span style={{ color: 'var(--malon-color)' }}>
+                <span style={{ color: "var(--malon-color)" }}>
                   Please note: Make sure the image you're uploaing is in
                   portrait format and not landscape. Image/Video size should be
                   less than 8MB.
@@ -2000,51 +2003,47 @@ export default function NewProduct() {
                   // setShowUploadingVideo(true);
                 }}
                 id="video"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
               <ImageRow>
                 <VintageCont>
                   <ItemCheck>
-                    <LuxuryCont>
-                      <Label>
-                        Luxury
-                        <Tips
-                          mode={mode}
-                          tips={`                  
+                    <Label style={{ marginRight: "10px" }}>
+                      Luxury
+                      <Tips
+                        mode={mode}
+                        tips={`                  
                           Product that is a well-known luxury brand. Please kindly select this box only if your goods are Luxury product 
 `}
-                        >
-                          <FontAwesomeIcon icon={faQuestionCircle} />
-                        </Tips>
-                      </Label>
-                    </LuxuryCont>
+                      >
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                      </Tips>
+                    </Label>
                     <Checkbox
                       type="checkbox"
                       checked={input.luxury}
                       onChange={(e) =>
-                        handleOnChange(e.target.checked, 'luxury')
+                        handleOnChange(e.target.checked, "luxury")
                       }
                     />
                   </ItemCheck>
                   <ItemCheck>
-                    <LuxuryCont>
-                      <Label>
-                        Vintage
-                        <Tips
-                          mode={mode}
-                          tips={`                  
+                    <Label style={{ marginRight: "10px" }}>
+                      Vintage
+                      <Tips
+                        mode={mode}
+                        tips={`                  
                       Product that is at least 15 years old. Please kindly select this box only if your goods are Vintage product
 `}
-                        >
-                          <FontAwesomeIcon icon={faQuestionCircle} />
-                        </Tips>
-                      </Label>
-                    </LuxuryCont>
+                      >
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                      </Tips>
+                    </Label>
                     <Checkbox
                       checked={input.vintage}
                       type="checkbox"
                       onChange={(e) =>
-                        handleOnChange(e.target.checked, 'vintage')
+                        handleOnChange(e.target.checked, "vintage")
                       }
                     />
                   </ItemCheck>
@@ -2054,7 +2053,7 @@ export default function NewProduct() {
                     <BigImageC mode={mode}>
                       {input.luxuryImage ? (
                         <LuxuryImgCont>
-                          <Close onClick={() => handleOnChange('', 'luxury')}>
+                          <Close onClick={() => handleOnChange("", "luxury")}>
                             <FontAwesomeIcon icon={faClose} />
                           </Close>
                           <BigImage
@@ -2076,7 +2075,7 @@ export default function NewProduct() {
                                 onChange={handleLuxury}
                               />
                               {invalidImage && (
-                                <div style={{ color: 'red', fontSize: '12px' }}>
+                                <div style={{ color: "red", fontSize: "12px" }}>
                                   {invalidImage}
                                 </div>
                               )}
@@ -2093,7 +2092,7 @@ export default function NewProduct() {
                     </TitleDetails>
                   </VimageCont>
                 ) : (
-                  ''
+                  ""
                 )}
               </ImageRow>
               <Item>
@@ -2105,11 +2104,11 @@ export default function NewProduct() {
 
                   Be concise and only use relevant keywords."
                   onChange={(e) =>
-                    handleOnChange(e.target.value, 'description')
+                    handleOnChange(e.target.value, "description")
                   }
                 />
                 {validationError.description && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
+                  <div style={{ color: "red", fontSize: "12px" }}>
                     {validationError.description}
                   </div>
                 )}
@@ -2122,11 +2121,11 @@ export default function NewProduct() {
                   placeholder="FOR CHILDREN'S WEAR/SH0ES, Please manually enter the Size/Age
                   brackets as shown on the label of clothes/shoes"
                   onChange={(e) =>
-                    handleOnChange(e.target.value, 'specification')
+                    handleOnChange(e.target.value, "specification")
                   }
                 />
                 {validationError.specification && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
+                  <div style={{ color: "red", fontSize: "12px" }}>
                     {validationError.specification}
                   </div>
                 )}
@@ -2136,32 +2135,32 @@ export default function NewProduct() {
                 <FormControl
                   sx={{
                     margin: 0,
-                    borderRadius: '0.2rem',
+                    borderRadius: "0.2rem",
                     border: `1px solid ${
-                      mode === 'pagebodydark'
-                        ? 'var(--dark-ev4)'
-                        : 'var(--light-ev4)'
+                      mode === "pagebodydark"
+                        ? "var(--dark-ev4)"
+                        : "var(--light-ev4)"
                     }`,
-                    '& .MuiOutlinedInput-root': {
+                    "& .MuiOutlinedInput-root": {
                       color: `${
-                        mode === 'pagebodydark'
-                          ? 'var(--white-color)'
-                          : 'var(--black-color)'
+                        mode === "pagebodydark"
+                          ? "var(--white-color)"
+                          : "var(--black-color)"
                       }`,
-                      '&:hover': {
-                        outline: 'none',
+                      "&:hover": {
+                        outline: "none",
                         border: 0,
                       },
                     },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      border: '0 !important',
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "0 !important",
                     },
                   }}
                   size="small"
                 >
                   <Select
                     renderValue={() => input.feature}
-                    onChange={(e) => handleOnChange(e.target.value, 'feature')}
+                    onChange={(e) => handleOnChange(e.target.value, "feature")}
                     displayEmpty
                   >
                     <MenuItem value="">-- select --</MenuItem>
@@ -2196,7 +2195,7 @@ export default function NewProduct() {
                   </Select>
                 </FormControl>
                 {validationError.feature && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
+                  <div style={{ color: "red", fontSize: "12px" }}>
                     {validationError.feature}
                   </div>
                 )}
@@ -2211,9 +2210,9 @@ export default function NewProduct() {
                 ))}
                 <div
                   style={{
-                    color: 'var(--orange-color)',
-                    cursor: 'pointer',
-                    textAlign: 'center',
+                    color: "var(--orange-color)",
+                    cursor: "pointer",
+                    textAlign: "center",
                   }}
                   onClick={() => setShowDelivery(true)}
                 >
@@ -2255,11 +2254,11 @@ export default function NewProduct() {
                       mode={mode}
                       value={input.tag}
                       type="text"
-                      onChange={(e) => handleOnChange(e.target.value, 'tag')}
+                      onChange={(e) => handleOnChange(e.target.value, "tag")}
                     />
                     <AddTag onClick={() => handleTags(input.tag)}>Add</AddTag>
                   </TagInputCont>
-                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  <div style={{ display: "flex", flexWrap: "wrap" }}>
                     {tags.map((t, i) => (
                       <TagItem mode={mode} key={i}>
                         {t}

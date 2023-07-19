@@ -86,7 +86,12 @@ const ButtonGroup = styled.div`
   gap: 10px;
 `;
 
-const ArticleListScreen = ({ switchScreen }) => {
+const ArticleListScreen = ({
+  switchScreen,
+  setTopic,
+  setQuestion,
+  setEditId,
+}) => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [articles, setArticles] = useState([]);
@@ -119,9 +124,12 @@ const ArticleListScreen = ({ switchScreen }) => {
     navigate(`/article/${articleId}`);
   };
 
-  const handleEditClick = (articleId) => {
+  const handleEditClick = (article) => {
     // Handle edit logic
-    console.log("Edit article:", articleId);
+    setEditId(article);
+    setTopic(article.topic);
+    setQuestion(article.question);
+    switchScreen("newtopic");
   };
 
   const handleDeleteClick = async (articleId) => {
@@ -174,7 +182,7 @@ const ArticleListScreen = ({ switchScreen }) => {
               <Content>{getFirstParagraphContent(article.content)}...</Content>
             </ArticleContent>
             <ButtonGroup>
-              <IconButton onClick={(e) => handleEditClick(article._id, e)}>
+              <IconButton onClick={(e) => handleEditClick(article, e)}>
                 <FaEdit />
                 Edit
               </IconButton>
