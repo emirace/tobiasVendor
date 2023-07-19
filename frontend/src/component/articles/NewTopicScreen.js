@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
+import { Store } from "../../Store";
 
 const Container = styled.div`
   max-width: 800px;
@@ -58,7 +59,7 @@ const CreateButton = styled.button`
   }
 `;
 
-const CancelButton = styled.button`
+const CancelButton = styled.div`
   padding: 10px 20px;
   font-size: 16px;
   background-color: #fff;
@@ -77,6 +78,7 @@ const NewTopicScreen = ({
   editId,
   setEditId,
 }) => {
+  const { dispatch: ctxDispatch } = useContext(Store);
   const handleTitleChange = (e) => {
     setTopic(e.target.value);
   };
@@ -88,6 +90,15 @@ const NewTopicScreen = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!topic || !question) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Fill all fields",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
     }
     // Save the new topic and perform necessary actions
     // Redirect to the desired screen
@@ -115,7 +126,6 @@ const NewTopicScreen = ({
           value={topic}
           onChange={handleTitleChange}
           placeholder="Enter the topic this article belongs to"
-          required
         />
         <Label>Title</Label>
         <Input
@@ -123,7 +133,6 @@ const NewTopicScreen = ({
           value={question}
           onChange={handleQuestionChange}
           placeholder="Enter the question you are about to answer"
-          required
         />
         <ButtonGroup>
           <CreateButton type="submit">Create</CreateButton>
