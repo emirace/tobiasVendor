@@ -50,6 +50,7 @@ export default function Articles() {
           switchScreen={switchScreen}
           topic={topic}
           question={question}
+          setEditId={setEditId}
           editId={editId}
         />
       )}

@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { Store } from "../Store";
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { Store } from '../Store';
 
 const Container = styled.div``;
 
@@ -13,7 +13,7 @@ const Hero = styled.div`
   padding-top: 80px;
   padding-bottom: 80px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 
   @media (max-width: 768px) {
     padding-top: 40px;
@@ -55,7 +55,7 @@ const SectionTitle = styled.h2`
 `;
 
 const ArticleItem = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   &:hover {
     h3 {
       color: var(--orange-color);
@@ -115,7 +115,7 @@ const ArticleListScreen = () => {
   const { state } = useContext(Store);
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const searchParam = sp.get("search") || "";
+  const searchParam = sp.get('search') || '';
   const { mode } = state;
   const [articles, setArticles] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -137,7 +137,7 @@ const ArticleListScreen = () => {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const { data } = await axios.get("/api/articles/topics");
+        const { data } = await axios.get('/api/articles/topics');
         setTopics(data);
       } catch (error) {
         console.log(error);
@@ -152,11 +152,18 @@ const ArticleListScreen = () => {
   };
 
   const getFirstParagraphContent = (content) => {
-    const paragraph = content.find((item) => item.type === "paragraph");
+    const paragraph = content.find((item) => item.type === 'paragraph');
     if (paragraph) {
       return paragraph.content.substring(0, 100);
     }
-    return "";
+    return '';
+  };
+
+  const handleSearchKey = (e) => {
+    var key = e.keyCode || e.which;
+    if (key === 13) {
+      e.target.blur();
+    }
   };
 
   return (
@@ -168,6 +175,7 @@ const ArticleListScreen = () => {
           placeholder="Search articles by topic"
           value={searchTerm}
           onChange={handleSearch}
+          onKeyDown={handleSearchKey}
         />
       </Hero>
       <Section>

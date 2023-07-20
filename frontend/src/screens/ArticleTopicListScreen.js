@@ -1,10 +1,10 @@
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
-import { Store } from "../Store";
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { Store } from '../Store';
 
 const Container = styled.div`
   max-width: 800px;
@@ -52,7 +52,7 @@ const SearchBox = styled.input`
   border: none;
   width: 100%;
   background: none;
-  color: ${(props) => (props.mode === "pagebodylight" ? "black" : "white")};
+  color: ${(props) => (props.mode === 'pagebodylight' ? 'black' : 'white')};
 
   @media (max-width: 768px) {
     width: auto;
@@ -76,7 +76,7 @@ const ArticleItemContainer = styled.div`
 `;
 
 const ArticleItem = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   &:hover {
     h3 {
       color: var(--orange-color);
@@ -98,7 +98,7 @@ export default function ArticleTopicListScreen() {
   const { mode } = state;
   const { topic } = useParams();
   const [articles, setArticles] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   useEffect(() => {
     const fetchArticles = async () => {
@@ -114,16 +114,17 @@ export default function ArticleTopicListScreen() {
   }, [topic]);
 
   const getFirstParagraphContent = (content) => {
-    const paragraph = content.find((item) => item.type === "paragraph");
+    const paragraph = content.find((item) => item.type === 'paragraph');
     if (paragraph) {
       return paragraph.content.substring(0, 100);
     }
-    return "";
+    return '';
   };
 
   const handleSearch = (e) => {
     var key = e.keyCode || e.which;
     if (key === 13) {
+      e.target.blur();
       navigate(`/articles?search=${searchTerm}`);
     }
   };

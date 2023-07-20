@@ -4,25 +4,25 @@ import React, {
   useReducer,
   useRef,
   useState,
-} from "react";
-import styled from "styled-components";
-import { RiCustomerService2Fill } from "react-icons/ri";
-import { CgChevronLeft, CgChevronRight } from "react-icons/cg";
-import { CgChevronDown } from "react-icons/cg";
-import { GrAttachment } from "react-icons/gr";
-import { HiOutlineSearch } from "react-icons/hi";
-import { v4 } from "uuid";
-import { Store } from "../Store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-import { socket } from "../App";
-import Messages from "./Messages";
-import { Link, useLocation } from "react-router-dom";
-import secureLocalStorage from "react-secure-storage";
-import { getError } from "../utils";
-import OneNewMessage from "./OneNewMessage";
-import { resizeImage } from "./ImageUploader";
+} from 'react';
+import styled from 'styled-components';
+import { RiCustomerService2Fill } from 'react-icons/ri';
+import { CgChevronLeft, CgChevronRight } from 'react-icons/cg';
+import { CgChevronDown } from 'react-icons/cg';
+import { GrAttachment } from 'react-icons/gr';
+import { HiOutlineSearch } from 'react-icons/hi';
+import { v4 } from 'uuid';
+import { Store } from '../Store';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { socket } from '../App';
+import Messages from './Messages';
+import { Link, useLocation } from 'react-router-dom';
+import secureLocalStorage from 'react-secure-storage';
+import { getError } from '../utils';
+import OneNewMessage from './OneNewMessage';
+import { resizeImage } from './ImageUploader';
 
 const Container = styled.div`
   position: fixed;
@@ -33,7 +33,7 @@ const Container = styled.div`
   z-index: 9;
   border-radius: 50%;
   background: ${(props) =>
-    props.mode === "pagebodylight" ? "black" : "white"};
+    props.mode === 'pagebodylight' ? 'black' : 'white'};
   display: flex;
   justify-content: center;
   color: black;
@@ -43,9 +43,9 @@ const Container = styled.div`
     font-size: 30px;
 
     color: ${(props) =>
-      props.mode === "pagebodylight"
-        ? "var(--orange-color)"
-        : "var(--orange-color)"};
+      props.mode === 'pagebodylight'
+        ? 'var(--orange-color)'
+        : 'var(--orange-color)'};
   }
   @media (max-width: 992px) {
     bottom: 65px;
@@ -245,11 +245,11 @@ const ImageFile = styled.img`
 `;
 const reducer = (state, action) => {
   switch (action.type) {
-    case "UPLOAD_REQUEST":
+    case 'UPLOAD_REQUEST':
       return { ...state, loadingUpload: true };
-    case "UPLOAD_SUCCESS":
-      return { ...state, loadingUpload: false, errorUpload: "" };
-    case "UPLOAD_FAIL":
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
       return {
         ...state,
         loadingUpload: false,
@@ -265,37 +265,37 @@ export default function Support() {
   const { mode, userInfo, notifications } = state;
   const [showSupport, setShowSupport] = useState(false);
   const [sendMessage, setSendMessage] = useState(false);
-  const [input, setInput] = useState("");
-  const [error, setError] = useState("");
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
   const [user, setUser] = useState(userInfo);
-  const [message, setMessage] = useState("");
-  const [currentChat, setCurrentChat] = useState("");
+  const [message, setMessage] = useState('');
+  const [currentChat, setCurrentChat] = useState('');
   const scrollref = useRef();
   const [messages, setMessages] = useState([]);
   const [displaySupport, setDisplaySupport] = useState(true);
-  const [arrivalMessage, setArrivalMessage] = useState("");
-  const [image, setImage] = useState("");
+  const [arrivalMessage, setArrivalMessage] = useState('');
+  const [image, setImage] = useState('');
   const location = useLocation();
   const [uploadImage, setUploadImage] = useState(false);
   const [articles, setArticles] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [{ loadingUpload }, dispatch] = useReducer(reducer, {
     loadingUpload: false,
   });
 
   const CurrentPath = location.pathname;
-  console.log("notifications", notifications);
+  console.log('notifications', notifications);
   const supportNotification = notifications.filter(
-    (x) => x.notifyType === "support" && x.read === false
+    (x) => x.notifyType === 'support' && x.read === false
   );
 
   useEffect(() => {
-    const exist = secureLocalStorage.getItem("guestUser");
-    console.log("storage");
+    const exist = secureLocalStorage.getItem('guestUser');
+    console.log('storage');
     if (exist && !userInfo) {
-      console.log("storage user", exist);
-      socket.emit("onlogin", exist);
+      console.log('storage user', exist);
+      socket.emit('onlogin', exist);
       setUser(exist);
       console.log(user);
     }
@@ -315,18 +315,18 @@ export default function Support() {
 
   useEffect(() => {
     if (!userInfo && user) {
-      socket.emit("initial_data", { userId: user._id });
-      socket.on("get_data", (notification) =>
-        ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification })
+      socket.emit('initial_data', { userId: user._id });
+      socket.on('get_data', (notification) =>
+        ctxDispatch({ type: 'UPDATE_NOTIFICATIONS', payload: notification })
       );
-      socket.on("change_data", () =>
-        socket.emit("initial_data", { userId: user._id })
+      socket.on('change_data', () =>
+        socket.emit('initial_data', { userId: user._id })
       );
     }
   }, [user, userInfo]);
 
   useEffect(() => {
-    if (CurrentPath === "/messages") {
+    if (CurrentPath === '/messages') {
       setDisplaySupport(false);
     } else {
       setDisplaySupport(true);
@@ -335,7 +335,7 @@ export default function Support() {
   }, [CurrentPath]);
 
   useEffect(() => {
-    socket.on("getMessage", (data) => {
+    socket.on('getMessage', (data) => {
       console.log(data);
       setArrivalMessage({
         sender: data.senderId,
@@ -358,7 +358,7 @@ export default function Support() {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    scrollref.current?.scrollIntoView({ behavior: "smooth" });
+    scrollref.current?.scrollIntoView({ behavior: 'smooth' });
     console.log(scrollref.current);
   }, [messages, showSupport]);
 
@@ -385,22 +385,22 @@ export default function Support() {
 
   const handleGuest = async () => {
     if (!input.username) {
-      handleError("Please enter your name", "username");
+      handleError('Please enter your name', 'username');
       return;
     }
     if (!input.email) {
-      handleError("Please enter an email", "email");
+      handleError('Please enter an email', 'email');
       return;
     }
     try {
-      const { data: currentGuest } = await axios.post("/api/guestusers/", {
+      const { data: currentGuest } = await axios.post('/api/guestusers/', {
         username: input.username,
         email: input.email,
         guest: true,
       });
       setUser(currentGuest);
-      secureLocalStorage.setItem("guestUser", currentGuest);
-      socket.emit("onlogin", currentGuest);
+      secureLocalStorage.setItem('guestUser', currentGuest);
+      socket.emit('onlogin', currentGuest);
       await addConversation(currentGuest);
     } catch (err) {
       console.log(err.message);
@@ -412,12 +412,12 @@ export default function Support() {
     try {
       const { data } = await axios.post(`/api/conversations/support`, {
         recieverId: user._id,
-        type: "support",
+        type: 'support',
         guestEmail: user.email,
         guest: userInfo ? false : true,
       });
       setCurrentChat(data);
-      socket.emit("remove_notifications", data._id);
+      socket.emit('remove_notifications', data._id);
     } catch (err) {
       console.log(err);
     }
@@ -427,11 +427,11 @@ export default function Support() {
     e.preventDefault();
     if (!message.length) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Enter a message to send",
+          message: 'Enter a message to send',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -443,14 +443,14 @@ export default function Support() {
       image,
     };
     try {
-      const { data } = await axios.post("api/messages/support", message1);
+      const { data } = await axios.post('api/messages/support', message1);
       setMessages([...messages, data.message]);
-      console.log("heeellllooo");
+      console.log('heeellllooo');
       const receiverId = currentChat.members.find(
         (member) => member !== user._id
       );
       console.log(receiverId, currentChat, user);
-      socket.emit("sendSupport", {
+      socket.emit('sendSupport', {
         message: data.message,
         senderId: user._id,
         receiverId,
@@ -458,19 +458,19 @@ export default function Support() {
         isAdmin: false,
         text: message,
       });
-      socket.emit("post_data", {
-        userId: "Admin",
+      socket.emit('post_data', {
+        userId: 'Admin',
         itemId: currentChat._id,
-        notifyType: "support",
-        msg: "New support Message",
-        mobile: { path: "Conversation", id: "" },
+        notifyType: 'support',
+        msg: 'New support Message',
+        mobile: { path: 'Conversation', id: '' },
         link: `/messages?conversation=${currentChat._id}`,
         userImage:
-          "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",
+          'https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png',
       });
-      setMessage("");
-      setImage("");
-      socket.emit("remove_notifications", currentChat?._id);
+      setMessage('');
+      setImage('');
+      socket.emit('remove_notifications', currentChat?._id);
     } catch (err) {
       console.log(getError(err));
     }
@@ -483,8 +483,8 @@ export default function Support() {
     setSendMessage(true);
   };
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      console.log("keypress");
+    if (e.key === 'Enter') {
+      console.log('keypress');
       handleSubmit(e);
     }
   };
@@ -492,40 +492,40 @@ export default function Support() {
   const uploadHandler = async (e) => {
     const file = e;
     const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
+    bodyFormData.append('file', file);
     try {
-      dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: "UPLOAD_SUCCESS" });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
       setImage(data.secure_url);
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Image Uploaded",
+          message: 'Image Uploaded',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
     } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Failed uploading image",
+          message: 'Failed uploading image',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       console.log(getError(err));
     }
   };
 
-  const [invalidImage, setInvalidImage] = useState("");
+  const [invalidImage, setInvalidImage] = useState('');
   const [resizeImage1, setResizeImage] = useState({
     file: [],
     filepreview: null,
@@ -548,15 +548,22 @@ export default function Support() {
     resizeImage(e, setInvalidImage, setResizeImage);
   };
 
-  if (CurrentPath === "/brand") return;
+  if (CurrentPath === '/brand') return;
   var pattern = /^\/brandpage\/[A-Z]$/;
   if (pattern.test(CurrentPath)) return;
+
+  const handleSearch = (e) => {
+    var key = e.keyCode || e.which;
+    if (key === 13) {
+      e.target.blur();
+    }
+  };
 
   return (
     displaySupport && (
       <Container
         mode={mode}
-        onClick={() => socket.emit("remove_notifications", currentChat?._id)}
+        onClick={() => socket.emit('remove_notifications', currentChat?._id)}
       >
         {!showSupport ? (
           <RiCustomerService2Fill
@@ -577,7 +584,7 @@ export default function Support() {
               {!sendMessage ? (
                 <>
                   <Logo src="https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif" />
-                  <Name>Hello {user?.username ?? "Guest"}</Name>
+                  <Name>Hello {user?.username ?? 'Guest'}</Name>
                 </>
               ) : (
                 <>
@@ -585,9 +592,9 @@ export default function Support() {
                     <CgChevronLeft onClick={() => setSendMessage(false)} />
                     <Logo src="https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif" />
                   </Admin>
-                  <Admin style={{ marginLeft: "70px" }}>
+                  <Admin style={{ marginLeft: '70px' }}>
                     <Image src="/images/pimage.png" />
-                    <div style={{ margin: "10px 0", maxWidth: "200px" }}>
+                    <div style={{ margin: '10px 0', maxWidth: '200px' }}>
                       We will reply as soon as we can, but usually within 48hrs
                     </div>
                   </Admin>
@@ -601,10 +608,10 @@ export default function Support() {
                     <ChatArea>
                       <div
                         style={{
-                          height: "100%",
-                          display: "flex",
-                          flexDirection: "column",
-                          padding: "20px",
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          padding: '20px',
                         }}
                       >
                         {image ? (
@@ -638,7 +645,7 @@ export default function Support() {
                       <input
                         type="file"
                         id="addimage"
-                        style={{ display: "none" }}
+                        style={{ display: 'none' }}
                         onChange={handleImageUpload}
                       />
                       <FontAwesomeIcon
@@ -654,10 +661,10 @@ export default function Support() {
                       <Input1
                         error={error.username}
                         onFocus={() => {
-                          handleError(null, "username");
+                          handleError(null, 'username');
                         }}
                         onChange={(e) =>
-                          handleOnChange(e.target.value, "username")
+                          handleOnChange(e.target.value, 'username')
                         }
                       />
 
@@ -668,10 +675,10 @@ export default function Support() {
                       <Input1
                         error={error.email}
                         onFocus={() => {
-                          handleError(null, "email");
+                          handleError(null, 'email');
                         }}
                         onChange={(e) =>
-                          handleOnChange(e.target.value, "email")
+                          handleOnChange(e.target.value, 'email')
                         }
                       />
 
@@ -685,7 +692,7 @@ export default function Support() {
             </Bottom>
             {!sendMessage && (
               <BoxCont>
-                <div style={{ padding: "150px 10px 10px 10px" }}>
+                <div style={{ padding: '150px 10px 10px 10px' }}>
                   <SmallBox>
                     <Head>FAQ</Head>
                     <SearchCont>
@@ -693,6 +700,8 @@ export default function Support() {
                       <Input
                         placeholder="Search question"
                         onChange={(e) => setSearchQuery(e.target.value)}
+                        type="search"
+                        onKeyDown={handleSearch}
                       />
                     </SearchCont>
                     <div>
@@ -726,7 +735,7 @@ export default function Support() {
 
                     <Admin>
                       <Image src="/images/pimage.png" />
-                      <div style={{ margin: "10px 0" }}>
+                      <div style={{ margin: '10px 0' }}>
                         We will reply as soon as we can, but usually within
                         48hrs
                       </div>

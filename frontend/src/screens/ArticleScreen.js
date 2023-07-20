@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import LoadingBox from "../component/LoadingBox";
-import { Store } from "../Store";
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import LoadingBox from '../component/LoadingBox';
+import { Store } from '../Store';
 
 const Container = styled.div`
   max-width: 800px;
@@ -95,7 +95,7 @@ const SearchBox = styled.input`
   border: none;
   width: 100%;
   background: none;
-  color: ${(props) => (props.mode === "pagebodylight" ? "black" : "white")};
+  color: ${(props) => (props.mode === 'pagebodylight' ? 'black' : 'white')};
 
   @media (max-width: 768px) {
     width: auto;
@@ -113,7 +113,7 @@ const ArticleScreen = () => {
   const { mode } = state;
   const { id: articleId } = useParams();
   const [article, setArticle] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -141,48 +141,48 @@ const ArticleScreen = () => {
       const item = article.content[i];
       console.log(item);
 
-      if (item.type === "paragraph") {
+      if (item.type === 'paragraph') {
         if (isLinkCombined) {
           // If the link was combined with the previous paragraph, skip this paragraph
           isLinkCombined = false;
           continue;
         }
         renderedContent.push(<p key={i}>{item.content}</p>);
-      } else if (item.type === "link") {
+      } else if (item.type === 'link') {
         let linkContent = item.content;
         // Check if the previous item and next item are paragraphs
         const prevItem = article.content[i - 1];
         const nextItem = article.content[i + 1];
         if (
           prevItem &&
-          prevItem.type === "paragraph" &&
+          prevItem.type === 'paragraph' &&
           nextItem &&
-          nextItem.type === "paragraph"
+          nextItem.type === 'paragraph'
         ) {
           isLinkCombined = true;
           // Add the link content within the previous paragraph
           renderedContent[renderedContent.length - 1] = (
             <p key={i}>
-              {prevItem.content}{" "}
+              {prevItem.content}{' '}
               <a href={item.url} target="_blank" rel="noopener noreferrer">
                 {linkContent}
-              </a>{" "}
+              </a>{' '}
               {nextItem.content}
             </p>
           );
         } else if (
           prevItem &&
-          prevItem.type === "paragraph" &&
+          prevItem.type === 'paragraph' &&
           nextItem &&
-          nextItem.type !== "paragraph"
+          nextItem.type !== 'paragraph'
         ) {
           // Add the link content within the previous paragraph
           renderedContent[renderedContent.length - 1] = (
             <p key={i}>
-              {prevItem.content}{" "}
+              {prevItem.content}{' '}
               <a href={item.url} target="_blank" rel="noopener noreferrer">
                 {linkContent}
-              </a>{" "}
+              </a>{' '}
               {/* {nextItem ? nextItem.content : ""} */}
             </p>
           );
@@ -196,7 +196,7 @@ const ArticleScreen = () => {
             </p>
           );
         }
-      } else if (item.type === "image") {
+      } else if (item.type === 'image') {
         renderedContent.push(<img key={i} src={item.content} alt={item.id} />);
       }
     }
@@ -207,6 +207,7 @@ const ArticleScreen = () => {
   const handleSearch = (e) => {
     var key = e.keyCode || e.which;
     if (key === 13) {
+      e.target.blur();
       navigate(`/articles?search=${searchTerm}`);
     }
   };
@@ -215,7 +216,7 @@ const ArticleScreen = () => {
     <Container>
       <TopRow>
         <Breadcrumbs>
-          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{" "}
+          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{' '}
           {article.topic}
         </Breadcrumbs>
         <SearchBoxContainer>

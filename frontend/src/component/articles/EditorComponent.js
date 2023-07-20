@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {
   faEdit,
   faTrash,
   faImage,
   faLink,
   faParagraph,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import { Store } from "../../Store";
-import { compressImageUpload, getError } from "../../utils";
-import { resizeImage } from "../ImageUploader";
-import useWindowDimensions from "../Dimension";
-import LoadingBox from "../LoadingBox";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import { Store } from '../../Store';
+import { compressImageUpload, getError } from '../../utils';
+import { resizeImage } from '../ImageUploader';
+import useWindowDimensions from '../Dimension';
+import LoadingBox from '../LoadingBox';
 
 const EditorComponent = ({
   topic,
@@ -27,19 +27,19 @@ const EditorComponent = ({
   const [content, setContent] = useState(
     editId
       ? editId.content
-      : [{ type: "paragraph", content: "", id: Date.now().toString() }]
+      : [{ type: 'paragraph', content: '', id: Date.now().toString() }]
   );
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [linkText, setLinkText] = useState("");
-  const [linkUrl, setLinkUrl] = useState("");
-  const [editingLinkId, setEditingLinkId] = useState("");
+  const [linkText, setLinkText] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
+  const [editingLinkId, setEditingLinkId] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
       // Make the POST request to the backend API
       const { data } = await axios.post(
-        "/api/articles",
+        '/api/articles',
         {
           topic,
           content,
@@ -54,24 +54,24 @@ const EditorComponent = ({
       console.log(data);
       // Do something with the response data, such as showing a success message
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Article created Successfully",
+          message: 'Article created Successfully',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
-      switchScreen("list");
+      switchScreen('list');
     } catch (error) {
       // Handle any errors that occur during the request
       console.log(error);
       // Show an error message or perform error handling
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(error),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -96,25 +96,25 @@ const EditorComponent = ({
       console.log(data);
       // Do something with the response data, such as showing a success message
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Article updated Successfully",
+          message: 'Article updated Successfully',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
       setEditId(null);
-      switchScreen("list");
+      switchScreen('list');
     } catch (error) {
       // Handle any errors that occur during the request
       console.log(error);
       // Show an error message or perform error handling
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(error),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -122,8 +122,8 @@ const EditorComponent = ({
   const handleAddParagraph = () => {
     const newContent = [...content];
     newContent.push({
-      type: "paragraph",
-      content: "",
+      type: 'paragraph',
+      content: '',
       id: Date.now().toString(),
     });
     setContent(newContent);
@@ -135,8 +135,8 @@ const EditorComponent = ({
 
   const handleLinkModalClose = () => {
     setShowLinkModal(false);
-    setLinkText("");
-    setLinkUrl("");
+    setLinkText('');
+    setLinkUrl('');
   };
   const handleLinkModalSubmit = () => {
     if (editingLinkId) {
@@ -151,7 +151,7 @@ const EditorComponent = ({
       const newContent = [
         ...content,
         {
-          type: "link",
+          type: 'link',
           content: linkText,
           url: linkUrl,
           id: Date.now().toString(),
@@ -161,16 +161,16 @@ const EditorComponent = ({
     }
 
     setShowLinkModal(false);
-    setLinkText("");
-    setLinkUrl("");
+    setLinkText('');
+    setLinkUrl('');
     setEditingLinkId(null);
   };
 
   const handleAddImage = async () => {
     try {
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = "image/*";
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'image/*';
       fileInput.onchange = async (event) => {
         const file = event.target.files[0];
         setLoading(true);
@@ -183,7 +183,7 @@ const EditorComponent = ({
           const newContent = [
             ...content,
             {
-              type: "image",
+              type: 'image',
               content: imageUrl,
               id: Date.now().toString(),
             },
@@ -194,11 +194,11 @@ const EditorComponent = ({
           setLoading(false);
           console.log(error);
           ctxDispatch({
-            type: "SHOW_TOAST",
+            type: 'SHOW_TOAST',
             payload: {
               message: getError(error),
               showStatus: true,
-              state1: "visible1 error",
+              state1: 'visible1 error',
             },
           });
         }
@@ -208,11 +208,11 @@ const EditorComponent = ({
     } catch (error) {
       console.log(error);
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(error),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -227,7 +227,7 @@ const EditorComponent = ({
     });
 
     const filteredContent = updatedContent.filter(
-      (item) => item.type !== "paragraph" || item.content.trim() !== ""
+      (item) => item.type !== 'paragraph' || item.content.trim() !== ''
     );
 
     setContent(filteredContent);
@@ -251,7 +251,7 @@ const EditorComponent = ({
 
   const renderContent = () => {
     return content.map((item) => {
-      if (item.type === "paragraph") {
+      if (item.type === 'paragraph') {
         return (
           <StyledTextarea
             mode={mode}
@@ -261,13 +261,13 @@ const EditorComponent = ({
             value={item.content}
             onChange={(event) => handleParagraphChange(event, item.id)}
             onInput={(event) => {
-              event.target.style.height = "auto";
-              event.target.style.height = event.target.scrollHeight + "px";
+              event.target.style.height = 'auto';
+              event.target.style.height = event.target.scrollHeight + 'px';
             }}
           />
         );
       }
-      if (item.type === "link") {
+      if (item.type === 'link') {
         return (
           <LinkWrapper key={item.id}>
             <StyledLink href={item.url}>{item.content}</StyledLink>
@@ -283,10 +283,15 @@ const EditorComponent = ({
         );
       }
 
-      if (item.type === "image") {
+      if (item.type === 'image') {
         return (
           <>
-            <img key={item.id} src={item.content} alt="Preview" />
+            <img
+              style={{ width: '70%' }}
+              key={item.id}
+              src={item.content}
+              alt="Preview"
+            />
             <IconWrapper onClick={() => handleLinkDelete(item.id)}>
               <FontAwesomeIcon icon={faTrash} />
             </IconWrapper>
@@ -326,7 +331,7 @@ const EditorComponent = ({
       {showLinkModal && (
         <ModalContainer>
           <Modal>
-            <h3>{editingLinkId ? "Edit Link" : "Add Link"}</h3>
+            <h3>{editingLinkId ? 'Edit Link' : 'Add Link'}</h3>
             <TextInput
               placeholder="Enter link text"
               value={linkText}
@@ -340,20 +345,20 @@ const EditorComponent = ({
             <ButtonContainer>
               <CancelButton onClick={handleLinkModalClose}>Cancel</CancelButton>
               <AddButton onClick={handleLinkModalSubmit}>
-                {editingLinkId ? "Update" : "Add"}
+                {editingLinkId ? 'Update' : 'Add'}
               </AddButton>
             </ButtonContainer>
           </Modal>
         </ModalContainer>
       )}
       <ButtonContainer>
-        {renderButton(handleAddParagraph, faParagraph, "Add Paragraph")}
-        {renderButton(handleAddLink, faLink, "Add Link")}
+        {renderButton(handleAddParagraph, faParagraph, 'Add Paragraph')}
+        {renderButton(handleAddLink, faLink, 'Add Link')}
 
         {loading ? (
           <LoadingBox />
         ) : (
-          renderButton(handleAddImage, faImage, "Add Image")
+          renderButton(handleAddImage, faImage, 'Add Image')
         )}
       </ButtonContainer>
       <div>
@@ -415,9 +420,9 @@ const StyledTextarea = styled.textarea`
   width: 100%;
   transition: box-shadow 0.2s ease-in-out;
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
 
   &:focus {
     outline: none;
