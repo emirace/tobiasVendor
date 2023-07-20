@@ -100,9 +100,7 @@ const ArticleListScreen = ({
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const { data } = await axios.get("/api/articles", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get("/api/articles");
         console.log(data);
         setArticles(data);
       } catch (error) {
@@ -110,7 +108,7 @@ const ArticleListScreen = ({
       }
     };
     fetchArticles();
-  }, [userInfo]);
+  }, []);
 
   const getFirstParagraphContent = (content) => {
     const paragraph = content.find((item) => item.type === "paragraph");

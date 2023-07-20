@@ -34,6 +34,7 @@ import ProductListScreen from "./ProductListScreen";
 import UserListScreen from "./UserListScreen";
 import DashboardScreen from "./DashboardScreen";
 import OrderListScreen from "./OrderListScreen";
+import mixpanel from "mixpanel-browser";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -378,6 +379,7 @@ export default function MyAccountScreen() {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
+    mixpanel.reset();
     window.location.href = "/signin";
   };
 

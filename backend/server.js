@@ -44,6 +44,7 @@ import reviewRouter from "./routes/reviewRoutes.js";
 import Product from "./models/productModel.js";
 import fs from "fs";
 import articleRouter from "./routes/articleRoutes.js";
+import Mixpanel from "mixpanel";
 
 dotenv.config();
 
@@ -57,6 +58,8 @@ mongoose
   });
 
 const app = express();
+
+var mixpanel = Mixpanel.init("233f27ff76029c2e456716935b253bfa");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -183,10 +186,12 @@ app.set("io", io);
 io.on("connection", (socket) => {
   console.log("user connected", socket.id);
 
-  console.log(users);
   socket.on("disconnect", () => {
     const user = users.find((x) => x.socketId === socket.id);
     if (user) {
+      mixpanel.track("User Disconnected", {
+        distinct_id: user._id,
+      });
       users = users.filter((user) => user.socketId !== socket.id);
       console.log("offline", user.username);
       const admin = users.find((x) => x.isAdmin);
@@ -205,6 +210,9 @@ io.on("connection", (socket) => {
       ...user,
       socketId: socket.id,
     };
+    mixpanel.track("User Connected", {
+      distinct_id: user._id,
+    });
     const existUser = users.find((x) => x._id === updatedUser._id);
     if (existUser) {
       existUser.socketId = socket.id;

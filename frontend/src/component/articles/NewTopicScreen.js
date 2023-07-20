@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../../Store';
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../../Store";
 
 const Container = styled.div`
   max-width: 800px;
@@ -91,28 +91,28 @@ const NewTopicScreen = ({
     e.preventDefault();
     if (!topic || !question) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Fill all fields',
+          message: "Fill all fields",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     // Save the new topic and perform necessary actions
     // Redirect to the desired screen
-    switchScreen('new');
+    switchScreen("new");
   };
 
   const handleCancel = () => {
     if (editId) {
-      setTopic('');
-      setQuestion('');
+      setTopic("");
+      setQuestion("");
       setEditId(null);
-      switchScreen('list');
+      switchScreen("list");
     } else {
-      switchScreen('create');
+      switchScreen("create");
     }
   };
 
@@ -135,7 +135,7 @@ const NewTopicScreen = ({
           placeholder="Enter the question you are about to answer"
         />
         <ButtonGroup>
-          <CreateButton type="submit">Create</CreateButton>
+          <CreateButton type="submit">Continue</CreateButton>
           <CancelButton onClick={handleCancel}>Back</CancelButton>
         </ButtonGroup>
       </Form>

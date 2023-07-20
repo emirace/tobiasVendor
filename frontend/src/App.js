@@ -105,6 +105,7 @@ import TopSellerList from "./component/dashboard/TopSellerList";
 import BrandScreenPage from "./screens/BrandScreenPage";
 import BuyerProtection from "./component/info/BuyerProtection";
 import DeletedScreen from "./screens/successPage/DeleteScreen";
+import mixpanel from "mixpanel-browser";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -120,6 +121,9 @@ const GigScreen = lazy(() => import("./screens/GigScreen"));
 const About = lazy(() => import("./component/info/About"));
 const ArticleListScreen = lazy(() => import("./screens/ArticleListScreen"));
 const ArticleScreen = lazy(() => import("./screens/ArticleScreen"));
+const ArticleTopicListScreen = lazy(() =>
+  import("./screens/ArticleTopicListScreen")
+);
 const PolicyScreen = lazy(() => import("./screens/PolicyScreen"));
 
 const NewProduct = lazy(() => import("./component/dashboard/NewProduct"));
@@ -232,6 +236,7 @@ function App() {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
+    mixpanel.reset();
   };
   const token = new URLSearchParams(window.location.search).get(
     "redirecttoken"
@@ -283,9 +288,17 @@ function App() {
     checkLoacation();
   }, []);
 
+  mixpanel.init("233f27ff76029c2e456716935b253bfa", {
+    debug: true,
+    track_pageview: true,
+    persistence: "localStorage",
+  });
+
   useEffect(() => {
     if (userInfo) {
       socket.emit("onlogin", userInfo);
+      mixpanel.identify(userInfo._id);
+    } else {
     }
   }, [userInfo]);
 
@@ -441,6 +454,10 @@ function App() {
                       <Route path="/about" element={<About />} />
                       <Route path="/articles" element={<ArticleListScreen />} />
                       <Route path="/article/:id" element={<ArticleScreen />} />
+                      <Route
+                        path="/articles/topic/:topic"
+                        element={<ArticleTopicListScreen />}
+                      />
                       <Route path="/privacypolicy" element={<PolicyScreen />} />
                       <Route
                         path="/emailsent"

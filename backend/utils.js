@@ -1,15 +1,15 @@
-import jwt from 'jsonwebtoken';
-import Account from './models/accountModel.js';
-import Transaction from './models/transactionModel.js';
-import nodemailer from 'nodemailer';
-import hbs from 'nodemailer-express-handlebars';
-import crypto from 'crypto';
-import dns from 'dns';
-import axios from 'axios';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import Account from "./models/accountModel.js";
+import Transaction from "./models/transactionModel.js";
+import nodemailer from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+import crypto from "crypto";
+import dns from "dns";
+import axios from "axios";
+import dotenv from "dotenv";
 dotenv.config();
 
-import path from 'path';
+import path from "path";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -23,7 +23,7 @@ export const generateToken = (user) => {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '30d',
+      expiresIn: "30d",
     }
   );
 };
@@ -34,14 +34,14 @@ export const isAuth = (req, res, next) => {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: "Invalid Token" });
       } else {
         req.user = decode;
         next();
       }
     });
   } else {
-    res.status(401).send({ message: 'No Token' });
+    res.status(401).send({ message: "No Token" });
   }
 };
 
@@ -51,7 +51,7 @@ export const isAuthOrNot = (req, res, next) => {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: "Invalid Token" });
       } else {
         req.user = decode;
         next();
@@ -66,7 +66,7 @@ export const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Admin Token' });
+    res.status(401).send({ message: "Invalid Admin Token" });
   }
 };
 
@@ -74,7 +74,7 @@ export const isSeller = (req, res, next) => {
   if (req.user && req.user.isSeller) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Seller Token' });
+    res.status(401).send({ message: "Invalid Seller Token" });
   }
 };
 
@@ -82,7 +82,7 @@ export const isSellerOrAdmin = (req, res, next) => {
   if (req.user && (req.user.isSeller || req.user.isSeller)) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Seller/Admin Token' });
+    res.status(401).send({ message: "Invalid Seller/Admin Token" });
   }
 };
 
@@ -90,12 +90,12 @@ export const isSocialAuth = (req, res, next) => {
   if (req.user) {
     next();
   } else {
-    res.status(401).send({ message: 'User not authorize' });
+    res.status(401).send({ message: "User not authorize" });
   }
 };
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.office365.com',
+  host: "smtp.office365.com",
   port: 587,
   auth: {
     user: process.env.EMAIL_USER,
@@ -103,23 +103,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 transporter.use(
-  'compile',
+  "compile",
   hbs({
     viewEngine: {
-      extname: '.handlebars',
-      partialsDir: path.resolve('./utils/layouts/'),
-      defaultLayout: 'main',
-      layoutsDir: path.resolve('./utils/layouts/'),
+      extname: ".handlebars",
+      partialsDir: path.resolve("./utils/layouts/"),
+      defaultLayout: "main",
+      layoutsDir: path.resolve("./utils/layouts/"),
     },
-    viewPath: path.resolve('./utils/layouts/'),
-    extName: '.handlebars',
+    viewPath: path.resolve("./utils/layouts/"),
+    extName: ".handlebars",
   })
 );
 
 export const sendEmail = async (options) => {
-  console.log('hello');
+  console.log("hello");
   const mailOption = {
-    from: { name: 'Repeddle', address: 'support@repeddle.com' },
+    from: { name: "Repeddle", address: "support@repeddle.com" },
     to: options.to,
     subject: options.subject,
     html: options.text,
@@ -129,24 +129,24 @@ export const sendEmail = async (options) => {
 
   try {
     await transporter.sendMail(mailOption);
-    console.log('Email sent successfully', options.to);
+    console.log("Email sent successfully", options.to);
   } catch (error) {
-    console.error('Failed to send email:', options.to, error);
+    console.error("Failed to send email:", options.to, error);
   }
 };
 
 export const slugify = (Text) => {
   return Text.toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '');
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
 };
 
-import { v4 } from 'uuid';
-import Notification from './models/notificationModel.js';
-import User from './models/userModel.js';
-import Conversation from './models/conversationModel.js';
-import Gig from './models/gigModel.js';
-import Order from './models/orderModel.js';
+import { v4 } from "uuid";
+import Notification from "./models/notificationModel.js";
+import User from "./models/userModel.js";
+import Conversation from "./models/conversationModel.js";
+import Gig from "./models/gigModel.js";
+import Order from "./models/orderModel.js";
 
 export async function creditAccount({
   amount,
@@ -160,7 +160,7 @@ export async function creditAccount({
   if (!account) {
     return {
       success: false,
-      error: 'Account does not exist',
+      error: "Account does not exist",
     };
   } else {
     account.balance = Number(account.balance) + Number(amount);
@@ -168,7 +168,7 @@ export async function creditAccount({
   }
 
   const transaction = new Transaction({
-    txnType: 'credit',
+    txnType: "credit",
     purpose,
     amount,
     accountId,
@@ -180,7 +180,7 @@ export async function creditAccount({
   await transaction.save();
   return {
     success: true,
-    message: 'Credit successful',
+    message: "Credit successful",
   };
 }
 
@@ -196,13 +196,13 @@ export async function debitAccount({
   if (!account) {
     return {
       success: false,
-      error: 'Account does not exist',
+      error: "Account does not exist",
     };
   }
   if (Number(account.balance) < amount) {
     return {
       success: false,
-      error: 'Insufficient balance',
+      error: "Insufficient balance",
     };
   } else {
     account.balance = Number(account.balance) - Number(amount);
@@ -210,7 +210,7 @@ export async function debitAccount({
   }
 
   await Transaction.create({
-    txnType: 'debit',
+    txnType: "debit",
     purpose,
     amount,
     accountId,
@@ -221,12 +221,12 @@ export async function debitAccount({
   });
   return {
     success: true,
-    message: 'Debit successful',
+    message: "Debit successful",
   };
 }
 
 export const generateOTP = () => {
-  let otp = '';
+  let otp = "";
   for (let i = 0; i <= 5; i++) {
     const randVal = Math.round(Math.random() * 9);
     otp = otp + randVal;
@@ -237,18 +237,18 @@ export const generateOTP = () => {
 export const confirmPayfast = async (req, cartTotal) => {
   try {
     const testingMode = false;
-    const pfHost = testingMode ? 'sandbox.payfast.co.za' : 'www.payfast.co.za';
-    const passPhrase = 'Re01thriftpeddle';
+    const pfHost = testingMode ? "sandbox.payfast.co.za" : "www.payfast.co.za";
+    const passPhrase = "Re01thriftpeddle";
     // const passPhrase = "jt7NOE43FZPn";
 
     const pfData = JSON.parse(JSON.stringify(req.body));
 
-    let pfParamString = '';
+    let pfParamString = "";
     for (let key in pfData) {
-      if (pfData.hasOwnProperty(key) && key !== 'signature') {
+      if (pfData.hasOwnProperty(key) && key !== "signature") {
         pfParamString += `${key}=${encodeURIComponent(
           pfData[key].trim()
-        ).replace(/%20/g, '+')}&`;
+        ).replace(/%20/g, "+")}&`;
       }
     }
 
@@ -257,18 +257,18 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidSignature = (pfData, pfParamString, pfPassphrase = null) => {
       // Calculate security signature
-      let tempParamString = '';
+      let tempParamString = "";
       if (pfPassphrase !== null) {
         pfParamString += `&passphrase=${encodeURIComponent(
           pfPassphrase.trim()
-        ).replace(/%20/g, '+')}`;
+        ).replace(/%20/g, "+")}`;
       }
 
       const signature = crypto
-        .createHash('md5')
+        .createHash("md5")
         .update(pfParamString)
-        .digest('hex');
-      return pfData['signature'] === signature;
+        .digest("hex");
+      return pfData["signature"] === signature;
     };
 
     async function ipLookup(domain) {
@@ -288,15 +288,15 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidIP = async (req) => {
       const validHosts = [
-        'www.payfast.co.za',
-        'sandbox.payfast.co.za',
-        'w1w.payfast.co.za',
-        'w2w.payfast.co.za',
+        "www.payfast.co.za",
+        "sandbox.payfast.co.za",
+        "w1w.payfast.co.za",
+        "w2w.payfast.co.za",
       ];
 
       let validIps = [];
       const pfIp =
-        req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
       try {
         for (let key in validHosts) {
@@ -317,7 +317,7 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidPaymentData = (cartTotal, pfData) => {
       return (
-        Math.abs(parseFloat(cartTotal) - parseFloat(pfData['amount_gross'])) <=
+        Math.abs(parseFloat(cartTotal) - parseFloat(pfData["amount_gross"])) <=
         0.01
       );
     };
@@ -331,7 +331,7 @@ export const confirmPayfast = async (req, cartTotal) => {
         .catch((error) => {
           console.error(error);
         });
-      return result === 'VALID';
+      return result === "VALID";
     };
 
     const check1 = pfValidSignature(pfData, pfParamString, passPhrase);
@@ -343,11 +343,11 @@ export const confirmPayfast = async (req, cartTotal) => {
     const check4 = await pfValidServerConfirmation(pfHost, pfParamString);
 
     if (check1 && check2 && check3 && check4) {
-      console.log('good');
+      console.log("good");
       // All checks have passed, the payment is successful
       return true;
     } else {
-      console.log('very bad');
+      console.log("very bad");
       return false;
       // Some checks have failed, check payment manually and log for investigation
     }
@@ -358,30 +358,30 @@ export const confirmPayfast = async (req, cartTotal) => {
 
 export const payShippingFee = async (order) => {
   try {
-    var result = { status: '200', message: 'Successful' };
+    var result = { status: "200", message: "Successful" };
     await Promise.all(
       order.orderItems.map(async (item) => {
-        if (item.deliverySelect['delivery Option'] === 'GIG Logistics') {
+        if (item.deliverySelect["delivery Option"] === "GIG Logistics") {
           const { data: loginData } = await axios.post(
-            'https://thirdparty.gigl-go.com/api/thirdparty/login',
+            "https://thirdparty.gigl-go.com/api/thirdparty/login",
             {
-              username: 'IND1109425',
-              Password: 'RBUVBi9EZs_7t_q@6019',
-              SessionObj: '',
+              username: "IND1109425",
+              Password: "RBUVBi9EZs_7t_q@6019",
+              SessionObj: "",
             }
           );
 
-          console.log('loginData');
+          console.log("loginData");
 
           const { data } = await axios.post(
-            'https://thirdparty.gigl-go.com/api/thirdparty/captureshipment',
+            "https://thirdparty.gigl-go.com/api/thirdparty/captureshipment",
             {
               ReceiverAddress: item.deliverySelect.address,
               CustomerCode: loginData.Object.UserName,
               SenderLocality: item.meta.address,
               SenderAddress: item.meta.address,
               ReceiverPhoneNumber: item.deliverySelect.phone,
-              VehicleType: 'BIKE',
+              VehicleType: "BIKE",
               SenderPhoneNumber: item.meta.phone,
               SenderName: item.meta.name,
               ReceiverName: item.deliverySelect.name,
@@ -398,13 +398,13 @@ export const payShippingFee = async (order) => {
               },
               PreShipmentItems: [
                 {
-                  SpecialPackageId: '0',
+                  SpecialPackageId: "0",
                   Quantity: item.quantity,
                   Weight: 1,
-                  ItemType: 'Normal',
+                  ItemType: "Normal",
                   ItemName: item.name,
                   Value: item.actualPrice,
-                  ShipmentType: 'Regular',
+                  ShipmentType: "Regular",
                   Description: item.description,
                   ImageUrl: item.image,
                 },
@@ -417,7 +417,7 @@ export const payShippingFee = async (order) => {
             }
           );
           console.log({ status: data.Code, message: data.ShortDescription });
-          if (data.Code !== '200') {
+          if (data.Code !== "200") {
             const admins = await User.find({
               isAdmin: true,
             });
@@ -432,12 +432,12 @@ export const payShippingFee = async (order) => {
             admins.map(async (admin) => {
               const notification = new Notification({
                 userId: admin._id,
-                notifyType: 'gig',
+                notifyType: "gig",
                 itemId: item._id,
                 msg: `Gig - ${data.ShortDescription}`,
                 link: `/gig/${gig._id}`,
                 userImage: item,
-                mobile: { path: 'Gig', id: gig._id },
+                mobile: { path: "Gig", id: gig._id },
               });
               await notification.save();
             });
@@ -457,17 +457,17 @@ export const checkStatus = (status, currentStatus) => {
     Pending: 0,
     Processing: 1,
     Dispatched: 2,
-    'In Transit': 3,
+    "In Transit": 3,
     Delivered: 4,
     Received: 5,
-    'Return Logged': 6,
-    'Return Approved': 8,
-    'Return Declined': 7,
-    'Return Dispatched': 9,
-    'Return Delivered': 10,
-    'Return Received': 11,
+    "Return Logged": 6,
+    "Return Approved": 8,
+    "Return Declined": 7,
+    "Return Dispatched": 9,
+    "Return Delivered": 10,
+    "Return Received": 11,
     Refunded: 12,
-    'Payment to Seller Initiated': 13,
+    "Payment to Seller Initiated": 13,
   };
 
   const statusOrderValue = statusOrder[status] || 0;
@@ -513,13 +513,13 @@ export const setTimer = async (
     const sellerNotification = new Notification({
       userId: receiver,
       itemId: orderId,
-      notifyType: 'remindOrder',
+      notifyType: "remindOrder",
       msg: message,
       link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
       userImage: orderItem.image,
       mobile: returnId
-        ? { path: 'ReturnScreen', id: returnId }
-        : { path: 'OrderScreen', id: orderId },
+        ? { path: "ReturnScreen", id: returnId }
+        : { path: "OrderScreen", id: orderId },
       createdAt: new Date(Date.now() + milliseconds - beforeTime),
     });
 
@@ -528,13 +528,13 @@ export const setTimer = async (
       return new Notification({
         userId: admin._id,
         itemId: orderId,
-        notifyType: 'remindOrder',
+        notifyType: "remindOrder",
         msg: message,
         link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
         userImage: orderItem.image,
         mobile: returnId
-          ? { path: 'ReturnScreen', id: returnId }
-          : { path: 'OrderScreen', id: orderId },
+          ? { path: "ReturnScreen", id: returnId }
+          : { path: "OrderScreen", id: orderId },
         createdAt: new Date(Date.now() + milliseconds - beforeTime),
       });
     });
@@ -544,13 +544,13 @@ export const setTimer = async (
       return new Notification({
         userId: admin._id,
         itemId: orderId,
-        notifyType: 'remindOrder',
+        notifyType: "remindOrder",
         msg: adminMessage,
         link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
         userImage: orderItem.image,
         mobile: returnId
-          ? { path: 'ReturnScreen', id: returnId }
-          : { path: 'OrderScreen', id: orderId },
+          ? { path: "ReturnScreen", id: returnId }
+          : { path: "OrderScreen", id: orderId },
         createdAt: new Date(Date.now() + milliseconds),
       });
     });
@@ -568,17 +568,62 @@ export const setTimer = async (
 
     setTimeout(async () => {
       // Emit Socket.IO event for real-time data update
-      io.emit('change_data');
+      io.emit("change_data");
     }, milliseconds - beforeTime);
 
     setTimeout(async () => {
       // Emit Socket.IO event for real-time data update
-      io.emit('change_data');
+      io.emit("change_data");
     }, milliseconds);
     order.orderItems[orderItemIndex] = orderItem;
     await order.save();
   } catch (error) {
     // Handle any errors that occur during the process
-    console.error('Error:', error.message);
+    console.error("Error:", error.message);
   }
+};
+
+function get_users_from_database() {
+  // Using the User model to fetch users from the database
+  return User.find();
+}
+function transform_to_mp_format(user) {
+  /** Transform the above into Mixpanel's format */
+  // It's important to set this to the same distinct_id that you use when tracking events.
+  // We recommend using the primary key of your users table for this.
+  const distinct_id = user._id;
+
+  // Note: we set `$ip` to 0 here to tell Mixpanel not to look up the IP of this user.
+  return {
+    $distinct_id: distinct_id,
+    $token: PROJECT_TOKEN,
+    $ip: "0",
+    $set: user.toObject(),
+  };
+}
+
+export const updateMixpanelUser = () => {
+  get_users_from_database()
+    .then((users) => {
+      const profiles = users.map(transform_to_mp_format);
+
+      // We recommend calling this API with batches of 200 user profiles to do this at scale.
+      axios
+        .post("https://api.mixpanel.com/engage", profiles, {
+          params: { verbose: "2" },
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((resp) => {
+          console.log(resp.data);
+          mongoose.disconnect();
+        })
+        .catch((error) => {
+          console.error("Error sending data to Mixpanel:", error);
+          mongoose.disconnect();
+        });
+    })
+    .catch((err) => {
+      console.error("Error fetching users from MongoDB:", err);
+      mongoose.disconnect();
+    });
 };

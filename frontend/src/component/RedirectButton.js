@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { logout } from "../hooks/initFacebookSdk";
 import { Store } from "../Store";
 import { region } from "../utils";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   background: var(--orange-color);
@@ -27,6 +28,7 @@ export default function RedirectButton() {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
+    mixpanel.reset();
   };
   const redirect = async () => {
     try {

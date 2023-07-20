@@ -16,6 +16,7 @@ import Input from "../component/Input";
 import OAuth2Login from "react-simple-oauth2-login";
 import { login, logout } from "../hooks/initFacebookSdk";
 import secureLocalStorage from "react-secure-storage";
+import mixpanel from "mixpanel-browser";
 
 const ContinueButton = styled.div`
   margin-top: 1.5rem;
@@ -180,6 +181,9 @@ export default function SigninScreen() {
       tokenId: response.credential,
     });
     console.log(data);
+    mixpanel.track("Signed In", {
+      "Signin Type": "Google",
+    });
     ctxDispatch({ type: "USER_SIGNIN", payload: data });
     localStorage.setItem("userInfo", JSON.stringify(data));
     window.location.href = `${redirect}?redirecttoken=${redirectToken}`;
@@ -217,6 +221,9 @@ export default function SigninScreen() {
       accessToken,
     });
     const account = response.data;
+    mixpanel.track("Signed In", {
+      "Signin Type": "Facebook",
+    });
     console.log(account);
     //signin here
     ctxDispatch({ type: "USER_SIGNIN", payload: account });
@@ -230,7 +237,9 @@ export default function SigninScreen() {
         password: input.password,
       });
       console.log(data);
-
+      mixpanel.track("Signed In", {
+        "Signin Type": "Signin form",
+      });
       ctxDispatch({ type: "USER_SIGNIN", payload: data });
       localStorage.setItem("userInfo", JSON.stringify(data));
       if (data.isVerifiedEmail) {
@@ -294,10 +303,10 @@ export default function SigninScreen() {
   const handleOnChange = (text, input) => {
     setInput((prevState) => ({
       ...prevState,
-      [input]: (input === "email") ? text.trim().toLowerCase() : text.trim()
+      [input]: input === "email" ? text.trim().toLowerCase() : text.trim(),
     }));
   };
-  
+
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };

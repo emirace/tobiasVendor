@@ -30,6 +30,7 @@ import { getError } from "../utils";
 import axios from "axios";
 import { logout } from "../hooks/initFacebookSdk";
 import RedirectButton from "../component/RedirectButton";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   display: none;
@@ -186,6 +187,7 @@ export default function MobileProfileScreen() {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
+    mixpanel.reset();
     window.location.href = "/signin";
   };
 

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { banks } from './constant';
+import axios from "axios";
+import { banks } from "./constant";
 
 export const getError = (error) => {
   return error.response && error.response.data.message
@@ -8,9 +8,9 @@ export const getError = (error) => {
 };
 
 export const couponDiscount = (coupon, price) => {
-  if (coupon.type === 'fixed') {
+  if (coupon.type === "fixed") {
     return coupon.value;
-  } else if (coupon.type === 'percent') {
+  } else if (coupon.type === "percent") {
     return (coupon.percentOff / 100) * price;
   } else {
     return 0;
@@ -32,49 +32,32 @@ export function timeDifference(date1, date2) {
 }
 
 export function displayDeliveryStatus(status) {
-  if (status === 'Delivered') {
+  if (status === "Delivered") {
     return (
       <div
         style={{
-          background: 'var(--green-color)',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "var(--green-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
       </div>
     );
   }
-  if (status === 'reject') {
+  if (status === "reject") {
     return (
       <div
         style={{
-          background: 'var(--yellow-color)',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
-        }}
-      >
-        {status}
-      </div>
-    );
-  }
-
-  if (status === 'Processing') {
-    return (
-      <div
-        style={{
-          background: 'blue',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "var(--yellow-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -82,16 +65,16 @@ export function displayDeliveryStatus(status) {
     );
   }
 
-  if (status === 'Dispatched') {
+  if (status === "Processing") {
     return (
       <div
         style={{
-          background: '#FFC000',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "blue",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -99,48 +82,16 @@ export function displayDeliveryStatus(status) {
     );
   }
 
-  if (status === 'Dispatched') {
+  if (status === "Dispatched") {
     return (
       <div
         style={{
-          background: '#FFC000',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
-        }}
-      >
-        {status}
-      </div>
-    );
-  }
-  if (status === 'In Transit') {
-    return (
-      <div
-        style={{
-          background: '#FFC000',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
-        }}
-      >
-        {status}
-      </div>
-    );
-  }
-  if (status === 'Processing') {
-    return (
-      <div
-        style={{
-          background: 'FFBF00',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "#FFC000",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -148,16 +99,65 @@ export function displayDeliveryStatus(status) {
     );
   }
 
-  if (status === 'Hold') {
+  if (status === "Dispatched") {
     return (
       <div
         style={{
-          background: 'var(--yellow-color)',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'black',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "#FFC000",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+  if (status === "In Transit") {
+    return (
+      <div
+        style={{
+          background: "#FFC000",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+  if (status === "Processing") {
+    return (
+      <div
+        style={{
+          background: "FFBF00",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
+        }}
+      >
+        {status}
+      </div>
+    );
+  }
+
+  if (status === "Hold") {
+    return (
+      <div
+        style={{
+          background: "var(--yellow-color)",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "black",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -167,12 +167,12 @@ export function displayDeliveryStatus(status) {
     return (
       <div
         style={{
-          background: 'grey',
-          textTransform: 'uppercase',
-          borderRadius: '0.25rem',
-          color: 'white',
-          textAlign: 'center',
-          padding: '2px 10px',
+          background: "grey",
+          textTransform: "uppercase",
+          borderRadius: "0.25rem",
+          color: "white",
+          textAlign: "center",
+          padding: "2px 10px",
         }}
       >
         {status}
@@ -182,10 +182,10 @@ export function displayDeliveryStatus(status) {
 }
 export const region = () => {
   const add =
-    window.location.hostname === 'www.repeddle.co.za' ||
-    window.location.hostname === 'repeddle.co.za'
-      ? 'ZAR'
-      : 'NGN';
+    window.location.hostname === "www.repeddle.co.za" ||
+    window.location.hostname === "repeddle.co.za"
+      ? "ZAR"
+      : "NGN";
   return add;
 };
 
@@ -236,23 +236,23 @@ export const calcPrice = async (cart, userInfo, currentCartItem) => {
 };
 
 export const GOOGLE_CLIENT_ID =
-  '359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com';
+  "359040935611-ilvv0jgq9rfqj3io9b7av1rfgukqolbu.apps.googleusercontent.com";
 
 export const deliveryNumber = (status) => {
   const deliveryStatusMap = {
     Processing: 1,
     Dispatched: 2,
-    'In Transit': 3,
+    "In Transit": 3,
     Delivered: 4,
     Received: 5,
-    'Return Logged': 6,
-    'Return Approved': 8,
-    'Return Declined': 7,
-    'Return Dispatched': 9,
-    'Return Delivered': 10,
-    'Return Received': 11,
+    "Return Logged": 6,
+    "Return Approved": 8,
+    "Return Declined": 7,
+    "Return Dispatched": 9,
+    "Return Delivered": 10,
+    "Return Received": 11,
     Refunded: 12,
-    'Payment to Seller Initiated': 13,
+    "Payment to Seller Initiated": 13,
   };
 
   return deliveryStatusMap[status] || 0;
@@ -260,11 +260,11 @@ export const deliveryNumber = (status) => {
 
 export const loginGig = async () => {
   const { data } = await axios.post(
-    'https://thirdparty.gigl-go.com/api/thirdparty/login',
+    "https://thirdparty.gigl-go.com/api/thirdparty/login",
     {
-      username: 'IND1109425',
-      Password: 'RBUVBi9EZs_7t_q@6019',
-      SessionObj: '',
+      username: "IND1109425",
+      Password: "RBUVBi9EZs_7t_q@6019",
+      SessionObj: "",
     }
   );
   return {
@@ -304,12 +304,12 @@ const calculateCountAllow = (data, cart, valid) => {
     return 0;
   }
 
-  console.log('hello', data, cart.cartItems);
+  console.log("hello", data, cart.cartItems);
   const selectedCount = cart.cartItems.reduce((a, c) => {
     if (!valid) {
       return (
         a +
-        (c.deliverySelect['delivery Option'] === data.seller.deliveryMethod
+        (c.deliverySelect["delivery Option"] === data.seller.deliveryMethod
           ? 1 * c.quantity
           : 0)
       );
@@ -380,7 +380,7 @@ export const getCode = (name) => {
   return result.code;
 };
 
-export const compressImageUpload = async (file, maxSize, token, image = '') => {
+export const compressImageUpload = async (file, maxSize, token, image = "") => {
   // Create an HTMLImageElement to get the original dimensions of the image
   const img = new Image();
   img.src = URL.createObjectURL(file);
@@ -404,10 +404,10 @@ export const compressImageUpload = async (file, maxSize, token, image = '') => {
       newHeight = maxSize;
       newWidth = maxSize * aspectRatio;
     }
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = newWidth;
     canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, newWidth, newHeight);
     const resizedBlob = await new Promise((resolve, reject) => {
       canvas.toBlob(
@@ -415,7 +415,7 @@ export const compressImageUpload = async (file, maxSize, token, image = '') => {
           if (blob !== null) {
             resolve(blob);
           } else {
-            reject(new Error('Failed to convert canvas to blob'));
+            reject(new Error("Failed to convert canvas to blob"));
           }
         },
         file.type,
@@ -428,17 +428,17 @@ export const compressImageUpload = async (file, maxSize, token, image = '') => {
 
   // Upload the resized image using axios
   const formData = new FormData();
-  formData.append('image', file);
-  image && formData.append('deleteImage', image);
+  formData.append("file", file);
+  image && formData.append("deleteImage", image);
   try {
-    const response = await axios.post('/api/upload', formData, {
+    const response = await axios.post("/api/upload", formData, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = response.data;
     return data.secure_url;
   } catch (error) {
     // Handle error if the request fails
-    console.error('Error uploading image:', error);
+    console.error("Error uploading image:", error);
     throw error;
   }
 };

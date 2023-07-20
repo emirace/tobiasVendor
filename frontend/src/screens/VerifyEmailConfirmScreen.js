@@ -9,6 +9,7 @@ import MessageBox from "../component/MessageBox";
 import { Store } from "../Store";
 import { getError } from "../utils";
 import secureLocalStorage from "react-secure-storage";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   position: fixed;
@@ -66,6 +67,7 @@ export default function VerifyEmailConfirmScreen({ email }) {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("shippingAddress");
     localStorage.removeItem("paymentMethod");
+    mixpanel.reset();
   };
   useEffect(() => {
     setLoading(true);

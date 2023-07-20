@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { Store } from "../Store";
 
 const Container = styled.div``;
@@ -56,6 +56,11 @@ const SectionTitle = styled.h2`
 
 const ArticleItem = styled.div`
   margin-bottom: 20px;
+  &:hover {
+    h3 {
+      color: var(--orange-color);
+    }
+  }
 `;
 
 const Topic = styled.h3`
@@ -108,21 +113,28 @@ const ArticleItemContainer = styled.div`
 
 const ArticleListScreen = () => {
   const { state } = useContext(Store);
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const searchParam = sp.get("search") || "";
   const { mode } = state;
   const [articles, setArticles] = useState([]);
   const [topics, setTopics] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchParam);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const { data } = await axios.get("/api/articles");
+        const { data } = await axios.get(`/api/articles?search=${searchTerm}`);
         setArticles(data);
       } catch (error) {
         console.log(error);
       }
     };
 
+    fetchArticles();
+  }, [searchTerm]);
+
+  useEffect(() => {
     const fetchTopics = async () => {
       try {
         const { data } = await axios.get("/api/articles/topics");
@@ -132,17 +144,12 @@ const ArticleListScreen = () => {
       }
     };
 
-    fetchArticles();
     fetchTopics();
   }, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
-
-  const filteredArticles = articles.filter((article) =>
-    article.topic.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const getFirstParagraphContent = (content) => {
     const paragraph = content.find((item) => item.type === "paragraph");
@@ -157,7 +164,7 @@ const ArticleListScreen = () => {
       <Hero mode={mode}>
         <HeroText>How can we help?</HeroText>
         <SearchInput
-          type="text"
+          type="search"
           placeholder="Search articles by topic"
           value={searchTerm}
           onChange={handleSearch}
@@ -166,7 +173,7 @@ const ArticleListScreen = () => {
       <Section>
         <SectionTitle>Popular Questions</SectionTitle>
         <ArticleItemContainer>
-          {filteredArticles.map((article) => (
+          {articles.map((article) => (
             <ArticleItem key={article._id}>
               <Link to={`/article/${article._id}`}>
                 <Topic>{article.question}</Topic>
@@ -180,7 +187,7 @@ const ArticleListScreen = () => {
         <SectionTitle>Learn More</SectionTitle>
         <TopicsList>
           {topics.map((topic) => (
-            <Link key={topic} to={`/topics/${topic}`}>
+            <Link key={topic} to={`/articles/topic/${topic}`}>
               <TopicItem>{topic}</TopicItem>
             </Link>
           ))}

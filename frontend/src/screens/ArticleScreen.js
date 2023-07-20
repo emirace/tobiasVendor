@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import React, { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import LoadingBox from "../component/LoadingBox";
+import { Store } from "../Store";
 
 const Container = styled.div`
   max-width: 800px;
@@ -52,18 +54,24 @@ const Title = styled.h1`
 const Content = styled.div`
   font-size: 16px;
   line-height: 1.5;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   p {
     margin-bottom: 10px;
   }
 
   a {
-    color: #007bff;
+    color: var(--orange-color);
     text-decoration: none;
 
     &:hover {
       text-decoration: underline;
     }
+  }
+  img {
+    max-width: 70%;
+    margin-bottom: 10px;
   }
 `;
 
@@ -87,6 +95,7 @@ const SearchBox = styled.input`
   border: none;
   width: 100%;
   background: none;
+  color: ${(props) => (props.mode === "pagebodylight" ? "black" : "white")};
 
   @media (max-width: 768px) {
     width: auto;
@@ -100,8 +109,12 @@ const SearchBox = styled.input`
 `;
 
 const ArticleScreen = () => {
+  const { state } = useContext(Store);
+  const { mode } = state;
   const { id: articleId } = useParams();
   const [article, setArticle] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -117,53 +130,59 @@ const ArticleScreen = () => {
   }, [articleId]);
 
   if (!article) {
-    return <div>Loading...</div>;
+    return <LoadingBox />;
   }
 
   const renderContent = () => {
     let renderedContent = [];
+    let isLinkCombined = false;
 
     for (let i = 0; i < article.content.length; i++) {
       const item = article.content[i];
       console.log(item);
 
-      if (item.type === 'paragraph') {
+      if (item.type === "paragraph") {
+        if (isLinkCombined) {
+          // If the link was combined with the previous paragraph, skip this paragraph
+          isLinkCombined = false;
+          continue;
+        }
         renderedContent.push(<p key={i}>{item.content}</p>);
-      } else if (item.type === 'link') {
-        let linkContent = item.text;
+      } else if (item.type === "link") {
+        let linkContent = item.content;
         // Check if the previous item and next item are paragraphs
         const prevItem = article.content[i - 1];
         const nextItem = article.content[i + 1];
-
         if (
           prevItem &&
-          prevItem.type === 'paragraph' &&
+          prevItem.type === "paragraph" &&
           nextItem &&
-          nextItem.type === 'paragraph'
+          nextItem.type === "paragraph"
         ) {
+          isLinkCombined = true;
           // Add the link content within the previous paragraph
           renderedContent[renderedContent.length - 1] = (
             <p key={i}>
-              {prevItem.content}
+              {prevItem.content}{" "}
               <a href={item.url} target="_blank" rel="noopener noreferrer">
                 {linkContent}
-              </a>
+              </a>{" "}
               {nextItem.content}
             </p>
           );
         } else if (
           prevItem &&
-          prevItem.type === 'paragraph' &&
+          prevItem.type === "paragraph" &&
           nextItem &&
-          nextItem.type !== 'paragraph'
+          nextItem.type !== "paragraph"
         ) {
           // Add the link content within the previous paragraph
           renderedContent[renderedContent.length - 1] = (
             <p key={i}>
-              {prevItem.content}
+              {prevItem.content}{" "}
               <a href={item.url} target="_blank" rel="noopener noreferrer">
                 {linkContent}
-              </a>
+              </a>{" "}
               {/* {nextItem ? nextItem.content : ""} */}
             </p>
           );
@@ -177,24 +196,37 @@ const ArticleScreen = () => {
             </p>
           );
         }
-      } else if (item.type === 'image') {
-        renderedContent.push(<img key={i} src={item.url} alt={item.alt} />);
+      } else if (item.type === "image") {
+        renderedContent.push(<img key={i} src={item.content} alt={item.id} />);
       }
     }
 
     return renderedContent;
   };
 
+  const handleSearch = (e) => {
+    var key = e.keyCode || e.which;
+    if (key === 13) {
+      navigate(`/articles?search=${searchTerm}`);
+    }
+  };
+
   return (
     <Container>
       <TopRow>
         <Breadcrumbs>
-          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{' '}
+          <Link to="/">Home</Link> / <Link to="/articles">Articles</Link> /{" "}
           {article.topic}
         </Breadcrumbs>
         <SearchBoxContainer>
           <SearchIcon icon={faSearch} />
-          <SearchBox type="text" placeholder="Search articles" />
+          <SearchBox
+            mode={mode}
+            type="search"
+            placeholder="Search articles"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearch}
+          />
         </SearchBoxContainer>
       </TopRow>
       <Title>{article.question}</Title>

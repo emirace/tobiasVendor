@@ -7,23 +7,18 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { RiCustomerService2Fill } from "react-icons/ri";
-import { CgChevronRight } from "react-icons/cg";
-import { CgChevronLeft } from "react-icons/cg";
+import { CgChevronLeft, CgChevronRight } from "react-icons/cg";
 import { CgChevronDown } from "react-icons/cg";
 import { GrAttachment } from "react-icons/gr";
 import { HiOutlineSearch } from "react-icons/hi";
 import { v4 } from "uuid";
 import { Store } from "../Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowDown,
-  faArrowRight,
-  faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { socket } from "../App";
 import Messages from "./Messages";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import { getError } from "../utils";
 import OneNewMessage from "./OneNewMessage";
@@ -137,6 +132,9 @@ const Li = styled.div`
   display: flex;
   justify-content: space-between;
   cursor: pointer;
+  &:hover {
+    color: var(--orange-color);
+  }
 `;
 const Button = styled.div`
   border: 1px solid black;
@@ -279,6 +277,8 @@ export default function Support() {
   const [image, setImage] = useState("");
   const location = useLocation();
   const [uploadImage, setUploadImage] = useState(false);
+  const [articles, setArticles] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [{ loadingUpload }, dispatch] = useReducer(reducer, {
     loadingUpload: false,
@@ -300,6 +300,18 @@ export default function Support() {
       console.log(user);
     }
   }, [user, userInfo]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const { data } = await axios.get(`/api/articles?search=${searchQuery}`);
+        setArticles(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchArticles();
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!userInfo && user) {
@@ -678,12 +690,23 @@ export default function Support() {
                     <Head>FAQ</Head>
                     <SearchCont>
                       <HiOutlineSearch />
-                      <Input placeholder="Search question" />
+                      <Input
+                        placeholder="Search question"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
                     </SearchCont>
                     <div>
-                      {/* <Li>
-                        <span>How can i start sell </span> <CgChevronRight />
-                      </Li>
+                      {articles.slice(0, 5).map((article) => (
+                        <Link
+                          to={`/article/${article._id}`}
+                          onClick={() => setShowSupport(false)}
+                        >
+                          <Li>
+                            <span>{article.question} </span> <CgChevronRight />
+                          </Li>
+                        </Link>
+                      ))}
+                      {/*
                       <Li>
                         <span>How can i start sell </span> <CgChevronRight />
                       </Li>

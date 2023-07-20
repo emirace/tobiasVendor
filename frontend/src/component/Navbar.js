@@ -25,6 +25,7 @@ import { BsFillSunFill } from "react-icons/bs";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import secureLocalStorage from "react-secure-storage";
 import RedirectButton from "./RedirectButton";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   width: 100%;
@@ -628,6 +629,7 @@ export const signoutHandler = () => {
   localStorage.removeItem("shippingAddress");
   localStorage.removeItem("useraddress");
   localStorage.removeItem("paymentMethod");
+  mixpanel.reset();
   window.location.href = "/signin";
 };
 export default function Navbar({
