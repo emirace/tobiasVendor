@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { compressImageUpload } from '../utils';
-import { Store } from '../Store';
-import axios from 'axios';
-import ContactSuccess from '../component/ContactSuccess';
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { compressImageUpload } from "../utils";
+import { Store } from "../Store";
+import axios from "axios";
+import ContactSuccess from "../component/ContactSuccess";
 
 const ContactForm = styled.form`
   display: flex;
@@ -51,11 +51,11 @@ const ContactUs = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    category: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    category: "",
+    subject: "",
+    message: "",
     file: null,
   });
   const [contactSuccess, setContactSuccess] = useState(false);
@@ -80,20 +80,21 @@ const ContactUs = () => {
     // Handle form submission here, e.g., send the data to a server or perform any other actions.
     try {
       // Send the POST request using Axios
-      await axios.post('/contacts', formData);
+      await axios.post("/api/contacts", formData);
 
       // Reset the form after successful submission (optional)
       setFormData({
-        name: '',
-        email: '',
-        category: '',
-        subject: '',
-        message: '',
+        name: "",
+        email: "",
+        category: "",
+        subject: "",
+        message: "",
         file: null,
       });
       setContactSuccess(true);
+      window.scrollTo(0, 0);
     } catch (error) {
-      console.error('Error submitting contact form:', error);
+      console.error("Error submitting contact form:", error);
     }
   };
 

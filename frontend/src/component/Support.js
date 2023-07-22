@@ -20,7 +20,7 @@ import { socket } from "../App";
 import Messages from "./Messages";
 import { Link, useLocation } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
-import { getError } from "../utils";
+import { compressImageUpload, getError } from "../utils";
 import OneNewMessage from "./OneNewMessage";
 import { resizeImage } from "./ImageUploader";
 
@@ -70,6 +70,7 @@ const Box = styled.div`
     right: 0;
     height: auto;
     border-radius: 0;
+    width: auto;
   }
 `;
 const CloseButton = styled.div`
@@ -264,10 +265,10 @@ export default function Support() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo, notifications } = state;
   const [showSupport, setShowSupport] = useState(false);
-  const [sendMessage, setSendMessage] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [user, setUser] = useState(userInfo);
+  const [sendMessage, setSendMessage] = useState(user);
   const [message, setMessage] = useState("");
   const [currentChat, setCurrentChat] = useState("");
   const scrollref = useRef();
@@ -489,63 +490,10 @@ export default function Support() {
     }
   };
 
-  const uploadHandler = async (e) => {
-    const file = e;
-    const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
-    try {
-      dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
-      dispatch({ type: "UPLOAD_SUCCESS" });
-      setImage(data.secure_url);
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Image Uploaded",
-          showStatus: true,
-          state1: "visible1 success",
-        },
-      });
-    } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
-      ctxDispatch({
-        type: "SHOW_TOAST",
-        payload: {
-          message: "Failed uploading image",
-          showStatus: true,
-          state1: "visible1 error",
-        },
-      });
-      console.log(getError(err));
-    }
-  };
-
-  const [invalidImage, setInvalidImage] = useState("");
-  const [resizeImage1, setResizeImage] = useState({
-    file: [],
-    filepreview: null,
-  });
-  useEffect(() => {
-    const uploadImage = async () => {
-      try {
-        if (!invalidImage && resizeImage1.filepreview) {
-          await uploadHandler(resizeImage1.file);
-          setImage(resizeImage1.filepreview);
-        }
-      } catch (err) {
-        console.log(getError(err));
-      }
-    };
-    uploadImage();
-  }, [resizeImage1]);
-
   const handleImageUpload = async (e) => {
-    resizeImage(e, setInvalidImage, setResizeImage);
+    const file = e.target.files[0];
+    const imageUrl = await compressImageUpload(file, 1024, userInfo.token);
+    setImage(imageUrl);
   };
 
   if (CurrentPath === "/brand") return;
@@ -719,19 +667,6 @@ export default function Support() {
                           </Li>
                         </Link>
                       ))}
-                      {/*
-                      <Li>
-                        <span>How can i start sell </span> <CgChevronRight />
-                      </Li>
-                      <Li>
-                        <span>How can i start sell </span> <CgChevronRight />
-                      </Li>
-                      <Li>
-                        <span>How can i start sell </span> <CgChevronRight />
-                      </Li>
-                      <Li>
-                        <span>How can i start sell </span> <CgChevronRight />
-                      </Li> */}
                     </div>
                   </SmallBox>
                   <SmallBox>

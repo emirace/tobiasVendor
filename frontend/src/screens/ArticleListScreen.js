@@ -87,7 +87,7 @@ const TopicItem = styled.h3`
   margin-bottom: 10px;
   padding: 20px;
   border-radius: 4px;
-  box-shadow: 2px 2px 10px -2px grey;
+  box-shadow: 2px 2px 10px -5px grey;
   text-align: center;
   text-transform: capitalize;
   &:hover {
@@ -112,7 +112,7 @@ const ArticleItemContainer = styled.div`
 `;
 const ButtonContainer = styled.div`
   display: flex;
-  flex-direaction: column;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
@@ -221,6 +221,10 @@ const ArticleListScreen = () => {
           ))}
         </TopicsList>
         <ButtonContainer>
+          <p>
+            More Questions? Go to{" "}
+            <b style={{ color: "var(--orange-color)" }}>Support Articles</b>
+          </p>
           <Link to="/contactus">
             <Button>Contact Us</Button>
           </Link>

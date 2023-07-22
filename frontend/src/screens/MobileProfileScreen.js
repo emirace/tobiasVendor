@@ -19,18 +19,18 @@ import {
   faQuestionCircle,
   faRightFromBracket,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import secureLocalStorage from 'react-secure-storage';
-import { getError } from '../utils';
-import axios from 'axios';
-import { logout } from '../hooks/initFacebookSdk';
-import RedirectButton from '../component/RedirectButton';
-import mixpanel from 'mixpanel-browser';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../Store";
+import secureLocalStorage from "react-secure-storage";
+import { getError } from "../utils";
+import axios from "axios";
+import { logout } from "../hooks/initFacebookSdk";
+import RedirectButton from "../component/RedirectButton";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   display: none;
@@ -61,8 +61,8 @@ const MobileMenuItem = styled.div`
 `;
 
 const AdsImage = styled.img.attrs({
-  src: '/images/p8.png',
-  alt: 'ads',
+  src: "/images/p8.png",
+  alt: "ads",
 })`
   width: 100vw;
   height: 100px;
@@ -73,9 +73,9 @@ const AdsImage = styled.img.attrs({
 `;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
 
@@ -100,7 +100,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -111,7 +111,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: 'darkmodeSwitch',
+  for: "darkmodeSwitch",
 })`
   margin-left: 5px;
   @media (max-width: 992px) {
@@ -128,7 +128,7 @@ const SectionTitle = styled.div`
   padding: 10px;
   text-transform: uppercase;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
 `;
 const Logout = styled.div`
   margin: 20px;
@@ -172,7 +172,7 @@ export default function MobileProfileScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUser(data);
-        console.log('user', data);
+        console.log("user", data);
       };
       fetchUser();
     } catch (err) {
@@ -182,36 +182,36 @@ export default function MobileProfileScreen() {
 
   const signoutHandler = () => {
     logout();
-    ctxDispatch({ type: 'USER_SIGNOUT' });
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems');
-    localStorage.removeItem('shippingAddress');
-    localStorage.removeItem('paymentMethod');
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("shippingAddress");
+    localStorage.removeItem("paymentMethod");
     mixpanel.reset();
-    window.location.href = '/signin';
+    window.location.href = "/signin";
   };
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
-      localStorage.setItem('mode', 'pagebodydark');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
     } else {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
-      localStorage.setItem('mode', 'pagebodylight');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
     }
   };
 
   const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === 'purchase' && x.read === false
+    (x) => x.notifyType === "purchase" && x.read === false
   );
   const soldNotification = notifications.filter(
-    (x) => x.notifyType === 'sold' && x.read === false
+    (x) => x.notifyType === "sold" && x.read === false
   );
   const buyerReturnNotification = notifications.filter(
-    (x) => x.notifyType === 'buyerreturn' && x.read === false
+    (x) => x.notifyType === "buyerreturn" && x.read === false
   );
   const sellerReturnNotification = notifications.filter(
-    (x) => x.notifyType === 'sellerreturn' && x.read === false
+    (x) => x.notifyType === "sellerreturn" && x.read === false
   );
 
   return (
@@ -219,13 +219,13 @@ export default function MobileProfileScreen() {
       <AdsImage />
       <SwitchCont>
         <Switch
-          checked={mode === 'pagebodydark'}
+          checked={mode === "pagebodydark"}
           onChange={(e) => darkMode(e.target.checked)}
         ></Switch>
-        <Label>{mode === 'pagebodydark' ? 'DarkMode' : 'LightMode'}</Label>
+        <Label>{mode === "pagebodydark" ? "DarkMode" : "LightMode"}</Label>
       </SwitchCont>
       <Welcome>Hi {userInfo?.username}</Welcome>
-      <SectionTitle mode={mode}>Dashboard</SectionTitle>{' '}
+      <SectionTitle mode={mode}>Dashboard</SectionTitle>{" "}
       <Link to={`/seller/${userInfo._id}`}>
         <MobileMenuItem>
           <FontAwesomeIcon icon={faUser} />
@@ -275,8 +275,8 @@ export default function MobileProfileScreen() {
       <Link to="/cart?wishlist=true">
         <MobileMenuItem>
           <FontAwesomeIcon icon={faHeart} />
-          My Wishlist{' '}
-          <span style={{ color: 'var(--orange-color)' }}>
+          My Wishlist{" "}
+          <span style={{ color: "var(--orange-color)" }}>
             ({user?.saved?.length})
           </span>
         </MobileMenuItem>
@@ -342,7 +342,7 @@ export default function MobileProfileScreen() {
               <FontAwesomeIcon icon={faUser} />
               Users
             </MobileMenuItem>
-          </Link>{' '}
+          </Link>{" "}
           <Link to="/messages">
             <MobileMenuItem>
               <FontAwesomeIcon icon={faChartColumn} />
@@ -418,16 +418,12 @@ export default function MobileProfileScreen() {
           Messages
         </MobileMenuItem>
       </Link>
-      {userInfo.isAdmin && (
-        <>
-          <Link to="/articles">
-            <MobileMenuItem>
-              <FontAwesomeIcon icon={faComment} />
-              Support Center
-            </MobileMenuItem>
-          </Link>
-        </>
-      )}
+      <Link to="/articles">
+        <MobileMenuItem>
+          <FontAwesomeIcon icon={faComment} />
+          Support Center
+        </MobileMenuItem>
+      </Link>
       <RedirectButton />
       <Logout onClick={() => signoutHandler()}>
         <FontAwesomeIcon icon={faRightFromBracket} />

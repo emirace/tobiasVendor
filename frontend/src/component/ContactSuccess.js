@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const SuccessContainer = styled.div`
   background-color: #fff;
@@ -17,7 +17,7 @@ const SuccessHeading = styled.h2`
 
 const BackToHomeLink = styled.a`
   display: inline-block;
-  margin-top: 20px;
+  margin-top: 10px;
   text-decoration: none;
   color: var(--orange-color);
   border: 1px solid var(--orange-color);
@@ -35,10 +35,14 @@ const ContactSuccess = () => {
   return (
     <SuccessContainer>
       <SuccessHeading>Message Successfully Sent!</SuccessHeading>
+      <p>Thank you for contacting us. Your message has been received.</p>
       <p>
-        Thank you for contacting us. Your message has been successfully sent.
+        Our aim is to get back to you in lesss than 24 hours; however, it may
+        take us a little longer during weekends, public holidays and evenings to
+        respond.{" "}
       </p>
-      <p>We will get back to you as soon as possible.</p>
+      <p>Thanks for your patience in advance.</p>
+      <p>Have a great day!</p>
       <BackToHomeLink href="/">Back to Home</BackToHomeLink>
     </SuccessContainer>
   );

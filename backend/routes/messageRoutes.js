@@ -1,14 +1,14 @@
-import express from 'express';
-import Message from '../models/messageModel.js';
-import expressAsyncHandler from 'express-async-handler';
-import { isAuth, sendEmail } from '../utils.js';
-import Conversation from '../models/conversationModel.js';
-import User from '../models/userModel.js';
+import express from "express";
+import Message from "../models/messageModel.js";
+import expressAsyncHandler from "express-async-handler";
+import { isAuth, sendEmail } from "../utils.js";
+import Conversation from "../models/conversationModel.js";
+import User from "../models/userModel.js";
 
 const messageRouter = express.Router();
 
 messageRouter.post(
-  '/',
+  "/",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
@@ -25,17 +25,17 @@ messageRouter.post(
           image: req.body.image,
         });
         const savedmessage = await newmessage.save();
-        if (conversation.conversationType === 'support' && !req.body.sendMail) {
-          console.log('sendMail', req.body.sendMail);
+        if (conversation.conversationType === "support" && !req.body.sendMail) {
+          console.log("sendMail", req.body.sendMail);
 
           const realUser = await User.findById(req.body.receiverId);
 
           sendEmail({
             to: realUser ? realUser.email : req.body.guestEmail,
-            subject: 'REPEDDLE SUPPORT ',
-            template: 'support',
+            subject: "REPEDDLE SUPPORT ",
+            template: "support",
             context: {
-              username: realUser ? realUser.username : 'Tribe',
+              username: realUser ? realUser.username : "Tribe",
               url: req.body.url,
               message: req.body.text,
             },
@@ -43,21 +43,21 @@ messageRouter.post(
         }
         res
           .status(200)
-          .send({ messages: 'message sent', message: savedmessage });
+          .send({ messages: "message sent", message: savedmessage });
       } else {
         res.status(500).send({
-          message: 'Conversation not Found',
-          err: { message: 'Conversation not Found' },
+          message: "Conversation not Found",
+          err: { message: "Conversation not Found" },
         });
       }
     } catch (err) {
-      res.status(500).send({ message: 'message sending failed', err });
+      res.status(500).send({ message: "message sending failed", err });
     }
   })
 );
 
 messageRouter.post(
-  '/support',
+  "/support",
   expressAsyncHandler(async (req, res) => {
     try {
       const conversation = await Conversation.findById(req.body.conversationId);
@@ -71,25 +71,25 @@ messageRouter.post(
           text: req.body.text,
           image: req.body.image,
         });
-        console.log('hello3');
+        console.log("hello3");
         const savedmessage = await newmessage.save();
         res
           .status(200)
-          .send({ messages: 'message sent', message: savedmessage });
+          .send({ messages: "message sent", message: savedmessage });
       } else {
         res.status(500).send({
-          message: 'Conversation not Found',
-          err: { message: 'Conversation not Found' },
+          message: "Conversation not Found",
+          err: { message: "Conversation not Found" },
         });
       }
     } catch (err) {
-      res.status(500).send({ message: 'message sending failed', err });
+      res.status(500).send({ message: "message sending failed", err });
     }
   })
 );
 
 messageRouter.get(
-  '/:conversationId',
+  "/:conversationId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
@@ -97,29 +97,29 @@ messageRouter.get(
         conversationId: req.params.conversationId,
       });
       if (messages) {
-        res.status(200).send({ message: 'message fetch successful', messages });
+        res.status(200).send({ message: "message fetch successful", messages });
       } else {
-        res.status(404).send('no messages found');
+        res.status(404).send("no messages found");
       }
     } catch (err) {
-      res.status(500).send({ message: 'failed to fetch message', err });
+      res.status(500).send({ message: "failed to fetch message", err });
     }
   })
 );
 messageRouter.get(
-  '/support/:conversationId',
+  "/support/:conversationId",
   expressAsyncHandler(async (req, res) => {
     try {
       const messages = await Message.find({
         conversationId: req.params.conversationId,
       });
       if (messages) {
-        res.status(200).send({ message: 'message fetch successful', messages });
+        res.status(200).send({ message: "message fetch successful", messages });
       } else {
-        res.status(404).send('no messages found');
+        res.status(404).send("no messages found");
       }
     } catch (err) {
-      res.status(500).send({ message: 'failed to fetch message', err });
+      res.status(500).send({ message: "failed to fetch message", err });
     }
   })
 );
