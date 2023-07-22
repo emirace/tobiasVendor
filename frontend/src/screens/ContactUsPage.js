@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { compressImageUpload } from "../utils";
 import { Store } from "../Store";
 import axios from "axios";
+import ContactSuccess from "../component/ContactSuccess";
 
 const ContactForm = styled.form`
   display: flex;
@@ -56,6 +57,7 @@ const ContactUs = () => {
     message: "",
     file: null,
   });
+  const [contactSuccess, setContactSuccess] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,7 +95,9 @@ const ContactUs = () => {
     }
   };
 
-  return (
+  return contactSuccess ? (
+    <ContactSuccess />
+  ) : (
     <ContactForm onSubmit={handleSubmit}>
       <FormHeading>Contact Us</FormHeading>
       <FormLabel htmlFor="name">Your Name</FormLabel>
