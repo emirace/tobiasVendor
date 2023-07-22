@@ -125,7 +125,6 @@ const Button = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-right: 20px;
 
   &:hover {
     background-color: var(--malon-color);
