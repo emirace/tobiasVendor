@@ -1,15 +1,16 @@
-import React, { useContext, useState } from "react";
-import styled from "styled-components";
-import { compressImageUpload } from "../utils";
-import { Store } from "../Store";
-import axios from "axios";
-import ContactSuccess from "../component/ContactSuccess";
+import React, { useContext, useState } from 'react';
+import styled from 'styled-components';
+import { compressImageUpload } from '../utils';
+import { Store } from '../Store';
+import axios from 'axios';
+import ContactSuccess from '../component/ContactSuccess';
 
 const ContactForm = styled.form`
   display: flex;
   flex-direction: column;
   max-width: 600px;
   margin: 10px auto;
+  padding: 20px;
 `;
 const FormHeading = styled.h2`
   font-size: 1.5rem;
@@ -50,14 +51,14 @@ const ContactUs = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    category: "",
-    subject: "",
-    message: "",
+    name: '',
+    email: '',
+    category: '',
+    subject: '',
+    message: '',
     file: null,
   });
-  const [contactSuccess, setContactSuccess] = useState(true);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,19 +80,20 @@ const ContactUs = () => {
     // Handle form submission here, e.g., send the data to a server or perform any other actions.
     try {
       // Send the POST request using Axios
-      await axios.post("/contacts", formData);
+      await axios.post('/contacts', formData);
 
       // Reset the form after successful submission (optional)
       setFormData({
-        name: "",
-        email: "",
-        category: "",
-        subject: "",
-        message: "",
+        name: '',
+        email: '',
+        category: '',
+        subject: '',
+        message: '',
         file: null,
       });
+      setContactSuccess(true);
     } catch (error) {
-      console.error("Error submitting contact form:", error);
+      console.error('Error submitting contact form:', error);
     }
   };
 

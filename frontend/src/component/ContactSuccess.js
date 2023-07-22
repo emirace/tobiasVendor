@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const SuccessContainer = styled.div`
   background-color: #fff;
@@ -8,24 +8,25 @@ const SuccessContainer = styled.div`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   text-align: center;
   max-width: 400px;
+  margin: 10px auto;
 `;
 
 const SuccessHeading = styled.h2`
-  color: #4caf50;
+  color: var(--orange-color);
 `;
 
 const BackToHomeLink = styled.a`
   display: inline-block;
   margin-top: 20px;
   text-decoration: none;
-  color: #007bff;
-  border: 1px solid #007bff;
+  color: var(--orange-color);
+  border: 1px solid var(--orange-color);
   padding: 8px 16px;
   border-radius: 4px;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 
   &:hover {
-    background-color: #007bff;
+    background-color: var(--orange-color);
     color: #fff;
   }
 `;

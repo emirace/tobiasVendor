@@ -1,13 +1,13 @@
-import express from "express";
-import expressAsyncHandler from "express-async-handler";
-import Contact from "../models/contactModel.js";
-import { isAdmin, isAuth } from "../utils.js";
+import express from 'express';
+import expressAsyncHandler from 'express-async-handler';
+import Contact from '../models/contactModel.js';
+import { isAdmin, isAuth } from '../utils.js';
 
 const contactRouter = express.Router();
 
 // Create a new contact form submission
 contactRouter.post(
-  "/contacts",
+  '/',
   expressAsyncHandler(async (req, res) => {
     try {
       const { name, email, category, subject, message, file } = req.body;
@@ -24,15 +24,15 @@ contactRouter.post(
       const savedContact = await newContact.save();
       res.status(201).json(savedContact);
     } catch (err) {
-      console.error("Error saving contact:", err);
-      res.status(500).json({ error: "Error saving contact" });
+      console.error('Error saving contact:', err);
+      res.status(500).json({ error: 'Error saving contact' });
     }
   })
 );
 
 // Get all contact form submissions
 contactRouter.get(
-  "/contacts",
+  '/',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -40,15 +40,15 @@ contactRouter.get(
       const contacts = await Contact.find({});
       res.json(contacts);
     } catch (err) {
-      console.error("Error fetching contacts:", err);
-      res.status(500).json({ error: "Error fetching contacts" });
+      console.error('Error fetching contacts:', err);
+      res.status(500).json({ error: 'Error fetching contacts' });
     }
   })
 );
 
 // Get a single contact form submission by ID
 contactRouter.get(
-  "/contacts/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -57,20 +57,20 @@ contactRouter.get(
     try {
       const contact = await Contact.findById(contactId);
       if (!contact) {
-        res.status(404).json({ error: "Contact not found" });
+        res.status(404).json({ error: 'Contact not found' });
       } else {
         res.json(contact);
       }
     } catch (err) {
-      console.error("Error fetching contact:", err);
-      res.status(500).json({ error: "Error fetching contact" });
+      console.error('Error fetching contact:', err);
+      res.status(500).json({ error: 'Error fetching contact' });
     }
   })
 );
 
 // Update a contact form submission by ID
 contactRouter.put(
-  "/contacts/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -84,20 +84,20 @@ contactRouter.put(
         { new: true }
       );
       if (!updatedContact) {
-        res.status(404).json({ error: "Contact not found" });
+        res.status(404).json({ error: 'Contact not found' });
       } else {
         res.json(updatedContact);
       }
     } catch (err) {
-      console.error("Error updating contact:", err);
-      res.status(500).json({ error: "Error updating contact" });
+      console.error('Error updating contact:', err);
+      res.status(500).json({ error: 'Error updating contact' });
     }
   })
 );
 
 // Delete a contact form submission by ID
 contactRouter.delete(
-  "/contacts/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -106,13 +106,13 @@ contactRouter.delete(
     try {
       const deletedContact = await Contact.findByIdAndDelete(contactId);
       if (!deletedContact) {
-        res.status(404).json({ error: "Contact not found" });
+        res.status(404).json({ error: 'Contact not found' });
       } else {
-        res.json({ message: "Contact deleted successfully" });
+        res.json({ message: 'Contact deleted successfully' });
       }
     } catch (err) {
-      console.error("Error deleting contact:", err);
-      res.status(500).json({ error: "Error deleting contact" });
+      console.error('Error deleting contact:', err);
+      res.status(500).json({ error: 'Error deleting contact' });
     }
   })
 );
