@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const SuccessContainer = styled.div`
@@ -15,7 +16,7 @@ const SuccessHeading = styled.h2`
   color: var(--orange-color);
 `;
 
-const BackToHomeLink = styled.a`
+const BackToHomeLink = styled.div`
   display: inline-block;
   margin-top: 10px;
   text-decoration: none;
@@ -43,7 +44,9 @@ const ContactSuccess = () => {
       </p>
       <p>Thanks for your patience in advance.</p>
       <p>Have a great day!</p>
-      <BackToHomeLink href="/">Back to Home</BackToHomeLink>
+      <Link to={"/"}>
+        <BackToHomeLink>Back to Home</BackToHomeLink>
+      </Link>
     </SuccessContainer>
   );
 };

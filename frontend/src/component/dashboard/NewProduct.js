@@ -742,6 +742,17 @@ export default function NewProduct() {
       });
       return;
     }
+    if (tag.includes("#")) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Tags cannot contain the '#' character",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     if (tags.length > 5) {
       ctxDispatch({
         type: "SHOW_TOAST",

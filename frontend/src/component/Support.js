@@ -268,7 +268,6 @@ export default function Support() {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [user, setUser] = useState(userInfo);
-  const [sendMessage, setSendMessage] = useState(user);
   const [message, setMessage] = useState("");
   const [currentChat, setCurrentChat] = useState("");
   const scrollref = useRef();
@@ -290,6 +289,8 @@ export default function Support() {
   const supportNotification = notifications.filter(
     (x) => x.notifyType === "support" && x.read === false
   );
+
+  const [sendMessage, setSendMessage] = useState(supportNotification.length);
 
   useEffect(() => {
     const exist = secureLocalStorage.getItem("guestUser");
@@ -540,9 +541,23 @@ export default function Support() {
                     <CgChevronLeft onClick={() => setSendMessage(false)} />
                     <Logo src="https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif" />
                   </Admin>
-                  <Admin style={{ marginLeft: "70px" }}>
-                    <Image src="/images/pimage.png" />
-                    <div style={{ margin: "10px 0", maxWidth: "200px" }}>
+                  <Admin style={{ marginLeft: "30px" }}>
+                    <Image src="https://res.cloudinary.com/emirace/image/upload/v1690227815/IMG-20230723-WA0003_dza4wz.jpg" />
+                    <Image
+                      style={{ marginLeft: "-30px" }}
+                      src="https://res.cloudinary.com/emirace/image/upload/v1690227844/IMG-20230723-WA0002_o2zhha.jpg"
+                    />
+                    <Image
+                      style={{ marginLeft: "-30px" }}
+                      src="https://res.cloudinary.com/emirace/image/upload/v1690227794/IMG-20230723-WA0004_c1nrox.jpg"
+                    />
+                    <div
+                      style={{
+                        margin: "10px 0 ",
+                        maxWidth: "200px",
+                        fontSize: "13px",
+                      }}
+                    >
                       We will reply as soon as we can, but usually within 48hrs
                     </div>
                   </Admin>
@@ -626,7 +641,10 @@ export default function Support() {
                           handleError(null, "email");
                         }}
                         onChange={(e) =>
-                          handleOnChange(e.target.value, "email")
+                          handleOnChange(
+                            e.target.value.trim().toLowerCase(),
+                            "email"
+                          )
                         }
                       />
 
@@ -673,7 +691,7 @@ export default function Support() {
                     <Head>Start a conversation</Head>
 
                     <Admin>
-                      <Image src="/images/pimage.png" />
+                      <Image src="https://res.cloudinary.com/emirace/image/upload/v1690227747/IMG-20230723-WA0000_eokyt8.jpg" />
                       <div style={{ margin: "10px 0" }}>
                         We will reply as soon as we can, but usually within
                         48hrs

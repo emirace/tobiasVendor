@@ -785,17 +785,16 @@ export default function OrderScreen() {
     setEnterwaybil(false);
   };
 
-  function toggleOrderHoldStatus(productId) {
+  function toggleOrderHoldStatus(product) {
     axios
       .put(
-        `/api/orders/hold/${orderId}/${productId}`,
+        `/api/orders/hold/${orderId}/${product._id}`,
         {},
         {
           headers: { authorization: `Bearer ${userInfo.token}` },
         }
       )
       .then((response) => {
-        console.log("onHold", response);
         // Perform any additional actions after successful response
         dispatch({ type: "FETCH_SUCCESS", payload: response.data.savedOrder });
         ctxDispatch({
@@ -805,6 +804,24 @@ export default function OrderScreen() {
             showStatus: true,
             state1: "visible1 success",
           },
+        });
+        socket.emit("post_data", {
+          userId: product.seller._id,
+          itemId: product._id,
+          notifyType: "hold",
+          msg: `Order ${product.onHold ? "UnHold" : "Hold"}`,
+          link: `/order/${order._id}`,
+          userImage: userInfo.image,
+          mobile: { path: "OrderScreen", id: order._id },
+        });
+        socket.emit("post_data", {
+          userId: order.buyer,
+          itemId: product._id,
+          notifyType: "hold",
+          msg: `Order ${product.onHold ? "UnHold" : "Hold"}`,
+          link: `/order/${order._id}`,
+          userImage: userInfo.image,
+          mobile: { path: "OrderScreen", id: order._id },
         });
       })
       .catch((error) => {
@@ -1113,7 +1130,7 @@ export default function OrderScreen() {
                       )}
                     {userInfo.isAdmin && (
                       <button
-                        onClick={() => toggleOrderHoldStatus(orderitem._id)}
+                        onClick={() => toggleOrderHoldStatus(orderitem)}
                         className="btn btn-primary w-100"
                         style={{
                           background: "var(--malon-color)",
@@ -1343,7 +1360,7 @@ export default function OrderScreen() {
                     )}
                   {userInfo.isAdmin && (
                     <button
-                      onClick={() => toggleOrderHoldStatus(orderitem._id)}
+                      onClick={() => toggleOrderHoldStatus(orderitem)}
                       className="btn btn-primary w-100"
                       style={{
                         background: "var(--malon-color)",

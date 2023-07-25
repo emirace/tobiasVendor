@@ -4,6 +4,7 @@ import { compressImageUpload } from "../utils";
 import { Store } from "../Store";
 import axios from "axios";
 import ContactSuccess from "../component/ContactSuccess";
+import LoadingBox from "../component/LoadingBox";
 
 const ContactForm = styled.form`
   display: flex;
@@ -65,7 +66,9 @@ const ContactUs = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const [loading, setLoading] = useState(false);
   const handleFileChange = async (e) => {
+    setLoading(true);
     const imageUrl = await compressImageUpload(
       e.target.files[0],
       1024,
@@ -73,6 +76,7 @@ const ContactUs = () => {
       formData.file
     );
     setFormData({ ...formData, file: imageUrl });
+    setLoading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -159,6 +163,7 @@ const ContactUs = () => {
         name="file"
         onChange={handleFileChange}
       />
+      {loading && <LoadingBox />}
 
       <FormButton type="submit">Submit</FormButton>
     </ContactForm>

@@ -1,9 +1,9 @@
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import '../style/Newsletter.css';
-import { region } from '../utils';
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { Store } from "../Store";
+import "../style/Newsletter.css";
+import { region } from "../utils";
 
 const Sent = styled.div`
   height: 100%;
@@ -19,26 +19,26 @@ const Sent = styled.div`
 
 export default function Newletter() {
   const { dispatch: ctxDispatch } = useContext(Store);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [sent, setSent] = useState(false);
   const handlesubmit = async () => {
     if (!input) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Please enter your email to get live updates',
+          message: "Please enter your email to get live updates",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
     }
     try {
-      const { data } = await axios.post(`/api/newsletters/${region()}`, {
-        email: input,
-        emailType: 'Newsletter',
+      await axios.post(`/api/newsletters/${region()}`, {
+        email: input.toLowerCase(),
+        emailType: "Newsletter",
       });
-      setInput('');
+      setInput("");
       setSent(true);
     } catch (err) {
       console.log(err);
@@ -62,7 +62,7 @@ export default function Newletter() {
       </div>
       <div className="newsletter_input">
         <input
-          type={'text'}
+          type={"text"}
           placeholder="Your Email"
           onChange={(e) => setInput(e.target.value)}
         ></input>
@@ -70,7 +70,7 @@ export default function Newletter() {
           Send
         </button>
       </div>
-      <div className="newsletter_desc" style={{ marginTop: '5px' }}>
+      <div className="newsletter_desc" style={{ marginTop: "5px" }}>
         We prioritize your privacy
       </div>
     </div>

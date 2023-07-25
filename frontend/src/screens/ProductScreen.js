@@ -1389,16 +1389,18 @@ export default function ProductScreen() {
               ""
             )}
           </div>
-          <Taglist>
-            Tags:
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {product.tags.map((t) => (
-                <Link to={`/search?query=${t}`}>
-                  <Tag>{t}</Tag>
-                </Link>
-              ))}
-            </div>
-          </Taglist>
+          {product.tags && (
+            <Taglist>
+              Tags:
+              <div style={{ display: "flex", flexWrap: "wrap" }}>
+                {product.tags.map((t) => (
+                  <Link to={`/search?query=${t}`}>
+                    <Tag>{t}</Tag>
+                  </Link>
+                ))}
+              </div>
+            </Taglist>
+          )}
           <div className="">
             {product.sizes.length > 0 && (
               <>
