@@ -1,28 +1,28 @@
-import express from "express";
-import User from "../models/userModel.js";
-import bcrypt from "bcryptjs";
+import express from 'express';
+import User from '../models/userModel.js';
+import bcrypt from 'bcryptjs';
 import {
   generateOTP,
   generateToken,
   isAdmin,
   isAuth,
   sendEmail,
-} from "../utils.js";
-import expressAsyncHandler from "express-async-handler";
-import Account from "../models/accountModel.js";
-import crypto from "crypto";
-import VerificationToken from "../models/verificationTokenModel.js";
-import dotenv from "dotenv";
-import { plainEmailTemp } from "../utils/mailTemplete.js";
-import { OAuth2Client } from "google-auth-library";
-import axios from "axios";
-import { Welcome } from "../utils/mailTempleter/Welcome.js";
-import { verifyEmail } from "../utils/mailTempleter/verifyEmail.js";
-import { passwordReset } from "../utils/mailTempleter/passwordReset.js";
-import { resetConfirmation } from "../utils/mailTempleter/resetConfirmation.js";
-import { resetSuccess } from "../utils/mailTempleter/resetSuccess.js";
-import Newsletters from "../models/newslettersModel.js";
-import mongoose from "mongoose";
+} from '../utils.js';
+import expressAsyncHandler from 'express-async-handler';
+import Account from '../models/accountModel.js';
+import crypto from 'crypto';
+import VerificationToken from '../models/verificationTokenModel.js';
+import dotenv from 'dotenv';
+import { plainEmailTemp } from '../utils/mailTemplete.js';
+import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
+import { Welcome } from '../utils/mailTempleter/Welcome.js';
+import { verifyEmail } from '../utils/mailTempleter/verifyEmail.js';
+import { passwordReset } from '../utils/mailTempleter/passwordReset.js';
+import { resetConfirmation } from '../utils/mailTempleter/resetConfirmation.js';
+import { resetSuccess } from '../utils/mailTempleter/resetSuccess.js';
+import Newsletters from '../models/newslettersModel.js';
+import mongoose from 'mongoose';
 dotenv.config();
 
 const userRouter = express.Router();
@@ -30,11 +30,11 @@ const userRouter = express.Router();
 // get all seller, which is all users now
 
 userRouter.get(
-  "/:region/top-sellers",
+  '/:region/top-sellers',
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const topSellers = await User.find({ isSeller: true, region })
-      .select("username image badge ")
+      .select('username image badge ')
       .sort({ rating: -1 })
       .limit(10);
 
@@ -45,16 +45,16 @@ userRouter.get(
 );
 
 userRouter.get(
-  "/:region/influencer",
+  '/:region/influencer',
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const users = await User.find({ region, influencer: true }).select("_id");
+    const users = await User.find({ region, influencer: true }).select('_id');
     res.send(users);
   })
 );
 
 userRouter.put(
-  "/bundle",
+  '/bundle',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -63,13 +63,13 @@ userRouter.put(
       await user.save();
       res.status(200).send(user.rebundle);
     } else {
-      res.status(404).send({ message: "User not Found" });
+      res.status(404).send({ message: 'User not Found' });
     }
   })
 );
 
 userRouter.put(
-  "/profile",
+  '/profile',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -123,30 +123,30 @@ userRouter.put(
         });
       } catch (err) {
         if (err) {
-          if (err.name === "MongoServerError" && err.code === 11000) {
+          if (err.name === 'MongoServerError' && err.code === 11000) {
             // Duplicate username
             return res
               .status(500)
-              .send({ succes: false, message: "User already exist!" });
+              .send({ succes: false, message: 'User already exist!' });
           }
         }
         console.log(err);
         return res.status(500).send(err);
       }
     } else {
-      res.status(404).send({ message: "User not Found" });
+      res.status(404).send({ message: 'User not Found' });
     }
   })
 );
 
 userRouter.post(
-  "/:region/signin",
+  '/:region/signin',
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       if (!user.password)
-        return res.status(500).send({ message: "Invalid email or password" });
+        return res.status(500).send({ message: 'Invalid email or password' });
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
@@ -171,34 +171,34 @@ userRouter.post(
         return;
       }
     }
-    res.status(401).send({ message: "Invalid email or password" });
+    res.status(401).send({ message: 'Invalid email or password' });
   })
 );
 
 userRouter.post(
-  "/:region/signup",
+  '/:region/signup',
   expressAsyncHandler(async (req, res) => {
     try {
       const { region } = req.params;
-      const url = region === "NGN" ? "com" : "co.za";
+      const url = region === 'NGN' ? 'com' : 'co.za';
       const newUser = new User({
         username: req.body.username.toLowerCase(),
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         phone: req.body.phone,
-        image: "/images/pimage.png",
+        image: '/images/pimage.png',
         password: bcrypt.hashSync(req.body.password),
         rating: 0,
         region,
         numReviews: 0,
       });
       newUser.userId = newUser._id.toString();
-      const resetToken = crypto.randomBytes(20).toString("hex");
+      const resetToken = crypto.randomBytes(20).toString('hex');
       newUser.resetEmailToken = crypto
-        .createHash("sha256")
+        .createHash('sha256')
         .update(resetToken)
-        .digest("hex");
+        .digest('hex');
       newUser.resetEmailExpire = Date.now() + 30 * (60 * 1000);
       const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
@@ -212,7 +212,7 @@ userRouter.post(
       } else {
         newsletter = new Newsletters({
           email: user.email,
-          emailType: "Newsletter",
+          emailType: 'Newsletter',
           url,
         });
       }
@@ -220,8 +220,8 @@ userRouter.post(
 
       sendEmail({
         to: newUser.email,
-        subject: "WELCOME TO REPEDDLE ",
-        template: "welcome",
+        subject: 'WELCOME TO REPEDDLE ',
+        template: 'welcome',
         context: {
           username: newUser.username,
           url,
@@ -230,7 +230,7 @@ userRouter.post(
       await Account.create({
         userId: user.id,
         balance: 0,
-        currency: region === "ZAR" ? "R " : "N ",
+        currency: region === 'ZAR' ? 'R ' : 'N ',
       });
       res.send({
         _id: user._id,
@@ -253,11 +253,11 @@ userRouter.post(
         token: generateToken(user),
       });
     } catch (err) {
-      if (err.name === "MongoServerError" && err.code === 11000) {
+      if (err.name === 'MongoServerError' && err.code === 11000) {
         // Duplicate username
         return res
           .status(500)
-          .send({ succes: false, message: "User already exist!" });
+          .send({ succes: false, message: 'User already exist!' });
       }
 
       return res.status(500).send(err);
@@ -266,12 +266,12 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/verifyemail/:resetToken",
+  '/verifyemail/:resetToken',
   expressAsyncHandler(async (req, res) => {
     const resetEmailToken = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(req.params.resetToken)
-      .digest("hex");
+      .digest('hex');
 
     const user = await User.findOne({
       resetEmailToken,
@@ -280,42 +280,42 @@ userRouter.post(
       },
     });
     if (user) {
-      const url = user.region === "NGN" ? "com" : "co.za";
+      const url = user.region === 'NGN' ? 'com' : 'co.za';
       user.resetEmailExpire = undefined;
       user.resetEmailToken = undefined;
       user.isVerifiedEmail = true;
       await user.save();
       sendEmail({
         to: user.email,
-        subject: "EMAIL VERIFIED SUCCESSFULLY",
-        template: "successEmail",
+        subject: 'EMAIL VERIFIED SUCCESSFULLY',
+        template: 'successEmail',
         context: {
           url,
         },
       });
       res
         .status(201)
-        .send({ success: true, message: "Email verified successfuly" });
+        .send({ success: true, message: 'Email verified successfuly' });
     } else {
       res.status(400).send({
         message:
-          "Invalid Verification or Expired Token, please resend verification email from your account.",
+          'Invalid Verification or Expired Token, please resend verification email from your account.',
       });
     }
   })
 );
 
 userRouter.post(
-  "/forgetpassword",
+  '/forgetpassword',
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      const url = user.region === "NGN" ? "com" : "co.za";
-      const resetToken = crypto.randomBytes(20).toString("hex");
+      const url = user.region === 'NGN' ? 'com' : 'co.za';
+      const resetToken = crypto.randomBytes(20).toString('hex');
       user.resetPasswordToken = crypto
-        .createHash("sha256")
+        .createHash('sha256')
         .update(resetToken)
-        .digest("hex");
+        .digest('hex');
       user.resetPasswordExpire = Date.now() + 30 * (60 * 1000);
       await user.save();
       const resetUrl = `https://repeddle.${url}/resetpassword/${resetToken}`;
@@ -323,8 +323,8 @@ userRouter.post(
       try {
         sendEmail({
           to: user.email,
-          subject: "PASSWORD RESET ",
-          template: "passwordReset",
+          subject: 'PASSWORD RESET ',
+          template: 'passwordReset',
           context: {
             url,
             resetlink: resetUrl,
@@ -334,31 +334,31 @@ userRouter.post(
 
         res
           .status(200)
-          .send({ success: true, message: "Email sent", resetUrl });
+          .send({ success: true, message: 'Email sent', resetUrl });
       } catch (error) {
         user.resetPasswordExpire = undefined;
         user.resetPasswordToken = undefined;
         await user.save();
         res.status(500).send({
           success: false,
-          message: " hello Encounter problem sending email",
+          message: ' hello Encounter problem sending email',
         });
       }
     } else {
       res
         .status(404)
-        .send({ success: false, message: "Encounter problem sending email" });
+        .send({ success: false, message: 'Encounter problem sending email' });
     }
   })
 );
 
 userRouter.post(
-  "/resetpassword/:resetToken",
+  '/resetpassword/:resetToken',
   expressAsyncHandler(async (req, res) => {
     const resetPasswordToken = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(req.params.resetToken)
-      .digest("hex");
+      .digest('hex');
 
     const user = await User.findOne({
       resetPasswordToken,
@@ -367,7 +367,7 @@ userRouter.post(
       },
     });
     if (user) {
-      const url = user.region === "NGN" ? "com" : "co.za";
+      const url = user.region === 'NGN' ? 'com' : 'co.za';
 
       user.password = bcrypt.hashSync(req.body.password);
       user.resetPasswordExpire = undefined;
@@ -375,8 +375,8 @@ userRouter.post(
       await user.save();
       sendEmail({
         to: user.email,
-        subject: "PASSWORD SUCCESSFULLY RESET",
-        template: "passwordResetSuccess",
+        subject: 'PASSWORD SUCCESSFULLY RESET',
+        template: 'passwordResetSuccess',
         context: {
           username: user.username,
           url,
@@ -385,15 +385,15 @@ userRouter.post(
       });
       res
         .status(201)
-        .send({ success: true, message: "Password Reset Success" });
+        .send({ success: true, message: 'Password Reset Success' });
     } else {
-      res.status(400).send({ message: "Invalid Reset Token" });
+      res.status(400).send({ message: 'Invalid Reset Token' });
     }
   })
 );
 
 userRouter.get(
-  "/sendverifyemail",
+  '/sendverifyemail',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -401,15 +401,15 @@ userRouter.get(
       if (user.isVerifiedEmail)
         return res
           .status(500)
-          .send({ message: "This user is already verified" });
+          .send({ message: 'This user is already verified' });
 
-      const url = user.region === "NGN" ? "com" : "co.za";
+      const url = user.region === 'NGN' ? 'com' : 'co.za';
 
-      const resetToken = crypto.randomBytes(20).toString("hex");
+      const resetToken = crypto.randomBytes(20).toString('hex');
       user.resetEmailToken = crypto
-        .createHash("sha256")
+        .createHash('sha256')
         .update(resetToken)
-        .digest("hex");
+        .digest('hex');
       user.resetEmailExpire = Date.now() + 10 * (60 * 1000);
       const resetUrl = `https://repeddle.${url}/verifyemail/${resetToken}`;
 
@@ -417,26 +417,26 @@ userRouter.get(
 
       sendEmail({
         to: user.email,
-        subject: "VERIFY YOUR EMAIL",
-        template: "verifyEmail",
+        subject: 'VERIFY YOUR EMAIL',
+        template: 'verifyEmail',
         context: {
           username: user.username,
           url,
           resetlink: resetUrl,
         },
       });
-      res.status(200).send({ message: "Email sent" });
+      res.status(200).send({ message: 'Email sent' });
     }
   })
 );
 
 userRouter.post(
-  "/:region/google",
+  '/:region/google',
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const { region } = req.params;
     console.log(req.body.tokenId);
-    const url = region === "NGN" ? "com" : "co.za";
+    const url = region === 'NGN' ? 'com' : 'co.za';
     const ticket = await client.verifyIdToken({
       idToken: req.body.tokenId,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -445,10 +445,10 @@ userRouter.post(
     const response = ticket.getPayload();
     console.log(response);
     if (
-      response.iss !== "accounts.google.com" &&
+      response.iss !== 'accounts.google.com' &&
       response.aud !== process.env.GOOGLE_CLIENT_ID
     )
-      return res.status(400).json({ status: "error", error: "Bad Request" });
+      return res.status(400).json({ status: 'error', error: 'Bad Request' });
 
     const user = {
       email: response.email,
@@ -468,20 +468,21 @@ userRouter.post(
       result = await User.create(user);
       sendEmail({
         to: result.email,
-        subject: "WELCOME TO REPEDDLE ",
-        template: "welcome",
+        subject: 'WELCOME TO REPEDDLE ',
+        template: 'welcome',
         context: {
           username: result.username,
           url,
         },
       });
     }
+    result.userId = result._id.toString();
     const account = await Account.findOne({ userId: result._id });
     if (!account)
       await Account.create({
         userId: result._id,
         balance: 0,
-        currency: req.params.region === "ZAR" ? "R " : "N ",
+        currency: req.params.region === 'ZAR' ? 'R ' : 'N ',
       });
 
     const token = generateToken(result);
@@ -514,7 +515,7 @@ userRouter.post(
     } else {
       newsletter = new Newsletters({
         email: result.email,
-        emailType: "Newsletter",
+        emailType: 'Newsletter',
         url,
       });
     }
@@ -524,12 +525,12 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/:region/googlemobile",
+  '/:region/googlemobile',
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const { email, given_name, family_name, picture, id, verified_email } =
       req.body;
-    const url = region === "NGN" ? "com" : "co.za";
+    const url = region === 'NGN' ? 'com' : 'co.za';
 
     const user = {
       email: email,
@@ -549,8 +550,8 @@ userRouter.post(
       result = await User.create(user);
       sendEmail({
         to: result.email,
-        subject: "WELCOME TO REPEDDLE ",
-        template: "welcome",
+        subject: 'WELCOME TO REPEDDLE ',
+        template: 'welcome',
         context: {
           username: result.username,
           url,
@@ -562,7 +563,7 @@ userRouter.post(
       await Account.create({
         userId: result._id,
         balance: 0,
-        currency: req.params.region === "ZAR" ? "R " : "N ",
+        currency: req.params.region === 'ZAR' ? 'R ' : 'N ',
       });
 
     const token = generateToken(result);
@@ -595,7 +596,7 @@ userRouter.post(
     } else {
       newsletter = new Newsletters({
         email: user.email,
-        emailType: "Newsletter",
+        emailType: 'Newsletter',
         url,
       });
     }
@@ -605,15 +606,15 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/:region/facebook",
+  '/:region/facebook',
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const url = region === "NGN" ? "com" : "co.za";
+    const url = region === 'NGN' ? 'com' : 'co.za';
     const { data } = await axios.get(
       `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
     );
     if (data.error)
-      return res.status(400).json({ status: "error", error: "Bad Request" });
+      return res.status(400).json({ status: 'error', error: 'Bad Request' });
 
     const user = {
       email: data.email,
@@ -635,13 +636,13 @@ userRouter.post(
       await Account.create({
         userId: result._id,
         balance: 0,
-        currency: req.params.region === "ZAR" ? "R " : "N ",
+        currency: req.params.region === 'ZAR' ? 'R ' : 'N ',
       });
 
     sendEmail({
       to: result.email,
-      subject: "WELCOME TO REPEDDLE ",
-      template: "welcome",
+      subject: 'WELCOME TO REPEDDLE ',
+      template: 'welcome',
       context: {
         username: result.username,
         url,
@@ -678,7 +679,7 @@ userRouter.post(
     } else {
       newsletter = new Newsletters({
         email: user.email,
-        emailType: "Newsletter",
+        emailType: 'Newsletter',
         url,
       });
     }
@@ -742,7 +743,7 @@ userRouter.post(
 // );
 
 userRouter.get(
-  "/seller/:idorusername",
+  '/seller/:idorusername',
   expressAsyncHandler(async (req, res) => {
     const { idorusername } = req.params;
     console.log(idorusername);
@@ -755,34 +756,34 @@ userRouter.get(
     }
     const user = await User.findOne(query)
       .populate({
-        path: "likes",
-        populate: { path: "seller", select: "username image" },
+        path: 'likes',
+        populate: { path: 'seller', select: 'username image' },
       })
       .populate({
-        path: "saved",
-        populate: { path: "seller", select: "username image" },
+        path: 'saved',
+        populate: { path: 'seller', select: 'username image' },
       })
       .select(
-        "_id usernameUpdate activeUpdate username firstName lastName email image about followers following likes saved sold isSeller region createdAt numReviews rating phone isAdmin newsletter address active influencer badge dob accountName accountNumber bankName rebundle buyers "
+        '_id usernameUpdate activeUpdate username firstName lastName email image about followers following likes saved sold isSeller region createdAt numReviews rating phone isAdmin newsletter address active influencer badge dob accountName accountNumber bankName rebundle buyers '
       );
 
     if (user) {
       res.send(user);
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
 
 userRouter.put(
-  "/follow/:id",
+  '/follow/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user1 = await User.findById(req.params.id);
     const user = await User.findById(req.user._id);
     if (user1 && user) {
       if (user1.followers.includes(req.user._id)) {
-        res.send({ message: "Already following this user" });
+        res.send({ message: 'Already following this user' });
         return;
       } else {
         user1.followers.push(req.user._id);
@@ -823,20 +824,20 @@ userRouter.put(
         });
       }
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
 
     if (user && user1) {
       user.following.push(req.params.id);
       const updatedUser = await user.save();
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
 
 userRouter.put(
-  "/unfollow/:id",
+  '/unfollow/:id',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user1 = await User.findById(req.params.id);
@@ -879,22 +880,22 @@ userRouter.put(
         buyers: updatedUser.buyers,
       });
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
 
     if (user && user1) {
       user.following.pull(req.params.id);
       const updatedUser = await user.save();
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
 
 userRouter.get(
-  "/followers/:id",
+  '/followers/:id',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id).populate("followers");
+    const user = await User.findById(req.params.id).populate('followers');
     let followerList = [];
     user.followers.map((f) => {
       const { _id, name, image } = f;
@@ -905,9 +906,9 @@ userRouter.get(
 );
 
 userRouter.get(
-  "/following/:id",
+  '/following/:id',
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id).populate("following");
+    const user = await User.findById(req.params.id).populate('following');
     let followingList = [];
     user.following.map((f) => {
       const { _id, name, image } = f;
@@ -918,22 +919,22 @@ userRouter.get(
 );
 
 userRouter.get(
-  "/:region/search",
+  '/:region/search',
   expressAsyncHandler(async (req, res) => {
     const { q } = req.query;
     const users = await User.find({
       username: { $regex: q.toLowerCase() },
-      $options: "i",
+      $options: 'i',
       region: req.params.region,
     })
-      .select("username image")
+      .select('username image')
       .limit(10);
     res.send(users);
   })
 );
 
 userRouter.get(
-  "/profile/user",
+  '/profile/user',
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -970,14 +971,14 @@ userRouter.get(
         rebundle: user.rebundle,
       });
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
 // get all users admin
 
 userRouter.get(
-  "/:region",
+  '/:region',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -986,19 +987,19 @@ userRouter.get(
     const searchQuery = query.q;
 
     const queryFilter =
-      searchQuery && searchQuery !== "all"
+      searchQuery && searchQuery !== 'all'
         ? {
             $or: [
               {
                 username: {
                   $regex: searchQuery,
-                  $options: "i",
+                  $options: 'i',
                 },
               },
               {
                 userId: {
                   $regex: searchQuery,
-                  $options: "i",
+                  $options: 'i',
                 },
               },
             ],
@@ -1067,7 +1068,7 @@ userRouter.get(
 // );
 
 userRouter.put(
-  "/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -1082,7 +1083,7 @@ userRouter.put(
       user.email = req.body.email || user.email;
       user.dob = req.body.dob || user.dob;
       user.activeUpdate =
-        req.body.active === "" ? user.activeUpdate : new Date();
+        req.body.active === '' ? user.activeUpdate : new Date();
       user.phone = req.body.phone || user.phone;
       user.address = req.body?.address?.state ? req.body.address : user.address;
       user.about = req.body.about || user.about;
@@ -1096,7 +1097,7 @@ userRouter.put(
 
       const updatedUser = await user.save();
       res.send({
-        message: "User Updated",
+        message: 'User Updated',
         _id: updatedUser._id,
         name: updatedUser.name,
         username: updatedUser.username,
@@ -1117,29 +1118,29 @@ userRouter.put(
         token: generateToken(updatedUser),
       });
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
 
 userRouter.delete(
-  "/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     if (User) {
       if (
-        user.email === "tobiasrepeddle@gmail.com" ||
-        user.email === "repeddleng@gmail.com"
+        user.email === 'tobiasrepeddle@gmail.com' ||
+        user.email === 'repeddleng@gmail.com'
       ) {
-        res.status(400).send({ message: "Can Not Delete Admin User" });
+        res.status(400).send({ message: 'Can Not Delete Admin User' });
         return;
       }
       await user.remove();
-      res.send({ message: "User Deleted" });
+      res.send({ message: 'User Deleted' });
     } else {
-      res.status(404).send({ message: "User Not Found" });
+      res.status(404).send({ message: 'User Not Found' });
     }
   })
 );
