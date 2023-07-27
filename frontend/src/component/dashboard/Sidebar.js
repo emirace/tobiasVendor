@@ -76,20 +76,22 @@ export default function Sidebar({ current }) {
   const { mode, userInfo, notifications } = state;
 
   const messageNotification = notifications.filter(
-    (x) => x.notifyType === "message"
+    (x) => x.notifyType === "message" && x.read === false
   );
   const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === "purchase"
+    (x) => x.notifyType === "purchase" && x.read === false
   );
-  const soldNotification = notifications.filter((x) => x.notifyType === "sold");
+  const soldNotification = notifications.filter(
+    (x) => x.notifyType === "sold" && x.read === false
+  );
   const sellerReturnNotification = notifications.filter(
-    (x) => x.notifyType === "sellerreturn"
+    (x) => x.notifyType === "sellerreturn" && x.read === false
   );
   const buyerReturnNotification = notifications.filter(
-    (x) => x.notifyType === "buyerreturn"
+    (x) => x.notifyType === "buyerreturn" && x.read === false
   );
   const productNotification = notifications.filter(
-    (x) => x.notifyType === "product"
+    (x) => x.notifyType === "product" && x.read === false
   );
   return (
     <Container mode={mode}>

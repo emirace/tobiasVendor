@@ -6,6 +6,8 @@ import axios from "axios";
 import { Store } from "../../Store";
 import LoadingBox from "../LoadingBox";
 import ModelLogin from "../ModelLogin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDotCircle, faEye } from "@fortawesome/free-solid-svg-icons";
 
 const Container = styled.div`
   flex: 4;
@@ -15,11 +17,18 @@ const Container = styled.div`
 const Title = styled.h1``;
 
 const MessageContainer = styled.div`
+  display: flex;
+  align-items: center;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
+  & svg {
+    color: var(--malon-color);
+    font-size: 8px;
+    margin-right: 10px;
+  }
 `;
 
 const ViewButton = styled.button`
@@ -60,7 +69,7 @@ const ContactUs = () => {
   const [showModel, setShowModel] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const messagesPerPage = 5; // You can adjust this number according to your preference.
+  const messagesPerPage = 20; // You can adjust this number according to your preference.
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastMessage = currentPage * messagesPerPage;
@@ -112,13 +121,13 @@ const ContactUs = () => {
         <>
           {currentMessages.map((message, index) => (
             <MessageContainer mode={mode} key={index}>
-              <p>Name: {message.name}</p>
-              <p>Email: {message.email}</p>
-              <p>Category: {message.category}</p>
-              <p>Subject: {message.subject}</p>
-              <ViewButton onClick={() => handleViewDetails(message)}>
-                View
-              </ViewButton>
+              <FontAwesomeIcon icon={faDotCircle} />
+              <div style={{ flex: 1 }}>Email: {message.email}</div>
+              <FontAwesomeIcon
+                onClick={() => handleViewDetails(message)}
+                icon={faEye}
+                style={{ fontSize: "16px", color: "var(--orange-color)" }}
+              />
             </MessageContainer>
           ))}
           <PaginationButtons>

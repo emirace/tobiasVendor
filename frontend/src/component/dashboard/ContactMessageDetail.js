@@ -27,7 +27,10 @@ const ContactMessageDetail = ({ message }) => {
         <Label>Name:</Label> <div>{name}</div>
       </Item>
       <Item>
-        <Label>Email:</Label> <div>{email}</div>
+        <Label>Email:</Label>{" "}
+        <div style={{ color: "var(--malon-color)" }}>
+          <a href={`mailto: ${email}`}>{email}</a>
+        </div>
       </Item>
       <Item>
         <Label>Category:</Label> <div>{category}</div>

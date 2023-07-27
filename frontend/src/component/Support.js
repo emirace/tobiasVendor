@@ -52,6 +52,7 @@ const Container = styled.div`
   }
 `;
 const Box = styled.div`
+  z-index: 10;
   position: absolute;
   bottom: 70px;
   right: 0;
@@ -244,6 +245,18 @@ const ImageFile = styled.img`
   max-height: 100%;
   object-fit: cover;
 `;
+const Badge = styled.div`
+  width: 15px;
+  height: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  background: var(--orange-color);
+  color: white;
+  border-radius: 50%;
+  margin-left: 10px;
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPLOAD_REQUEST":
@@ -290,7 +303,7 @@ export default function Support() {
     (x) => x.notifyType === "support" && x.read === false
   );
 
-  const [sendMessage, setSendMessage] = useState(supportNotification.length);
+  const [sendMessage, setSendMessage] = useState(false);
 
   useEffect(() => {
     const exist = secureLocalStorage.getItem("guestUser");
@@ -698,7 +711,17 @@ export default function Support() {
                       </div>
                     </Admin>
                     <Button onClick={handleSendMessage}>
-                      <FontAwesomeIcon icon={faPaperPlane} /> Send us a message
+                      {supportNotification.length ? (
+                        <>
+                          <span>New Message Received</span>{" "}
+                          <Badge>{supportNotification.length}</Badge>
+                        </>
+                      ) : (
+                        <>
+                          <FontAwesomeIcon icon={faPaperPlane} />
+                          <span> Send us a message</span>
+                        </>
+                      )}
                     </Button>
                   </SmallBox>
                 </div>
