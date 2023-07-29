@@ -291,10 +291,12 @@ const Discount = styled.div`
   display: flex;
   align-items: center;
 `;
+const PriceDisplayCont = styled.div`
+  margin-left: 20px;
+`;
 const PriceDisplay = styled.div`
   display: flex;
   justify-content: center;
-  margin: 55px 0 0 30px;
 `;
 const Offer = styled.div`
   font-size: 25px;
@@ -535,6 +537,17 @@ const Switch = styled.input.attrs({
     background: grey;
     transition: 0.5s;
   }
+`;
+
+const ItemNum = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+`;
+const Key = styled.div`
+  flex: 3;
+`;
+const Value = styled.div`
+  flex: 1;
 `;
 
 const reducer = (state, action) => {
@@ -1096,6 +1109,15 @@ export default function NewProduct() {
   };
 
   const [showTopInfo, setShowTopInfo] = useState(false);
+
+  const costPrice = input.discount
+    ? parseInt(input.discount) < parseInt(input.price)
+      ? `${currency}${input.price}`
+      : null
+    : null;
+  const sellingPrice = input.discount
+    ? parseInt(input.discount)
+    : parseInt(input.price);
 
   return (
     <NewProductC mode={mode}>
@@ -1771,27 +1793,55 @@ export default function NewProduct() {
                         handleOnChange(e.target.value, "discount")
                       }
                     />
-                    {discount() ? (
-                      <span style={{ fontSize: "11px" }}>
-                        {discount().toFixed(0)}% discount
-                      </span>
-                    ) : null}
                   </Discount>
                 </Item>
               </div>
-              <PriceDisplay>
-                <Offer>
-                  {currency}
-                  {input.discount || input.price}
-                </Offer>
-                <Actual>
-                  {input.discount
-                    ? parseInt(input.discount) < parseInt(input.price)
-                      ? `${currency}${input.price}`
-                      : null
-                    : null}
-                </Actual>
-              </PriceDisplay>
+              <PriceDisplayCont>
+                <PriceDisplay>
+                  <Offer>
+                    {currency}
+                    {sellingPrice}
+                  </Offer>
+                  <Actual>{costPrice}</Actual>
+                </PriceDisplay>{" "}
+                {discount() ? (
+                  <span style={{ fontSize: "11px", textAlign: "center" }}>
+                    {discount().toFixed(0)}% discount
+                  </span>
+                ) : null}
+                <div style={{ fontSize: "12px" }}>
+                  <ItemNum>
+                    <Key>Total cost:</Key>
+                    <Value>
+                      {currency}
+                      {sellingPrice.toFixed(2)}
+                    </Value>
+                  </ItemNum>
+                  <ItemNum>
+                    <Key>Repeddle Commision (7.9%):</Key>
+                    <Value>
+                      {currency}
+                      {((7.9 / 100) * parseInt(sellingPrice)).toFixed(2)}
+                    </Value>
+                  </ItemNum>
+                  <ItemNum>
+                    <Key>
+                      Estimated amount you will Receive{" "}
+                      <Tips
+                        mode={mode}
+                        tips={`Amount shown here is an estimated withdrawable amount you will receive in your Repeddle wallet. Final amount pay is determined by the delivery cost when product sells`}
+                      >
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                      </Tips>
+                      :
+                    </Key>
+                    <Value>
+                      {currency}
+                      {((92.1 / 100) * sellingPrice).toFixed(2)}
+                    </Value>
+                  </ItemNum>
+                </div>
+              </PriceDisplayCont>
             </Price>
             <TitleDetails>
               <div

@@ -5,6 +5,7 @@ import { Store } from "../Store";
 import axios from "axios";
 import ContactSuccess from "../component/ContactSuccess";
 import LoadingBox from "../component/LoadingBox";
+import { socket } from "../App";
 
 const ContactForm = styled.form`
   display: flex;
@@ -84,8 +85,17 @@ const ContactUs = () => {
     // Handle form submission here, e.g., send the data to a server or perform any other actions.
     try {
       // Send the POST request using Axios
-      await axios.post("/api/contacts", formData);
-
+      const { data } = await axios.post("/api/contacts", formData);
+      socket.emit("post_data", {
+        userId: "Admin",
+        itemId: data._id,
+        notifyType: "contactus",
+        msg: `New Contact Us message`,
+        link: `/dashboard/contact`,
+        mobile: { path: "ContactUs", id: "" },
+        userImage:
+          "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",
+      });
       // Reset the form after successful submission (optional)
       setFormData({
         name: "",
