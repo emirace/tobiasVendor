@@ -25,6 +25,11 @@ const emailLists = [
     subject: 'Let Our Community Get To Know You!',
     template: 'community',
   },
+  {
+    name: 'Performance tracking',
+    subject: 'PERFORMANCE TRACKING',
+    template: 'performanceTracking',
+  },
 ];
 
 // get all newsletters

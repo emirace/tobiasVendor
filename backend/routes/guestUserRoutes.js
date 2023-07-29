@@ -1,15 +1,15 @@
-import express from "express";
-import { isAdmin, isAuth } from "../utils.js";
-import expressAsyncHandler from "express-async-handler";
-import GuestUser from "../models/guestUser.js";
-import Newsletters from "../models/newslettersModel.js";
+import express from 'express';
+import { isAdmin, isAuth } from '../utils.js';
+import expressAsyncHandler from 'express-async-handler';
+import GuestUser from '../models/guestUser.js';
+import Newsletters from '../models/newslettersModel.js';
 
 const guestUserRouter = express.Router();
 
 // get all guestUsers
 
 guestUserRouter.get(
-  "/",
+  '/',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -21,7 +21,7 @@ guestUserRouter.get(
 // get a guestUsers
 
 guestUserRouter.get(
-  "/:id",
+  '/:id',
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -33,7 +33,7 @@ guestUserRouter.get(
 // add a guestUser
 
 guestUserRouter.post(
-  "/",
+  '/',
   expressAsyncHandler(async (req, res) => {
     try {
       const { email, username } = req.body;
@@ -50,14 +50,15 @@ guestUserRouter.post(
 
         if (newsletter) {
           newsletter.isDeleted = false;
-          newsletter.url = url;
+          // newsletter.url = url;
         } else {
           newsletter = new Newsletters({
             email,
-            emailType: "Newsletter",
-            url,
+            emailType: 'Newsletter',
+            url: 'co.za',
           });
         }
+        console.log('newsletter', newsletter);
         await newsletter.save();
         const newGuestUser = await guestUser.save();
         res.status(201).send(newGuestUser);
