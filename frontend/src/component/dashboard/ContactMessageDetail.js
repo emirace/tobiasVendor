@@ -1,6 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import MessageImage from "../MessageImage";
+import React, { useContext } from 'react';
+import styled from 'styled-components';
+import MessageImage from '../MessageImage';
+import axios from 'axios';
+import { Store } from '../../Store';
 
 const MessageContainer = styled.div`
   padding: 20px;
@@ -11,14 +13,18 @@ const Item = styled.div`
 `;
 const Label = styled.strong``;
 
-const ContactMessageDetail = ({ message }) => {
+const ContactMessageDetail = ({ message, handleClick }) => {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const {
+    _id,
     name,
     email,
     category,
     subject,
     message: messageContent,
     file,
+    assignTo,
   } = message;
 
   return (
@@ -27,8 +33,11 @@ const ContactMessageDetail = ({ message }) => {
         <Label>Name:</Label> <div>{name}</div>
       </Item>
       <Item>
-        <Label>Email:</Label>{" "}
-        <div style={{ color: "var(--malon-color)" }}>
+        <Label>Email:</Label>{' '}
+        <div
+          style={{ color: 'var(--malon-color)' }}
+          onClick={() => handleClick(_id)}
+        >
           <a href={`mailto: ${email}`}>{email}</a>
         </div>
       </Item>
@@ -40,6 +49,10 @@ const ContactMessageDetail = ({ message }) => {
       </Item>
       <Item>
         <Label>Message:</Label> <div>{messageContent}</div>
+      </Item>
+
+      <Item>
+        <Label>Asigned to:</Label> <div>{assignTo ? assignTo : 'None'}</div>
       </Item>
       {file && (
         <div>

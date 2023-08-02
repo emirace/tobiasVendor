@@ -1,7 +1,7 @@
-import axios from "axios";
-import { region } from "../utils";
+import axios from 'axios';
+import { region } from '../utils';
 
-const facebookAppId = "1192378101342003";
+const facebookAppId = '1192378101342003';
 //const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
 
 export default function initFacebookSdk() {
@@ -12,7 +12,7 @@ export default function initFacebookSdk() {
         appId: facebookAppId,
         cookie: true,
         xfbml: true,
-        version: "v8.0",
+        version: 'v8.0',
       });
 
       // auto authenticate with the api if already logged in with facebook
@@ -20,7 +20,7 @@ export default function initFacebookSdk() {
         if (authResponse) {
           console.log(authResponse.accessToken);
         } else {
-          console.log("authResponse.accessToken");
+          console.log('authResponse.accessToken');
           resolve();
         }
       });
@@ -35,9 +35,9 @@ export default function initFacebookSdk() {
       }
       js = d.createElement(s);
       js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      js.src = 'https://connect.facebook.net/en_US/sdk.js';
       fjs.parentNode.insertBefore(js, fjs);
-    })(document, "script", "facebook-jssdk");
+    })(document, 'script', 'facebook-jssdk');
   });
 }
 
@@ -48,9 +48,8 @@ export async function login() {
       console.log(response.authResponse);
       apiAuthenticate(response.authResponse.accessToken);
     },
-    { scope: "public_profile,email", return_scopes: true }
+    { scope: 'public_profile,email', return_scopes: true }
   );
-
 }
 
 export async function apiAuthenticate(accessToken) {
@@ -67,5 +66,7 @@ export async function apiAuthenticate(accessToken) {
 
 export function logout() {
   // revoke app permissions to logout completely because FB.logout() doesn't remove FB cookie
-  window.FB.api("/me/permissions", "delete", null, () => window.FB.logout());
+  if (window.FB) {
+    window.FB.api('/me/permissions', 'delete', null, () => window.FB.logout());
+  }
 }

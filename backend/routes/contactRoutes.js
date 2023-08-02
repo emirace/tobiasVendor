@@ -8,9 +8,11 @@ const contactRouter = express.Router();
 
 // Create a new contact form submission
 contactRouter.post(
-  '/',
+  '/:region',
   expressAsyncHandler(async (req, res) => {
     try {
+      const { region } = req.params;
+      const url = region === 'NGN' ? 'com' : 'co.za';
       const { name, email, category, subject, message, file } = req.body;
 
       const newContact = new Contact({
@@ -26,12 +28,12 @@ contactRouter.post(
 
       if (newsletter) {
         newsletter.isDeleted = false;
-        // newsletter.url = url;
+        newsletter.url = url;
       } else {
         newsletter = new Newsletters({
           email,
           emailType: 'Newsletter',
-          url: 'co.za',
+          url,
         });
       }
       console.log('newsletter', newsletter);
@@ -53,7 +55,9 @@ contactRouter.get(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     try {
-      const contacts = await Contact.find({}).sort({ createdAt: -1 });
+      const contacts = await Contact.find({})
+        .sort({ assignTo: 1, createdAt: -1 })
+        .exec();
       res.json(contacts);
     } catch (err) {
       console.error('Error fetching contacts:', err);
@@ -94,16 +98,13 @@ contactRouter.put(
     const updateData = req.body;
 
     try {
-      const updatedContact = await Contact.findByIdAndUpdate(
-        contactId,
-        updateData,
-        { new: true }
-      );
-      if (!updatedContact) {
-        res.status(404).json({ error: 'Contact not found' });
-      } else {
-        res.json(updatedContact);
+      const contact = await Contact.findById(contactId);
+      if (!contact) {
+        return res.status(404).json({ error: 'Contact not found' });
       }
+      contact.assignTo = req.user.username;
+      const updatedContact = await contact.save();
+      res.json(updatedContact);
     } catch (err) {
       console.error('Error updating contact:', err);
       res.status(500).json({ error: 'Error updating contact' });

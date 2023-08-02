@@ -33,9 +33,11 @@ guestUserRouter.get(
 // add a guestUser
 
 guestUserRouter.post(
-  '/',
+  '/:region',
   expressAsyncHandler(async (req, res) => {
     try {
+      const { region } = req.params;
+      const url = region === 'NGN' ? 'com' : 'co.za';
       const { email, username } = req.body;
       const user = await GuestUser.findOne({ email });
       if (user) {
@@ -50,12 +52,12 @@ guestUserRouter.post(
 
         if (newsletter) {
           newsletter.isDeleted = false;
-          // newsletter.url = url;
+          newsletter.url = url;
         } else {
           newsletter = new Newsletters({
             email,
             emailType: 'Newsletter',
-            url: 'co.za',
+            url,
           });
         }
         console.log('newsletter', newsletter);

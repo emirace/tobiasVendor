@@ -1,11 +1,10 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import { Store } from "../Store";
-import { getError } from "../utils";
-import LoadingBox from "./LoadingBox";
-import moment from "moment";
-import { Badge } from "./Navbar";
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { Store } from '../Store';
+import { getError } from '../utils';
+import LoadingBox from './LoadingBox';
+import moment from 'moment';
 
 const User = styled.div`
   position: relative;
@@ -19,7 +18,7 @@ const User = styled.div`
   }
   &.active {
     background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   }
 `;
 const ProfileImg = styled.img.attrs((props) => ({
@@ -49,6 +48,8 @@ const LastMsg = styled.div`
   width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
+  justify-content: space-between;
+  align-items: center;
   white-space: nowrap;
   @media (max-width: 992px) {
     width: 170px;
@@ -72,6 +73,19 @@ const ProductImage = styled.img`
   width: 60px;
   height: 60px;
   object-fit: cover;
+`;
+
+const Badge = styled.span`
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-color);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 50%;
+  cursor: default;
 `;
 
 export default function Conversation({
@@ -134,7 +148,7 @@ export default function Conversation({
       }
     };
     getMessages();
-  }, [conversation, userInfo]);
+  }, [conversation, userInfo, count]);
 
   useEffect(() => {
     const getproduct = async () => {
@@ -169,41 +183,43 @@ export default function Conversation({
       <>
         <User
           mode={mode}
-          className={currentChat === conversation._id ? "active" : ""}
+          className={currentChat === conversation._id ? 'active' : ''}
         >
           {report ? (
             <ProfileImg src={user.image} />
           ) : (
             <ProfileImg
               src={
-                conversation.conversationType === "reportProduct" ||
-                conversation.conversationType === "reportUser"
-                  ? "https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png"
+                conversation.conversationType === 'reportProduct' ||
+                conversation.conversationType === 'reportUser'
+                  ? 'https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png'
                   : user.image
               }
             />
           )}
           <ProfileDetail>
             <Name>
-              {conversation.conversationType === "reportProduct" ||
-              conversation.conversationType === "reportUser" ? (
-                <div style={{ color: "red" }}>Report</div>
+              {conversation.conversationType === 'reportProduct' ||
+              conversation.conversationType === 'reportUser' ? (
+                <div style={{ color: 'red' }}>Report</div>
               ) : (
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <>{user.username}</>
                   {status && <Badge1 />}
                 </div>
               )}
             </Name>
             <LastMsg>
-              {message.message && message.messages.length > 0
-                ? message.messages[message.messages.length - 1].text
-                : "No messages"}{" "}
-              {count.length > 0 && <Badge>{count.length}</Badge>}
-              {conversation.needRespond && report && <Badgered />}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                {message.message && message.messages.length > 0
+                  ? message.messages[message.messages.length - 1].text
+                  : 'No messages'}{' '}
+                {conversation.needRespond && report && <Badgered />}
+              </div>
+              <div>{count.length > 0 && <Badge>{count.length}</Badge>}</div>
             </LastMsg>
 
-            <div style={{ color: "grey" }}>
+            <div style={{ color: 'grey' }}>
               {moment(conversation.updatedAt).fromNow()}
             </div>
           </ProfileDetail>

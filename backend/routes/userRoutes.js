@@ -975,8 +975,8 @@ userRouter.get(
     }
   })
 );
-// get all users admin
 
+// get all users admin
 userRouter.get(
   '/:region',
   isAuth,
@@ -986,26 +986,29 @@ userRouter.get(
     const { region } = req.params;
     const searchQuery = query.q;
 
-    const queryFilter =
-      searchQuery && searchQuery !== 'all'
-        ? {
-            $or: [
-              {
-                username: {
-                  $regex: searchQuery,
-                  $options: 'i',
-                },
+    const queryFilter = {
+      region,
+      ...(searchQuery &&
+        searchQuery !== 'all' && {
+          $or: [
+            {
+              username: {
+                $regex: searchQuery,
+                $options: 'i',
               },
-              {
-                userId: {
-                  $regex: searchQuery,
-                  $options: 'i',
-                },
-              },
-            ],
-          }
-        : {};
-    const users = await User.find({ ...queryFilter, region }).sort({
+            },
+            // {
+            //   userId: {
+            //     $regex: searchQuery,
+            //     $options: 'i',
+            //   },
+            // },
+          ],
+        }),
+    };
+    console.log('searchQuery', queryFilter);
+
+    const users = await User.find(queryFilter).sort({
       createdAt: -1,
     });
     res.send(users);

@@ -1,17 +1,30 @@
 // MessageListb.js
-import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import ContactMessageDetail from "./ContactMessageDetail";
-import axios from "axios";
-import { Store } from "../../Store";
-import LoadingBox from "../LoadingBox";
-import ModelLogin from "../ModelLogin";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDotCircle, faEye } from "@fortawesome/free-solid-svg-icons";
+import React, { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
+import ContactMessageDetail from './ContactMessageDetail';
+import axios from 'axios';
+import { Store } from '../../Store';
+import LoadingBox from '../LoadingBox';
+import ModelLogin from '../ModelLogin';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDotCircle, faEye } from '@fortawesome/free-solid-svg-icons';
 
 const Container = styled.div`
   flex: 4;
   padding: 0 20px;
+`;
+
+const Badge = styled.span`
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-color);
+  color: #fff;
+  font-size: 10px;
+  border-radius: 50%;
+  cursor: default;
 `;
 
 const Title = styled.h1``;
@@ -20,7 +33,7 @@ const MessageContainer = styled.div`
   display: flex;
   align-items: center;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
@@ -47,17 +60,17 @@ const PaginationButtons = styled.div`
 
 const PaginationButton = styled.button`
   background-color: ${(props) =>
-    props.disabled ? "gray" : "var(--orange-color)"};
+    props.disabled ? 'gray' : 'var(--orange-color)'};
   color: white;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
-  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
   margin: 0 5px;
 
   &:hover {
     background-color: ${(props) =>
-      props.disabled ? "gray" : "var(--orange-dark-color)"};
+      props.disabled ? 'gray' : 'var(--orange-dark-color)'};
   }
 `;
 
@@ -68,6 +81,7 @@ const ContactUs = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [showModel, setShowModel] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   const messagesPerPage = 20; // You can adjust this number according to your preference.
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,7 +109,7 @@ const ContactUs = () => {
       try {
         setLoading(true);
 
-        const { data } = await axios.get("/api/contacts", {
+        const { data } = await axios.get('/api/contacts', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setMessages(data);
@@ -105,7 +119,24 @@ const ContactUs = () => {
       }
     };
     fetchMessage();
-  }, []);
+  }, [userInfo.token, refresh]);
+
+  const handleClick = async (id) => {
+    try {
+      await axios.put(
+        `/api/contacts/${id}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+      setRefresh(!refresh);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleViewDetails = (message) => {
     setSelectedMessage(message);
@@ -123,11 +154,16 @@ const ContactUs = () => {
             <MessageContainer mode={mode} key={index}>
               <FontAwesomeIcon icon={faDotCircle} />
               <div style={{ flex: 1 }}>Email: {message.email}</div>
-              <FontAwesomeIcon
-                onClick={() => handleViewDetails(message)}
-                icon={faEye}
-                style={{ fontSize: "16px", color: "var(--orange-color)" }}
-              />
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+              >
+                {!message.assignTo && <Badge />}
+                <FontAwesomeIcon
+                  onClick={() => handleViewDetails(message)}
+                  icon={faEye}
+                  style={{ fontSize: '16px', color: 'var(--orange-color)' }}
+                />
+              </div>
             </MessageContainer>
           ))}
           <PaginationButtons>
@@ -139,7 +175,10 @@ const ContactUs = () => {
             </PaginationButton>
           </PaginationButtons>
           <ModelLogin setShowModel={setShowModel} showModel={showModel}>
-            <ContactMessageDetail message={selectedMessage} />
+            <ContactMessageDetail
+              message={selectedMessage}
+              handleClick={handleClick}
+            />
           </ModelLogin>
         </>
       )}

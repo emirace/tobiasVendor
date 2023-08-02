@@ -5,31 +5,31 @@ import {
   faPaperPlane,
   faSearch,
   faShield,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
 import React, {
   useEffect,
   useContext,
   useState,
   useReducer,
   useRef,
-} from "react";
-import styled from "styled-components";
-import Navbar from "../component/Navbar";
-import { Store } from "../Store";
-import Conversation from "../component/Conversation";
-import Messages from "../component/Messages";
-import { Link, useLocation } from "react-router-dom";
-import { getError, region } from "../utils";
-import ReportConversation from "../component/Report/ReportConversation";
-import Report from "../component/Report";
-import ModelLogin from "../component/ModelLogin";
-import CropImage from "../component/cropImage/CropImage";
-import { socket } from "../App";
-import LoadingBox from "../component/LoadingBox";
-import useWindowDimensions from "../component/Dimension";
-import { resizeImage } from "../component/ImageUploader";
+} from 'react';
+import styled from 'styled-components';
+import Navbar from '../component/Navbar';
+import { Store } from '../Store';
+import Conversation from '../component/Conversation';
+import Messages from '../component/Messages';
+import { Link, useLocation } from 'react-router-dom';
+import { getError, region } from '../utils';
+import ReportConversation from '../component/Report/ReportConversation';
+import Report from '../component/Report';
+import ModelLogin from '../component/ModelLogin';
+import CropImage from '../component/cropImage/CropImage';
+import { socket } from '../App';
+import LoadingBox from '../component/LoadingBox';
+import useWindowDimensions from '../component/Dimension';
+import { resizeImage } from '../component/ImageUploader';
 
 const Container = styled.div`
   position: fixed;
@@ -42,7 +42,7 @@ const Container = styled.div`
 const ChatCont = styled.div`
   display: flex;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   margin: 10px 10px 0 10px;
   border-radius: 0.2rem;
   height: calc(100% - 172px);
@@ -56,10 +56,10 @@ const Left = styled.div`
   margin: 10px 20px 0 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
   @media (max-width: 992px) {
     margin: 0;
-    display: ${(props) => (props.showLeft ? "" : "none")};
+    display: ${(props) => (props.showLeft ? '' : 'none')};
   }
 `;
 const Right = styled.div`
@@ -68,11 +68,11 @@ const Right = styled.div`
   border-radius: 0.2rem;
   padding: 10px 30px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
   @media (max-width: 992px) {
     margin: 5px;
     padding: 10px;
-    display: ${(props) => (props.showLeft ? "none" : "")};
+    display: ${(props) => (props.showLeft ? 'none' : '')};
   }
 `;
 const ChatCont2 = styled.div`
@@ -99,13 +99,13 @@ const Search = styled.input.attrs((props) => ({
   placeholder: props.placeholder,
 }))`
   background: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--black-color)"
-      : "var(--white-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--black-color)'
+      : 'var(--white-color)'};
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   border: 0;
   border-radius: 0.2rem;
   padding: 0 10px;
@@ -115,7 +115,7 @@ const Search = styled.input.attrs((props) => ({
   &::placeholder {
     padding-left: 10px;
     color: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--light-ev4)" : "var(--dark-ev4)"};
+      props.mode === 'pagebodydark' ? 'var(--light-ev4)' : 'var(--dark-ev4)'};
   }
 `;
 
@@ -158,17 +158,17 @@ const TextInput = styled.input`
   height: 100%;
   width: 100%;
   background: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--black-color)"
-      : "var(--white-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--black-color)'
+      : 'var(--white-color)'};
   border-radius: 0.2rem;
   border: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
 
   padding: 20px;
   &:focus-visible {
@@ -178,9 +178,9 @@ const TextInput = styled.input`
   &::placeholder {
     padding: 20px;
     color: ${(props) =>
-      props.mode === "pagebodydark"
-        ? "var(--white-color)"
-        : "var(--black-color)"};
+      props.mode === 'pagebodydark'
+        ? 'var(--white-color)'
+        : 'var(--black-color)'};
   }
   @media (max-width: 992px) {
     &::placeholder {
@@ -193,17 +193,17 @@ const Textarea = styled.textarea`
   height: 100%;
   width: 100%;
   background: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--black-color)"
-      : "var(--white-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--black-color)'
+      : 'var(--white-color)'};
   border-radius: 0.2rem;
   border: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
   color: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--white-color)"
-      : "var(--black-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--white-color)'
+      : 'var(--black-color)'};
   padding: 10px;
   resize: none;
   &:focus-visible {
@@ -237,7 +237,7 @@ const Tab = styled.div`
   justify-content: space-around;
   padding: 0 10px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
 `;
 const TabItem = styled.div`
   cursor: pointer;
@@ -250,7 +250,7 @@ const TabItem = styled.div`
   }
   &.active {
     background: ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
   }
   @media (max-width: 992px) {
     padding: 10px 20px;
@@ -267,7 +267,7 @@ const Back = styled.div`
     margin-right: 5px;
   }
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   @media (max-width: 992px) {
     display: flex;
   }
@@ -331,7 +331,7 @@ const SearchUl = styled.div`
   padding: 15px;
   width: 100%;
   z-index: 9;
-  background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
+  background: ${(props) => (props.mode === 'pagebodydark' ? 'black' : 'white')};
 `;
 const SearchLi = styled.div`
   display: flex;
@@ -392,27 +392,27 @@ const Badge = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "FETCH_REQUEST":
+    case 'FETCH_REQUEST':
       return { ...state, loading: true };
-    case "FETCH_SUCCESS":
+    case 'FETCH_SUCCESS':
       return { ...state, conversations: action.payload, loading: false };
-    case "FETCH_FAIL":
+    case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-    case "MSG_REQUEST":
+    case 'MSG_REQUEST':
       return { ...state, loadingMessages: true };
-    case "MSG_SUCCESS":
+    case 'MSG_SUCCESS':
       return {
         ...state,
         messages: action.payload,
         loadingMessages: false,
       };
-    case "MSG_FAIL":
+    case 'MSG_FAIL':
       return { ...state, loadingMessages: false, error: action.payload };
-    case "UPLOAD_REQUEST":
+    case 'UPLOAD_REQUEST':
       return { ...state, loadingUpload: true };
-    case "UPLOAD_SUCCESS":
-      return { ...state, loadingUpload: false, errorUpload: "" };
-    case "UPLOAD_FAIL":
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
       return {
         ...state,
         loadingUpload: false,
@@ -428,34 +428,34 @@ export default function ChatScreen() {
   const { mode, userInfo, notifications } = state;
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const currentCon = sp.get("conversation");
+  const currentCon = sp.get('conversation');
   const [menu, setMymenu] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [currentChat, setCurrentChat] = useState("");
-  const [currentReply, setCurrentReply] = useState("");
-  const [newMessage, setNewMessage] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState("");
+  const [currentChat, setCurrentChat] = useState('');
+  const [currentReply, setCurrentReply] = useState('');
+  const [newMessage, setNewMessage] = useState('');
+  const [arrivalMessage, setArrivalMessage] = useState('');
   const [modelRef1, setmodelRef1] = useState();
   const [modelRef2, setmodelRef2] = useState();
   const [onlineUser, setOnlineUser] = useState([]);
   const scrollref = useRef();
   const [reports, setReports] = useState([]);
-  const [searchResult, setSearchResult] = useState("");
+  const [searchResult, setSearchResult] = useState('');
   const [refresh, setRefresh] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState('');
   const [showUploadingImage, setShowUploadingImage] = useState(false);
   const searchRef = useRef();
 
   const supportNotification = notifications.filter(
-    (x) => x.notifyType === "support" && x.read === false
+    (x) => x.notifyType === 'supportRespond' && x.read === false
   );
 
   const reportNotification = notifications.filter(
-    (x) => x.notifyType === "report" && x.read === false
+    (x) => x.notifyType === 'report' && x.read === false
   );
 
   const backMode = (mode) => {
-    if (mode === "pagebodydark") {
+    if (mode === 'pagebodydark') {
       mode = false;
     } else {
       mode = true;
@@ -480,30 +480,30 @@ export default function ChatScreen() {
       setShowNotification(!menu);
     }
     if (searchRef !== e.target) {
-      setSearchResult("");
+      setSearchResult('');
     }
   };
 
   const [{ loading, error, loadingUpload, conversations, messages }, dispatch] =
     useReducer(reducer, {
       loading: true,
-      error: "",
+      error: '',
       conversations: [],
       messages: [],
     });
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    document.body.style.paddingRight = "15px";
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = '15px';
 
     return () => {
-      document.body.style.overflow = "unset";
-      document.body.style.paddingRight = "0px";
+      document.body.style.overflow = 'unset';
+      document.body.style.paddingRight = '0px';
     };
   }, []);
 
   useEffect(() => {
-    socket.on("getMessage", (data) => {
+    socket.on('getMessage', (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -516,7 +516,7 @@ export default function ChatScreen() {
   const [arrivalReport, setArrivalReport] = useState();
 
   useEffect(() => {
-    socket.on("getReport", (data) => {
+    socket.on('getReport', (data) => {
       setArrivalReport(data.report);
     });
   }, []);
@@ -527,7 +527,7 @@ export default function ChatScreen() {
     }
   }, [arrivalReport]);
 
-  const [testing, setTesting] = useState("");
+  const [testing, setTesting] = useState('');
   useEffect(() => {
     if (
       arrivalMessage &&
@@ -536,18 +536,18 @@ export default function ChatScreen() {
     ) {
       if (currentChat._id === arrivalMessage.message.conversationId) {
         dispatch({
-          type: "MSG_SUCCESS",
+          type: 'MSG_SUCCESS',
           payload: [...messages, arrivalMessage.message],
         });
       } else {
-        setTesting("working");
+        setTesting('working');
       }
     } else if (arrivalMessage) {
     }
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.on("getUsers", (users) => {
+    socket.on('getUsers', (users) => {
       setOnlineUser(users);
     });
   }, [userInfo]);
@@ -555,16 +555,16 @@ export default function ChatScreen() {
   useEffect(() => {
     const getConversation = async () => {
       try {
-        dispatch({ type: "FETCH_REQUEST" });
+        dispatch({ type: 'FETCH_REQUEST' });
         const { data } = await axios.get(`/api/conversations/user`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({
-          type: "FETCH_SUCCESS",
+          type: 'FETCH_SUCCESS',
           payload: data.conversations,
         });
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err });
+        dispatch({ type: 'FETCH_FAIL', payload: err });
         console.log(err);
       }
     };
@@ -575,14 +575,14 @@ export default function ChatScreen() {
   useEffect(() => {
     const getReportConversation = async () => {
       try {
-        dispatch({ type: "FETCH_REQUEST" });
+        dispatch({ type: 'FETCH_REQUEST' });
         const { data } = await axios.get(`/api/conversations/reports`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         console.log(data);
         setReportConversions(data);
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err });
+        dispatch({ type: 'FETCH_FAIL', payload: err });
         console.log(err);
       }
     };
@@ -593,14 +593,14 @@ export default function ChatScreen() {
   useEffect(() => {
     const getSupportConversation = async () => {
       try {
-        dispatch({ type: "FETCH_REQUEST" });
+        dispatch({ type: 'FETCH_REQUEST' });
         const { data } = await axios.get(`/api/conversations/supports`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        console.log("support", data);
+        console.log('support', data);
         setSupportConversations(data);
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err });
+        dispatch({ type: 'FETCH_FAIL', payload: err });
         console.log(err);
       }
     };
@@ -619,7 +619,7 @@ export default function ChatScreen() {
           setReports(data.reports);
         }
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err });
+        dispatch({ type: 'FETCH_FAIL', payload: err });
         console.log(getError(err));
       }
     };
@@ -629,13 +629,13 @@ export default function ChatScreen() {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        dispatch({ type: "MSG_REQUEST" });
+        dispatch({ type: 'MSG_REQUEST' });
         const { data } = await axios.get(`/api/messages/${currentChat._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: "MSG_SUCCESS", payload: data.messages });
+        dispatch({ type: 'MSG_SUCCESS', payload: data.messages });
       } catch (err) {
-        dispatch({ type: "MSG_FAIL" });
+        dispatch({ type: 'MSG_FAIL' });
 
         console.log(err);
       }
@@ -661,18 +661,18 @@ export default function ChatScreen() {
   }, []);
 
   useEffect(() => {
-    scrollref.current?.scrollIntoView({ behavior: "smooth" });
+    scrollref.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, reports]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newMessage.length && !image.length) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Failed",
+          message: 'Failed',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -687,54 +687,54 @@ export default function ChatScreen() {
       conversationId: currentChat._id,
       image: image,
       receiverId,
-      guestEmail: currentChat.guest ? currentChat.guestEmail : "",
+      guestEmail: currentChat.guest ? currentChat.guestEmail : '',
       sendMail: isOnlineCon(currentChat),
     };
     try {
-      const { data } = await axios.post("api/messages", message, {
+      const { data } = await axios.post('api/messages', message, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       dispatch({
-        type: "MSG_SUCCESS",
+        type: 'MSG_SUCCESS',
         payload: [...messages, data.message],
       });
-      console.log("receiver", receiverId);
-      socket.emit("sendMessage", {
+      console.log('receiver', receiverId);
+      socket.emit('sendMessage', {
         message: data.message,
         senderId: userInfo._id,
         image: image,
         receiverId,
         text: newMessage,
       });
-      socket.emit("post_data", {
+      socket.emit('post_data', {
         userId:
-          (currentChat.conversationType === "reportProduct" ||
-            currentChat.conversationType === "reportUser") &&
+          (currentChat.conversationType === 'reportProduct' ||
+            currentChat.conversationType === 'reportUser') &&
           !userInfo.isAdmin
-            ? "Admin"
+            ? 'Admin'
             : receiverId,
         itemId: currentChat._id,
         notifyType:
-          currentChat.conversationType === "reportProduct" ||
-          currentChat.conversationType === "reportUser"
-            ? "report"
-            : currentChat.conversationType === "support"
-            ? "support"
-            : "message",
+          currentChat.conversationType === 'reportProduct' ||
+          currentChat.conversationType === 'reportUser'
+            ? 'report'
+            : currentChat.conversationType === 'support'
+            ? 'supportReceived'
+            : 'message',
         msg:
-          currentChat.conversationType === "reportProduct" ||
-          currentChat.conversationType === "reportUser"
-            ? "New report Message"
-            : currentChat.conversationType === "support"
-            ? "New Support message"
+          currentChat.conversationType === 'reportProduct' ||
+          currentChat.conversationType === 'reportUser'
+            ? 'New report Message'
+            : currentChat.conversationType === 'support'
+            ? 'New Support message'
             : `${userInfo.username} sent you a message`,
         link: `/messages?conversation=${currentChat._id}`,
-        mobile: { path: "Conversation", id: "" },
+        mobile: { path: 'Conversation', id: '' },
 
         userImage: userInfo.image,
       });
-      setNewMessage("");
-      setImage("");
+      setNewMessage('');
+      setImage('');
       setRefresh(!refresh);
     } catch (err) {
       console.log(err);
@@ -830,7 +830,7 @@ export default function ChatScreen() {
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id, type: "user" },
+        { recieverId: id, type: 'user' },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
       setCurrentChat(data);
@@ -843,43 +843,43 @@ export default function ChatScreen() {
   const uploadHandler = async (e) => {
     const file = e;
     const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
+    bodyFormData.append('file', file);
     try {
-      console.log("helo");
-      dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
+      console.log('helo');
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: "UPLOAD_SUCCESS" });
-      console.log("fkkjshdaeldnf", data);
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      console.log('fkkjshdaeldnf', data);
       setImage(data.secure_url);
-      console.log("jkghfgfdsfdgfhjhimage", image);
+      console.log('jkghfgfdsfdgfhjhimage', image);
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Image Uploaded",
+          message: 'Image Uploaded',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
     } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Failed uploading image",
+          message: 'Failed uploading image',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       console.log(getError(err));
     }
   };
 
-  const [invalidImage, setInvalidImage] = useState("");
+  const [invalidImage, setInvalidImage] = useState('');
   const [resizeImage1, setResizeImage] = useState({
     file: [],
     filepreview: null,
@@ -904,7 +904,7 @@ export default function ChatScreen() {
 
   const { width } = useWindowDimensions();
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && width > 992) {
+    if (e.key === 'Enter' && width > 992) {
       handleSubmit(e);
     }
   };
@@ -919,22 +919,22 @@ export default function ChatScreen() {
     }
   };
 
-  const [currentTab, setCurrentTab] = useState("messages");
+  const [currentTab, setCurrentTab] = useState('messages');
   const toggleTab = (tab) => {
     switch (tab) {
-      case "messages":
+      case 'messages':
         return (
           <Conserv>
             {conversations.length < 1
-              ? "No Conversation"
+              ? 'No Conversation'
               : conversations.map(
                   (c, index) =>
-                    c.conversationType !== "support" && (
+                    c.conversationType !== 'support' && (
                       <div
                         onClick={() => {
                           setShowLeft(false);
                           setCurrentChat(c);
-                          socket.emit("remove_notifications", c._id);
+                          socket.emit('remove_notifications', c._id);
                         }}
                         key={index}
                       >
@@ -948,18 +948,18 @@ export default function ChatScreen() {
                 )}
           </Conserv>
         );
-      case "reports":
+      case 'reports':
         return (
           <Conserv>
             {reportConversions.length < 1
-              ? "No Reports"
+              ? 'No Reports'
               : reportConversions.map((r, index) => (
                   <div
                     key={r._id}
                     onClick={() => {
                       setShowLeft(false);
                       setCurrentChat(r);
-                      socket.emit("remove_notifications", r._id);
+                      socket.emit('remove_notifications', r._id);
                     }}
                   >
                     <Conversation
@@ -972,18 +972,18 @@ export default function ChatScreen() {
                 ))}
           </Conserv>
         );
-      case "supports":
+      case 'supports':
         return (
           <Conserv>
             {supportConversations.length < 1
-              ? "No Support"
+              ? 'No Support'
               : supportConversations.map((r, index) => (
                   <div
                     key={r._id}
                     onClick={() => {
                       setShowLeft(false);
                       setCurrentChat(r);
-                      socket.emit("remove_notifications", r._id);
+                      socket.emit('remove_notifications', r._id);
                     }}
                   >
                     <Conversation
@@ -1005,7 +1005,7 @@ export default function ChatScreen() {
   const handleSubmitReply = async () => {
     try {
       const { data } = await axios.post(
-        "/api/reports/",
+        '/api/reports/',
         {
           reportedUser: reports[0].reportedUser.toString(),
           user: currentReply,
@@ -1015,7 +1015,7 @@ export default function ChatScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      socket.emit("sendReport", {
+      socket.emit('sendReport', {
         report: data.savedReport,
       });
 
@@ -1034,7 +1034,7 @@ export default function ChatScreen() {
       //   report: data.savedReport,
       // });
 
-      setNewMessage("");
+      setNewMessage('');
     } catch (err) {
       console.log(getError(err));
     }
@@ -1061,7 +1061,7 @@ export default function ChatScreen() {
       <ChatCont mode={mode}>
         <Left mode={mode} showLeft={showLeft}>
           <TopBar>
-            <div style={{ position: "relative" }}>
+            <div style={{ position: 'relative' }}>
               <FontAwesomeIcon icon={faSearch} />
               <Search
                 onChange={handleSearchInput}
@@ -1094,21 +1094,21 @@ export default function ChatScreen() {
           {userInfo && userInfo.isAdmin && (
             <Tab mode={mode}>
               <TabItem
-                className={currentTab === "messages" ? "active" : ""}
+                className={currentTab === 'messages' ? 'active' : ''}
                 mode={mode}
                 onClick={() => {
-                  setCurrentTab("messages");
-                  setCurrentChat("");
+                  setCurrentTab('messages');
+                  setCurrentChat('');
                 }}
               >
                 Messages
               </TabItem>
               <TabItem
                 mode={mode}
-                className={currentTab === "reports" ? "active" : ""}
+                className={currentTab === 'reports' ? 'active' : ''}
                 onClick={() => {
-                  setCurrentTab("reports");
-                  setCurrentChat("");
+                  setCurrentTab('reports');
+                  setCurrentChat('');
                 }}
               >
                 Reports
@@ -1118,8 +1118,8 @@ export default function ChatScreen() {
               </TabItem>
               <TabItem
                 mode={mode}
-                className={currentTab === "supports" ? "active" : ""}
-                onClick={() => setCurrentTab("supports")}
+                className={currentTab === 'supports' ? 'active' : ''}
+                onClick={() => setCurrentTab('supports')}
               >
                 Supports
                 {supportNotification.length ? (
@@ -1145,69 +1145,69 @@ export default function ChatScreen() {
                     <Link
                       to={`/seller/${user._id}`}
                       style={{
-                        display: "flex",
-                        justifyContent: "end",
-                        paddingRight: "10px",
-                        "box-shadow":
-                          mode === "pagebodylight"
-                            ? "0 0 3px rgba(0, 0, 0, 0.2)"
-                            : "0 0 3px rgba(225, 225, 225, 0.2)",
+                        display: 'flex',
+                        justifyContent: 'end',
+                        paddingRight: '10px',
+                        'box-shadow':
+                          mode === 'pagebodylight'
+                            ? '0 0 3px rgba(0, 0, 0, 0.2)'
+                            : '0 0 3px rgba(225, 225, 225, 0.2)',
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
                         <ProfileImg src={user.image} />
                         <div>{user.username}</div>
                       </div>
                     </Link>
                   ) : (
-                    <div style={{ hieght: "46px" }} />
+                    <div style={{ hieght: '46px' }} />
                   )}
                 </BackUser>
               )}
-              {currentTab !== "supports" && (
+              {currentTab !== 'supports' && (
                 <PrivacyInfo>
                   <FontAwesomeIcon icon={faShield} />
 
                   <div
                     style={{
-                      color: "grey",
-                      textAlign: "center",
-                      lineHeight: "18px",
+                      color: 'grey',
+                      textAlign: 'center',
+                      lineHeight: '18px',
                     }}
                   >
-                    {currentTab === "messages"
+                    {currentTab === 'messages'
                       ? `
                   Kind Reminder: To make sure you're covered by Repeddle Buyer's
                   & Seller's Protection, all payments must be made using
                   Repeddle's App and Website complete CHECKOUT system.`
-                      : currentTab === "reports"
+                      : currentTab === 'reports'
                       ? `Please leave all information that will help us resolve your
                   query. Please include an order number if your report is
                   related to an order you purchased from this seller, or you
                   can go to your purchase history and report the related item
                   directly from the report tab on the item page.`
-                      : ""}
+                      : ''}
                   </div>
                 </PrivacyInfo>
               )}
-              {currentChat.conversationType !== "user" &&
-                currentChat.conversationType !== "support" && (
+              {currentChat.conversationType !== 'user' &&
+                currentChat.conversationType !== 'support' && (
                   <Link
                     to={
-                      currentChat.conversationType === "reportUser"
+                      currentChat.conversationType === 'reportUser'
                         ? `/seller/${product._id}`
                         : `/product/${product.slug}`
                     }
                     style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      borderBottom: "1px solid grey",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      borderBottom: '1px solid grey',
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                       <ProductImg src={product.image} />
                       <div>
-                        {currentChat.conversationType === "reportUser"
+                        {currentChat.conversationType === 'reportUser'
                           ? product.username
                           : product.name}
                       </div>
@@ -1216,19 +1216,19 @@ export default function ChatScreen() {
                 )}
               <ChatArea
                 className={
-                  currentTab === "supports"
-                    ? "support"
-                    : currentTab === "messages" &&
-                      currentChat.conversationType === "user"
-                    ? "messages"
-                    : ""
+                  currentTab === 'supports'
+                    ? 'support'
+                    : currentTab === 'messages' &&
+                      currentChat.conversationType === 'user'
+                    ? 'messages'
+                    : ''
                 }
               >
                 <div
                   style={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
                   }}
                 >
                   {messages.map((m, index) => (
@@ -1265,21 +1265,21 @@ export default function ChatScreen() {
                     ) : image ? (
                       <Imagecont>
                         <Image src={image} alt="img" />
-                        <Remove onClick={() => setImage("")}>Remove</Remove>
+                        <Remove onClick={() => setImage('')}>Remove</Remove>
                       </Imagecont>
                     ) : (
                       <label
                         htmlFor="addimage"
                         style={{
-                          display: "flex",
-                          height: "100%",
-                          flexDirection: "column",
-                          justifyContent: "center",
-                          alignItems: "center",
+                          display: 'flex',
+                          height: '100%',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
                         }}
                       >
                         <FontAwesomeIcon
-                          style={{ fontSize: "200px" }}
+                          style={{ fontSize: '200px' }}
                           icon={faImage}
                         />
                         Click to Add Image
@@ -1288,7 +1288,7 @@ export default function ChatScreen() {
                     <input
                       type="file"
                       id="addimage"
-                      style={{ display: "none" }}
+                      style={{ display: 'none' }}
                       onChange={handleImageUpload}
                     />
                     <Message>

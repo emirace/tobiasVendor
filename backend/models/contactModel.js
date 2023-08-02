@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 // Define the Contact schema
 const contactSchema = new mongoose.Schema(
@@ -26,6 +26,10 @@ const contactSchema = new mongoose.Schema(
     file: {
       type: String,
     },
+    assignTo: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -33,5 +37,5 @@ const contactSchema = new mongoose.Schema(
 );
 
 // Create the Contact model
-const Contact = mongoose.model("Contact", contactSchema);
+const Contact = mongoose.model('Contact', contactSchema);
 export default Contact;
