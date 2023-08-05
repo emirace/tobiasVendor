@@ -201,7 +201,7 @@ const ArticleListScreen = () => {
       <Section>
         <SectionTitle>Popular Questions</SectionTitle>
         <ArticleItemContainer>
-          {articles.map((article) => (
+          {articles.slice(0, 6).map((article) => (
             <ArticleItem key={article._id}>
               <Link to={`/article/${article._id}`}>
                 <Topic>{article.question}</Topic>
@@ -223,7 +223,9 @@ const ArticleListScreen = () => {
         <ButtonContainer>
           <p>
             More Questions? Go to{" "}
-            <b style={{ color: "var(--orange-color)" }}>Support Articles</b>
+            <Link to="/support-articles">
+              <b style={{ color: "var(--orange-color)" }}>Support Articles</b>
+            </Link>
           </p>
           <Link to="/contactus">
             <Button>Contact Us</Button>
