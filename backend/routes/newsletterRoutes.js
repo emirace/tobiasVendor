@@ -30,6 +30,11 @@ const emailLists = [
     subject: 'PERFORMANCE TRACKING',
     template: 'performanceTracking',
   },
+  {
+    name: 'Exciting announcement',
+    subject: 'EXCITING ANNOUNCEMENT',
+    template: 'exiciting',
+  },
 ];
 
 // get all newsletters
