@@ -685,6 +685,7 @@ export default function NewProduct() {
           }));
           setDeliveryOption(data.deliveryOption);
           setSizes(data.sizes);
+          setAddSize(data.sizes.length < 1);
           tags = data.tags;
         } catch (err) {
           console.log(getError(err));

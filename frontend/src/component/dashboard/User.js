@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Store } from '../../Store';
 import axios from 'axios';
-import { getError, region, timeDifference } from '../../utils';
+import { compressImageUpload, getError, region, timeDifference } from '../../utils';
 import LoadingBox from '../LoadingBox';
 import SmallModel from '../SmallModel';
 import moment from 'moment';
@@ -755,14 +755,10 @@ export default function User() {
     bodyFormData.append('file', file);
     try {
       dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
+      const compressImage=await compressImageUpload(file,1024,userInfo.token) 
+     
       dispatch({ type: 'UPLOAD_SUCCESS' });
-      setImage(data.secure_url);
+      setImage(compressImage);
       ctxDispatch({
         type: 'SHOW_TOAST',
         payload: {

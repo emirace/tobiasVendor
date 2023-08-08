@@ -692,6 +692,7 @@ export default function Product() {
   const [showDelivery, setShowDelivery] = useState(false);
   const [countInStock, setCountInStock] = useState(1);
   const [addSize, setAddSize] = useState(sizes.length < 1);
+  console.log("size", sizes, addSize, sizes.length < 1);
   const [searchBrand, setSearchBrand] = useState(null);
   const [brandQuery, setBrandQuery] = useState("");
   const [deliveryOption, setDeliveryOption] = useState([
@@ -729,6 +730,7 @@ export default function Product() {
         setDiscount(data.actualPrice);
         setDeliveryOption(data.deliveryOption);
         setSizes(data.sizes);
+        setAddSize(data.sizes.length < 1);
         tags = data.tags;
         setInput(data);
       };
@@ -1878,6 +1880,7 @@ export default function Product() {
                             placeholder="qty"
                             mode={mode}
                             maxLength={4}
+                            value={s.value}
                             onChange={(e) => {
                               smallSizeHandler(
                                 s.size,
