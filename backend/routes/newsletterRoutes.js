@@ -35,6 +35,11 @@ const emailLists = [
     subject: "CHALLENGING FAST FASHION POLLUTION IN AFRICA",
     template: "challenging",
   },
+  {
+    name: 'Exciting announcement',
+    subject: 'EXCITING ANNOUNCEMENT',
+    template: 'exiciting',
+  },
 ];
 
 // get all newsletters
