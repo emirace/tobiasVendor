@@ -55,6 +55,7 @@ const AddButton2 = styled.button`
   color: var(--white-color);
   border-radius: 0.2rem;
   cursor: pointer;
+  margin-bottom: 10px;
 `;
 
 const Top = styled.div`

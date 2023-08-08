@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRotateLeft,
   faArrowRotateRight,
@@ -19,17 +19,17 @@ import {
   faMoneyBillTransfer,
   faQuestionCircle,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Store } from '../../Store';
-import { Badge } from '../Navbar';
+} from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { Store } from "../../Store";
+import { Badge } from "../Navbar";
 
 const Container = styled.div`
   flex: 1;
   height: calc(100vh-168px);
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   position: sticky;
   border-radius: 0.2rem;
   top: 168px;
@@ -63,7 +63,7 @@ const ListItem = styled.li`
   &:hover {
     border-left: 2px solid var(--orange-color);
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
   }
   & svg {
     margin-right: 5px;
@@ -76,25 +76,25 @@ export default function Sidebar({ current }) {
   const { mode, userInfo, notifications } = state;
 
   const messageNotification = notifications.filter(
-    (x) => x.notifyType === 'message' && x.read === false
+    (x) => x.notifyType === "message" && x.read === false
   );
   const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === 'purchase' && x.read === false
+    (x) => x.notifyType === "purchase" && x.read === false
   );
   const soldNotification = notifications.filter(
-    (x) => x.notifyType === 'sold' && x.read === false
+    (x) => x.notifyType === "sold" && x.read === false
   );
   const sellerReturnNotification = notifications.filter(
-    (x) => x.notifyType === 'sellerreturn' && x.read === false
+    (x) => x.notifyType === "sellerreturn" && x.read === false
   );
   const buyerReturnNotification = notifications.filter(
-    (x) => x.notifyType === 'buyerreturn' && x.read === false
+    (x) => x.notifyType === "buyerreturn" && x.read === false
   );
   const productNotification = notifications.filter(
-    (x) => x.notifyType === 'product' && x.read === false
+    (x) => x.notifyType === "product" && x.read === false
   );
   const contactNotification = notifications.filter(
-    (x) => x.notifyType === 'contactus' && x.read === false
+    (x) => x.notifyType === "contactus" && x.read === false
   );
   return (
     <Container mode={mode}>
@@ -105,7 +105,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/home">
               <ListItem
                 mode={mode}
-                className={current === 'home' ? 'active' : ''}
+                className={current === "home" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faHouse} /> Home
               </ListItem>
@@ -114,11 +114,11 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/productlist">
               <ListItem
                 mode={mode}
-                className={current === 'productlist' ? 'active' : ''}
+                className={current === "productlist" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faBasketShopping} /> My Products
                 {productNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{productNotification.length}</span>
                   </Badge>
                 )}
@@ -127,11 +127,11 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/orderlist">
               <ListItem
                 mode={mode}
-                className={current === 'sales' ? 'active' : ''}
+                className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Purchase Orders
                 {purchaseNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{purchaseNotification.length}</span>
                   </Badge>
                 )}
@@ -140,11 +140,11 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/saleslist">
               <ListItem
                 mode={mode}
-                className={current === 'sales' ? 'active' : ''}
+                className={current === "sales" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartBar} /> Sold Orders
                 {soldNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{soldNotification.length}</span>
                   </Badge>
                 )}
@@ -154,12 +154,12 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/sellerreturns">
               <ListItem
                 mode={mode}
-                className={current === 'returns' ? 'active' : ''}
+                className={current === "returns" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faArrowRotateLeft} />
                 Sold Returns
                 {sellerReturnNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{sellerReturnNotification.length}</span>
                   </Badge>
                 )}
@@ -168,12 +168,12 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/buyerreturns">
               <ListItem
                 mode={mode}
-                className={current === 'returns' ? 'active' : ''}
+                className={current === "returns" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faArrowRotateRight} />
                 Purchase Returns
                 {buyerReturnNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{buyerReturnNotification.length}</span>
                   </Badge>
                 )}
@@ -182,7 +182,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/wallet">
               <ListItem
                 mode={mode}
-                className={current === 'transactions' ? 'active' : ''}
+                className={current === "transactions" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faMoneyBillTransfer} />
                 My Wallet
@@ -192,7 +192,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/alltransaction">
               <ListItem
                 mode={mode}
-                className={current === 'transactionlist' ? 'active' : ''}
+                className={current === "transactionlist" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faMoneyBill} />
                 All Transactions
@@ -206,7 +206,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/address">
               <ListItem
                 mode={mode}
-                className={current === 'address' ? 'active' : ''}
+                className={current === "address" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faHome} /> Address Book
               </ListItem>
@@ -214,7 +214,7 @@ export default function Sidebar({ current }) {
             <Link to="/dashboard/coupon">
               <ListItem
                 mode={mode}
-                className={current === 'coupon' ? 'active' : ''}
+                className={current === "coupon" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faGift} /> Coupon/Gift
               </ListItem>
@@ -228,7 +228,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/analytics">
                 <ListItem
                   mode={mode}
-                  className={current === 'analytics' ? 'active' : ''}
+                  className={current === "analytics" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faChartLine} /> Analytics
                 </ListItem>
@@ -236,14 +236,14 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/userlist">
                 <ListItem
                   mode={mode}
-                  className={current === 'userlist' ? 'active' : ''}
+                  className={current === "userlist" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faUser} /> Users
                 </ListItem>
               </Link>
               <ListItem
                 mode={mode}
-                className={current === 'report' ? 'active' : ''}
+                className={current === "report" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faChartColumn} /> Reports
               </ListItem>
@@ -251,7 +251,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/categories">
                 <ListItem
                   mode={mode}
-                  className={current === 'categories' ? 'active' : ''}
+                  className={current === "categories" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faListCheck} /> Categories
                 </ListItem>
@@ -260,7 +260,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/articles">
                 <ListItem
                   mode={mode}
-                  className={current === 'articles' ? 'active' : ''}
+                  className={current === "articles" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faQuestionCircle} /> Articles
                 </ListItem>
@@ -269,7 +269,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/messages">
                 <ListItem
                   mode={mode}
-                  className={current === 'messages' ? 'active' : ''}
+                  className={current === "messages" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faEnvelope} /> All Messages
                 </ListItem>
@@ -277,7 +277,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/allreturns">
                 <ListItem
                   mode={mode}
-                  className={current === 'allreturns' ? 'active' : ''}
+                  className={current === "allreturns" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faArrowRotateLeft} />
                   Return Querries
@@ -286,7 +286,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/logreturns">
                 <ListItem
                   mode={mode}
-                  className={current === 'logreturns' ? 'active' : ''}
+                  className={current === "logreturns" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faArrowRotateLeft} />
                   All Logged Returns
@@ -296,7 +296,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/payments">
                 <ListItem
                   mode={mode}
-                  className={current === 'payments' ? 'active' : ''}
+                  className={current === "payments" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faMoneyBill} />
                   Payments
@@ -305,7 +305,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/transactionlist">
                 <ListItem
                   mode={mode}
-                  className={current === 'transactionlist' ? 'active' : ''}
+                  className={current === "transactionlist" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faMoneyBill} />
                   All Transactions
@@ -314,7 +314,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/newsletter">
                 <ListItem
                   mode={mode}
-                  className={current === 'newsletter' ? 'active' : ''}
+                  className={current === "newsletter" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faMoneyBill} />
                   Collected Email
@@ -323,7 +323,7 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/otherbrand">
                 <ListItem
                   mode={mode}
-                  className={current === 'otherbrand' ? 'active' : ''}
+                  className={current === "otherbrand" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faQuestionCircle} />
                   Other brands
@@ -332,13 +332,13 @@ export default function Sidebar({ current }) {
               <Link to="/dashboard/contact">
                 <ListItem
                   mode={mode}
-                  className={current === 'contact' ? 'active' : ''}
+                  className={current === "contact" ? "active" : ""}
                 >
                   <FontAwesomeIcon icon={faEnvelope} />
                   Contact Us
                   {contactNotification.length > 0 && (
                     <Badge
-                      style={{ top: '50%', transform: 'translateY(-50%)' }}
+                      style={{ top: "50%", transform: "translateY(-50%)" }}
                     >
                       <span>{contactNotification.length}</span>
                     </Badge>
@@ -349,16 +349,16 @@ export default function Sidebar({ current }) {
           </Menu>
         )}
         <Menu>
-          <Title>Notification</Title>
+          <Title>Chat & Info</Title>
           <List>
             <Link to="/messages">
               <ListItem
-                className={current === 'message' ? 'active' : ''}
+                className={current === "message" ? "active" : ""}
                 mode={mode}
               >
                 <FontAwesomeIcon icon={faMessage} /> Messages
                 {messageNotification.length > 0 && (
-                  <Badge style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <Badge style={{ top: "50%", transform: "translateY(-50%)" }}>
                     <span>{messageNotification.length}</span>
                   </Badge>
                 )}
@@ -367,7 +367,7 @@ export default function Sidebar({ current }) {
             <Link to="/articles">
               <ListItem
                 mode={mode}
-                className={current === 'support' ? 'active' : ''}
+                className={current === "support" ? "active" : ""}
               >
                 <FontAwesomeIcon icon={faComment} /> Support Center
               </ListItem>
