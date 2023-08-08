@@ -588,7 +588,6 @@ const reducer = (state, action) => {
   }
 };
 
-let sizes = [];
 let tags = [];
 
 const color1 = [
@@ -624,6 +623,7 @@ export default function NewProduct() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const productId = sp.get("id");
+  const [sizes, setSizes] = useState([]);
   const [validated, setValidated] = useState(false);
   const [formError, setFormError] = useState("");
   const [deliveryOption, setDeliveryOption] = useState([
@@ -684,7 +684,7 @@ export default function NewProduct() {
             discount: data.actualPrice,
           }));
           setDeliveryOption(data.deliveryOption);
-          sizes = data.sizes;
+          setSizes(data.sizes);
           tags = data.tags;
         } catch (err) {
           console.log(getError(err));
@@ -731,19 +731,19 @@ export default function NewProduct() {
       });
       return;
     }
-    const exist = sizes.filter((s) => {
-      return s.size === sizenow;
-    });
-    if (exist.length > 0) {
-      const newsizes = sizes.filter((s) => {
-        return s.size !== sizenow;
-      });
-      sizes = newsizes;
+
+    const exist = sizes.some((s) => s.size === sizenow);
+
+    if (exist) {
+      const newSizes = sizes.filter((s) => s.size !== sizenow);
+      setSizes(newSizes);
     } else {
-      sizes.push({ size: sizenow, value: "1" });
+      setSizes((prevSizes) => [...prevSizes, { size: sizenow, value: "1" }]);
     }
+
     setInput((prev) => ({ ...prev, selectedSize: "" }));
   };
+
   const handleTags = (tag) => {
     if (tag.includes(" ")) {
       ctxDispatch({
@@ -944,16 +944,25 @@ export default function NewProduct() {
   };
 
   const [currentSizeValue, setCurrentSizeValue] = useState("");
+
   const smallSizeHandler = (label, value) => {
-    const sizeIndex = sizes.findIndex((x) => x.size === label);
-    sizes[sizeIndex].value = value;
+    setSizes((prevSizes) => {
+      const sizeIndex = prevSizes.findIndex((x) => x.size === label);
+      if (sizeIndex !== -1) {
+        const updatedSizes = [...prevSizes];
+        updatedSizes[sizeIndex].value = value;
+        return updatedSizes;
+      }
+      return prevSizes;
+    });
     setCurrentSizeValue(value);
   };
+
   const deleteSizeHandler = (label) => {
     const newsizes = sizes.filter((s) => {
       return s.size !== label;
     });
-    sizes = newsizes;
+    setSizes(newsizes);
   };
 
   const videouploadHandler = async (e) => {
@@ -1610,7 +1619,7 @@ export default function NewProduct() {
                 mode={mode}
                 checked={addSize}
                 onChange={(e) => {
-                  sizes = [];
+                  setSizes([]);
                   setAddSize(e.target.checked);
                 }}
               />

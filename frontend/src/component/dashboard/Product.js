@@ -47,6 +47,16 @@ const AddButton = styled.button`
   cursor: pointer;
 `;
 
+const AddButton2 = styled.button`
+  // width: 80px;
+  border: none;
+  padding: 5px 20px;
+  background: var(--malon-color);
+  color: var(--white-color);
+  border-radius: 0.2rem;
+  cursor: pointer;
+`;
+
 const Top = styled.div`
   display: flex;
   @media (max-width: 992px) {
@@ -621,7 +631,6 @@ const reducer = (state, action) => {
   }
 };
 
-let sizes = [];
 let tags = [];
 
 const color1 = [
@@ -657,6 +666,7 @@ export default function Product() {
   const params = useParams();
   const { id } = params;
   const [product, setProduct] = useState("");
+  const [sizes, setSizes] = useState([]);
 
   const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
     useReducer(reducer, {
@@ -718,7 +728,7 @@ export default function Product() {
         setPrice(data.price);
         setDiscount(data.actualPrice);
         setDeliveryOption(data.deliveryOption);
-        sizes = data.sizes;
+        setSizes(data.sizes);
         tags = data.tags;
         setInput(data);
       };
@@ -827,7 +837,7 @@ export default function Product() {
           category: input.category,
           brand: input.brand,
           specification: input.specification,
-          sizes: sizes,
+          sizes,
           description: input.description,
           condition: input.condition,
           color: input.color,
@@ -927,8 +937,15 @@ export default function Product() {
   const [currentImage, setCurrentImage] = useState("image1");
 
   const smallSizeHandler = (label, value) => {
-    const sizeIndex = sizes.findIndex((x) => x.size === label);
-    sizes[sizeIndex].value = value;
+    setSizes((prevSizes) => {
+      const sizeIndex = prevSizes.findIndex((x) => x.size === label);
+      if (sizeIndex !== -1) {
+        const updatedSizes = [...prevSizes];
+        updatedSizes[sizeIndex].value = value;
+        return updatedSizes;
+      }
+      return prevSizes;
+    });
   };
 
   const sizeHandler = (sizenow) => {
@@ -943,17 +960,16 @@ export default function Product() {
       });
       return;
     }
-    const exist = sizes.filter((s) => {
-      return s.size === sizenow;
-    });
-    if (exist.length > 0) {
-      const newsizes = sizes.filter((s) => {
-        return s.size !== sizenow;
-      });
-      sizes = newsizes;
+
+    const exist = sizes.some((s) => s.size === sizenow);
+
+    if (exist) {
+      const newSizes = sizes.filter((s) => s.size !== sizenow);
+      setSizes(newSizes);
     } else {
-      sizes.push({ size: sizenow, value: "1" });
+      setSizes((prevSizes) => [...prevSizes, { size: sizenow, value: "1" }]);
     }
+
     setInput((prev) => ({ ...prev, selectedSize: "" }));
   };
 
@@ -1072,6 +1088,38 @@ export default function Product() {
     return ((parseInt(price) - parseInt(discount)) / parseInt(price)) * 100;
   };
 
+  const notAvailable = async () => {
+    try {
+      const { data } = await axios.put(
+        `/api/products/${id}/not-available`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      const updatedProduct = data;
+      setProduct(updatedProduct);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Marked as no longer available",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
   return (
     <ProductC>
       <ProductTitleCont>
@@ -1080,6 +1128,7 @@ export default function Product() {
           <AddButton>Create</AddButton>
         </Link>
       </ProductTitleCont>
+      <AddButton2 onClick={notAvailable}>No Longer Available</AddButton2>
       <Top>
         <TopLeft>
           <Chart title="Sales Performance" data={productData} dataKey="uv" />
@@ -1776,7 +1825,7 @@ export default function Product() {
                 mode={mode}
                 checked={addSize}
                 onChange={(e) => {
-                  sizes = [];
+                  setSizes([]);
                   setAddSize(e.target.checked);
                 }}
               />

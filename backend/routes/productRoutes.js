@@ -1,22 +1,22 @@
-import express from 'express';
-import Product from '../models/productModel.js';
-import User from '../models/userModel.js';
+import express from "express";
+import Product from "../models/productModel.js";
+import User from "../models/userModel.js";
 import {
   isAuth,
   isAdmin,
   isSellerOrAdmin,
   isSeller,
   slugify,
-} from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import RecentView from '../models/recentViewModel.js';
+} from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import RecentView from "../models/recentViewModel.js";
 
 const productRouter = express.Router();
 
 // get all product
 
-productRouter.get('/:region/all', async (req, res) => {
-  console.log('fetching...');
+productRouter.get("/:region/all", async (req, res) => {
+  console.log("fetching...");
   const { query } = req;
   const page = query.page || 1;
   const pageSize = query.pageSize || PAGE_SIZE;
@@ -25,13 +25,13 @@ productRouter.get('/:region/all', async (req, res) => {
     .skip(pageSize * (page - 1))
     .sort({ createdAt: -1 })
     .limit(pageSize)
-    .populate('seller', '_id username');
-  console.log('products', page);
+    .populate("seller", "_id username");
+  console.log("products", page);
   res.send(products);
 });
 
 productRouter.post(
-  '/:region',
+  "/:region",
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -77,7 +77,7 @@ productRouter.post(
         image: image1,
         images: images ? images : [],
         tags,
-        video: video ? video : '',
+        video: video ? video : "",
         price,
         actualPrice: discount,
         product,
@@ -86,12 +86,12 @@ productRouter.post(
         category,
         subCategory,
         shippingLocation: location,
-        brand: brand ? brand : 'other',
+        brand: brand ? brand : "other",
         specification,
         condition,
         sizes: sizes,
         deliveryOption,
-        keyFeatures: feature ? feature : '',
+        keyFeatures: feature ? feature : "",
         rating: 0,
         numReviews: 0,
         description,
@@ -111,13 +111,13 @@ productRouter.post(
       createdProduct.productId = createdProduct._id.toString();
       await createdProduct.save();
 
-      res.send({ message: 'Product Created', createdProduct });
+      res.send({ message: "Product Created", createdProduct });
     } catch (err) {
-      if (err.name === 'MongoServerError' && err.code === 11000) {
+      if (err.name === "MongoServerError" && err.code === 11000) {
         // Duplicate username
         return res.status(500).send({
           succes: false,
-          message: 'Product with this name already exist!',
+          message: "Product with this name already exist!",
         });
       }
 
@@ -127,20 +127,20 @@ productRouter.post(
 );
 
 productRouter.put(
-  '/:id',
+  "/:id",
   isAuth,
   isSellerOrAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
-    const product = await Product.findById(productId).populate('seller', '_id');
+    const product = await Product.findById(productId).populate("seller", "_id");
     const slugName = slugify(req.body.name);
     const images = [req.body.image2, req.body.image3, req.body.image4];
     const countInStock = req.body.sizes.reduce(
       (a, b) => (a = a + Number(b.value)),
       0
     );
-    const useractive = () => (req.body.active === 'yes' ? true : false);
-    const userbadge = () => (req.body.badge === 'yes' ? true : false);
+    const useractive = () => (req.body.active === "yes" ? true : false);
+    const userbadge = () => (req.body.badge === "yes" ? true : false);
     if (product.seller._id.toString() === req.user._id || req.user.isAdmin) {
       if (product && !product.sold) {
         product.name = req.body.name || product.name;
@@ -165,21 +165,21 @@ productRouter.put(
           req.body.deliveryOption || product.deliveryOption;
         product.color = req.body.color || product.color;
         product.badge = req.user.isAdmin
-          ? req.body.badge === ''
+          ? req.body.badge === ""
             ? req.user.badge
             : userbadge()
           : product.badge;
         product.active = req.user.isAdmin
-          ? req.body.active === ''
+          ? req.body.active === ""
             ? req.user.active
             : useractive()
           : product.active;
         product.sizes = req.body.sizes || product.sizes;
         await product.save();
-        res.send({ message: 'Product Updated' });
+        res.send({ message: "Product Updated" });
       } else {
-        res.status(404).send({ message: 'Product Not Found' });
-        throw { message: 'Product Not Found' };
+        res.status(404).send({ message: "Product Not Found 1" });
+        throw { message: "Product Not Found" };
       }
     } else {
       res.status(404).send({ message: "You can't edit someelse product" });
@@ -189,7 +189,7 @@ productRouter.put(
 );
 
 productRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -201,21 +201,21 @@ productRouter.delete(
         await view.remove();
       }
 
-      res.send({ message: 'Product Delected' });
+      res.send({ message: "Product Delected" });
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.post(
-  '/:id/reviews',
+  "/:id/reviews",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId).populate(
-      'reviews',
-      'usernsme image'
+      "reviews",
+      "usernsme image"
     );
     if (product) {
       if (product.seller.toString() === req.user._id) {
@@ -226,7 +226,7 @@ productRouter.post(
       if (product.reviews.find((x) => x.name === req.user.username)) {
         return res
           .status(400)
-          .send({ message: 'You already submitted a review' });
+          .send({ message: "You already submitted a review" });
       }
       if (!product.userBuy.includes(req.user._id)) {
         return;
@@ -248,19 +248,19 @@ productRouter.post(
       const updatedProduct = await product.save();
 
       res.status(201).send({
-        message: 'Review Created',
+        message: "Review Created",
         review: updatedProduct.reviews[updatedProduct.reviews.length - 1],
         numReviews: product.numReviews,
         rating: product.rating,
       });
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.delete(
-  '/:id/reviews/:reviewId',
+  "/:id/reviews/:reviewId",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -280,19 +280,19 @@ productRouter.delete(
       const updatedProduct = await product.save();
 
       res.status(201).send({
-        message: 'Review Deleted',
+        message: "Review Deleted",
         reviews: updatedProduct.reviews,
         numReviews: product.numReviews,
         rating: product.rating,
       });
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.put(
-  '/:id/save',
+  "/:id/save",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
@@ -305,50 +305,50 @@ productRouter.put(
           const updatedUser = await user.save();
 
           res.status(201).send({
-            message: 'Product removed from wishlist',
+            message: "Product removed from wishlist",
             user: updatedUser,
-            status: 'visible1 error',
+            status: "visible1 error",
           });
         } else {
           user.saved.push(productId);
           const updatedUser = await user.save();
           res.status(201).send({
-            message: 'Product added to wishlist',
+            message: "Product added to wishlist",
             user: updatedUser,
-            status: 'visible1 success',
+            status: "visible1 success",
           });
         }
       } else {
         res.status(404).send({
-          message: 'you must login to like product',
+          message: "you must login to like product",
         });
       }
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.put(
-  '/:id/unsave',
+  "/:id/unsave",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).send({ message: 'Product Not Found' });
+      return res.status(404).send({ message: "Product Not Found" });
     }
 
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).send({
-        message: 'You must log in to save to the wishlist',
+        message: "You must log in to save to the wishlist",
       });
     }
 
     if (!user.saved.includes(product._id)) {
       return res.status(201).send({
-        message: 'Product is not saved in the wishlist',
+        message: "Product is not saved in the wishlist",
       });
     }
 
@@ -356,24 +356,24 @@ productRouter.put(
     const updatedUser = await user.save();
 
     res.status(201).send({
-      message: 'Product removed from the wishlist',
+      message: "Product removed from the wishlist",
       user: updatedUser,
-      status: 'visible1 error',
+      status: "visible1 error",
     });
   })
 );
 
 productRouter.put(
-  '/:id/likes',
+  "/:id/likes",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId)
       .populate(
-        'seller',
-        'username rebundle email image sold slug rating numReviews address region lastName firstName badge'
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
       )
-      .populate('reviews.name', 'username image');
+      .populate("reviews.name", "username image");
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
@@ -381,7 +381,7 @@ productRouter.put(
 
         const updatedProduct = await product.save();
         res.status(201).send({
-          message: 'Liked Product',
+          message: "Liked Product",
           product: updatedProduct,
         });
 
@@ -389,64 +389,64 @@ productRouter.put(
         const newuser = await user.save();
       } else {
         res.status(404).send({
-          message: 'you must login to like product',
+          message: "you must login to like product",
         });
       }
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.put(
-  '/:id/shares',
+  "/:id/shares",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId)
       .populate(
-        'seller',
-        'username rebundle email image sold slug rating numReviews address region lastName firstName badge'
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
       )
-      .populate('reviews.name', 'username image');
+      .populate("reviews.name", "username image");
     if (product) {
       const exist = product.shares.filter(
         (x) => x._id.toString() === req.user._id
       );
       if (exist.length > 0) {
-        res.status(500).send({ message: 'Already shared product' });
+        res.status(500).send({ message: "Already shared product" });
       } else {
         product.shares.push(req.user._id);
         const updatedProduct = await product.save();
         res.status(200).send({
-          message: 'Product Shared',
+          message: "Product Shared",
           product: updatedProduct,
         });
       }
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.put(
-  '/:id/unlikes',
+  "/:id/unlikes",
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId)
       .populate(
-        'seller',
-        'username rebundle email image sold slug rating numReviews address region lastName firstName badge'
+        "seller",
+        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
       )
-      .populate('reviews.name', 'username image');
+      .populate("reviews.name", "username image");
     if (product) {
       const user = await User.findById(req.user._id);
       if (user) {
         product.likes.pull(req.user._id);
         const updatedProduct = await product.save();
         res.status(201).send({
-          message: 'Unliked Product',
+          message: "Unliked Product",
           product: updatedProduct,
         });
 
@@ -454,17 +454,17 @@ productRouter.put(
         await user.save();
       } else {
         res.status(404).send({
-          message: 'you must login to like product',
+          message: "you must login to like product",
         });
       }
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
 
 productRouter.put(
-  '/:id/viewcount',
+  "/:id/viewcount",
   expressAsyncHandler(async (req, res) => {
     try {
       const productId = req.params.id;
@@ -473,7 +473,7 @@ productRouter.put(
       const product = await Product.findById(productId);
 
       if (!product) {
-        return res.status(404).send({ message: 'Product Not Found' });
+        return res.status(404).send({ message: "Product Not Found" });
       }
 
       const currentTime = new Date();
@@ -489,15 +489,47 @@ productRouter.put(
         await product.save();
 
         res.status(200).send({
-          message: 'Product Viewed',
+          message: "Product Viewed",
           product: product,
         });
       } else {
-        res.status(400).send({ message: 'Already viewed product' });
+        res.status(400).send({ message: "Already viewed product" });
       }
     } catch (error) {
-      res.status(500).send({ message: 'Internal server error' });
+      res.status(500).send({ message: "Internal server error" });
       console.log(error);
+    }
+  })
+);
+
+productRouter.put(
+  "/:id/not-available",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    console.log("Marking as sold");
+    const { id } = req.params;
+
+    try {
+      const product = await Product.findById(id).populate("seller", "username");
+
+      if (!product) {
+        return res.status(404).send({ error: "Product not found" });
+      }
+
+      if (product.seller.toString() !== req.user._id.toString()) {
+        return res.status(405).send({ error: "Not Authorized" });
+      }
+
+      product.countInStock = 0;
+      product.sizes = [];
+
+      const updatedProduct = await product.save();
+
+      res.status(200).send(updatedProduct);
+    } catch (error) {
+      res
+        .status(500)
+        .send({ error: "An error occurred while updating the product" });
     }
   })
 );
@@ -507,7 +539,7 @@ const PAGE_SIZE = 20;
 // get all Product with pagination
 
 productRouter.get(
-  '/:region/admin',
+  "/:region/admin",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -518,19 +550,19 @@ productRouter.get(
     const searchQuery = query.q;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
                 name: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 productId: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
             ],
@@ -553,7 +585,7 @@ productRouter.get(
 );
 
 productRouter.get(
-  '/:region/admin/outofstock',
+  "/:region/admin/outofstock",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -564,19 +596,19 @@ productRouter.get(
     const searchQuery = query.q;
 
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
                 name: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 productId: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
             ],
@@ -604,7 +636,7 @@ productRouter.get(
 // get all Product with pagination for a user
 
 productRouter.get(
-  '/seller/:id',
+  "/seller/:id",
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const page = query.page || 1;
@@ -612,7 +644,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller })
-      .populate('seller', 'username')
+      .populate("seller", "username")
       .skip(pageSize * (page - 1))
       .limit(pageSize);
 
@@ -627,26 +659,26 @@ productRouter.get(
 );
 
 productRouter.get(
-  '/seller/search/:id',
+  "/seller/search/:id",
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q;
     const page = query.page || 1;
     const pageSize = query.pageSize || PAGE_SIZE;
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
                 name: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 productId: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
             ],
@@ -655,7 +687,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller, ...queryFilter })
-      .populate('seller', 'username image')
+      .populate("seller", "username image")
       .sort({ createdAt: -1 })
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -671,83 +703,83 @@ productRouter.get(
 );
 
 productRouter.get(
-  '/:region/search',
+  "/:region/search",
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const { query } = req;
     const pageSize = query.pageSize || PAGE_SIZE;
     const page = query.page || 1;
-    const category = query.category || '';
-    const brand = query.brand || '';
-    const maxPrice = query.maxPrice || '';
-    const minPrice = query.minPrice || '';
-    const color = query.color || '';
-    const size = query.size || '';
-    const rating = query.rating || '';
-    const order = query.order || '';
-    const condition = query.condition || '';
-    const deal = query.deal || '';
-    const shipping = query.shipping || '';
-    const availability = query.availability || '';
-    const type = query.type || '';
-    const pattern = query.pattern || '';
-    const searchQuery = query.query || '';
+    const category = query.category || "";
+    const brand = query.brand || "";
+    const maxPrice = query.maxPrice || "";
+    const minPrice = query.minPrice || "";
+    const color = query.color || "";
+    const size = query.size || "";
+    const rating = query.rating || "";
+    const order = query.order || "";
+    const condition = query.condition || "";
+    const deal = query.deal || "";
+    const shipping = query.shipping || "";
+    const availability = query.availability || "";
+    const type = query.type || "";
+    const pattern = query.pattern || "";
+    const searchQuery = query.query || "";
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
                 name: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 sellerName: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 brand: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 color: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 category: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 subCategory: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 product: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 material: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
               {
                 tags: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
             ],
@@ -755,26 +787,26 @@ productRouter.get(
         : {};
 
     const availabilityFilter =
-      availability && availability === 'Sold Items' ? { sold: true } : {};
+      availability && availability === "Sold Items" ? { sold: true } : {};
     const categoryFilter =
-      category && category !== 'all' ? { subCategory: category } : {};
-    const brandFilter = brand && brand !== 'all' ? { brand } : {};
-    const colorFilter = color && color !== 'all' ? { color } : {};
+      category && category !== "all" ? { subCategory: category } : {};
+    const brandFilter = brand && brand !== "all" ? { brand } : {};
+    const colorFilter = color && color !== "all" ? { color } : {};
     const dealFilter =
-      deal && deal === 'all'
+      deal && deal === "all"
         ? {}
-        : deal === 'On Sale Now'
+        : deal === "On Sale Now"
         ? { countInStock: { $gt: 0 } }
         : {};
-    const shippingFilter = shipping && shipping !== 'all' ? { shipping } : {};
-    const typeFilter = type && type !== 'all' ? { type } : {};
+    const shippingFilter = shipping && shipping !== "all" ? { shipping } : {};
+    const typeFilter = type && type !== "all" ? { type } : {};
     const patternFilter =
-      pattern && pattern !== 'all' ? { material: pattern } : {};
+      pattern && pattern !== "all" ? { material: pattern } : {};
     const conditionFilter =
-      condition && condition !== 'all' ? { condition } : {};
-    const sizeFilter = size && size !== 'all' ? { 'sizes.size': size } : {};
+      condition && condition !== "all" ? { condition } : {};
+    const sizeFilter = size && size !== "all" ? { "sizes.size": size } : {};
     const ratingFilter =
-      rating && rating !== 'all'
+      rating && rating !== "all"
         ? {
             rating: {
               $gte: Number(rating),
@@ -788,19 +820,19 @@ productRouter.get(
       },
     };
     const sortOrder =
-      order === 'featured'
+      order === "featured"
         ? { featured: -1 }
-        : order === 'lowest'
+        : order === "lowest"
         ? { price: 1 }
-        : order === 'highest'
+        : order === "highest"
         ? { price: -1 }
-        : order === 'toprated'
+        : order === "toprated"
         ? { raing: -1 }
-        : order === 'newest'
+        : order === "newest"
         ? { creatAt: -1 }
-        : order === 'likes'
+        : order === "likes"
         ? { likes: -1 }
-        : order === 'relevance'
+        : order === "relevance"
         ? { updatedAt: -1 }
         : { _id: -1 };
     const products = await Product.find({
@@ -852,37 +884,37 @@ productRouter.get(
 );
 
 productRouter.get(
-  '/categories',
+  "/categories",
   expressAsyncHandler(async (req, res) => {
-    const categories = await Product.find().distinct('category');
+    const categories = await Product.find().distinct("category");
     res.send(categories);
   })
 );
 
-productRouter.get('/slug/:slug', async (req, res) => {
+productRouter.get("/slug/:slug", async (req, res) => {
   const product = await Product.findOne({ slug: req.params.slug })
     .populate(
-      'seller',
-      'username rebundle email image sold slug rating numReviews address region lastName firstName badge'
+      "seller",
+      "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
     )
-    .populate('reviews.name', 'username image');
+    .populate("reviews.name", "username image");
   if (product) {
     res.send(product);
   } else {
-    res.status(404).send({ message: 'SORRY😢 PRODUCT NOT LONGER AVAILABLE' });
+    res.status(404).send({ message: "SORRY😢 PRODUCT NOT LONGER AVAILABLE" });
   }
 });
 
-productRouter.get('/:id', async (req, res) => {
-  console.log('checking');
+productRouter.get("/:id", async (req, res) => {
+  console.log("checking");
   const product = await Product.findById(req.params.id).populate(
-    'seller',
-    'username'
+    "seller",
+    "username"
   );
   if (product) {
     res.send(product);
   } else {
-    res.status(404).send({ message: 'Product Not Found' });
+    res.status(404).send({ message: "Product Not Found" });
   }
 });
 
