@@ -36,9 +36,9 @@ const emailLists = [
     template: "challenging",
   },
   {
-    name: 'Exciting announcement',
-    subject: 'EXCITING ANNOUNCEMENT',
-    template: 'exiciting',
+    name: "Exciting announcement",
+    subject: "EXCITING ANNOUNCEMENT",
+    template: "exiciting",
   },
 ];
 
@@ -179,6 +179,15 @@ newsletterRouter.post(
       user.newsletter = true;
       await user.save();
     }
+
+    await sendEmail({
+      to: email,
+      subject: "WELCOME TO REPEDDLE NEWSLATTER",
+      template: "newsletter",
+      context: {
+        url: region === "NGN" ? "com" : "co.za",
+      },
+    });
 
     res.status(201).send(newsletter);
   })
