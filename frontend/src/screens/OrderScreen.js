@@ -1,49 +1,49 @@
-import axios from 'axios';
+import axios from "axios";
 import React, {
   useContext,
   useEffect,
   useReducer,
   useRef,
   useState,
-} from 'react';
-import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Card from 'react-bootstrap/Card';
-import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import { Store } from '../Store';
+} from "react";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Card from "react-bootstrap/Card";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import { Store } from "../Store";
 import {
   deliveryNumber,
   displayDeliveryStatus,
   getError,
   timeDifference,
-} from '../utils';
-import ListGroup from 'react-bootstrap/ListGroup';
-import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import moment from 'moment';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { useReactToPrint } from 'react-to-print';
-import ModelLogin from '../component/ModelLogin';
-import Return from '../component/Return';
-import { socket } from '../App';
-import Model from '../component/Model';
-import DeliveryHistory from '../component/DeliveryHistory';
+} from "../utils";
+import ListGroup from "react-bootstrap/ListGroup";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import moment from "moment";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useReactToPrint } from "react-to-print";
+import ModelLogin from "../component/ModelLogin";
+import Return from "../component/Return";
+import { socket } from "../App";
+import Model from "../component/Model";
+import DeliveryHistory from "../component/DeliveryHistory";
 import {
   faCheck,
   faCommentsDollar,
   faSquareCheck,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Main = styled.div`
   margin: 20px;
   padding: 20px 5vw 0 5vw;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin: 10px;
     padding: 10px 5px 0 5px;
@@ -98,7 +98,7 @@ const SumaryContDetails = styled.div`
   margin-bottom: 15px;
   height: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   @media (max-width: 992px) {
     padding: 10px 15px;
@@ -114,7 +114,7 @@ const SumaryCont = styled.div`
   padding: 15px 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   @media print {
     background: white;
@@ -282,9 +282,9 @@ const AfterActionCont = styled.div`
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid grey;
   border-radius: 0.2rem;
   height: 40px;
@@ -345,12 +345,12 @@ const TrackingCont = styled.div`
   display: flex;
   align-items: center;
   & svg {
-    color: var(--orange-color);
+    color: white;
     height: 40px;
     width: 40px;
     cursor: pointer;
     &:hover {
-      color: var(--malon-color);
+      background: var(--malon-color);
     }
   }
 `;
@@ -394,42 +394,42 @@ const IconCont = styled.div`
   cursor: pointer;
   color: white;
   &:hover {
-    color: var(--malon-color);
+    background: var(--malon-color);
   }
 `;
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'FETCH_REQUEST':
-      return { ...state, loading: true, error: '' };
-    case 'FETCH_SUCCESS':
+    case "FETCH_REQUEST":
+      return { ...state, loading: true, error: "" };
+    case "FETCH_SUCCESS":
       return {
         ...state,
         loading: false,
         order: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_FAIL':
+    case "FETCH_FAIL":
       return { ...state, loading: false, error: action.payload };
-    case 'PAY_REQUEST':
+    case "PAY_REQUEST":
       return { ...state, loadingPay: true };
-    case 'PAY_SUCCESS':
+    case "PAY_SUCCESS":
       return { ...state, loadingPay: false, successPay: true };
-    case 'PAY_FAIL':
+    case "PAY_FAIL":
       return { ...state, loadingPay: false };
-    case 'PAY_RESET':
+    case "PAY_RESET":
       return { ...state, loadingPay: false, successPay: false };
-    case 'DELIVER_REQUEST':
+    case "DELIVER_REQUEST":
       return { ...state, loadingDeliver: true };
-    case 'DELIVER_SUCCESS':
+    case "DELIVER_SUCCESS":
       return { ...state, loadingDeliver: false, successDeliver: true };
-    case 'DELIVER_FAIL':
+    case "DELIVER_FAIL":
       return {
         ...state,
         loadingDeliver: false,
         errorDeliver: action.payload,
       };
-    case 'DELIVER_RESET':
+    case "DELIVER_RESET":
       return { ...state, loadingDeliver: false, successDeliver: false };
 
     default:
@@ -454,7 +454,7 @@ export default function OrderScreen() {
   ] = useReducer(reducer, {
     loading: true,
     order: {},
-    error: '',
+    error: "",
     successPay: false,
     loadingPay: false,
   });
@@ -472,7 +472,7 @@ export default function OrderScreen() {
   const [showDeliveryHistory, setShowDeliveryHistory] = useState(false);
   const [currentDeliveryHistory, setCurrentDeliveryHistory] = useState(0);
   const [enterwaybil, setEnterwaybil] = useState(false);
-  const [waybillNumber, setWaybillNumber] = useState('');
+  const [waybillNumber, setWaybillNumber] = useState("");
 
   const [afterAction, setAfterAction] = useState(false);
   function createOrder(data, actions) {
@@ -492,7 +492,7 @@ export default function OrderScreen() {
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
       try {
-        dispatch({ type: 'PAY_REQUEST' });
+        dispatch({ type: "PAY_REQUEST" });
         const { data } = await axios.put(
           `/api/orders/${order._id}/pay`,
           details,
@@ -504,10 +504,10 @@ export default function OrderScreen() {
               }
             : {}
         );
-        dispatch({ type: 'PAY_SUCCESS', payload: data });
-        toast.success('Order is paid');
+        dispatch({ type: "PAY_SUCCESS", payload: data });
+        toast.success("Order is paid");
       } catch (err) {
-        dispatch({ type: 'PAY_FAIL', payload: getError(err) });
+        dispatch({ type: "PAY_FAIL", payload: getError(err) });
         toast.error(getError(err));
       }
     });
@@ -520,7 +520,7 @@ export default function OrderScreen() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        dispatch({ type: 'FETCH_REQUEST' });
+        dispatch({ type: "FETCH_REQUEST" });
         const { data } = await axios.get(
           `/api/orders/${orderId}`,
           userInfo
@@ -537,9 +537,9 @@ export default function OrderScreen() {
             setIsSeller(true);
           }
         }
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
-        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
     if (
@@ -550,15 +550,15 @@ export default function OrderScreen() {
     ) {
       fetchOrder();
       if (successPay) {
-        dispatch({ type: 'PAY_RESET' });
+        dispatch({ type: "PAY_RESET" });
       }
       if (successDeliver) {
-        dispatch({ type: 'DELIVER_RESET' });
+        dispatch({ type: "DELIVER_RESET" });
       }
     } else {
       const loadPaypalScript = async () => {
         const { data: clientId } = await axios.get(
-          '/api/keys/paypal',
+          "/api/keys/paypal",
           userInfo
             ? {
                 headers: {
@@ -568,13 +568,13 @@ export default function OrderScreen() {
             : {}
         );
         paypalDispatch({
-          type: 'resetOptions',
+          type: "resetOptions",
           value: {
-            'client-id': clientId,
-            currency: 'USD',
+            "client-id": clientId,
+            currency: "USD",
           },
         });
-        paypalDispatch({ type: 'useLoadingStatus', value: 'pending' });
+        paypalDispatch({ type: "useLoadingStatus", value: "pending" });
       };
       loadPaypalScript();
     }
@@ -590,7 +590,7 @@ export default function OrderScreen() {
 
   async function deliverOrderHandler(deliveryStatus, productId, orderitem) {
     try {
-      dispatch({ type: 'DELIVER_REQUEST' });
+      dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
         `/api/orders/${order._id}/deliver/${productId}`,
         { deliveryStatus, trackingNumber: waybillNumber },
@@ -598,68 +598,68 @@ export default function OrderScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'DELIVER_SUCCESS' });
-      if (deliveryStatus !== 'Return Logged') {
+      dispatch({ type: "DELIVER_SUCCESS" });
+      if (deliveryStatus !== "Return Logged") {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
             message:
-              deliveryStatus === 'Refunded'
-                ? 'Order payment refunded'
-                : deliveryStatus === 'Payment to Seller Initiated'
-                ? 'Payment to Seller Initiated'
-                : 'Delivery status updated',
+              deliveryStatus === "Refunded"
+                ? "Order payment refunded"
+                : deliveryStatus === "Payment to Seller Initiated"
+                ? "Payment to Seller Initiated"
+                : "Delivery status updated",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
       }
-      if (deliveryStatus === 'Received' || deliveryStatus === 'Return Logged') {
-        socket.emit('post_data', {
+      if (deliveryStatus === "Received" || deliveryStatus === "Return Logged") {
+        socket.emit("post_data", {
           userId: orderitem.seller._id,
           itemId: order._id,
-          notifyType: 'delivery',
+          notifyType: "delivery",
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
-          userImage: '/images/pimage.png',
-          mobile: { path: 'OrderScreen', id: order._id },
+          userImage: "/images/pimage.png",
+          mobile: { path: "OrderScreen", id: order._id },
         });
       } else {
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: order.user,
           itemId: order._id,
-          notifyType: 'buyerreturn',
+          notifyType: "buyerreturn",
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
-          userImage: '/images/pimage.png',
-          mobile: { path: 'OrderScreen', id: order._id },
+          userImage: "/images/pimage.png",
+          mobile: { path: "OrderScreen", id: order._id },
         });
       }
     } catch (err) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
-      dispatch({ type: 'DELIVER_FAIL' });
+      dispatch({ type: "DELIVER_FAIL" });
     }
   }
 
   const paymentRequest = async (seller, cost, itemCurrency, sellerImage) => {
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: seller,
         amount: (92.1 / 100) * cost,
         meta: {
-          Type: 'Order Completed',
-          from: 'Wallet',
-          to: 'Wallet',
-          typeName: 'Order',
+          Type: "Order Completed",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
           id: orderId,
           currency: itemCurrency,
         },
@@ -668,13 +668,13 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
-      userId: 'Admin',
+    socket.emit("post_data", {
+      userId: "Admin",
       itemId: paymentData._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: `Order Completed`,
       link: `/payment/${paymentData._id}`,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
       userImage: sellerImage,
     });
   };
@@ -686,16 +686,16 @@ export default function OrderScreen() {
 
   const refund = async (product) => {
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: order.user,
         amount:
           Number(product.deliverySelect.cost) + Number(product.actualPrice),
         meta: {
-          Type: 'Order Refund',
-          from: 'Wallet',
-          to: 'Wallet',
-          typeName: 'Order',
+          Type: "Order Refund",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
           id: orderId,
           currency: product.currency,
         },
@@ -704,50 +704,50 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: order.user,
       itemId: product._id,
-      notifyType: 'refund',
+      notifyType: "refund",
       msg: `Purchased Order Not Processed`,
       link: `/order/${order._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'OrderScreen', id: order._id },
+      mobile: { path: "OrderScreen", id: order._id },
     });
 
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: product.seller._id,
       itemId: product._id,
-      notifyType: 'refund',
+      notifyType: "refund",
       msg: `Purchased Order Refunded`,
       link: `/order/${order._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'OrderScreen', id: order._id },
+      mobile: { path: "OrderScreen", id: order._id },
     });
 
-    socket.emit('post_data', {
-      userId: 'Admin',
+    socket.emit("post_data", {
+      userId: "Admin",
       itemId: product._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: `Order refund initiated, please confirm`,
       link: `/payment/${paymentData._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
-    deliverOrderHandler('Refunded', product._id);
+    deliverOrderHandler("Refunded", product._id);
   };
 
   const paySeller = async (product) => {
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: product.seller._id,
         amount: (92.1 / 100) * product.actualPrice,
         meta: {
-          Type: 'Pay Seller',
-          from: 'Wallet',
-          to: 'Wallet',
-          typeName: 'Order',
+          Type: "Pay Seller",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
           id: orderId,
           currency: product.currency,
         },
@@ -756,32 +756,35 @@ export default function OrderScreen() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: userInfo._id,
       itemId: product._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: product.seller._id,
       itemId: product._id,
-      notifyType: 'payseller',
+      notifyType: "payseller",
       msg: `Order Payment Initiated`,
       link: `/order/${order._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
-    deliverOrderHandler('Payment to Seller Initiated', product._id);
+    deliverOrderHandler("Payment to Seller Initiated", product._id);
   };
 
+  const [loadingWaybill, setLoadingWaybill] = useState(false);
   const comfirmWaybill = async (product) => {
     if (!waybillNumber) return;
+    setLoadingWaybill(true);
 
-    await deliverOrderHandler('Dispatched', product._id);
+    await deliverOrderHandler("Dispatched", product._id);
+    setLoadingWaybill(false);
     setEnterwaybil(false);
   };
 
@@ -796,42 +799,42 @@ export default function OrderScreen() {
       )
       .then((response) => {
         // Perform any additional actions after successful response
-        dispatch({ type: 'FETCH_SUCCESS', payload: response.data.savedOrder });
+        dispatch({ type: "FETCH_SUCCESS", payload: response.data.savedOrder });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Hold status updated',
+            message: "Hold status updated",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: product.seller._id,
           itemId: product._id,
-          notifyType: 'hold',
-          msg: `Order ${product.onHold ? 'UnHold' : 'Hold'}`,
+          notifyType: "hold",
+          msg: `Order ${product.onHold ? "UnHold" : "Hold"}`,
           link: `/order/${order._id}`,
           userImage: userInfo.image,
-          mobile: { path: 'OrderScreen', id: order._id },
+          mobile: { path: "OrderScreen", id: order._id },
         });
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: order.buyer,
           itemId: product._id,
-          notifyType: 'hold',
-          msg: `Order ${product.onHold ? 'UnHold' : 'Hold'}`,
+          notifyType: "hold",
+          msg: `Order ${product.onHold ? "UnHold" : "Hold"}`,
           link: `/order/${order._id}`,
           userImage: userInfo.image,
-          mobile: { path: 'OrderScreen', id: order._id },
+          mobile: { path: "OrderScreen", id: order._id },
         });
       })
       .catch((error) => {
         console.error(error);
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
             message: getError(error),
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         // Handle any errors that occur during the request
@@ -850,7 +853,7 @@ export default function OrderScreen() {
       </Helmet>
       <InvoiceLogo src="/images/logo.png" />
       <InvoiceHead>Invoice</InvoiceHead>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Header>Order Details</Header>
         <Print onClick={handlePrint}>Print as Invoice</Print>
       </div>
@@ -860,11 +863,11 @@ export default function OrderScreen() {
 
           <ItemNum>
             {order.orderItems.length} Item
-            {order.orderItems.length > 1 ? 's' : ''}
+            {order.orderItems.length > 1 ? "s" : ""}
           </ItemNum>
           <Date>
-            Placed on{' '}
-            {moment(order.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
+            Placed on{" "}
+            {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
           </Date>
           {/* <Price>
             Total: {currency}
@@ -873,10 +876,10 @@ export default function OrderScreen() {
         </SumaryCont>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginRight: '20px',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginRight: "20px",
           }}
         >
           <Heading>Items in your order</Heading>
@@ -885,11 +888,11 @@ export default function OrderScreen() {
             daydiff(order.createdAt, 13) >= 0 &&
             deliveryNumber(order.deliveryStatus) > 3 && (
               <div
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
                 onClick={() => setShowReturn(true)}
               >
                 <b>Log a return</b>
-                <div style={{ color: 'red' }}>
+                <div style={{ color: "red" }}>
                   {daydiff(order.createdAt, 13)} days left
                 </div>
               </div>
@@ -909,7 +912,7 @@ export default function OrderScreen() {
             orderitem.seller._id === userInfo._id && (
               <SumaryContDetails mode={mode}>
                 <SubSumaryContDetails>
-                  <div style={{ display: 'none' }}>
+                  <div style={{ display: "none" }}>
                     {
                       (itemsPrice =
                         itemsPrice + orderitem.actualPrice * orderitem.quantity)
@@ -920,16 +923,16 @@ export default function OrderScreen() {
                     }
                   </div>
                   <div>
-                    <div style={{ display: 'flex', textAlign: 'center' }}>
+                    <div style={{ display: "flex", textAlign: "center" }}>
                       {displayDeliveryStatus(
-                        orderitem.onHold ? 'Hold' : orderitem.deliveryStatus
+                        orderitem.onHold ? "Hold" : orderitem.deliveryStatus
                       )}
                       <div
                         style={{
-                          color: 'var(--malon-color)',
-                          cursor: 'pointer',
-                          textAlign: 'center',
-                          marginLeft: '15px',
+                          color: "var(--malon-color)",
+                          cursor: "pointer",
+                          textAlign: "center",
+                          marginLeft: "15px",
                         }}
                         onClick={() => {
                           setShowDeliveryHistory(true);
@@ -939,7 +942,7 @@ export default function OrderScreen() {
                         }}
                       >
                         {console.log(
-                          'deliverynumber',
+                          "deliverynumber",
                           orderitem.deliveryStatus,
                           deliveryNumber(orderitem.deliveryStatus)
                         )}
@@ -947,18 +950,18 @@ export default function OrderScreen() {
                       </div>
                     </div>
                     <Name>
-                      On{' '}
+                      On{" "}
                       {moment(orderitem.deliveredAt).format(
-                        'MMMM Do YYYY, h:mm:ss a'
+                        "MMMM Do YYYY, h:mm:ss a"
                       )}
                     </Name>
                   </div>
                   {userInfo &&
                     order.user === userInfo._id &&
-                    orderitem.deliveryStatus === 'Delivered' && (
+                    orderitem.deliveryStatus === "Delivered" && (
                       <Received
                         onClick={() =>
-                          deliverOrderHandler('Received', orderitem._id)
+                          deliverOrderHandler("Received", orderitem._id)
                         }
                       >
                         Comfirm you have recieved order
@@ -967,58 +970,62 @@ export default function OrderScreen() {
                   {userInfo && order && (
                     <SetStatus>
                       {enterwaybil ? (
-                        <TrackingCont>
-                          <TextInput
-                            mode={mode}
-                            placeholder="Enter Tracking number"
-                            value={waybillNumber}
-                            type="text"
-                            onChange={(e) => setWaybillNumber(e.target.value)}
-                          />
-                          <IconCont
-                            style={{ background: 'var(--orange-color)' }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faCheck}
-                              onClick={() => comfirmWaybill(orderitem)}
+                        loadingWaybill ? (
+                          <LoadingBox />
+                        ) : (
+                          <TrackingCont>
+                            <TextInput
+                              mode={mode}
+                              placeholder="Enter Tracking number"
+                              value={waybillNumber}
+                              type="text"
+                              onChange={(e) => setWaybillNumber(e.target.value)}
                             />
-                          </IconCont>
-                        </TrackingCont>
+                            <IconCont
+                              style={{ background: "var(--orange-color)" }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                onClick={() => comfirmWaybill(orderitem)}
+                              />
+                            </IconCont>
+                          </TrackingCont>
+                        )
                       ) : (
                         <>
                           {orderitem.trackingNumber && (
-                            <label style={{ marginRight: '20px' }}>
+                            <label style={{ marginRight: "20px" }}>
                               Tracking Number: {orderitem.trackingNumber}
                             </label>
                           )}
                           <FormControl
                             disabled={
                               orderitem.onHold ||
-                              orderitem.deliveryStatus === 'Received' ||
-                              orderitem.deliveryStatus === 'Return Logged'
+                              orderitem.deliveryStatus === "Received" ||
+                              orderitem.deliveryStatus === "Return Logged"
                             }
                             sx={{
-                              minWidth: '220px',
+                              minWidth: "220px",
                               margin: 0,
-                              borderRadius: '0.2rem',
+                              borderRadius: "0.2rem",
                               border: `1px solid ${
-                                mode === 'pagebodydark'
-                                  ? 'var(--dark-ev4)'
-                                  : 'var(--light-ev4)'
+                                mode === "pagebodydark"
+                                  ? "var(--dark-ev4)"
+                                  : "var(--light-ev4)"
                               }`,
-                              '& .MuiOutlinedInput-root': {
+                              "& .MuiOutlinedInput-root": {
                                 color: `${
-                                  mode === 'pagebodydark'
-                                    ? 'var(--white-color)'
-                                    : 'var(--black-color)'
+                                  mode === "pagebodydark"
+                                    ? "var(--white-color)"
+                                    : "var(--black-color)"
                                 }`,
-                                '&:hover': {
-                                  outline: 'none',
+                                "&:hover": {
+                                  outline: "none",
                                   border: 0,
                                 },
                               },
-                              '& .MuiOutlinedInput-notchedOutline': {
-                                border: '0 !important',
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                border: "0 !important",
                               },
                             }}
                             size="small"
@@ -1026,9 +1033,9 @@ export default function OrderScreen() {
                             <InputLabel
                               sx={{
                                 color: `${
-                                  mode === 'pagebodydark'
-                                    ? 'var(--white-color)'
-                                    : 'var(--black-color)'
+                                  mode === "pagebodydark"
+                                    ? "var(--white-color)"
+                                    : "var(--black-color)"
                                 }`,
                               }}
                               id="deliveryStatus"
@@ -1039,10 +1046,10 @@ export default function OrderScreen() {
                             <Select
                               onChange={(e) => {
                                 if (
-                                  e.target.value === 'Dispatched' &&
+                                  e.target.value === "Dispatched" &&
                                   orderitem.deliverySelect[
-                                    'delivery Option'
-                                  ] !== 'Pick up from Seller'
+                                    "delivery Option"
+                                  ] !== "Pick up from Seller"
                                 ) {
                                   setEnterwaybil(true);
                                 } else {
@@ -1122,8 +1129,8 @@ export default function OrderScreen() {
                           onClick={() => refund(orderitem)}
                           className="btn btn-primary w-100"
                           style={{
-                            background: 'var(--malon-color)',
-                            marginTop: '10px',
+                            background: "var(--malon-color)",
+                            marginTop: "10px",
                           }}
                         >
                           Refund
@@ -1134,11 +1141,11 @@ export default function OrderScreen() {
                         onClick={() => toggleOrderHoldStatus(orderitem)}
                         className="btn btn-primary w-100"
                         style={{
-                          background: 'var(--malon-color)',
-                          marginTop: '10px',
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
                         }}
                       >
-                        {orderitem.onHold ? 'UnHold' : 'Hold'}
+                        {orderitem.onHold ? "UnHold" : "Hold"}
                       </button>
                     )}
                     {userInfo.isAdmin &&
@@ -1148,14 +1155,14 @@ export default function OrderScreen() {
                           onClick={() => {
                             paySeller(orderitem);
                             deliverOrderHandler(
-                              'Payment To Seller Initiated',
+                              "Payment To Seller Initiated",
                               orderitem._id
                             );
                           }}
                           className="btn btn-primary w-100"
                           style={{
-                            background: 'var(--malon-color)',
-                            marginTop: '10px',
+                            background: "var(--malon-color)",
+                            marginTop: "10px",
                           }}
                         >
                           Pay Seller
@@ -1164,18 +1171,18 @@ export default function OrderScreen() {
                   </ActionButton>
                 </DetailButton>
                 {Object.entries(orderitem.deliverySelect).map(([key, value]) =>
-                  key === 'total' ? (
-                    ''
+                  key === "total" ? (
+                    ""
                   ) : (
                     <div
                       style={{
-                        display: 'flex',
-                        textTransform: 'capitalize',
-                        fontSize: '13px',
+                        display: "flex",
+                        textTransform: "capitalize",
+                        fontSize: "13px",
                       }}
                     >
                       <DeliveryKey>{key}:</DeliveryKey>
-                      {key === 'cost' ? (
+                      {key === "cost" ? (
                         <div>
                           {currency}
                           {value}
@@ -1186,7 +1193,7 @@ export default function OrderScreen() {
                     </div>
                   )
                 )}
-                <div style={{ marginTop: '20px' }}>
+                <div style={{ marginTop: "20px" }}>
                   <div>Buyer Information</div>
                   <UserCont>
                     <UserImg src={order.user.image} alt="img" />
@@ -1206,13 +1213,13 @@ export default function OrderScreen() {
                   </UserCont>
                 </div>
                 {userInfo.isAdmin && (
-                  <div style={{ marginTop: '20px' }}>
+                  <div style={{ marginTop: "20px" }}>
                     <div>Seller Information</div>
                     <UserCont>
                       <UserImg src={orderitem.seller.image} alt="img" />
                       <div>
                         <UserName
-                          style={{ color: 'var(--malon-color)' }}
+                          style={{ color: "var(--malon-color)" }}
                           className="link"
                         >
                           <Link to={`/seller/${orderitem.seller._id}`}>
@@ -1223,7 +1230,7 @@ export default function OrderScreen() {
                           <UserName>{orderitem.seller._id}</UserName>
                         )}
                         <UserName>
-                          {orderitem.seller.firstName}{' '}
+                          {orderitem.seller.firstName}{" "}
                           {orderitem.seller.lastNames}
                         </UserName>
                       </div>
@@ -1236,16 +1243,16 @@ export default function OrderScreen() {
             <SumaryContDetails mode={mode}>
               <Cont123>
                 <div>
-                  <div style={{ display: 'flex', textAlign: 'center' }}>
+                  <div style={{ display: "flex", textAlign: "center" }}>
                     {displayDeliveryStatus(
-                      orderitem.onHold ? 'Hold' : orderitem.deliveryStatus
+                      orderitem.onHold ? "Hold" : orderitem.deliveryStatus
                     )}
                     <div
                       style={{
-                        color: 'var(--malon-color)',
-                        cursor: 'pointer',
-                        textAlign: 'center',
-                        marginLeft: '15px',
+                        color: "var(--malon-color)",
+                        cursor: "pointer",
+                        textAlign: "center",
+                        marginLeft: "15px",
                       }}
                       onClick={() => {
                         setShowDeliveryHistory(true);
@@ -1258,25 +1265,25 @@ export default function OrderScreen() {
                     </div>
                   </div>
                   <Name>
-                    On{' '}
+                    On{" "}
                     {moment(orderitem.deliveredAt).format(
-                      'MMMM Do YYYY, h:mm:ss a'
+                      "MMMM Do YYYY, h:mm:ss a"
                     )}
                   </Name>
                 </div>
                 {userInfo &&
                   order.user._id === userInfo._id &&
-                  orderitem.deliveryStatus === 'Delivered' && (
+                  orderitem.deliveryStatus === "Delivered" && (
                     <>
                       <Received
                         onClick={() => {
                           orderitem.onHold
                             ? ctxDispatch({
-                                type: 'SHOW_TOAST',
+                                type: "SHOW_TOAST",
                                 payload: {
-                                  message: 'Order placed on Hold',
+                                  message: "Order placed on Hold",
                                   showStatus: true,
-                                  state1: 'visible1 error',
+                                  state1: "visible1 error",
                                 },
                               })
                             : setAfterAction(true);
@@ -1293,7 +1300,7 @@ export default function OrderScreen() {
                             <Received
                               onClick={() => {
                                 deliverOrderHandler(
-                                  'Received',
+                                  "Received",
                                   orderitem._id,
                                   orderitem
                                 );
@@ -1317,7 +1324,7 @@ export default function OrderScreen() {
                               Log a return
                             </ReturnButton>
                           </AfterAction>
-                          <div style={{ fontSize: '13px', maxWidth: '400px' }}>
+                          <div style={{ fontSize: "13px", maxWidth: "400px" }}>
                             Please inspect your order before confirming receipt.
                             Kindly know that you can't LOG A RETURN after order
                             receipt confirmation. However, you can re-list your
@@ -1328,7 +1335,7 @@ export default function OrderScreen() {
                     </>
                   )}
                 {orderitem.trackingNumber && (
-                  <label style={{ marginRight: '20px' }}>
+                  <label style={{ marginRight: "20px" }}>
                     Tracking Number: {orderitem.trackingNumber}
                   </label>
                 )}
@@ -1361,8 +1368,8 @@ export default function OrderScreen() {
                         onClick={() => refund(orderitem)}
                         className="btn btn-primary w-100"
                         style={{
-                          background: 'var(--malon-color)',
-                          marginTop: '10px',
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
                         }}
                       >
                         Refund
@@ -1373,11 +1380,11 @@ export default function OrderScreen() {
                       onClick={() => toggleOrderHoldStatus(orderitem)}
                       className="btn btn-primary w-100"
                       style={{
-                        background: 'var(--malon-color)',
-                        marginTop: '10px',
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
                       }}
                     >
-                      {orderitem.onHold ? 'UnHold' : 'Hold'}
+                      {orderitem.onHold ? "UnHold" : "Hold"}
                     </button>
                   )}
                   {userInfo.isAdmin &&
@@ -1387,14 +1394,14 @@ export default function OrderScreen() {
                         onClick={() => {
                           paySeller(orderitem);
                           deliverOrderHandler(
-                            'Payment To Seller Initiated',
+                            "Payment To Seller Initiated",
                             orderitem._id
                           );
                         }}
                         className="btn btn-primary w-100"
                         style={{
-                          background: 'var(--malon-color)',
-                          marginTop: '10px',
+                          background: "var(--malon-color)",
+                          marginTop: "10px",
                         }}
                       >
                         Pay Seller
@@ -1403,19 +1410,19 @@ export default function OrderScreen() {
                 </ActionButton>
               </DetailButton>
               {Object.entries(orderitem.deliverySelect).map(([key, value]) =>
-                key === 'total' ? (
-                  ''
+                key === "total" ? (
+                  ""
                 ) : (
                   <div
                     style={{
-                      display: 'flex',
-                      textTransform: 'capitalize',
-                      fontSize: '13px',
+                      display: "flex",
+                      textTransform: "capitalize",
+                      fontSize: "13px",
                     }}
                     key={key}
                   >
                     <DeliveryKey>{key}:</DeliveryKey>
-                    {key === 'cost' ? (
+                    {key === "cost" ? (
                       <DeliveryValue>
                         {currency}
                         {value}
@@ -1426,7 +1433,7 @@ export default function OrderScreen() {
                   </div>
                 )
               )}
-              <div style={{ marginTop: '20px' }}>
+              <div style={{ marginTop: "20px" }}>
                 <div>Seller Information</div>
                 <UserCont>
                   <UserImg src={orderitem.seller.image} alt="img" />
@@ -1446,7 +1453,7 @@ export default function OrderScreen() {
                 </UserCont>
               </div>
               {userInfo.isAdmin && (
-                <div style={{ marginTop: '20px' }}>
+                <div style={{ marginTop: "20px" }}>
                   <div>Buyer Information</div>
                   <UserCont>
                     <UserImg src={order.user.image} alt="img" />
@@ -1475,11 +1482,11 @@ export default function OrderScreen() {
         >
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              pading: '20px',
-              height: '100%',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              pading: "20px",
+              height: "100%",
             }}
           >
             <DeliveryHistory status={currentDeliveryHistory} />
@@ -1492,9 +1499,9 @@ export default function OrderScreen() {
               <Name>Payment Status</Name>
               <ItemNum>
                 {order.isPaid ? (
-                  <div style={{ color: 'var(--orange-color)' }}>Paid</div>
+                  <div style={{ color: "var(--orange-color)" }}>Paid</div>
                 ) : (
-                  <div style={{ color: 'var(--malon-color)' }}>Not Paid</div>
+                  <div style={{ color: "var(--malon-color)" }}>Not Paid</div>
                 )}
               </ItemNum>
               <hr />
@@ -1502,12 +1509,12 @@ export default function OrderScreen() {
               <ItemNum>{order.paymentMethod}</ItemNum>
               <hr />
               <PaymentRow>
-                <div style={{ width: '100%' }}>
+                <div style={{ width: "100%" }}>
                   <Name>Payment Details</Name>
                   <div
                     style={{
-                      display: 'flex',
-                      textTransform: 'capitalize',
+                      display: "flex",
+                      textTransform: "capitalize",
                     }}
                   >
                     <DeliveryKey>Item Total:</DeliveryKey>
@@ -1518,8 +1525,8 @@ export default function OrderScreen() {
                   </div>
                   <div
                     style={{
-                      display: 'flex',
-                      textTransform: 'capitalize',
+                      display: "flex",
+                      textTransform: "capitalize",
                     }}
                   >
                     <DeliveryKey>Shipping Fee:</DeliveryKey>
@@ -1530,8 +1537,8 @@ export default function OrderScreen() {
                   </div>
                   <div
                     style={{
-                      display: 'flex',
-                      textTransform: 'capitalize',
+                      display: "flex",
+                      textTransform: "capitalize",
                     }}
                   >
                     <DeliveryKey>Total:</DeliveryKey>
@@ -1552,7 +1559,7 @@ export default function OrderScreen() {
                       <ItemNum>
                         <Key>Total cost:</Key>
                         <Value>
-                          {' '}
+                          {" "}
                           {currency}
                           {itemsPrice + shippingPrice}
                         </Value>
@@ -1560,7 +1567,7 @@ export default function OrderScreen() {
                       <ItemNum>
                         <Key>Repeddle Commision (7.9%):</Key>
                         <Value>
-                          {' '}
+                          {" "}
                           {currency}
                           {((7.9 / 100) * (itemsPrice + shippingPrice)).toFixed(
                             2
@@ -1570,7 +1577,7 @@ export default function OrderScreen() {
                       <ItemNum>
                         <Key>You will Receive:</Key>
                         <Value>
-                          {' '}
+                          {" "}
                           {currency}
                           {(
                             itemsPrice +

@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import IconsTooltips from './IconsTooltips';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
+import IconsTooltips from "./IconsTooltips";
 import {
   faBell,
   faEnvelope,
@@ -8,30 +8,30 @@ import {
   faMoon,
   faShoppingCart,
   faSun,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SearchBox from './SearchBox';
-import { Link } from 'react-router-dom';
-import { Store } from '../Store';
-import axios from 'axios';
-import { getError } from '../utils';
-import { ReactComponent as MessageIcon } from './../icons/Icons-04.svg';
-import { ReactComponent as CartIcon } from './../icons/Icons-08.svg';
-import { ReactComponent as Notification } from './../icons/Icons-11.svg';
-import { socket } from '../App';
-import moment from 'moment';
-import { logout } from '../hooks/initFacebookSdk';
-import { BsFillSunFill } from 'react-icons/bs';
-import { BsFillMoonStarsFill } from 'react-icons/bs';
-import secureLocalStorage from 'react-secure-storage';
-import RedirectButton from './RedirectButton';
-import mixpanel from 'mixpanel-browser';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchBox from "./SearchBox";
+import { Link } from "react-router-dom";
+import { Store } from "../Store";
+import axios from "axios";
+import { getError } from "../utils";
+import { ReactComponent as MessageIcon } from "./../icons/Icons-04.svg";
+import { ReactComponent as CartIcon } from "./../icons/Icons-08.svg";
+import { ReactComponent as Notification } from "./../icons/Icons-11.svg";
+import { socket } from "../App";
+import moment from "moment";
+import { logout } from "../hooks/initFacebookSdk";
+import { BsFillSunFill } from "react-icons/bs";
+import { BsFillMoonStarsFill } from "react-icons/bs";
+import secureLocalStorage from "react-secure-storage";
+import RedirectButton from "./RedirectButton";
+import mixpanel from "mixpanel-browser";
 
 const Container = styled.div`
   width: 100%;
   margin-bottom: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin-bottom: 0;
   }
@@ -214,7 +214,7 @@ const Third = styled.div`
 
 const Right = styled.div`
   flex: 1;
-  content: '';
+  content: "";
   display: flex;
   justify-content: end;
   @media (max-width: 992px) {
@@ -354,7 +354,7 @@ export const Badge = styled.span`
   justify-content: center;
   background: var(--orange-color);
   color: #fff;
-  font-size: 10px;
+  font-size: 8px;
   border-radius: 50%;
   position: absolute;
   right: 0;
@@ -382,13 +382,13 @@ const SubCategory = styled.ul`
   position: absolute;
   box-shadow: ${(props) =>
     props.bg
-      ? '0 0 3px rgba(0, 0, 0, 0.2)'
-      : '0 0 3px rgba(225, 225, 225, 0.2)'};
+      ? "0 0 3px rgba(0, 0, 0, 0.2)"
+      : "0 0 3px rgba(225, 225, 225, 0.2)"};
   top: 32px;
   left: 0;
   width: 100vw;
   height: 550px;
-  background: ${(props) => (props.bg ? '#fff' : '#000')};
+  background: ${(props) => (props.bg ? "#fff" : "#000")};
   display: none;
   flex-direction: column;
   align-items: center;
@@ -420,9 +420,9 @@ const SwitchCont = styled.div`
 `;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
   margin: 0 10px;
@@ -447,7 +447,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -458,7 +458,7 @@ const Switch = styled.input.attrs({
 `;
 
 const Label = styled.label.attrs({
-  for: 'darkmodeSwitch',
+  for: "darkmodeSwitch",
 })`
   margin-left: 5px;
   color: #fff;
@@ -474,9 +474,9 @@ const ProfileMenu = styled.div`
   width: 200px;
   top: 50px;
   box-shadow: ${(props) =>
-    props.mode === 'pagebodylight '
-      ? '0 5px 16px rgba(0, 0, 0, 0.2)'
-      : '0 5px 16px rgba(225, 225, 225, 0.2)'};
+    props.mode === "pagebodylight "
+      ? "0 5px 16px rgba(0, 0, 0, 0.2)"
+      : "0 5px 16px rgba(225, 225, 225, 0.2)"};
   border-radius: 5px;
   font-size: 14px;
   & ul li {
@@ -486,7 +486,7 @@ const ProfileMenu = styled.div`
   }
   & ul li:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
     color: var(--orange-color);
   }
 `;
@@ -528,17 +528,17 @@ const NotificationMenu = styled.div`
   top: 50px;
   left: 50%;
   transform: translateX(-50%);
-  background: ${(props) => (props.mode === 'pagebodydark' ? 'black' : 'white')};
+  background: ${(props) => (props.mode === "pagebodydark" ? "black" : "white")};
 
   box-shadow: ${(props) =>
-    props.mode === 'pagebodylight '
-      ? '0 5px 16px rgba(0, 0, 0, 0.2)'
-      : '0 5px 16px rgba(225, 225, 225, 0.2)'};
+    props.mode === "pagebodylight "
+      ? "0 5px 16px rgba(0, 0, 0, 0.2)"
+      : "0 5px 16px rgba(225, 225, 225, 0.2)"};
 `;
 const Title = styled.div`
   font-weight: bold;
   margin-bottom: 10px;
-  color: ${(props) => (props.mode === 'pagebodydark' ? 'white' : 'black')};
+  color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
 `;
 const NotItem = styled.div`
   display: flex;
@@ -548,7 +548,7 @@ const NotItem = styled.div`
   padding: 3px;
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   }
 `;
 const NotImage = styled.img`
@@ -561,7 +561,7 @@ const NotDetail = styled.div`
   margin-left: 5px;
 `;
 const NotText = styled.div`
-  color: ${(props) => (props.mode === 'pagebodydark' ? 'white' : 'black')};
+  color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
 `;
 const Time = styled.div`
   color: var(--orange-color);
@@ -570,7 +570,7 @@ const Time = styled.div`
 const Tips = styled.span`
   position: relative;
   &:hover::after {
-    content: '${(props) => props.tips}';
+    content: "${(props) => props.tips}";
     width: 350px;
     position: absolute;
     border-radius: 0.5rem;
@@ -582,13 +582,13 @@ const Tips = styled.span`
     font-weight: 400;
     padding: 10px;
     background: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
   }
 `;
 
@@ -602,13 +602,13 @@ const DetailText = styled.div`
   padding: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
   @media (max-width: 992px) {
     left: 25%;
     width: 250px;
@@ -624,13 +624,13 @@ const Welcome = styled.div`
 
 export const signoutHandler = () => {
   logout();
-  localStorage.removeItem('userInfo');
-  localStorage.removeItem('cartItems');
-  localStorage.removeItem('shippingAddress');
-  localStorage.removeItem('useraddress');
-  localStorage.removeItem('paymentMethod');
+  localStorage.removeItem("userInfo");
+  localStorage.removeItem("cartItems");
+  localStorage.removeItem("shippingAddress");
+  localStorage.removeItem("useraddress");
+  localStorage.removeItem("paymentMethod");
   mixpanel.reset();
-  window.location.href = '/signin';
+  window.location.href = "/signin";
 };
 export default function Navbar({
   menu,
@@ -654,18 +654,18 @@ export default function Navbar({
 
   const messageNotification = notifications.filter(
     (x) =>
-      (x.notifyType === 'message' || x.notifyType === 'supportRespond') &&
+      (x.notifyType === "message" || x.notifyType === "supportRespond") &&
       x.read === false
   );
 
   const purchaseNotification = notifications.filter(
-    (x) => x.notifyType === 'purchase' && x.read === false
+    (x) => x.notifyType === "purchase" && x.read === false
   );
   const soldNotification = notifications.filter(
-    (x) => x.notifyType === 'sold' && x.read === false
+    (x) => x.notifyType === "sold" && x.read === false
   );
   const productNotification = notifications.filter(
-    (x) => x.notifyType === 'product' && x.read === false
+    (x) => x.notifyType === "product" && x.read === false
   );
   const allNotification = notifications.filter((x) => x.read === false);
 
@@ -674,7 +674,7 @@ export default function Navbar({
       const fetchCategories = async () => {
         const { data } = await axios.get(`/api/categories`);
         setCategories(data);
-        console.log('categori', data);
+        console.log("categori", data);
       };
       fetchCategories();
     } catch (err) {
@@ -690,7 +690,7 @@ export default function Navbar({
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUser(data);
-        console.log('user', data);
+        console.log("user", data);
       };
       fetchUser();
     } catch (err) {
@@ -699,7 +699,7 @@ export default function Navbar({
   }, [userInfo, refresher]);
 
   const backMode = (mode) => {
-    if (mode === 'pagebodydark') {
+    if (mode === "pagebodydark") {
       mode = false;
     } else {
       mode = true;
@@ -710,11 +710,11 @@ export default function Navbar({
 
   const darkMode = (mode) => {
     if (mode) {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodydark' });
-      localStorage.setItem('mode', 'pagebodydark');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodydark" });
+      localStorage.setItem("mode", "pagebodydark");
     } else {
-      ctxDispatch({ type: 'CHANGE_MODE', payload: 'pagebodylight' });
-      localStorage.setItem('mode', 'pagebodylight');
+      ctxDispatch({ type: "CHANGE_MODE", payload: "pagebodylight" });
+      localStorage.setItem("mode", "pagebodylight");
     }
   };
 
@@ -725,7 +725,7 @@ export default function Navbar({
           <SwitchCont>
             <BsFillSunFill />
             <Switch
-              checked={mode === 'pagebodydark'}
+              checked={mode === "pagebodydark"}
               onChange={(e) => darkMode(e.target.checked)}
             ></Switch>
             <BsFillMoonStarsFill />
@@ -737,10 +737,10 @@ export default function Navbar({
               <Underline>
                 <Link to="signup">SIGN UP</Link>
               </Underline>
-              , List All Item For Free{' '}
+              , List All Item For Free{" "}
             </First>
             <First>
-              No Selling Fees, Hurry, Start Selling, Limited Offer!!{' '}
+              No Selling Fees, Hurry, Start Selling, Limited Offer!!{" "}
               <Underline>
                 DETAILS
                 <DetailText className="text">
@@ -752,13 +752,13 @@ export default function Navbar({
               </Underline>
             </First>
             <First>
-              Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{' '}
+              Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{" "}
               and <Underline>ANDRIOD</Underline>
             </First>
           </SliderCont>
         </Center>
         <Right>
-          <Link to={userInfo?.isSeller ? '/newproduct' : '/sell'}>
+          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <Sell>Sell</Sell>
           </Link>
         </Right>
@@ -768,9 +768,9 @@ export default function Navbar({
           <Link to="/">
             <LogoImage
               src={
-                mode === 'pagebodydark'
-                  ? 'https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif'
-                  : 'https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif'
+                mode === "pagebodydark"
+                  ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
+                  : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif"
               }
             />
           </Link>
@@ -797,22 +797,22 @@ export default function Navbar({
                 setShowNotification(!showNotification);
                 console.log(showNotification);
               }}
-              styled={{ position: 'relative' }}
+              styled={{ position: "relative" }}
             >
               <FontAwesomeIcon
                 icon={faBell}
                 color="var(--malon-color)"
-                style={{ cursor: 'pointer', size: '25px' }}
+                style={{ cursor: "pointer", size: "25px" }}
               />
               <div
                 ref={modelRef2}
                 style={{
-                  position: 'absolute',
-                  left: '0',
-                  top: '0',
-                  right: '0',
-                  bottom: '0',
-                  cursor: 'pointer',
+                  position: "absolute",
+                  left: "0",
+                  top: "0",
+                  right: "0",
+                  bottom: "0",
+                  cursor: "pointer",
                 }}
               ></div>
             </div>
@@ -835,7 +835,7 @@ export default function Navbar({
                         mode={mode}
                         key={not._id}
                         onClick={() => {
-                          socket.emit('remove_id_notifications', not._id);
+                          socket.emit("remove_id_notifications", not._id);
                         }}
                       >
                         <NotImage src={not.userImage} alt="img" />
@@ -846,8 +846,8 @@ export default function Navbar({
                         {!not.read && (
                           <Badge
                             style={{
-                              top: '50%',
-                              transform: 'translateY(-50%)',
+                              top: "50%",
+                              transform: "translateY(-50%)",
                             }}
                           />
                         )}
@@ -870,7 +870,7 @@ export default function Navbar({
               )}
             </Link>
           </MenuItemCart>
-          <Link to={userInfo?.isSeller ? '/newproduct' : '/sell'}>
+          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <SellButton>Sell</SellButton>
           </Link>
           {userInfo ? (
@@ -905,7 +905,7 @@ export default function Navbar({
                     </Li>
                     <Li>
                       <Link to="/dashboard/saleslist">Sold Orders</Link>
-                      {console.log('sold', soldNotification)}
+                      {console.log("sold", soldNotification)}
 
                       {soldNotification.length > 0 && (
                         <Badge>
@@ -933,7 +933,7 @@ export default function Navbar({
                     </Li>
                     <Li>
                       <Link to="/dashboard/productlist">My Products</Link>
-                      {console.log('product', productNotification)}
+                      {console.log("product", productNotification)}
 
                       {productNotification.length > 0 && (
                         <Badge>
@@ -944,8 +944,8 @@ export default function Navbar({
 
                     <Li>
                       <Link to="/cart?wishlist=true">
-                        Wishlist{' '}
-                        <span style={{ color: 'var(--orange-color)' }}>
+                        Wishlist{" "}
+                        <span style={{ color: "var(--orange-color)" }}>
                           ({user?.saved?.length})
                         </span>
                       </Link>

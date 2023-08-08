@@ -35,7 +35,7 @@ articleRouter.get("/", async (req, res) => {
       });
     } else {
       // If no search query is provided, retrieve all articles
-      articles = await Article.find();
+      articles = await Article.find().sort({ createdAt: -1 });
     }
     res.json(articles);
   } catch (error) {
