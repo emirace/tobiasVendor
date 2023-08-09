@@ -516,9 +516,9 @@ productRouter.put(
         return res.status(404).send({ error: "Product not found" });
       }
 
-      if (product.seller.toString() !== req.user._id.toString()) {
-        return res.status(405).send({ error: "Not Authorized" });
-      }
+      // if (product.seller.toString() !== req.user._id.toString()) {
+      //   return res.status(405).send({ error: "Not Authorized" });
+      // }
 
       product.countInStock = 0;
       product.sizes = [];

@@ -1196,9 +1196,14 @@ export default function OrderScreen() {
                 <div style={{ marginTop: "20px" }}>
                   <div>Buyer Information</div>
                   <UserCont>
-                    <UserImg src={order.user.image} alt="img" />
+                    <Link to={`/seller/${order.user._id}`}>
+                      <UserImg src={order.user.image} alt="img" />
+                    </Link>
                     <div>
-                      <UserName className="link">
+                      <UserName
+                        className="link"
+                        style={{ color: "var(--malon-color)" }}
+                      >
                         <Link to={`/seller/${order.user._id}`}>
                           @{order.user.username}
                         </Link>
@@ -1216,7 +1221,9 @@ export default function OrderScreen() {
                   <div style={{ marginTop: "20px" }}>
                     <div>Seller Information</div>
                     <UserCont>
-                      <UserImg src={orderitem.seller.image} alt="img" />
+                      <Link to={`/seller/${orderitem.seller._id}`}>
+                        <UserImg src={orderitem.seller.image} alt="img" />
+                      </Link>
                       <div>
                         <UserName
                           style={{ color: "var(--malon-color)" }}
@@ -1436,9 +1443,14 @@ export default function OrderScreen() {
               <div style={{ marginTop: "20px" }}>
                 <div>Seller Information</div>
                 <UserCont>
-                  <UserImg src={orderitem.seller.image} alt="img" />
+                  <Link to={`/seller/${orderitem.seller._id}`}>
+                    <UserImg src={orderitem.seller.image} alt="img" />
+                  </Link>
                   <div>
-                    <UserName className="link">
+                    <UserName
+                      className="link"
+                      style={{ color: "var(--malon-color" }}
+                    >
                       <Link to={`/seller/${orderitem.seller._id}`}>
                         @{orderitem.sellerName}
                       </Link>
@@ -1456,9 +1468,14 @@ export default function OrderScreen() {
                 <div style={{ marginTop: "20px" }}>
                   <div>Buyer Information</div>
                   <UserCont>
-                    <UserImg src={order.user.image} alt="img" />
+                    <Link to={`/seller/${order.user._id}`}>
+                      <UserImg src={order.user.image} alt="img" />
+                    </Link>
                     <div>
-                      <UserName className="link">
+                      <UserName
+                        className="link"
+                        style={{ color: "var(--malon-color" }}
+                      >
                         <Link to={`/seller/${order.user._id}`}>
                           @{order.user.username}
                         </Link>

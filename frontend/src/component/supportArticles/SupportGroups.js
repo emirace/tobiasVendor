@@ -7,7 +7,7 @@ const SupportGroupsWrapper = styled.div`
   max-width: 1200px;
   margin: 20px auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 0 20px;
 `;
