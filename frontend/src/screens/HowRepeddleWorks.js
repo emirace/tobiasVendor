@@ -105,7 +105,10 @@ const HowRepeddleWorks = () => {
       shortDescription: "Fashion, Homeware, Tech, Gadgets &amp; More",
       extra: (
         <span>
-          <Link to="/sell" style={{ color: "var(--malon-color" }}>
+          <Link
+            to="/sell"
+            style={{ color: "var(--malon-color)", fontWeight: "bold" }}
+          >
             Shop
           </Link>{" "}
           the trill. No guilt..!!
@@ -163,7 +166,11 @@ const HowRepeddleWorks = () => {
           <StepContent>
             <Header>{step.header}</Header>
             <ShortDescription>{step.shortDescription}</ShortDescription>
-            {step.extra && <div style={{ fontSize: "18px" }}>{step.extra}</div>}
+            {step.extra && (
+              <div style={{ fontSize: "18px", fontSize: "20px" }}>
+                {step.extra}
+              </div>
+            )}
             <TextContent>{step.content}</TextContent>
           </StepContent>
         </Step>
