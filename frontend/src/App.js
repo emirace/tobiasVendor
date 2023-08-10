@@ -119,6 +119,7 @@ const CartScreen = lazy(() => import("./screens/CartScreen"));
 const GigScreen = lazy(() => import("./screens/GigScreen"));
 
 const About = lazy(() => import("./component/info/About"));
+const HowRepeddleWork = lazy(() => import("./screens/HowRepeddleWorks"));
 const SupportArticles = lazy(() => import("./screens/SupportArticles"));
 const ArticleListScreen = lazy(() => import("./screens/ArticleListScreen"));
 const ArticleScreen = lazy(() => import("./screens/ArticleScreen"));
@@ -453,6 +454,10 @@ function App() {
                       <Route path="/myaccount" element={<SellerScreen />} />
                       <Route path="/cart" element={<CartScreen />} />
                       <Route path="/about" element={<About />} />
+                      <Route
+                        path="/how-repeddle-work"
+                        element={<HowRepeddleWork />}
+                      />
                       <Route
                         path="/support-articles"
                         element={<SupportArticles />}

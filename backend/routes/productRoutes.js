@@ -503,25 +503,22 @@ productRouter.put(
 );
 
 productRouter.put(
-  "/:id/not-available",
+  "/:id/available",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log("Marking as sold");
     const { id } = req.params;
 
     try {
-      const product = await Product.findById(id).populate("seller", "username");
+      const product = await Product.findOne({
+        _id: id,
+        seller: req.user._id,
+      }).populate("seller", "username");
 
       if (!product) {
         return res.status(404).send({ error: "Product not found" });
       }
 
-      // if (product.seller.toString() !== req.user._id.toString()) {
-      //   return res.status(405).send({ error: "Not Authorized" });
-      // }
-
-      product.countInStock = 0;
-      product.sizes = [];
+      product.isAvailable = !product.isAvailable;
 
       const updatedProduct = await product.save();
 

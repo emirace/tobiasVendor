@@ -1094,7 +1094,7 @@ export default function Product() {
   const notAvailable = async () => {
     try {
       const { data } = await axios.put(
-        `/api/products/${id}/not-available`,
+        `/api/products/${id}/available`,
         {},
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -1105,7 +1105,9 @@ export default function Product() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Marked as no longer available",
+          message: updatedProduct.isAvailable
+            ? "Marked as available"
+            : "Marked as no longer available",
           showStatus: true,
           state1: "visible1 success",
         },
@@ -1131,7 +1133,11 @@ export default function Product() {
           <AddButton>Create</AddButton>
         </Link>
       </ProductTitleCont>
-      <AddButton2 onClick={notAvailable}>No Longer Available</AddButton2>
+      {product.isAvailable ? (
+        <AddButton2 onClick={notAvailable}>No Longer Available</AddButton2>
+      ) : (
+        <AddButton2 onClick={notAvailable}>Mark as Available</AddButton2>
+      )}
       <Top>
         <TopLeft>
           <Chart title="Sales Performance" data={productData} dataKey="uv" />
