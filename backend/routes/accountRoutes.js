@@ -144,7 +144,7 @@ accountRouter.post(
                   url: user.region === "NGN" ? "com" : "co.za",
                   orderItems: order.orderItems,
                   returnId: returned?._id,
-                  amount: returned.amount,
+                  amount: amount,
                 },
               });
             } else {

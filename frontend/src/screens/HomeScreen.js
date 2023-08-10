@@ -325,6 +325,15 @@ export default function ProductsScreen() {
         <section>
           <CategoriesLinksButtons />
         </section>
+        <section>
+          <Link to="/how-repeddle-work">
+            <img
+              src="https://res.cloudinary.com/emirace/image/upload/v1691653514/20230807_205931_0000_t2aa7t.png"
+              alt="img"
+              style={{ width: "100%", objectFit: "contain" }}
+            />
+          </Link>
+        </section>
 
         <section className="CategoryListing_section ">
           <div className="product-title-Listing">

@@ -1133,11 +1133,12 @@ export default function Product() {
           <AddButton>Create</AddButton>
         </Link>
       </ProductTitleCont>
-      {product.isAvailable ? (
-        <AddButton2 onClick={notAvailable}>No Longer Available</AddButton2>
-      ) : (
-        <AddButton2 onClick={notAvailable}>Mark as Available</AddButton2>
-      )}
+      {!product.soldAll &&
+        (product.isAvailable ? (
+          <AddButton2 onClick={notAvailable}>No Longer Available</AddButton2>
+        ) : (
+          <AddButton2 onClick={notAvailable}>Mark as Available</AddButton2>
+        ))}
       <Top>
         <TopLeft>
           <Chart title="Sales Performance" data={productData} dataKey="uv" />
