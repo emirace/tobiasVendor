@@ -58,6 +58,7 @@ const userSchema = new mongoose.Schema(
       status: { type: Boolean, default: false },
       count: { type: Number, defalut: 0 },
     },
+    userId: { type: String },
   },
   {
     timestamps: true,

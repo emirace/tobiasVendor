@@ -504,7 +504,7 @@ export default function Support() {
     setSendMessage(true);
   };
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !sendingMessage) {
       console.log("keypress");
       handleSubmit(e);
     }
@@ -628,7 +628,7 @@ export default function Support() {
                         onChange={handleImageUpload}
                       />
                       <FontAwesomeIcon
-                        onClick={() => (sendMessage ? null : handleSubmit)}
+                        onClick={() => (sendingMessage ? null : handleSubmit)}
                         icon={faPaperPlane}
                       />
                     </InputCont>
