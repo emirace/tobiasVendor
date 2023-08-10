@@ -440,7 +440,7 @@ export default function Support() {
       console.log(err);
     }
   };
-
+  const [sendingMessage, setSendingMessage] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.length) {
@@ -461,6 +461,7 @@ export default function Support() {
       image,
     };
     try {
+      setSendingMessage(true);
       const { data } = await axios.post("api/messages/support", message1);
       setMessages([...messages, data.message]);
       console.log("heeellllooo");
@@ -489,7 +490,9 @@ export default function Support() {
       setMessage("");
       setImage("");
       socket.emit("remove_notifications", currentChat?._id);
+      setSendingMessage(false);
     } catch (err) {
+      setSendingMessage(false);
       console.log(getError(err));
     }
   };
@@ -625,7 +628,7 @@ export default function Support() {
                         onChange={handleImageUpload}
                       />
                       <FontAwesomeIcon
-                        onClick={handleSubmit}
+                        onClick={() => (sendMessage ? null : handleSubmit)}
                         icon={faPaperPlane}
                       />
                     </InputCont>

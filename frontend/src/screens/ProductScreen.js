@@ -1439,7 +1439,14 @@ export default function ProductScreen() {
               </>
             )}
             <div className="sp_btn">
-              {product.countInStock > 0 ? (
+              {!product.isAvailable ? (
+                <button
+                  style={{ backgroundColor: "grey", cursor: "not-allowed" }}
+                  className="sp_cart_btn"
+                >
+                  Not Available
+                </button>
+              ) : product.countInStock > 0 ? (
                 <button onClick={addToCartHandler} className="sp_cart_btn">
                   add to cart
                 </button>
