@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const DropdownWrapper = styled.div`
@@ -35,9 +36,9 @@ const SearchDropdown = ({ results, onItemClick }) => {
   return (
     <DropdownWrapper>
       {results.map((result, index) => (
-        <ResultItem key={index} onClick={() => onItemClick(result)}>
-          {result.displayName}
-        </ResultItem>
+        <Link to={result.url}>
+          <ResultItem key={index}>{result.displayName}</ResultItem>
+        </Link>
       ))}
     </DropdownWrapper>
   );

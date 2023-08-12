@@ -1003,12 +1003,12 @@ userRouter.get(
                 $options: "i",
               },
             },
-            // {
-            //   userId: {
-            //     $regex: searchQuery,
-            //     $options: 'i',
-            //   },
-            // },
+            {
+              userId: {
+                $regex: searchQuery,
+                $options: "i",
+              },
+            },
           ],
         }),
     };

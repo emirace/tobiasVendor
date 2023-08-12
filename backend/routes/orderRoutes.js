@@ -44,7 +44,6 @@ orderRouter.get(
     const { query } = req;
     const searchQuery = query.q;
     const sort = query.sort;
-
     const queryFilter =
       searchQuery && searchQuery !== "all"
         ? {
@@ -54,6 +53,7 @@ orderRouter.get(
             },
           }
         : {};
+    console.log(queryFilter);
     const sortFilter =
       sort && sort !== "all"
         ? sort === "Progress"
@@ -68,6 +68,7 @@ orderRouter.get(
               deliveryStatus: sort,
             }
         : {};
+
     const orders = await Order.find({ ...queryFilter, ...sortFilter, region })
       .sort({ createdAt: -1 })
       .populate("user", "username")
@@ -173,7 +174,10 @@ orderRouter.post(
       });
 
       const order = await newOrder.save();
-      res.status(201).send({ message: "New Order Created", order });
+      order.orderId = order._id.toString();
+      const neworder = await order.save();
+
+      res.status(201).send({ message: "New Order Created", neworder });
     } catch (err) {
       res
         .status(500)

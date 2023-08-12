@@ -46,6 +46,7 @@ import fs from "fs";
 import articleRouter from "./routes/articleRoutes.js";
 import Mixpanel from "mixpanel";
 import contactRouter from "./routes/contactRoutes.js";
+import Order from "./models/orderModel.js";
 
 dotenv.config();
 
@@ -98,7 +99,19 @@ app.get("/api/keys/flutterwave", (req, res) => {
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
-
+const orderId = async () => {
+  const orders = await Order.find();
+  orders.map(async (order) => {
+    if (!order.orderId) {
+      order.orderId = order._id.toString();
+      await order.save();
+      console.log("updated", order._id);
+    } else {
+      console.log("already has", order._id);
+    }
+  });
+};
+await orderId();
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);

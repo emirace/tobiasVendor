@@ -13,24 +13,24 @@ export const supportLinksData = [
     links: [
       { displayName: "Buyer's Guide", url: "/buyersguide" },
       { displayName: "Re:Bundle", url: "/rebundle" },
-      { displayName: "Re:Buindle Simplified", url: "/link3" },
-      { displayName: "How to log a return", url: "/link3" },
-      { displayName: "Product Condition", url: "/link3" },
+      { displayName: "Re:Bundle Simplified", url: "/RebundleSimplify" },
+      { displayName: "How to log a return", url: "/howtologreturn" },
+      { displayName: "Product Condition", url: "/condition" },
       // Add more links here
     ],
   },
   {
     header: "SELLER'S KITS",
     links: [
-      { displayName: "Commission Fee Structure", url: "/link1" },
-      { displayName: "Product Condition", url: "/link2" },
+      { displayName: "Commission Fee Structure", url: "/feestructure" },
+      { displayName: "Product Condition", url: "/condition" },
       // Add more links here
     ],
   },
   {
     header: "SAFETY KITS",
     links: [
-      { displayName: "Buyers & sellers Protection", url: "/link1" },
+      { displayName: "Buyers & sellers Protection", url: "/buyerprotection" },
       // Add more links here
     ],
   },
@@ -39,7 +39,7 @@ export const supportLinksData = [
     links: [
       { displayName: "Terms of use", url: "/terms" },
       { displayName: "Privacy Policy", url: "/privacypolicy" },
-      { displayName: "Cookies Policy", url: "/link3" },
+      { displayName: "Cookies Policy", url: "/privacypolicy?cookies" },
       { displayName: "Return & Refund", url: "/returns" },
       // Add more links here
     ],

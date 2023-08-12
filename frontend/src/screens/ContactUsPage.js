@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
-import { compressImageUpload, region } from '../utils';
-import { Store } from '../Store';
-import axios from 'axios';
-import ContactSuccess from '../component/ContactSuccess';
-import LoadingBox from '../component/LoadingBox';
-import { socket } from '../App';
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import { compressImageUpload, region } from "../utils";
+import { Store } from "../Store";
+import axios from "axios";
+import ContactSuccess from "../component/ContactSuccess";
+import LoadingBox from "../component/LoadingBox";
+import { socket } from "../App";
 
 const ContactForm = styled.form`
   display: flex;
@@ -50,21 +50,25 @@ const FormButton = styled.button`
 `;
 
 const ContactUs = () => {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { userInfo } = state;
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    category: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    category: "",
+    subject: "",
+    message: "",
     file: null,
   });
   const [contactSuccess, setContactSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === "email") {
+      setFormData({ ...formData, [name]: value.trim() });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const [loading, setLoading] = useState(false);
@@ -86,29 +90,29 @@ const ContactUs = () => {
     try {
       // Send the POST request using Axios
       const { data } = await axios.post(`/api/contacts/${region()}`, formData);
-      socket.emit('post_data', {
-        userId: 'Admin',
+      socket.emit("post_data", {
+        userId: "Admin",
         itemId: data._id,
-        notifyType: 'contactus',
+        notifyType: "contactus",
         msg: `New Contact Us message`,
         link: `/dashboard/contact`,
-        mobile: { path: 'ContactUs', id: '' },
+        mobile: { path: "ContactUs", id: "" },
         userImage:
-          'https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png',
+          "https://res.cloudinary.com/emirace/image/upload/v1667253235/download_vms4oc.png",
       });
       // Reset the form after successful submission (optional)
       setFormData({
-        name: '',
-        email: '',
-        category: '',
-        subject: '',
-        message: '',
+        name: "",
+        email: "",
+        category: "",
+        subject: "",
+        message: "",
         file: null,
       });
       setContactSuccess(true);
       window.scrollTo(0, 0);
     } catch (error) {
-      console.error('Error submitting contact form:', error);
+      console.error("Error submitting contact form:", error);
     }
   };
 

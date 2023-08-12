@@ -51,11 +51,6 @@ const HeroHeader = () => {
     setSearchResults(results);
   };
 
-  const handleItemClick = (result) => {
-    // Do something when a search result is clicked, like navigating to the link
-    console.log("Clicked:", result);
-  };
-
   return (
     <HeroHeaderWrapper>
       <Title>Support Articles</Title>
@@ -65,9 +60,7 @@ const HeroHeader = () => {
         value={searchQuery}
         onChange={handleSearch}
       />
-      {searchQuery && (
-        <SearchDropdown results={searchResults} onItemClick={handleItemClick} />
-      )}
+      {searchQuery && <SearchDropdown results={searchResults} />}
     </HeroHeaderWrapper>
   );
 };

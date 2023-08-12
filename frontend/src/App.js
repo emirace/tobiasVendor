@@ -136,6 +136,10 @@ const SustainabilityImpact = lazy(() =>
 const RebundleSimplify = lazy(() =>
   import("./component/info/RebundleSimplify")
 );
+const HowToLogReturn = lazy(() => import("./component/info/HowToLogReturn"));
+const BuyerGuard = lazy(() => import("./component/info/BuyerGuard"));
+const Condition = lazy(() => import("./component/Condition"));
+const FeeStructure = lazy(() => import("./component/info/FeeStructure"));
 const BuyersPro = lazy(() => import("./component/info/BuyersPro"));
 
 const SellScreen = lazy(() => import("./screens/SellScreen"));
@@ -457,9 +461,17 @@ function App() {
                       />
                       <Route path="/vipshield" element={<VipShield />} />
                       <Route path="/terms" element={<Terms />} />
+                      <Route path="/buyerprotection" element={<BuyersPro />} />
+                      <Route path="/condition" element={<Condition />} />
+                      <Route path="/feestructure" element={<FeeStructure />} />
                       <Route path="/protections" element={<BuyersPro />} />
+                      <Route path="/buyersguide" element={<BuyerGuard />} />
                       <Route
-                        path="/protections"
+                        path="/howtologreturn"
+                        element={<HowToLogReturn />}
+                      />
+                      <Route
+                        path="/RebundleSimplify"
                         element={<RebundleSimplify />}
                       />
                       <Route path="/rebundle" element={<Bundle />} />
