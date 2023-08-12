@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -20,6 +21,18 @@ const Para = styled.p`
 `;
 
 export default function PolicyScreen() {
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const cookies = sp.get("cookies") || null;
+
+  const scrollref = useRef();
+
+  useEffect(() => {
+    if (cookies) {
+      scrollref.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [cookies]);
+
   return (
     <Container>
       <Helmet>
@@ -175,7 +188,7 @@ export default function PolicyScreen() {
         Please note that we do not alter our Site’s data collection and use
         practices when we see a Do Not Track signal from your browser.{" "}
       </Para>
-      <SubHeader>Cookies</SubHeader>
+      <SubHeader ref={scrollref}>Cookies</SubHeader>
       <Para>
         Cookies are text files, often encrypted, stored in your browser. They
         are created when a user’s browser loads a given website: the website

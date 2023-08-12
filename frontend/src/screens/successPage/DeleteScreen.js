@@ -63,7 +63,7 @@ export default function DeletedScreen() {
         >
           Looks like this page is missing, if you still need help, please
           contact support on{" "}
-          <Link to="" style={{ color: "var(--orange-color)" }}>
+          <Link to="/articles" style={{ color: "var(--orange-color)" }}>
             Support center
           </Link>
         </Text>

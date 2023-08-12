@@ -202,7 +202,7 @@ export default function Bundle() {
           <Link to="/">Happy Thrifting!</Link>
         </Header>
         <Links className="a">
-          <Link to="/rebundle">BUYING GUILD</Link>
+          <Link to="/buyersguide">BUYING GUILD</Link>
 
           <Link to="/rebundle">CASH-OUT WITH FREE DELIVERY</Link>
         </Links>

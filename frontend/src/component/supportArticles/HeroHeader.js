@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import SearchDropdown from "./SearchDropdown";
+import { supportLinksData } from "../../screens/SupportArticles";
 
 const HeroHeaderWrapper = styled.div`
   position: relative;
@@ -36,20 +37,6 @@ const HeroHeader = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  // Assuming you have the support links data in an array like this:
-  const supportLinksData = [
-    {
-      header: "Group 1",
-      links: [
-        { displayName: "Link 1", url: "https://example.com/link1" },
-        { displayName: "Link 2", url: "https://example.com/link2" },
-        { displayName: "Link 3", url: "https://example.com/link3" },
-        // Add more links here
-      ],
-    },
-    // Add more groups here
-  ];
-
   const handleSearch = (event) => {
     const query = event.target.value;
     setSearchQuery(query);
@@ -64,11 +51,6 @@ const HeroHeader = () => {
     setSearchResults(results);
   };
 
-  const handleItemClick = (result) => {
-    // Do something when a search result is clicked, like navigating to the link
-    console.log("Clicked:", result);
-  };
-
   return (
     <HeroHeaderWrapper>
       <Title>Support Articles</Title>
@@ -78,9 +60,7 @@ const HeroHeader = () => {
         value={searchQuery}
         onChange={handleSearch}
       />
-      {searchQuery && (
-        <SearchDropdown results={searchResults} onItemClick={handleItemClick} />
-      )}
+      {searchQuery && <SearchDropdown results={searchResults} />}
     </HeroHeaderWrapper>
   );
 };
