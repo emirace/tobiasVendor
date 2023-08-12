@@ -48,11 +48,15 @@ const StepContent = styled.div`
 `;
 
 const Header = styled.h2`
-  font-size: 28px;
-  line-height: 34px;
+  font-size: 22px;
+  line-height: 24px;
   color: var(--malon-color);
   margin-bottom: 0;
   text-align: center;
+  font-weight: normal;
+  @media (min-width: 768px) {
+    font-size: 28px;
+  }
 `;
 const Header1 = styled.h2`
   font-size: 28px;
@@ -60,11 +64,24 @@ const Header1 = styled.h2`
 `;
 
 const ShortDescription = styled.p`
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 15px;
   font-style: italic;
   color: var(--orange-color);
   text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+`;
+const Extra = styled.div`
+  font-size: 18px;
+  margin-bottom: 15px;
+  margin-top: -15px;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const TextContent = styled.p``;
@@ -102,12 +119,16 @@ const HowRepeddleWorks = () => {
       image:
         "https://res.cloudinary.com/emirace/image/upload/v1691621421/fidhkhbzohm4svjzhdmb.png",
       header: "Hunt all you want",
-      shortDescription: "Fashion, Homeware, Tech, Gadgets &amp; More",
+      shortDescription: "Fashion, Homeware, Tech, Gadgets & More",
       extra: (
         <span>
           <Link
-            to="/sell"
-            style={{ color: "var(--malon-color)", fontWeight: "bold" }}
+            to="/search"
+            style={{
+              color: "var(--malon-color)",
+              fontWeight: "bold",
+              textDecoration: "underline",
+            }}
           >
             Shop
           </Link>{" "}
@@ -120,7 +141,14 @@ const HowRepeddleWorks = () => {
     {
       image:
         "https://res.cloudinary.com/emirace/image/upload/v1691621408/odn3kjxjksaptotxjdxg.png",
-      header: "Buy safely with REPEDDLE PROTECT.",
+      header: (
+        <span>
+          Buy safely with{" "}
+          <Link to="/buyerprotection" style={{ textDecoration: "underline" }}>
+            REPEDDLE PROTECT
+          </Link>
+        </span>
+      ),
       shortDescription: "All Safe, No Worries!",
       content:
         "We never underestimate the importance of trust and safety in our community. Every time you buy an item on Repeddle, we ensure your money is safe by withholding your money so you get your item delivered to you before we make the money available for sellers to withdraw. In case of any unfortunate event, our support teams are always available to help.",
@@ -130,7 +158,7 @@ const HowRepeddleWorks = () => {
         "https://res.cloudinary.com/emirace/image/upload/v1691621436/ce53bpnuya8btoby5er3.png",
       header: "Engage with the community.",
       shortDescription:
-        "Comment, Review, Share &amp; Chat with fellow community members.",
+        "Comment, Review, Share & Chat with fellow community members.",
       content:
         "Connecting and engaging is very easy on Repeddle. We make our community part of us by making it social, so you can comment, review, report or chat with sellers and other users. By this way, you get the best out of what you buy, while keeping it safe.",
     },
@@ -166,11 +194,7 @@ const HowRepeddleWorks = () => {
           <StepContent>
             <Header>{step.header}</Header>
             <ShortDescription>{step.shortDescription}</ShortDescription>
-            {step.extra && (
-              <div style={{ fontSize: "18px", fontSize: "20px" }}>
-                {step.extra}
-              </div>
-            )}
+            {step.extra && <Extra>{step.extra}</Extra>}
             <TextContent>{step.content}</TextContent>
           </StepContent>
         </Step>

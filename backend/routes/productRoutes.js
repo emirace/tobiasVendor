@@ -517,6 +517,9 @@ productRouter.put(
       if (!product) {
         return res.status(404).send({ error: "Product not found" });
       }
+      if (product.soldAll) {
+        return res.status(404).send({ error: "Product already sold out" });
+      }
 
       product.isAvailable = !product.isAvailable;
 

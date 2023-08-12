@@ -128,10 +128,20 @@ export const sendEmail = async (options) => {
   };
 
   try {
-    await transporter.sendMail(mailOption);
+    transporter.sendMail(mailOption);
     console.log("Email sent successfully", options.to);
+    // mixpanel.track('Email', {
+    //   type:options.subject,
+    //   status:'Successfully',
+    //   email:options.to
+    //   });
   } catch (error) {
     console.error("Failed to send email:", options.to, error);
+    // mixpanel.track('Email', {
+    //   type:options.subject,
+    //   status:'Failed',
+    //   email:options.to
+    //   });
   }
 };
 
@@ -147,6 +157,7 @@ import User from "./models/userModel.js";
 import Conversation from "./models/conversationModel.js";
 import Gig from "./models/gigModel.js";
 import Order from "./models/orderModel.js";
+// import { mixpanel } from "./server.js";
 
 export async function creditAccount({
   amount,

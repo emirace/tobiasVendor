@@ -10,7 +10,6 @@ const SupportGroupsWrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 0 20px;
-
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
   }
