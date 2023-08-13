@@ -627,8 +627,11 @@ export default function Support() {
                         style={{ display: "none" }}
                         onChange={handleImageUpload}
                       />
+                      {console.log("sendingMessage", sendingMessage)}
                       <FontAwesomeIcon
-                        onClick={() => (sendingMessage ? null : handleSubmit)}
+                        onClick={(e) =>
+                          sendingMessage ? null : handleSubmit(e)
+                        }
                         icon={faPaperPlane}
                       />
                     </InputCont>
