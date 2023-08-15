@@ -6,6 +6,7 @@ const paymentSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     status: { type: String, default: "Pending" },
     meta: { type: Object, required: true },
+    paymentId: { type: String },
   },
   {
     timestamps: true,

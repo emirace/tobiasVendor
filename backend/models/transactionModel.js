@@ -18,6 +18,7 @@ const transactionSchema = new mongoose.Schema(
     balanceBefore: { type: Number, required: true },
     balanceAfter: { type: Number, required: true },
     metadata: Object,
+    transactionId: { type: String },
   },
   {
     timestamps: true,

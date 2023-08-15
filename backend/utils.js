@@ -188,6 +188,7 @@ export async function creditAccount({
     balanceBefore: Number(account.balance),
     balanceAfter: Number(account.balance) + Number(amount),
   });
+  transaction.transactionId = transaction._id;
   await transaction.save();
   return {
     success: true,
@@ -220,7 +221,7 @@ export async function debitAccount({
     account.save();
   }
 
-  await Transaction.create({
+  const transaction = new Transaction({
     txnType: "debit",
     purpose,
     amount,
@@ -230,6 +231,8 @@ export async function debitAccount({
     balanceBefore: Number(account.balance),
     balanceAfter: Number(account.balance) - Number(amount),
   });
+  transaction.transactionId = transaction._id;
+  await transaction.save();
   return {
     success: true,
     message: "Debit successful",
