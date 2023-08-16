@@ -110,6 +110,10 @@ transporter.use(
       partialsDir: path.resolve("./utils/layouts/"),
       defaultLayout: "main",
       layoutsDir: path.resolve("./utils/layouts/"),
+      runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowedProtoMethodsByDefault: true,
+      },
     },
     viewPath: path.resolve("./utils/layouts/"),
     extName: ".handlebars",
@@ -157,6 +161,8 @@ import User from "./models/userModel.js";
 import Conversation from "./models/conversationModel.js";
 import Gig from "./models/gigModel.js";
 import Order from "./models/orderModel.js";
+import moment from "moment";
+import Product from "./models/productModel.js";
 // import { mixpanel } from "./server.js";
 
 export async function creditAccount({
@@ -640,4 +646,50 @@ export const updateMixpanelUser = () => {
       console.error("Error fetching users from MongoDB:", err);
       mongoose.disconnect();
     });
+};
+
+export const sendWeeklyMail = async () => {
+  const today = moment(); // Get the current date
+  const previousMonday = today.clone().startOf("isoWeek").subtract(7, "days"); // Get the start of the previous week
+  const currentMonday = previousMonday.clone().add(7, "days");
+
+  console.log("Previous Monday:", previousMonday.format("YYYY-MM-DD"));
+  console.log("Current Monday:", currentMonday.format("YYYY-MM-DD"));
+
+  try {
+    const products = await Product.find({
+      // createdAt: { $gte: previousMonday.toDate(), $lt: currentMonday.toDate() },
+    });
+
+    // Convert the products array into an array of arrays containing two products each
+    const productsInPairs = [];
+    for (let i = 0; i < products.length; i += 2) {
+      const pair = {
+        firstProduct: products[i],
+        secondProduct: products[i + 1],
+      };
+      productsInPairs.push(pair);
+    }
+
+    const emailType = {
+      name: "Hunt It",
+      subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+      template: "huntIt",
+    };
+
+    await sendEmail({
+      to: "emmanuelakwuba57@gmail.com",
+      subject: emailType.subject,
+      template: emailType.template,
+      context: {
+        url: "com",
+        products: productsInPairs,
+      },
+    });
+
+    // Add your logic here
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    // Handle the error
+  }
 };

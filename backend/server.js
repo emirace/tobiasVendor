@@ -4,6 +4,7 @@ import http from "http";
 import { Server } from "socket.io";
 import path from "path";
 import dotenv from "dotenv";
+import cron from "node-cron";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
@@ -33,7 +34,7 @@ import locationRouter from "./routes/locationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import User from "./models/userModel.js";
 import newsletterRouter from "./routes/newsletterRoutes.js";
-import { sendEmail } from "./utils.js";
+import { sendEmail, sendWeeklyMail } from "./utils.js";
 import guestUserRouter from "./routes/guestUserRoutes.js";
 import redirectRouter from "./routes/redirectRoutes.js";
 import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
@@ -83,6 +84,11 @@ app.use(
     ],
   })
 );
+function textfuncion() {
+  console.log("running cron");
+}
+// cron.schedule("* * * * *", sendWeeklyMail);
+// cron.schedule('0 12 * * 1', myFunction);
 
 app.use(
   cookieSession({
