@@ -664,14 +664,14 @@ export const sendWeeklyMail = async () => {
         $lt: currentMonday.toDate(),
       },
       region: "NGN",
-    });
+    }).sort({ createdAt: -1 });
     const productsZAR = await Product.find({
-      createdAt: {
-        $gte: previousMonday.toDate(),
-        $lt: currentMonday.toDate(),
-      },
+      // createdAt: {
+      //   $gte: previousMonday.toDate(),
+      //   $lt: currentMonday.toDate(),
+      // },
       region: "ZAR",
-    });
+    }).sort({ createdAt: -1 });
 
     // Convert the products array into an array of arrays containing two products each
     const productsInPairsNGN = [];
@@ -700,7 +700,11 @@ export const sendWeeklyMail = async () => {
 
     // const existEmails = await Newsletters.find();
 
-    const existEmails = [{ email: "emmanuelakwuba57@gmail.com", url: "co.za" }];
+    const existEmails = [
+      { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
+      { email: "tobiasomeyi@gmail.com", url: "co.za" },
+    ];
+    // const existEmails = [{ email: "tobiasomeyi@gmail.com", url: "co.za" }];
 
     for (const existEmail of existEmails) {
       console.log(existEmail.email);
