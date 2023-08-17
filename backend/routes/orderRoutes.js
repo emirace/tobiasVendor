@@ -173,11 +173,11 @@ orderRouter.post(
         region,
       });
 
-      const order = await newOrder.save();
-      order.orderId = order._id.toString();
-      const neworder = await order.save();
+      const neworder = await newOrder.save();
+      neworder.orderId = neworder._id.toString();
+      const order = await neworder.save();
 
-      res.status(201).send({ message: "New Order Created", neworder });
+      res.status(201).send({ message: "New Order Created", order });
     } catch (err) {
       res
         .status(500)
