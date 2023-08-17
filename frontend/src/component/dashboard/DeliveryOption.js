@@ -406,8 +406,7 @@ export default function DeliveryOption({
         Select as many as you like. Shops with multiple options sell faster. The
         Buyer will cover the delivery fee when purchasing.
       </TitleDetails>
-      {/* {region() === 'ZAR' ? ( */}
-      {true ? (
+      {region() === "ZAR" ? (
         <>
           <OptionCont>
             <Option>

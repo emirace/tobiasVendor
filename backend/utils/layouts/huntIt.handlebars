@@ -162,19 +162,21 @@
                       style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
                     >
                       <tr>
-                        <td
-                          class="pad"
-                          style="padding-left:20px;padding-right:20px;width:100%;"
-                        >
+                        <td class="pad" style="width:100%;">
                           <div
                             class="alignment"
                             align="center"
                             style="line-height:10px"
-                          ><img
-                              src={{this.firstProduct.image}}
-                              style="display: block; height: auto; border: 0; max-width: 285px; width: 100%;"
-                              width="285"
-                            /></div>
+                          ><a
+                              href="https://repeddle.{{url}}/product/{{this.firstProduct.slug}}"
+                              target="_blank"
+                              style="outline:none"
+                              tabindex="-1"
+                            ><img
+                                src={{this.firstProduct.image}}
+                                style="display: block; height: auto; border: 0; max-width: 285px; width: 100%;"
+                                width="285"
+                              /></a></div>
                         </td>
                       </tr>
                     </table>
@@ -234,7 +236,7 @@
                             style="color:#000000;direction:ltr;font-family:Inter, sans-serif;font-size:10px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:center;mso-line-height-alt:15px;"
                           >
                             <p style="margin: 0;"><strong
-                              >{{this.firstProduct.actualPrice}}</strong></p>
+                              >{{this.firstProduct.currency}}{{this.firstProduct.actualPrice}}</strong></p>
                           </div>
                         </td>
                       </tr>
@@ -257,19 +259,21 @@
                       style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;"
                     >
                       <tr>
-                        <td
-                          class="pad"
-                          style="padding-left:20px;padding-right:20px;width:100%;"
-                        >
+                        <td class="pad" style="width:100%;">
                           <div
                             class="alignment"
                             align="center"
                             style="line-height:10px"
-                          ><img
-                              src={{this.secondProduct.image}}
-                              style="display: block; height: auto; border: 0; max-width: 285px; width: 100%;"
-                              width="285"
-                            /></div>
+                          ><a
+                              href="https://repeddle.{{url}}/product/{{this.secondProduct.slug}}"
+                              target="_blank"
+                              style="outline:none"
+                              tabindex="-1"
+                            ><img
+                                src={{this.secondProduct.image}}
+                                style="display: block; height: auto; border: 0; max-width: 285px; width: 100%;"
+                                width="285"
+                              /></a></div>
                         </td>
                       </tr>
                     </table>
@@ -329,7 +333,7 @@
                             style="color:#000000;direction:ltr;font-family:Inter, sans-serif;font-size:10px;font-weight:400;letter-spacing:0px;line-height:150%;text-align:center;mso-line-height-alt:15px;"
                           >
                             <p style="margin: 0;"><strong
-                              >{{this.secondProduct.actualPrice}}</strong></p>
+                              >{{this.secondProduct.currency}}{{this.secondProduct.actualPrice}}</strong></p>
                           </div>
                         </td>
                       </tr>
@@ -342,7 +346,6 @@
                     style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-left: 5px; padding-right: 20px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;"
                   ></td>
                 {{/if}}
-
               </tr>
             </tbody>
           </table>
@@ -353,7 +356,7 @@
 
 {{/each}}
 <table
-  class="row row-4"
+  class="row row-3"
   align="center"
   width="100%"
   border="0"
@@ -440,7 +443,7 @@
   </tbody>
 </table>
 <table
-  class="row row-5"
+  class="row row-4"
   align="center"
   width="100%"
   border="0"

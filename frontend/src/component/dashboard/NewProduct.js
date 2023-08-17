@@ -642,7 +642,7 @@ export default function NewProduct() {
   });
   const [validationError, setValidationError] = useState({});
 
-  const [paxi, setPaxi] = useState(true);
+  const [paxi, setPaxi] = useState(region() === "ZAR");
   const [gig, setGig] = useState(false);
   const [pudo, setPudo] = useState(false);
   const [postnet, setPostnet] = useState(false);

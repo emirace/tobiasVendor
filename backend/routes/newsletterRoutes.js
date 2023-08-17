@@ -42,9 +42,9 @@ const emailLists = [
     template: "challenging",
   },
   {
-    name: "Hunt It",
-    subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
-    template: "huntIt",
+    name: "How Repeddle Work",
+    subject: "HOW REPOEDDLE WORKS!",
+    template: "howRepeddleWork",
   },
 ];
 
@@ -120,9 +120,6 @@ newsletterRouter.post(
             },
           });
         }
-      } else if (emailName === "Hunt It") {
-        const products = await Product.find();
-        const existEmails = await Newsletters.find({ email: { $in: emails } });
       } else {
         const existEmails = await Newsletters.find({ email: { $in: emails } });
 

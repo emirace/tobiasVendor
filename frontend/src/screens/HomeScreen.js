@@ -358,14 +358,14 @@ export default function ProductsScreen() {
             />
             <CategoryListing
               image="/images/julian-hochgesang-sA5wcAu4CBA-unsplash.webp"
-              title="SNEAKER-HEAD"
+              title="SHOE AFFAIRS"
               link="/search?query=shoes"
             />
             <CategoryListing
               image="/images/stephen-audu-BkB5T-ZdK88-unsplash.webp"
-              title="BAG AFFAIR"
+              title="BAG AFFAIRS"
               bottom={true}
-              link="/search?categories=bag"
+              link="/search?categories=bags"
             />
             <CategoryListing
               image="/images/carmen-fu-4xb2LK36Mps-unsplash.webp"

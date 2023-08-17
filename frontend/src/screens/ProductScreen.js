@@ -1141,6 +1141,18 @@ export default function ProductScreen() {
     }
   };
 
+  const checkFileTypeByExtension = (fileUrl) => {
+    const extension = fileUrl.split(".").pop().toLowerCase();
+
+    if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
+      return "image";
+    } else if (["mp4", "avi", "mov", "mkv"].includes(extension)) {
+      return "video";
+    } else {
+      return "unknown";
+    }
+  };
+
   return loading ? (
     <LoadingBox />
   ) : error ? (
@@ -1197,7 +1209,7 @@ export default function ProductScreen() {
 
         <div className="d-md-none mb-4">
           <CustomCarousel>
-            {[product.image, ...product.images]
+            {[product.image, ...product.images, product.video]
               .filter((image) => image)
               .map(
                 (image) =>
@@ -1210,18 +1222,27 @@ export default function ProductScreen() {
                         height: "500px",
                       }}
                     >
-                      <img
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "contain",
-                        }}
-                        src={image}
-                        alt="product"
-                      />
+                      {checkFileTypeByExtension(image) === "image" ? (
+                        <img
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                          }}
+                          src={image}
+                          alt="product"
+                        />
+                      ) : (
+                        <video width="100%" controls muted autoplay>
+                          <source src={product.video} type="video/mp4" />
+                        </video>
+                      )}
                     </div>
                   )
               )}
+            {/* <video width="100%" controls muted autoplay>
+              <source src={product.video} type="video/mp4" />
+            </video> */}
           </CustomCarousel>
         </div>
         <div className="single_product_center">
