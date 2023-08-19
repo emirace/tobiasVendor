@@ -740,14 +740,12 @@ export default function Navbar({
               , List All Item For Free{" "}
             </First>
             <First>
-              No Selling Fees, Hurry, Start Selling, Limited Offer!!{" "}
+              Selling made Super Easy. Buy, Sell, Cash-Out & Repeat!{" "}
               <Underline>
                 DETAILS
                 <DetailText className="text">
-                  Sell more than 10,400 brand names you love. To give you
-                  unmatched user experiencd and support the growth of your
-                  business as part of our thrift secondhand community, you will
-                  not be charge Repeddle seller's commision fee.
+                  Sell more than 10,400 brand names you love. Listing is just a
+                  few steps away!
                 </DetailText>
               </Underline>
             </First>
@@ -978,7 +976,8 @@ export default function Navbar({
           categories.map((c) => (
             <CategoryGroup>
               <CategoryItem>
-                <Link to={`/category/${c.name}`}>{c.name}</Link>
+                <Link to={`/search?category=${c.name}`}>{c.name}</Link>
+                {/* <Link to={`/category/${c.name}`}>{c.name}</Link>  */}
               </CategoryItem>
 
               <SubCategory bg={subCateMode}>

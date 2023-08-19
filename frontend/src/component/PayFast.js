@@ -102,13 +102,13 @@ export default function PayFast({ totalPrice, placeOrderHandler }) {
               });
               navigate(`/order/${order.order._id}`);
             } else {
+              setLoading(false);
               console.log("Payment Window Closed");
               await axios.delete(`/api/orders/${order.order._id}`, {
                 headers: {
                   Authorization: `Bearer ${userInfo.token}`,
                 },
               });
-              setLoading(false);
             }
           });
         }

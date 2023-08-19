@@ -649,19 +649,23 @@ export default function OrderScreen() {
     }
   }
 
-  const paymentRequest = async (seller, cost, itemCurrency, sellerImage) => {
+  const paymentRequest = async (orderitem) => {
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
-        userId: seller,
-        amount: (92.1 / 100) * cost,
+        userId: orderitem.seller._id,
+        amount:
+          orderitem.region === "ZAR"
+            ? (92.1 / 100) *
+              (orderitem.actualPrice, +orderitem.deliverySelect.cost)
+            : (92.1 / 100) * orderitem.actualPrice,
         meta: {
           Type: "Order Completed",
           from: "Wallet",
           to: "Wallet",
           typeName: "Order",
           id: orderId,
-          currency: itemCurrency,
+          currency: orderitem.currency,
         },
       },
       {
@@ -675,7 +679,7 @@ export default function OrderScreen() {
       msg: `Order Completed`,
       link: `/payment/${paymentData._id}`,
       mobile: { path: "PaymentScreen", id: paymentData._id },
-      userImage: sellerImage,
+      userImage: orderitem.seller.image,
     });
   };
   const daydiff = (start, end) =>
@@ -1315,7 +1319,8 @@ export default function OrderScreen() {
                                   orderitem.seller._id,
                                   orderitem.actualPrice,
                                   orderitem.currency,
-                                  orderitem.seller.image
+                                  orderitem.seller.image,
+                                  orderitem.deliverySelect.cost
                                 );
                                 setAfterAction(false);
                               }}

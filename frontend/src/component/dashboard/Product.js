@@ -871,7 +871,7 @@ export default function Product() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Failed updating product, try again late",
+          message: getError(err),
           showStatus: true,
           state1: "visible1 error",
         },

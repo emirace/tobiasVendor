@@ -909,10 +909,10 @@ export default function NewProduct() {
       valid = false;
     }
 
-    // if (!input.feature) {
-    //   handleError("Select feature", "feature");
-    //   valid = false;
-    // }
+    if (!input.description) {
+      handleError("Enter description", "description");
+      valid = false;
+    }
     if (!input.color) {
       handleError("Select color", "color");
       valid = false;
@@ -1132,6 +1132,7 @@ export default function NewProduct() {
 
   return (
     <NewProductC mode={mode}>
+      {console.log(input)}
       <Helmet>
         <title>New Product</title>
       </Helmet>
