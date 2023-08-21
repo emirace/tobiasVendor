@@ -61,7 +61,7 @@ const ProductName = styled.h3`
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 150px;
-  margin: 0;
+  margin: 5px 0 0 0;
 `;
 
 const ProductBrand = styled.p`
@@ -120,15 +120,19 @@ export default function TheThrill() {
     const price = parseInt(product.price);
     const actualPrice = parseInt(product.actualPrice);
 
-    if (price < actualPrice) {
-      return null;
+    if (price <= actualPrice) {
+      return null; // No discount
     }
 
     const discountPercentage = ((price - actualPrice) / price) * 100;
     return discountPercentage.toFixed(2); // Return with 2 decimal places
   };
+
   return (
     <div>
+      <div className="product-title">
+        <h2 className="product-category1">Shop The Thrill</h2>
+      </div>
       {loading ? (
         Array.from({ length: 6 }).map((_, index) => (
           <SkeletonProduct key={index} />
