@@ -129,7 +129,7 @@ export default function TheThrill() {
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "10px" }}>
       <div className="product-title">
         <h2 className="product-category1">Shop The Thrill</h2>
       </div>
