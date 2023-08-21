@@ -30,6 +30,7 @@ import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
 import Support from "../component/Support";
 import CategoriesLinksButtons from "../component/CategoriesLinksButtons";
+import TheThrill from "../component/TheThrill";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -349,6 +350,8 @@ export default function ProductsScreen() {
           </Link>
         </section>
 
+        <TheThrill />
+
         <section className="CategoryListing_section ">
           <div className="product-title-Listing">
             <h2 className="product-categorylisting">New Collections</h2>
@@ -411,7 +414,7 @@ export default function ProductsScreen() {
                     ></img>
                     <div className="main-item-text">
                       <h4>Classic Men Wears</h4>
-                      <Link to="/search?query=men">Shop Now</Link>
+                      <Link to="/search?category=men">Shop Now</Link>
                       {/* <Link to="/category/Classic Men Wears">Shop Now</Link> */}
                     </div>
                   </div>
