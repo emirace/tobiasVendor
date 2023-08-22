@@ -1,14 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const subCategoriesSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  items: [{ type: String }],
+  items: [{ name: { type: String }, path: { type: String, default: null } }],
+  path: { type: String, default: null },
 });
 
 const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     image: { type: String },
+    path: { type: String, default: null },
     subCategories: [subCategoriesSchema],
   },
   {
@@ -16,5 +18,5 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-const Category = mongoose.model('Category', categorySchema);
+const Category = mongoose.model("Category", categorySchema);
 export default Category;

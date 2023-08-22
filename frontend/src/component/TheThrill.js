@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { region } from "../utils";
 import styled, { keyframes } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const SkeletonPulse = keyframes`
   0% {
@@ -15,40 +16,70 @@ const SkeletonPulse = keyframes`
   }
 `;
 
-const SkeletonProductContainer = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-`;
-
 const SkeletonImage = styled.div`
-  width: 100px;
-  height: 100px;
+  flex: 1;
+  /* width: 100px; */
+  height: 150px;
   background-color: #f0f0f0;
   animation: ${SkeletonPulse} 1.5s infinite;
 `;
 
-const SkeletonText = styled.div`
-  flex-grow: 1;
-  height: 20px;
+const SkeletonProductContainer = styled.div`
+  flex: 0 0 calc(50% - 10px);
+  padding: 10px;
   background-color: #f0f0f0;
+  @media (min-width: 768px) {
+    max-width: 240px;
+  }
+`;
+
+const SkeletonProductName = styled.div`
+  width: 80%;
+  height: 18px;
+  background-color: #e0e0e0;
+  margin-top: 10px;
   animation: ${SkeletonPulse} 1.5s infinite;
-  margin-left: 10px;
+`;
+
+const SkeletonProductPrice = styled.div`
+  width: 60%;
+  height: 16px;
+  background-color: #e0e0e0;
+  margin-top: 5px;
+  animation: ${SkeletonPulse} 1.5s infinite;
+`;
+
+const SkeletonProductDiscount = styled.div`
+  width: 40px;
+  height: 14px;
+  background-color: #e0e0e0;
+  margin-top: 5px;
+  animation: ${SkeletonPulse} 1.5s infinite;
 `;
 
 const ProductsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  padding: 10px;
-  gap: 10px;
+  padding: 10px 20px;
+  gap: 20px;
   @media (min-width: 768px) {
     flex-wrap: nowrap; /* Prevent wrapping of products on desktop */
     overflow-x: auto; /* Enable horizontal scrolling on desktop */
+    padding: 10px 5vw;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
 const ProductContainer = styled.div`
-  flex: 0 0 calc(50% - 5px);
+  flex: 0 0 calc(50% - 10px);
+  @media (min-width: 768px) {
+    max-width: 240px;
+  }
 `;
 
 const Image = styled.img`
@@ -64,15 +95,10 @@ const ProductName = styled.h3`
   margin: 5px 0 0 0;
 `;
 
-const ProductBrand = styled.p`
-  font-size: 14px;
-  margin-bottom: 0;
-`;
-
 const ProductPrice = styled.p`
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 `;
 
 const DiscountBadge = styled.span`
@@ -84,21 +110,40 @@ const DiscountBadge = styled.span`
   margin-left: 5px;
 `;
 
-const SkeletonProduct = () => (
-  <SkeletonProductContainer>
-    <SkeletonImage />
-    <SkeletonText />
-  </SkeletonProductContainer>
-);
+const ViewMoreButton = styled.button`
+  display: block;
+  margin: 20px auto;
+  margin-top: 0;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: var(--orange-color);
+  border-radius: 0.2rem;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--malon-color);
+  }
+`;
 
 const ErrorText = styled.p`
   color: red;
 `;
 
+const SkeletonProduct = () => (
+  <SkeletonProductContainer>
+    <SkeletonImage />
+    <SkeletonProductName />
+    <SkeletonProductPrice />
+    <SkeletonProductDiscount />
+  </SkeletonProductContainer>
+);
+
 export default function TheThrill() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -128,29 +173,59 @@ export default function TheThrill() {
     return discountPercentage.toFixed(2); // Return with 2 decimal places
   };
 
+  const sliderHandler = (direction) => {
+    var slider = document.getElementById("slider");
+    if (direction === "left") {
+      slider.scrollBy(-200, 0);
+      // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
+    } else {
+      slider.scrollBy(200, 0);
+    }
+  };
+
+  const handleViewMore = () => {
+    navigate("/search");
+  };
+
+  const handleClick = (slug) => {
+    navigate(`/product/${slug}`);
+  };
+
   return (
-    <div style={{ marginTop: "10px" }}>
+    <div style={{ marginTop: "20px", position: "relative" }}>
       <div className="product-title">
         <h2 className="product-category1">Shop The Thrill</h2>
       </div>
+
+      <button onClick={() => sliderHandler("left")} className="pre-btn1">
+        <i className="fa fa-angle-left"></i>
+      </button>
+      <button onClick={() => sliderHandler("right")} className="next-btn1">
+        <i className="fa fa-angle-right"></i>
+      </button>
       {loading ? (
-        Array.from({ length: 6 }).map((_, index) => (
-          <SkeletonProduct key={index} />
-        ))
+        <ProductsContainer>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonProduct key={index} />
+          ))}
+        </ProductsContainer>
       ) : error ? (
         <ErrorText>{error}</ErrorText>
       ) : (
         <ProductsContainer>
-          {products.map((product) => (
-            <ProductContainer key={product._id}>
+          {products.slice(0, 6).map((product) => (
+            <ProductContainer
+              key={product._id}
+              onClick={() => handleClick(product.slug)}
+            >
               <Image src={product.image} alt={product.name} />
               <ProductName>{product.name}</ProductName>
-              <ProductBrand>{product.brand}</ProductBrand>
+              {/* <ProductBrand>{product.brand}</ProductBrand> */}
               <ProductPrice>
                 {discount(product) ? (
                   <>
                     <span>
-                      {console.log(discount(product))}${product.currency}
+                      {product.currency}
                       {product.price}
                     </span>
                     <DiscountBadge>{discount(product)}% Off</DiscountBadge>
@@ -163,6 +238,7 @@ export default function TheThrill() {
           ))}
         </ProductsContainer>
       )}
+      <ViewMoreButton onClick={handleViewMore}>View More</ViewMoreButton>
     </div>
   );
 }

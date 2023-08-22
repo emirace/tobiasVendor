@@ -923,6 +923,10 @@ form .mb-3 a:hover,
   .banner_item .banner_image {
     height: 300px;
   }
+  .pre-btn1,
+  .next-btn1 {
+    display: none;
+  }
   .center-item .main-item-text {
     left: 10px;
   }

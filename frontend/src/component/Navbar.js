@@ -995,8 +995,8 @@ export default function Navbar({
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
-                              <a href={`/search?query=${l}`}>
-                                <SList>{l}</SList>
+                              <a href={`/search?query=${l.name}`}>
+                                <SList>{l.nameS}</SList>
                               </a>
                             ))}
                           </UList>

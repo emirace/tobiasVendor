@@ -48,7 +48,16 @@ const productSchema = new mongoose.Schema(
     },
     numReviews: { type: Number, required: true },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    shares: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    shares: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+          default: null,
+        },
+        hashed: String,
+      },
+    ],
     reviews: [reviewSchema],
     sold: { type: Boolean },
     soldAll: { type: Boolean, default: false },

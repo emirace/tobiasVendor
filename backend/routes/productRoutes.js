@@ -7,6 +7,7 @@ import {
   isSellerOrAdmin,
   isSeller,
   slugify,
+  isAuthOrNot,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import RecentView from "../models/recentViewModel.js";
@@ -26,7 +27,6 @@ productRouter.get("/:region/all", async (req, res) => {
     .sort({ createdAt: -1 })
     .limit(pageSize)
     .populate("seller", "_id username");
-  console.log("products", page);
   res.send(products);
 });
 
@@ -398,31 +398,38 @@ productRouter.put(
 
 productRouter.put(
   "/:id/shares",
-  isAuth,
+  isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
-    const productId = req.params.id;
-    const product = await Product.findById(productId)
-      .populate(
-        "seller",
-        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
-      )
-      .populate("reviews.name", "username image");
-    if (product) {
-      const exist = product.shares.filter(
-        (x) => x._id.toString() === req.user._id
-      );
-      if (exist.length > 0) {
-        res.status(500).send({ message: "Already shared product" });
-      } else {
-        product.shares.push(req.user._id);
-        const updatedProduct = await product.save();
-        res.status(200).send({
-          message: "Product Shared",
-          product: updatedProduct,
-        });
+    try {
+      const { id: productId } = req.params;
+      const { hashed } = req.body;
+
+      const product = await Product.findById(productId)
+        .populate(
+          "seller",
+          "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+        )
+        .populate("reviews.name", "username image");
+
+      if (!product) {
+        return res.status(404).send({ message: "Product Not Found" });
       }
-    } else {
-      res.status(404).send({ message: "Product Not Found" });
+
+      const isShared = product.shares.some((share) => share.hashed === hashed);
+      if (isShared) {
+        return res.status(400).send({ message: "Already shared product" });
+      }
+
+      product.shares.push({ user: req?.user?._id, hashed });
+      await product.save();
+
+      return res.status(200).send({
+        message: "Product Shared",
+        product,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: "Internal server error" });
     }
   })
 );
@@ -476,12 +483,10 @@ productRouter.put(
 
       const currentTime = new Date();
       const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
-      console.log(product.viewcount);
       const lastView = product.viewcount
         .filter((view) => view.hashed === hashed)
         .sort((a, b) => b.time - a.time)
         .find((view) => view.time >= sixHoursAgo);
-      console.log(lastView);
       if (!lastView) {
         product.viewcount.push({ hashed, time: currentTime });
         await product.save();
@@ -833,7 +838,6 @@ productRouter.get(
         : order === "relevance"
         ? { updatedAt: -1 }
         : { _id: -1 };
-    console.log(categoryFilter);
     const products = await Product.find({
       ...queryFilter,
       ...categoryFilter,

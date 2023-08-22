@@ -332,7 +332,6 @@ export default function ProductScreen() {
       // Concatenate and hash the device information
       const combinedInfo = userAgent + screenWidth + screenHeight;
       const hashed = MD5(combinedInfo).toString();
-      console.log("combinedInfo", hashed);
       axios
         .put(`/api/products/${product?._id}/viewcount`, { hashed })
         .then((response) => {
