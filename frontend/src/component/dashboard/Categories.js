@@ -54,6 +54,10 @@ const Item = styled.div`
   flex-direction: column;
   margin-top: 10px;
   margin-right: 20px;
+  padding: 10px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const Label = styled.label`
   margin-bottom: 10px;
@@ -258,6 +262,8 @@ export default function Categories() {
   const [selectedSubcategoryIndex, setSelectedSubcategoryIndex] =
     useState(null);
   const [itemIndex, setItemIndex] = useState(null);
+  const [editCat, setEditCat] = useState(false);
+  const [editCurrentCat, setEditCurrentCat] = useState(null);
 
   const [refresh, setrefresh] = useState(false);
 
@@ -298,10 +304,18 @@ export default function Categories() {
   };
 
   const handleSubcategoryChange = (index, name, path) => {
+    console.log(index, name, path);
     const updatedSubCategories = [...subCategories];
     updatedSubCategories[index].name = name;
     updatedSubCategories[index].path = path;
     setSubCategories(updatedSubCategories);
+  };
+
+  const handleDeleteSubcategory = (subcategoryIndex) => {
+    const newSubCategories = subCategories.filter(
+      (_, index) => index !== subcategoryIndex
+    );
+    setSubCategories(newSubCategories);
   };
 
   const handleItemChange = (subcategoryIndex, itemIndex, name, path) => {
@@ -309,6 +323,24 @@ export default function Categories() {
     updatedSubCategories[subcategoryIndex].items[itemIndex].name = name;
     updatedSubCategories[subcategoryIndex].items[itemIndex].path = path;
     setSubCategories(updatedSubCategories);
+  };
+
+  const handleDeleteItem = (subcategoryIndex, itemIndex) => {
+    const newSubCategories = subCategories.map((subcategory, index) => {
+      if (index === subcategoryIndex) {
+        const updatedItems = subcategory.items.filter(
+          (item, idx) => idx !== itemIndex
+        );
+
+        return {
+          ...subcategory,
+          items: updatedItems,
+        };
+      }
+      return subcategory;
+    });
+
+    setSubCategories(newSubCategories);
   };
 
   const handleSelectSubcategory = (index) => {
@@ -362,177 +394,121 @@ export default function Categories() {
     }
   }, [userInfo, refresh]);
 
-  // const submitHandler = async () => {
-  //   try {
-  //     if (!editCat) {
-  //       const exist = categories.some((e) => e.name === name);
-  //       if (exist) {
-  //         ctxDispatch({
-  //           type: "SHOW_TOAST",
-  //           payload: {
-  //             message: "Categories name already exist",
-  //             showStatus: true,
-  //             state1: "visible1 error",
-  //           },
-  //         });
-  //         return;
-  //       }
-  //       if (!name) {
-  //         ctxDispatch({
-  //           type: "SHOW_TOAST",
-  //           payload: {
-  //             message: "Enter a valid category name",
-  //             showStatus: true,
-  //             state1: "visible1 error",
-  //           },
-  //         });
-  //         return;
-  //       }
+  const handleEdit = (cat) => {
+    console.log(cat);
+    setEditCat(true);
+    setEditCurrentCat(cat);
+    setCategory({ name: cat.name, path: cat.ath });
+    setImageUpload({
+      loading: false,
+      image: cat.image,
+      error: "",
+    });
+    setSubCategories(cat.subCategories);
+  };
 
-  //       if (!imageUpload.image) {
-  //         ctxDispatch({
-  //           type: "SHOW_TOAST",
-  //           payload: {
-  //             message: "Upload a category image",
-  //             showStatus: true,
-  //             state1: "visible1 error",
-  //           },
-  //         });
-  //         return;
-  //       }
-  //       await axios.post(
-  //         "/api/categories",
-  //         {
-  //           name,
-  //           subCategories,
-  //           image: imageUpload.image,
-  //         },
-  //         {
-  //           headers: { Authorization: `Bearer ${userInfo.token}` },
-  //         }
-  //       );
-  //       ctxDispatch({
-  //         type: "SHOW_TOAST",
-  //         payload: {
-  //           message: "Categories Added",
-  //           showStatus: true,
-  //           state1: "visible1 success",
-  //         },
-  //       });
-  //     } else {
-  //       await axios.put(
-  //         "/api/categories",
-  //         {
-  //           id: editCurrentCat._id,
-  //           name,
-  //           subCategories,
-  //           image: imageUpload.image,
-  //         },
-  //         {
-  //           headers: { Authorization: `Bearer ${userInfo.token}` },
-  //         }
-  //       );
-  //       ctxDispatch({
-  //         type: "SHOW_TOAST",
-  //         payload: {
-  //           message: "Categories Updated",
-  //           showStatus: true,
-  //           state1: "visible1 success",
-  //         },
-  //       });
-  //       setEditCat(false);
-  //     }
+  const cancelEdit = () => {
+    setEditCat(false);
+    setEditCurrentCat(null);
+    setCategory({ name: "", path: "" });
+    setSubCategories([]);
+    setImageUpload({
+      loading: false,
+      image: "",
+      error: "",
+    });
+  };
 
-  //     setName("");
-  //     subCategories = [];
-  //     setCurrentCat("");
-  //     setCurrentCatItem("");
-  //     setImageUpload({ loading: false, image: "", error: "" });
-  //     setrefresh(!refresh);
-  //   } catch (err) {
-  //     console.log(getError(err));
-  //   }
-  // };
+  const submitHandler = async () => {
+    try {
+      if (!editCat) {
+        const exist = categories.some((e) => e.name === category.name);
+        if (exist) {
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Categories name already exist",
+              showStatus: true,
+              state1: "visible1 error",
+            },
+          });
+          return;
+        }
+        if (!category.name) {
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Enter a valid category name",
+              showStatus: true,
+              state1: "visible1 error",
+            },
+          });
+          return;
+        }
 
-  // const sizeHandler = (name) => {
-  //   const exist = subCategories.filter((s) => {
-  //     return s.name === name;
-  //   });
-  //   if (exist.length > 0) {
-  //     const newsizes = subCategories.filter((s) => {
-  //       return s.name !== name;
-  //     });
-  //     console.log(subCategories);
-  //     subCategories = newsizes;
-  //     console.log(subCategories);
-  //     setCurrentCatItem("");
-  //     setCurrentCat("");
-  //     setrefresh(!refresh);
+        if (!imageUpload.image) {
+          ctxDispatch({
+            type: "SHOW_TOAST",
+            payload: {
+              message: "Upload a category image",
+              showStatus: true,
+              state1: "visible1 error",
+            },
+          });
+          return;
+        }
+        await axios.post(
+          "/api/categories",
+          {
+            category,
+            subCategories,
+            image: imageUpload.image,
+          },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Categories Added",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+      } else {
+        await axios.put(
+          "/api/categories",
+          {
+            id: editCurrentCat._id,
+            category,
+            subCategories,
+            image: imageUpload.image,
+          },
+          {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+        ctxDispatch({
+          type: "SHOW_TOAST",
+          payload: {
+            message: "Categories Updated",
+            showStatus: true,
+            state1: "visible1 success",
+          },
+        });
+        setEditCat(false);
+      }
 
-  //     return;
-  //   }
-  //   if (!editCatSub) {
-  //     if (currentCatItem === "") {
-  //       const subCategoriesObject = {
-  //         name: currentCat.toLowerCase(),
-  //         items: [],
-  //       };
-  //       subCategories.push(subCategoriesObject);
-  //     } else {
-  //       const CatArray = currentCatItem.toLowerCase().split(",");
-  //       const subCategoriesObject = {
-  //         name: currentCat.toLowerCase(),
-  //         items: CatArray,
-  //       };
-  //       subCategories.push(subCategoriesObject);
-  //     }
-  //     setCurrentCat("");
-  //     setCurrentCatItem("");
-  //     setrefresh(!refresh);
-  //   } else {
-  //     if (currentCatItem === "") {
-  //       const subCategoriesObject = {
-  //         name: currentCat.toLowerCase(),
-  //         items: [],
-  //       };
-  //       subCategories[index] = subCategoriesObject;
-  //     } else {
-  //       const CatArray = currentCatItem.toLowerCase().split(",");
-  //       const subCategoriesObject = {
-  //         name: currentCat.toLowerCase(),
-  //         items: CatArray,
-  //       };
-  //       subCategories[index] = subCategoriesObject;
-  //     }
-  //     setCurrentCat("");
-  //     setCurrentCatItem("");
-  //     setrefresh(!refresh);
-  //     setEditCatSub(false);
-  //     console.log(subCategories);
-  //   }
-  // };
-
-  // const editHandler = (c, type) => {
-  //   if (type === "cancel") {
-  //     setName("");
-  //     subCategories = [];
-  //     setEditCat(false);
-  //     setImageUpload({ loading: false, image: "", error: "" });
-  //     return;
-  //   }
-  //   setName(c.name);
-  //   subCategories = c.subCategories;
-  //   setEditCat(true);
-  //   setEditCurrentCat(c);
-  //   setImageUpload({ loading: false, image: c.image, error: "" });
-  // };
-
-  // const editSubCategories = (sub) => {
-  //   setIndex(sub);
-  //   setEditCatSub(true);
-  //   setCurrentCat(subCategories[sub].name);
-  //   setCurrentCatItem(subCategories[sub].items.toString());
-  // };
+      setCategory({ name: "", path: "" });
+      setSubCategories([]);
+      setEditCurrentCat(null);
+      setImageUpload({ loading: false, image: "", error: "" });
+      setrefresh(!refresh);
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
 
   const deleteHandler = async (c) => {
     const confirm = window.confirm(
@@ -612,7 +588,7 @@ export default function Categories() {
       <Title>Categories</Title>
       <Content>
         <Left mode={mode}>
-          <Item>
+          <Item mode={mode}>
             <Label>Category Name</Label>
             <InputCont>
               <Input
@@ -632,7 +608,7 @@ export default function Categories() {
             </InputCont>
             <Path>{category.path}</Path>
           </Item>
-          <Item>
+          <Item mode={mode}>
             <Label>Category Image</Label>
             {imageUpload.loading ? (
               <LoadingBox />
@@ -656,7 +632,7 @@ export default function Categories() {
             />
             <UploadImage htmlFor="uploadimage">Upload</UploadImage>
           </Item>
-          <Item>
+          <Item mode={mode}>
             <InputCont>
               <Label>Sub Categories</Label>
               <Button
@@ -711,8 +687,7 @@ export default function Categories() {
                         color: "var(--malon-color)",
                       }}
                       onClick={() => {
-                        setSelectedSubcategoryIndex(subcategoryIndex);
-                        openModal("addNameLink2");
+                        handleDeleteSubcategory(subcategoryIndex);
                       }}
                     />
                   </InputContIcon>
@@ -720,13 +695,27 @@ export default function Categories() {
               </ItemCont>
             ))}
           </Item>
-          <Item>
+          <Item mode={mode}>
             <InputCont>
               <Label>Sub Categories Items</Label>
               <Button
                 mode={mode}
                 className="add"
-                onClick={() => openModal("addNameLink")}
+                onClick={() => {
+                  if (selectedSubcategoryIndex === null) {
+                    ctxDispatch({
+                      type: "SHOW_TOAST",
+                      payload: {
+                        message: "Select sub category",
+                        showStatus: true,
+                        state1: "visible1 error",
+                      },
+                    });
+                    return;
+                  }
+                  setItemIndex(null);
+                  openModal("addNameLink");
+                }}
               >
                 Add
               </Button>
@@ -749,9 +738,6 @@ export default function Categories() {
                         <ItemCont
                           onClick={() =>
                             setSelectedSubcategoryIndex(subcategoryIndex)
-                          }
-                          selected={
-                            selectedSubcategoryIndex === subcategoryIndex
                           }
                         >
                           <InputCont>
@@ -797,9 +783,7 @@ export default function Categories() {
                                   color: "var(--malon-color)",
                                 }}
                                 onClick={() => {
-                                  setSelectedSubcategoryIndex(subcategoryIndex);
-                                  setItemIndex(itemIndex);
-                                  openModal("addNameLink");
+                                  handleDeleteItem(subcategoryIndex, itemIndex);
                                 }}
                               />
                             </InputContIcon>
@@ -812,32 +796,18 @@ export default function Categories() {
             ))}
           </Item>
 
-          {/* <SubCont>
-            {subCategories.map((c, index) => (
-              <SubCat>
-                <CatList mode={mode} key={index}>
-                  <div onClick={() => editSubCategories(index)}>{c.name}</div>
-                </CatList>
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  onClick={(e) => sizeHandler(c.name)}
-                />
-              </SubCat>
-            ))}
-          </SubCont> */}
-
-          {/* <Button onClick={submitHandler}>
+          <Button onClick={submitHandler}>
             {editCat ? "Update Category" : "Add Category"}
           </Button>
           {editCat ? (
             <FontAwesomeIcon
-              onClick={() => editHandler("", "cancel")}
+              onClick={() => cancelEdit()}
               className="icon"
               icon={faTimes}
             />
           ) : (
             ""
-          )} */}
+          )}
 
           {modal.addNameLink && (
             <Modal onClose={() => closeModal("addNameLink")}>
@@ -901,7 +871,9 @@ export default function Categories() {
                 {c.name}
               </div>
               <div>
-                <Edit mode={mode}>Edit</Edit>
+                <Edit mode={mode} onClick={() => handleEdit(c)}>
+                  Edit
+                </Edit>
                 <Delete mode={mode} onClick={() => deleteHandler(c)}>
                   Delete
                 </Delete>
@@ -928,9 +900,10 @@ const FormModal = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (index) {
-      if (itemIndex) {
+    if (index >= 0 && index !== null) {
+      if (itemIndex >= 0 && itemIndex !== null) {
         onSubmit(index, itemIndex, name, link);
+        console.log("name1");
       } else {
         onSubmit(index, name, link);
       }
@@ -964,7 +937,7 @@ const FormModal = ({
             />
           </>
         )}
-        <button type="submit">Submit</button>
+        <Button type="submit">Add</Button>
       </Form1>
     </ModalContent>
   );

@@ -702,7 +702,7 @@ export default function PlaceOrderScreen() {
                     >
                       Proceed to Payment
                     </Button>
-                  ) : cart.paymentMethod === "Credit/Debit card" ? (
+                  ) : cart.paymentMethod !== "Wallet" ? (
                     region() === "ZAR" ? (
                       <PayFast
                         userInfo={userInfo}
@@ -723,6 +723,7 @@ export default function PlaceOrderScreen() {
                               }
                         }
                         onApprove={onApprove}
+                        method={cart.paymentMethod}
                       />
                     )
                   ) : (

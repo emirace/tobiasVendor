@@ -58,7 +58,9 @@ export default function CategoriesLinksButtons() {
   return (
     <Container mode={mode}>
       {categories?.map((cat) => (
-        <Box onClick={() => navigate(`/category/${cat.name}`)}>{cat.name}</Box>
+        <Box onClick={() => navigate(cat.path || `/search?query=${cat.name}`)}>
+          {cat.name}
+        </Box>
       ))}
     </Container>
   );

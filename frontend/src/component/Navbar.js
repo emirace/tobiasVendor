@@ -976,7 +976,9 @@ export default function Navbar({
           categories.map((c) => (
             <CategoryGroup>
               <CategoryItem>
-                <Link to={`/search?category=${c.name}`}>{c.name}</Link>
+                <Link to={c.path || `/search?category=${c.name}`}>
+                  {c.name}
+                </Link>
                 {/* <Link to={`/category/${c.name}`}>{c.name}</Link>  */}
               </CategoryItem>
 
@@ -986,7 +988,9 @@ export default function Navbar({
                     if (s.items.length === 0) {
                       return (
                         <SubCategoryItemS>
-                          <a href={`/search?query=${s.name}`}>{s.name}</a>
+                          <Link to={s.path || `/search?query=${s.name}`}>
+                            {s.name}
+                          </Link>
                         </SubCategoryItemS>
                       );
                     } else {
@@ -995,9 +999,9 @@ export default function Navbar({
                           <SubCategoryItem>{s.name}</SubCategoryItem>
                           <UList>
                             {s.items.map((l) => (
-                              <a href={`/search?query=${l.name}`}>
-                                <SList>{l.nameS}</SList>
-                              </a>
+                              <Link to={l.path || `/search?query=${l.name}`}>
+                                <SList>{l.name}</SList>
+                              </Link>
                             ))}
                           </UList>
                         </Group>

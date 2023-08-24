@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { region } from "../utils";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowsAlt, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 const SkeletonPulse = keyframes`
   0% {
@@ -114,15 +116,19 @@ const ViewMoreButton = styled.button`
   display: block;
   margin: 20px auto;
   margin-top: 0;
-  padding: 10px 20px;
+  padding: 5px 20px;
   font-size: 16px;
   background-color: var(--orange-color);
   border-radius: 0.2rem;
   color: #fff;
+  font-weight: bold;
   border: none;
   cursor: pointer;
   &:hover {
     background-color: var(--malon-color);
+  }
+  @media (max-width: 768px) {
+    width: 95%;
   }
 `;
 
@@ -226,7 +232,7 @@ export default function TheThrill() {
                   <>
                     <span>
                       {product.currency}
-                      {product.price}
+                      {product.actualPrice}
                     </span>
                     <DiscountBadge>{discount(product)}% Off</DiscountBadge>
                   </>
@@ -234,6 +240,25 @@ export default function TheThrill() {
                   `${product.currency}${product.price}`
                 )}
               </ProductPrice>
+              {/* <ul className="product_hover">
+                <li>
+                  <span
+                  // onClick={() => setShowModel(!showModel)}
+                  >
+                    <FontAwesomeIcon icon={faArrowsAlt} />
+                  </span>
+                </li>
+                <li>
+                <span onClick={toggleLikes}>*/}
+              {/* <FontAwesomeIcon icon={faThumbsUp} /> */}
+              {/*   </span>
+                </li>
+                <li>
+                  <span onClick={() => saveItem()}>
+                    <FontAwesomeIcon icon={faHeart} />
+                  </span>
+                </li>
+              </ul> */}
             </ProductContainer>
           ))}
         </ProductsContainer>

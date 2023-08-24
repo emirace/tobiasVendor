@@ -49,6 +49,7 @@ import Mixpanel from "mixpanel";
 import contactRouter from "./routes/contactRoutes.js";
 import Order from "./models/orderModel.js";
 import Payment from "./models/paymentModel.js";
+import Category from "./models/categoryModel.js";
 
 dotenv.config();
 
@@ -106,19 +107,38 @@ app.get("/api/keys/flutterwave", (req, res) => {
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
-// const paymentId = async () => {
-//   const payments = await Payment.find();
-//   payments.map(async (payment) => {
-//     if (!payment.paymentId) {
-//       payment.paymentId = payment._id.toString();
-//       await payment.save();
-//       console.log("updated", payment._id);
-//     } else {
-//       console.log("already has", payment._id);
-//     }
+// const changeCat = async () => {
+//   console.log("starting change");
+//   const categoriesFromDB = await Category.find().exec(); // Assuming 'Category' is your Mongoose model
+
+//   const updatedCategories = categoriesFromDB.map((category) => {
+//     const updatedSubCategories = (category.subCategories || []).map(
+//       (subCategory) => ({
+//         ...subCategory.toObject(),
+//         items: (subCategory.items || []).map((itemName) => ({
+//           name: itemName,
+//           path: null,
+//         })),
+//       })
+//     );
+
+//     return {
+//       ...category.toObject(),
+//       subCategories: updatedSubCategories,
+//     };
 //   });
+
+//   // Assuming 'Category' is your Mongoose model
+//   await Promise.all(
+//     updatedCategories.map((updatedCategory) =>
+//       Category.findByIdAndUpdate(updatedCategory._id, updatedCategory, {
+//         new: true,
+//       }).exec()
+//     )
+//   );
+//   console.log("done change");
 // };
-// await paymentId();
+// await changeCat();
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);

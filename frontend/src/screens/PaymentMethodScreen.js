@@ -47,10 +47,40 @@ export default function PaymentMethodScreen() {
         <div className="mb-3">
           <Form.Check
             type="radio"
-            id="Credit/Debit card"
-            label="Credit/Debit card"
-            value="Credit/Debit card"
-            checked={paymentMethodName === "Credit/Debit card"}
+            id="card"
+            label="Card"
+            value="card"
+            checked={paymentMethodName === "card"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <Form.Check
+            type="radio"
+            id="ussd"
+            label="USSD"
+            value="ussd"
+            checked={paymentMethodName === "ussd"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <Form.Check
+            type="radio"
+            id="account"
+            label="Account"
+            value="account"
+            checked={paymentMethodName === "account"}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <Form.Check
+            type="radio"
+            id="banktransfer"
+            label="Bank Transfer"
+            value="banktransfer"
+            checked={paymentMethodName === "banktransfer"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
         </div>

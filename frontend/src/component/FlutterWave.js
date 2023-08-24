@@ -21,7 +21,13 @@ const Button = styled.div`
     background: var(--malon-color);
   }
 `;
-export default function FlutterWave({ amount, currency, user, onApprove }) {
+export default function FlutterWave({
+  amount,
+  currency,
+  user,
+  onApprove,
+  method,
+}) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [baseKey, setBaseKey] = useState("");
@@ -36,12 +42,14 @@ export default function FlutterWave({ amount, currency, user, onApprove }) {
     getKey();
   }, []);
 
+  console.log("method", method);
+
   const config = {
     public_key: baseKey,
     tx_ref: v4(),
     amount,
     currency,
-    payment_options: "card,mobilemoney,ussd",
+    payment_options: method,
     customer: {
       email: user.email,
       phonenumber: user.phone,

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const subCategoriesSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: { type: String },
   items: [{ name: { type: String }, path: { type: String, default: null } }],
   path: { type: String, default: null },
 });

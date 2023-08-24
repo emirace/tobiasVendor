@@ -23,10 +23,10 @@ categoryRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const category = new Category({
-      name: req.body.name,
+      name: req.body.category.name,
       subCategories: req.body.subCategories,
       image: req.body.image,
-      path: req.body.path,
+      path: req.body.category.path,
     });
 
     await category.save();
