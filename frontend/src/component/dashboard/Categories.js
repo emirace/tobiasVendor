@@ -12,7 +12,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Store } from "../../Store";
-import { getError } from "../../utils";
+import { compressImageUpload, getError } from "../../utils";
 import LoadingBox from "../LoadingBox";
 
 const Container = styled.div`
@@ -244,20 +244,48 @@ const Path = styled.div`
   margin-top: -5px;
 `;
 
-// const Label = styled.label`
-//   font-weight: bold;
-// `;
-
-// const Input = styled.input`
-//   padding: 5px;
-// `;
-
+const Checkbox = styled.input`
+  /* margin-bottom: 10px; */
+  margin-right: 10px;
+  cursor: pointer;
+  &::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+    border: 1px solid var(--orange-color);
+  }
+  &:checked::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: var(--orange-color);
+    border: 1px solid var(--malon-color);
+  }
+`;
 export default function Categories() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
   const [categories, setCategories] = useState([]);
-  const [category, setCategory] = useState({ name: "", path: "" });
+  const [category, setCategory] = useState({
+    name: "",
+    isCategory: true,
+    path: "",
+  });
   const [subCategories, setSubCategories] = useState([]);
   const [selectedSubcategoryIndex, setSelectedSubcategoryIndex] =
     useState(null);
@@ -271,26 +299,31 @@ export default function Categories() {
     setCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCategoryPathChange = (name, path) => {
+  const handleCategoryPathChange = (name, isCategory, path) => {
     const newCategory = {
       name,
+      isCategory,
       path,
     };
     setCategory(newCategory);
   };
 
-  const handleAddSubcategory = (name, path) => {
+  const handleAddSubcategory = (name, isCategory, path) => {
     const newSubcategory = {
       name,
+      isCategory,
       path,
     };
     setSubCategories([...subCategories, newSubcategory]);
   };
 
-  const handleAddItem = (subcategoryIndex, name, path) => {
+  const handleAddItem = (subcategoryIndex, name, isCategory, path) => {
     const newSubCategories = subCategories.map((subcategory, index) => {
       if (index === subcategoryIndex) {
-        const updatedItems = [...(subcategory.items || []), { name, path }];
+        const updatedItems = [
+          ...(subcategory.items || []),
+          { name, isCategory, path },
+        ];
 
         return {
           ...subcategory,
@@ -303,10 +336,10 @@ export default function Categories() {
     setSubCategories(newSubCategories);
   };
 
-  const handleSubcategoryChange = (index, name, path) => {
-    console.log(index, name, path);
+  const handleSubcategoryChange = (index, name, isCategory, path) => {
     const updatedSubCategories = [...subCategories];
     updatedSubCategories[index].name = name;
+    updatedSubCategories[index].isCategory = isCategory;
     updatedSubCategories[index].path = path;
     setSubCategories(updatedSubCategories);
   };
@@ -318,9 +351,18 @@ export default function Categories() {
     setSubCategories(newSubCategories);
   };
 
-  const handleItemChange = (subcategoryIndex, itemIndex, name, path) => {
+  const handleItemChange = (
+    subcategoryIndex,
+    itemIndex,
+    name,
+    isCategory,
+    path
+  ) => {
+    console.log(name, isCategory, path);
     const updatedSubCategories = [...subCategories];
     updatedSubCategories[subcategoryIndex].items[itemIndex].name = name;
+    updatedSubCategories[subcategoryIndex].items[itemIndex].isCategory =
+      isCategory;
     updatedSubCategories[subcategoryIndex].items[itemIndex].path = path;
     setSubCategories(updatedSubCategories);
   };
@@ -345,19 +387,6 @@ export default function Categories() {
 
   const handleSelectSubcategory = (index) => {
     setSelectedSubcategoryIndex(index);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post("YOUR_BACKEND_API_URL", {
-        name: category,
-        subCategories: subCategories,
-      });
-
-      // Handle response, show success message, navigate to a different screen, etc.
-    } catch (error) {
-      // Handle error, show error message, etc.
-    }
   };
 
   const [modal, setModal] = useState({
@@ -395,7 +424,6 @@ export default function Categories() {
   }, [userInfo, refresh]);
 
   const handleEdit = (cat) => {
-    console.log(cat);
     setEditCat(true);
     setEditCurrentCat(cat);
     setCategory({ name: cat.name, path: cat.ath });
@@ -541,21 +569,18 @@ export default function Categories() {
     error: "",
   });
   const uploadImageHandler = async (e) => {
-    const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
     try {
       setImageUpload((prev) => ({ ...prev, loading: true }));
-      const { data } = await axios.post("/api/upload", bodyFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
+      const imageUrl = await compressImageUpload(
+        e.target.files[0],
+        1024,
+        userInfo.token
+      );
       setImageUpload((prev) => ({
         ...prev,
         loading: false,
-        image: data.secure_url,
+        error: "",
+        image: imageUrl,
       }));
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -582,6 +607,8 @@ export default function Categories() {
       console.log(getError(err));
     }
   };
+
+  console.log(category, subCategories);
 
   return (
     <Container>
@@ -818,7 +845,11 @@ export default function Categories() {
                 category={
                   itemIndex !== null
                     ? subCategories[selectedSubcategoryIndex].items[itemIndex]
-                    : {}
+                    : {
+                        name: "",
+                        isCategory: true,
+                        path: "",
+                      }
                 }
                 nameLabel="Name:"
                 linkLabel="Link:"
@@ -831,7 +862,7 @@ export default function Categories() {
             <Modal onClose={() => closeModal("addNameLink2")}>
               <FormModal
                 onSubmit={
-                  selectedSubcategoryIndex
+                  selectedSubcategoryIndex !== null
                     ? handleSubcategoryChange
                     : handleAddSubcategory
                 }
@@ -839,7 +870,11 @@ export default function Categories() {
                 category={
                   selectedSubcategoryIndex !== null
                     ? subCategories[selectedSubcategoryIndex]
-                    : {}
+                    : {
+                        name: "",
+                        isCategory: true,
+                        path: "",
+                      }
                 }
                 nameLabel="Name:"
                 linkLabel="Link:"
@@ -895,20 +930,35 @@ const FormModal = ({
   linkLabel,
   itemIndex,
 }) => {
+  const { dispatch: ctxDispatch } = useContext(Store);
   const [name, setName] = useState(category.name || "");
   const [link, setLink] = useState(category.path || "");
+  const [isCategory, setIsCategory] = useState(category.isCategory);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!name) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Name is required",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    console.log(index, itemIndex);
+    console.log(index >= 0 && index !== null);
     if (index >= 0 && index !== null) {
+      console.log(itemIndex >= 0 && itemIndex !== null);
       if (itemIndex >= 0 && itemIndex !== null) {
-        onSubmit(index, itemIndex, name, link);
-        console.log("name1");
+        onSubmit(index, itemIndex, name, isCategory, link);
       } else {
-        onSubmit(index, name, link);
+        onSubmit(index, name, isCategory, link);
       }
     } else {
-      onSubmit(name, link);
+      onSubmit(name, isCategory, link);
     }
     onClose();
   };
@@ -937,6 +987,16 @@ const FormModal = ({
             />
           </>
         )}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Checkbox
+            id="checkbox"
+            type="checkbox"
+            checked={isCategory}
+            onChange={(e) => setIsCategory(e.target.checked)}
+          />
+          <label htmlFor="checkbox">It's Category</label>
+        </div>
+
         <Button type="submit">Add</Button>
       </Form1>
     </ModalContent>

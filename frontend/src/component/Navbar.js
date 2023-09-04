@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBox from "./SearchBox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import axios from "axios";
 import { getError } from "../utils";
@@ -647,6 +647,8 @@ export default function Navbar({
     setmodelRef2(modelRef2.current);
   }, []);
 
+  const navigate = useNavigate();
+
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode, notifications, refresher } = state;
 
@@ -868,9 +870,22 @@ export default function Navbar({
               )}
             </Link>
           </MenuItemCart>
-          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
+          {/* <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <SellButton>Sell</SellButton>
-          </Link>
+          </Link> */}
+          <MenuItemCart>
+            <FontAwesomeIcon
+              icon={faBell}
+              color="var(--malon-color)"
+              style={{ cursor: "pointer", size: "20px", marginTop: "10px" }}
+              onClick={() => navigate("/notifications")}
+            />
+            {allNotification.length > 0 && (
+              <Badge>
+                <span>{allNotification.length}</span>
+              </Badge>
+            )}
+          </MenuItemCart>
           {userInfo ? (
             <ProfileCont>
               <ProfileImg

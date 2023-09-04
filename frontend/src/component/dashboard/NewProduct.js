@@ -360,6 +360,7 @@ const BrandListItem = styled.div`
 const Checkbox = styled.input`
   margin-bottom: 10px;
   margin-right: 10px;
+  cursor: pointer;
   &::after {
     width: 15px;
     height: 15px;
@@ -385,7 +386,7 @@ const Checkbox = styled.input`
     top: -2px;
     left: -1px;
     background-color: var(--orange-color);
-    border: 1px solid var(--orange-color);
+    border: 1px solid var(--malon-color);
   }
 `;
 const ItemCheck = styled.div`
@@ -1214,9 +1215,12 @@ export default function NewProduct() {
                 >
                   <MenuItem value="">-- select --</MenuItem>
                   {categories.length > 0 &&
-                    categories.map((cat) => (
-                      <MenuItem value={cat.name}>{cat.name}</MenuItem>
-                    ))}
+                    categories.map(
+                      (cat) =>
+                        cat.isCategory && (
+                          <MenuItem value={cat.name}>{cat.name}</MenuItem>
+                        )
+                    )}
                 </Select>
               </FormControl>
               {validationError.product && (
@@ -1270,9 +1274,14 @@ export default function NewProduct() {
                         categories.map(
                           (cat) =>
                             cat.name === input.product &&
-                            cat.subCategories.map((sub) => (
-                              <MenuItem value={sub.name}>{sub.name}</MenuItem>
-                            ))
+                            cat.subCategories.map(
+                              (sub) =>
+                                sub.isCategory && (
+                                  <MenuItem value={sub.name}>
+                                    {sub.name}
+                                  </MenuItem>
+                                )
+                            )
                         )}
                     </Select>
                   </FormControl>
@@ -1327,9 +1336,14 @@ export default function NewProduct() {
                             cat.subCategories.map(
                               (sub) =>
                                 sub.name === input.category &&
-                                sub.items.map((item, i) => (
-                                  <MenuItem value={item}>{item}</MenuItem>
-                                ))
+                                sub.items.map(
+                                  (item, i) =>
+                                    item.isCategory && (
+                                      <MenuItem value={item.name}>
+                                        {item.name}
+                                      </MenuItem>
+                                    )
+                                )
                             )
                         )}
                     </Select>

@@ -94,9 +94,11 @@ export const isSocialAuth = (req, res, next) => {
   }
 };
 
+console.log(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD);
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
-  port: 587,
+  host: "mail.privateemail.com",
+  port: 465,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
@@ -121,9 +123,8 @@ transporter.use(
 );
 
 export const sendEmail = async (options) => {
-  console.log("hello");
   const mailOption = {
-    from: { name: "Repeddle", address: "support@repeddle.com" },
+    from: { name: "Repeddle", address: "support@repeddle.co.za" },
     to: options.to,
     subject: options.subject,
     html: options.text,

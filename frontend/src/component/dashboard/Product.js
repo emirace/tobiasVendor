@@ -1388,7 +1388,7 @@ export default function Product() {
                           (sub) =>
                             sub.name === input.category &&
                             sub.items.map((item, i) => (
-                              <MenuItem value={item}>{item}</MenuItem>
+                              <MenuItem value={item.name}>{item.name}</MenuItem>
                             ))
                         )
                     )}

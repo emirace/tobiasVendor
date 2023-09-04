@@ -15,6 +15,14 @@ import styled from "styled-components";
 
 import { ReactComponent as Search } from "./../icons/search.svg";
 
+const Sell = styled.div`
+  background: var(--orange-color);
+  color: white;
+  border-radius: 50%;
+  padding: 12px;
+  font-weight: bold;
+`;
+
 export const Badge = styled.span`
   // min-width: 12px;
   // min-height: 12px;
@@ -86,21 +94,13 @@ export default function StickyNav() {
           <div className="stickynav_text">Categories</div>
         </Link>
         <Link
-          to="/notifications"
+          to={userInfo?.isSeller ? "/newproduct" : "/sell"}
           onClick={() => setCurrentNav("notifications")}
           className={`sticky_item ${
             currentNav === "notifications" && "active"
           }`}
         >
-          <div style={{ position: "relative" }}>
-            <FontAwesomeIcon icon={faBell} />
-          </div>
-          <div className="stickynav_text">Notifications</div>
-          {allNotification.length > 0 && (
-            <Badge>
-              <span>{allNotification.length}</span>
-            </Badge>
-          )}
+          <Sell className="stickynav_text">Sell</Sell>
         </Link>
         <Link
           to="/messages"

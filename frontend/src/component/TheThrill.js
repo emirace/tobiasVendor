@@ -78,7 +78,7 @@ const ProductsContainer = styled.div`
 `;
 
 const ProductContainer = styled.div`
-  flex: 0 0 calc(50% - 10px);
+  flex: 0 0 calc(33.33% - 10px);
   @media (min-width: 768px) {
     max-width: 240px;
   }

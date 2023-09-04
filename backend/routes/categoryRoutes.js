@@ -27,6 +27,7 @@ categoryRouter.post(
       subCategories: req.body.subCategories,
       image: req.body.image,
       path: req.body.category.path,
+      isCategory: req.body.category.isCategory,
     });
 
     await category.save();
@@ -42,12 +43,13 @@ categoryRouter.put(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const category = await Category.findById(req.body.id);
-
+    console.log(category.isCategory, req.body.category.isCategory);
     if (category) {
-      category.name = req.body.name || category.name;
+      category.name = req.body.category.name || category.name;
       category.subCategories = req.body.subCategories || category.subCategories;
       category.image = req.body.image || category.image;
-      category.path = req.body.path || category.path;
+      category.path = req.body.category.path || category.path;
+      category.isCategory = req.body.category.isCategory;
 
       const newCategory = await category.save();
       res.status(201).send(newCategory);
