@@ -194,6 +194,7 @@ export default function ReturnPage() {
   }, [refresh]);
 
   const paymentRequest = async (user, cost, type) => {
+    console.log("amount pay", cost, type);
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
@@ -321,14 +322,19 @@ export default function ReturnPage() {
         deliverOrderHandler("Return Declined", returned.productId._id);
         returned.orderId.orderItems.map(async (item) => {
           if (item._id === returned.productId._id) {
-            const amount1 =
+            const amountZAR =
               (92.1 / 100) *
-              (Number(returned.sending.cost) +
-                returned.productId.actualPrice * item.quantity);
+              (returned.productId.actualPrice * item.quantity +
+                returned.sending.cost);
+            const amountNGN =
+              (92.1 / 100) * returned.productId.actualPrice * item.quantity -
+              (1.4 / 100) * returned.sending.cost;
+            const amount =
+              returned.productId.region === "ZAR" ? amountZAR : amountNGN;
 
             await paymentRequest(
               returned.productId.seller,
-              amount1,
+              amount,
               "Return Declined"
             );
           }
@@ -455,11 +461,18 @@ export default function ReturnPage() {
   };
 
   const paySeller = async (product) => {
+    const amountZAR =
+      (92.1 / 100) *
+      (product.actualPrice * product.quantity + product.deliverySelect.cost);
+    const amountNGN =
+      (92.1 / 100) * product.actualPrice * product.quantity -
+      (1.4 / 100) * product.deliverySelect.cost;
+    const amount = product.region === "ZAR" ? amountZAR : amountNGN;
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
         userId: product.seller._id,
-        amount: (92.1 / 100) * product.actualPrice,
+        amount,
         meta: {
           Type: "Pay Seller",
           from: "Wallet",
@@ -777,7 +790,7 @@ export default function ReturnPage() {
                             if (item._id === returned.productId._id) {
                               await paymentRequest(
                                 returned.orderId.user,
-                                returned.returnDelivery.cost * 2 +
+                                returned.returnDelivery.cost +
                                   returned.productId.actualPrice *
                                     item.quantity,
                                 "Return Completed"

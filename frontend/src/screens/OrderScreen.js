@@ -649,39 +649,6 @@ export default function OrderScreen() {
     }
   }
 
-  const paymentRequest = async (orderitem) => {
-    const { data: paymentData } = await axios.post(
-      "/api/payments",
-      {
-        userId: orderitem.seller._id,
-        amount:
-          orderitem.region === "ZAR"
-            ? (92.1 / 100) *
-              (orderitem.actualPrice, +orderitem.deliverySelect.cost)
-            : (92.1 / 100) * orderitem.actualPrice,
-        meta: {
-          Type: "Order Completed",
-          from: "Wallet",
-          to: "Wallet",
-          typeName: "Order",
-          id: orderId,
-          currency: orderitem.currency,
-        },
-      },
-      {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      }
-    );
-    socket.emit("post_data", {
-      userId: "Admin",
-      itemId: paymentData._id,
-      notifyType: "payment",
-      msg: `Order Completed`,
-      link: `/payment/${paymentData._id}`,
-      mobile: { path: "PaymentScreen", id: paymentData._id },
-      userImage: orderitem.seller.image,
-    });
-  };
   const daydiff = (start, end) =>
     start && end - timeDifference(new window.Date(start), new window.Date());
 
@@ -741,12 +708,60 @@ export default function OrderScreen() {
     deliverOrderHandler("Refunded", product._id);
   };
 
+  const paymentRequest = async (orderitem) => {
+    const amountZAR =
+      (92.1 / 100) *
+      (orderitem.actualPrice * orderitem.quantity +
+        orderitem.deliverySelect.cost);
+    const amountNGN =
+      (92.1 / 100) * orderitem.actualPrice * orderitem.quantity -
+      (1.4 / 100) * orderitem.deliverySelect.cost;
+    const amount = orderitem.region === "ZAR" ? amountZAR : amountNGN;
+    console.log("amount paid", amountNGN, amountZAR, amount);
+
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: orderitem.seller._id,
+        amount,
+        meta: {
+          Type: "Order Completed",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
+          id: orderId,
+          currency: orderitem.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: "Admin",
+      itemId: paymentData._id,
+      notifyType: "payment",
+      msg: `Order Completed`,
+      link: `/payment/${paymentData._id}`,
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+      userImage: orderitem.seller.image,
+    });
+  };
+
   const paySeller = async (product) => {
+    const amountZAR =
+      (92.1 / 100) * (product.actualPrice + product.deliverySelect.cost);
+    const amountNGN =
+      (92.1 / 100) * product.actualPrice -
+      (1.4 / 100) * product.deliverySelect.cost;
+    const amount = product.region === "ZAR" ? amountZAR : amountNGN;
+    console.log("amount paid", amountNGN, amountZAR, amount);
+
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
         userId: product.seller._id,
-        amount: (92.1 / 100) * product.actualPrice,
+        amount,
         meta: {
           Type: "Pay Seller",
           from: "Wallet",
@@ -897,7 +912,7 @@ export default function OrderScreen() {
               >
                 <b>Log a return</b>
                 <div style={{ color: "red" }}>
-                  {daydiff(order.createdAt, 13)} days left
+                  {daydiff(order.deliveredAt, 3)} days left
                 </div>
               </div>
             )}
@@ -1315,13 +1330,7 @@ export default function OrderScreen() {
                                   orderitem._id,
                                   orderitem
                                 );
-                                paymentRequest(
-                                  orderitem.seller._id,
-                                  orderitem.actualPrice,
-                                  orderitem.currency,
-                                  orderitem.seller.image,
-                                  orderitem.deliverySelect.cost
-                                );
+                                paymentRequest(orderitem);
                                 setAfterAction(false);
                               }}
                             >

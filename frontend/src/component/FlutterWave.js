@@ -49,7 +49,8 @@ export default function FlutterWave({
     tx_ref: v4(),
     amount,
     currency,
-    payment_options: method,
+    payment_options:
+      "card, account, banktransfer, mpesa, barter, nqr, ussd, credit",
     customer: {
       email: user.email,
       phonenumber: user.phone,

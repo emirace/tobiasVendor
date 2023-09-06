@@ -48,13 +48,13 @@ export default function PaymentMethodScreen() {
           <Form.Check
             type="radio"
             id="card"
-            label="Card"
+            label="Debit/Credit/Bank"
             value="card"
             checked={paymentMethodName === "card"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <Form.Check
             type="radio"
             id="ussd"
@@ -83,7 +83,7 @@ export default function PaymentMethodScreen() {
             checked={paymentMethodName === "banktransfer"}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className="mb-3">
           <Form.Check
             disabled={balance === 0 || balance <= totalPrice}

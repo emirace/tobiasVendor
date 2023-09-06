@@ -290,6 +290,22 @@ const MenuItemCart = styled.div`
     opacity: 1;
   }
 `;
+
+const MenuItemNot = styled.div`
+  font-size: 20px;
+  padding: 0 10px;
+  position: relative;
+  display: none;
+  @media (max-width: 992px) {
+    display: block;
+  }
+  &:hover {
+    color: var(--orange-color);
+  }
+  &:hover div {
+    opacity: 1;
+  }
+`;
 const ProfileImg = styled.img`
   width: 40px;
   height: 40px;
@@ -559,6 +575,7 @@ const NotImage = styled.img`
 const NotDetail = styled.div`
   font-size: 14px;
   margin-left: 5px;
+  flex: 1;
 `;
 const NotText = styled.div`
   color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
@@ -873,7 +890,7 @@ export default function Navbar({
           {/* <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <SellButton>Sell</SellButton>
           </Link> */}
-          <MenuItemCart>
+          <MenuItemNot>
             <FontAwesomeIcon
               icon={faBell}
               color="var(--malon-color)"
@@ -885,7 +902,7 @@ export default function Navbar({
                 <span>{allNotification.length}</span>
               </Badge>
             )}
-          </MenuItemCart>
+          </MenuItemNot>
           {userInfo ? (
             <ProfileCont>
               <ProfileImg

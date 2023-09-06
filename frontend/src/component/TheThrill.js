@@ -63,8 +63,8 @@ const ProductsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  padding: 10px 20px;
-  gap: 20px;
+  padding: 10px 10px;
+  gap: 10px;
   @media (min-width: 768px) {
     flex-wrap: nowrap; /* Prevent wrapping of products on desktop */
     overflow-x: auto; /* Enable horizontal scrolling on desktop */
@@ -78,9 +78,9 @@ const ProductsContainer = styled.div`
 `;
 
 const ProductContainer = styled.div`
-  flex: 0 0 calc(33.33% - 10px);
+  flex: 0 0 calc(33% - 10px);
   @media (min-width: 768px) {
-    max-width: 240px;
+    max-width: 200px;
   }
 `;
 
@@ -93,7 +93,7 @@ const ProductName = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 120px;
   margin: 5px 0 0 0;
 `;
 

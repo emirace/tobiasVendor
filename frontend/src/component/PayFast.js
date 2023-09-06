@@ -19,6 +19,7 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 0.2rem;
+  margin-top: 10px;
   height: 40px;
   &:hover {
     background: var(--malon-color);
