@@ -107,38 +107,23 @@ app.get("/api/keys/flutterwave", (req, res) => {
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
-// const changeCat = async () => {
-//   console.log("starting change");
-//   const categoriesFromDB = await Category.find().exec(); // Assuming 'Category' is your Mongoose model
 
-//   const updatedCategories = categoriesFromDB.map((category) => {
-//     const updatedSubCategories = (category.subCategories || []).map(
-//       (subCategory) => ({
-//         ...subCategory.toObject(),
-//         items: (subCategory.items || []).map((itemName) => ({
-//           name: itemName,
-//           path: null,
-//         })),
-//       })
-//     );
-
-//     return {
-//       ...category.toObject(),
-//       subCategories: updatedSubCategories,
-//     };
+// const changeBrand = async () => {
+//   // Define a regular expression pattern to match non-alphabet characters
+//   const nonAlphabetPattern = { alpha: { $not: { $regex: /[A-Za-z]/ } } };
+//   console.log("started,,,,,,");
+//   // Update the "alpha" field for each matching brand to 'other'
+//   const updateResult = await Brand.updateMany(nonAlphabetPattern, {
+//     $set: { alpha: "other" },
 //   });
 
-//   // Assuming 'Category' is your Mongoose model
-//   await Promise.all(
-//     updatedCategories.map((updatedCategory) =>
-//       Category.findByIdAndUpdate(updatedCategory._id, updatedCategory, {
-//         new: true,
-//       }).exec()
-//     )
-//   );
-//   console.log("done change");
+//   // `updateResult` contains information about the update operation (number of documents updated, etc.)
+
+//   console.log("Number of brands updated:", updateResult.nModified);
 // };
-// await changeCat();
+
+// changeBrand();
+
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
