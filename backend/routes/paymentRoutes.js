@@ -1,34 +1,34 @@
-import express from 'express';
-import { isAdmin, isAuth } from '../utils.js';
-import expressAsyncHandler from 'express-async-handler';
-import Payment from '../models/paymentModel.js';
+import express from "express";
+import { isAdmin, isAuth } from "../utils.js";
+import expressAsyncHandler from "express-async-handler";
+import Payment from "../models/paymentModel.js";
 
 const paymentRouter = express.Router();
 
 // get all payments
 
 paymentRouter.get(
-  '/',
+  "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
     const searchQuery = query.q;
     const queryFilter =
-      searchQuery && searchQuery !== 'all'
+      searchQuery && searchQuery !== "all"
         ? {
             $or: [
               {
                 paymentId: {
                   $regex: searchQuery,
-                  $options: 'i',
+                  $options: "i",
                 },
               },
             ],
           }
         : {};
     const payments = await Payment.find({ ...queryFilter })
-      .populate('userId', 'username')
+      .populate("userId", "username")
       .sort({ createdAt: -1 });
     res.send(payments);
   })
@@ -37,12 +37,15 @@ paymentRouter.get(
 // add a payment
 
 paymentRouter.post(
-  '/',
+  "/",
   isAuth,
   expressAsyncHandler(async (req, res) => {
+    console.log(req.body.amount);
+    const formattedAmount = parseFloat(req.body.amount).toFixed(2);
+    console.log("amount", formattedAmount);
     const payment = new Payment({
       userId: req.body.userId,
-      amount: req.body.amount,
+      amount: formattedAmount,
       meta: req.body.meta,
     });
     payment.paymentId = payment._id.toString();
@@ -55,7 +58,7 @@ paymentRouter.post(
 // update a payment
 
 paymentRouter.put(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
@@ -65,7 +68,7 @@ paymentRouter.put(
       const newpayment = await payment.save();
       res.status(200).send(newpayment);
     } else {
-      res.status(404).send('payment not found');
+      res.status(404).send("payment not found");
     }
   })
 );
@@ -73,16 +76,16 @@ paymentRouter.put(
 // delete a payment
 
 paymentRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const payment = await Payment.findById(req.params.id);
     if (payment) {
       await payment.remove();
-      res.send('Adress deleted');
+      res.send("Adress deleted");
     } else {
-      res.status(404).send('Payment not found');
+      res.status(404).send("Payment not found");
     }
   })
 );
@@ -90,18 +93,18 @@ paymentRouter.delete(
 // get a payment
 
 paymentRouter.get(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const payment = await Payment.findById(req.params.id).populate(
-      'userId',
-      'username image'
+      "userId",
+      "username image"
     );
     if (payment) {
       res.status(201).send(payment);
     } else {
-      res.status(404).send('payment not found');
+      res.status(404).send("payment not found");
     }
   })
 );

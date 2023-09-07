@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { socket } from "../App";
 import { Badge } from "../component/Navbar";
@@ -46,7 +46,14 @@ const Time = styled.div`
 `;
 export default function MobileNotificationScreen() {
   const { state } = useContext(Store);
-  const { mode, userInfo, notifications } = state;
+  const { mode, notifications } = state;
+  const navigate = useNavigate();
+
+  const handleOnClick = (not) => {
+    console.log("not", not);
+    socket.emit("remove_id_notifications", not._id);
+    navigate(not.link);
+  };
   return (
     <Container>
       <NotificationMenu mode={mode}>
@@ -55,29 +62,25 @@ export default function MobileNotificationScreen() {
           <b>No Notification</b>
         ) : (
           notifications.map((not) => (
-            <Link to={not.link}>
-              <NotItem
-                mode={mode}
-                key={not._id}
-                onClick={() => {
-                  socket.emit("remove_id_notifications", not._id);
-                }}
-              >
-                <NotImage src={not.userImage} alt="img" />
-                <NotDetail>
-                  <NotText mode={mode}>{not.msg}</NotText>
-                  <Time>{moment(not.createdAt).fromNow()}</Time>
-                </NotDetail>
-                {!not.read && (
-                  <Badge
-                    style={{
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                    }}
-                  />
-                )}
-              </NotItem>
-            </Link>
+            <NotItem
+              mode={mode}
+              key={not._id}
+              onClick={() => handleOnClick(not)}
+            >
+              <NotImage src={not.userImage} alt="img" />
+              <NotDetail>
+                <NotText mode={mode}>{not.msg}</NotText>
+                <Time>{moment(not.createdAt).fromNow()}</Time>
+              </NotDetail>
+              {!not.read && (
+                <Badge
+                  style={{
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                  }}
+                />
+              )}
+            </NotItem>
           ))
         )}
       </NotificationMenu>

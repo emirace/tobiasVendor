@@ -391,15 +391,13 @@ io.on("connection", (socket) => {
     const currentDateTime = new Date();
     const notification = await Notification.findOne({
       _id: id,
-      createdAt: { $gte: currentDateTime },
+      createdAt: { $lte: currentDateTime },
     });
 
     if (notification) {
       notification.read = true;
       await notification.save();
     }
-
-    // await Notification.create(notifications)
 
     io.sockets.emit("change_data");
   });
