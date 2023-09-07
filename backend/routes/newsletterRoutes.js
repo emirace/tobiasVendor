@@ -31,14 +31,19 @@ const emailLists = [
     template: 'performanceTracking',
   },
   {
-    name: "Exciting announcement",
-    subject: "EXCITING ANNOUNCEMENT",
-    template: "exiciting",
+    name: 'Exciting announcement',
+    subject: 'EXCITING ANNOUNCEMENT',
+    template: 'exiciting',
   },
   {
     name: 'Chanllenging fast',
     subject: 'CHALLENGING FAST FASHION POLLUTION IN AFRICA',
     template: 'challenging',
+  },
+  {
+    name: 'Feature Update',
+    subject: 'FEATURE UPDATE',
+    template: 'featureUpdate',
   },
 ];
 
@@ -182,10 +187,10 @@ newsletterRouter.post(
 
     await sendEmail({
       to: email,
-      subject: "WELCOME TO REPEDDLE NEWSLATTER",
-      template: "newsletter",
+      subject: 'WELCOME TO REPEDDLE NEWSLATTER',
+      template: 'newsletter',
       context: {
-        url: region === "NGN" ? "com" : "co.za",
+        url: region === 'NGN' ? 'com' : 'co.za',
       },
     });
 
