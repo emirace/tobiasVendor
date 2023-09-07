@@ -628,7 +628,7 @@ export default function OrderScreen() {
         socket.emit("post_data", {
           userId: order.user,
           itemId: order._id,
-          notifyType: "buyerreturn",
+          notifyType: "delivery",
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
@@ -708,16 +708,24 @@ export default function OrderScreen() {
     deliverOrderHandler("Refunded", product._id);
   };
 
-  const paymentRequest = async (orderitem) => {
-    const amountZAR =
-      (92.1 / 100) *
-      (orderitem.actualPrice * orderitem.quantity +
-        orderitem.deliverySelect.cost);
+  function calculateAmount(orderitem) {
+    console.log(orderitem);
+    const price = orderitem.actualPrice * orderitem.quantity;
+    const deliveryCost = orderitem.deliverySelect.cost;
+
+    const exchangeRate = 0.921; // 92.1%
+    const amountZAR = exchangeRate * (price + deliveryCost);
     const amountNGN =
-      (92.1 / 100) * orderitem.actualPrice * orderitem.quantity -
-      (1.4 / 100) * orderitem.deliverySelect.cost;
+      (exchangeRate * price - 0.014 * deliveryCost) *
+      (orderitem.region === "ZAR" ? 1 : 0);
+
     const amount = orderitem.region === "ZAR" ? amountZAR : amountNGN;
-    console.log("amount paid", amountNGN, amountZAR, amount);
+
+    return amount;
+  }
+
+  const paymentRequest = async (orderitem) => {
+    const amount = calculateAmount(orderitem);
 
     const { data: paymentData } = await axios.post(
       "/api/payments",
@@ -749,13 +757,7 @@ export default function OrderScreen() {
   };
 
   const paySeller = async (product) => {
-    const amountZAR =
-      (92.1 / 100) * (product.actualPrice + product.deliverySelect.cost);
-    const amountNGN =
-      (92.1 / 100) * product.actualPrice -
-      (1.4 / 100) * product.deliverySelect.cost;
-    const amount = product.region === "ZAR" ? amountZAR : amountNGN;
-    console.log("amount paid", amountNGN, amountZAR, amount);
+    const amount = calculateAmount(product);
 
     const { data: paymentData } = await axios.post(
       "/api/payments",
@@ -903,8 +905,7 @@ export default function OrderScreen() {
         >
           <Heading>Items in your order</Heading>
           {!isSeller &&
-            daydiff(order.createdAt, 10) <= 0 &&
-            daydiff(order.createdAt, 13) >= 0 &&
+            daydiff(order.deliveredAt, 3) >= 0 &&
             deliveryNumber(order.deliveryStatus) > 3 && (
               <div
                 style={{ cursor: "pointer" }}

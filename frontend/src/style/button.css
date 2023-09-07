@@ -949,9 +949,10 @@ form .mb-3 a:hover,
     left: 10px;
   }
   .product-card1 {
-    width: 162px;
+    width: 172px;
     height: 342px;
     margin-right: 10px;
+    margin-bottom: 10px;
   }
   .center-item {
     margin-bottom: 10px;

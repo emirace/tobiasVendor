@@ -1678,14 +1678,7 @@ export default function Product() {
               </Actual>
             </PriceDisplay>
             <TitleDetails>
-              <div style={{ color: "red", fontSize: "12px", fontSize: "13px" }}>
-                Our Commission
-              </div>
-              To give you unmatched user experience and support the growth of
-              your business as part of our community, you will not be charged
-              Repeddle commission fee. To understand how our fee works after the
-              grace period, please have a look at our fee structure{" "}
-              <span
+              <div
                 onClick={() => setShowComissionModal(true)}
                 style={{
                   color: "red",
@@ -1694,8 +1687,8 @@ export default function Product() {
                   cursor: "pointer",
                 }}
               >
-                here{" "}
-              </span>
+                Our Commission
+              </div>
             </TitleDetails>
             <ModelLogin
               setShowModel={setShowComissionModal}

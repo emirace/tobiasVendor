@@ -1494,7 +1494,7 @@ export default function NewProduct() {
                   <MenuItem value="Vegan leather">Vegan leather</MenuItem>
                   <MenuItem value="Velvet">Velvet</MenuItem>
                   <MenuItem value="Wool">Wool</MenuItem>
-                  <MenuItem value="Wool">Other</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
                 </Select>
               </FormControl>
               {validationError.material && (

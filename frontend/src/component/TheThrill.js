@@ -4,7 +4,11 @@ import { region } from "../utils";
 import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowsAlt, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowsAlt,
+  faHeart,
+  faThumbsUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 const SkeletonPulse = keyframes`
   0% {
@@ -27,7 +31,7 @@ const SkeletonImage = styled.div`
 `;
 
 const SkeletonProductContainer = styled.div`
-  flex: 0 0 calc(50% - 10px);
+  flex: 0 0 calc(33% - 10px);
   padding: 10px;
   background-color: #f0f0f0;
   @media (min-width: 768px) {
@@ -78,7 +82,12 @@ const ProductsContainer = styled.div`
 `;
 
 const ProductContainer = styled.div`
+  position: relative;
   flex: 0 0 calc(33% - 10px);
+  /* &:hover .product_hover li {
+    opacity: 1;
+    top: 0;
+  } */
   @media (min-width: 768px) {
     max-width: 200px;
   }
@@ -89,12 +98,16 @@ const Image = styled.img`
 `;
 
 const ProductName = styled.h3`
-  font-size: 18px;
+  font-size: 16px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100px;
   margin: 5px 0 0 0;
+  @media (min-width: 768px) {
+    font-size: 18px;
+    max-width: 200px;
+  }
 `;
 
 const ProductPrice = styled.p`
@@ -240,7 +253,7 @@ export default function TheThrill() {
                   `${product.currency}${product.price}`
                 )}
               </ProductPrice>
-              {/* <ul className="product_hover">
+              <ul className="product_hover">
                 <li>
                   <span
                   // onClick={() => setShowModel(!showModel)}
@@ -249,16 +262,20 @@ export default function TheThrill() {
                   </span>
                 </li>
                 <li>
-                <span onClick={toggleLikes}>*/}
-              {/* <FontAwesomeIcon icon={faThumbsUp} /> */}
-              {/*   </span>
+                  <span
+                  // onClick={toggleLikes}
+                  >
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                  </span>
                 </li>
                 <li>
-                  <span onClick={() => saveItem()}>
+                  <span
+                  // onClick={() => saveItem()}
+                  >
                     <FontAwesomeIcon icon={faHeart} />
                   </span>
                 </li>
-              </ul> */}
+              </ul>
             </ProductContainer>
           ))}
         </ProductsContainer>

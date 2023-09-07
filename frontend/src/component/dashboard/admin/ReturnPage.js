@@ -671,8 +671,7 @@ export default function ReturnPage() {
               <>
                 {userInfo.isAdmin &&
                   daydiff(orderitem.deliveredAt, 3) <= 0 &&
-                  deliveryNumber(orderitem.deliveryStatus) < 9 &&
-                  deliveryNumber(orderitem.deliveryStatus) > 8 &&
+                  deliveryNumber(orderitem.deliveryStatus) === 8 &&
                   !returned.returnDelivery && (
                     <button
                       onClick={() => refund(orderitem)}
@@ -688,8 +687,7 @@ export default function ReturnPage() {
 
                 {userInfo.isAdmin &&
                   daydiff(orderitem.deliveredAt, 3) <= 0 &&
-                  deliveryNumber(orderitem.deliveryStatus) < 11 &&
-                  deliveryNumber(orderitem.deliveryStatus) > 10 && (
+                  deliveryNumber(orderitem.deliveryStatus) === 10 && (
                     <button
                       onClick={() => refund(orderitem)}
                       className="btn btn-primary w-100"
@@ -704,8 +702,7 @@ export default function ReturnPage() {
 
                 {userInfo.isAdmin &&
                   daydiff(orderitem.deliveredAt, 3) <= 0 &&
-                  deliveryNumber(orderitem.deliveryStatus) < 9 &&
-                  deliveryNumber(orderitem.deliveryStatus) > 8 &&
+                  deliveryNumber(orderitem.deliveryStatus) === 8 &&
                   returned.returnDelivery && (
                     <button
                       onClick={() => {
@@ -722,8 +719,7 @@ export default function ReturnPage() {
                   )}
                 {userInfo.isAdmin &&
                   daydiff(orderitem.deliveredAt, 7) <= 0 &&
-                  deliveryNumber(orderitem.deliveryStatus) < 10 &&
-                  deliveryNumber(orderitem.deliveryStatus) > 9 &&
+                  deliveryNumber(orderitem.deliveryStatus) === 9 &&
                   returned.returnDelivery && (
                     <button
                       onClick={() => {

@@ -19,8 +19,15 @@ const Sell = styled.div`
   background: var(--orange-color);
   color: white;
   border-radius: 50%;
-  padding: 12px;
+  height: 60px;
+  width: 60px;
   font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  margin-top: -30px;
 `;
 
 export const Badge = styled.span`

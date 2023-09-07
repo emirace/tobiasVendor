@@ -8,7 +8,7 @@
   background: white;
   display: flex;
   justify-content: space-between;
-  overflow-x: auto;
+  /* overflow-x: auto; */
 }
 
 .sticky_item {
@@ -19,7 +19,7 @@
   color: var(--malon-color);
   flex-grow: 1;
   min-width: 50px;
-  overflow: hidden;
+  /* overflow: hidden; */
   white-space: nowrap;
   position: relative;
 }

@@ -722,7 +722,10 @@ export default function DeliveryOption({
               <Label>
                 <FontAwesomeIcon icon={faTruck} />
                 <Name>GIG Logistics</Name>
-                <Tips mode={mode} tips={`About GIG Logistics `}>
+                <Tips
+                  mode={mode}
+                  tips={`Sending & receiving package almost anywhere in Nigeria is made easy with GIGL integrated on Repeddle. Simply fill in a contactable correct address and phone number. A GIGL driver may come to you for pick up, or ask you to drop off your package to the nearest GIGL experience centre closer to you. The buyer pays for delivery and package will be delivered to the address buyer will provide when making a purchase. Please do not make any delivery payment to anyone.`}
+                >
                   <FontAwesomeIcon icon={faQuestionCircle} />
                 </Tips>
               </Label>
@@ -859,7 +862,13 @@ export default function DeliveryOption({
         <Option>
           <Label>
             <FontAwesomeIcon icon={faTruck} />
-            <Name>Pick up from Seller</Name>
+            <Name>Pick up from Seller</Name>{" "}
+            <Tips
+              mode={mode}
+              tips={`Pick-up from seller is an option seller & buyer agrees upon a choice of delivery outside of delivery methods available on Repeddle. Pick-up from seller may be ideal for users within the same locality.`}
+            >
+              <FontAwesomeIcon icon={faQuestionCircle} />
+            </Tips>
           </Label>
           <Switch
             mode={mode}
