@@ -22,6 +22,7 @@ import { Store } from "../Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import IconsTooltips from "./IconsTooltips";
+import { MD5 } from "crypto-js";
 
 const Container = styled.div`
   position: relative;
@@ -29,7 +30,7 @@ const Container = styled.div`
 
 const Dropdown = styled.div`
   position: absolute;
-  top: 60px;
+  top: 30px;
   right: 0;
   background: ${(props) =>
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
@@ -39,12 +40,16 @@ const Dropdown = styled.div`
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
+  z-index: 100;
 
   ${({ isOpen }) =>
     isOpen &&
     `
     max-height: 300px;
   `}
+  @media (min-width: 768px) {
+    top: 60px;
+  }
 `;
 
 const Button = styled.button`
@@ -131,30 +136,39 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
   };
 
   const handleShare = async () => {
-    if (userInfo) {
-      try {
-        const { data } = await axios.put(
-          `/api/products/${product._id}/shares`,
-          {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
-        );
-        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
-        if (data.product) {
-          socket.emit("post_data", {
-            userId: product.seller._id,
-            itemId: product._id,
-            notifyType: "share",
-            msg: `${userInfo.username} shared your product`,
-            link: `/product/${product.slug}`,
-            mobile: { path: "Product", id: product.slug },
-            userImage: userInfo.image,
-          });
+    const userAgent = navigator.userAgent;
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
+    // Concatenate and hash the device information
+    const combinedInfo = userAgent + screenWidth + screenHeight;
+
+    const hashed = MD5(combinedInfo).toString();
+    console.log(hashed);
+    try {
+      const { data } = await axios.put(
+        `/api/products/${product._id}/shares`,
+        { hashed },
+        {
+          headers: userInfo
+            ? { Authorization: `Bearer ${userInfo.token}` }
+            : undefined,
         }
-      } catch (err) {
-        console.log(err);
+      );
+      dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
+      if (userInfo) {
+        socket.emit("post_data", {
+          userId: product.seller._id,
+          itemId: product._id,
+          notifyType: "share",
+          msg: `${userInfo.username} shared your product`,
+          link: `/product/${product.slug}`,
+          mobile: { path: "Product", id: product.slug },
+          userImage: userInfo.image,
+        });
       }
+    } catch (err) {
+      console.log(err);
     }
   };
 

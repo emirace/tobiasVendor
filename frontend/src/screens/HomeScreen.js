@@ -2,8 +2,6 @@ import React, { useContext, useEffect, useReducer, useState } from "react";
 
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Product from "../component/Product";
 import { Helmet } from "react-helmet-async";
 import LoadingBox from "../component/LoadingBox";
@@ -32,6 +30,7 @@ import Influencer from "../component/Influencer";
 import { baseURL, region } from "../utils";
 import Support from "../component/Support";
 import CategoriesLinksButtons from "../component/CategoriesLinksButtons";
+import TheThrill from "../component/TheThrill";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -112,6 +111,22 @@ const InflucerComing = styled.img`
   width: 70%;
   @media (max-width: 992px) {
     width: 100%;
+  }
+`;
+
+const Row = styled.div`
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 0;
+    flex-direction: column;
+  }
+`;
+
+const Col = styled.div`
+  @media (max-width: 768px) {
+    order: ${(props) => (props.orderMobile ? props.orderMobile : "initial")};
   }
 `;
 
@@ -335,6 +350,8 @@ export default function ProductsScreen() {
           </Link>
         </section>
 
+        <TheThrill />
+
         <section className="CategoryListing_section ">
           <div className="product-title-Listing">
             <h2 className="product-categorylisting">New Collections</h2>
@@ -358,19 +375,19 @@ export default function ProductsScreen() {
             />
             <CategoryListing
               image="/images/julian-hochgesang-sA5wcAu4CBA-unsplash.webp"
-              title="SNEAKER-HEAD"
-              link="/search?query=shoes"
+              title="SHOES AFFAIR"
+              link="/search?query=shoe"
             />
             <CategoryListing
               image="/images/stephen-audu-BkB5T-ZdK88-unsplash.webp"
-              title="BAG AFFAIR"
+              title="BAGS AFFAIR"
               bottom={true}
-              link="/search?categories=bag"
+              link="/search?query=bags"
             />
             <CategoryListing
               image="/images/carmen-fu-4xb2LK36Mps-unsplash.webp"
               title="GEN-Z KIDS"
-              link="/search?categories=kids"
+              link="/search?query=kids"
             />
             <CategoryListing
               image="/images/ahmed-carter-GP3-QpmTgPk-unsplash.webp"
@@ -387,7 +404,7 @@ export default function ProductsScreen() {
         <section className="center-item">
           <div className="container-fluid">
             <Row>
-              <Col md={5}>
+              <Col style={{ flex: 5 }} orderMobile={2}>
                 <Col className="">
                   <div className="main-item paddown padtop">
                     <img
@@ -397,7 +414,8 @@ export default function ProductsScreen() {
                     ></img>
                     <div className="main-item-text">
                       <h4>Classic Men Wears</h4>
-                      <Link to="/category/Classic Men Wears">Shop Now</Link>
+                      <Link to="/search?category=men">Shop Now</Link>
+                      {/* <Link to="/category/Classic Men Wears">Shop Now</Link> */}
                     </div>
                   </div>
                 </Col>
@@ -410,12 +428,13 @@ export default function ProductsScreen() {
                     ></img>
                     <div className="main-item-text">
                       <h4>Smart Kid's Wears</h4>
-                      <Link to="/category/Smart Kid's Wears">Shop Now</Link>
+                      <Link to="/search?query=kid">Shop Now</Link>
+                      {/* <Link to="/category/Smart Kid's Wears">Shop Now</Link> */}
                     </div>
                   </div>
                 </Col>
               </Col>
-              <Col md={7}>
+              <Col style={{ flex: 7 }} orderMobile={1}>
                 <div className="main-item main-item-1 padtop">
                   <img
                     src="/images/tamara-bellis-uN1m9Ca0aqo-unsplash.webp"
@@ -425,9 +444,12 @@ export default function ProductsScreen() {
                   <div className="main-item-text">
                     <h1>High Taste Women Wears</h1>
                     <div>
-                      <Link to="/category/Womens Wears">
+                      <Link to="/search?query=women">
                         <button className="search-btn1">Shop Now</button>
                       </Link>
+                      {/* <Link to="/category/Womens Wears">
+                        <button className="search-btn1">Shop Now</button>
+                      </Link> */}
                     </div>
                   </div>
                 </div>
@@ -445,6 +467,11 @@ export default function ProductsScreen() {
             </p>
           </div>
           <div className="CategoryListing_item scroll_snap">
+            <CategoryListing
+              image="https://res.cloudinary.com/emirace/image/upload/v1692426674/usljgmtg7fb5wi0m5o4r.jpg"
+              title="PUMA"
+              link="/search?brand=puma"
+            />
             <CategoryListing
               image="/images/Picture1.webp"
               title="PATAGONIA"

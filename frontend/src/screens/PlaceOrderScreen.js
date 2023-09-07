@@ -702,31 +702,28 @@ export default function PlaceOrderScreen() {
                     >
                       Proceed to Payment
                     </Button>
-                  ) : cart.paymentMethod === "Credit/Debit card" ? (
-                    region() === "ZAR" ? (
-                      <PayFast
-                        userInfo={userInfo}
-                        placeOrderHandler={placeOrderHandler}
-                        totalPrice={cart.totalPrice}
-                      />
-                    ) : (
-                      <FlutterWave
-                        amount={cart.totalPrice}
-                        currency={currency === "N " ? "NGN" : "ZAR"}
-                        user={
-                          userInfo
-                            ? userInfo
-                            : {
-                                email: cart.shippingAddress.email,
-                                name: cart.shippingAddress.fullName,
-                                phone: cart.shippingAddress.phone,
-                              }
-                        }
-                        onApprove={onApprove}
-                      />
-                    )
+                  ) : region() === "ZAR" ? (
+                    <PayFast
+                      userInfo={userInfo}
+                      placeOrderHandler={placeOrderHandler}
+                      totalPrice={cart.totalPrice}
+                    />
                   ) : (
-                    ""
+                    <FlutterWave
+                      amount={cart.totalPrice}
+                      currency={currency === "N " ? "NGN" : "ZAR"}
+                      user={
+                        userInfo
+                          ? userInfo
+                          : {
+                              email: cart.shippingAddress.email,
+                              name: cart.shippingAddress.fullName,
+                              phone: cart.shippingAddress.phone,
+                            }
+                      }
+                      onApprove={onApprove}
+                      method={cart.paymentMethod}
+                    />
                   )}
                 </ListGroup.Item>
 
@@ -737,7 +734,7 @@ export default function PlaceOrderScreen() {
                     amount={cart.totalPrice}
                   />
                 </WalletModel>
-                <ListGroup.Item>
+                {/* <ListGroup.Item>
                   <div className="d-grid">
                     <Button
                       type="button"
@@ -748,7 +745,7 @@ export default function PlaceOrderScreen() {
                     </Button>
                     {loading && <LoadingBox></LoadingBox>}
                   </div>
-                </ListGroup.Item>
+                </ListGroup.Item> */}
               </ListGroup>
             </Card.Body>
           </Section>

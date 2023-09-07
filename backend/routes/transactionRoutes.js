@@ -34,7 +34,7 @@ transactionRouter.get(
         ? {
             $or: [
               {
-                returnId: {
+                transactionId: {
                   $regex: searchQuery,
                   $options: "i",
                 },
@@ -63,7 +63,7 @@ transactionRouter.get(
         ? {
             $or: [
               {
-                returnId: {
+                transactionId: {
                   $regex: searchQuery,
                   $options: "i",
                 },

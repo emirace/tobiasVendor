@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBox from "./SearchBox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../Store";
 import axios from "axios";
 import { getError } from "../utils";
@@ -34,6 +34,20 @@ const Container = styled.div`
     props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: transform 0.3s ease-in-out;
+    transform: translateY(${(props) => (props.isVisible ? "0" : "-100%")});
+    z-index: 100;
+  }
+`;
+const Fill = styled.div`
+  display: none;
+  height: 72px;
+  @media (max-width: 992px) {
+    display: block;
   }
 `;
 const Wrapper = styled.div`
@@ -283,6 +297,22 @@ const MenuItemCart = styled.div`
   font-size: 20px;
   padding: 0 10px;
   position: relative;
+  &:hover {
+    color: var(--orange-color);
+  }
+  &:hover div {
+    opacity: 1;
+  }
+`;
+
+const MenuItemNot = styled.div`
+  font-size: 20px;
+  padding: 0 10px;
+  position: relative;
+  display: none;
+  @media (max-width: 992px) {
+    display: block;
+  }
   &:hover {
     color: var(--orange-color);
   }
@@ -559,6 +589,7 @@ const NotImage = styled.img`
 const NotDetail = styled.div`
   font-size: 14px;
   margin-left: 5px;
+  flex: 1;
 `;
 const NotText = styled.div`
   color: ${(props) => (props.mode === "pagebodydark" ? "white" : "black")};
@@ -632,6 +663,7 @@ export const signoutHandler = () => {
   mixpanel.reset();
   window.location.href = "/signin";
 };
+
 export default function Navbar({
   menu,
   setMymenu,
@@ -646,6 +678,8 @@ export default function Navbar({
     setmodelRef1(modelRef.current);
     setmodelRef2(modelRef2.current);
   }, []);
+
+  const navigate = useNavigate();
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode, notifications, refresher } = state;
@@ -698,6 +732,37 @@ export default function Navbar({
     }
   }, [userInfo, refresher]);
 
+  const [isVisible, setIsVisible] = useState(true);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      const isScrollingUp = currentScrollPos < prevScrollPos;
+
+      // Adjust the scroll threshold (72px) as needed
+      const scrollThreshold = 72;
+
+      if (
+        isScrollingUp ||
+        currentScrollPos <= scrollThreshold ||
+        currentScrollPos === 0
+      ) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+
+      setPrevScrollPos(currentScrollPos);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [prevScrollPos]);
+
   const backMode = (mode) => {
     if (mode === "pagebodydark") {
       mode = false;
@@ -719,306 +784,325 @@ export default function Navbar({
   };
 
   return (
-    <Container mode={mode}>
-      <Wrapper>
-        <Left>
-          <SwitchCont>
-            <BsFillSunFill />
-            <Switch
-              checked={mode === "pagebodydark"}
-              onChange={(e) => darkMode(e.target.checked)}
-            ></Switch>
-            <BsFillMoonStarsFill />
-          </SwitchCont>
-        </Left>
-        <Center>
-          <SliderCont>
-            <First>
-              <Underline>
-                <Link to="signup">SIGN UP</Link>
-              </Underline>
-              , List All Item For Free{" "}
-            </First>
-            <First>
-              No Selling Fees, Hurry, Start Selling, Limited Offer!!{" "}
-              <Underline>
-                DETAILS
-                <DetailText className="text">
-                  Sell more than 10,400 brand names you love. To give you
-                  unmatched user experiencd and support the growth of your
-                  business as part of our thrift secondhand community, you will
-                  not be charge Repeddle seller's commision fee.
-                </DetailText>
-              </Underline>
-            </First>
-            <First>
-              Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{" "}
-              and <Underline>ANDRIOD</Underline>
-            </First>
-          </SliderCont>
-        </Center>
-        <Right>
-          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
-            <Sell>Sell</Sell>
-          </Link>
-        </Right>
-      </Wrapper>
-      <Wrapper2>
-        <Logo>
-          <Link to="/">
-            <LogoImage
-              src={
-                mode === "pagebodydark"
-                  ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
-                  : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif"
-              }
-            />
-          </Link>
-        </Logo>
+    <>
+      <Container mode={mode} isVisible={isVisible}>
+        <Wrapper>
+          <Left>
+            <SwitchCont>
+              <BsFillSunFill />
+              <Switch
+                checked={mode === "pagebodydark"}
+                onChange={(e) => darkMode(e.target.checked)}
+              ></Switch>
+              <BsFillMoonStarsFill />
+            </SwitchCont>
+          </Left>
+          <Center>
+            <SliderCont>
+              <First>
+                <Underline>
+                  <Link to="signup">SIGN UP</Link>
+                </Underline>
+                , List All Item For Free{" "}
+              </First>
+              <First>
+                Selling made Super Easy. Buy, Sell, Cash-Out & Repeat!{" "}
+                <Underline>
+                  DETAILS
+                  <DetailText className="text">
+                    Sell more than 10,400 brand names you love. Listing is just
+                    a few steps away!
+                  </DetailText>
+                </Underline>
+              </First>
+              <First>
+                Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{" "}
+                and <Underline>ANDRIOD</Underline>
+              </First>
+            </SliderCont>
+          </Center>
+          <Right>
+            <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
+              <Sell>Sell</Sell>
+            </Link>
+          </Right>
+        </Wrapper>
+        <Wrapper2>
+          <Logo>
+            <Link to="/">
+              <LogoImage
+                src={
+                  mode === "pagebodydark"
+                    ? "https://res.cloudinary.com/emirace/image/upload/v1661147636/Logo_White_3_ii3edm.gif"
+                    : "https://res.cloudinary.com/emirace/image/upload/v1661147778/Logo_Black_1_ampttc.gif"
+                }
+              />
+            </Link>
+          </Logo>
 
-        <Search>
-          <SearchBox />
-        </Search>
-        <RightMenu>
-          <MenuItem>
-            <Link to="/messages">
-              <MessageIcon height={25} width={25} />
-              <IconsTooltips tips="Messages" />
-              {messageNotification.length > 0 && (
+          <Search>
+            <SearchBox />
+          </Search>
+          <RightMenu>
+            <MenuItem>
+              <Link to="/messages">
+                <MessageIcon height={25} width={25} />
+                <IconsTooltips tips="Messages" />
+                {messageNotification.length > 0 && (
+                  <Badge>
+                    <span>{messageNotification.length}</span>
+                  </Badge>
+                )}
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <div
+                onClick={() => {
+                  setShowNotification(!showNotification);
+                  console.log(showNotification);
+                }}
+                styled={{ position: "relative" }}
+              >
+                <FontAwesomeIcon
+                  icon={faBell}
+                  color="var(--malon-color)"
+                  style={{ cursor: "pointer", size: "25px" }}
+                />
+                <div
+                  ref={modelRef2}
+                  style={{
+                    position: "absolute",
+                    left: "0",
+                    top: "0",
+                    right: "0",
+                    bottom: "0",
+                    cursor: "pointer",
+                  }}
+                ></div>
+              </div>
+
+              <IconsTooltips tips="Notifications" />
+              {allNotification.length > 0 && (
                 <Badge>
-                  <span>{messageNotification.length}</span>
+                  <span>{allNotification.length}</span>
                 </Badge>
               )}
-            </Link>
-          </MenuItem>
-          <MenuItem>
-            <div
-              onClick={() => {
-                setShowNotification(!showNotification);
-                console.log(showNotification);
-              }}
-              styled={{ position: "relative" }}
-            >
+              {showNotification && (
+                <NotificationMenu mode={mode}>
+                  <Title mode={mode}>Notifications</Title>
+                  {notifications.length < 0 ? (
+                    <b>No Notification</b>
+                  ) : (
+                    notifications.map((not) => (
+                      <Link to={not.link}>
+                        <NotItem
+                          mode={mode}
+                          key={not._id}
+                          onClick={() => {
+                            socket.emit("remove_id_notifications", not._id);
+                          }}
+                        >
+                          <NotImage src={not.userImage} alt="img" />
+                          <NotDetail>
+                            <NotText mode={mode}>{not.msg}</NotText>
+                            <Time>{moment(not.createdAt).fromNow()}</Time>
+                          </NotDetail>
+                          {!not.read && (
+                            <Badge
+                              style={{
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                              }}
+                            />
+                          )}
+                        </NotItem>
+                      </Link>
+                    ))
+                  )}
+                </NotificationMenu>
+              )}
+            </MenuItem>
+            <MenuItemCart>
+              <Link to="/cart">
+                <CartIcon height={25} width={25} />
+                <IconsTooltips tips="Cart" />
+
+                {cart.cartItems.length > 0 && (
+                  <Badge>
+                    <span>{cart.cartItems.length}</span>
+                  </Badge>
+                )}
+              </Link>
+            </MenuItemCart>
+            {/* <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
+            <SellButton>Sell</SellButton>
+          </Link> */}
+            <MenuItemNot>
               <FontAwesomeIcon
                 icon={faBell}
                 color="var(--malon-color)"
-                style={{ cursor: "pointer", size: "25px" }}
+                style={{ cursor: "pointer", size: "20px", marginTop: "10px" }}
+                onClick={() => navigate("/notifications")}
               />
-              <div
-                ref={modelRef2}
-                style={{
-                  position: "absolute",
-                  left: "0",
-                  top: "0",
-                  right: "0",
-                  bottom: "0",
-                  cursor: "pointer",
-                }}
-              ></div>
-            </div>
-
-            <IconsTooltips tips="Notifications" />
-            {allNotification.length > 0 && (
-              <Badge>
-                <span>{allNotification.length}</span>
-              </Badge>
-            )}
-            {showNotification && (
-              <NotificationMenu mode={mode}>
-                <Title mode={mode}>Notifications</Title>
-                {notifications.length < 0 ? (
-                  <b>No Notification</b>
-                ) : (
-                  notifications.map((not) => (
-                    <Link to={not.link}>
-                      <NotItem
-                        mode={mode}
-                        key={not._id}
-                        onClick={() => {
-                          socket.emit("remove_id_notifications", not._id);
-                        }}
-                      >
-                        <NotImage src={not.userImage} alt="img" />
-                        <NotDetail>
-                          <NotText mode={mode}>{not.msg}</NotText>
-                          <Time>{moment(not.createdAt).fromNow()}</Time>
-                        </NotDetail>
-                        {!not.read && (
-                          <Badge
-                            style={{
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                            }}
-                          />
-                        )}
-                      </NotItem>
-                    </Link>
-                  ))
-                )}
-              </NotificationMenu>
-            )}
-          </MenuItem>
-          <MenuItemCart>
-            <Link to="/cart">
-              <CartIcon height={25} width={25} />
-              <IconsTooltips tips="Cart" />
-
-              {cart.cartItems.length > 0 && (
+              {allNotification.length > 0 && (
                 <Badge>
-                  <span>{cart.cartItems.length}</span>
+                  <span>{allNotification.length}</span>
                 </Badge>
               )}
-            </Link>
-          </MenuItemCart>
-          <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
-            <SellButton>Sell</SellButton>
-          </Link>
-          {userInfo ? (
-            <ProfileCont>
-              <ProfileImg
-                src={userInfo.image}
-                ref={modelRef}
-                onClick={() => setMymenu(!menu)}
-              />
-              {console.log(mode)}
-              {menu && (
-                <ProfileMenu mode={mode} className={mode}>
-                  <Welcome>Hi {userInfo.username}</Welcome>
-                  <ul>
-                    <Li>
-                      <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
+            </MenuItemNot>
+            {userInfo ? (
+              <ProfileCont>
+                <ProfileImg
+                  src={userInfo.image}
+                  ref={modelRef}
+                  onClick={() => setMymenu(!menu)}
+                />
+                {console.log(mode)}
+                {menu && (
+                  <ProfileMenu mode={mode} className={mode}>
+                    <Welcome>Hi {userInfo.username}</Welcome>
+                    <ul>
+                      <Li>
+                        <Link to={`/seller/${userInfo._id}`}>My Profile</Link>
 
-                      {/* {messageNotification.length > 0 && (
+                        {/* {messageNotification.length > 0 && (
                         <Badge>
                           <span>{messageNotification.length}</span>
                         </Badge>
                       )} */}
-                    </Li>
-                    <Li>
-                      <Link to="/dashboard/orderlist">Purchased Orders</Link>
+                      </Li>
+                      <Li>
+                        <Link to="/dashboard/orderlist">Purchased Orders</Link>
 
-                      {purchaseNotification.length > 0 && (
-                        <Badge>
-                          <span>{purchaseNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
-                    <Li>
-                      <Link to="/dashboard/saleslist">Sold Orders</Link>
-                      {console.log("sold", soldNotification)}
+                        {purchaseNotification.length > 0 && (
+                          <Badge>
+                            <span>{purchaseNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
+                      <Li>
+                        <Link to="/dashboard/saleslist">Sold Orders</Link>
+                        {console.log("sold", soldNotification)}
 
-                      {soldNotification.length > 0 && (
-                        <Badge>
-                          <span>{soldNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
-                    <Li>
-                      <Link to="/earning">My Earnings</Link>
+                        {soldNotification.length > 0 && (
+                          <Badge>
+                            <span>{soldNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
+                      <Li>
+                        <Link to="/earning">My Earnings</Link>
 
-                      {productNotification.length > 0 && (
-                        <Badge>
-                          <span>{productNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
-                    <Li>
-                      <Link to="/dashboard/wallet">My Wallet</Link>
+                        {productNotification.length > 0 && (
+                          <Badge>
+                            <span>{productNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
+                      <Li>
+                        <Link to="/dashboard/wallet">My Wallet</Link>
 
-                      {productNotification.length > 0 && (
-                        <Badge>
-                          <span>{productNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
-                    <Li>
-                      <Link to="/dashboard/productlist">My Products</Link>
-                      {console.log("product", productNotification)}
+                        {productNotification.length > 0 && (
+                          <Badge>
+                            <span>{productNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
+                      <Li>
+                        <Link to="/dashboard/productlist">My Products</Link>
+                        {console.log("product", productNotification)}
 
-                      {productNotification.length > 0 && (
-                        <Badge>
-                          <span>{productNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
+                        {productNotification.length > 0 && (
+                          <Badge>
+                            <span>{productNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
 
-                    <Li>
-                      <Link to="/cart?wishlist=true">
-                        Wishlist{" "}
-                        <span style={{ color: "var(--orange-color)" }}>
-                          ({user?.saved?.length})
-                        </span>
-                      </Link>
-                      {productNotification.length > 0 && (
-                        <Badge>
-                          <span>{productNotification.length}</span>
-                        </Badge>
-                      )}
-                    </Li>
-                    <Li>
-                      <Link to="/dashboard">Dashboard</Link>
-                    </Li>
-                    <li onClick={() => signoutHandler()}>Log Out</li>
-                    <Li>
-                      <RedirectButton />
-                    </Li>
-                  </ul>
-                </ProfileMenu>
-              )}
-            </ProfileCont>
-          ) : (
-            <SignIn>
-              <Link to="signin">SIGN IN / SIGN UP</Link>
-            </SignIn>
-          )}
-        </RightMenu>
-      </Wrapper2>
-      <Category>
-        {categories.length > 0 &&
-          categories.map((c) => (
-            <CategoryGroup>
-              <CategoryItem>
-                <Link to={`/category/${c.name}`}>{c.name}</Link>
-              </CategoryItem>
+                      <Li>
+                        <Link to="/cart?wishlist=true">
+                          Wishlist{" "}
+                          <span style={{ color: "var(--orange-color)" }}>
+                            ({user?.saved?.length})
+                          </span>
+                        </Link>
+                        {productNotification.length > 0 && (
+                          <Badge>
+                            <span>{productNotification.length}</span>
+                          </Badge>
+                        )}
+                      </Li>
+                      <Li>
+                        <Link to="/dashboard">Dashboard</Link>
+                      </Li>
+                      <li onClick={() => signoutHandler()}>Log Out</li>
+                      <Li>
+                        <RedirectButton />
+                      </Li>
+                    </ul>
+                  </ProfileMenu>
+                )}
+              </ProfileCont>
+            ) : (
+              <SignIn>
+                <Link to="signin">SIGN IN / SIGN UP</Link>
+              </SignIn>
+            )}
+          </RightMenu>
+        </Wrapper2>
+        <Category>
+          {categories.length > 0 &&
+            categories.map((c) => (
+              <CategoryGroup>
+                <CategoryItem>
+                  <Link to={c.path || `/search?category=${c.name}`}>
+                    {c.name}
+                  </Link>
+                  {/* <Link to={`/category/${c.name}`}>{c.name}</Link>  */}
+                </CategoryItem>
 
-              <SubCategory bg={subCateMode}>
-                {c.subCategories.length > 0 &&
-                  c.subCategories.map((s) => {
-                    if (s.items.length === 0) {
-                      return (
-                        <SubCategoryItemS>
-                          <a href={`/search?query=${s.name}`}>{s.name}</a>
-                        </SubCategoryItemS>
-                      );
-                    } else {
-                      return (
-                        <Group>
-                          <SubCategoryItem>{s.name}</SubCategoryItem>
-                          <UList>
-                            {s.items.map((l) => (
-                              <a href={`/search?query=${l}`}>
-                                <SList>{l}</SList>
-                              </a>
-                            ))}
-                          </UList>
-                        </Group>
-                      );
-                    }
-                  })}
-              </SubCategory>
-            </CategoryGroup>
-          ))}
-        <CategoryGroup>
-          <Link to="/brand">
-            <CategoryItem>SHOP BY BRAND</CategoryItem>
-          </Link>
-        </CategoryGroup>
-        <CategoryGroup>
-          <Link to="/recurated">
-            <CategoryItem>RE:CURATED</CategoryItem>
-          </Link>
-        </CategoryGroup>
-      </Category>
-    </Container>
+                <SubCategory bg={subCateMode}>
+                  {c.subCategories.length > 0 &&
+                    c.subCategories.map((s) => {
+                      if (s.items.length === 0) {
+                        return (
+                          <SubCategoryItemS>
+                            <Link to={s.path || `/search?query=${s.name}`}>
+                              {s.name}
+                            </Link>
+                          </SubCategoryItemS>
+                        );
+                      } else {
+                        return (
+                          <Group>
+                            <SubCategoryItem>{s.name}</SubCategoryItem>
+                            <UList>
+                              {s.items.map((l) => (
+                                <Link to={l.path || `/search?query=${l.name}`}>
+                                  <SList>{l.name}</SList>
+                                </Link>
+                              ))}
+                            </UList>
+                          </Group>
+                        );
+                      }
+                    })}
+                </SubCategory>
+              </CategoryGroup>
+            ))}
+          <CategoryGroup>
+            <Link to="/brand">
+              <CategoryItem>SHOP BY BRAND</CategoryItem>
+            </Link>
+          </CategoryGroup>
+          <CategoryGroup>
+            <Link to="/recurated">
+              <CategoryItem>RE:CURATED</CategoryItem>
+            </Link>
+          </CategoryGroup>
+        </Category>
+      </Container>
+      <Fill />
+    </>
   );
 }

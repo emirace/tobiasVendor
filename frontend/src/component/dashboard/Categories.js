@@ -1,12 +1,19 @@
-import { faDotCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Store } from '../../Store';
-import { getError } from '../../utils';
-import LoadingBox from '../LoadingBox';
+import {
+  faDotCircle,
+  faLink,
+  faPen,
+  faPlus,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../../Store";
+import { compressImageUpload, getError } from "../../utils";
+import LoadingBox from "../LoadingBox";
 
 const Container = styled.div`
   flex: 4;
@@ -19,7 +26,7 @@ const Left = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   & .icon {
     margin-left: 10px;
   }
@@ -29,7 +36,7 @@ const Right = styled.div`
   flex: 1;
   padding: 20px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
 `;
 const Content = styled.div`
   display: flex;
@@ -47,6 +54,10 @@ const Item = styled.div`
   flex-direction: column;
   margin-top: 10px;
   margin-right: 20px;
+  padding: 10px;
+  border-radius: 0.2rem;
+  background: ${(props) =>
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const Label = styled.label`
   margin-bottom: 10px;
@@ -56,10 +67,10 @@ const Label = styled.label`
 const Input = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
+    props.mode === "pagebodydark" ? "var(--white-color)" : "var(--dark-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   border-radius: 0.2rem;
   height: 40px;
   padding: 10px;
@@ -70,10 +81,10 @@ const Input = styled.input`
 const Textarea = styled.textarea`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--white-color)' : 'var(--dark-color)'};
+    props.mode === "pagebodydark" ? "var(--white-color)" : "var(--dark-color)"};
   border: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   border-radius: 0.2rem;
   width: 80%;
   height: 80px;
@@ -91,19 +102,38 @@ const Button = styled.button`
   padding: 5px 10px;
   border-radius: 0.2rem;
   cursor: pointer;
-  margin-top: 20px;
+  margin: 10px 0;
   &.add {
     margin-top: 0;
     width: 80px;
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
     color: var(--orange-color);
   }
+`;
+const ItemCont = styled.div`
+  padding: 0 10px;
+  border-radius: 0.2rem;
+  margin-bottom: 5px;
+  cursor: pointer;
+  background: ${(props) =>
+    props.selected
+      ? props.mode === "pagebodydark"
+        ? "var(--dark-ev3)"
+        : "#fcf0e0"
+      : ""};
+
+  border: ${(props) => (props.selected ? "1px solid var(--orange-color)" : "")};
 `;
 const InputCont = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
+  justify-content: space-between;
+`;
+const InputContIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 const CatList = styled.div`
   cursor: pointer;
@@ -114,7 +144,7 @@ const CatList = styled.div`
   margin: 5px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 `;
 const SubCat = styled.div`
   display: flex;
@@ -151,7 +181,7 @@ const Delete = styled.button`
   border-radius: 0.2rem;
   font-size: 14px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? '#211111' : '#f8d6d6'};
+    props.mode === "pagebodydark" ? "#211111" : "#f8d6d6"};
   color: var(--red-color);
 `;
 const Edit = styled.button`
@@ -161,7 +191,7 @@ const Edit = styled.button`
   margin-right: 10px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : '#fcf0e0'};
+    props.mode === "pagebodydark" ? "var(--dark-ev3)" : "#fcf0e0"};
   color: var(--orange-color);
 `;
 const UploadImage = styled.label`
@@ -169,28 +199,220 @@ const UploadImage = styled.label`
   padding: 2px 5px;
   font-size: 14px;
   cursor: pointer;
-  /* margin-right: 10px; */
+  text-align: center;
+  margin-top: 5px;
   border-radius: 0.2rem;
 `;
 
-let subCategories = [];
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  position: relative;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+`;
+
+const CloseButton = styled.span`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 18px;
+  cursor: pointer;
+`;
+
+const Form1 = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Path = styled.div`
+  font-size: 10px;
+  font-style: italic;
+  margin-top: -5px;
+`;
+
+const Checkbox = styled.input`
+  /* margin-bottom: 10px; */
+  margin-right: 10px;
+  cursor: pointer;
+  &::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: ${(props) =>
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
+    border: 1px solid var(--orange-color);
+  }
+  &:checked::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: var(--orange-color);
+    border: 1px solid var(--malon-color);
+  }
+`;
 export default function Categories() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
-  const [currentCat, setCurrentCat] = useState('');
-  const [currentCatItem, setCurrentCatItem] = useState('');
-  const [name, setName] = useState('');
+
   const [categories, setCategories] = useState([]);
-  const [refresh, setrefresh] = useState(false);
+  const [category, setCategory] = useState({
+    name: "",
+    isCategory: true,
+    path: "",
+  });
+  const [subCategories, setSubCategories] = useState([]);
+  const [selectedSubcategoryIndex, setSelectedSubcategoryIndex] =
+    useState(null);
+  const [itemIndex, setItemIndex] = useState(null);
   const [editCat, setEditCat] = useState(false);
-  const [editCatSub, setEditCatSub] = useState(false);
-  const [editCurrentCat, setEditCurrentCat] = useState({});
-  const [index, setIndex] = useState({});
+  const [editCurrentCat, setEditCurrentCat] = useState(null);
+
+  const [refresh, setrefresh] = useState(false);
+
+  const handleCategoryNameChange = (name, value) => {
+    setCategory((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCategoryPathChange = (name, isCategory, path) => {
+    const newCategory = {
+      name,
+      isCategory,
+      path,
+    };
+    setCategory(newCategory);
+  };
+
+  const handleAddSubcategory = (name, isCategory, path) => {
+    const newSubcategory = {
+      name,
+      isCategory,
+      path,
+    };
+    setSubCategories([...subCategories, newSubcategory]);
+  };
+
+  const handleAddItem = (subcategoryIndex, name, isCategory, path) => {
+    const newSubCategories = subCategories.map((subcategory, index) => {
+      if (index === subcategoryIndex) {
+        const updatedItems = [
+          ...(subcategory.items || []),
+          { name, isCategory, path },
+        ];
+
+        return {
+          ...subcategory,
+          items: updatedItems,
+        };
+      }
+      return subcategory;
+    });
+
+    setSubCategories(newSubCategories);
+  };
+
+  const handleSubcategoryChange = (index, name, isCategory, path) => {
+    const updatedSubCategories = [...subCategories];
+    updatedSubCategories[index].name = name;
+    updatedSubCategories[index].isCategory = isCategory;
+    updatedSubCategories[index].path = path;
+    setSubCategories(updatedSubCategories);
+  };
+
+  const handleDeleteSubcategory = (subcategoryIndex) => {
+    const newSubCategories = subCategories.filter(
+      (_, index) => index !== subcategoryIndex
+    );
+    setSubCategories(newSubCategories);
+  };
+
+  const handleItemChange = (
+    subcategoryIndex,
+    itemIndex,
+    name,
+    isCategory,
+    path
+  ) => {
+    console.log(name, isCategory, path);
+    const updatedSubCategories = [...subCategories];
+    updatedSubCategories[subcategoryIndex].items[itemIndex].name = name;
+    updatedSubCategories[subcategoryIndex].items[itemIndex].isCategory =
+      isCategory;
+    updatedSubCategories[subcategoryIndex].items[itemIndex].path = path;
+    setSubCategories(updatedSubCategories);
+  };
+
+  const handleDeleteItem = (subcategoryIndex, itemIndex) => {
+    const newSubCategories = subCategories.map((subcategory, index) => {
+      if (index === subcategoryIndex) {
+        const updatedItems = subcategory.items.filter(
+          (item, idx) => idx !== itemIndex
+        );
+
+        return {
+          ...subcategory,
+          items: updatedItems,
+        };
+      }
+      return subcategory;
+    });
+
+    setSubCategories(newSubCategories);
+  };
+
+  const handleSelectSubcategory = (index) => {
+    setSelectedSubcategoryIndex(index);
+  };
+
+  const [modal, setModal] = useState({
+    addNameLink: false,
+    addLink: false,
+    addNameLink2: false,
+  });
+
+  const openModal = (modalName) => {
+    setModal((prevModal) => ({
+      ...prevModal,
+      [modalName]: true,
+    }));
+  };
+
+  const closeModal = (modalName) => {
+    setModal((prevModal) => ({
+      ...prevModal,
+      [modalName]: false,
+    }));
+  };
 
   useEffect(() => {
     try {
       const fetchCategory = async () => {
-        const { data } = await axios.get('/api/categories', {
+        const { data } = await axios.get("/api/categories", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setCategories(data);
@@ -201,28 +423,52 @@ export default function Categories() {
     }
   }, [userInfo, refresh]);
 
+  const handleEdit = (cat) => {
+    setEditCat(true);
+    setEditCurrentCat(cat);
+    setCategory({ name: cat.name, path: cat.ath });
+    setImageUpload({
+      loading: false,
+      image: cat.image,
+      error: "",
+    });
+    setSubCategories(cat.subCategories);
+  };
+
+  const cancelEdit = () => {
+    setEditCat(false);
+    setEditCurrentCat(null);
+    setCategory({ name: "", path: "" });
+    setSubCategories([]);
+    setImageUpload({
+      loading: false,
+      image: "",
+      error: "",
+    });
+  };
+
   const submitHandler = async () => {
     try {
       if (!editCat) {
-        const exist = categories.some((e) => e.name === name);
+        const exist = categories.some((e) => e.name === category.name);
         if (exist) {
           ctxDispatch({
-            type: 'SHOW_TOAST',
+            type: "SHOW_TOAST",
             payload: {
-              message: 'Categories name already exist',
+              message: "Categories name already exist",
               showStatus: true,
-              state1: 'visible1 error',
+              state1: "visible1 error",
             },
           });
           return;
         }
-        if (!name) {
+        if (!category.name) {
           ctxDispatch({
-            type: 'SHOW_TOAST',
+            type: "SHOW_TOAST",
             payload: {
-              message: 'Enter a valid category name',
+              message: "Enter a valid category name",
               showStatus: true,
-              state1: 'visible1 error',
+              state1: "visible1 error",
             },
           });
           return;
@@ -230,19 +476,19 @@ export default function Categories() {
 
         if (!imageUpload.image) {
           ctxDispatch({
-            type: 'SHOW_TOAST',
+            type: "SHOW_TOAST",
             payload: {
-              message: 'Upload a category image',
+              message: "Upload a category image",
               showStatus: true,
-              state1: 'visible1 error',
+              state1: "visible1 error",
             },
           });
           return;
         }
         await axios.post(
-          '/api/categories',
+          "/api/categories",
           {
-            name,
+            category,
             subCategories,
             image: imageUpload.image,
           },
@@ -251,19 +497,19 @@ export default function Categories() {
           }
         );
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Categories Added',
+            message: "Categories Added",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
       } else {
         await axios.put(
-          '/api/categories',
+          "/api/categories",
           {
             id: editCurrentCat._id,
-            name,
+            category,
             subCategories,
             image: imageUpload.image,
           },
@@ -272,105 +518,24 @@ export default function Categories() {
           }
         );
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Categories Updated',
+            message: "Categories Updated",
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
         setEditCat(false);
       }
 
-      setName('');
-      subCategories = [];
-      setCurrentCat('');
-      setCurrentCatItem('');
-      setImageUpload({ loading: false, image: '', error: '' });
+      setCategory({ name: "", path: "" });
+      setSubCategories([]);
+      setEditCurrentCat(null);
+      setImageUpload({ loading: false, image: "", error: "" });
       setrefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
     }
-  };
-
-  const sizeHandler = (name) => {
-    const exist = subCategories.filter((s) => {
-      return s.name === name;
-    });
-    if (exist.length > 0) {
-      const newsizes = subCategories.filter((s) => {
-        return s.name !== name;
-      });
-      console.log(subCategories);
-      subCategories = newsizes;
-      console.log(subCategories);
-      setCurrentCatItem('');
-      setCurrentCat('');
-      setrefresh(!refresh);
-
-      return;
-    }
-    if (!editCatSub) {
-      if (currentCatItem === '') {
-        const subCategoriesObject = {
-          name: currentCat.toLowerCase(),
-          items: [],
-        };
-        subCategories.push(subCategoriesObject);
-      } else {
-        const CatArray = currentCatItem.toLowerCase().split(',');
-        const subCategoriesObject = {
-          name: currentCat.toLowerCase(),
-          items: CatArray,
-        };
-        subCategories.push(subCategoriesObject);
-      }
-      setCurrentCat('');
-      setCurrentCatItem('');
-      setrefresh(!refresh);
-    } else {
-      if (currentCatItem === '') {
-        const subCategoriesObject = {
-          name: currentCat.toLowerCase(),
-          items: [],
-        };
-        subCategories[index] = subCategoriesObject;
-      } else {
-        const CatArray = currentCatItem.toLowerCase().split(',');
-        const subCategoriesObject = {
-          name: currentCat.toLowerCase(),
-          items: CatArray,
-        };
-        subCategories[index] = subCategoriesObject;
-      }
-      setCurrentCat('');
-      setCurrentCatItem('');
-      setrefresh(!refresh);
-      setEditCatSub(false);
-      console.log(subCategories);
-    }
-  };
-
-  const editHandler = (c, type) => {
-    if (type === 'cancel') {
-      setName('');
-      subCategories = [];
-      setEditCat(false);
-      setImageUpload({ loading: false, image: '', error: '' });
-      return;
-    }
-    setName(c.name);
-    subCategories = c.subCategories;
-    setEditCat(true);
-    setEditCurrentCat(c);
-    setImageUpload({ loading: false, image: c.image, error: '' });
-  };
-
-  const editSubCategories = (sub) => {
-    setIndex(sub);
-    setEditCatSub(true);
-    setCurrentCat(subCategories[sub].name);
-    setCurrentCatItem(subCategories[sub].items.toString());
   };
 
   const deleteHandler = async (c) => {
@@ -385,11 +550,11 @@ export default function Categories() {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Categories deleted',
+          message: "Categories deleted",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       setrefresh(!refresh);
@@ -400,32 +565,29 @@ export default function Categories() {
 
   const [imageUpload, setImageUpload] = useState({
     loading: false,
-    image: '',
-    error: '',
+    image: "",
+    error: "",
   });
   const uploadImageHandler = async (e) => {
-    const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
     try {
       setImageUpload((prev) => ({ ...prev, loading: true }));
-      const { data } = await axios.post('/api/upload', bodyFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
+      const imageUrl = await compressImageUpload(
+        e.target.files[0],
+        1024,
+        userInfo.token
+      );
       setImageUpload((prev) => ({
         ...prev,
         loading: false,
-        image: data.secure_url,
+        error: "",
+        image: imageUrl,
       }));
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Image Uploaded',
+          message: "Image Uploaded",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
     } catch (err) {
@@ -435,111 +597,302 @@ export default function Categories() {
         error: getError(err),
       }));
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Failed uploading image',
+          message: "Failed uploading image",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       console.log(getError(err));
     }
   };
 
+  console.log(category, subCategories);
+
   return (
     <Container>
       <Title>Categories</Title>
       <Content>
         <Left mode={mode}>
-          <Item>
+          <Item mode={mode}>
             <Label>Category Name</Label>
-            <Input
-              mode={mode}
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              value={name}
-              placeholder="Enter category name"
-            />
+            <InputCont>
+              <Input
+                mode={mode}
+                onChange={(e) =>
+                  handleCategoryNameChange("name", e.target.value)
+                }
+                type="text"
+                value={category.name}
+                placeholder="Enter category name"
+              />
+              <FontAwesomeIcon
+                icon={faLink}
+                style={{ cursor: "pointer" }}
+                onClick={() => openModal("addLink")}
+              />
+            </InputCont>
+            <Path>{category.path}</Path>
           </Item>
-          <Item>
+          <Item mode={mode}>
             <Label>Category Image</Label>
             {imageUpload.loading ? (
               <LoadingBox />
             ) : imageUpload.error ? (
-              <div style={{ color: 'red' }}>{imageUpload.error}</div>
+              <div style={{ color: "red" }}>{imageUpload.error}</div>
             ) : imageUpload.image ? (
-              <image
+              <img
                 src={imageUpload.image}
                 alt="imageupload"
-                style={{ height: 200, objectFit: 'contain', width: 200 }}
+                style={{ height: 200, objectFit: "contain", width: 200 }}
               />
             ) : (
-              ''
+              ""
             )}
             <input
               mode={mode}
               id="uploadimage"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               type="file"
               onChange={uploadImageHandler}
             />
             <UploadImage htmlFor="uploadimage">Upload</UploadImage>
           </Item>
-          <Item>
-            <Label>Sub Categories</Label>
+          <Item mode={mode}>
             <InputCont>
-              <Input
+              <Label>Sub Categories</Label>
+              <Button
                 mode={mode}
-                className="half"
-                value={currentCat}
-                type="text"
-                placeholder="Enter Sub category"
-                onChange={(e) => setCurrentCat(e.target.value)}
-              />
+                className="add"
+                onClick={() => {
+                  setSelectedSubcategoryIndex(null);
+                  setItemIndex(null);
+                  openModal("addNameLink2");
+                }}
+              >
+                <FontAwesomeIcon icon={faPlus} color="var(--orange-color)" />
+              </Button>
             </InputCont>
+            {subCategories.map((subcategory, subcategoryIndex) => (
+              <ItemCont
+                onClick={() => setSelectedSubcategoryIndex(subcategoryIndex)}
+                selected={selectedSubcategoryIndex === subcategoryIndex}
+              >
+                <InputCont>
+                  <div style={{ display: "flex", alignItems: "start" }}>
+                    <FontAwesomeIcon
+                      icon={faDotCircle}
+                      style={{
+                        fontSize: "10px",
+                        display: "flex",
+                        marginRight: "10px",
+                        marginTop: "8px",
+                      }}
+                    />
+                    <div
+                      onPress={() => handleSelectSubcategory(subcategoryIndex)}
+                    >
+                      {subcategory.name}
+                      <Path>{subcategory.path}</Path>
+                    </div>
+                  </div>
+                  <InputContIcon>
+                    <FontAwesomeIcon
+                      icon={faPen}
+                      style={{ cursor: "pointer", fontSize: "10px" }}
+                      onClick={() => {
+                        setSelectedSubcategoryIndex(subcategoryIndex);
+                        openModal("addNameLink2");
+                      }}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "10px",
+                        color: "var(--malon-color)",
+                      }}
+                      onClick={() => {
+                        handleDeleteSubcategory(subcategoryIndex);
+                      }}
+                    />
+                  </InputContIcon>
+                </InputCont>
+              </ItemCont>
+            ))}
           </Item>
-          <Item>
-            <Label>Sub Categories Items</Label>
+          <Item mode={mode}>
             <InputCont>
-              <Textarea
+              <Label>Sub Categories Items</Label>
+              <Button
                 mode={mode}
-                className="half"
-                value={currentCatItem}
-                type="text"
-                placeholder="Enter Sub category"
-                onChange={(e) => setCurrentCatItem(e.target.value)}
-              />
-              <Button mode={mode} className="add" onClick={sizeHandler}>
+                className="add"
+                onClick={() => {
+                  if (selectedSubcategoryIndex === null) {
+                    ctxDispatch({
+                      type: "SHOW_TOAST",
+                      payload: {
+                        message: "Select sub category",
+                        showStatus: true,
+                        state1: "visible1 error",
+                      },
+                    });
+                    return;
+                  }
+                  setItemIndex(null);
+                  openModal("addNameLink");
+                }}
+              >
                 Add
               </Button>
             </InputCont>
+            {subCategories.map((subcategory, subcategoryIndex) => (
+              <>
+                {selectedSubcategoryIndex === subcategoryIndex && (
+                  <>
+                    <div
+                      style={{
+                        color: "var(--orange-color)",
+                        fontSize: "10px",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {subcategory.name}:
+                    </div>
+                    {subcategory.items &&
+                      subcategory.items.map((item, itemIndex) => (
+                        <ItemCont
+                          onClick={() =>
+                            setSelectedSubcategoryIndex(subcategoryIndex)
+                          }
+                        >
+                          <InputCont>
+                            <div
+                              style={{ display: "flex", alignItems: "start" }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faDotCircle}
+                                style={{
+                                  fontSize: "10px",
+                                  display: "flex",
+                                  marginRight: "10px",
+                                  marginTop: "8px",
+                                }}
+                              />
+                              <div
+                                onPress={() =>
+                                  handleSelectSubcategory(subcategoryIndex)
+                                }
+                              >
+                                {item.name}
+                                <Path>{item.path}</Path>
+                              </div>
+                            </div>
+                            <InputContIcon>
+                              <FontAwesomeIcon
+                                icon={faPen}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "10px",
+                                }}
+                                onClick={() => {
+                                  setSelectedSubcategoryIndex(subcategoryIndex);
+                                  setItemIndex(itemIndex);
+                                  openModal("addNameLink");
+                                }}
+                              />
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "10px",
+                                  color: "var(--malon-color)",
+                                }}
+                                onClick={() => {
+                                  handleDeleteItem(subcategoryIndex, itemIndex);
+                                }}
+                              />
+                            </InputContIcon>
+                          </InputCont>
+                        </ItemCont>
+                      ))}
+                  </>
+                )}
+              </>
+            ))}
           </Item>
 
-          <SubCont>
-            {subCategories.map((c, index) => (
-              <SubCat>
-                <CatList mode={mode} key={index}>
-                  <div onClick={() => editSubCategories(index)}>{c.name}</div>
-                </CatList>
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  onClick={(e) => sizeHandler(c.name)}
-                />
-              </SubCat>
-            ))}
-          </SubCont>
-
           <Button onClick={submitHandler}>
-            {editCat ? 'Update Category' : 'Add Category'}
+            {editCat ? "Update Category" : "Add Category"}
           </Button>
           {editCat ? (
             <FontAwesomeIcon
-              onClick={() => editHandler('', 'cancel')}
+              onClick={() => cancelEdit()}
               className="icon"
               icon={faTimes}
             />
           ) : (
-            ''
+            ""
+          )}
+
+          {modal.addNameLink && (
+            <Modal onClose={() => closeModal("addNameLink")}>
+              <FormModal
+                onSubmit={itemIndex !== null ? handleItemChange : handleAddItem}
+                onClose={() => closeModal("addNameLink")}
+                title="Add Name and Link"
+                category={
+                  itemIndex !== null
+                    ? subCategories[selectedSubcategoryIndex].items[itemIndex]
+                    : {
+                        name: "",
+                        isCategory: true,
+                        path: "",
+                      }
+                }
+                nameLabel="Name:"
+                linkLabel="Link:"
+                index={selectedSubcategoryIndex}
+                itemIndex={itemIndex}
+              />
+            </Modal>
+          )}
+          {modal.addNameLink2 && (
+            <Modal onClose={() => closeModal("addNameLink2")}>
+              <FormModal
+                onSubmit={
+                  selectedSubcategoryIndex !== null
+                    ? handleSubcategoryChange
+                    : handleAddSubcategory
+                }
+                onClose={() => closeModal("addNameLink2")}
+                category={
+                  selectedSubcategoryIndex !== null
+                    ? subCategories[selectedSubcategoryIndex]
+                    : {
+                        name: "",
+                        isCategory: true,
+                        path: "",
+                      }
+                }
+                nameLabel="Name:"
+                linkLabel="Link:"
+                index={selectedSubcategoryIndex}
+              />
+            </Modal>
+          )}
+          {modal.addLink && (
+            <Modal onClose={() => closeModal("addLink")}>
+              <FormModal
+                onSubmit={handleCategoryPathChange}
+                onClose={() => {
+                  closeModal("addLink");
+                }}
+                category={category}
+                linkLabel="Link:"
+              />
+            </Modal>
           )}
         </Left>
         <Right mode={mode}>
@@ -553,7 +906,7 @@ export default function Categories() {
                 {c.name}
               </div>
               <div>
-                <Edit mode={mode} onClick={() => editHandler(c, 'edit')}>
+                <Edit mode={mode} onClick={() => handleEdit(c)}>
                   Edit
                 </Edit>
                 <Delete mode={mode} onClick={() => deleteHandler(c)}>
@@ -567,3 +920,85 @@ export default function Categories() {
     </Container>
   );
 }
+
+const FormModal = ({
+  onSubmit,
+  index,
+  onClose,
+  category,
+  nameLabel,
+  linkLabel,
+  itemIndex,
+}) => {
+  const { dispatch: ctxDispatch } = useContext(Store);
+  const [name, setName] = useState(category.name || "");
+  const [link, setLink] = useState(category.path || "");
+  const [isCategory, setIsCategory] = useState(category.isCategory);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!name) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Name is required",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
+    console.log(index, itemIndex);
+    console.log(index >= 0 && index !== null);
+    if (index >= 0 && index !== null) {
+      console.log(itemIndex >= 0 && itemIndex !== null);
+      if (itemIndex >= 0 && itemIndex !== null) {
+        onSubmit(index, itemIndex, name, isCategory, link);
+      } else {
+        onSubmit(index, name, isCategory, link);
+      }
+    } else {
+      onSubmit(name, isCategory, link);
+    }
+    onClose();
+  };
+
+  return (
+    <ModalContent>
+      <CloseButton onClick={onClose}>&times;</CloseButton>
+      <Form1 onSubmit={handleSubmit}>
+        {nameLabel && (
+          <>
+            <Label>{nameLabel}</Label>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </>
+        )}
+        {linkLabel && (
+          <>
+            <Label>{linkLabel}</Label>
+            <Input
+              type="text"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+            />
+          </>
+        )}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Checkbox
+            id="checkbox"
+            type="checkbox"
+            checked={isCategory}
+            onChange={(e) => setIsCategory(e.target.checked)}
+          />
+          <label htmlFor="checkbox">It's Category</label>
+        </div>
+
+        <Button type="submit">Add</Button>
+      </Form1>
+    </ModalContent>
+  );
+};

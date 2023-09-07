@@ -333,36 +333,50 @@ function App() {
 
   useEffect(() => {
     const getCartItems = async () => {
-      let items = [];
+      const itemsMap = {}; // Use an object to prevent duplicates
+
       if (userInfo) {
-        const { data } = await axios.get("/api/cartItems", {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
-        items = data.map((x) => x.item);
+        try {
+          const { data } = await axios.get("/api/cartItems", {
+            headers: { Authorization: `Bearer ${userInfo.token}` },
+          });
+          data.forEach((x) => (itemsMap[x.item._id] = x.item)); // Add items to object
+        } catch (error) {
+          console.error("Error fetching cart items:", error);
+        }
       }
+
       const localCart = JSON.parse(localStorage.getItem("cartItems"));
-      if (localCart) {
-        localCart.map((product) => {
-          if (userInfo) {
-            axios.post(
-              "/api/cartItems",
-              {
-                ...product,
-                quantity: product.quantity,
-                selectSize: product.selectSize,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${userInfo.token}`,
+
+      if (localCart && userInfo) {
+        try {
+          await Promise.all(
+            localCart.map((product) =>
+              axios.post(
+                "/api/cartItems",
+                {
+                  ...product,
+                  quantity: product.quantity,
+                  selectSize: product.selectSize,
                 },
-              }
-            );
-          }
-        });
-        // console.log(localCart);
-        items = [...items, ...localCart];
+                {
+                  headers: {
+                    Authorization: `Bearer ${userInfo.token}`,
+                  },
+                }
+              )
+            )
+          );
+          localCart.forEach((product) => (itemsMap[product._id] = product)); // Add local cart items to object
+        } catch (error) {
+          console.error("Error adding local cart items:", error);
+        }
       }
-      ctxDispatch({ type: "UPDATE_CART", payload: items });
+
+      const itemsArray = Object.values(itemsMap); // Convert object values to array
+
+      console.log("App cartItem", itemsArray);
+      ctxDispatch({ type: "UPDATE_CART", payload: itemsArray });
     };
 
     getCartItems();

@@ -50,7 +50,7 @@ const FormButton = styled.button`
 `;
 
 const ContactUs = () => {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
   const [formData, setFormData] = useState({
     name: "",
@@ -73,15 +73,27 @@ const ContactUs = () => {
 
   const [loading, setLoading] = useState(false);
   const handleFileChange = async (e) => {
-    setLoading(true);
-    const imageUrl = await compressImageUpload(
-      e.target.files[0],
-      1024,
-      userInfo.token,
-      formData.file
-    );
-    setFormData({ ...formData, file: imageUrl });
-    setLoading(false);
+    try {
+      setLoading(true);
+      const imageUrl = await compressImageUpload(
+        e.target.files[0],
+        1024,
+        userInfo.token,
+        formData.file
+      );
+      setFormData({ ...formData, file: imageUrl });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Login or sign up to add an image",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
   };
 
   const handleSubmit = async (e) => {

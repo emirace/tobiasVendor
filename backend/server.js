@@ -4,6 +4,7 @@ import http from "http";
 import { Server } from "socket.io";
 import path from "path";
 import dotenv from "dotenv";
+import cron from "node-cron";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
@@ -33,7 +34,7 @@ import locationRouter from "./routes/locationRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import User from "./models/userModel.js";
 import newsletterRouter from "./routes/newsletterRoutes.js";
-import { sendEmail } from "./utils.js";
+import { sendEmail, sendWeeklyMail } from "./utils.js";
 import guestUserRouter from "./routes/guestUserRoutes.js";
 import redirectRouter from "./routes/redirectRoutes.js";
 import rebundleSellerRouter from "./routes/rebundleSellerRoutes.js.js";
@@ -47,6 +48,8 @@ import articleRouter from "./routes/articleRoutes.js";
 import Mixpanel from "mixpanel";
 import contactRouter from "./routes/contactRoutes.js";
 import Order from "./models/orderModel.js";
+import Payment from "./models/paymentModel.js";
+import Category from "./models/categoryModel.js";
 
 dotenv.config();
 
@@ -82,6 +85,11 @@ app.use(
     ],
   })
 );
+function textfuncion() {
+  console.log("running cron");
+}
+// cron.schedule("* * * * *", sendWeeklyMail);
+// cron.schedule('0 12 * * 1', sendWeeklyMail);
 
 app.use(
   cookieSession({
@@ -99,19 +107,23 @@ app.get("/api/keys/flutterwave", (req, res) => {
 app.get("/api/keys/paypal", (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || "sb");
 });
-const orderId = async () => {
-  const orders = await Order.find();
-  orders.map(async (order) => {
-    if (!order.orderId) {
-      order.orderId = order._id.toString();
-      await order.save();
-      console.log("updated", order._id);
-    } else {
-      console.log("already has", order._id);
-    }
-  });
-};
-await orderId();
+
+// const changeBrand = async () => {
+//   // Define a regular expression pattern to match non-alphabet characters
+//   const nonAlphabetPattern = { alpha: { $not: { $regex: /[A-Za-z]/ } } };
+//   console.log("started,,,,,,");
+//   // Update the "alpha" field for each matching brand to 'other'
+//   const updateResult = await Brand.updateMany(nonAlphabetPattern, {
+//     $set: { alpha: "other" },
+//   });
+
+//   // `updateResult` contains information about the update operation (number of documents updated, etc.)
+
+//   console.log("Number of brands updated:", updateResult.nModified);
+// };
+
+// changeBrand();
+
 app.use("/api/upload", uploadRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);

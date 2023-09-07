@@ -19,7 +19,7 @@ paymentRouter.get(
         ? {
             $or: [
               {
-                returnId: {
+                paymentId: {
                   $regex: searchQuery,
                   $options: "i",
                 },
@@ -45,6 +45,7 @@ paymentRouter.post(
       amount: Math.round(req.body.amount * 100) / 100,
       meta: req.body.meta,
     });
+    payment.paymentId = payment._id.toString();
 
     const newPayment = await payment.save();
     res.status(200).send(newPayment);

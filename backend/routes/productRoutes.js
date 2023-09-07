@@ -7,6 +7,7 @@ import {
   isSellerOrAdmin,
   isSeller,
   slugify,
+  isAuthOrNot,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import RecentView from "../models/recentViewModel.js";
@@ -26,7 +27,6 @@ productRouter.get("/:region/all", async (req, res) => {
     .sort({ createdAt: -1 })
     .limit(pageSize)
     .populate("seller", "_id username");
-  console.log("products", page);
   res.send(products);
 });
 
@@ -141,50 +141,48 @@ productRouter.put(
     );
     const useractive = () => (req.body.active === "yes" ? true : false);
     const userbadge = () => (req.body.badge === "yes" ? true : false);
-    if (product.seller._id.toString() === req.user._id || req.user.isAdmin) {
-      if (product && !product.sold) {
-        product.name = req.body.name || product.name;
-        product.price = req.body.price || product.price;
-        product.actualPrice = req.body.discount || product.actualPrice;
-        product.product = req.body.mainCate || product.product;
-        product.category = req.body.category || product.category;
-        product.subCategory = req.body.subCategory || product.subCategory;
-        product.product = req.body.product || product.category;
-        product.subCategory = req.body.subCategory || product.subCategory;
-        product.image = req.body.image1 || product.image;
-        product.images = images || product.images;
-        product.tags = req.body.tags || product.tags;
-        product.brand = req.body.brand || product.brand;
-        product.countInStock = countInStock || product.countInStock;
-        product.description = req.body.description || product.description;
-        product.specification = req.body.specification || product.specification;
-        product.keyFeatures = req.body.feature || product.keyFeatures;
-        product.condition = req.body.condition || product.condition;
-        product.material = req.body.material || product.material;
-        product.deliveryOption =
-          req.body.deliveryOption || product.deliveryOption;
-        product.color = req.body.color || product.color;
-        product.badge = req.user.isAdmin
-          ? req.body.badge === ""
-            ? req.user.badge
-            : userbadge()
-          : product.badge;
-        product.active = req.user.isAdmin
-          ? req.body.active === ""
-            ? req.user.active
-            : useractive()
-          : product.active;
-        product.sizes = req.body.sizes || product.sizes;
-        await product.save();
-        res.send({ message: "Product Updated" });
-      } else {
-        res.status(404).send({ message: "Product Not Found 1" });
-        throw { message: "Product Not Found" };
-      }
-    } else {
+    if (product.seller._id.toString() !== req.user._id && !req.user.isAdmin) {
       res.status(404).send({ message: "You can't edit someelse product" });
-      throw { message: "You can't edit someelse product" };
+      return;
     }
+    if (product && product.sold && !req.user.isAdmin) {
+      res
+        .status(404)
+        .send({ message: "You can't edit already checkout product" });
+      return;
+    }
+    product.name = req.body.name || product.name;
+    product.price = req.body.price || product.price;
+    product.actualPrice = req.body.discount || product.actualPrice;
+    product.product = req.body.mainCate || product.product;
+    product.category = req.body.category || product.category;
+    product.subCategory = req.body.subCategory || product.subCategory;
+    product.subCategory = req.body.subCategory || product.subCategory;
+    product.image = req.body.image1 || product.image;
+    product.images = images || product.images;
+    product.tags = req.body.tags || product.tags;
+    product.brand = req.body.brand || product.brand;
+    product.countInStock = countInStock || product.countInStock;
+    product.description = req.body.description || product.description;
+    product.specification = req.body.specification || product.specification;
+    product.keyFeatures = req.body.feature || product.keyFeatures;
+    product.condition = req.body.condition || product.condition;
+    product.material = req.body.material || product.material;
+    product.deliveryOption = req.body.deliveryOption || product.deliveryOption;
+    product.color = req.body.color || product.color;
+    product.badge = req.user.isAdmin
+      ? req.body.badge === ""
+        ? req.user.badge
+        : userbadge()
+      : product.badge;
+    product.active = req.user.isAdmin
+      ? req.body.active === ""
+        ? req.user.active
+        : useractive()
+      : product.active;
+    product.sizes = req.body.sizes || product.sizes;
+    await product.save();
+    res.send({ message: "Product Updated" });
   })
 );
 
@@ -400,31 +398,38 @@ productRouter.put(
 
 productRouter.put(
   "/:id/shares",
-  isAuth,
+  isAuthOrNot,
   expressAsyncHandler(async (req, res) => {
-    const productId = req.params.id;
-    const product = await Product.findById(productId)
-      .populate(
-        "seller",
-        "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
-      )
-      .populate("reviews.name", "username image");
-    if (product) {
-      const exist = product.shares.filter(
-        (x) => x._id.toString() === req.user._id
-      );
-      if (exist.length > 0) {
-        res.status(500).send({ message: "Already shared product" });
-      } else {
-        product.shares.push(req.user._id);
-        const updatedProduct = await product.save();
-        res.status(200).send({
-          message: "Product Shared",
-          product: updatedProduct,
-        });
+    try {
+      const { id: productId } = req.params;
+      const { hashed } = req.body;
+
+      const product = await Product.findById(productId)
+        .populate(
+          "seller",
+          "username rebundle email image sold slug rating numReviews address region lastName firstName badge"
+        )
+        .populate("reviews.name", "username image");
+
+      if (!product) {
+        return res.status(404).send({ message: "Product Not Found" });
       }
-    } else {
-      res.status(404).send({ message: "Product Not Found" });
+
+      const isShared = product.shares.some((share) => share.hashed === hashed);
+      if (isShared) {
+        return res.status(400).send({ message: "Already shared product" });
+      }
+
+      product.shares.push({ user: req?.user?._id, hashed });
+      await product.save();
+
+      return res.status(200).send({
+        message: "Product Shared",
+        product,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: "Internal server error" });
     }
   })
 );
@@ -478,12 +483,10 @@ productRouter.put(
 
       const currentTime = new Date();
       const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
-      console.log(product.viewcount);
       const lastView = product.viewcount
         .filter((view) => view.hashed === hashed)
         .sort((a, b) => b.time - a.time)
         .find((view) => view.time >= sixHoursAgo);
-      console.log(lastView);
       if (!lastView) {
         product.viewcount.push({ hashed, time: currentTime });
         await product.save();
@@ -789,7 +792,7 @@ productRouter.get(
     const availabilityFilter =
       availability && availability === "Sold Items" ? { sold: true } : {};
     const categoryFilter =
-      category && category !== "all" ? { subCategory: category } : {};
+      category && category !== "all" ? { product: category } : {};
     const brandFilter = brand && brand !== "all" ? { brand } : {};
     const colorFilter = color && color !== "all" ? { color } : {};
     const dealFilter =
@@ -829,7 +832,7 @@ productRouter.get(
         : order === "toprated"
         ? { raing: -1 }
         : order === "newest"
-        ? { creatAt: -1 }
+        ? { createdAt: -1 }
         : order === "likes"
         ? { likes: -1 }
         : order === "relevance"

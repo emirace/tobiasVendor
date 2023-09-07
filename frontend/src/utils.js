@@ -1,5 +1,6 @@
 import axios from "axios";
 import { banks } from "./constant";
+import { socket } from "./App";
 
 export const getError = (error) => {
   return error.response && error.response.data.message

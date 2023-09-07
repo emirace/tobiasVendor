@@ -94,9 +94,11 @@ export const isSocialAuth = (req, res, next) => {
   }
 };
 
+console.log(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD);
+
 const transporter = nodemailer.createTransport({
-  host: "smtp.office365.com",
-  port: 587,
+  host: "mail.privateemail.com",
+  port: 465,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
@@ -110,6 +112,10 @@ transporter.use(
       partialsDir: path.resolve("./utils/layouts/"),
       defaultLayout: "main",
       layoutsDir: path.resolve("./utils/layouts/"),
+      runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowedProtoMethodsByDefault: true,
+      },
     },
     viewPath: path.resolve("./utils/layouts/"),
     extName: ".handlebars",
@@ -117,9 +123,8 @@ transporter.use(
 );
 
 export const sendEmail = async (options) => {
-  console.log("hello");
   const mailOption = {
-    from: { name: "Repeddle", address: "support@repeddle.com" },
+    from: { name: "Repeddle", address: "support@repeddle.co.za" },
     to: options.to,
     subject: options.subject,
     html: options.text,
@@ -157,6 +162,9 @@ import User from "./models/userModel.js";
 import Conversation from "./models/conversationModel.js";
 import Gig from "./models/gigModel.js";
 import Order from "./models/orderModel.js";
+import moment from "moment";
+import Product from "./models/productModel.js";
+import Newsletters from "./models/newslettersModel.js";
 // import { mixpanel } from "./server.js";
 
 export async function creditAccount({
@@ -188,6 +196,7 @@ export async function creditAccount({
     balanceBefore: Number(account.balance),
     balanceAfter: Number(account.balance) + Number(amount),
   });
+  transaction.transactionId = transaction._id;
   await transaction.save();
   return {
     success: true,
@@ -220,7 +229,7 @@ export async function debitAccount({
     account.save();
   }
 
-  await Transaction.create({
+  const transaction = new Transaction({
     txnType: "debit",
     purpose,
     amount,
@@ -230,6 +239,8 @@ export async function debitAccount({
     balanceBefore: Number(account.balance),
     balanceAfter: Number(account.balance) - Number(amount),
   });
+  transaction.transactionId = transaction._id;
+  await transaction.save();
   return {
     success: true,
     message: "Debit successful",
@@ -637,4 +648,82 @@ export const updateMixpanelUser = () => {
       console.error("Error fetching users from MongoDB:", err);
       mongoose.disconnect();
     });
+};
+
+export const sendWeeklyMail = async () => {
+  const today = moment(); // Get the current date
+  const previousMonday = today.clone().startOf("isoWeek").subtract(7, "days"); // Get the start of the previous week
+  const currentMonday = previousMonday.clone().add(7, "days");
+
+  console.log("Previous Monday:", previousMonday.format("YYYY-MM-DD"));
+  console.log("Current Monday:", currentMonday.format("YYYY-MM-DD"));
+
+  try {
+    const productsNGN = await Product.find({
+      createdAt: {
+        $gte: previousMonday.toDate(),
+        $lt: currentMonday.toDate(),
+      },
+      region: "NGN",
+    }).sort({ createdAt: -1 });
+    const productsZAR = await Product.find({
+      // createdAt: {
+      //   $gte: previousMonday.toDate(),
+      //   $lt: currentMonday.toDate(),
+      // },
+      region: "ZAR",
+    }).sort({ createdAt: -1 });
+
+    // Convert the products array into an array of arrays containing two products each
+    const productsInPairsNGN = [];
+    const productsInPairsZAR = [];
+    for (let i = 0; i < productsNGN.length; i += 2) {
+      const pair = {
+        firstProduct: productsNGN[i],
+        secondProduct: productsNGN[i + 1],
+      };
+      productsInPairsNGN.push(pair);
+    }
+
+    for (let i = 0; i < productsZAR.length; i += 2) {
+      const pair = {
+        firstProduct: productsZAR[i],
+        secondProduct: productsZAR[i + 1],
+      };
+      productsInPairsZAR.push(pair);
+    }
+
+    const emailType = {
+      name: "Hunt It",
+      subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+      template: "huntIt",
+    };
+
+    // const existEmails = await Newsletters.find();
+
+    const existEmails = [
+      { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
+      { email: "tobiasomeyi@gmail.com", url: "co.za" },
+    ];
+    // const existEmails = [{ email: "tobiasomeyi@gmail.com", url: "co.za" }];
+
+    for (const existEmail of existEmails) {
+      console.log(existEmail.email);
+      await sendEmail({
+        to: existEmail.email,
+        subject: emailType.subject,
+        template: emailType.template,
+        context: {
+          url: existEmail.url,
+          products:
+            existEmail.url === "com" ? productsInPairsNGN : productsInPairsZAR,
+        },
+      });
+    }
+
+    // Add your logic here
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    // Handle the error
+  }
 };

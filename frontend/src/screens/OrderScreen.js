@@ -628,7 +628,7 @@ export default function OrderScreen() {
         socket.emit("post_data", {
           userId: order.user,
           itemId: order._id,
-          notifyType: "buyerreturn",
+          notifyType: "delivery",
           msg: `Order ${deliveryStatus} `,
           link: `/order/${order._id}`,
           userImage: "/images/pimage.png",
@@ -649,35 +649,6 @@ export default function OrderScreen() {
     }
   }
 
-  const paymentRequest = async (seller, cost, itemCurrency, sellerImage) => {
-    const { data: paymentData } = await axios.post(
-      "/api/payments",
-      {
-        userId: seller,
-        amount: (92.1 / 100) * cost,
-        meta: {
-          Type: "Order Completed",
-          from: "Wallet",
-          to: "Wallet",
-          typeName: "Order",
-          id: orderId,
-          currency: itemCurrency,
-        },
-      },
-      {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      }
-    );
-    socket.emit("post_data", {
-      userId: "Admin",
-      itemId: paymentData._id,
-      notifyType: "payment",
-      msg: `Order Completed`,
-      link: `/payment/${paymentData._id}`,
-      mobile: { path: "PaymentScreen", id: paymentData._id },
-      userImage: sellerImage,
-    });
-  };
   const daydiff = (start, end) =>
     start && end - timeDifference(new window.Date(start), new window.Date());
 
@@ -737,12 +708,62 @@ export default function OrderScreen() {
     deliverOrderHandler("Refunded", product._id);
   };
 
+  function calculateAmount(orderitem) {
+    console.log(orderitem);
+    const price = orderitem.actualPrice * orderitem.quantity;
+    const deliveryCost = orderitem.deliverySelect.cost;
+
+    const exchangeRate = 0.921; // 92.1%
+    const amountZAR = exchangeRate * (price + deliveryCost);
+    const amountNGN =
+      (exchangeRate * price - 0.014 * deliveryCost) *
+      (orderitem.region === "ZAR" ? 1 : 0);
+
+    const amount = orderitem.region === "ZAR" ? amountZAR : amountNGN;
+
+    return amount;
+  }
+
+  const paymentRequest = async (orderitem) => {
+    const amount = calculateAmount(orderitem);
+
+    const { data: paymentData } = await axios.post(
+      "/api/payments",
+      {
+        userId: orderitem.seller._id,
+        amount,
+        meta: {
+          Type: "Order Completed",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
+          id: orderId,
+          currency: orderitem.currency,
+        },
+      },
+      {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    socket.emit("post_data", {
+      userId: "Admin",
+      itemId: paymentData._id,
+      notifyType: "payment",
+      msg: `Order Completed`,
+      link: `/payment/${paymentData._id}`,
+      mobile: { path: "PaymentScreen", id: paymentData._id },
+      userImage: orderitem.seller.image,
+    });
+  };
+
   const paySeller = async (product) => {
+    const amount = calculateAmount(product);
+
     const { data: paymentData } = await axios.post(
       "/api/payments",
       {
         userId: product.seller._id,
-        amount: (92.1 / 100) * product.actualPrice,
+        amount,
         meta: {
           Type: "Pay Seller",
           from: "Wallet",
@@ -884,8 +905,7 @@ export default function OrderScreen() {
         >
           <Heading>Items in your order</Heading>
           {!isSeller &&
-            daydiff(order.createdAt, 10) <= 0 &&
-            daydiff(order.createdAt, 13) >= 0 &&
+            daydiff(order.deliveredAt, 3) >= 0 &&
             deliveryNumber(order.deliveryStatus) > 3 && (
               <div
                 style={{ cursor: "pointer" }}
@@ -893,7 +913,7 @@ export default function OrderScreen() {
               >
                 <b>Log a return</b>
                 <div style={{ color: "red" }}>
-                  {daydiff(order.createdAt, 13)} days left
+                  {daydiff(order.deliveredAt, 3)} days left
                 </div>
               </div>
             )}
@@ -1311,12 +1331,7 @@ export default function OrderScreen() {
                                   orderitem._id,
                                   orderitem
                                 );
-                                paymentRequest(
-                                  orderitem.seller._id,
-                                  orderitem.actualPrice,
-                                  orderitem.currency,
-                                  orderitem.seller.image
-                                );
+                                paymentRequest(orderitem);
                                 setAfterAction(false);
                               }}
                             >

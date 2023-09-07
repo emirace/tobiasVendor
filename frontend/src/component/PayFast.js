@@ -19,6 +19,7 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 0.2rem;
+  margin-top: 10px;
   height: 40px;
   &:hover {
     background: var(--malon-color);
@@ -102,13 +103,13 @@ export default function PayFast({ totalPrice, placeOrderHandler }) {
               });
               navigate(`/order/${order.order._id}`);
             } else {
+              setLoading(false);
               console.log("Payment Window Closed");
               await axios.delete(`/api/orders/${order.order._id}`, {
                 headers: {
                   Authorization: `Bearer ${userInfo.token}`,
                 },
               });
-              setLoading(false);
             }
           });
         }

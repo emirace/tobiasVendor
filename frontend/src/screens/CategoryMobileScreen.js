@@ -148,7 +148,7 @@ const SidebarItem = ({ item }) => {
           <SidebarContent className="sidebar-content">
             {item.items.map((child, index) => (
               <SidebarItemPlain key={index}>
-                <Link to={`/search?query=${child}`}> {child}</Link>
+                <Link to={`/search?query=${child.name}`}> {child.name}</Link>
               </SidebarItemPlain>
             ))}
           </SidebarContent>
