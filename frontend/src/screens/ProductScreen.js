@@ -363,7 +363,7 @@ export default function ProductScreen() {
       }
     };
     fetchData();
-  }, [slug, comment]);
+  }, [slug]);
   useEffect(() => {
     const fetchComment = async () => {
       try {

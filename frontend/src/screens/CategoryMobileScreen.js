@@ -18,6 +18,7 @@ const Container = styled.div`
   z-index: 7;
   overflow: auto;
   padding: 10px;
+  margin-top: 72px;
 `;
 
 const Search = styled.div`

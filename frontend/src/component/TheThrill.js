@@ -116,13 +116,18 @@ const ProductPrice = styled.p`
   margin-bottom: 0px;
 `;
 
+const Price = styled.span`
+  font-size: 14px;
+`;
+
 const DiscountBadge = styled.span`
-  color: #fff;
-  background-color: #e74c3c;
-  font-size: 12px;
-  padding: 2px 5px;
-  border-radius: 3px;
+  color: var(--malon-color);
+  font-size: 10px;
   margin-left: 5px;
+  text-decoration: line-through;
+  @media (max-width: 992px) {
+    font-size: 12px;
+  }
 `;
 
 const ViewMoreButton = styled.button`
@@ -241,16 +246,15 @@ export default function TheThrill() {
               <ProductName>{product.name}</ProductName>
               {/* <ProductBrand>{product.brand}</ProductBrand> */}
               <ProductPrice>
-                {discount(product) ? (
-                  <>
-                    <span>
-                      {product.currency}
-                      {product.actualPrice}
-                    </span>
-                    <DiscountBadge>{discount(product)}% Off</DiscountBadge>
-                  </>
-                ) : (
-                  `${product.currency}${product.price}`
+                <Price>
+                  {product.currency}
+                  {product.actualPrice}
+                </Price>
+                {discount(product) && (
+                  <DiscountBadge>
+                    {product.currency}
+                    {product.price}
+                  </DiscountBadge>
                 )}
               </ProductPrice>
               <ul className="product_hover">

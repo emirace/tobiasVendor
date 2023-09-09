@@ -655,8 +655,8 @@ export const sendWeeklyMail = async () => {
   const previousMonday = today.clone().startOf("isoWeek").subtract(7, "days"); // Get the start of the previous week
   const currentMonday = previousMonday.clone().add(7, "days");
 
-  console.log("Previous Monday:", previousMonday.format("YYYY-MM-DD"));
-  console.log("Current Monday:", currentMonday.format("YYYY-MM-DD"));
+  console.log("Previous Monday:", previousMonday.toDate());
+  console.log("Current Monday:", currentMonday.toDate());
 
   try {
     const productsNGN = await Product.find({
@@ -667,10 +667,10 @@ export const sendWeeklyMail = async () => {
       region: "NGN",
     }).sort({ createdAt: -1 });
     const productsZAR = await Product.find({
-      // createdAt: {
-      //   $gte: previousMonday.toDate(),
-      //   $lt: currentMonday.toDate(),
-      // },
+      createdAt: {
+        $gte: previousMonday.toDate(),
+        $lt: currentMonday.toDate(),
+      },
       region: "ZAR",
     }).sort({ createdAt: -1 });
 
@@ -699,13 +699,12 @@ export const sendWeeklyMail = async () => {
       template: "huntIt",
     };
 
-    // const existEmails = await Newsletters.find();
+    const existEmails = await Newsletters.find();
 
-    const existEmails = [
-      { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
-      { email: "tobiasomeyi@gmail.com", url: "co.za" },
-    ];
-    // const existEmails = [{ email: "tobiasomeyi@gmail.com", url: "co.za" }];
+    // const existEmails = [
+    //   { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
+    //   { email: "tobiasomeyi@gmail.com", url: "com" },
+    // ];
 
     for (const existEmail of existEmails) {
       console.log(existEmail.email);

@@ -40,7 +40,7 @@ const Container = styled.div`
     width: 100%;
     transition: transform 0.3s ease-in-out;
     transform: translateY(${(props) => (props.isVisible ? "0" : "-100%")});
-    z-index: 100;
+    z-index: 50;
   }
 `;
 const Fill = styled.div`
