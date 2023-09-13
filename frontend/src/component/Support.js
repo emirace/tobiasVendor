@@ -30,7 +30,7 @@ const Container = styled.div`
   right: 20px;
   width: 60px;
   height: 60px;
-  z-index: 9;
+  z-index: 100;
   border-radius: 50%;
   background: ${(props) =>
     props.mode === "pagebodylight" ? "black" : "white"};
@@ -307,12 +307,9 @@ export default function Support() {
 
   useEffect(() => {
     const exist = secureLocalStorage.getItem("guestUser");
-    console.log("storage");
     if (exist && !userInfo) {
-      console.log("storage user", exist);
       socket.emit("onlogin", exist);
       setUser(exist);
-      console.log(user);
     }
   }, [user, userInfo]);
 
@@ -361,8 +358,6 @@ export default function Support() {
   }, [userInfo]);
 
   useEffect(() => {
-    console.log(arrivalMessage, currentChat);
-
     if (arrivalMessage && currentChat) {
       if (currentChat._id === arrivalMessage.message.conversationId) {
         console.log(arrivalMessage);
@@ -440,7 +435,9 @@ export default function Support() {
       console.log(err);
     }
   };
+
   const [sendingMessage, setSendingMessage] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.length) {

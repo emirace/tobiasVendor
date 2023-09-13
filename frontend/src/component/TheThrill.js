@@ -122,11 +122,11 @@ const Price = styled.span`
 
 const DiscountBadge = styled.span`
   color: var(--malon-color);
-  font-size: 10px;
+  font-size: 12px;
   margin-left: 5px;
-  text-decoration: line-through;
+  /* text-decoration: line-through; */
   @media (max-width: 992px) {
-    font-size: 12px;
+    font-size: 10px;
   }
 `;
 
@@ -194,7 +194,7 @@ export default function TheThrill() {
     }
 
     const discountPercentage = ((price - actualPrice) / price) * 100;
-    return discountPercentage.toFixed(2); // Return with 2 decimal places
+    return discountPercentage.toFixed(); // Return with 2 decimal places
   };
 
   const sliderHandler = (direction) => {
@@ -251,10 +251,7 @@ export default function TheThrill() {
                   {product.actualPrice}
                 </Price>
                 {discount(product) && (
-                  <DiscountBadge>
-                    {product.currency}
-                    {product.price}
-                  </DiscountBadge>
+                  <DiscountBadge>{discount(product)}% Off</DiscountBadge>
                 )}
               </ProductPrice>
               <ul className="product_hover">

@@ -1070,6 +1070,17 @@ export default function ProductScreen() {
       });
       return;
     }
+    if (userInfo._id.toString() === id.toString()) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't message yuurself",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+      return;
+    }
     try {
       const { data } = await axios.post(
         `/api/conversations/`,

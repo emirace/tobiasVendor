@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { Store } from "../../Store";
 import axios from "axios";
-import { getError } from "../../utils";
+import { getError, region } from "../../utils";
 import LoadingBox from "../LoadingBox";
 import MessageImage from "../MessageImage";
 import ModelLogin from "../ModelLogin";
@@ -703,7 +703,7 @@ export default function Product() {
     brand: "",
   });
 
-  const [paxi, setPaxi] = useState(true);
+  const [paxi, setPaxi] = useState(region() === "ZAR");
   const [gig, setGig] = useState(false);
   const [pudo, setPudo] = useState(false);
   const [postnet, setPostnet] = useState(false);

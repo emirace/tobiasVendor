@@ -105,7 +105,7 @@ export default function FeeStructure() {
         <li>Your Product listed price is NGN 300</li>
         <li>Balance = NGN 276.3</li>
         <li>Delivery cost is NGN 100 </li>
-        <li>DComission on delivery cost 1.4% = NGN 1.4</li>
+        <li>Comission on delivery cost 1.4% = NGN 1.4</li>
         <li> Total amount buyer paid is NGN 400</li>
         <li>
           The total earning we will send to your Repeddle wallet is NGN 274.9

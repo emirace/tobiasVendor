@@ -211,6 +211,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
           body="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items"
           url={shareUrl}
           onShareWindowClose={handleShare}
+          openShareDialogOnClick={true}
         >
           <ShareButton mode={mode}>
             <EmailIcon size={25} round={true} />

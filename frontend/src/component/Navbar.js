@@ -23,7 +23,6 @@ import moment from "moment";
 import { logout } from "../hooks/initFacebookSdk";
 import { BsFillSunFill } from "react-icons/bs";
 import { BsFillMoonStarsFill } from "react-icons/bs";
-import secureLocalStorage from "react-secure-storage";
 import RedirectButton from "./RedirectButton";
 import mixpanel from "mixpanel-browser";
 
@@ -937,19 +936,21 @@ export default function Navbar({
             {/* <Link to={userInfo?.isSeller ? "/newproduct" : "/sell"}>
             <SellButton>Sell</SellButton>
           </Link> */}
-            <MenuItemNot>
-              <FontAwesomeIcon
-                icon={faBell}
-                color="var(--malon-color)"
-                style={{ cursor: "pointer", size: "20px", marginTop: "10px" }}
-                onClick={() => navigate("/notifications")}
-              />
-              {allNotification.length > 0 && (
-                <Badge>
-                  <span>{allNotification.length}</span>
-                </Badge>
-              )}
-            </MenuItemNot>
+            {userInfo && (
+              <MenuItemNot>
+                <FontAwesomeIcon
+                  icon={faBell}
+                  color="var(--malon-color)"
+                  style={{ cursor: "pointer", size: "20px", marginTop: "10px" }}
+                  onClick={() => navigate("/notifications")}
+                />
+                {allNotification.length > 0 && (
+                  <Badge>
+                    <span>{allNotification.length}</span>
+                  </Badge>
+                )}
+              </MenuItemNot>
+            )}
             {userInfo ? (
               <ProfileCont>
                 <ProfileImg

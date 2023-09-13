@@ -322,6 +322,7 @@ export default function DeliveryOption({
   const [rebundleCount, setRebundleCount] = useState(0);
   const [loadingRebundle, setLoadingRebundle] = useState(false);
   const [rebundleError, setRebundleError] = useState("");
+
   const handleRebundle = async (value) => {
     if (value) {
       const { data } = await axios.put("/api/users/bundle", value, {
@@ -393,6 +394,25 @@ export default function DeliveryOption({
       );
       if (exist.length === 0) {
         setError1("Select a delivery price option for Aramex Store-to-Door ");
+        return;
+      }
+    }
+
+    if (gig) {
+      if (!meta.name) {
+        setError1("Enter a valid name");
+        return;
+      }
+      if (!meta.address) {
+        setError1("Enter a valid address");
+        return;
+      }
+      if (!meta.phone) {
+        setError1("Enter a valid phone");
+        return;
+      }
+      if (!meta.stationId) {
+        setError1("Select station");
         return;
       }
     }
@@ -741,7 +761,7 @@ export default function DeliveryOption({
                   });
                   if (!e.target.checked) {
                     setDeliveryOption(
-                      deliveryOption.filter((x) => x.name !== "Gig Logistics")
+                      deliveryOption.filter((x) => x.name !== "GIG Logistics")
                     );
                   }
                 }}
@@ -767,7 +787,6 @@ export default function DeliveryOption({
                   />
                 </Plan1>
                 <Plan1>
-                  {console.log(meta)}
                   <Input
                     mode={mode}
                     type="text"

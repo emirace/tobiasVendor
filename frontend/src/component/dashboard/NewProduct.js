@@ -751,7 +751,7 @@ export default function NewProduct() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Please remove unnecessary space",
+          message: "Please remove space",
           showStatus: true,
           state1: "visible1 error",
         },
@@ -794,7 +794,6 @@ export default function NewProduct() {
 
   const submitHandler = async () => {
     setFormError("");
-    console.log("result", sizes.length === 0 && addSize === false);
     if (addSize === false && sizes.length === 0) {
       ctxDispatch({
         type: "SHOW_TOAST",
@@ -1695,10 +1694,10 @@ export default function NewProduct() {
                               handleError("", "sizes");
                             }}
                           />
-                          {/* <FontAwesomeIcon
+                          <FontAwesomeIcon
                             onClick={() => deleteSizeHandler(s.size)}
                             icon={faTimes}
-                          /> */}
+                          />
                         </SmallItem>
                       ))}
                     </SmallItems>

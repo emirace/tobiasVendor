@@ -703,7 +703,7 @@ export const sendWeeklyMail = async () => {
 
     // const existEmails = [
     //   { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
-    //   { email: "tobiasomeyi@gmail.com", url: "com" },
+    //   { email: "tobiasomeyi@gmail.com", url: "co.za" },
     // ];
 
     for (const existEmail of existEmails) {

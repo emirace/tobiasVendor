@@ -88,8 +88,8 @@ app.use(
 function textfuncion() {
   console.log("running cron");
 }
-// cron.schedule("* * * * *", sendWeeklyMail);
-// cron.schedule('0 12 * * 1', sendWeeklyMail);
+
+cron.schedule("0 12 * * 1", sendWeeklyMail);
 
 app.use(
   cookieSession({
@@ -376,7 +376,7 @@ io.on("connection", (socket) => {
     const notifications = await Notification.find({
       itemId: id,
       read: false,
-      createdAt: { $gte: currentDateTime },
+      createdAt: { $lte: currentDateTime },
     });
 
     notifications.forEach(async (notification) => {
