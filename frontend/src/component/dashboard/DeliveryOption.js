@@ -221,8 +221,8 @@ export default function DeliveryOption({
   setPaxi,
   setGig,
   gig,
-  pudo,
-  setPudo,
+  pudoLocker,
+  setPudoLocker,
   postnet,
   setPostnet,
   aramex,
@@ -233,6 +233,8 @@ export default function DeliveryOption({
   setBundle,
   meta,
   setMeta,
+  pudoDoor,
+  setPudoDoor,
 }) {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
@@ -369,12 +371,22 @@ export default function DeliveryOption({
         return;
       }
     }
-    if (pudo) {
+    if (pudoLocker) {
       const exist = deliveryOption.filter(
         (x) => x.name === "PUDO Locker-to-Locker"
       );
       if (exist.length === 0) {
         setError1("Select a delivery price option for PUDO Locker-to-Locker ");
+        return;
+      }
+    }
+
+    if (pudoDoor) {
+      const exist = deliveryOption.filter(
+        (x) => x.name === "PUDO Locker-to-Door"
+      );
+      if (exist.length === 0) {
+        setError1("Select a delivery price option for PUDO Locker-to-Door ");
         return;
       }
     }
@@ -516,9 +528,9 @@ export default function DeliveryOption({
               </Label>
               <Switch
                 mode={mode}
-                checked={pudo}
+                checked={pudoLocker}
                 onChange={(e) => {
-                  setPudo(e.target.checked);
+                  setPudoLocker(e.target.checked);
                   if (!e.target.checked) {
                     setDeliveryOption(
                       deliveryOption.filter(
@@ -532,7 +544,7 @@ export default function DeliveryOption({
             <div
               style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
-            {pudo && (
+            {pudoLocker && (
               <Plans>
                 <Plan>
                   <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
@@ -545,52 +557,173 @@ export default function DeliveryOption({
                   />
                 </Plan>
                 <Plan>
-                  <PlanName>Extra-Small (600x170x80 mm) + R 40.00</PlanName>
+                  <PlanName>
+                    Extra-Small | 600x170x80 mm (MAX 2kg) + R 50.00
+                  </PlanName>
                   <Radio
                     type="radio"
                     name="PUDO Locker-to-Locker"
                     onChange={(e) => handleChange(e.target)}
-                    value={40}
+                    value={50}
                     id="standard"
                   />
                 </Plan>
                 <Plan>
-                  <PlanName>Small (600x410x80 mm) + R 50.00</PlanName>
+                  <PlanName>Small | 600x410x80 mm (MAX 5kg) + R 60.00</PlanName>
                   <Radio
                     type="radio"
                     name="PUDO Locker-to-Locker"
                     onChange={(e) => handleChange(e.target)}
-                    value={50}
+                    value={60}
                     id="Large"
                   />
                 </Plan>
                 <Plan>
-                  <PlanName>Medium (600x410x190 mm) + R 50.00</PlanName>
+                  <PlanName>
+                    Medium | 600x410x190 mm (MAX 10kg) + R 60.00
+                  </PlanName>
                   <Radio
                     type="radio"
                     name="PUDO Locker-to-Locker"
                     onChange={(e) => handleChange(e.target)}
-                    value={50}
+                    value={60}
                     id="Large"
                   />
                 </Plan>
                 <Plan>
-                  <PlanName>Large (600x410x410 mm) + R 50.00</PlanName>
+                  <PlanName>
+                    Large | 600x410x410 mm (MAX 15kg) + R 60.00
+                  </PlanName>
                   <Radio
                     type="radio"
                     name="PUDO Locker-to-Locker"
                     onChange={(e) => handleChange(e.target)}
-                    value={50}
+                    value={60}
                     id="Large"
                   />
                 </Plan>
                 <Plan>
-                  <PlanName>Extra-Large (600x410x690 mm) + R 50.00</PlanName>
+                  <PlanName>
+                    Extra-Large | 600x410x690 mm (MAX 20kg) + R 60.00
+                  </PlanName>
                   <Radio
                     type="radio"
                     name="PUDO Locker-to-Locker"
                     onChange={(e) => handleChange(e.target)}
-                    value={50}
+                    value={60}
+                    id="Large"
+                  />
+                </Plan>
+                <a
+                  className="link"
+                  href="https://www.pudo.co.za/how-it-works.php"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  How PUDO works
+                </a>
+              </Plans>
+            )}
+          </OptionCont>
+          <OptionCont>
+            <Option>
+              <Label>
+                <FontAwesomeIcon icon={faTruck} />
+                <Name>PUDO Locker-to-Door</Name>
+                <Tips
+                  mode={mode}
+                  tips={`
+              Locker-to-locker courier service anywhere in South Africa. Drop off the item at the nearest Pudo locker. The Buyer will collect the item from the locker of their choice. Pudo lockers are accessible 24/7, so you can drop off or pick up your package when it suits you best.
+                      `}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <Switch
+                mode={mode}
+                checked={pudoDoor}
+                onChange={(e) => {
+                  setPudoDoor(e.target.checked);
+                  if (!e.target.checked) {
+                    setDeliveryOption(
+                      deliveryOption.filter(
+                        (x) => x.name !== "PUDO Locker-to-Locker"
+                      )
+                    );
+                  }
+                }}
+              ></Switch>
+            </Option>
+            <div
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
+            />
+            {pudoDoor && (
+              <Plans>
+                <Plan>
+                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    id="free"
+                    value={0}
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>
+                    Extra-Small | 600x170x80 mm (MAX 2kg) + R 60.00
+                  </PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={60}
+                    id="standard"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>Small | 600x410x80 mm (MAX 5kg) + R 70.00</PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={70}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>
+                    Medium | 600x410x190 mm (MAX 10kg) + R 100.00
+                  </PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={100}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>
+                    Large | 600x410x410 mm (MAX 15kg) + R 150.00
+                  </PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={150}
+                    id="Large"
+                  />
+                </Plan>
+                <Plan>
+                  <PlanName>
+                    Extra-Large | 600x410x690 mm (MAX 20kg) + R 200.00
+                  </PlanName>
+                  <Radio
+                    type="radio"
+                    name="PUDO Locker-to-Door"
+                    onChange={(e) => handleChange(e.target)}
+                    value={200}
                     id="Large"
                   />
                 </Plan>

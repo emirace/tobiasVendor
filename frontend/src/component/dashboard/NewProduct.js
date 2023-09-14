@@ -645,7 +645,8 @@ export default function NewProduct() {
 
   const [paxi, setPaxi] = useState(region() === "ZAR");
   const [gig, setGig] = useState(false);
-  const [pudo, setPudo] = useState(false);
+  const [pudoLocker, setPudoLocker] = useState(false);
+  const [pudoDoor, setPudoDoor] = useState(false);
   const [postnet, setPostnet] = useState(false);
   const [aramex, setAramex] = useState(false);
   const [pickup, setPickup] = useState(true);
@@ -2312,8 +2313,10 @@ export default function NewProduct() {
                     setPaxi={setPaxi}
                     gig={gig}
                     setGig={setGig}
-                    pudo={pudo}
-                    setPudo={setPudo}
+                    pudoLocker={pudoLocker}
+                    pudoDoor={pudoDoor}
+                    setPudoLocker={setPudoLocker}
+                    setPudoDoor={setPudoDoor}
                     aramex={aramex}
                     setAramex={setAramex}
                     postnet={postnet}
