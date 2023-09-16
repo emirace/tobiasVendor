@@ -254,7 +254,7 @@ export default function TheThrill() {
                   <DiscountBadge>{discount(product)}% Off</DiscountBadge>
                 )}
               </ProductPrice>
-              <ul className="product_hover">
+              {/* <ul className="product_hover">
                 <li>
                   <span
                   // onClick={() => setShowModel(!showModel)}
@@ -276,7 +276,7 @@ export default function TheThrill() {
                     <FontAwesomeIcon icon={faHeart} />
                   </span>
                 </li>
-              </ul>
+              </ul> */}
             </ProductContainer>
           ))}
         </ProductsContainer>

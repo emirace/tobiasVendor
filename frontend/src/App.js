@@ -10,51 +10,17 @@ import "./style/SearchScreen.css";
 import "./style/SellerScreen.css";
 import "./style/StickyNav.css";
 
-import {
-  BrowserRouter,
-  Link,
-  Navigate,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBagShopping,
-  faCircleHalfStroke,
-  faEnvelope,
-  faGear,
-  faHeart,
-  faRightFromBracket,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
 import Navbar from "./component/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Badge from "react-bootstrap/Badge";
-import Container from "react-bootstrap/Container";
-import { LinkContainer } from "react-router-bootstrap";
 import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { Store } from "./Store";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Button from "react-bootstrap/Button";
-import { baseURL, getError, region } from "./utils";
+import { region } from "./utils";
 import axios from "axios";
-import SearchBox from "./component/SearchBox";
 import Footer from "./component/Footer";
-import DashboardScreen from "./screens/DashboardScreen";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import ProductListScreen from "./screens/ProductListScreen";
-import ProductEditScreen from "./screens/ProductEditScreen";
-import OrderListScreen from "./screens/OrderListScreen";
-import UserListScreen from "./screens/UserListScreen";
-import MyAccountScreen from "./screens/MyAccountScreen";
-import UserEditScreen from "./screens/UserEditScreen";
 
-import ProductCreateScreen from "./screens/ProductCreateScreen";
 import StickyNav from "./component/StickyNav";
 import styled from "styled-components";
 import {
@@ -62,12 +28,10 @@ import {
   CartNotEmpty,
   IsActive,
   IsPaymentMethod,
-  IsShippingAdd,
   IsVerifyAddress,
   IsVerifyBank,
   IsVerifyEmail,
   ProtectedRoute,
-  SellerRedirect,
   SellerRoute,
 } from "./component/ProtectedRoute";
 import ScrollToTop from "./component/ScrollToTop";
@@ -79,7 +43,6 @@ import ProductListAdmin from "./component/dashboard/admin/ProductList";
 import OutOfStock from "./component/dashboard/admin/OutOfStock";
 
 import Bundle from "./component/info/Bundle";
-import useGeoLocation from "./hooks/useGeoLocation";
 import LoadingPage from "./component/LoadingPage";
 import ForgetScreen from "./screens/ForgetScreen";
 import ResetScreen from "./screens/ResetScreen";
@@ -98,7 +61,6 @@ import VerifyAddressScreen from "./screens/VerifyAddressScreen";
 import Terms from "./component/info/Terms";
 import BanScreen from "./screens/successPage/BanScreen";
 import VerifyEmailConfirmScreen from "./screens/VerifyEmailConfirmScreen";
-import secureLocalStorage from "react-secure-storage";
 import AcceptCookies from "./component/AcceptCookies";
 import MobileNotificationScreen from "./screens/MobileNotificationScreen";
 import TopSellerList from "./component/dashboard/TopSellerList";
@@ -106,6 +68,8 @@ import BrandScreenPage from "./screens/BrandScreenPage";
 import BuyerProtection from "./component/info/BuyerProtection";
 import DeletedScreen from "./screens/successPage/DeleteScreen";
 import mixpanel from "mixpanel-browser";
+
+// import NotificationSound from "./asset/notification-sound.mp3";
 
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
@@ -250,6 +214,9 @@ function App() {
   const token = new URLSearchParams(window.location.search).get(
     "redirecttoken"
   );
+
+  const audioPlayer = useRef(null);
+
   // const redirect = redirectInUrl ? redirectInUrl : "/";
 
   // const { search } = useLocation();
@@ -322,9 +289,16 @@ function App() {
       };
     }
   }, [userInfo]);
+
+  function playAudio() {
+    audioPlayer.current.play();
+  }
+
   const getData = (notification) => {
     ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
+    // playAudio();
   };
+
   const changeData = () => {
     if (userInfo) {
       socket.emit("initial_data", { userId: userInfo._id });
@@ -418,6 +392,7 @@ function App() {
               <Notification />
               <ToastNotification />
               <StickyNav />
+              <audio ref={audioPlayer} src={"NotificationSound"} />
               <header style={{ background: "inherit" }}>
                 <NavCont>
                   <Navbar
