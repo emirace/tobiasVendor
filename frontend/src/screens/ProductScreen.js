@@ -1,30 +1,30 @@
-import axios from "axios";
+import axios from 'axios';
 import React, {
   useContext,
   useEffect,
   useReducer,
   useRef,
   useState,
-} from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import ListGroup from "react-bootstrap/ListGroup";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import Rating from "../component/Rating";
-import { Helmet } from "react-helmet-async";
-import LoadingBox from "../component/LoadingBox";
-import MessageBox from "../component/MessageBox";
-import { getError, region } from "../utils";
-import { Store } from "../Store";
-import OwlCarousel from "react-owl-carousel";
-import { Carousel } from "react-responsive-carousel";
-import "../style/product.css";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+} from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import Rating from '../component/Rating';
+import { Helmet } from 'react-helmet-async';
+import LoadingBox from '../component/LoadingBox';
+import MessageBox from '../component/MessageBox';
+import { getError, region } from '../utils';
+import { Store } from '../Store';
+import OwlCarousel from 'react-owl-carousel';
+import { Carousel } from 'react-responsive-carousel';
+import '../style/product.css';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faAngleLeft,
   faAngleRight,
@@ -42,28 +42,28 @@ import {
   faThumbsDown,
   faThumbsUp,
   faWater,
-} from "@fortawesome/free-solid-svg-icons";
-import "../style/ProductScreen.css";
-import styled from "styled-components";
-import IconsTooltips from "../component/IconsTooltips";
-import ReviewLists from "./ReviewLists";
-import Model from "../component/Model";
-import ModelLogin from "../component/ModelLogin";
-import Signin from "../component/Signin";
-import Comment from "../component/Comment";
-import ProtectionRight from "../component/ProtectionRight";
-import Report from "../component/Report";
-import { format } from "timeago.js";
-import Sizechart from "../component/Sizechart";
-import Product from "../component/Product";
-import { socket } from "../App";
-import MagnifyImage from "../component/MagnifyImage";
-import RebundlePoster from "../component/RebundlePoster";
-import RebundleLabel from "../component/RebundleLabel";
-import CustomCarousel from "../component/CustomCarousel";
-import ShareModal from "../component/ShareButton";
-import { MD5 } from "crypto-js";
-import ReactImageMagnify from "react-image-magnify";
+} from '@fortawesome/free-solid-svg-icons';
+import '../style/ProductScreen.css';
+import styled from 'styled-components';
+import IconsTooltips from '../component/IconsTooltips';
+import ReviewLists from './ReviewLists';
+import Model from '../component/Model';
+import ModelLogin from '../component/ModelLogin';
+import Signin from '../component/Signin';
+import Comment from '../component/Comment';
+import ProtectionRight from '../component/ProtectionRight';
+import Report from '../component/Report';
+import { format } from 'timeago.js';
+import Sizechart from '../component/Sizechart';
+import Product from '../component/Product';
+import { socket } from '../App';
+import MagnifyImage from '../component/MagnifyImage';
+import RebundlePoster from '../component/RebundlePoster';
+import RebundleLabel from '../component/RebundleLabel';
+import CustomCarousel from '../component/CustomCarousel';
+import ShareModal from '../component/ShareButton';
+import { MD5 } from 'crypto-js';
+import ReactImageMagnify from 'react-image-magnify';
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -90,7 +90,7 @@ const TabItem = styled.div`
     color: var(--orange-color);
     font-weight: bold;
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -137,30 +137,30 @@ const SustainHeader = styled.div`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "REFRESH_PRODUCT":
+    case 'REFRESH_PRODUCT':
       return { ...state, product: action.payload };
-    case "CREATE_REQUEST":
+    case 'CREATE_REQUEST':
       return { ...state, loadingCreateReview: true };
-    case "CREATE_SUCCESS":
+    case 'CREATE_SUCCESS':
       return { ...state, loadingCreateReview: false };
-    case "CREATE_FAIL":
+    case 'CREATE_FAIL':
       return { ...state, loadingCreateReview: false };
-    case "FETCH_REQUEST":
+    case 'FETCH_REQUEST':
       return { ...state, loading: true };
-    case "FETCH_SUCCESS":
+    case 'FETCH_SUCCESS':
       return { ...state, product: action.payload, loading: false };
-    case "FETCH_FAIL":
+    case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-    case "COMMENT_SUCCESS":
+    case 'COMMENT_SUCCESS':
       return { ...state, comments: action.payload };
-    case "COMMENT2_SUCCESS":
+    case 'COMMENT2_SUCCESS':
       const com = action.payload;
       return { ...state, comments: { ...state.comments, com } };
-    case "UPLOAD_REQUEST":
+    case 'UPLOAD_REQUEST':
       return { ...state, loadingUpload: true };
-    case "UPLOAD_SUCCESS":
-      return { ...state, loadingUpload: false, errorUpload: "" };
-    case "UPLOAD_FAIL":
+    case 'UPLOAD_SUCCESS':
+      return { ...state, loadingUpload: false, errorUpload: '' };
+    case 'UPLOAD_FAIL':
       return { ...state, loadingUpload: false, errorUpload: action.payload };
 
     default:
@@ -243,18 +243,18 @@ export default function ProductScreen() {
   let reviewRef = useRef();
   const navigate = useNavigate();
   const [rating, setRAting] = useState(0);
-  const [comment, setComment] = useState("");
-  const [like, setLike] = useState("");
-  const [comment2, setComment2] = useState("");
+  const [comment, setComment] = useState('');
+  const [like, setLike] = useState('');
+  const [comment2, setComment2] = useState('');
   const [itemDetail, setItemDetail] = useState(false);
   const [overview, setOverview] = useState(false);
   const [specification, setSpecification] = useState(false);
   const [condition, setCondition] = useState(false);
   const [shipping, setShipping] = useState(false);
   const [features, setFeatures] = useState(false);
-  const [size, setSize] = useState("");
+  const [size, setSize] = useState('');
   const [share, setShare] = useState(false);
-  const [displayTab, setDisplayTab] = useState("comments");
+  const [displayTab, setDisplayTab] = useState('comments');
   const [reportModel, setReportModel] = useState(false);
   const [sizechartModel, setSizechartModel] = useState(false);
   const params = useParams();
@@ -264,7 +264,7 @@ export default function ProductScreen() {
     useReducer(reducer, {
       product: null,
       loading: true,
-      error: "",
+      error: '',
       comments: [],
     });
 
@@ -276,7 +276,7 @@ export default function ProductScreen() {
           await axios.put(`/api/recentviews/${region()}/${data._id}`);
         }
         const factor = 0.9;
-        var views = JSON.parse(localStorage.getItem("recentlyView") || "[]");
+        var views = JSON.parse(localStorage.getItem('recentlyView') || '[]');
         const existing = views.find((x) => x.productId === data._id);
 
         const newView = {
@@ -298,8 +298,8 @@ export default function ProductScreen() {
                 : item
             )
           : [...views, newView];
-        console.log("veiws:", views, "newViews:", newViews);
-        localStorage.setItem("recentlyView", JSON.stringify(newViews));
+        console.log('veiws:', views, 'newViews:', newViews);
+        localStorage.setItem('recentlyView', JSON.stringify(newViews));
         if (newViews) {
           const newViews1 = newViews.map((v) =>
             data._id !== v.productId
@@ -311,7 +311,7 @@ export default function ProductScreen() {
                 }
               : v
           );
-          localStorage.setItem("recentlyView", JSON.stringify(newViews1));
+          localStorage.setItem('recentlyView', JSON.stringify(newViews1));
           console.log(newViews1);
         }
       } catch (err) {
@@ -351,16 +351,16 @@ export default function ProductScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: "FETCH_REQUEST" });
+      dispatch({ type: 'FETCH_REQUEST' });
       try {
         const result = await axios.get(`/api/products/slug/${slug}`);
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+        dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
 
         console.log(result);
 
         window.scrollTo(0, 0);
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
     fetchData();
@@ -370,7 +370,7 @@ export default function ProductScreen() {
       try {
         if (product) {
           const { data } = await axios.get(`/api/comments/${product._id}`);
-          dispatch({ type: "COMMENT_SUCCESS", payload: data });
+          dispatch({ type: 'COMMENT_SUCCESS', payload: data });
         }
       } catch (err) {
         console.log(err);
@@ -395,34 +395,34 @@ export default function ProductScreen() {
     fetchData();
   }, [userInfo, refresh]);
 
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState('');
   const [sliderIndex, setSliderIndex] = useState(0);
   const [showModel, setShowModel] = useState(false);
   const [showLoginModel, setShowLoginModel] = useState(false);
-  const [selectSize, setSelectSize] = useState("");
-  const [image, setImage] = useState("");
+  const [selectSize, setSelectSize] = useState('');
+  const [image, setImage] = useState('');
 
   const addToCartHandler = async () => {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
     if (!selectSize && product?.sizes.length > 0) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Select Size",
+          message: 'Select Size',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (userInfo && product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: "You can't buy Your product",
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -430,18 +430,18 @@ export default function ProductScreen() {
     const { data } = await axios.get(`/api/products/${product._id}`);
     if (data.countInStock < quantity) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Sorry. Product is out of stock",
+          message: 'Sorry. Product is out of stock',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (userInfo) {
       await axios.post(
-        "/api/cartItems",
+        '/api/cartItems',
         { ...product, quantity, selectSize },
         {
           headers: {
@@ -451,26 +451,26 @@ export default function ProductScreen() {
       );
     }
     ctxDispatch({
-      type: "CART_ADD_ITEM",
+      type: 'CART_ADD_ITEM',
       payload: { ...product, quantity, selectSize },
     });
     ctxDispatch({
-      type: "SHOW_NOTIFICAATION",
+      type: 'SHOW_NOTIFICAATION',
       payload: {
-        text: "Item added to Cart",
+        text: 'Item added to Cart',
         showStatus: true,
-        buttonText: "Checkout",
-        link: "/cart",
+        buttonText: 'Checkout',
+        link: '/cart',
       },
     });
   };
   const sliderHandler = (direction) => {
-    if (direction === "left") {
-      var slider = document.getElementById("slider");
+    if (direction === 'left') {
+      var slider = document.getElementById('slider');
       slider.scrollBy(350, 0);
       // setSliderIndex(sliderIndex > 0 ? sliderIndex - 1 : products.length - 5);
     } else {
-      var slider = document.getElementById("slider");
+      var slider = document.getElementById('slider');
       slider.scrollBy(-350, 0);
     }
   };
@@ -481,39 +481,39 @@ export default function ProductScreen() {
     e.preventDefault();
     if (!comment) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Please enter review",
+          message: 'Please enter review',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (!rating) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Please select rating",
+          message: 'Please select rating',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (!like) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Give review a thumb up or thumb down",
+          message: 'Give review a thumb up or thumb down',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     try {
-      dispatch({ type: "CREATE_REQUEST" });
+      dispatch({ type: 'CREATE_REQUEST' });
       const { data } = await axios.post(
         `/api/products/${product._id}/reviews`,
         { rating, comment, name: userInfo.username, like },
@@ -521,46 +521,46 @@ export default function ProductScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: "CREATE_SUCCESS" });
+      dispatch({ type: 'CREATE_SUCCESS' });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Review submitted successfully",
+          message: 'Review submitted successfully',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
       product.reviews.unshift(data.review);
       product.numReviews = data.numReviews;
       product.rating = data.rating;
-      dispatch({ type: "REFRESH_PRODUCT", payload: product });
+      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
       window.scrollTo({
-        behavior: "smooth",
+        behavior: 'smooth',
         top: reviewRef.current.offsetTop,
       });
 
-      socket.emit("post_data", {
+      socket.emit('post_data', {
         userId: product.seller._id,
         itemId: product._id,
-        notifyType: "review",
+        notifyType: 'review',
         msg: `${userInfo.username} gave your product a review`,
         link: `/product/${product.slug}`,
         userImage: userInfo.image,
-        mobile: { path: "Product", id: product.slug },
+        mobile: { path: 'Product', id: product.slug },
       });
-      setRAting("");
-      setComment("");
-      setLike("");
+      setRAting('');
+      setComment('');
+      setLike('');
     } catch (err) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
-      dispatch({ type: "CREATE_FAIL" });
+      dispatch({ type: 'CREATE_FAIL' });
     }
   };
 
@@ -568,11 +568,11 @@ export default function ProductScreen() {
     e.preventDefault();
     if (!comment2) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Enter a comment",
+          message: 'Enter a comment',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -587,21 +587,21 @@ export default function ProductScreen() {
       );
       console.log(data);
       comments.push(data);
-      dispatch({ type: "COMMENT_SUCCESS", payload: comments });
-      setComment2("");
+      dispatch({ type: 'COMMENT_SUCCESS', payload: comments });
+      setComment2('');
 
       window.scrollTo({
-        behavior: "smooth",
+        behavior: 'smooth',
         top: reviewRef.current.offsetTop,
       });
 
-      socket.emit("post_data", {
+      socket.emit('post_data', {
         userId: product.seller._id,
         itemId: product._id,
-        notifyType: "comment",
+        notifyType: 'comment',
         msg: `${userInfo.username} commented on your product`,
         link: `/product/${product.slug}`,
-        mobile: { path: "Product", id: product.slug },
+        mobile: { path: 'Product', id: product.slug },
         userImage: userInfo.image,
       });
     } catch (err) {
@@ -611,22 +611,22 @@ export default function ProductScreen() {
 
   const toggleCollapse = (type) => {
     switch (type) {
-      case "itemDetail":
+      case 'itemDetail':
         setItemDetail(!itemDetail);
         break;
-      case "overview":
+      case 'overview':
         setOverview(!overview);
         break;
-      case "condition":
+      case 'condition':
         setCondition(!condition);
         break;
-      case "shipping":
+      case 'shipping':
         setShipping(!shipping);
         break;
-      case "features":
+      case 'features':
         setFeatures(!features);
         break;
-      case "specification":
+      case 'specification':
         setSpecification(!specification);
         break;
       default:
@@ -636,22 +636,22 @@ export default function ProductScreen() {
   const saveItem = async () => {
     if (!userInfo) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Sign In/ Sign Up to add an item to wishlist",
+          message: 'Sign In/ Sign Up to add an item to wishlist',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: "You can't add your product to wishlist",
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -665,7 +665,7 @@ export default function ProductScreen() {
         }
       );
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: data.message,
           showStatus: true,
@@ -681,22 +681,22 @@ export default function ProductScreen() {
   const toggleLikes = async () => {
     if (!userInfo) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Sign in /  Sign Up to like",
+          message: 'Sign in /  Sign Up to like',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (product.seller._id === userInfo._id) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: "You can't like your product",
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -710,23 +710,23 @@ export default function ProductScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
+        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
         ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "Item unLiked",
+            message: 'Item unLiked',
             showStatus: true,
-            state1: "visible1 error",
+            state1: 'visible1 error',
           },
         });
 
-        socket.emit("post_data", {
+        socket.emit('post_data', {
           userId: data.product.seller._id,
           itemId: data.product._id,
-          notifyType: "like",
+          notifyType: 'like',
           msg: `${userInfo.username} unliked your product`,
           link: `/product/${data.product.slug}`,
-          mobile: { path: "Product", id: data.product.slug },
+          mobile: { path: 'Product', id: data.product.slug },
           userImage: userInfo.image,
         });
       } else {
@@ -737,23 +737,23 @@ export default function ProductScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
+        dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
         ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "Item Liked",
+            message: 'Item Liked',
             showStatus: true,
-            state1: "visible1 success",
+            state1: 'visible1 success',
           },
         });
 
-        socket.emit("post_data", {
+        socket.emit('post_data', {
           userId: data.product.seller._id,
           itemId: data.product._id,
-          notifyType: "like",
+          notifyType: 'like',
           msg: `${userInfo.username} liked your product`,
           link: `/product/${data.product.slug}`,
-          mobile: { path: "Product", id: data.product.slug },
+          mobile: { path: 'Product', id: data.product.slug },
           userImage: userInfo.image,
         });
       }
@@ -765,33 +765,33 @@ export default function ProductScreen() {
   const uploadImageHandler = async (e) => {
     const file = e.target.files[0];
     const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
+    bodyFormData.append('file', file);
     try {
-      dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upload', bodyFormData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
           authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: "UPLOAD_SUCCESS" });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
       setImage(data.secure_url);
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Image Uploaded",
+          message: 'Image Uploaded',
           showStatus: true,
-          state1: "visible1 success",
+          state1: 'visible1 success',
         },
       });
     } catch (err) {
-      dispatch({ type: "UPLOAD_FAIL", payload: getError(err) });
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Failed uploading image",
+          message: 'Failed uploading image',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       console.log(getError(err));
@@ -802,27 +802,27 @@ export default function ProductScreen() {
     try {
       if (!userInfo) {
         return ctxDispatch({
-          type: "SHOW_TOAST",
+          type: 'SHOW_TOAST',
           payload: {
-            message: "SIGN IN or REGISTER to report an item",
+            message: 'SIGN IN or REGISTER to report an item',
             showStatus: true,
-            state1: "visible1 error",
+            state1: 'visible1 error',
           },
         });
       }
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id, productId: id2, type: "reportProduct" },
+        { recieverId: id, productId: id2, type: 'reportProduct' },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
       navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -836,43 +836,43 @@ export default function ProductScreen() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: "CREATE_SUCCESS" });
+      dispatch({ type: 'CREATE_SUCCESS' });
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Review deleted successfully",
+          message: 'Review deleted successfully',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       product.reviews = data.reviews;
       product.numReviews = data.numReviews;
       product.rating = data.rating;
-      dispatch({ type: "REFRESH_PRODUCT", payload: product });
+      dispatch({ type: 'REFRESH_PRODUCT', payload: product });
     } catch (err) {
       console.log(getError(err));
     }
   };
 
   const conditionDetails = (item) => {
-    if (item === "New with Tags") {
-      return "New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it. This product shows no alterations, no defects and comes with Original purchase tags.";
-    } else if (item === "New with No Tags") {
-      return "A preowned secondhand product that has never been worn or use but doesn’t have original purchase tags. This product should show no defects or alterations.";
-    } else if (item === "Excellent Condition") {
-      return "A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Product do not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. ";
-    } else if (item === "Good Condition") {
-      return "A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected.";
-    } else if (item === "Fair Condition") {
-      return "A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are shown on product photos and mentioned in description.";
+    if (item === 'New with Tags') {
+      return 'New with Tags: A preowned secondhand product that has never been worn or used. These products reflect no sign of use and has its original purchase tags on it. This product shows no alterations, no defects and comes with Original purchase tags.';
+    } else if (item === 'New with No Tags') {
+      return 'A preowned secondhand product that has never been worn or use but doesn’t have original purchase tags. This product should show no defects or alterations.';
+    } else if (item === 'Excellent Condition') {
+      return 'A preowned secondhand Product still in an excellent condition that has only been used or worn very slightly, (perhaps 1–3 times) and carefully maintained. These Product may reflect very minimal worn or usage sign. Product do not have any damage on the fabric or material, no worn smell and no missing accessory, button or pieces. ';
+    } else if (item === 'Good Condition') {
+      return 'A preowned secondhand product in a very good condition which has been used or worn and properly maintained. No remarkable defects (Tear, Hole or Rust) expected.';
+    } else if (item === 'Fair Condition') {
+      return 'A preowned secondhand product which has been frequently used or worn. Products may show reasonable defects signs, scratches, worn corners or interior wear. Defects are shown on product photos and mentioned in description.';
     } else {
-      return "No condition Selected";
+      return 'No condition Selected';
     }
   };
 
   const switchTab = (tab) => {
     switch (tab) {
-      case "comments":
+      case 'comments':
         return (
           <>
             <div className="my-3 mx-4">
@@ -903,12 +903,12 @@ export default function ProductScreen() {
                         placeholder="Leave a comment here"
                         value={comment2}
                         className={` ${
-                          mode === "pagebodydark" ? "" : "color_black"
+                          mode === 'pagebodydark' ? '' : 'color_black'
                         }`}
                         onChange={(e) => setComment2(e.target.value)}
                       />
                       <input
-                        style={{ marginTop: "5px" }}
+                        style={{ marginTop: '5px' }}
                         type="file"
                         label="hello"
                         onChange={(e) => uploadImageHandler(e)}
@@ -923,10 +923,10 @@ export default function ProductScreen() {
                   </form>
                 ) : (
                   <CustomMessage>
-                    Please{" "}
+                    Please{' '}
                     <Link to={`/signin?redirect=/product/${product.slug}`}>
                       Sign In
-                    </Link>{" "}
+                    </Link>{' '}
                     to write a comment
                   </CustomMessage>
                 )}
@@ -934,7 +934,7 @@ export default function ProductScreen() {
             </div>
           </>
         );
-      case "reviews":
+      case 'reviews':
         return (
           <>
             <div className="my-3 mx-4">
@@ -946,31 +946,31 @@ export default function ProductScreen() {
               <ListGroup>
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>{" "}
+                    <strong>{review.name}</strong>{' '}
                     <FontAwesomeIcon
-                      style={{ marginLeft: "10px" }}
+                      style={{ marginLeft: '10px' }}
                       icon={
-                        review.like === "yes"
+                        review.like === 'yes'
                           ? faThumbsUp
-                          : review.like === "no"
+                          : review.like === 'no'
                           ? faThumbsDown
                           : faFaceSmile
                       }
                       color={
-                        review.like === "yes"
-                          ? "#eb9f40"
-                          : review.like === "no"
-                          ? "red"
-                          : "grey"
+                        review.like === 'yes'
+                          ? '#eb9f40'
+                          : review.like === 'no'
+                          ? 'red'
+                          : 'grey'
                       }
-                      size={"lg"}
+                      size={'lg'}
                     />
                     <Rating rating={review.rating} caption=" "></Rating>
                     <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                     {userInfo && userInfo.isAdmin && (
                       <div
-                        style={{ color: "red", cursor: "pointer" }}
+                        style={{ color: 'red', cursor: 'pointer' }}
                         onClick={() => deleteReview(review._id)}
                       >
                         delete
@@ -1007,7 +1007,7 @@ export default function ProductScreen() {
                       >
                         <Form.Control
                           className={` ${
-                            mode === "pagebodydark" ? "" : "color_black"
+                            mode === 'pagebodydark' ? '' : 'color_black'
                           }`}
                           as="textarea"
                           placeholder="Leave a comment here"
@@ -1019,14 +1019,14 @@ export default function ProductScreen() {
                         <div>Like</div>
                         <FontAwesomeIcon
                           icon={faThumbsUp}
-                          onClick={() => setLike("yes")}
-                          color={like === "yes" ? "#eb9f40" : "grey"}
-                        />{" "}
+                          onClick={() => setLike('yes')}
+                          color={like === 'yes' ? '#eb9f40' : 'grey'}
+                        />{' '}
                         <div>Dislike</div>
                         <FontAwesomeIcon
                           icon={faThumbsDown}
-                          onClick={() => setLike("no")}
-                          color={like === "no" ? "#eb9f40" : "grey"}
+                          onClick={() => setLike('no')}
+                          color={like === 'no' ? '#eb9f40' : 'grey'}
                         />
                       </Thumbs>
                       <div className="my-3">
@@ -1042,10 +1042,10 @@ export default function ProductScreen() {
                     </form>
                   ) : (
                     <CustomMessage>
-                      Please{" "}
+                      Please{' '}
                       <Link to={`/signin?redirect=/product/${product.slug}`}>
                         Sign In
-                      </Link>{" "}
+                      </Link>{' '}
                       to write a review
                     </CustomMessage>
                   ))}
@@ -1062,22 +1062,22 @@ export default function ProductScreen() {
   const addConversation = async (id, id2) => {
     if (!userInfo) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
-          message: "Signin/ Sign Up to start a conversation",
+          message: 'Signin/ Sign Up to start a conversation',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
     }
     if (userInfo._id.toString() === id.toString()) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message: "You can't message yourself",
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
       return;
@@ -1085,19 +1085,19 @@ export default function ProductScreen() {
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id, productId: id2, type: "product" },
+        { recieverId: id, productId: id2, type: 'product' },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
       console.log(data);
       navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
       ctxDispatch({
-        type: "SHOW_TOAST",
+        type: 'SHOW_TOAST',
         payload: {
           message:
-            "Encounter a problem starting a conversation, pls try again later",
+            'Encounter a problem starting a conversation, pls try again later',
           showStatus: true,
-          state1: "visible1 error",
+          state1: 'visible1 error',
         },
       });
     }
@@ -1109,8 +1109,8 @@ export default function ProductScreen() {
       setSize(`${item} ( ${current[0].value} left)`);
       setSelectSize(item);
     } else {
-      setSize("Out of stock");
-      setSelectSize("");
+      setSize('Out of stock');
+      setSelectSize('');
     }
   };
 
@@ -1126,19 +1126,19 @@ export default function ProductScreen() {
   const [onlineUser, setOnlineUser] = useState([]);
 
   useEffect(() => {
-    socket.emit("initialUsers");
-    socket.on("loadUsers", (users) => {
+    socket.emit('initialUsers');
+    socket.on('loadUsers', (users) => {
       setOnlineUser(users);
-      console.log("loadUsers", users);
+      console.log('loadUsers', users);
     });
-    socket.on("getUsers", (users) => {
+    socket.on('getUsers', (users) => {
       setOnlineUser(users);
-      console.log("onlineuser", users);
+      console.log('onlineuser', users);
     });
-    console.log("onlineuser", onlineUser);
+    console.log('onlineuser', onlineUser);
     return () => {
-      socket.off("loadUsers");
-      socket.off("getUsers");
+      socket.off('loadUsers');
+      socket.off('getUsers');
     };
   }, [userInfo]);
 
@@ -1153,14 +1153,14 @@ export default function ProductScreen() {
   };
 
   const checkFileTypeByExtension = (fileUrl) => {
-    const extension = fileUrl.split(".").pop().toLowerCase();
+    const extension = fileUrl.split('.').pop().toLowerCase();
 
-    if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
-      return "image";
-    } else if (["mp4", "avi", "mov", "mkv"].includes(extension)) {
-      return "video";
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension)) {
+      return 'image';
+    } else if (['mp4', 'avi', 'mov', 'mkv'].includes(extension)) {
+      return 'video';
     } else {
-      return "unknown";
+      return 'unknown';
     }
   };
 
@@ -1185,14 +1185,14 @@ export default function ProductScreen() {
                 <div
                   key={index}
                   className={`single_product_multi_image ${
-                    selectedImage === x ? "activeImage" : ""
+                    selectedImage === x ? 'activeImage' : ''
                   }`}
                   onClick={() => setSelectedImage(x)}
                 >
                   <img
                     src={x}
                     alt=""
-                    className={selectedImage === x ? "active1" : ""}
+                    className={selectedImage === x ? 'active1' : ''}
                   />
                 </div>
               )
@@ -1200,16 +1200,16 @@ export default function ProductScreen() {
           {product.video && (
             <div
               className="single_product_multi_image"
-              onClick={() => setSelectedImage("video")}
+              onClick={() => setSelectedImage('video')}
             >
               <div
                 style={{
                   backgroundImage: `url('${product.image}')`,
-                  width: "100%",
-                  height: "60px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  width: '100%',
+                  height: '60px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 <FontAwesomeIcon icon={faCirclePlay} />
@@ -1228,17 +1228,17 @@ export default function ProductScreen() {
                     <div
                       key={image}
                       style={{
-                        width: "100vw",
-                        marginLeft: "-20px",
-                        height: "500px",
+                        width: '100vw',
+                        marginLeft: '-20px',
+                        height: '500px',
                       }}
                     >
-                      {checkFileTypeByExtension(image) === "image" ? (
+                      {checkFileTypeByExtension(image) === 'image' ? (
                         <img
                           style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
                           }}
                           src={image}
                           alt="product"
@@ -1257,7 +1257,7 @@ export default function ProductScreen() {
           </CustomCarousel>
         </div>
         <div className="single_product_center">
-          {selectedImage === "video" ? (
+          {selectedImage === 'video' ? (
             <video width="100%" controls muted autoplay>
               <source src={product.video} type="video/mp4" />
             </video>
@@ -1266,7 +1266,7 @@ export default function ProductScreen() {
             <ReactImageMagnify
               {...{
                 smallImage: {
-                  alt: "Wristwatch by Ted Baker London",
+                  alt: 'Wristwatch by Ted Baker London',
                   isFluidWidth: true,
                   src: selectedImage || product.image,
                 },
@@ -1275,7 +1275,7 @@ export default function ProductScreen() {
                   width: 1200,
                   height: 1800,
                 },
-                enlargedImagePosition: "over",
+                // enlargedImagePosition: "over",
               }}
             />
           )}
@@ -1289,7 +1289,7 @@ export default function ProductScreen() {
               {product.seller.badge && (
                 <div
                   className="seller_profile_badge"
-                  style={{ right: "0px", bottom: "0px" }}
+                  style={{ right: '0px', bottom: '0px' }}
                 >
                   <Badge src="https://res.cloudinary.com/emirace/image/upload/v1661148671/Icons-28_hfzerc.png" />
                 </div>
@@ -1299,14 +1299,14 @@ export default function ProductScreen() {
               <div className="single_product_seller_name">
                 <Link
                   to={`/seller/${product.seller._id}`}
-                  style={{ color: "var(--malon-color)" }}
+                  style={{ color: 'var(--malon-color)' }}
                 >
                   @{product.seller.username}
                 </Link>
               </div>
               <div>
-                {product.seller?.address?.state},{" "}
-                {product.seller.region === "NGN" ? "Nigeria" : "South Africa"}
+                {product.seller?.address?.state},{' '}
+                {product.seller.region === 'NGN' ? 'Nigeria' : 'South Africa'}
               </div>
               <ReviewsClick onClick={() => setShowModel(!showModel)}>
                 <Rating
@@ -1326,11 +1326,11 @@ export default function ProductScreen() {
             <div className="single_produc_sold">
               <FontAwesomeIcon icon={faTag} />
               {product.seller.sold.length < 5
-                ? "< 5"
-                : product.seller.sold.length}{" "}
+                ? '< 5'
+                : product.seller.sold.length}{' '}
               sold
               <span>
-                <FontAwesomeIcon icon={faEye} style={{ marginLeft: "10px" }} />
+                <FontAwesomeIcon icon={faEye} style={{ marginLeft: '10px' }} />
                 {product.viewcount.length}
               </span>
             </div>
@@ -1339,14 +1339,14 @@ export default function ProductScreen() {
             ) : (
               <div
                 className="single_produc_status"
-                style={{ borderColor: "grey", color: "grey" }}
+                style={{ borderColor: 'grey', color: 'grey' }}
               >
                 offline
               </div>
             )}
           </div>
           {product.seller.rebundle.status && (
-            <RebundlePoster style={{ marginTop: "5px" }} />
+            <RebundlePoster style={{ marginTop: '5px' }} />
           )}
 
           <div className="single_product_actions">
@@ -1355,12 +1355,12 @@ export default function ProductScreen() {
               <FontAwesomeIcon
                 className={
                   userInfo && product.likes.find((x) => x === userInfo._id)
-                    ? "orange-color"
-                    : ""
+                    ? 'orange-color'
+                    : ''
                 }
                 onClick={toggleLikes}
                 icon={faThumbsUp}
-                style={{ marginLeft: "5px" }}
+                style={{ marginLeft: '5px' }}
               />
               <IconsTooltips tips="Like Product " />
             </IconContainer>
@@ -1376,8 +1376,8 @@ export default function ProductScreen() {
                   user &&
                   user.saved &&
                   user.saved.find((x) => x._id === product._id)
-                    ? "orange-color"
-                    : ""
+                    ? 'orange-color'
+                    : ''
                 }
                 onClick={() => {
                   saveItem();
@@ -1403,14 +1403,14 @@ export default function ProductScreen() {
           </div>
           <div>Listed {format(product.createdAt)}</div>
 
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <div className="sp_name">{product.name}</div>
             <div
               style={{
                 fontSize: 15,
                 marginLeft: 20,
-                fontWeight: "400",
-                color: "grey",
+                fontWeight: '400',
+                color: 'grey',
               }}
               className="sp_name"
             >
@@ -1433,13 +1433,13 @@ export default function ProductScreen() {
                 (-{discount().toString().substring(0, 5)}% )
               </div>
             ) : (
-              ""
+              ''
             )}
           </div>
           {product.tags && (
             <Taglist>
               Tags:
-              <div style={{ display: "flex", flexWrap: "wrap" }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {product.tags.map((t) => (
                   <Link to={`/search?query=${t}`}>
                     <Tag>{t}</Tag>
@@ -1459,7 +1459,7 @@ export default function ProductScreen() {
                         <span key={size.size}>
                           <label
                             className={`sp_select_size_btn ${
-                              selectSize === size.size ? "sp_btn_checked" : ""
+                              selectSize === size.size ? 'sp_btn_checked' : ''
                             }  `}
                             onClick={() => sizeHandler(size.size)}
                           >
@@ -1470,10 +1470,10 @@ export default function ProductScreen() {
                   )}
 
                   <span
-                    style={{ textDecoration: "underline", cursor: "pointer" }}
+                    style={{ textDecoration: 'underline', cursor: 'pointer' }}
                     onClick={() => setSizechartModel(true)}
                   >
-                    size chart{" "}
+                    size chart{' '}
                   </span>
 
                   <ModelLogin
@@ -1488,7 +1488,7 @@ export default function ProductScreen() {
             <div className="sp_btn">
               {!product.isAvailable ? (
                 <button
-                  style={{ backgroundColor: "grey", cursor: "not-allowed" }}
+                  style={{ backgroundColor: 'grey', cursor: 'not-allowed' }}
                   className="sp_cart_btn"
                 >
                   Not Available
@@ -1499,7 +1499,7 @@ export default function ProductScreen() {
                 </button>
               ) : (
                 <button
-                  style={{ backgroundColor: "grey", cursor: "not-allowed" }}
+                  style={{ backgroundColor: 'grey', cursor: 'not-allowed' }}
                   className="sp_cart_btn"
                 >
                   sold out
@@ -1513,13 +1513,13 @@ export default function ProductScreen() {
             <div className="sp_more_detail">
               <div
                 className={`sp_detail_section ${
-                  overview ? "active" : ""
+                  overview ? 'active' : ''
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title  sp_condition_cont"
-                  onClick={() => toggleCollapse("overview")}
-                  style={{ textTransform: "uppercase", marginBottom: "5px" }}
+                  onClick={() => toggleCollapse('overview')}
+                  style={{ textTransform: 'uppercase', marginBottom: '5px' }}
                 >
                   Overview
                 </div>
@@ -1543,11 +1543,11 @@ export default function ProductScreen() {
                       </TableRow>
                       <TableRow mode={mode}>
                         <TableCell>Subcategory</TableCell>
-                        <TableCell>{product.subCategory || "nal"}</TableCell>
+                        <TableCell>{product.subCategory || 'nal'}</TableCell>
                       </TableRow>
                       <TableRow mode={mode}>
                         <TableCell>Color</TableCell>
-                        <TableCell>{product.color || "nal"}</TableCell>
+                        <TableCell>{product.color || 'nal'}</TableCell>
                       </TableRow>
                     </tbody>
                   </Table>
@@ -1574,24 +1574,24 @@ export default function ProductScreen() {
               </div>
               <div
                 className={`sp_detail_section ${
-                  itemDetail ? "active" : ""
+                  itemDetail ? 'active' : ''
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title  sp_condition_cont"
-                  onClick={() => toggleCollapse("itemDetail")}
+                  onClick={() => toggleCollapse('itemDetail')}
                 >
                   Item Description
                 </div>
                 <div className="sp_detail_contail">{product.description}</div>
               </div>
               <div
-                className={`sp_detail_section ${condition ? "active" : ""} `}
+                className={`sp_detail_section ${condition ? 'active' : ''} `}
               >
                 <div className="">
                   <div
                     className="sp_detail_title sp_condition_cont"
-                    onClick={() => toggleCollapse("condition")}
+                    onClick={() => toggleCollapse('condition')}
                   >
                     Condition
                   </div>
@@ -1600,23 +1600,23 @@ export default function ProductScreen() {
                 <div className="sp_detail_contail">
                   <div
                     className="sp_condition"
-                    style={{ fontWeight: "bold", padding: "10px" }}
+                    style={{ fontWeight: 'bold', padding: '10px' }}
                   >
                     {product.condition}
                   </div>
-                  <div style={{ textAlign: "justify" }}>
+                  <div style={{ textAlign: 'justify' }}>
                     {conditionDetails(product.condition)}
                   </div>
                 </div>
               </div>
               <div
                 className={`sp_detail_section ${
-                  shipping ? "active" : ""
+                  shipping ? 'active' : ''
                 } sp_detail_section_f`}
               >
                 <div
                   className="sp_detail_title "
-                  onClick={() => toggleCollapse("shipping")}
+                  onClick={() => toggleCollapse('shipping')}
                 >
                   Shipping Location
                 </div>
@@ -1624,15 +1624,15 @@ export default function ProductScreen() {
                   {product.shippingLocation}
                 </div>
               </div>
-              {product.keyFeatures && product.keyFeatures !== "Other" && (
+              {product.keyFeatures && product.keyFeatures !== 'Other' && (
                 <div
                   className={`sp_detail_section ${
-                    features ? "active" : ""
+                    features ? 'active' : ''
                   } sp_detail_section_f`}
                 >
                   <div
                     className="sp_detail_title "
-                    onClick={() => toggleCollapse("features")}
+                    onClick={() => toggleCollapse('features')}
                   >
                     Key Features
                   </div>
@@ -1642,12 +1642,12 @@ export default function ProductScreen() {
               {product.specification && (
                 <div
                   className={`sp_detail_section ${
-                    specification ? "active" : ""
+                    specification ? 'active' : ''
                   } sp_detail_section_f`}
                 >
                   <div
                     className="sp_detail_title "
-                    onClick={() => toggleCollapse("specification")}
+                    onClick={() => toggleCollapse('specification')}
                   >
                     Specification
                   </div>
@@ -1659,39 +1659,39 @@ export default function ProductScreen() {
             </div>
             <ProtectionRight />
             <Sustain mode={mode}>
-              <SustainHeader style={{ fontWeight: "600" }}>
+              <SustainHeader style={{ fontWeight: '600' }}>
                 REPEDDLE SUSTAINABILITY IMPACT
               </SustainHeader>
-              <div style={{ fontSize: "14px" }}>
+              <div style={{ fontSize: '14px' }}>
                 <p>
                   Save our environment (AFRICA) and planet from Landfill, Water
                   pollution and Carbon Emission.
-                </p>{" "}
+                </p>{' '}
                 <p>
-                  We advocate for <b>clean air</b>, <b>clean water</b> and a{" "}
+                  We advocate for <b>clean air</b>, <b>clean water</b> and a{' '}
                   <b>clean environment</b>. These are not too much to ask; these
                   are common basic living condition!!!
                 </p>
                 <p>
-                  {" "}
-                  By buying and{" "}
+                  {' '}
+                  By buying and{' '}
                   <Link
                     style={{
-                      textDecoration: "underline",
-                      color: "var(--malon-color)",
+                      textDecoration: 'underline',
+                      color: 'var(--malon-color)',
                     }}
                     to="/sell"
                   >
                     selling
-                  </Link>{" "}
+                  </Link>{' '}
                   secondhand item on Repeddle, you’re not only reducing carbon
                   footprint and saving the planet, but you are giving an African
                   Child a better hope for tomorrow. Learn more on our
-                  sustainability take{" "}
+                  sustainability take{' '}
                   <Link
                     style={{
-                      textDecoration: "underline",
-                      color: "var(--malon-color)",
+                      textDecoration: 'underline',
+                      color: 'var(--malon-color)',
                     }}
                     to="/sustainability"
                   >
@@ -1699,32 +1699,32 @@ export default function ProductScreen() {
                   </Link>
                 </p>
               </div>
-              <SustainHeader style={{ fontWeight: "600" }}>
+              <SustainHeader style={{ fontWeight: '600' }}>
                 POSITIVE IMPACT OF USING SECONDHAND CLOTHES
               </SustainHeader>
               <SustainCont>
-                <div style={{ flex: "1", marginTop: "4px" }}>
+                <div style={{ flex: '1', marginTop: '4px' }}>
                   <FontAwesomeIcon icon={faWater} />
                 </div>
-                <div style={{ flex: "9" }}>
+                <div style={{ flex: '9' }}>
                   <Sustainbold>2,700L</Sustainbold> of water saved for one
                   person to drink for 900 days.
                 </div>
               </SustainCont>
               <SustainCont>
-                <div style={{ flex: "1", marginTop: "4px" }}>
+                <div style={{ flex: '1', marginTop: '4px' }}>
                   <FontAwesomeIcon icon={faCloud} />
                 </div>
-                <div style={{ flex: "9" }}>
+                <div style={{ flex: '9' }}>
                   <Sustainbold>10%</Sustainbold> co2 of global carbon emissions
                   avoided.
                 </div>
               </SustainCont>
               <SustainCont>
-                <div style={{ flex: "1", marginTop: "4px" }}>
+                <div style={{ flex: '1', marginTop: '4px' }}>
                   <FontAwesomeIcon icon={faLightbulb} />
                 </div>
-                <div style={{ flex: "9" }}>
+                <div style={{ flex: '9' }}>
                   <Sustainbold>98%</Sustainbold> Chance of clothes ending up in
                   landfills avoided.
                 </div>
@@ -1750,10 +1750,10 @@ export default function ProductScreen() {
         <div className="product-title">
           <h2 className="product-category1">Recently Viewed</h2>
         </div>
-        <button onClick={() => sliderHandler("left")} className="pre-btn1">
+        <button onClick={() => sliderHandler('left')} className="pre-btn1">
           <i className="fa fa-angle-left"></i>
         </button>
-        <button onClick={() => sliderHandler("right")} className="next-btn1">
+        <button onClick={() => sliderHandler('right')} className="next-btn1">
           <i className="fa fa-angle-right"></i>
         </button>
         <div
@@ -1763,7 +1763,7 @@ export default function ProductScreen() {
           //   transform: sliderstyle,
           // }}
         >
-          {JSON.parse(localStorage.getItem("recentlyView") || "[]").map(
+          {JSON.parse(localStorage.getItem('recentlyView') || '[]').map(
             (product) => (
               <div key={product.productId} className="smooth1">
                 <Product product={product.product} />
@@ -1776,14 +1776,14 @@ export default function ProductScreen() {
       <section>
         <Tab>
           <TabItem
-            className={displayTab === "comments" && "active"}
-            onClick={() => setDisplayTab("comments")}
+            className={displayTab === 'comments' && 'active'}
+            onClick={() => setDisplayTab('comments')}
           >
             Comments ({comments.length})
           </TabItem>
           <TabItem
-            className={displayTab === "reviews" && "active"}
-            onClick={() => setDisplayTab("reviews")}
+            className={displayTab === 'reviews' && 'active'}
+            onClick={() => setDisplayTab('reviews')}
           >
             Reviews ({product.reviews.length})
           </TabItem>
