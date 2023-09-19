@@ -71,6 +71,9 @@
   border-radius: 5px;
 }
 .single_product_seller_name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-weight: bold;
   text-transform: capitalize;
 }
@@ -117,7 +120,7 @@
   margin-top: 10px;
   font-size: 25px;
   text-transform: capitalize;
-  font-family: "Absentiasans";
+  font-family: 'Absentiasans';
 }
 
 .select_size_header {
@@ -221,7 +224,7 @@
 }
 
 .sp_detail_title::before {
-  content: " ";
+  content: ' ';
   width: 10px;
   height: 10px;
   border-bottom: 1px solid;
@@ -233,7 +236,7 @@
 }
 
 .sp_detail_section.active .sp_detail_title::before {
-  content: " ";
+  content: ' ';
   transform: rotate(134deg);
 }
 

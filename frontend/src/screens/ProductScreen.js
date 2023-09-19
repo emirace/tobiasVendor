@@ -237,6 +237,12 @@ const Badge = styled.img`
   border-radius: 0 !important;
 `;
 
+const Follow = styled.div`
+  background: var(--orange-color);
+  color: white;
+  padding: 5px;
+`;
+
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo, mode } = state;
@@ -1303,6 +1309,7 @@ export default function ProductScreen() {
                 >
                   @{product.seller.username}
                 </Link>
+                <Follow>Follow</Follow>
               </div>
               <div>
                 {product.seller?.address?.state},{' '}
