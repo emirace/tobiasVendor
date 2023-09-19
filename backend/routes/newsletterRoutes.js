@@ -1,5 +1,5 @@
 import express from 'express';
-import { isAdmin, isAuth, sendEmail } from '../utils.js';
+import { isAdmin, isAuth, sendEmail, sendEmailMessage } from '../utils.js';
 import expressAsyncHandler from 'express-async-handler';
 import Newsletters from '../models/newslettersModel.js';
 import User from '../models/userModel.js';
@@ -92,6 +92,7 @@ newsletterRouter.post(
   expressAsyncHandler(async (req, res) => {
     try {
       const { emails, emailName } = req.body;
+      const io = req.app.get('io');
       console.log(emails);
       const emailType = emailLists.find(
         (emailList) => emailList.name === emailName
@@ -130,6 +131,18 @@ newsletterRouter.post(
             },
           });
         }
+        const content = {
+          io,
+          image:
+            'https://ci4.googleusercontent.com/proxy/r0kKvKBFuacat3TpSUWYob3GNDx9WWJoZVr5HGcr07ljh3hI8jQgCc-Lz6Wa53uSzM2q4-TrhmLeGe_8qGLV-ExxlZuI7Jw_ARAD17V4mf1MLjkR6CqTjozEEFz8F_MWOVIIhJAlaPbQemK6-mA=s0-d-e1-ft#https://res.cloudinary.com/emirace/image/upload/v1691653514/20230807_205931_0000_t2aa7t.png',
+          link: 'https://repeddle.com/how-repeddle-work',
+          receiverId: existUsers._id,
+          senderId: req.user._id,
+          text: 'At Repeddle, one of our biggest commitment is to our community members, the environment and humanity.\n In the same vein as part of our community member, we want to see you thrive both in your business and the business of making our environment better by reducing fashion footprints on the planet.\n Learning how Repeddle works will help you understand that using Repeddle as a tool to achieving our commitment is a very easy step, while  Shopping  or listing items to  Sell is just a breeze.',
+          title: 'HOW REPOEDDLE WORKS!',
+          senderImage: req.user.image,
+        };
+        sendEmailMessage(content);
       } else {
         const existEmails = await Newsletters.find({ email: { $in: emails } });
 

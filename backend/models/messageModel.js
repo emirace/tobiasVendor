@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema(
   {
@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema(
     sender: { type: String },
     text: { type: String },
     image: { type: String },
+    link: { type: String, default: null },
   },
 
   {
@@ -13,5 +14,5 @@ const messageSchema = new mongoose.Schema(
   }
 );
 
-const Message = mongoose.model("Message", messageSchema);
+const Message = mongoose.model('Message', messageSchema);
 export default Message;
