@@ -94,8 +94,6 @@ export const isSocialAuth = (req, res, next) => {
   }
 };
 
-console.log(process.env.EMAIL_USER, process.env.EMAIL_PASSWORD);
-
 const transporter = nodemailer.createTransport({
   host: "mail.privateemail.com",
   port: 465,

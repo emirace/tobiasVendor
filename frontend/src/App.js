@@ -290,9 +290,9 @@ function App() {
     }
   }, [userInfo]);
 
-  function playAudio() {
-    audioPlayer.current.play();
-  }
+  // function playAudio() {
+  //   audioPlayer.current.play();
+  // }
 
   const getData = (notification) => {
     ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
@@ -392,7 +392,7 @@ function App() {
               <Notification />
               <ToastNotification />
               <StickyNav />
-              <audio ref={audioPlayer} src={"NotificationSound"} />
+              {/* <audio ref={audioPlayer} src={"./asset/notification-sound.mp3"} /> */}
               <header style={{ background: "inherit" }}>
                 <NavCont>
                   <Navbar
