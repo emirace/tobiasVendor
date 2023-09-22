@@ -8,6 +8,20 @@ import dns from "dns";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
+import Mixpanel from "mixpanel";
+import { v4 } from "uuid";
+import Notification from "./models/notificationModel.js";
+import User from "./models/userModel.js";
+import Conversation from "./models/conversationModel.js";
+import Gig from "./models/gigModel.js";
+import Order from "./models/orderModel.js";
+import moment from "moment";
+import Product from "./models/productModel.js";
+import Newsletters from "./models/newslettersModel.js";
+import Message from "./models/messageModel.js";
+// import { mixpanel } from "./server.js";
+
+export var mixpanel = Mixpanel.init(process.env.MIXPANEL);
 
 import path from "path";
 
@@ -133,18 +147,18 @@ export const sendEmail = async (options) => {
   try {
     transporter.sendMail(mailOption);
     console.log("Email sent successfully", options.to);
-    // mixpanel.track('Email', {
-    //   type:options.subject,
-    //   status:'Successfully',
-    //   email:options.to
-    //   });
+    mixpanel.track("Email", {
+      type: options.subject,
+      status: "Successfully",
+      email: options.to,
+    });
   } catch (error) {
     console.error("Failed to send email:", options.to, error);
-    // mixpanel.track('Email', {
-    //   type:options.subject,
-    //   status:'Failed',
-    //   email:options.to
-    //   });
+    mixpanel.track("Email", {
+      type: options.subject,
+      status: "Failed",
+      email: options.to,
+    });
   }
 };
 
@@ -153,18 +167,6 @@ export const slugify = (Text) => {
     .replace(/ /g, "-")
     .replace(/[^\w-]+/g, "");
 };
-
-import { v4 } from "uuid";
-import Notification from "./models/notificationModel.js";
-import User from "./models/userModel.js";
-import Conversation from "./models/conversationModel.js";
-import Gig from "./models/gigModel.js";
-import Order from "./models/orderModel.js";
-import moment from "moment";
-import Product from "./models/productModel.js";
-import Newsletters from "./models/newslettersModel.js";
-import Message from "./models/messageModel.js";
-// import { mixpanel } from "./server.js";
 
 export async function creditAccount({
   amount,
