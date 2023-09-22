@@ -64,7 +64,7 @@ mongoose
 
 const app = express();
 
-var mixpanel = Mixpanel.init("233f27ff76029c2e456716935b253bfa");
+var mixpanel = Mixpanel.init(process.env.MIXPANEL);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

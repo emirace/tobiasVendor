@@ -513,7 +513,7 @@ export default function Support() {
     setImage(imageUrl);
   };
 
-  if (CurrentPath === "/brand") return;
+  if (CurrentPath === "/brand" || CurrentPath === "/newproduct") return;
   var pattern = /^\/brandpage\/[A-Z]$/;
   if (pattern.test(CurrentPath)) return;
 

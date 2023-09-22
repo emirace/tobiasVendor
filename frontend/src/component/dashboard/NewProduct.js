@@ -943,6 +943,14 @@ export default function NewProduct() {
       ...prevState,
       [input]: errorMessage,
     }));
+    ctxDispatch({
+      type: "SHOW_TOAST",
+      payload: {
+        message: errorMessage,
+        showStatus: true,
+        state1: "visible1 error",
+      },
+    });
   };
 
   const [currentSizeValue, setCurrentSizeValue] = useState("");
