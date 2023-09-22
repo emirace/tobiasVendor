@@ -130,21 +130,33 @@ newsletterRouter.post(
               time: moment(existUser.createdAt).fromNow(true),
             },
           });
+          const content = {
+            io,
+            image:
+              'https://ci4.googleusercontent.com/proxy/r0kKvKBFuacat3TpSUWYob3GNDx9WWJoZVr5HGcr07ljh3hI8jQgCc-Lz6Wa53uSzM2q4-TrhmLeGe_8qGLV-ExxlZuI7Jw_ARAD17V4mf1MLjkR6CqTjozEEFz8F_MWOVIIhJAlaPbQemK6-mA=s0-d-e1-ft#https://res.cloudinary.com/emirace/image/upload/v1691653514/20230807_205931_0000_t2aa7t.png',
+            link: 'https://repeddle.com/how-repeddle-work',
+            receiverId: existUsers._id,
+            senderId: req.user._id,
+            text: 'At Repeddle, one of our biggest commitment is to our community members, the environment and humanity.\n In the same vein as part of our community member, we want to see you thrive both in your business and the business of making our environment better by reducing fashion footprints on the planet.\n Learning how Repeddle works will help you understand that using Repeddle as a tool to achieving our commitment is a very easy step, while  Shopping  or listing items to  Sell is just a breeze.',
+            title: 'HOW REPOEDDLE WORKS!',
+          };
+          sendEmailMessage(content);
         }
-        const content = {
-          io,
-          image:
-            'https://ci4.googleusercontent.com/proxy/r0kKvKBFuacat3TpSUWYob3GNDx9WWJoZVr5HGcr07ljh3hI8jQgCc-Lz6Wa53uSzM2q4-TrhmLeGe_8qGLV-ExxlZuI7Jw_ARAD17V4mf1MLjkR6CqTjozEEFz8F_MWOVIIhJAlaPbQemK6-mA=s0-d-e1-ft#https://res.cloudinary.com/emirace/image/upload/v1691653514/20230807_205931_0000_t2aa7t.png',
-          link: 'https://repeddle.com/how-repeddle-work',
-          receiverId: existUsers._id,
-          senderId: req.user._id,
-          text: 'At Repeddle, one of our biggest commitment is to our community members, the environment and humanity.\n In the same vein as part of our community member, we want to see you thrive both in your business and the business of making our environment better by reducing fashion footprints on the planet.\n Learning how Repeddle works will help you understand that using Repeddle as a tool to achieving our commitment is a very easy step, while  Shopping  or listing items to  Sell is just a breeze.',
-          title: 'HOW REPOEDDLE WORKS!',
-          senderImage: req.user.image,
-        };
-        sendEmailMessage(content);
       } else {
         const existEmails = await Newsletters.find({ email: { $in: emails } });
+
+        // Initialize empty arrays to store the emails
+        const comEmails = [];
+        const cozaEmails = [];
+
+        // Use the filter method to separate emails based on the 'url' field
+        existEmails.forEach((item) => {
+          if (item.url === 'com') {
+            comEmails.push(item.email);
+          } else if (item.url === 'co.za') {
+            cozaEmails.push(item.email);
+          }
+        });
 
         const bulkEmailOperations = existEmails.map((existEmail) => {
           const email = existEmail.email;
@@ -158,14 +170,24 @@ newsletterRouter.post(
           };
         });
         await Newsletters.bulkWrite(bulkEmailOperations);
-
-        for (const existEmail of existEmails) {
+        if (cozaEmails.length) {
           await sendEmail({
-            to: existEmail.email,
+            to: cozaEmails,
             subject: emailType.subject,
             template: emailType.template,
             context: {
-              url: existEmail.url,
+              url: 'co.za',
+            },
+          });
+        }
+
+        if (comEmails.length) {
+          await sendEmail({
+            to: comEmails,
+            subject: emailType.subject,
+            template: emailType.template,
+            context: {
+              url: 'com',
             },
           });
         }
