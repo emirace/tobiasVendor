@@ -739,6 +739,7 @@ export const sendEmailMessage = async ({
   senderImage = 'https://repeddle.com/images/pimage.png', // Default sender image
 }) => {
   try {
+    console.log('console');
     // Create a new conversation
     const conversation = await Conversation.create({
       members: [senderId, receiverId],
