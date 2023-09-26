@@ -136,7 +136,7 @@ transporter.use(
 
 export const sendEmail = async (options) => {
   const mailOption = {
-    from: { name: "Repeddle", address: "support@repeddle.co.za" },
+    from: { name: "Repeddle", address: "support@repeddle.com" },
     to: options.to,
     subject: options.subject,
     html: options.text,
