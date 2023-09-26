@@ -785,6 +785,7 @@ export default function Navbar({
   return (
     <>
       <Container mode={mode} isVisible={isVisible}>
+
         <Wrapper>
           <Left>
             <SwitchCont>

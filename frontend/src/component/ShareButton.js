@@ -1,5 +1,5 @@
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import {
   EmailShareButton,
   WhatsappShareButton,
@@ -15,14 +15,14 @@ import {
   WhatsappIcon,
   PinterestIcon,
   LinkedinIcon,
-} from 'react-share';
-import styled, { keyframes } from 'styled-components';
-import { socket } from '../App';
-import { Store } from '../Store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShareNodes } from '@fortawesome/free-solid-svg-icons';
-import IconsTooltips from './IconsTooltips';
-import { MD5 } from 'crypto-js';
+} from "react-share";
+import styled, { keyframes } from "styled-components";
+import { socket } from "../App";
+import { Store } from "../Store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
+import IconsTooltips from "./IconsTooltips";
+import { MD5 } from "crypto-js";
 
 const Container = styled.div`
   position: relative;
@@ -33,7 +33,7 @@ const Dropdown = styled.div`
   top: 30px;
   right: 0;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 5px;
@@ -80,7 +80,7 @@ const ShareButton = styled.button`
 
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   }
   & svg {
     margin-right: 0;
@@ -91,9 +91,9 @@ const ShareButton = styled.button`
 const ShareButtonText = styled.span`
   margin-left: 8px;
   color: ${(props) =>
-    props.mode === 'pagebodylight'
-      ? 'var(--black-color)'
-      : 'var(--white-color)'};
+    props.mode === "pagebodylight"
+      ? "var(--black-color)"
+      : "var(--white-color)"};
 `;
 
 const ShareButtonAnimation = keyframes`
@@ -155,15 +155,15 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
             : undefined,
         }
       );
-      dispatch({ type: 'REFRESH_PRODUCT', payload: data.product });
+      dispatch({ type: "REFRESH_PRODUCT", payload: data.product });
       if (userInfo) {
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: product.seller._id,
           itemId: product._id,
-          notifyType: 'share',
+          notifyType: "share",
           msg: `${userInfo.username} shared your product`,
           link: `/product/${product.slug}`,
-          mobile: { path: 'Product', id: product.slug },
+          mobile: { path: "Product", id: product.slug },
           userImage: userInfo.image,
         });
       }
@@ -175,36 +175,36 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
   const handleShare2 = async () => {
     try {
       await navigator.share({
-        title: 'Repeddle',
-        text: 'See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items',
+        title: "Repeddle",
+        text: "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items",
         url: shareUrl,
       });
-      console.log('Shared successfully');
+      console.log("Shared successfully");
       handleShare();
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
   const shareButtons = [
-    // {
-    //   platform: "Facebook",
-    //   button: (
-    //     <FacebookShareButton
-    //       quote="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items"
-    //       hashtag="#Repeddle"
-    //       url={shareUrl}
-    //       onShareWindowClose={handleShare}
-    //     >
-    //       <ShareButton mode={mode}>
-    //         <FacebookIcon size={25} round={true} />
-    //         <ShareButtonText mode={mode}>Facebook</ShareButtonText>
-    //       </ShareButton>
-    //     </FacebookShareButton>
-    //   ),
-    // },
     {
-      platform: 'Email',
+      platform: "Facebook",
+      button: (
+        <FacebookShareButton
+          quote="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items"
+          hashtag="#Repeddle"
+          url={shareUrl}
+          onShareWindowClose={handleShare}
+        >
+          <ShareButton onClick={handleShare} mode={mode}>
+            <FacebookIcon size={25} round={true} />
+            <ShareButtonText mode={mode}>Facebook</ShareButtonText>
+          </ShareButton>
+        </FacebookShareButton>
+      ),
+    },
+    {
+      platform: "Email",
       button: (
         <EmailShareButton
           subject="Repeddle"
@@ -220,7 +220,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       ),
     },
     {
-      platform: 'WhatsApp',
+      platform: "WhatsApp",
       button: (
         <WhatsappShareButton
           url={shareUrl}
@@ -235,11 +235,11 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       ),
     },
     {
-      platform: 'Twitter',
+      platform: "Twitter",
       button: (
         <TwitterShareButton
           title="See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items"
-          hashtags={['Repeddle']}
+          hashtags={["Repeddle"]}
           url={shareUrl}
           onShareWindowClose={handleShare}
         >
@@ -251,7 +251,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       ),
     },
     {
-      platform: 'Telegram',
+      platform: "Telegram",
       button: (
         <TelegramShareButton
           url={shareUrl}
@@ -266,7 +266,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       ),
     },
     {
-      platform: 'Pinterest',
+      platform: "Pinterest",
       button: (
         <PinterestShareButton
           url={shareUrl}
@@ -282,7 +282,7 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       ),
     },
     {
-      platform: 'LinkedIn',
+      platform: "LinkedIn",
       button: (
         <LinkedinShareButton
           title="Repeddle"
@@ -301,19 +301,20 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
     },
   ];
 
-  const handleFB = () => {
-    window.FB.ui(
-      {
-        method: 'share',
-        href: shareUrl,
-      },
-      function (response) {
-        console.log('FB response', response);
-      }
-    );
-  };
+  // const handleFB = () => {
+  //   window.FB.ui(
+  //     {
+  //       method: 'share',
+  //       href: shareUrl,
+  //     },
+  //     function (response) {
+  //       console.log('FB response', response);
+  //     }
+  //   );
+  // };
+
   const text =
-    'See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items';
+    "See what I found on Africa’s leading social marketplace for secondhand Pre-loved fashion & items";
 
   const handleTweet = async () => {
     return await axios.get(
@@ -324,12 +325,12 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
   return (
     <Container>
       <IconContainer>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           {product.shares.length}
           <FontAwesomeIcon
             onClick={toggleDropdown}
             icon={faShareNodes}
-            style={{ marginLeft: '5px' }}
+            style={{ marginLeft: "5px" }}
           />
         </div>
         <IconsTooltips className="tiptools" tips="Share " />
@@ -338,10 +339,10 @@ const ShareModal = ({ url: shareUrl, product, dispatch }) => {
       {isDropdownOpen && (
         <Dropdown mode={mode} isOpen={isDropdownOpen}>
           <ShareButtonsContainer>
-            <ShareButton onClick={handleFB} mode={mode}>
+            {/* <ShareButton onClick={handleFB} mode={mode}>
               <FacebookIcon size={25} round={true} />
               <ShareButtonText mode={mode}>Facebook</ShareButtonText>
-            </ShareButton>
+            </ShareButton> */}
             {shareButtons.map(({ button }) => (
               <>{button}</>
             ))}

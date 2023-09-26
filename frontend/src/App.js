@@ -68,9 +68,6 @@ import BrandScreenPage from "./screens/BrandScreenPage";
 import BuyerProtection from "./component/info/BuyerProtection";
 import DeletedScreen from "./screens/successPage/DeleteScreen";
 import mixpanel from "mixpanel-browser";
-
-// import NotificationSound from "./asset/notification-sound.mp3";
-
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
   import("./screens/CategoryMobileScreen")
@@ -215,8 +212,6 @@ function App() {
     "redirecttoken"
   );
 
-  const audioPlayer = useRef(null);
-
   // const redirect = redirectInUrl ? redirectInUrl : "/";
 
   // const { search } = useLocation();
@@ -290,13 +285,8 @@ function App() {
     }
   }, [userInfo]);
 
-  // function playAudio() {
-  //   audioPlayer.current.play();
-  // }
-
   const getData = (notification) => {
     ctxDispatch({ type: "UPDATE_NOTIFICATIONS", payload: notification });
-    // playAudio();
   };
 
   const changeData = () => {
@@ -392,7 +382,6 @@ function App() {
               <Notification />
               <ToastNotification />
               <StickyNav />
-              {/* <audio ref={audioPlayer} src={"./asset/notification-sound.mp3"} /> */}
               <header style={{ background: "inherit" }}>
                 <NavCont>
                   <Navbar

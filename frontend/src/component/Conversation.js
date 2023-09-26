@@ -148,7 +148,7 @@ export default function Conversation({
       }
     };
     getMessages();
-  }, [conversation, userInfo, count]);
+  }, []);
 
   useEffect(() => {
     const getproduct = async () => {

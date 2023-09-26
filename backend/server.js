@@ -89,7 +89,7 @@ function textfuncion() {
   console.log("running cron");
 }
 
-cron.schedule("0 12 * * 1", sendWeeklyMail);
+// cron.schedule("0 12 * * 1", sendWeeklyMail);
 
 app.use(
   cookieSession({

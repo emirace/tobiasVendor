@@ -465,7 +465,7 @@ export default function NewsletterList() {
 
         <List>
           {loadingNewsletters && <LoadingBox />}
-          {newsletters.map((newsletter) => (
+          {newsletters.map((newsletter, index) => (
             <ListItem key={newsletter._id}>
               <SubListItem>
                 <Checkbox
@@ -474,6 +474,7 @@ export default function NewsletterList() {
                   checked={selectedEmails.includes(newsletter.email)}
                   onChange={() => handleEmailSelection(newsletter)}
                 />
+                <div style={{ marginRight: "5px" }}>{index + 1}. </div>
                 <Email
                   style={
                     newsletter.isDeleted

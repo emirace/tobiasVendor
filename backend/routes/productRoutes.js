@@ -414,13 +414,20 @@ productRouter.put(
       if (!product) {
         return res.status(404).send({ message: "Product Not Found" });
       }
+      const currentTime = new Date();
+      const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
+      const isShared = product.viewcount
+        .filter((view) => view.hashed === hashed)
+        .sort((a, b) => b.time - a.time)
+        .find((view) => view.time >= sixHoursAgo);
+      console.log(isShared);
+      // const isShared = product.shares.some((share) => share.hashed === hashed);
 
-      const isShared = product.shares.some((share) => share.hashed === hashed);
       if (isShared) {
         return res.status(400).send({ message: "Already shared product" });
       }
 
-      product.shares.push({ user: req?.user?._id, hashed });
+      product.shares.push({ user: req?.user?._id, hashed, time: currentTime });
       await product.save();
 
       return res.status(200).send({
