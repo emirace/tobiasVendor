@@ -566,6 +566,7 @@ orderRouter.put(
         subject: "",
         template: "",
         context: {},
+        content: {},
       };
 
       const returned = await Return.findOne({
@@ -584,6 +585,14 @@ orderRouter.put(
             orderId: order._id,
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Order Is Being Processed ";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+          };
           break;
         case "Dispatched":
           emailOptions.to = order.user.email;
@@ -596,6 +605,14 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
             trackId: orderItem.trackingNumber,
+          };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Order Dispatched.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
           };
           setTimer(
             io,
@@ -618,6 +635,14 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Order Is In Transit.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+          };
           break;
         case "Delivered":
           emailOptions.to = order.user.email;
@@ -630,6 +655,14 @@ orderRouter.put(
             address: getAddress(orderItem),
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
+          };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Order Is In Transit.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
           };
           setTimer(
             io,
@@ -761,6 +794,17 @@ orderRouter.put(
 
       if (emailOptions.to) {
         await sendEmail(emailOptions);
+        const content = {
+          io,
+          receiverId: emailOptions._id,
+          senderId: emailOptions.user._id,
+          title: emailOptions.title,
+          emailMessages: fillEmailContent(
+            emailOptions.title,
+            emailOptions.content
+          ),
+        };
+        sendEmailMessage(content);
       }
 
       res.send({ message: "Order delivery status changed" });

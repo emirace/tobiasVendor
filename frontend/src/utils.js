@@ -1,6 +1,7 @@
 import axios from "axios";
 import { banks } from "./constant";
 import { socket } from "./App";
+import { Link } from "react-router-dom";
 
 export const getError = (error) => {
   return error.response && error.response.data.message
@@ -443,3 +444,22 @@ export const compressImageUpload = async (file, maxSize, token, image = "") => {
     throw error;
   }
 };
+
+export function createHtmlFromObjects(objectArray) {
+  return objectArray.map((item, index) => {
+    if (item.type === "div") {
+      return (
+        <div style={{ marginBottom: "10px" }} key={index}>
+          {item.content}
+        </div>
+      );
+    } else if (item.type === "img") {
+      return <img key={index} src={item.content} alt="" />;
+    } else if (item.type === "link") {
+      return <Link to={item.href}>{item.content}</Link>;
+    } else {
+      // Handle other types or provide a default case
+      return null;
+    }
+  });
+}

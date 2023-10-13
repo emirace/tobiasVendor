@@ -416,10 +416,10 @@ productRouter.put(
       }
       const currentTime = new Date();
       const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
-      const isShared = product.viewcount
-        .filter((view) => view.hashed === hashed)
+      const isShared = product.shares
+        .filter((share) => share.hashed === hashed)
         .sort((a, b) => b.time - a.time)
-        .find((view) => view.time >= sixHoursAgo);
+        .find((share) => share.time >= sixHoursAgo);
       console.log(isShared);
       // const isShared = product.shares.some((share) => share.hashed === hashed);
 

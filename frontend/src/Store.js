@@ -1,5 +1,6 @@
 import { createContext, useReducer } from "react";
 import secureLocalStorage from "react-secure-storage";
+import { Howl, Howler } from "howler";
 
 export const Store = createContext();
 const initialState = {
@@ -47,6 +48,12 @@ const initialState = {
     ? localStorage.getItem("cookies")
     : false,
   redirectToken: "",
+};
+const playNotificationSound = () => {
+  const sound = new Howl({
+    src: ["/sound/notification-sound.mp3"], // Replace with the correct path
+  });
+  sound.play();
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -145,10 +152,15 @@ function reducer(state, action) {
         },
       };
     case "UPDATE_NOTIFICATIONS":
-      return {
-        ...state,
-        notifications: action.payload,
-      };
+      const newNotifications = action.payload;
+      if (
+        state.notifications.length !== 0 &&
+        newNotifications.length > state.notifications.length
+      ) {
+        playNotificationSound();
+      }
+
+      return { ...state, notifications: action.payload };
     case "REFRESHER":
       return {
         ...state,

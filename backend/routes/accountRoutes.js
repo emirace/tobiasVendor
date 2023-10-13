@@ -134,7 +134,6 @@ accountRouter.post(
           if (req.body.purpose === "Return Completed") {
             const returned = await Return.findOne({ orderId: order._id });
             if (returned) {
-              console.log("gddddfg return complete 222");
               sendEmail({
                 to: user.email,
                 subject: "RETURN REFUNDED",
@@ -144,7 +143,7 @@ accountRouter.post(
                   url: user.region === "NGN" ? "com" : "co.za",
                   orderItems: order.orderItems,
                   returnId: returned?._id,
-                  amount: amount,
+                  amount,
                 },
               });
             } else {

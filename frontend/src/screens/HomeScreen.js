@@ -212,7 +212,6 @@ export default function ProductsScreen() {
       dispatch({ type: "FETCH_REQUEST" });
       try {
         const { data } = await axios.get(`/api/products/${region()}/all`);
-        console.log(data);
         dispatch({
           type: "FETCH_SUCCESS",
           payload: data,
@@ -243,7 +242,6 @@ export default function ProductsScreen() {
       try {
         const { data } = await axios.get(`/api/users/${region()}/influencer`);
         setInfluencerList(data);
-        console.log("influence", data);
       } catch (err) {}
     };
     getInfluencer();
@@ -640,9 +638,7 @@ export default function ProductsScreen() {
                 {sellers.length === 0 && (
                   <MessageBox>No Seller Found</MessageBox>
                 )}
-                {console.log("seller", sellers)}
                 <Seller className="scroll_snap">
-                  {console.log(sellers, products)}
                   {sellers &&
                     sellers.length > 0 &&
                     sellers.map((seller, index) => (

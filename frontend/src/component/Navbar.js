@@ -707,7 +707,6 @@ export default function Navbar({
       const fetchCategories = async () => {
         const { data } = await axios.get(`/api/categories`);
         setCategories(data);
-        console.log("categori", data);
       };
       fetchCategories();
     } catch (err) {
@@ -723,7 +722,6 @@ export default function Navbar({
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setUser(data);
-        console.log("user", data);
       };
       fetchUser();
     } catch (err) {
@@ -859,7 +857,6 @@ export default function Navbar({
               <div
                 onClick={() => {
                   setShowNotification(!showNotification);
-                  console.log(showNotification);
                 }}
                 styled={{ position: "relative" }}
               >
@@ -959,7 +956,6 @@ export default function Navbar({
                   ref={modelRef}
                   onClick={() => setMymenu(!menu)}
                 />
-                {console.log(mode)}
                 {menu && (
                   <ProfileMenu mode={mode} className={mode}>
                     <Welcome>Hi {userInfo.username}</Welcome>
@@ -984,7 +980,6 @@ export default function Navbar({
                       </Li>
                       <Li>
                         <Link to="/dashboard/saleslist">Sold Orders</Link>
-                        {console.log("sold", soldNotification)}
 
                         {soldNotification.length > 0 && (
                           <Badge>
@@ -1012,7 +1007,6 @@ export default function Navbar({
                       </Li>
                       <Li>
                         <Link to="/dashboard/productlist">My Products</Link>
-                        {console.log("product", productNotification)}
 
                         {productNotification.length > 0 && (
                           <Badge>

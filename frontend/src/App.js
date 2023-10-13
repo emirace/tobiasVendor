@@ -68,6 +68,7 @@ import BrandScreenPage from "./screens/BrandScreenPage";
 import BuyerProtection from "./component/info/BuyerProtection";
 import DeletedScreen from "./screens/successPage/DeleteScreen";
 import mixpanel from "mixpanel-browser";
+
 const ProductScreen = lazy(() => import("./screens/ProductScreen"));
 const CategoryMobileScreen = lazy(() =>
   import("./screens/CategoryMobileScreen")
@@ -138,55 +139,6 @@ const ReturnPage = lazy(() => import("./component/dashboard/admin/ReturnPage"));
 const NavCont = styled.div`
   position: relation;
 `;
-const Switch = styled.input.attrs({
-  type: "checkbox",
-  id: "darkmodeSwitch",
-  role: "switch",
-})`
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  width: 40px;
-  height: 15px;
-  -webkit-appearance: none;
-  background: #fff;
-  border-radius: 20px;
-  outline: none;
-  transition: 0.5s;
-  @media (max-width: 992px) {
-    display: none;
-  }
-
-  &:checked {
-    &:before {
-      left: 25px;
-    }
-  }
-  &:before {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: var(--malon-color);
-    transition: 0.5s;
-  }
-`;
-
-const Label = styled.label.attrs({
-  for: "darkmodeSwitch",
-})`
-  color: #fff;
-  margin-left: 5px;
-  position: absolute;
-  top: 5px;
-  left: 60px;
-  @media (max-width: 992px) {
-    display: none;
-  }
-`;
 
 const ENDPOINT =
   window.location.host.indexOf("localhost") >= 0
@@ -198,7 +150,7 @@ initFacebookSdk().then(App);
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo, mode, notifications, cookies } = state;
+  const { userInfo, mode, cookies } = state;
   const signoutHandler = () => {
     logout();
     localStorage.removeItem("userInfo");
@@ -222,12 +174,10 @@ function App() {
 
   useEffect(() => {
     const checkLoacation = async () => {
-      console.log(token, "outside");
       try {
         if (token) {
           const { data } = await axios.put("/api/redirects", { token: token });
           if (data.success) {
-            console.log(token, "i am in ");
             setLoading(false);
             ctxDispatch({ type: "SET_REDIRECT_TOKEN", payload: token });
           } else {
@@ -339,7 +289,6 @@ function App() {
 
       const itemsArray = Object.values(itemsMap); // Convert object values to array
 
-      console.log("App cartItem", itemsArray);
       ctxDispatch({ type: "UPDATE_CART", payload: itemsArray });
     };
 

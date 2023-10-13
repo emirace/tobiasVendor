@@ -1,10 +1,10 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { format } from 'timeago.js';
-import { getError } from '../utils';
-import MessageImage from './MessageImage';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { format } from "timeago.js";
+import { createHtmlFromObjects, getError } from "../utils";
+import MessageImage from "./MessageImage";
+import { Link } from "react-router-dom";
 
 const RecievedChat = styled.div`
   display: flex;
@@ -68,25 +68,14 @@ export default function Messages({ message, own, report, product, support }) {
   // }, [message, report]);
   return (
     <>
-      {console.log('in msg', product)}
       {own ? (
         <>
           <SendChat>
             <div>
-              <InlineS style={{ padding: support ? '10px' : '20px' }}>
-                {message.image && <MessageImage url={message.image} />}
-                {message.text}
-                {message.link && (
-                  <Link
-                    to={message.link}
-                    style={{
-                      color: 'var(--orange-color)',
-                      textDecorationLine: 'underline',
-                    }}
-                  >
-                    learn more...
-                  </Link>
-                )}
+              <InlineS style={{ padding: support ? "10px" : "20px" }}>
+                {message.type === "email"
+                  ? createHtmlFromObjects(message.emailMessages)
+                  : message.text}
               </InlineS>
               <TimeS>{format(message.createdAt)}</TimeS>
             </div>
@@ -98,20 +87,10 @@ export default function Messages({ message, own, report, product, support }) {
       ) : (
         <RecievedChat>
           <div>
-            <InlineR style={{ padding: support ? '10px' : '20px' }}>
-              {message.image && <MessageImage url={message.image} />}
-              {message.text}
-              {message.link && (
-                <Link
-                  to={message.link}
-                  style={{
-                    color: 'var(--orange-color)',
-                    textDecorationLine: 'underline',
-                  }}
-                >
-                  learn more...
-                </Link>
-              )}
+            <InlineR style={{ padding: support ? "10px" : "20px" }}>
+              {message.type === "email"
+                ? createHtmlFromObjects(message.emailMessages)
+                : message.text}
             </InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>
           </div>

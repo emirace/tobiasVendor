@@ -24,6 +24,7 @@ import Message from "./models/messageModel.js";
 export var mixpanel = Mixpanel.init(process.env.MIXPANEL);
 
 import path from "path";
+import { messageEmails } from "./utils/constant.js";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -651,26 +652,23 @@ export const updateMixpanelUser = () => {
     });
 };
 
-export const sendWeeklyMail = async () => {
+export const sendWeeklyMail = async (emails, io) => {
   const today = moment(); // Get the current date
-  const previousMonday = today.clone().startOf("isoWeek").subtract(7, "days"); // Get the start of the previous week
-  const currentMonday = previousMonday.clone().add(7, "days");
-
-  console.log("Previous Monday:", previousMonday.toDate());
-  console.log("Current Monday:", currentMonday.toDate());
+  const oneWeekAgo = today.clone().subtract(7, "days"); // Get the date one week ago
 
   try {
     const productsNGN = await Product.find({
       createdAt: {
-        $gte: previousMonday.toDate(),
-        $lt: currentMonday.toDate(),
+        $gte: oneWeekAgo.toDate(), // Find products created on or after one week ago
+        $lt: today.toDate(), // Find products created before the current date
       },
       region: "NGN",
     }).sort({ createdAt: -1 });
+
     const productsZAR = await Product.find({
       createdAt: {
-        $gte: previousMonday.toDate(),
-        $lt: currentMonday.toDate(),
+        $gte: oneWeekAgo.toDate(), // Find products created on or after one week ago
+        $lt: today.toDate(), // Find products created before the current date
       },
       region: "ZAR",
     }).sort({ createdAt: -1 });
@@ -678,6 +676,7 @@ export const sendWeeklyMail = async () => {
     // Convert the products array into an array of arrays containing two products each
     const productsInPairsNGN = [];
     const productsInPairsZAR = [];
+
     for (let i = 0; i < productsNGN.length; i += 2) {
       const pair = {
         firstProduct: productsNGN[i],
@@ -700,28 +699,44 @@ export const sendWeeklyMail = async () => {
       template: "huntIt",
     };
 
-    const existEmails = await Newsletters.find();
+    const existEmails = await Newsletters.find({ email: { $in: emails } });
 
-    // const existEmails = [
-    //   { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
-    //   { email: "tobiasomeyi@gmail.com", url: "co.za" },
-    // ];
+    // Initialize empty arrays to store the emails
+    const comEmails = [];
+    const cozaEmails = [];
 
-    for (const existEmail of existEmails) {
-      console.log(existEmail.email);
+    // Use the filter method to separate emails based on the 'url' field
+    existEmails.forEach((item) => {
+      if (item.url === "com") {
+        comEmails.push(item.email);
+      } else if (item.url === "co.za") {
+        cozaEmails.push(item.email);
+      }
+    });
+
+    if (cozaEmails.length > 0 && productsInPairsZAR.length > 0) {
       await sendEmail({
-        to: existEmail.email,
+        to: cozaEmails,
         subject: emailType.subject,
         template: emailType.template,
         context: {
-          url: existEmail.url,
-          products:
-            existEmail.url === "com" ? productsInPairsNGN : productsInPairsZAR,
+          url: "co.za",
+          products: productsInPairsZAR,
         },
       });
     }
 
-    // Add your logic here
+    if (comEmails.length > 0 && productsInPairsNGN.length > 0) {
+      await sendEmail({
+        to: comEmails,
+        subject: emailType.subject,
+        template: emailType.template,
+        context: {
+          url: "com",
+          products: productsInPairsNGN,
+        },
+      });
+    }
   } catch (error) {
     console.error("Error fetching products:", error);
     // Handle the error
@@ -732,13 +747,11 @@ export const sendEmailMessage = async ({
   senderId,
   receiverId,
   title,
-  text,
-  image,
-  link,
+  emailMessages,
   io,
   senderImage = "https://repeddle.com/images/pimage.png", // Default sender image
 }) => {
-  console.log(senderId, receiverId, title, text, image, link, senderImage);
+  console.log(senderId, receiverId, title, emailMessages, senderImage);
   try {
     // Create a new conversation
     const conversation = await Conversation.create({
@@ -752,9 +765,9 @@ export const sendEmailMessage = async ({
     const newMessage = await Message.create({
       conversationId: conversation._id,
       sender: senderId,
-      text,
-      image,
-      link,
+      type: "email",
+      emailMessages,
+      text: title,
     });
 
     // Create a new notification
@@ -775,3 +788,184 @@ export const sendEmailMessage = async ({
     console.error("Error sending email message:", error);
   }
 };
+
+export const sendAllEmail = () => {
+  const emailTemplete = [
+    {
+      subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+      template: "huntIt",
+    },
+    {
+      subject: "ORDER COMPLETED",
+      template: "ordercCompleted",
+    },
+    {
+      subject: "RETURN REFUNDED",
+      template: "returnRefunded",
+    },
+    {
+      subject: "WITHDRAWAL REQUESTED",
+      template: "withdrawalRequest",
+    },
+    {
+      subject: "REPEDDLE SUPPORT ",
+      template: "support",
+    },
+    { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
+    { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
+    {
+      name: "Hack",
+      subject: "Hacks on How to Make Your First Repeddle Sale!",
+      template: "hack",
+    },
+    {
+      name: "Pricing Your Listing",
+      subject: "PRICING YOUR LISTING",
+      template: "pricing",
+    },
+    {
+      name: "Let Our Community",
+      subject: "Let Our Community Get To Know You!",
+      template: "community",
+    },
+    {
+      name: "Performance tracking",
+      subject: "PERFORMANCE TRACKING",
+      template: "performanceTracking",
+    },
+    {
+      name: "Exciting announcement",
+      subject: "EXCITING ANNOUNCEMENT",
+      template: "exiciting",
+    },
+    {
+      name: "Chanllenging fast",
+      subject: "CHALLENGING FAST FASHION POLLUTION IN AFRICA",
+      template: "challenging",
+    },
+    {
+      name: "How Repeddle Work",
+      subject: "HOW REPOEDDLE WORKS!",
+      template: "howRepeddleWork",
+    },
+    {
+      name: "Feature Update",
+      subject: "FEATURE UPDATE",
+      template: "featureUpdate",
+    },
+    {
+      name: "THRIFT FOR GOOD CAUSE",
+      subject: "THRIFT FOR GOOD CAUSE",
+      template: "goodCause",
+    },
+    {
+      subject: "PREPARING ORDER FOR DELIVERY",
+      template: "preparingOrder",
+    },
+    {
+      subject: "ORDER DISPATCHED",
+      template: "dispatchOrder",
+    },
+    {
+      subject: "ORDER IN TRANSIT",
+      template: "transitOrder",
+    },
+    {
+      subject: "ORDER DELIVERED",
+      template: "orderDelivered",
+    },
+    {
+      subject: "ORDER RECEIVED",
+      template: "orderReceive",
+    },
+    {
+      subject: "ORDER RETURN DISPATCHED",
+      template: "returnDispatched",
+    },
+    {
+      subject: "RETURN DELIVERED",
+      template: "returnDelivered",
+    },
+    {
+      subject: "RETURN RECEIVED",
+      template: "returnReceived",
+    },
+    {
+      subject: "Purchased Order Not Processed",
+      template: "refundOrder",
+    },
+    {
+      subject: "PROCESSING YOUR ORDER",
+      template: "processingOrder",
+    },
+    {
+      subject: "NEW ORDER",
+      template: "processingOrderSeller",
+    },
+    {
+      subject: "ORDER RETURN RECEIVED ",
+      template: "returnRequest",
+    },
+    {
+      subject: "ORDER RETURN DECLINED",
+      template: "returnDeclineBuyer",
+    },
+    {
+      subject: "ORDER RETURN APPROVED",
+      template: "returnAppoveBuyer",
+    },
+    {
+      subject: "ORDER RETURN APPROVED",
+      template: "returnAppoveSeller",
+    },
+    {
+      subject: "WELCOME TO REPEDDLE ",
+      template: "welcome",
+    },
+    {
+      subject: "EMAIL VERIFIED SUCCESSFULLY",
+      template: "successEmail",
+    },
+    {
+      subject: "PASSWORD RESET ",
+      template: "passwordReset",
+    },
+    {
+      subject: "PASSWORD SUCCESSFULLY RESET",
+      template: "passwordResetSuccess",
+    },
+    {
+      subject: "VERIFY YOUR EMAIL",
+      template: "verifyEmail",
+    },
+  ];
+
+  const email = "repeddleapp@gmail.com";
+
+  emailTemplete.forEach(async (emailType) => {
+    // await sendEmail({
+    //   to: email,
+    //   subject: emailType.subject,
+    //   template: emailType.template,
+    //   context: {
+    //     url: "co.za",
+    //   },
+    // });
+  });
+};
+
+export function fillEmailContent(title, content) {
+  const email = messageEmails.find((email) => email.title === title);
+  if (email) {
+    email.textArray.forEach((item) => {
+      if (item.type === "div") {
+        Object.keys(content).forEach((key) => {
+          item.content = item.content.replace(key, content[key]);
+        });
+      }
+    });
+    return email.textArray;
+  } else {
+    return null;
+  }
+}

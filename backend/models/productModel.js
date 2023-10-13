@@ -56,7 +56,7 @@ const productSchema = new mongoose.Schema(
           default: null,
         },
         hashed: { type: String },
-        time: { type: Date },
+        time: { type: Date, default: null },
       },
     ],
     viewcount: [{ hashed: { type: String }, time: { type: Date } }],
