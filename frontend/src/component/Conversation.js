@@ -70,6 +70,7 @@ const Badgered = styled.div`
   background: red;
 `;
 const ProductImage = styled.img`
+  margin-right: 5px;
   width: 60px;
   height: 60px;
   object-fit: cover;
@@ -83,6 +84,7 @@ const Badge = styled.span`
   justify-content: center;
   background: var(--orange-color);
   color: #fff;
+  margin-right: 5px;
   font-size: 10px;
   border-radius: 50%;
   cursor: default;

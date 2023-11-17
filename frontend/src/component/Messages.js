@@ -73,9 +73,14 @@ export default function Messages({ message, own, report, product, support }) {
           <SendChat>
             <div>
               <InlineS style={{ padding: support ? "10px" : "20px" }}>
-                {message.type === "email"
-                  ? createHtmlFromObjects(message.emailMessages)
-                  : message.text}
+                {message.type === "email" ? (
+                  createHtmlFromObjects(message.emailMessages)
+                ) : (
+                  <div>
+                    {message.image && <MessageImage url={message.image} />}
+                    {message.text}
+                  </div>
+                )}
               </InlineS>
               <TimeS>{format(message.createdAt)}</TimeS>
             </div>
@@ -88,9 +93,14 @@ export default function Messages({ message, own, report, product, support }) {
         <RecievedChat>
           <div>
             <InlineR style={{ padding: support ? "10px" : "20px" }}>
-              {message.type === "email"
-                ? createHtmlFromObjects(message.emailMessages)
-                : message.text}
+              {message.type === "email" ? (
+                createHtmlFromObjects(message.emailMessages)
+              ) : (
+                <div>
+                  {message.image && <MessageImage url={message.image} />}
+                  {message.text}
+                </div>
+              )}
             </InlineR>
             <TimeR>{format(message.createdAt)}</TimeR>
           </div>

@@ -2,10 +2,12 @@ import express from "express";
 import {
   creditAccount,
   debitAccount,
+  fillEmailContent,
   isAdmin,
   isAuth,
   isAuthOrNot,
   sendEmail,
+  sendEmailMessage,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
@@ -80,6 +82,7 @@ accountRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const io = req.app.get("io");
     var account;
     if (req.body.userId === "Admin") {
       const admin = await User.findOne({
@@ -130,6 +133,17 @@ accountRouter.post(
                 orderItems: order.orderItems,
               },
             });
+            const content = {
+              io,
+              receiverId: user._id,
+              senderId: req.user._id,
+              title: "Order Payment Received.",
+              emailMessages: fillEmailContent("Order Payment Received.", {
+                USERNAME: user.username,
+                EMAIL: user.email,
+              }),
+            };
+            sendEmailMessage(content);
           }
           if (req.body.purpose === "Return Completed") {
             const returned = await Return.findOne({ orderId: order._id });
@@ -146,6 +160,19 @@ accountRouter.post(
                   amount,
                 },
               });
+              const content = {
+                io,
+                receiverId: user._id,
+                senderId: req.user._id,
+                title: "Return Refunded.",
+                emailMessages: fillEmailContent("Return Refunded.", {
+                  USERNAME: user.username,
+                  EMAIL: user.email,
+                  RETURNID: returned._id,
+                  AMOUNT: amount,
+                }),
+              };
+              sendEmailMessage(content);
             } else {
               throw {
                 success: false,

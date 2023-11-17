@@ -2,6 +2,7 @@ import axios from "axios";
 import { banks } from "./constant";
 import { socket } from "./App";
 import { Link } from "react-router-dom";
+import MessageImage from "./component/MessageImage";
 
 export const getError = (error) => {
   return error.response && error.response.data.message
@@ -454,7 +455,7 @@ export function createHtmlFromObjects(objectArray) {
         </div>
       );
     } else if (item.type === "img") {
-      return <img key={index} src={item.content} alt="" />;
+      return <MessageImage key={index} url={item.content} />;
     } else if (item.type === "link") {
       return <Link to={item.href}>{item.content}</Link>;
     } else {

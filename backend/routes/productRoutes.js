@@ -117,7 +117,8 @@ productRouter.post(
         // Duplicate username
         return res.status(500).send({
           succes: false,
-          message: "Product with this name already exist!",
+          message:
+            "Product with this name already exist! please use another product name",
         });
       }
 

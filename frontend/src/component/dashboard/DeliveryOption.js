@@ -2,19 +2,19 @@ import {
   faCheck,
   faQuestionCircle,
   faTruck,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Store } from '../../Store';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { getError, loginGig, region } from '../../utils';
-import axios from 'axios';
-import useGeoLocation from '../../hooks/useGeoLocation';
-import LoadingBox from '../LoadingBox';
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Store } from "../../Store";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { getError, loginGig, region } from "../../utils";
+import axios from "axios";
+import useGeoLocation from "../../hooks/useGeoLocation";
+import LoadingBox from "../LoadingBox";
 
 const Container = styled.div`
   padding: 30px 15vw;
@@ -44,9 +44,9 @@ const Option = styled.div`
 const Name = styled.div``;
 
 const Switch = styled.input.attrs({
-  type: 'checkbox',
-  id: 'darkmodeSwitch',
-  role: 'switch',
+  type: "checkbox",
+  id: "darkmodeSwitch",
+  role: "switch",
 })`
   position: relative;
 
@@ -62,7 +62,7 @@ const Switch = styled.input.attrs({
 
   &:checked {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : '#fcf0e0'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "#fcf0e0"};
     &:before {
       left: 25px;
       background: var(--orange-color);
@@ -72,7 +72,7 @@ const Switch = styled.input.attrs({
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -85,7 +85,7 @@ const Switch = styled.input.attrs({
 const Tips = styled.span`
   position: relative;
   &:hover::after {
-    content: '${(props) => props.tips}';
+    content: "${(props) => props.tips}";
     width: 350px;
     position: absolute;
     border-radius: 0.5rem;
@@ -97,13 +97,13 @@ const Tips = styled.span`
     font-weight: 400;
     padding: 10px;
     background: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--white-color)'
-        : 'var(--black-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--white-color)"
+        : "var(--black-color)"};
     color: ${(props) =>
-      props.mode === 'pagebodydark'
-        ? 'var(--black-color)'
-        : 'var(--white-color)'};
+      props.mode === "pagebodydark"
+        ? "var(--black-color)"
+        : "var(--white-color)"};
     @media (max-width: 992px) {
       font-size: 11px;
       left: -90px;
@@ -152,7 +152,7 @@ const Radio = styled.input`
     left: -1px;
     position: relative;
     background-color: var(--orange-color);
-    content: '';
+    content: "";
     display: inline-block;
     visibility: visible;
     border: 2px solid white;
@@ -165,13 +165,13 @@ const Input = styled.input`
   height: 30px;
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev3)' : 'var(--light-ev3)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
   background: none;
   padding-left: 10px;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   &:focus {
     outline: none;
     border-bottom: 1px solid var(--orange-color);
@@ -193,19 +193,42 @@ const Button = styled.div`
   }
 `;
 
+const pudoOptions = [
+  { name: "Offer free shipping to buyer + R 0.00", value: 0 },
+  {
+    name: "Extra-Small | 600x170x80 mm (MAX 2kg) + R 60.00",
+    value: 60,
+  },
+  {
+    name: "Small | 600x410x80 mm (MAX 5kg) + R 70.00",
+    value: 70,
+  },
+  {
+    name: " Medium | 600x410x190 mm (MAX 10kg) + R 100.00",
+    value: 100,
+  },
+  {
+    name: " Large | 600x410x410 mm (MAX 15kg) + R 150.00",
+    value: 150,
+  },
+  {
+    name: " Extra-Large | 600x410x690 mm (MAX 20kg) + R 200.00",
+    value: 200,
+  },
+];
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_STATIONs_REQUEST':
+    case "FETCH_STATIONs_REQUEST":
       return { ...state, loadingStations: true };
-    case 'FETCH_STATIONs_SUCCESS':
+    case "FETCH_STATIONs_SUCCESS":
       return {
         ...state,
         loadingStations: false,
         stations: action.payload,
-        error: '',
+        error: "",
       };
 
-    case 'FETCH_STATIONs_FAILED':
+    case "FETCH_STATIONs_FAILED":
       return { ...state, loadingStations: false };
 
     default:
@@ -239,7 +262,7 @@ export default function DeliveryOption({
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode, userInfo } = state;
 
-  const [error1, setError1] = useState('');
+  const [error1, setError1] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e;
@@ -256,7 +279,7 @@ export default function DeliveryOption({
         });
       }
     }
-    console.log('meta', meta);
+    console.log("meta", meta);
 
     if (exist) {
       const newArray = deliveryOption.filter((x) => x.name !== name);
@@ -267,37 +290,37 @@ export default function DeliveryOption({
   };
 
   const [{ error, loadingStations, stations }, dispatch] = useReducer(reducer, {
-    error: '',
+    error: "",
     loadingStations: true,
   });
 
   useEffect(() => {
     const fetchStations = async () => {
       try {
-        dispatch({ type: 'FETCH_STATIONs_REQUEST' });
+        dispatch({ type: "FETCH_STATIONs_REQUEST" });
         const token = await loginGig();
         console.log(token);
         const { data } = await axios.get(
-          'https://thirdparty.gigl-go.com/api/thirdparty/localStations',
+          "https://thirdparty.gigl-go.com/api/thirdparty/localStations",
           {
             headers: { Authorization: `Bearer ${token.token}` },
           }
         );
         console.log(data);
-        dispatch({ type: 'FETCH_STATIONs_SUCCESS', payload: data.Object });
+        dispatch({ type: "FETCH_STATIONs_SUCCESS", payload: data.Object });
       } catch (error) {
-        dispatch({ type: 'FETCH_STATIONs_FAIL' });
+        dispatch({ type: "FETCH_STATIONs_FAIL" });
       }
     };
     fetchStations();
   }, []);
 
   const location = useGeoLocation();
-  const [locationerror, setLocationerror] = useState('');
+  const [locationerror, setLocationerror] = useState("");
   useEffect(() => {
     if (gig) {
       if (location.error) {
-        setLocationerror('Location is require for proper delivery');
+        setLocationerror("Location is require for proper delivery");
       } else {
         setMeta({
           ...meta,
@@ -310,24 +333,24 @@ export default function DeliveryOption({
 
   const handleCheck = (e) => {
     const { name, value } = e;
-    console.log('hello', name, value);
+    console.log("hello", name, value);
 
     const exist = deliveryOption.filter((x) => x.value === value);
-    console.log('exist', exist);
+    console.log("exist", exist);
     if (exist) {
       return true;
     } else {
       return false;
     }
   };
-  const [rebundleStatus, setRebundleStatus] = useState('');
+  const [rebundleStatus, setRebundleStatus] = useState("");
   const [rebundleCount, setRebundleCount] = useState(0);
   const [loadingRebundle, setLoadingRebundle] = useState(false);
-  const [rebundleError, setRebundleError] = useState('');
+  const [rebundleError, setRebundleError] = useState("");
 
   const handleRebundle = async (value) => {
     if (value) {
-      const { data } = await axios.put('/api/users/bundle', value, {
+      const { data } = await axios.put("/api/users/bundle", value, {
         headers: {
           authorization: `Bearer ${userInfo.token}`,
         },
@@ -336,13 +359,13 @@ export default function DeliveryOption({
       return;
     }
     if (!rebundleCount) {
-      setRebundleError('Enter the quantity of item(s) for Rebundle');
+      setRebundleError("Enter the quantity of item(s) for Rebundle");
       return;
     }
     try {
       setLoadingRebundle(true);
       const { data } = await axios.put(
-        '/api/users/bundle',
+        "/api/users/bundle",
         { status: rebundleStatus, count: rebundleCount },
         {
           headers: {
@@ -360,23 +383,23 @@ export default function DeliveryOption({
 
   const handleClose = () => {
     if (rebundleStatus & !bundle) {
-      setRebundleError('Click activate to make Rebundle active ');
+      setRebundleError("Click activate to make Rebundle active ");
       return;
     }
 
     if (paxi) {
-      const exist = deliveryOption.filter((x) => x.name === 'Paxi PEP store');
+      const exist = deliveryOption.filter((x) => x.name === "Paxi PEP store");
       if (exist.length === 0) {
-        setError1('Select a delivery price option for Paxi PEP store ');
+        setError1("Select a delivery price option for Paxi PEP store ");
         return;
       }
     }
     if (pudoLocker) {
       const exist = deliveryOption.filter(
-        (x) => x.name === 'PUDO Locker-to-Locker'
+        (x) => x.name === "PUDO Locker-to-Locker"
       );
       if (exist.length === 0) {
-        setError1('Select a delivery price option for PUDO Locker-to-Locker ');
+        setError1("Select a delivery price option for PUDO Locker-to-Locker ");
         return;
       }
     }
@@ -389,42 +412,46 @@ export default function DeliveryOption({
         setError1("Select a delivery price option for PUDO Locker-to-Door ");
         return;
       }
+      if (!meta.address) {
+        setError1("Enter a valid address for PUDO Locker-to-Door");
+        return;
+      }
     }
 
     if (postnet) {
       const exist = deliveryOption.filter(
-        (x) => x.name === 'PostNet-to-PostNet'
+        (x) => x.name === "PostNet-to-PostNet"
       );
       if (exist.length === 0) {
-        setError1('Select a delivery price option for PostNet-to-PostNet ');
+        setError1("Select a delivery price option for PostNet-to-PostNet ");
         return;
       }
     }
     if (aramex) {
       const exist = deliveryOption.filter(
-        (x) => x.name === 'Aramex Store-to-Door'
+        (x) => x.name === "Aramex Store-to-Door"
       );
       if (exist.length === 0) {
-        setError1('Select a delivery price option for Aramex Store-to-Door ');
+        setError1("Select a delivery price option for Aramex Store-to-Door ");
         return;
       }
     }
 
     if (gig) {
       if (!meta.name) {
-        setError1('Enter a valid name');
+        setError1("Enter a valid name");
         return;
       }
       if (!meta.address) {
-        setError1('Enter a valid address');
+        setError1("Enter a valid address");
         return;
       }
       if (!meta.phone) {
-        setError1('Enter a valid phone');
+        setError1("Enter a valid phone");
         return;
       }
       if (!meta.stationId) {
-        setError1('Select station');
+        setError1("Select station");
         return;
       }
     }
@@ -438,7 +465,7 @@ export default function DeliveryOption({
         Select as many as you like. Shops with multiple options sell faster. The
         Buyer will cover the delivery fee when purchasing.
       </TitleDetails>
-      {region() === 'ZAR' ? (
+      {region() === "ZAR" ? (
         <>
           <OptionCont>
             <Option>
@@ -460,14 +487,14 @@ export default function DeliveryOption({
                   setPaxi(e.target.checked);
                   if (!e.target.checked) {
                     setDeliveryOption(
-                      deliveryOption.filter((x) => x.name !== 'Paxi PEP store')
+                      deliveryOption.filter((x) => x.name !== "Paxi PEP store")
                     );
                   }
                 }}
               ></Switch>
             </Option>
             <div
-              style={{ width: '100%', height: '1px', background: '#d4d4d4' }}
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
             {paxi && (
               <Plans>
@@ -534,7 +561,7 @@ export default function DeliveryOption({
                   if (!e.target.checked) {
                     setDeliveryOption(
                       deliveryOption.filter(
-                        (x) => x.name !== 'PUDO Locker-to-Locker'
+                        (x) => x.name !== "PUDO Locker-to-Locker"
                       )
                     );
                   }
@@ -542,7 +569,7 @@ export default function DeliveryOption({
               ></Switch>
             </Option>
             <div
-              style={{ width: '100%', height: '1px', background: '#d4d4d4' }}
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
             {pudoLocker && (
               <Plans>
@@ -647,7 +674,7 @@ export default function DeliveryOption({
                   if (!e.target.checked) {
                     setDeliveryOption(
                       deliveryOption.filter(
-                        (x) => x.name !== "PUDO Locker-to-Locker"
+                        (x) => x.name !== "PUDO Locker-to-Door"
                       )
                     );
                   }
@@ -659,74 +686,30 @@ export default function DeliveryOption({
             />
             {pudoDoor && (
               <Plans>
-                <Plan>
-                  <PlanName>Offer free shipping to buyer + R 0.00</PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    id="free"
-                    value={0}
+                <Plan1>
+                  <Input
+                    mode={mode}
+                    type="text"
+                    onChange={(e) =>
+                      setMeta({ ...meta, address: e.target.value })
+                    }
+                    placeholder="Enter full address"
+                    value={meta?.address}
                   />
-                </Plan>
-                <Plan>
-                  <PlanName>
-                    Extra-Small | 600x170x80 mm (MAX 2kg) + R 60.00
-                  </PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    value={60}
-                    id="standard"
-                  />
-                </Plan>
-                <Plan>
-                  <PlanName>Small | 600x410x80 mm (MAX 5kg) + R 70.00</PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    value={70}
-                    id="Large"
-                  />
-                </Plan>
-                <Plan>
-                  <PlanName>
-                    Medium | 600x410x190 mm (MAX 10kg) + R 100.00
-                  </PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    value={100}
-                    id="Large"
-                  />
-                </Plan>
-                <Plan>
-                  <PlanName>
-                    Large | 600x410x410 mm (MAX 15kg) + R 150.00
-                  </PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    value={150}
-                    id="Large"
-                  />
-                </Plan>
-                <Plan>
-                  <PlanName>
-                    Extra-Large | 600x410x690 mm (MAX 20kg) + R 200.00
-                  </PlanName>
-                  <Radio
-                    type="radio"
-                    name="PUDO Locker-to-Door"
-                    onChange={(e) => handleChange(e.target)}
-                    value={200}
-                    id="Large"
-                  />
-                </Plan>
+                </Plan1>
+                {pudoOptions.map((opt) => (
+                  <Plan>
+                    <PlanName>{opt.name}</PlanName>
+                    <Radio
+                      type="radio"
+                      name="PUDO Locker-to-Door"
+                      onChange={(e) => handleChange(e.target)}
+                      value={opt.value}
+                      id="standard"
+                    />
+                  </Plan>
+                ))}
+
                 <a
                   className="link"
                   href="https://www.pudo.co.za/how-it-works.php"
@@ -760,7 +743,7 @@ export default function DeliveryOption({
                   if (!e.target.checked) {
                     setDeliveryOption(
                       deliveryOption.filter(
-                        (x) => x.name !== 'PostNet-to-PostNet'
+                        (x) => x.name !== "PostNet-to-PostNet"
                       )
                     );
                   }
@@ -768,7 +751,7 @@ export default function DeliveryOption({
               ></Switch>
             </Option>
             <div
-              style={{ width: '100%', height: '1px', background: '#d4d4d4' }}
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
             {postnet && (
               <Plans>
@@ -834,7 +817,7 @@ export default function DeliveryOption({
                   if (!e.target.checked) {
                     setDeliveryOption(
                       deliveryOption.filter(
-                        (x) => x.name !== 'Aramex Store-to-Door'
+                        (x) => x.name !== "Aramex Store-to-Door"
                       )
                     );
                   }
@@ -842,7 +825,7 @@ export default function DeliveryOption({
               ></Switch>
             </Option>
             <div
-              style={{ width: '100%', height: '1px', background: '#d4d4d4' }}
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
             {aramex && (
               <Plans>
@@ -898,25 +881,25 @@ export default function DeliveryOption({
                 onChange={(e) => {
                   setGig(e.target.checked);
                   handleChange({
-                    name: 'GIG Logistics',
+                    name: "GIG Logistics",
                     value: 0,
                     gig: e.target.checked,
                   });
                   if (!e.target.checked) {
                     setDeliveryOption(
-                      deliveryOption.filter((x) => x.name !== 'GIG Logistics')
+                      deliveryOption.filter((x) => x.name !== "GIG Logistics")
                     );
                   }
                 }}
               ></Switch>
             </Option>
             <div
-              style={{ width: '100%', height: '1px', background: '#d4d4d4' }}
+              style={{ width: "100%", height: "1px", background: "#d4d4d4" }}
             />
             {gig && (
               <Plans>
                 {locationerror && (
-                  <div style={{ color: 'red', textAlign: 'center' }}>
+                  <div style={{ color: "red", textAlign: "center" }}>
                     {locationerror}
                   </div>
                 )}
@@ -954,37 +937,37 @@ export default function DeliveryOption({
                 <Plan1>
                   <div
                     style={{
-                      fontSize: '14px',
-                      marginLeft: '20px',
-                      marginRight: '20px',
-                      color: 'grey',
+                      fontSize: "14px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      color: "grey",
                     }}
                   >
                     Select Station
                   </div>
                   <FormControl
                     sx={{
-                      width: '80%',
+                      width: "80%",
                       margin: 0,
-                      borderRadius: '0.2rem',
+                      borderRadius: "0.2rem",
                       border: `1px solid ${
-                        mode === 'pagebodydark'
-                          ? 'var(--dark-ev4)'
-                          : 'var(--light-ev4)'
+                        mode === "pagebodydark"
+                          ? "var(--dark-ev4)"
+                          : "var(--light-ev4)"
                       }`,
-                      '& .MuiOutlinedInput-root': {
+                      "& .MuiOutlinedInput-root": {
                         color: `${
-                          mode === 'pagebodydark'
-                            ? 'var(--white-color)'
-                            : 'var(--black-color)'
+                          mode === "pagebodydark"
+                            ? "var(--white-color)"
+                            : "var(--black-color)"
                         }`,
-                        '&:hover': {
-                          outline: 'none',
+                        "&:hover": {
+                          outline: "none",
                           border: 0,
                         },
                       },
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: '0 !important',
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "0 !important",
                       },
                     }}
                     size="small"
@@ -1024,7 +1007,7 @@ export default function DeliveryOption({
         <Option>
           <Label>
             <FontAwesomeIcon icon={faTruck} />
-            <Name>Pick up from Seller</Name>{' '}
+            <Name>Pick up from Seller</Name>{" "}
             <Tips
               mode={mode}
               tips={`Pick-up from seller is an option seller & buyer agrees upon a choice of delivery outside of delivery methods available on Repeddle. Pick-up from seller may be ideal for users within the same locality.`}
@@ -1037,16 +1020,16 @@ export default function DeliveryOption({
             checked={pickup}
             onChange={(e) => {
               setPickup(e.target.checked);
-              handleChange({ name: 'Pick up from Seller', value: '0' });
+              handleChange({ name: "Pick up from Seller", value: "0" });
               if (!e.target.checked) {
                 setDeliveryOption(
-                  deliveryOption.filter((x) => x.name !== 'Pick up from Seller')
+                  deliveryOption.filter((x) => x.name !== "Pick up from Seller")
                 );
               }
             }}
           ></Switch>
         </Option>
-        <div style={{ width: '100%', height: '1px', background: '#d4d4d4' }} />
+        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
       </OptionCont>
       <OptionCont>
         <Option>
@@ -1074,19 +1057,19 @@ export default function DeliveryOption({
             }}
           ></Switch>
         </Option>
-        <div style={{ width: '100%', height: '1px', background: '#d4d4d4' }} />
+        <div style={{ width: "100%", height: "1px", background: "#d4d4d4" }} />
         {rebundleStatus && (
           <Plans>
             {bundle ? (
               <div>
                 <FontAwesomeIcon
                   icon={faCheck}
-                  style={{ color: 'var(--orange-color)' }}
+                  style={{ color: "var(--orange-color)" }}
                 />
               </div>
             ) : (
               <>
-                <div style={{ fontWeight: '11px' }}>
+                <div style={{ fontWeight: "11px" }}>
                   Please input numbers of how many item(s) you are willing to
                   pack in delivery bag(s) for a buyer when Rebundle is active
                 </div>
@@ -1097,7 +1080,7 @@ export default function DeliveryOption({
                     onChange={(e) => {
                       setRebundleCount(e.target.value);
                     }}
-                    onFocus={() => setRebundleError('')}
+                    onFocus={() => setRebundleError("")}
                   />
                   {loadingRebundle ? (
                     <LoadingBox />
@@ -1108,7 +1091,7 @@ export default function DeliveryOption({
                   )}
                 </Plan>
                 {rebundleError && (
-                  <div style={{ color: 'red' }}>{rebundleError}</div>
+                  <div style={{ color: "red" }}>{rebundleError}</div>
                 )}
               </>
             )}
@@ -1118,7 +1101,7 @@ export default function DeliveryOption({
           </Plans>
         )}
       </OptionCont>
-      {error1 && <div style={{ color: 'red' }}>{error1}</div>}
+      {error1 && <div style={{ color: "red" }}>{error1}</div>}
       <Button onClick={handleClose}>Continue</Button>
     </Container>
   );

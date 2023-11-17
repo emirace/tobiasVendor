@@ -9,6 +9,8 @@ import {
   payShippingFee,
   checkStatus,
   setTimer,
+  sendEmailMessage,
+  fillEmailContent,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
@@ -684,6 +686,14 @@ orderRouter.put(
             orderId: order._id,
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Your Order Has Been Received.";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
+          };
 
           // Clear the existing timer if it exists
           if (orderItem.notifications) {
@@ -707,6 +717,14 @@ orderRouter.put(
             orderItems: [orderItem],
             trackId: orderItem.returnTrackingNumber,
             returnId: returned ? returned._id : "",
+          };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Return Dispatched.";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
           };
           setTimer(
             io,
@@ -732,6 +750,14 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
             orderItems: [orderItem],
           };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Your Return Has Been Delivered";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
+          };
           setTimer(
             io,
             orderItem.seller._id,
@@ -755,6 +781,15 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
           };
 
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Return Has Been Received";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            RETURNID: returned ? returned._id : "",
+            EMAIL: order.user.email,
+          };
+
           // Clear the existing timer if it exists
           if (orderItem.notifications) {
             const currentDateTime = new Date();
@@ -776,6 +811,14 @@ orderRouter.put(
             orderId: order._id,
             user: order.user.username,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Purchased Order Not Processed";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+          };
 
           // Clear the existing timer if it exists
           if (orderItem.notifications) {
@@ -796,8 +839,8 @@ orderRouter.put(
         await sendEmail(emailOptions);
         const content = {
           io,
-          receiverId: emailOptions._id,
-          senderId: emailOptions.user._id,
+          receiverId: emailOptions.receiverId,
+          senderId: emailOptions.senderId,
           title: emailOptions.title,
           emailMessages: fillEmailContent(
             emailOptions.title,
@@ -1352,7 +1395,19 @@ orderRouter.put(
               sellerId: order.orderItems[0].seller._id,
             },
           });
-          console.log(sellers);
+          const content = {
+            io,
+            receiverId: order.user._id,
+            senderId: order.orderItems[0].seller._id,
+            title: "Your Order Is Being Processed ",
+            emailMessages: fillEmailContent("Your Order Is Being Processed ", {
+              USERNAME: order.user.username,
+              ORDERID: order._id,
+              EMAIL: order.user.email,
+            }),
+          };
+          sendEmailMessage(content);
+
           sellers.map((seller) => {
             sendEmail({
               to: seller.email,
@@ -1371,6 +1426,18 @@ orderRouter.put(
                 sellerId: order.orderItems[0].seller._id,
               },
             });
+            const content = {
+              io,
+              receiverId: seller._id,
+              senderId: order.user._id,
+              title: "New Order To Process",
+              emailMessages: fillEmailContent("New Order To Process", {
+                USERNAME: seller.username,
+                ORDERID: order._id,
+                EMAIL: seller.email,
+              }),
+            };
+            sendEmailMessage(content);
           });
           res.send({ message: "Order Paid", order: updateOrder });
         } else {

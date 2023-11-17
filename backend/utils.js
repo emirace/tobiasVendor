@@ -146,7 +146,7 @@ export const sendEmail = async (options) => {
   };
 
   try {
-    transporter.sendMail(mailOption);
+    await transporter.sendMail(mailOption);
     console.log("Email sent successfully", options.to);
     mixpanel.track("Email", {
       type: options.subject,
@@ -652,46 +652,45 @@ export const updateMixpanelUser = () => {
     });
 };
 
-export const sendWeeklyMail = async (emails, io) => {
+function createProductPairs(products) {
+  const productPairs = [];
+  for (let i = 0; i < products.length; i += 2) {
+    const pair = {
+      firstProduct: products[i],
+      secondProduct: products[i + 1],
+    };
+    productPairs.push(pair);
+  }
+  return productPairs;
+}
+
+export const sendWeeklyMail = async (emails, io, req) => {
   const today = moment(); // Get the current date
-  const oneWeekAgo = today.clone().subtract(7, "days"); // Get the date one week ago
+  const oneWeekAgo = today.clone().subtract(14, "days"); // Get the date one week ago
 
   try {
-    const productsNGN = await Product.find({
-      createdAt: {
-        $gte: oneWeekAgo.toDate(), // Find products created on or after one week ago
-        $lt: today.toDate(), // Find products created before the current date
-      },
-      region: "NGN",
-    }).sort({ createdAt: -1 });
-
-    const productsZAR = await Product.find({
-      createdAt: {
-        $gte: oneWeekAgo.toDate(), // Find products created on or after one week ago
-        $lt: today.toDate(), // Find products created before the current date
-      },
-      region: "ZAR",
-    }).sort({ createdAt: -1 });
+    console.log(emails);
+    const [productsNGN, productsZAR] = await Promise.all([
+      Product.find({
+        createdAt: {
+          $gte: oneWeekAgo.toDate(),
+          $lt: today.toDate(),
+        },
+        region: "NGN",
+      }).sort({ createdAt: -1 }),
+      Product.find({
+        createdAt: {
+          $gte: oneWeekAgo.toDate(),
+          $lt: today.toDate(),
+        },
+        region: "ZAR",
+      }).sort({ createdAt: -1 }),
+    ]);
 
     // Convert the products array into an array of arrays containing two products each
-    const productsInPairsNGN = [];
-    const productsInPairsZAR = [];
 
-    for (let i = 0; i < productsNGN.length; i += 2) {
-      const pair = {
-        firstProduct: productsNGN[i],
-        secondProduct: productsNGN[i + 1],
-      };
-      productsInPairsNGN.push(pair);
-    }
-
-    for (let i = 0; i < productsZAR.length; i += 2) {
-      const pair = {
-        firstProduct: productsZAR[i],
-        secondProduct: productsZAR[i + 1],
-      };
-      productsInPairsZAR.push(pair);
-    }
+    const productsInPairsNGN = createProductPairs(productsNGN);
+    const productsInPairsZAR = createProductPairs(productsZAR);
 
     const emailType = {
       name: "Hunt It",
@@ -700,43 +699,59 @@ export const sendWeeklyMail = async (emails, io) => {
     };
 
     const existEmails = await Newsletters.find({ email: { $in: emails } });
+    const existUsers = await User.find({ email: { $in: emails } });
 
-    // Initialize empty arrays to store the emails
-    const comEmails = [];
-    const cozaEmails = [];
+    const comEmails = existEmails
+      .filter((item) => item.url === "com")
+      .map((item) => item.email);
+    const cozaEmails = existEmails
+      .filter((item) => item.url === "co.za")
+      .map((item) => item.email);
 
-    // Use the filter method to separate emails based on the 'url' field
-    existEmails.forEach((item) => {
-      if (item.url === "com") {
-        comEmails.push(item.email);
-      } else if (item.url === "co.za") {
-        cozaEmails.push(item.email);
+    const emailPromises = [];
+    console.log(productsInPairsNGN, "ZAR", productsInPairsZAR);
+    if (productsInPairsZAR.length > 0) {
+      for (const cozaEmail of cozaEmails) {
+        await sendEmail({
+          to: cozaEmail,
+          subject: emailType.subject,
+          template: emailType.template,
+          context: {
+            url: "co.za",
+            products: productsInPairsZAR,
+          },
+        });
       }
-    });
-
-    if (cozaEmails.length > 0 && productsInPairsZAR.length > 0) {
-      await sendEmail({
-        to: cozaEmails,
-        subject: emailType.subject,
-        template: emailType.template,
-        context: {
-          url: "co.za",
-          products: productsInPairsZAR,
-        },
-      });
     }
 
     if (comEmails.length > 0 && productsInPairsNGN.length > 0) {
-      await sendEmail({
-        to: comEmails,
-        subject: emailType.subject,
-        template: emailType.template,
-        context: {
-          url: "com",
-          products: productsInPairsNGN,
-        },
-      });
+      for (const comEmail of comEmails) {
+        await sendEmail({
+          to: comEmail,
+          subject: emailType.subject,
+          template: emailType.template,
+          context: {
+            url: "com",
+            products: productsInPairsNGN,
+          },
+        });
+      }
     }
+    // await Promise.all(emailPromises);
+
+    // existUsers.forEach((user) => {
+    //   const content = {
+    //     io,
+    //     receiverId: user._id,
+    //     senderId: req.user._id,
+    //     title: "Hunt It * Thrift It * Flaunt It!",
+    //     emailMessages: fillEmailContent("Hunt It * Thrift It * Flaunt It!", {
+    //       USERNAME: user.username,
+    //       EMAIL: user.email,
+    //     }),
+    //   };
+    //   sendEmailMessage(content);
+    // });
   } catch (error) {
     console.error("Error fetching products:", error);
     // Handle the error
@@ -751,7 +766,6 @@ export const sendEmailMessage = async ({
   io,
   senderImage = "https://repeddle.com/images/pimage.png", // Default sender image
 }) => {
-  console.log(senderId, receiverId, title, emailMessages, senderImage);
   try {
     // Create a new conversation
     const conversation = await Conversation.create({

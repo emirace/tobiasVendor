@@ -2,11 +2,13 @@ import express from "express";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import {
+  fillEmailContent,
   generateOTP,
   generateToken,
   isAdmin,
   isAuth,
   sendEmail,
+  sendEmailMessage,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
@@ -181,6 +183,7 @@ userRouter.post(
     try {
       const { region } = req.params;
       const url = region === "NGN" ? "com" : "co.za";
+      const io = req.app.get("io");
       const newUser = new User({
         username: req.body.username.toLowerCase(),
         firstName: req.body.firstName,
@@ -227,6 +230,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: newUser._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: newUser.username,
+      //     EMAIL: newUser.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       await Account.create({
         userId: user.id,
         balance: 0,
@@ -355,6 +369,7 @@ userRouter.post(
 userRouter.post(
   "/resetpassword/:resetToken",
   expressAsyncHandler(async (req, res) => {
+    const io = req.app.get("io");
     const resetPasswordToken = crypto
       .createHash("sha256")
       .update(req.params.resetToken)
@@ -383,6 +398,17 @@ userRouter.post(
           email: user.email,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: user._id,
+      //   senderId: req.user._id,
+      //   title: "Your Password Is Successfully Reset",
+      //   emailMessages: fillEmailContent("Your Password Is Successfully Reset", {
+      //     USERNAME: user.username,
+      //     EMAIL: user.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       res
         .status(201)
         .send({ success: true, message: "Password Reset Success" });
@@ -425,6 +451,7 @@ userRouter.get(
           resetlink: resetUrl,
         },
       });
+
       res.status(200).send({ message: "Email sent" });
     }
   })
@@ -435,6 +462,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const { region } = req.params;
+    const io = req.app.get("io");
     console.log(req.body.tokenId);
     const url = region === "NGN" ? "com" : "co.za";
     const ticket = await client.verifyIdToken({
@@ -475,6 +503,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
     }
     result.userId = result._id.toString();
     await result.save();
@@ -532,6 +571,7 @@ userRouter.post(
     const { email, given_name, family_name, picture, id, verified_email } =
       req.body;
     const url = region === "NGN" ? "com" : "co.za";
+    const io = req.app.get("io");
 
     const user = {
       email: email,
@@ -558,6 +598,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       result.userId = result._id.toString();
       await result.save();
     }
@@ -613,6 +664,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const url = region === "NGN" ? "com" : "co.za";
+    const io = req.app.get("io");
     const { data } = await axios.get(
       `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
     );
@@ -644,6 +696,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       result.userId = result._id.toString();
       await result.save();
     }

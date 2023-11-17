@@ -16,10 +16,14 @@ import Product from "../models/productModel.js";
 const newsletterRouter = express.Router();
 
 const emailLists = [
-  { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
-  { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
   {
-    name: "Hack",
+    name: "Congratulation",
+    subject: "CONGRATULATION",
+    template: "congrants01",
+  },
+  { name: "Did You Know", subject: "DID YOU KNOW", template: "doyouknow" },
+  {
+    name: "Hacks on How to Make Your First Repeddle Sale",
     subject: "Hacks on How to Make Your First Repeddle Sale!",
     template: "hack",
   },
@@ -29,17 +33,17 @@ const emailLists = [
     template: "pricing",
   },
   {
-    name: "Let Our Community",
+    name: "Let Our Community Get To Know You",
     subject: "Let Our Community Get To Know You!",
     template: "community",
   },
   {
-    name: "Performance tracking",
+    name: "Track All Important Metrics",
     subject: "PERFORMANCE TRACKING",
     template: "performanceTracking",
   },
   {
-    name: "Exciting announcement",
+    name: "Exciting Announcement",
     subject: "EXCITING ANNOUNCEMENT",
     template: "exiciting",
   },
@@ -49,22 +53,22 @@ const emailLists = [
     template: "challenging",
   },
   {
-    name: "How Repeddle Work",
+    name: "How Repeddle Works!",
     subject: "HOW REPOEDDLE WORKS!",
     template: "howRepeddleWork",
   },
   {
-    name: "Feature Update",
+    name: "Feature Update!",
     subject: "FEATURE UPDATE",
     template: "featureUpdate",
   },
   {
-    name: "THRIFT FOR GOOD CAUSE",
+    name: "Thrift For Good Cause",
     subject: "THRIFT FOR GOOD CAUSE",
     template: "goodCause",
   },
   {
-    name: "HUNT IT - THRIFT IT - FLAUNT IT!",
+    name: "Hunt It * Thrift It * Flaunt It!",
     subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
     template: "huntIt",
   },
@@ -105,7 +109,6 @@ newsletterRouter.post(
     try {
       const { emails, emailName } = req.body;
       const io = req.app.get("io");
-      console.log(emails);
       const emailType = emailLists.find(
         (emailList) => emailList.name === emailName
       );
@@ -114,7 +117,7 @@ newsletterRouter.post(
         return res.status(400).send("Invalid email name");
       }
 
-      if (emailName === "Congrats 01") {
+      if (emailName === "Congratulation") {
         const existUsers = await User.find({ email: { $in: emails } });
 
         const bulkEmailOperations = existUsers.map((existUser) => {
@@ -142,14 +145,13 @@ newsletterRouter.post(
               time: moment(existUser.createdAt).fromNow(true),
             },
           });
-          console.log(existUser.email);
 
           const content = {
             io,
             receiverId: existUser._id,
             senderId: req.user._id,
-            title: "Congratulation",
-            emailMessages: fillEmailContent("Congratulation", {
+            title: emailType.name,
+            emailMessages: fillEmailContent(emailType.name, {
               USERNAME: existUser.username,
               DATE: moment(existUser.createdAt).fromNow(true),
               EMAIL: existUser.email,
@@ -157,23 +159,23 @@ newsletterRouter.post(
           };
           sendEmailMessage(content);
         }
-      } else if (emailName === "HUNT IT - THRIFT IT - FLAUNT IT!") {
-        sendWeeklyMail(emails, io);
+      } else if (emailName === "Hunt It * Thrift It * Flaunt It!") {
+        await sendWeeklyMail(emails, io, req);
       } else {
         const existEmails = await Newsletters.find({ email: { $in: emails } });
+        const existUser = await User.find({ email: { $in: emails } });
+        // // Initialize empty arrays to store the emails
+        // const comEmails = [];
+        // const cozaEmails = [];
 
-        // Initialize empty arrays to store the emails
-        const comEmails = [];
-        const cozaEmails = [];
-
-        // Use the filter method to separate emails based on the 'url' field
-        existEmails.forEach((item) => {
-          if (item.url === "com") {
-            comEmails.push(item.email);
-          } else if (item.url === "co.za") {
-            cozaEmails.push(item.email);
-          }
-        });
+        // // Use the filter method to separate emails based on the 'url' field
+        // existEmails.forEach((item) => {
+        //   if (item.url === "com") {
+        //     comEmails.push(item.email);
+        //   } else if (item.url === "co.za") {
+        //     cozaEmails.push(item.email);
+        //   }
+        // });
 
         const bulkEmailOperations = existEmails.map((existEmail) => {
           const email = existEmail.email;
@@ -188,27 +190,51 @@ newsletterRouter.post(
         });
         await Newsletters.bulkWrite(bulkEmailOperations);
 
-        if (cozaEmails.length) {
+        // if (cozaEmails.length) {
+        //   await sendEmail({
+        //     to: cozaEmails,
+        //     subject: emailType.subject,
+        //     template: emailType.template,
+        //     context: {
+        //       url: "co.za",
+        //     },
+        //   });
+        // }
+
+        // if (comEmails.length) {
+        //   await sendEmail({
+        //     to: comEmails,
+        //     subject: emailType.subject,
+        //     template: emailType.template,
+        //     context: {
+        //       url: "com",
+        //     },
+        //   });
+        // }
+        for (const existUser of existEmails) {
           await sendEmail({
-            to: cozaEmails,
+            to: existUser.email,
             subject: emailType.subject,
             template: emailType.template,
             context: {
-              url: "co.za",
+              url: existUser.url,
             },
           });
         }
 
-        if (comEmails.length) {
-          await sendEmail({
-            to: comEmails,
-            subject: emailType.subject,
-            template: emailType.template,
-            context: {
-              url: "com",
-            },
-          });
-        }
+        existUser.forEach((user) => {
+          const content = {
+            io,
+            receiverId: user._id,
+            senderId: req.user._id,
+            title: emailType.name,
+            emailMessages: fillEmailContent(emailType.name, {
+              USERNAME: user.username,
+              EMAIL: user.email,
+            }),
+          };
+          sendEmailMessage(content);
+        });
       }
 
       res.status(200).send("Emails sent successfully");

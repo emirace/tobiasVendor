@@ -859,7 +859,7 @@ export default function NewProduct() {
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
-          message: "Error creating product, fill mising fields",
+          message: getError(err),
           showStatus: true,
           state1: "visible1 error",
         },
