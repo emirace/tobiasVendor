@@ -737,21 +737,20 @@ export const sendWeeklyMail = async (emails, io, req) => {
         });
       }
     }
-    // await Promise.all(emailPromises);
 
-    // existUsers.forEach((user) => {
-    //   const content = {
-    //     io,
-    //     receiverId: user._id,
-    //     senderId: req.user._id,
-    //     title: "Hunt It * Thrift It * Flaunt It!",
-    //     emailMessages: fillEmailContent("Hunt It * Thrift It * Flaunt It!", {
-    //       USERNAME: user.username,
-    //       EMAIL: user.email,
-    //     }),
-    //   };
-    //   sendEmailMessage(content);
-    // });
+    existUsers.forEach((user) => {
+      const content = {
+        io,
+        receiverId: user._id,
+        senderId: req.user._id,
+        title: "Hunt It * Thrift It * Flaunt It!",
+        emailMessages: fillEmailContent("Hunt It * Thrift It * Flaunt It!", {
+          USERNAME: user.username,
+          EMAIL: user.email,
+        }),
+      };
+      sendEmailMessage(content);
+    });
   } catch (error) {
     console.error("Error fetching products:", error);
     // Handle the error
@@ -853,7 +852,7 @@ export const sendAllEmail = () => {
       template: "exiciting",
     },
     {
-      name: "Chanllenging fast",
+      name: "Challenging Fast Fashion",
       subject: "CHALLENGING FAST FASHION POLLUTION IN AFRICA",
       template: "challenging",
     },

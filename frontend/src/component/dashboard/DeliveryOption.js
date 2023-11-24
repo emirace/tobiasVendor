@@ -199,10 +199,10 @@ const pudoOptions = [
     name: "Extra-Small | 600x170x80 mm (MAX 2kg) + R 60.00",
     value: 60,
   },
-  {
-    name: "Small | 600x410x80 mm (MAX 5kg) + R 70.00",
-    value: 70,
-  },
+  // {
+  //   name: "Small | 600x410x80 mm (MAX 5kg) + R 70.00",
+  //   value: 70,
+  // },
   {
     name: " Medium | 600x410x190 mm (MAX 10kg) + R 100.00",
     value: 100,
@@ -412,10 +412,6 @@ export default function DeliveryOption({
         setError1("Select a delivery price option for PUDO Locker-to-Door ");
         return;
       }
-      if (!meta.address) {
-        setError1("Enter a valid address for PUDO Locker-to-Door");
-        return;
-      }
     }
 
     if (postnet) {
@@ -595,7 +591,7 @@ export default function DeliveryOption({
                     id="standard"
                   />
                 </Plan>
-                <Plan>
+                {/* <Plan>
                   <PlanName>Small | 600x410x80 mm (MAX 5kg) + R 60.00</PlanName>
                   <Radio
                     type="radio"
@@ -604,7 +600,7 @@ export default function DeliveryOption({
                     value={60}
                     id="Large"
                   />
-                </Plan>
+                </Plan> */}
                 <Plan>
                   <PlanName>
                     Medium | 600x410x190 mm (MAX 10kg) + R 60.00
@@ -686,17 +682,6 @@ export default function DeliveryOption({
             />
             {pudoDoor && (
               <Plans>
-                <Plan1>
-                  <Input
-                    mode={mode}
-                    type="text"
-                    onChange={(e) =>
-                      setMeta({ ...meta, address: e.target.value })
-                    }
-                    placeholder="Enter full address"
-                    value={meta?.address}
-                  />
-                </Plan1>
                 {pudoOptions.map((opt) => (
                   <Plan>
                     <PlanName>{opt.name}</PlanName>

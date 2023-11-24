@@ -48,7 +48,7 @@ const emailLists = [
     template: "exiciting",
   },
   {
-    name: "Chanllenging fast",
+    name: "Challenging Fast Fashion",
     subject: "CHALLENGING FAST FASHION POLLUTION IN AFRICA",
     template: "challenging",
   },
@@ -211,16 +211,16 @@ newsletterRouter.post(
         //     },
         //   });
         // }
-        for (const existUser of existEmails) {
-          await sendEmail({
-            to: existUser.email,
-            subject: emailType.subject,
-            template: emailType.template,
-            context: {
-              url: existUser.url,
-            },
-          });
-        }
+        // for (const existUser of existEmails) {
+        //   await sendEmail({
+        //     to: existUser.email,
+        //     subject: emailType.subject,
+        //     template: emailType.template,
+        //     context: {
+        //       url: existUser.url,
+        //     },
+        //   });
+        // }
 
         existUser.forEach((user) => {
           const content = {
@@ -233,7 +233,10 @@ newsletterRouter.post(
               EMAIL: user.email,
             }),
           };
-          sendEmailMessage(content);
+
+          if (fillEmailContent(emailType.name, {})) {
+            sendEmailMessage(content);
+          }
         });
       }
 

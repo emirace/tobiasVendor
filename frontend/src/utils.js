@@ -447,20 +447,24 @@ export const compressImageUpload = async (file, maxSize, token, image = "") => {
 };
 
 export function createHtmlFromObjects(objectArray) {
-  return objectArray.map((item, index) => {
-    if (item.type === "div") {
-      return (
-        <div style={{ marginBottom: "10px" }} key={index}>
-          {item.content}
-        </div>
-      );
-    } else if (item.type === "img") {
-      return <MessageImage key={index} url={item.content} />;
-    } else if (item.type === "link") {
-      return <Link to={item.href}>{item.content}</Link>;
-    } else {
-      // Handle other types or provide a default case
-      return null;
-    }
-  });
+  return objectArray ? (
+    objectArray.map((item, index) => {
+      if (item.type === "div") {
+        return (
+          <div style={{ marginBottom: "10px" }} key={index}>
+            {item.content}
+          </div>
+        );
+      } else if (item.type === "img") {
+        return <MessageImage key={index} url={item.content} />;
+      } else if (item.type === "link") {
+        return <Link to={item.href}>{item.content}</Link>;
+      } else {
+        // Handle other types or provide a default case
+        return null;
+      }
+    })
+  ) : (
+    <div>___ No message data ___</div>
+  );
 }

@@ -64,7 +64,7 @@ export const messageEmails = [
     ],
   },
   {
-    title: "Challenging Fast Fashion Pollution In Africa.",
+    title: "Challenging Fast Fashion",
     textArray: [
       { type: "div", content: "Hi USERNAME" },
       {
