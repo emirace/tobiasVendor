@@ -545,7 +545,7 @@ productRouter.put(
   })
 );
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 40;
 
 // get all Product with pagination
 
@@ -655,6 +655,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller })
+      .sort({ createdAt: -1 })
       .populate("seller", "username")
       .skip(pageSize * (page - 1))
       .limit(pageSize);

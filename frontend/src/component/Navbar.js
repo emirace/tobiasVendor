@@ -783,7 +783,6 @@ export default function Navbar({
   return (
     <>
       <Container mode={mode} isVisible={isVisible}>
-
         <Wrapper>
           <Left>
             <SwitchCont>
@@ -814,8 +813,9 @@ export default function Navbar({
                 </Underline>
               </First>
               <First>
-                Easy on the App. Explore Repeddle on <Underline>IOS</Underline>{" "}
-                and <Underline>ANDRIOD</Underline>
+                {" "}
+                Explore Repeddle on <Underline>IOS</Underline> and{" "}
+                <Underline>ANDRIOD</Underline> - Coming soon.
               </First>
             </SliderCont>
           </Center>

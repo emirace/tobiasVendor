@@ -17,7 +17,7 @@ import Rating from "../component/Rating";
 import { Helmet } from "react-helmet-async";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
-import { getError, region } from "../utils";
+import { compressImageUpload, getError, region } from "../utils";
 import { Store } from "../Store";
 import OwlCarousel from "react-owl-carousel";
 import { Carousel } from "react-responsive-carousel";
@@ -64,6 +64,7 @@ import CustomCarousel from "../component/CustomCarousel";
 import ShareModal from "../component/ShareButton";
 import { MD5 } from "crypto-js";
 import ReactImageMagnify from "react-image-magnify";
+import { FaFlag } from "react-icons/fa";
 
 const ReviewsClick = styled.div`
   cursor: pointer;
@@ -768,18 +769,13 @@ export default function ProductScreen() {
 
   const uploadImageHandler = async (e) => {
     const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append("file", file);
+
     try {
       dispatch({ type: "UPLOAD_REQUEST" });
-      const { data } = await axios.post("/api/upload", bodyFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
+      const imageUrl = await compressImageUpload(file, 1024, userInfo.token);
+
       dispatch({ type: "UPLOAD_SUCCESS" });
-      setImage(data.secure_url);
+      setImage(imageUrl);
       ctxDispatch({
         type: "SHOW_TOAST",
         payload: {
@@ -1822,11 +1818,22 @@ export default function ProductScreen() {
                 </div>
               </SustainCont>
             </Sustain>
-            <ReportButton
-              onClick={() => handlereport(product.seller._id, product._id)}
+            <div
+              style={{ display: "flex", gap: "20px", justifyContent: "end" }}
             >
-              Report Item
-            </ReportButton>
+              {userInfo && userInfo.isAdmin && (
+                <ReportButton
+                // onClick={() => handlereport(product.seller._id, product._id)}
+                >
+                  <FaFlag /> Flag As Invalid
+                </ReportButton>
+              )}
+              <ReportButton
+                onClick={() => handlereport(product.seller._id, product._id)}
+              >
+                Report Item
+              </ReportButton>
+            </div>
 
             <ModelLogin showModel={reportModel} setShowModel={setReportModel}>
               <Report

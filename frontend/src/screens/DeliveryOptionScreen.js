@@ -837,6 +837,47 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                   ) : deliveryOption === "PUDO Locker-to-Door" ? (
                     <Plans>
                       <Plan>
+                        <Input
+                          mode={mode}
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              address: "",
+                            })
+                          }
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, address: e.target.value })
+                          }
+                          placeholder="Address"
+                          value={meta.address}
+                        />
+                        {validationError.address && (
+                          <Error>{validationError.address}</Error>
+                        )}
+                      </Plan>
+                      <Plan>
+                        <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              city: "",
+                            })
+                          }
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, city: e.target.value })
+                          }
+                          placeholder="City/Town"
+                          value={meta.city}
+                        />
+                        {validationError.city && (
+                          <Error>{validationError.city}</Error>
+                        )}
+                      </Plan>
+
+                      <Plan>
                         <Label>Province</Label>
                         <FormControl
                           sx={{
@@ -887,26 +928,6 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         </FormControl>
                         {validationError.province && (
                           <Error>{validationError.province}</Error>
-                        )}
-                      </Plan>
-                      <Plan>
-                        <Input
-                          mode={mode}
-                          onFocus={() =>
-                            setValidationError({
-                              ...validationError,
-                              address: "",
-                            })
-                          }
-                          type="text"
-                          onChange={(e) =>
-                            setMeta({ ...meta, address: e.target.value })
-                          }
-                          placeholder="Address"
-                          value={meta.address}
-                        />
-                        {validationError.address && (
-                          <Error>{validationError.address}</Error>
                         )}
                       </Plan>
 
@@ -1215,6 +1236,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.suburb}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Input
                           onFocus={() =>
@@ -1235,6 +1257,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.city}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Input
                           onFocus={() =>
@@ -1255,6 +1278,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.postalcode}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Label>Province</Label>
                         <FormControl

@@ -666,10 +666,9 @@ function createProductPairs(products) {
 
 export const sendWeeklyMail = async (emails, io, req) => {
   const today = moment(); // Get the current date
-  const oneWeekAgo = today.clone().subtract(14, "days"); // Get the date one week ago
+  const oneWeekAgo = today.clone().subtract(7, "days"); // Get the date one week ago
 
   try {
-    console.log(emails);
     const [productsNGN, productsZAR] = await Promise.all([
       Product.find({
         createdAt: {
@@ -693,8 +692,8 @@ export const sendWeeklyMail = async (emails, io, req) => {
     const productsInPairsZAR = createProductPairs(productsZAR);
 
     const emailType = {
-      name: "Hunt It",
-      subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+      name: "Hunt It * Thrift It * Flaunt It!",
+      subject: "New Arrivals; HUNT IT - THRIFT IT - FLAUNT IT!",
       template: "huntIt",
     };
 
@@ -709,7 +708,6 @@ export const sendWeeklyMail = async (emails, io, req) => {
       .map((item) => item.email);
 
     const emailPromises = [];
-    console.log(productsInPairsNGN, "ZAR", productsInPairsZAR);
     if (productsInPairsZAR.length > 0) {
       for (const cozaEmail of cozaEmails) {
         await sendEmail({
@@ -749,7 +747,7 @@ export const sendWeeklyMail = async (emails, io, req) => {
           EMAIL: user.email,
         }),
       };
-      sendEmailMessage(content);
+      // sendEmailMessage(content);
     });
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -767,38 +765,35 @@ export const sendEmailMessage = async ({
 }) => {
   try {
     // Create a new conversation
-    const conversation = await Conversation.create({
-      members: [senderId, receiverId],
-      userId: receiverId,
-      conversationType: "user",
-      canReply: false,
-    });
-
-    // Create a new message
-    const newMessage = await Message.create({
-      conversationId: conversation._id,
-      sender: senderId,
-      type: "email",
-      emailMessages,
-      text: title,
-    });
-
+    // const conversation = await Conversation.create({
+    //   members: [senderId, receiverId],
+    //   userId: receiverId,
+    //   conversationType: "user",
+    //   canReply: false,
+    // });
+    // // Create a new message
+    // const newMessage = await Message.create({
+    //   conversationId: conversation._id,
+    //   sender: senderId,
+    //   type: "email",
+    //   emailMessages,
+    //   text: title,
+    // });
     // Create a new notification
-    const notification = await Notification.create({
-      userId: receiverId,
-      itemId: conversation._id,
-      notifyType: "message",
-      msg: title,
-      link: `/messages?conversation=${conversation._id}`,
-      mobile: { path: "Conversation", id: "" },
-      userImage: senderImage,
-    });
-
+    // const notification = await Notification.create({
+    //   userId: receiverId,
+    //   itemId: conversation._id,
+    //   notifyType: "message",
+    //   msg: title,
+    //   link: `/messages?conversation=${conversation._id}`,
+    //   mobile: { path: "Conversation", id: "" },
+    //   userImage: senderImage,
+    // });
     // Emit a change_data event
-    io.emit("change_data");
+    // io.emit("change_data");
   } catch (error) {
     // Handle any errors here
-    console.error("Error sending email message:", error);
+    // console.error("Error sending email message:", error);
   }
 };
 

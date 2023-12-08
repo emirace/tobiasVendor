@@ -28,6 +28,7 @@ import { resizeImage } from "../ImageUploader";
 import VideoTrimmer from "../VideoTrimmer";
 import SmallModel from "../SmallModel";
 import AddOtherBrand from "../AddOtherBrand";
+import { FaChevronRight } from "react-icons/fa";
 
 const NewProductC = styled.div`
   flex: 4;
@@ -124,6 +125,7 @@ const Label = styled.label`
     }
   }
 `;
+
 const ItemCont = styled.div`
   display: flex;
   gap: 20px;
@@ -550,6 +552,15 @@ const Key = styled.div`
 `;
 const Value = styled.div`
   flex: 1;
+`;
+
+const AddSize = styled.div`
+  margin-bottom: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  & svg {
+    margin-left: 10px;
+  }
 `;
 
 const reducer = (state, action) => {
@@ -1131,6 +1142,7 @@ export default function NewProduct() {
   };
 
   const [showTopInfo, setShowTopInfo] = useState(false);
+  const [showSizes, setShowSizes] = useState(false);
 
   const costPrice = input.discount
     ? parseInt(input.discount) < parseInt(input.price)
@@ -1630,165 +1642,179 @@ export default function NewProduct() {
                 </div>
               )}
             </Item>
-            <div
-              style={{
-                display: "flex",
-                marginTop: "20px",
-                marginBottom: "10px",
-                alignItems: "center",
-              }}
-            >
-              <label style={{ marginRight: "10px" }}>
-                Item do not require size
-              </label>
-              <Switch
-                mode={mode}
-                checked={addSize}
-                onChange={(e) => {
-                  setSizes([]);
-                  setAddSize(e.target.checked);
-                }}
-              />
-            </div>
-            <Sizes style={{ marginTop: "0" }}>
-              <SizeLeft>
-                {!addSize ? (
-                  <>
-                    <Item style={{ marginTop: "0" }}>
-                      <Label>
-                        Add Size
-                        <Tips
-                          mode={mode}
-                          tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
+            <Item style={{ marginBottom: "15px" }}>
+              <AddSize onClick={() => setShowSizes(!showSizes)}>
+                Add Size
+                <Tips
+                  mode={mode}
+                  tips={`If I feel the product and the size seems to differ from what indicated on the label, what should I do?
                   Please be advised to list the product with the size printed on the label. Mentioning the size discrepancy, you noticed in the product description helps a great deal for buyers to make informed size decision. If buyers are forewarned, they will not be disappointed. This minimizes the chances of your products been returned as a result of unfit size.`}
-                        >
-                          <FontAwesomeIcon icon={faQuestionCircle} />
-                        </Tips>
-                      </Label>
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </AddSize>
 
-                      <TagInputCont>
-                        <TagInput
-                          mode={mode}
-                          value={input.selectedSize}
-                          type="text"
-                          maxlength={4}
-                          placeholder="Add  size"
-                          onChange={(e) => {
-                            handleOnChange(
-                              e.target.value.slice(0, 4),
-                              "selectedSize"
-                            );
-                            handleError("", "sizes");
-                          }}
-                        />
-                        <AddTag onClick={() => sizeHandler(input.selectedSize)}>
-                          Add
-                        </AddTag>
-                      </TagInputCont>
-                    </Item>
-                    <SmallItems>
-                      <TitleDetails>
-                        Provide the exact size as indicated on your product's
-                        label.
-                      </TitleDetails>
-                      {sizes.map((s) => (
-                        <SmallItem>
-                          <Label>{s.size}</Label>:
-                          <SizeInput
-                            placeholder="qty"
+              {showSizes && (
+                <div>
+                  <div
+                    style={{
+                      fontSize: "10px",
+                      maxWidth: "300px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Please include size for items that requires size, EG: Shoes,
+                    Clothes Etc. For item that does not require size, EG: Books,
+                    Cups, Etc. Kindly switch to "ITEM DO NOT REQUIRE SIZE"
+                    button.
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      marginBottom: "10px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <label style={{ marginRight: "10px" }}>
+                      Item do not require size
+                    </label>
+                    <Switch
+                      mode={mode}
+                      checked={addSize}
+                      onChange={(e) => {
+                        setSizes([]);
+                        setAddSize(e.target.checked);
+                      }}
+                    />
+                  </div>
+                  {!addSize ? (
+                    <>
+                      <Item style={{ marginTop: "0" }}>
+                        <TagInputCont>
+                          <TagInput
                             mode={mode}
-                            value={s.value}
-                            maxLength={4}
+                            value={input.selectedSize}
+                            type="text"
+                            maxlength={4}
+                            placeholder="Add  size"
                             onChange={(e) => {
-                              const inputValue = e.target.value.slice(0, 4);
-                              smallSizeHandler(s.size, inputValue);
+                              handleOnChange(
+                                e.target.value.slice(0, 4),
+                                "selectedSize"
+                              );
                               handleError("", "sizes");
                             }}
                           />
-                          <FontAwesomeIcon
-                            onClick={() => deleteSizeHandler(s.size)}
-                            icon={faTimes}
-                          />
-                        </SmallItem>
-                      ))}
-                    </SmallItems>
-                  </>
-                ) : (
-                  <Item style={{ marginTop: "0" }}>
-                    <Label>Count in stock</Label>
-                    <TextInput
-                      mode={mode}
-                      type="number"
-                      value={countInStock}
-                      onChange={(e) => setCountInStock(e.target.value)}
-                    />
-                  </Item>
-                )}
-                {validationError.sizes && (
-                  <div style={{ color: "red", fontSize: "12px" }}>
-                    {validationError.sizes}
-                  </div>
-                )}
-              </SizeLeft>
-
-              <SizeRight>
-                <Item style={{ marginTop: "0" }}>
-                  <Label>
-                    Shipping Location
-                    <Tips
-                      mode={mode}
-                      tips={`Please select if your product can be shipped anywhere around
-                      your country. If you're in Nigeria, Only select Nigeria. If
-                      you are selling in South Africa only select South Africa`}
-                    >
-                      <FontAwesomeIcon icon={faQuestionCircle} />
-                    </Tips>
-                  </Label>
-                  <FormControl
-                    sx={{
-                      margin: 0,
-                      borderRadius: "0.2rem",
-                      border: `1px solid ${
-                        mode === "pagebodydark"
-                          ? "var(--dark-ev4)"
-                          : "var(--light-ev4)"
-                      }`,
-                      "& .MuiOutlinedInput-root": {
-                        color: `${
-                          mode === "pagebodydark"
-                            ? "var(--white-color)"
-                            : "var(--black-color)"
-                        }`,
-                        "&:hover": {
-                          outline: "none",
-                          border: 0,
-                        },
-                      },
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "0 !important",
-                      },
-                    }}
-                    size="small"
-                  >
-                    <Select
-                      renderValue={() => input.location}
-                      onChange={(e) =>
-                        handleOnChange(e.target.value, "location")
-                      }
-                      displayEmpty
-                    >
-                      <MenuItem value="Nigeria">Nigeria</MenuItem>
-                      <MenuItem value="South Africa">South Africa</MenuItem>
-                    </Select>
-                  </FormControl>
-                  {validationError.location && (
-                    <div style={{ color: "red", fontSize: "12px" }}>
-                      {validationError.location}
+                          <AddTag
+                            onClick={() => sizeHandler(input.selectedSize)}
+                          >
+                            Add
+                          </AddTag>
+                        </TagInputCont>
+                      </Item>
+                      <SmallItems>
+                        <TitleDetails>
+                          Provide the exact size as indicated on your product's
+                          label.
+                        </TitleDetails>
+                        {sizes.map((s) => (
+                          <SmallItem>
+                            <Label>{s.size}</Label>:
+                            <SizeInput
+                              placeholder="qty"
+                              mode={mode}
+                              value={s.value}
+                              maxLength={4}
+                              onChange={(e) => {
+                                const inputValue = e.target.value.slice(0, 4);
+                                smallSizeHandler(s.size, inputValue);
+                                handleError("", "sizes");
+                              }}
+                            />
+                            <FontAwesomeIcon
+                              onClick={() => deleteSizeHandler(s.size)}
+                              icon={faTimes}
+                            />
+                          </SmallItem>
+                        ))}
+                      </SmallItems>
+                    </>
+                  ) : (
+                    <div style={{ marginTop: "0" }}>
+                      <Label style={{ marginRight: "15px" }}>
+                        Count in stock
+                      </Label>
+                      <TextInput
+                        mode={mode}
+                        type="number"
+                        value={countInStock}
+                        onChange={(e) => setCountInStock(e.target.value)}
+                      />
                     </div>
                   )}
-                </Item>
-              </SizeRight>
-            </Sizes>
+                </div>
+              )}
+
+              {validationError.sizes && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.sizes}
+                </div>
+              )}
+            </Item>
+
+            <Item style={{ marginTop: "0" }}>
+              <Label>
+                Shipping Location
+                <Tips
+                  mode={mode}
+                  tips={`Please select if your product can be shipped anywhere around
+                      your country. If you're in Nigeria, Only select Nigeria. If
+                      you are selling in South Africa only select South Africa`}
+                >
+                  <FontAwesomeIcon icon={faQuestionCircle} />
+                </Tips>
+              </Label>
+              <FormControl
+                sx={{
+                  margin: 0,
+                  borderRadius: "0.2rem",
+                  border: `1px solid ${
+                    mode === "pagebodydark"
+                      ? "var(--dark-ev4)"
+                      : "var(--light-ev4)"
+                  }`,
+                  "& .MuiOutlinedInput-root": {
+                    color: `${
+                      mode === "pagebodydark"
+                        ? "var(--white-color)"
+                        : "var(--black-color)"
+                    }`,
+                    "&:hover": {
+                      outline: "none",
+                      border: 0,
+                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "0 !important",
+                  },
+                }}
+                size="small"
+              >
+                <Select
+                  renderValue={() => input.location}
+                  onChange={(e) => handleOnChange(e.target.value, "location")}
+                  displayEmpty
+                >
+                  <MenuItem value="Nigeria">Nigeria</MenuItem>
+                  <MenuItem value="South Africa">South Africa</MenuItem>
+                </Select>
+              </FormControl>
+              {validationError.location && (
+                <div style={{ color: "red", fontSize: "12px" }}>
+                  {validationError.location}
+                </div>
+              )}
+            </Item>
 
             <Price>
               <Item className="half">

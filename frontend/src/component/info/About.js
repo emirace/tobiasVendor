@@ -217,7 +217,7 @@ export default function About() {
       </Section>
       <Section>
         <SubHeading>NOW, LET'S GO PEDDLE; DOWNLOAD OUR APP</SubHeading>
-        <Row>
+        <Row style={{ position: "relative" }}>
           <Image2Cont>
             <Image2
               src="https://res.cloudinary.com/emirace/image/upload/v1661221990/andhika-soreng-XuJ9qu47S2c-unsplash_po2ujf.webp"
@@ -232,6 +232,20 @@ export default function About() {
             />
             <DownloadCont src="/images/gp.png" alt="playstore" />
           </Image2Cont>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              fontWeight: "bold",
+              color: "white",
+              fontSize: "50px",
+              transform: "translate(-50%,-50%)",
+              textShadow: "#000 1px 0 10px",
+            }}
+          >
+            COMING SOON
+          </div>
         </Row>
 
         <Link to="/sell">

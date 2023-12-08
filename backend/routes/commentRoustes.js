@@ -1,7 +1,7 @@
 import express from "express";
 import Product from "../models/productModel.js";
 import Comment from "../models/commentModel.js";
-import { isAuth } from "../utils.js";
+import { isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 
@@ -192,6 +192,21 @@ commentRouter.put(
       res.status(201).send({ message: "Reply Liked", comment: updatedComment });
     } else {
       res.status(404).send({ message: "Comment Not Found" });
+    }
+  })
+);
+
+commentRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const comment = await Comment.findById(req.params.id);
+    if (comment) {
+      await comment.remove();
+      res.send("Comment deleted");
+    } else {
+      res.status(404).send("Comment not found");
     }
   })
 );

@@ -69,7 +69,7 @@ const emailLists = [
   },
   {
     name: "Hunt It * Thrift It * Flaunt It!",
-    subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+    subject: "New Arrivals; HUNT IT - THRIFT IT - FLAUNT IT!",
     template: "huntIt",
   },
 ];
@@ -116,6 +116,7 @@ newsletterRouter.post(
       if (!emailType) {
         return res.status(400).send("Invalid email name");
       }
+      res.status(200).send("Emails sent successfully");
 
       if (emailName === "Congratulation") {
         const existUsers = await User.find({ email: { $in: emails } });
@@ -146,6 +147,7 @@ newsletterRouter.post(
             },
           });
 
+          console.log("existUsers", existUser.username, existUser.email);
           const content = {
             io,
             receiverId: existUser._id,
@@ -157,13 +159,14 @@ newsletterRouter.post(
               EMAIL: existUser.email,
             }),
           };
-          sendEmailMessage(content);
+          // sendEmailMessage(content);
         }
       } else if (emailName === "Hunt It * Thrift It * Flaunt It!") {
         await sendWeeklyMail(emails, io, req);
       } else {
         const existEmails = await Newsletters.find({ email: { $in: emails } });
-        const existUser = await User.find({ email: { $in: emails } });
+        // const existUsers = await User.find({ email: { $in: emails } });
+
         // // Initialize empty arrays to store the emails
         // const comEmails = [];
         // const cozaEmails = [];
@@ -211,36 +214,36 @@ newsletterRouter.post(
         //     },
         //   });
         // }
-        // for (const existUser of existEmails) {
-        //   await sendEmail({
-        //     to: existUser.email,
-        //     subject: emailType.subject,
-        //     template: emailType.template,
-        //     context: {
-        //       url: existUser.url,
-        //     },
-        //   });
+
+        for (const existUser of existEmails) {
+          console.log(existUser);
+          await sendEmail({
+            to: existUser.email,
+            subject: emailType.subject,
+            template: emailType.template,
+            context: {
+              url: existUser.url,
+            },
+          });
+        }
+
+        // existUsers.forEach((user) => {
+        //   const content = {
+        //     io,
+        //     receiverId: user._id,
+        //     senderId: req.user._id,
+        //     title: emailType.name,
+        //     emailMessages: fillEmailContent(emailType.name, {
+        //       USERNAME: user.username,
+        //       EMAIL: user.email,
+        //     }),
+        //   };
+
+        // if (fillEmailContent(emailType.name, {})) {
+        //   sendEmailMessage(content);
         // }
-
-        existUser.forEach((user) => {
-          const content = {
-            io,
-            receiverId: user._id,
-            senderId: req.user._id,
-            title: emailType.name,
-            emailMessages: fillEmailContent(emailType.name, {
-              USERNAME: user.username,
-              EMAIL: user.email,
-            }),
-          };
-
-          if (fillEmailContent(emailType.name, {})) {
-            sendEmailMessage(content);
-          }
-        });
+        // });
       }
-
-      res.status(200).send("Emails sent successfully");
     } catch (error) {
       console.error("Failed to send emails:", error);
       res.status(500).send("Failed to send emails");

@@ -21,7 +21,6 @@ const Container = styled.div`
 `;
 const InputCont = styled.div`
   height: 45px;
-  margin: 25px 0 0 0;
   padding: 5px;
   width: 100%;
   border: 1px solid var(--malon-color);
@@ -200,32 +199,37 @@ export default function Withdraw({
       }
     }
   };
-  const handleChange = (e) => {
-    setAmount(e.target.value);
-    dispatch({ type: "FETCH_FAIL", payload: "" });
+
+  useEffect(() => {
     const fees =
       region() === "ZAR"
         ? 10
-        : e.target.value <= 5000
+        : amount <= 5000
         ? 10.75
-        : e.target.value > 5000 && e.target.value <= 50000
+        : amount > 5000 && amount <= 50000
         ? 26.88
         : 53.75;
     setFee(fees);
-    const totalMoney = Number(e.target.value) + Number(fees);
-    console.log("totalMoney", totalMoney);
+    const totalMoney = Number(amount) + Number(fees);
+    console.log("totalMoney", totalMoney, balance.balance);
     if (totalMoney > balance.balance) {
       setErrormsg(
         "Insufficient funds, Please enter a lower amount to complete your withdrawal"
       );
       return;
     }
-    if (!e.target.value) {
+    if (!amount) {
       setErrormsg("Please enter the amount you want to withdraw");
       return;
     }
     setErrormsg("");
+  }, [amount, balance.balance]);
+
+  const handleChange = (e) => {
+    setAmount(e.target.value);
+    dispatch({ type: "FETCH_FAIL", payload: "" });
   };
+
   return loading ? (
     <LoadingBox />
   ) : !user.accountName ? (
@@ -247,6 +251,9 @@ export default function Withdraw({
         {user.bankName} ({user.accountNumber})
       </div>
       {error && <MessageBox variant="danger">{error}</MessageBox>}
+      <div style={{ textAlign: "right", width: "100%", marginTop: "25px" }}>
+        bal: {balance.balance}
+      </div>
       <InputCont>
         <Input
           type="number"

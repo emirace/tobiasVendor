@@ -33,7 +33,7 @@ export const messageEmails = [
       {
         type: "div",
         content:
-          "Your return with return MRRN ticket number: has been delivered to: and is ready for collection.",
+          "Your return with return MRRN ticket number: RETURNID has been delivered to: ADDRESS and is ready for collection.",
       },
       {
         type: "div",
@@ -90,7 +90,7 @@ export const messageEmails = [
       {
         type: "div",
         content:
-          "Thanks for selling with us, @example has made a purchase of your product.",
+          "Thanks for selling with us, BUYER made a purchase of your product.",
       },
       {
         type: "div",
@@ -126,12 +126,12 @@ export const messageEmails = [
       {
         type: "div",
         content:
-          "Thanks for shopping with us! @example is getting your order ready for you.  ",
+          "Thanks for shopping with us! SELLER is getting your order ready for you.  ",
       },
       {
         type: "div",
         content:
-          "You can track the process of your order from the product details TRACK ORDER on your dashboard, or through the notification centre of your profile. . Kindly read the full message in your e-mail EMAIL ",
+          "You can track the process of your order from the product details TRACK ORDER on your dashboard, or through the notification centre of your profile. . Kindly read the full message in your e-mail EMAIL ",
       },
     ],
   },
@@ -225,7 +225,7 @@ export const messageEmails = [
       {
         type: "div",
         content:
-          "Your recently logged return with return MRRN ticket number:… has just been dropped off by the buyer at your selected delivery choice and will soon be on its way to your pick-up point/address.",
+          "Your recently logged return with return MRRN ticket number: RETURNID has just been dropped off by the buyer at your selected delivery choice and will soon be on its way to your pick-up point/address.",
       },
       {
         type: "div",
@@ -254,7 +254,7 @@ export const messageEmails = [
     title: "Your Order Is In Transit.",
 
     textArray: [
-      { type: "div", content: "Hi Tribe" },
+      { type: "div", content: "Hi USERNAME" },
       {
         type: "div",
         content:
@@ -569,6 +569,29 @@ export const messageEmails = [
       {
         type: "div",
         content: "Kindly read the full message in your e-mail EMAIL ",
+      },
+    ],
+  },
+  {
+    title: "Your Order Has Been Delivered.",
+
+    textArray: [
+      { type: "div", content: "Hi USERNAME" },
+      {
+        type: "div",
+        content:
+          "Yay! Your order has been delivered to ADDRESS and is ready for collection.",
+      },
+      {
+        type: "div",
+        content:
+          "Please remember to go pick your parcel at your provided pick-up point or address with your Proof of Identity.",
+      },
+
+      {
+        type: "div",
+        content:
+          "Your parcel was delivered by DELIVERYMETHOD Kindly read the full message in your e-mail EMAIL ",
       },
     ],
   },

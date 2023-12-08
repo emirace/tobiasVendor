@@ -589,11 +589,12 @@ orderRouter.put(
           };
           emailOptions.receiverId = order.user._id;
           emailOptions.senderId = orderItem.seller._id;
-          emailOptions.title = "Your Order Is Being Processed ";
+          emailOptions.title = "Your Order Is Being Processed ";
           emailOptions.content = {
             USERNAME: order.user.username,
             ORDERID: order._id,
             EMAIL: order.user.email,
+            SELLER: order.orderItems[0].seller.username,
           };
           break;
         case "Dispatched":
@@ -659,13 +660,14 @@ orderRouter.put(
             orderItems: order.orderItems,
           };
           emailOptions.receiverId = order.user._id;
-          emailOptions.senderId = orderItem.seller._id;
-          emailOptions.title = "Your Order Is In Transit.";
+          emailOptions.senderId = "Your Order Has Been Delivered.";
           emailOptions.content = {
             USERNAME: order.user.username,
             ORDERID: order._id,
             EMAIL: order.user.email,
+            ADDRESS: getAddress(orderItem),
           };
+          DELIVERYMETHOD: orderItem.deliverySelect["delivery Option"];
           setTimer(
             io,
             order.user._id,
@@ -725,6 +727,7 @@ orderRouter.put(
             USERNAME: orderItem.seller.username,
             ORDERID: order._id,
             EMAIL: orderItem.seller.email,
+            RETURNID: returned ? returned._id : "",
           };
           setTimer(
             io,
@@ -757,6 +760,8 @@ orderRouter.put(
             USERNAME: orderItem.seller.username,
             ORDERID: order._id,
             EMAIL: orderItem.seller.email,
+            RETURNID: returned ? returned._id : "",
+            ADDRESS: getAddress(orderItem),
           };
           setTimer(
             io,
@@ -1404,6 +1409,7 @@ orderRouter.put(
               USERNAME: order.user.username,
               ORDERID: order._id,
               EMAIL: order.user.email,
+              SELLER: order.orderItems[0].seller.username,
             }),
           };
           sendEmailMessage(content);
@@ -1426,7 +1432,7 @@ orderRouter.put(
                 sellerId: order.orderItems[0].seller._id,
               },
             });
-            const content = {
+            const content1 = {
               io,
               receiverId: seller._id,
               senderId: order.user._id,
@@ -1435,9 +1441,10 @@ orderRouter.put(
                 USERNAME: seller.username,
                 ORDERID: order._id,
                 EMAIL: seller.email,
+                BUYER: order.user.username,
               }),
             };
-            sendEmailMessage(content);
+            sendEmailMessage(content1);
           });
           res.send({ message: "Order Paid", order: updateOrder });
         } else {

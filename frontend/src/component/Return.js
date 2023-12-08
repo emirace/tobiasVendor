@@ -14,6 +14,7 @@ import { deliveryNumber, getError, region, timeDifference } from "../utils";
 import { resizeImage } from "./ImageUploader";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
+import { daydiff } from "../screens/OrderScreen";
 
 const Container = styled.div`
   padding: 30px;
@@ -176,6 +177,7 @@ export default function Return({
   const [refund, setRefund] = useState("");
   const [reason, setReason] = useState("");
   const [error, setError] = useState("");
+
   const handleReturn = async () => {
     if (!reason.length) {
       setError("Please select a reason for return");
@@ -403,11 +405,12 @@ export default function Return({
               >
                 Message seller
               </SelectOpt>
-              {deliveryNumber(current.deliveryStatus) === 4 && (
-                <SelectOpt mode={mode} onClick={() => setTab("form")}>
-                  Return form
-                </SelectOpt>
-              )}
+              {deliveryNumber(current.deliveryStatus) === 4 &&
+                daydiff(current.deliveredAt, 3) >= 0 && (
+                  <SelectOpt mode={mode} onClick={() => setTab("form")}>
+                    Return form
+                  </SelectOpt>
+                )}
             </Options>
           </Content>
         );

@@ -19,6 +19,7 @@ import { Store } from "../Store";
 import SearchBox from "../component/SearchBox";
 import SearchFilter from "./SearchFilter";
 import { BiFilter } from "react-icons/bi";
+import ScrollToTop from "../component/ScrollToTop";
 
 const Container = styled.div`
   display: flex;
@@ -108,6 +109,19 @@ const Filters = styled.div`
   }
 `;
 
+const Next = styled.div`
+  border: 1px solid;
+  padding: 4px;
+  border-radius: 0.2rem;
+  width: 100px;
+  text-align: center;
+  font-weight: 500;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -170,6 +184,7 @@ export default function SearchSceen() {
         );
         console.log(data);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
+        window.scrollTo(0, 0);
       } catch (err) {
         dispatch({
           type: "FETCH_FAIL",
@@ -368,7 +383,14 @@ export default function SearchSceen() {
               {products.length === 0 && (
                 <>
                   <MessageBox>
-                    🔎Cant't find what you're looking for? Try related products!
+                    <div
+                      style={{
+                        marginBottom: "15px",
+                      }}
+                    >
+                      🔎Cant't find what you're looking for? Try related
+                      products!
+                    </div>
                   </MessageBox>
                   {rLoading ? (
                     <LoadingBox />
@@ -390,329 +412,36 @@ export default function SearchSceen() {
                   </EachCont>
                 ))}
               </ProductListC>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "20px",
+                }}
+              >
+                {page > 1 && (
+                  <Link
+                    to={getFilterUrl({ page: parseInt(page) - 1 })}
+                    onClick={() => setQueryBrand("")}
+                  >
+                    <Next>Previous</Next>
+                  </Link>
+                )}
+                {pages > 1 && products.length === 40 && (
+                  <Link
+                    to={getFilterUrl({ page: parseInt(page) + 1 })}
+                    onClick={() => setQueryBrand("")}
+                  >
+                    <Next>Next</Next>
+                  </Link>
+                )}
+              </div>
             </>
           )}
         </Right>
       </Container>
-      {/* <div className="container">
-        <Row>
-          <Col md={3} className="d-none d-lg-block">
-            <div
-              className={`search_cate_container ${cateClass ? 'active' : ''}`}
-            >
-              <div
-                className="seaarch_cate_heading"
-                onClick={() => toggleCollapse('category')}
-              >
-                category
-              </div>
-              <ul className="search_cate_content">
-                <li>
-                  <FontAwesomeIcon icon={faCircleDot} />
-                  <Link
-                    className={'all' === category ? 'text-bold' : ''}
-                    to={getFilterUrl({ category: 'all' })}
-                  >
-                    All
-                  </Link>
-                </li>
-                {categories.map((c) => (
-                  <li key={c}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    <Link
-                      className={c === category ? 'text-bold' : ''}
-                      to={getFilterUrl({ category: c })}
-                    >
-                      {c}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={`search_cate_container ${priceClass ? 'active' : ''}`}
-            >
-              <div
-                className="seaarch_cate_heading"
-                onClick={() => toggleCollapse('price')}
-              >
-                Price
-              </div>
-              <ul className="search_cate_content">
-                <li>
-                  <FontAwesomeIcon icon={faCircleDot} />
-                  <Link
-                    className={'all' === price ? 'text-bold' : ''}
-                    to={getFilterUrl({ price: 'all' })}
-                  >
-                    All
-                  </Link>
-                </li>
-                {prices.map((p) => (
-                  <li key={p.value}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    <Link
-                      className={p.value === price ? 'text-bold' : ''}
-                      to={getFilterUrl({ price: p.value })}
-                    >
-                      {p.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              className={`search_cate_container ${reviewClass ? 'active' : ''}`}
-            >
-              <div
-                className="seaarch_cate_heading"
-                onClick={() => toggleCollapse('review')}
-              >
-                Avg Review
-              </div>
-              <ul className="search_cate_content">
-                {ratings.map((r) => (
-                  <li key={r.name}>
-                    <FontAwesomeIcon icon={faCircleDot} />
-                    <Link
-                      className={
-                        `${r.rating}` === `${rating}` ? 'text-bold' : ''
-                      }
-                      to={getFilterUrl({ rating: r.rating })}
-                    >
-                      <Rating caption={' & up'} rating={r.rating}></Rating>
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <FontAwesomeIcon icon={faCircleDot} />
-                  <Link
-                    className={rating === 'all' ? 'text-bold' : ''}
-                    to={getFilterUrl({ rating: 'all' })}
-                  >
-                    <Rating caption={' & up'} rating={0}></Rating>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </Col>
-          <Col md={12} lg={9}>
-            {loading ? (
-              <LoadingBox></LoadingBox>
-            ) : error ? (
-              <MessageBox variant="danger">{error}</MessageBox>
-            ) : (
-              <>
-                <Row className="justify-content-between mb-3">
-                  <button
-                    className={`filter_btn col-3 d-block d-lg-none ${
-                      filterSidebar ? 'active' : ''
-                    }`}
-                    onClick={() => setFilterSidebar(!filterSidebar)}
-                  >
-                    Filters
-                  </button>
-                  <Col className="text-end ">
-                    Sort by
-                    <select
-                      className="search_sortBy"
-                      value={order}
-                      onChange={(e) => {
-                        navigate(getFilterUrl({ order: e.target.value }));
-                      }}
-                    >
-                      <option className={mode || ''} value="newest">
-                        Newest Arrivals
-                      </option>
-                      <option className={mode || ''} value="lowest">
-                        Price: Low to High
-                      </option>
-                      <option className={mode || ''} value="highest">
-                        Price: High to Low
-                      </option>
-                      <option className={mode || ''} value="toprated">
-                        Avg. Customer Reviews
-                      </option>
-                    </select>
-                  </Col>
-                </Row>
-                <div className="d-block d-lg-none">
-                  <div
-                    className={`filter_sidebar  ${
-                      filterSidebar ? 'active' : ''
-                    }`}
-                  >
-                    <div
-                      className={`search_cate_container ${
-                        cateClass ? 'active' : ''
-                      }`}
-                    >
-                      <div
-                        className="seaarch_cate_heading"
-                        onClick={() => toggleCollapse('category')}
-                      >
-                        category
-                      </div>
-                      <ul
-                        className="search_cate_content"
-                        onClick={() => setFilterSidebar(!filterSidebar)}
-                      >
-                        <li>
-                          <FontAwesomeIcon icon={faCircleDot} />
-                          <Link
-                            className={'all' === category ? 'text-bold' : ''}
-                            to={getFilterUrl({ category: 'all' })}
-                          >
-                            All
-                          </Link>
-                        </li>
-                        {categories.map((c) => (
-                          <li key={c}>
-                            <FontAwesomeIcon icon={faCircleDot} />
-                            <Link
-                              className={c === category ? 'text-bold' : ''}
-                              to={getFilterUrl({ category: c })}
-                            >
-                              {c}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div
-                      className={`search_cate_container ${
-                        priceClass ? 'active' : ''
-                      }`}
-                    >
-                      <div
-                        className="seaarch_cate_heading"
-                        onClick={() => toggleCollapse('price')}
-                      >
-                        Price
-                      </div>
-                      <ul
-                        className="search_cate_content"
-                        onClick={() => setFilterSidebar(!filterSidebar)}
-                      >
-                        <li>
-                          <FontAwesomeIcon icon={faCircleDot} />
-                          <Link
-                            className={'all' === price ? 'text-bold' : ''}
-                            to={getFilterUrl({ price: 'all' })}
-                          >
-                            All
-                          </Link>
-                        </li>
-                        {prices.map((p) => (
-                          <li key={p.value}>
-                            <FontAwesomeIcon icon={faCircleDot} />
-                            <Link
-                              className={p.value === price ? 'text-bold' : ''}
-                              to={getFilterUrl({ price: p.value })}
-                            >
-                              {p.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div
-                      className={`search_cate_container ${
-                        reviewClass ? 'active' : ''
-                      }`}
-                    >
-                      <div
-                        className="seaarch_cate_heading"
-                        onClick={() => toggleCollapse('review')}
-                      >
-                        Avg Review
-                      </div>
-                      <ul
-                        className="search_cate_content"
-                        onClick={() => setFilterSidebar(!filterSidebar)}
-                      >
-                        {ratings.map((r) => (
-                          <li key={r.name}>
-                            <FontAwesomeIcon icon={faCircleDot} />
-                            <Link
-                              className={
-                                `${r.rating}` === `${rating}` ? 'text-bold' : ''
-                              }
-                              to={getFilterUrl({ rating: r.rating })}
-                            >
-                              <Rating
-                                caption={' & up'}
-                                rating={r.rating}
-                              ></Rating>
-                            </Link>
-                          </li>
-                        ))}
-                        <li>
-                          <FontAwesomeIcon icon={faCircleDot} />
-                          <Link
-                            className={rating === 'all' ? 'text-bold' : ''}
-                            to={getFilterUrl({ rating: 'all' })}
-                          >
-                            <Rating caption={' & up'} rating={0}></Rating>
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <Row>
-                  <Col>
-                    <div className="d-flex search_result">
-                      {countProducts === 0 ? 'No' : countProducts} Results
-                      {query !== 'all' && ' : ' + query}
-                      {category !== 'all' && ' : ' + category}
-                      {price !== 'all' && ' : Price ' + price}
-                      {rating !== 'all' && ' : Rating' + rating + ' & up'}
-                      {query !== 'all' ||
-                      category !== 'all' ||
-                      rating !== 'all' ||
-                      price !== 'all' ? (
-                        <Button
-                          variant="none"
-                          onClick={() => navigate('/search')}
-                        >
-                          <i className="fas fa-times-circle"></i>
-                        </Button>
-                      ) : null}
-                    </div>
-                  </Col>
-                </Row>
-                {products.length === 0 && (
-                  <MessageBox>No Product Found</MessageBox>
-                )}
-                <Row>
-                  {products.map((product) => (
-                    <Col sm={6} lg={4} className="mb-3 col-6" key={product._id}>
-                      <Product product={product}></Product>
-                    </Col>
-                  ))}
-                </Row>
-                <div>
-                  {[...Array(pages).keys()].map((x) => (
-                    <LinkContainer
-                      key={x + 1}
-                      className="mx-1"
-                      to={getFilterUrl({ page: x + 1 })}
-                    >
-                      <Button
-                        className={Number(page) === x + 1 ? 'text-bold' : ''}
-                        variant="none"
-                      >
-                        {x + 1}
-                      </Button>
-                    </LinkContainer>
-                  ))}
-                </div>
-              </>
-            )}
-          </Col>
-        </Row>
-      </div> */}
     </div>
   );
 }
