@@ -31,6 +31,7 @@ import { baseURL, region } from "../utils";
 import Support from "../component/Support";
 import CategoriesLinksButtons from "../component/CategoriesLinksButtons";
 import TheThrill from "../component/TheThrill";
+import Paystack from "../component/payments/Paystack";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -283,6 +284,7 @@ export default function ProductsScreen() {
         <title>Repeddle</title>
       </Helmet>
       <div>
+        <Paystack amount={100} />
         <section className="banner ">
           <OwlCarousel
             items={1}
