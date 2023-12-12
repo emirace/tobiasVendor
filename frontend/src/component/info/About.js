@@ -124,6 +124,22 @@ const ThinkBold = styled.div`
   text-align: center;
 `;
 
+const ComingSoon = styled.h3`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: bold;
+  color: white;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  text-shadow: #000 1px 0 10px;
+  text-align: center;
+  white-space: nowrap;
+  @media (max-width: 992px) {
+    font-size: 30px;
+  }
+`;
+
 export default function About() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -232,20 +248,7 @@ export default function About() {
             />
             <DownloadCont src="/images/gp.png" alt="playstore" />
           </Image2Cont>
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              fontWeight: "bold",
-              color: "white",
-              fontSize: "50px",
-              transform: "translate(-50%,-50%)",
-              textShadow: "#000 1px 0 10px",
-            }}
-          >
-            COMING SOON
-          </div>
+          <ComingSoon>COMING SOON</ComingSoon>
         </Row>
 
         <Link to="/sell">

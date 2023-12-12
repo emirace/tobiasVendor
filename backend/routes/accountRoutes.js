@@ -19,8 +19,13 @@ import Flutterwave from "flutterwave-node-v3";
 import User from "../models/userModel.js";
 import Return from "../models/returnModel.js";
 import Order from "../models/orderModel.js";
+import paystack from "paystack";
 
 dotenv.config();
+
+const secretKey = process.env.PAYSTACK_SECRET_KEY;
+const paystackInstance = paystack(secretKey);
+
 const flw = new Flutterwave(
   process.env.FLW_PUBLIC_KEY,
   process.env.FLW_SECRET_KEY
@@ -324,10 +329,18 @@ accountRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
-      const { transaction_id } = req.body;
-      const response = await flw.Transaction.verify({ id: transaction_id });
-      console.log(response);
-      if (response.data.status === "successful") {
+      const { transaction_id, type } = req.body;
+
+      var response;
+      if (type === "flutterwave") {
+        response = await flw.Transaction.verify({ id: transaction_id });
+      } else if (type === "paystack") {
+        response = await paystackInstance.transaction.verify(transaction_id);
+      }
+      if (
+        response?.data?.status === "successful" ||
+        response?.data?.status === "success"
+      ) {
         const recipientId = await Account.findOne({ userId: req.user._id });
         const admin = await User.findOne({
           email:
@@ -345,7 +358,7 @@ accountRouter.post(
           const purpose = "transfer";
           console.log(amount);
           const debitResult = await debitAccount({
-            amount,
+            amount: type === "paystack" ? amount / 100 : amount,
             accountId: senderId._id,
             purpose,
             metadata: {
@@ -357,7 +370,7 @@ accountRouter.post(
           console.log(debitResult);
           if (debitResult.success) {
             await creditAccount({
-              amount,
+              amount: type === "paystack" ? amount / 100 : amount,
               accountId: recipientId._id,
               purpose,
               metadata: {

@@ -71,7 +71,7 @@ export default function FlutterWave({
         onClick={() => {
           handleFlutterPayment({
             callback: async (response) => {
-              onApprove(response);
+              onApprove({ ...response, type: "flutterwave" });
               closePaymentModal(); // this will close the modal programmatically
             },
             onClose: () => {},

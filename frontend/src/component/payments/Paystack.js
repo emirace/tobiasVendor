@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PaystackButton } from "react-paystack";
+import { usePaystackPayment } from "react-paystack";
 import { Store } from "../../Store";
 import { region } from "../../utils";
 import styled from "styled-components";
@@ -15,14 +15,16 @@ const Button = styled.div`
   justify-content: center;
   border-radius: 0.2rem;
   height: 40px;
+  margin-top: 10px;
   &:hover {
     background: var(--malon-color);
   }
 `;
 
-const Paystack = ({ amount }) => {
+const Paystack = ({ amount, onApprove }) => {
   const { state } = useContext(Store);
   const { userInfo } = state;
+
   const config = {
     reference:
       "REP_" +
@@ -30,32 +32,32 @@ const Paystack = ({ amount }) => {
       new Date().getTime().toString(),
     email: userInfo.email,
     amount: amount * 100,
-    publicKey: "pk_test_8b77dc49b3d3fd1f63484986b3f8f0ea3c78b7dd",
+    publicKey: "pk_live_96998e69a31a4a9d1afc9ec874dec535657ce0ad",
     currency: region(),
   };
 
   // you can call this function anything
-  const handlePaystackSuccessAction = (reference) => {
+  const onSuccess = (reference) => {
     // Implementation for whatever you want to do with reference and after success call.
     console.log(reference);
+    onApprove({ transaction_id: reference.reference, type: "paystack" });
   };
 
   // you can call this function anything
-  const handlePaystackCloseAction = () => {
+  const onClose = () => {
     // implementation for  whatever you want to do when the Paystack dialog closed.
     console.log("closed");
+    // onClose();
   };
 
-  const componentProps = {
-    ...config,
-    text: "Paystack Button Implementation",
-    onSuccess: (reference) => handlePaystackSuccessAction(reference),
-    onClose: handlePaystackCloseAction,
-  };
-
+  const initializePayment = usePaystackPayment(config);
   return (
-    <Button>
-      <PaystackButton {...componentProps} />
+    <Button
+      onClick={() => {
+        initializePayment(onSuccess, onClose);
+      }}
+    >
+      Paystack
     </Button>
   );
 };

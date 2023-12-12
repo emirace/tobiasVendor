@@ -26,6 +26,10 @@ import Return from "../models/returnModel.js";
 import RebundleSeller from "../models/rebuldleSellerModel.js";
 import crypto from "crypto";
 import Notification from "../models/notificationModel.js";
+import paystack from "paystack";
+
+const secretKey = process.env.PAYSTACK_SECRET_KEY;
+const paystackInstance = paystack(secretKey);
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -497,6 +501,78 @@ const getAddress = (orderItem) => {
 
   return address;
 };
+
+orderRouter.put(
+  "/cancel/:orderId/:productId",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { orderId, productId } = req.params;
+
+      const order = await Order.findById(orderId)
+        .populate({
+          path: "user",
+          select: "email username",
+        })
+        .populate("orderItems.product");
+
+      if (!order) {
+        return res.status(404).send("Order not found");
+      }
+
+      const orderItemIndex = order.orderItems.findIndex(
+        (item) => String(item._id) === String(productId)
+      );
+
+      if (orderItemIndex === -1) {
+        return res.status(404).send({ message: "Order item not found" });
+      }
+
+      const orderItem = order.orderItems[orderItemIndex];
+
+      const p = await Product.findById(orderItem._id);
+
+      p.sold = false;
+      p.countInStock = p.countInStock + orderItem.quantity;
+      p.soldAll = false;
+
+      p.sizes = p.sizes.map((size) => {
+        return size.size === orderItem.selectSize
+          ? { ...size, value: `${Number(size.value) + orderItem.quantity}` }
+          : size;
+      });
+
+      const userIndex = p.userBuy.indexOf(req.user._id);
+      if (userIndex !== -1) {
+        p.userBuy.splice(userIndex, 1);
+      }
+
+      const seller = await User.findById(p.seller);
+
+      const sellerIndex = seller.sold.indexOf(p._id);
+      if (sellerIndex !== -1) {
+        seller.sold.splice(sellerIndex, 1);
+      }
+
+      seller.earnings = seller.earnings - p.actualPrice;
+
+      await seller.save();
+      await p.save();
+
+      order.orderItems[orderItemIndex] = orderItem;
+
+      const savedOrder = await order.save();
+
+      res.status(200).send({
+        message: "Order canceled successfully",
+        savedOrder,
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  })
+);
 
 orderRouter.put(
   "/:id/deliver/:productId",
@@ -1288,8 +1364,7 @@ orderRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const { transaction_id } = req.body;
-    const { method } = req.body;
+    const { transaction_id, method, type } = req.body;
     var response;
     try {
       const io = req.app.get("io");
@@ -1303,13 +1378,16 @@ orderRouter.put(
           response = { data: { status: "failed" } };
         }
       } else {
-        if (region === "N ") {
+        if (type === "flutterwave") {
           response = await flw.Transaction.verify({ id: transaction_id });
-        } else {
-          response = await flw.Transaction.verify({ id: transaction_id });
+        } else if (type === "paystack") {
+          response = await paystackInstance.transaction.verify(transaction_id);
         }
       }
-      if (response?.data?.status === "successful") {
+      if (
+        response?.data?.status === "successful" ||
+        response?.data?.status === "success"
+      ) {
         const order = await Order.findById(req.params.id).populate({
           path: "user",
           select: "email username",
@@ -1451,7 +1529,7 @@ orderRouter.put(
           res.status(404).send({ message: "Order Not Found" });
         }
       } else {
-        res.send("error making payment");
+        res.status(500).send("error making payment");
       }
     } catch (error) {
       console.log("error", error);

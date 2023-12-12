@@ -9,6 +9,7 @@ import { getError, region } from "../../utils";
 import axios from "axios";
 import PayFast from "../PayFast";
 import PayFastFund from "../PayFastFund";
+import Paystack from "../payments/Paystack";
 const BASE_KEY = process.env.REACT_APP_FLUTTERWAVE_KEY;
 
 const Container = styled.div`
@@ -147,7 +148,7 @@ export default function AddFund({
             handleFlutterPayment({
               callback: async (response) => {
                 console.log(response);
-                onApprove(response);
+                onApprove({ ...response, type: "flutterwave" });
                 closePaymentModal(); // this will close the modal programmatically
               },
               onClose: () => {},
@@ -164,6 +165,8 @@ export default function AddFund({
           refresh={refresh}
         />
       )}
+
+      {/* {userInfo?.isAdmin && <Paystack amount={amount} onApprove={onApprove} />} */}
     </Container>
   );
 }

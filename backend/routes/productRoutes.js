@@ -581,7 +581,7 @@ productRouter.get(
         : {};
 
     const products = await Product.find({ ...queryFilter, region })
-      .skip(pageSize * (page - 1))
+      // .skip(pageSize * (page - 1))
       .sort({ createdAt: -1 })
       .limit(pageSize);
 

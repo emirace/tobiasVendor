@@ -394,6 +394,12 @@ const IconCont = styled.div`
   }
 `;
 
+const Cancel = styled.div`
+  cursor: pointer;
+  color: red;
+  margin-top: 5px;
+`;
+
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -864,6 +870,36 @@ export default function OrderScreen() {
       });
   }
 
+  const handleCancelOrder = async (itemId) => {
+    try {
+      axios.put(
+        `/api/orders/cancel/${orderId}/${itemId}`,
+        {},
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order cancel succcessfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -1111,6 +1147,11 @@ export default function OrderScreen() {
                     </SetStatus>
                   )}
                 </SubSumaryContDetails>
+                {userInfo?.isAdmin && (
+                  <Cancel onClick={() => handleCancelOrder(orderitem._id)}>
+                    Cancel Order
+                  </Cancel>
+                )}
                 <hr />
                 <DetailButton>
                   <OrderItem>
@@ -1368,11 +1409,16 @@ export default function OrderScreen() {
                     <b>Log a return</b>
                   </div>
                   {daydiff(orderitem.deliveredAt, 3) >= 0 && (
-                  <div style={{ color: "red" }}>
-                    {daydiff(orderitem.deliveredAt, 3)} days left
-                  </div>
-                  )} 
+                    <div style={{ color: "red" }}>
+                      {daydiff(orderitem.deliveredAt, 3)} days left
+                    </div>
+                  )}
                 </div>
+              )}
+              {userInfo?.isAdmin && (
+                <Cancel onClick={() => handleCancelOrder(orderitem._id)}>
+                  Cancel Order
+                </Cancel>
               )}
               <hr />
               <DetailButton>

@@ -19,6 +19,7 @@ import WalletModel from "../component/wallet/WalletModel";
 import PayFund from "../component/wallet/PayFund";
 import { socket } from "../App";
 import PayFast from "../component/PayFast";
+import Paystack from "../component/payments/Paystack";
 
 const Container = styled.div`
   display: flex;
@@ -725,6 +726,10 @@ export default function PlaceOrderScreen() {
                       method={cart.paymentMethod}
                     />
                   )}
+
+                  {/* {userInfo?.isAdmin && (
+                    <Paystack amount={cart.totalPrice} onApprove={onApprove} />
+                  )} */}
                 </ListGroup.Item>
 
                 <WalletModel showModel={showModel} setShowModel={setShowModel}>

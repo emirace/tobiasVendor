@@ -31,7 +31,6 @@ import { baseURL, region } from "../utils";
 import Support from "../component/Support";
 import CategoriesLinksButtons from "../component/CategoriesLinksButtons";
 import TheThrill from "../component/TheThrill";
-import Paystack from "../component/payments/Paystack";
 //import data from '../data';
 
 const Seller = styled.div`
@@ -195,6 +194,23 @@ const BrandSearch = styled.div`
   }
 `;
 
+const ComingSoon = styled.h3`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: bold;
+  color: black;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  text-shadow: #fff 1px 0 10px;
+  text-align: center;
+  white-space: nowrap;
+  @media (max-width: 992px) {
+    font-size: 30px;
+    transform: translate(-50%, -80%);
+  }
+`;
+
 export default function ProductsScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -284,7 +300,6 @@ export default function ProductsScreen() {
         <title>Repeddle</title>
       </Helmet>
       <div>
-        <Paystack amount={100} />
         <section className="banner ">
           <OwlCarousel
             items={1}
@@ -553,6 +568,7 @@ export default function ProductsScreen() {
                 src="/images/phonescreen.png"
                 alt="app"
               />
+              <ComingSoon>COMING SOON</ComingSoon>
             </div>
           </div>
         </AppSection>
