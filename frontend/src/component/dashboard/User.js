@@ -31,8 +31,8 @@ import SmallModel from "../SmallModel";
 import moment from "moment";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import { states } from "../../constant";
 import Select from "@mui/material/Select";
-import { banks, states } from "../../constant";
 import { signoutHandler } from "../Navbar";
 
 const Container = styled.div`
@@ -668,9 +668,6 @@ export default function User() {
           badge,
           about,
           password,
-          accountName: input.accountName,
-          accountNumber: input.accountNumber,
-          bankName: input.bankName,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -728,6 +725,42 @@ export default function User() {
     }
   };
 
+  const updateAccount = async () => {
+    try {
+      await axios.post(
+        id
+          ? `/api/accounts/${region()}/bankaccount/${user._id}`
+          : `/api/accounts/${region()}/bankaccount/${userInfo._id}`,
+        {
+          accountName: input.accountName,
+          accountNumber: input.accountNumber,
+          bankName: input.bankName,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "User Updated",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+      navigate(id ? "/dashboard/userlist" : `../../seller/${user._id}`);
+    } catch (err) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(err),
+          showStatus: true,
+          state1: "visible1 errorr",
+        },
+      });
+    }
+  };
+
   const accountValidate = (e) => {
     e.preventDefault();
     let valid = true;
@@ -745,7 +778,7 @@ export default function User() {
     }
 
     if (valid) {
-      submitHandler(e);
+      updateAccount();
     }
   };
 
@@ -873,6 +906,32 @@ export default function User() {
       console.log("Error updating newsletter status:", error);
     }
   };
+
+  const [banks, setBanks] = useState([]);
+  // const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await axios.get(
+          `/api/accounts/bank/${
+            region() === "ZAR" ? "south africa" : "nigeria"
+          }`,
+          {
+            headers: { authorization: `Bearer ${userInfo.token}` },
+          }
+        );
+
+        console.log(response);
+
+        setBanks(response.data.banks.data);
+      } catch (error) {
+        // setError(error.message);
+      }
+    };
+
+    fetchBanks();
+  }, []);
 
   return (
     <Container>
@@ -1066,13 +1125,18 @@ export default function User() {
                         }
                         onFocus={() => handleError("", "bankName")}
                         displayEmpty
+                        renderValue={() => input?.bankName?.name}
                       >
                         {region() === "NGN"
-                          ? banks.Nigeria.map((x) => (
-                              <MenuItem value={x.name}>{x.name}</MenuItem>
+                          ? banks.map((x) => (
+                              <MenuItem value={{ name: x.name, code: x.code }}>
+                                {x.name}
+                              </MenuItem>
                             ))
-                          : banks.SouthAfrica.map((x) => (
-                              <MenuItem value={x.name}>{x.name}</MenuItem>
+                          : banks.map((x) => (
+                              <MenuItem value={{ name: x.name, code: x.code }}>
+                                {x.name}
+                              </MenuItem>
                             ))}
                       </Select>
                     </FormControl>

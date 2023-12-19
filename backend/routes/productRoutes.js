@@ -140,6 +140,7 @@ productRouter.put(
       (a, b) => (a = a + Number(b.value)),
       0
     );
+    console.log(req.body.active);
     const useractive = () => (req.body.active === "yes" ? true : false);
     const userbadge = () => (req.body.badge === "yes" ? true : false);
     if (product.seller._id.toString() !== req.user._id && !req.user.isAdmin) {
@@ -582,8 +583,8 @@ productRouter.get(
 
     const products = await Product.find({ ...queryFilter, region })
       // .skip(pageSize * (page - 1))
-      .sort({ createdAt: -1 })
-      .limit(pageSize);
+      .sort({ createdAt: -1 });
+    // .limit(pageSize);
 
     const countProducts = await Product.countDocuments({ region });
     res.send({

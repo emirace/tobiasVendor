@@ -810,6 +810,7 @@ export default function Product() {
       submitHandler();
     }
   };
+
   const submitHandler = async () => {
     if (product.sold && !userInfo.isAdmin) {
       ctxDispatch({
@@ -831,7 +832,7 @@ export default function Product() {
           price,
           image1,
           badge,
-          active,
+          active: input.active,
           image2,
           image3,
           image4,

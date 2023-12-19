@@ -296,6 +296,7 @@ export default function ProductListAdmin() {
     price: p.currency + p.actualPrice,
     slug: p.slug,
   }));
+  console.log(products);
 
   return (
     <ProductLists mode={mode}>
@@ -378,7 +379,7 @@ export default function ProductListAdmin() {
         rows={rows}
         columns={columns}
         disableSelectionOnClick
-        pageSize={10}
+        pageSize={20}
         rowsPerPageOptions={[5]}
       />
     </ProductLists>

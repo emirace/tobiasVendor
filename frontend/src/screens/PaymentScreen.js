@@ -292,6 +292,61 @@ export default function PaymentScreen() {
     }
   };
 
+  const handlePaystackPayment = async () => {
+    const { data } = await axios.post(
+      `/api/accounts/${region()}/paystack/payaccount`,
+      {
+        paymentId: payment._id,
+      },
+      {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      }
+    );
+    console.log(data);
+    dispatch({ type: "GET_SUCCESS", payload: data });
+    //   deliverOrderHandler("Return Declined", payment.productId._id);
+    payment.meta.Type === "Withdrawal Request"
+      ? socket.emit("post_data", {
+          userId: payment.userId._id,
+          itemId: payment._id,
+          notifyType: "payment",
+          msg: `Your Withdrawal request is been proccessed`,
+          link: `/dashboard/wallet`,
+          mobile: { path: "Withdraw", id: "" },
+          userImage: userInfo.image,
+        })
+      : payment.meta.Type === "Order Completed" ||
+        payment.meta.Type === "Return Declined"
+      ? socket.emit("post_data", {
+          userId: payment.userId._id,
+          itemId: payment._id,
+          notifyType: "payment",
+          msg: `Your order is paid`,
+          link: `/dashboard/wallet`,
+          mobile: { path: "Account", id: "" },
+          userImage: userInfo.image,
+        })
+      : payment.meta.Type === "Pay Seller"
+      ? socket.emit("post_data", {
+          userId: payment.userId._id,
+          itemId: payment._id,
+          notifyType: "payment",
+          msg: `Order payment settled`,
+          link: `/dashboard/wallet`,
+          mobile: { path: "Account", id: "" },
+          userImage: userInfo.image,
+        })
+      : socket.emit("post_data", {
+          userId: payment.userId._id,
+          itemId: payment._id,
+          notifyType: "payment",
+          msg: `Your order return refunded`,
+          link: `/dashboard/wallet`,
+          mobile: { path: "Account", id: "" },
+          userImage: userInfo.image,
+        });
+  };
+
   return loading ? (
     <LoadingBox />
   ) : (
@@ -364,6 +419,11 @@ export default function PaymentScreen() {
             <Button onClick={() => handlePayment()}>Confirm Payment</Button>
           </>
         )}
+        {/* {userInfo.isAdmin && (
+          <Button onClick={() => handlePaystackPayment()}>
+            Confirm Paystack
+          </Button>
+        )} */}
       </SumaryContDetails>
     </Container>
   );
