@@ -72,6 +72,16 @@ const emailLists = [
     subject: "New Arrivals; HUNT IT - THRIFT IT - FLAUNT IT!",
     template: "huntIt",
   },
+  {
+    name: "WE VALUE YOUR OPINION AND FEEDBACK",
+    subject: "WE VALUE YOUR OPINION AND FEEDBACK",
+    template: "feedback",
+  },
+  {
+    name: "HOW SELLERS PROCESS ORDER",
+    subject: "HOW SELLERS PROCESS ORDER",
+    template: "howSeller",
+  },
 ];
 
 // get all newsletters
@@ -147,7 +157,6 @@ newsletterRouter.post(
             },
           });
 
-          console.log("existUsers", existUser.username, existUser.email);
           const content = {
             io,
             receiverId: existUser._id,
@@ -216,7 +225,6 @@ newsletterRouter.post(
         // }
 
         for (const existUser of existEmails) {
-          console.log(existUser);
           await sendEmail({
             to: existUser.email,
             subject: emailType.subject,
@@ -309,7 +317,6 @@ newsletterRouter.delete(
           user.newsletter = false;
           await user.save();
         }
-        console.log(deletedNewsletter);
         res.status(200).send(deletedNewsletter);
       } else {
         res.status(404).send("Newsletter not found");

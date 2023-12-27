@@ -832,7 +832,7 @@ export default function Product() {
           price,
           image1,
           badge,
-          active: input.active,
+          active,
           image2,
           image3,
           image4,
@@ -1200,8 +1200,8 @@ export default function Product() {
                     name="active"
                     id="active"
                     value="yes"
-                    checked={input.active === "yes" ? true : false}
-                    onChange={(e) => handleOnChange(e.target.value, "active")}
+                    checked={active === "yes" ? true : false}
+                    onChange={(e) => setActive(e.target.value)}
                   />
                   <Label htmlFor="active">Yes</Label>
                   <Input
@@ -1209,8 +1209,8 @@ export default function Product() {
                     name="active"
                     id="active2"
                     value="no"
-                    checked={input.active === "no" ? true : false}
-                    onChange={(e) => handleOnChange(e.target.value, "active")}
+                    checked={active === "no" ? true : false}
+                    onChange={(e) => setActive(e.target.value)}
                   />
                   <Label htmlFor="active2">No</Label>
                 </Gender>
@@ -1221,8 +1221,8 @@ export default function Product() {
                     name="badge"
                     id="badgeyes"
                     value="yes"
-                    checked={input.badge === "yes" ? true : false}
-                    onChange={(e) => handleOnChange(e.target.value, "badge")}
+                    checked={badge === "yes" ? true : false}
+                    onChange={(e) => setBadge(e.target.value)}
                   />
                   <Label htmlFor="badgeyes">Yes</Label>
                   <Input
@@ -1230,8 +1230,8 @@ export default function Product() {
                     name="badge"
                     id="badgeno"
                     value="no"
-                    checked={input.badge === "no" ? true : false}
-                    onChange={(e) => handleOnChange(e.target.value, "badge")}
+                    checked={badge === "no" ? true : false}
+                    onChange={(e) => setBadge(e.target.value)}
                   />
                   <Label htmlFor="badgeno">No</Label>
                 </Gender>
