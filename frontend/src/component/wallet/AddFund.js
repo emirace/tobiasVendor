@@ -158,15 +158,14 @@ export default function AddFund({
           Continue
         </Button>
       ) : (
-        <PayFastFund
-          totalPrice={amount}
-          setShowModel={setShowModel}
-          setRefresh={setRefresh}
-          refresh={refresh}
-        />
+        // <PayFastFund
+        //   totalPrice={amount}
+        //   setShowModel={setShowModel}
+        //   setRefresh={setRefresh}
+        //   refresh={refresh}
+        // />
+        <Paystack amount={amount} onApprove={onApprove} />
       )}
-
-      {/* {userInfo?.isAdmin && <Paystack amount={amount} onApprove={onApprove} />} */}
     </Container>
   );
 }

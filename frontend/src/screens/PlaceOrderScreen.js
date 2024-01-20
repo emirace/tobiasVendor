@@ -704,11 +704,12 @@ export default function PlaceOrderScreen() {
                       Proceed to Payment
                     </Button>
                   ) : region() === "ZAR" ? (
-                    <PayFast
-                      userInfo={userInfo}
-                      placeOrderHandler={placeOrderHandler}
-                      totalPrice={cart.totalPrice}
-                    />
+                    // <PayFast
+                    //   userInfo={userInfo}
+                    //   placeOrderHandler={placeOrderHandler}
+                    //   totalPrice={cart.totalPrice}
+                    // />
+                    <Paystack amount={cart.totalPrice} onApprove={onApprove} />
                   ) : (
                     <FlutterWave
                       amount={cart.totalPrice}
@@ -726,10 +727,6 @@ export default function PlaceOrderScreen() {
                       method={cart.paymentMethod}
                     />
                   )}
-
-                  {/* {userInfo?.isAdmin && (
-                    <Paystack amount={cart.totalPrice} onApprove={onApprove} />
-                  )} */}
                 </ListGroup.Item>
 
                 <WalletModel showModel={showModel} setShowModel={setShowModel}>

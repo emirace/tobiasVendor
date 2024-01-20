@@ -57,7 +57,7 @@ const Paystack = ({ amount, onApprove }) => {
         initializePayment(onSuccess, onClose);
       }}
     >
-      Paystack
+      Continue to Payment
     </Button>
   );
 };

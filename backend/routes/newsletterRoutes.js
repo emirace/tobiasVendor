@@ -82,6 +82,11 @@ const emailLists = [
     subject: "HOW SELLERS PROCESS ORDER",
     template: "howSeller",
   },
+  {
+    name: "HAPPY PEDDLING NEW YEAR",
+    subject: "HAPPY PEDDLING NEW YEAR",
+    template: "newyear",
+  },
 ];
 
 // get all newsletters
