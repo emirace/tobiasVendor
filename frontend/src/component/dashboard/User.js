@@ -655,7 +655,7 @@ export default function User() {
           email,
           dob,
           phone,
-          username,
+          username: username.trim(),
           address: {
             street: input.street,
             apartment: input.apartment,
@@ -1288,7 +1288,6 @@ export default function User() {
                     in {daydiff} days
                   </div>
                 )}
-                {console.log("daydiff", daydiff)}
                 <TextInput
                   mode={mode}
                   disabled={daydiff > 0}

@@ -836,9 +836,9 @@ productRouter.get(
       order === "featured"
         ? { featured: -1 }
         : order === "lowest"
-        ? { price: 1 }
+        ? { actualPrice: 1 }
         : order === "highest"
-        ? { price: -1 }
+        ? { actualPrice: -1 }
         : order === "toprated"
         ? { raing: -1 }
         : order === "newest"

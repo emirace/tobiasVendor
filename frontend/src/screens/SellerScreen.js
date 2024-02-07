@@ -165,6 +165,19 @@ const ProfileUrl = styled.div`
   text-decoration: underline;
 `;
 
+const Next = styled.div`
+  border: 1px solid;
+  padding: 4px;
+  border-radius: 0.2rem;
+  width: 100px;
+  text-align: center;
+  font-weight: 500;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_USER_REQUEST":
@@ -379,6 +392,11 @@ export default function SellerScreen() {
         return true;
       } else return false;
     }
+  };
+
+  const getFilterUrl = (filter) => {
+    const filterPage = filter.page || page;
+    return `?page=${filterPage}`;
   };
 
   const tabSwitch = (tab) => {
@@ -797,6 +815,27 @@ export default function SellerScreen() {
           )}
         </Tab>
         <Content mode={mode}>{tabSwitch(displayTab)}</Content>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
+          }}
+        >
+          {page > 1 && (
+            <Link to={getFilterUrl({ page: parseInt(page) - 1 })}>
+              <Next>Previous</Next>
+            </Link>
+          )}
+          {pages > 1 && products.length === 40 && (
+            <Link to={getFilterUrl({ page: parseInt(page) + 1 })}>
+              <Next>Next</Next>
+            </Link>
+          )}
+        </div>
       </Right>
     </div>
   );

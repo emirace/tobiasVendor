@@ -79,7 +79,7 @@ userRouter.put(
     if (user) {
       try {
         user.about = req.body.about || user.about;
-        user.username = req.body.username || user.username;
+        user.username = req.body.username.trim() || user.username;
         user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
         user.firstName = req.body.firstName || user.firstName;
         user.lastName = req.body.lastName || user.lastName;
@@ -821,7 +821,7 @@ userRouter.get(
     if (mongoose.Types.ObjectId.isValid(idorusername)) {
       query = { _id: idorusername };
     } else {
-      query = { username: idorusername };
+      query = { username: idorusername.trim() };
     }
     const user = await User.findOne(query)
       .populate({
