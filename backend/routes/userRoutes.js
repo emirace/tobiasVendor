@@ -70,73 +70,185 @@ userRouter.put(
   })
 );
 
+// userRouter.put(
+//   "/profile",
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const user = await User.findById(req.user._id);
+//     const current = new Date();
+//     if (user) {
+//       try {
+//         user.about = req.body.about || user.about;
+//         user.username = req.body.username || user.username;
+//         user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
+//         user.firstName = req.body.firstName || user.firstName;
+//         user.lastName = req.body.lastName || user.lastName;
+//         user.email = req.body.email || user.email;
+//         user.dob = req.body.dob || user.dob;
+//         user.accountName = req.body.accountName || user.accountName;
+//         user.accountNumber = req.body.accountNumber || user.accountNumber;
+//         user.bankName = req.body.bankName || user.bankName;
+//         user.address = req.body?.address?.state
+//           ? req.body.address
+//           : user.address;
+//         user.phone = req.body.phone || user.phone;
+//         user.image = req.body.image || user.image;
+//         if (req.body.password) {
+//           user.password = bcrypt.hashSync(req.body.password, 8);
+//         }
+//         if (user.address && user.bankName) {
+//           user.isSeller = true;
+//         } else {
+//           user.isSeller = false;
+//         }
+//         const updatedUser = await user.save();
+
+//         res.send({
+//           _id: updatedUser._id,
+//           name: updatedUser.name,
+//           username: updatedUser.username,
+//           usernameUpdate: updatedUser.usernameUpdate,
+//           firstName: updatedUser.firstName,
+//           lastName: updatedUser.lastName,
+//           region: updatedUser.region,
+//           email: updatedUser.email,
+//           isSeller: updatedUser.isSeller,
+//           isAdmin: updatedUser.isAdmin,
+//           image: updatedUser.image,
+//           active: updatedUser.active,
+//           isVerifiedEmail: updatedUser.isVerifiedEmail,
+//           address: updatedUser.address,
+//           bankName: updatedUser.bankName,
+//           accountNumber: updatedUser.accountNumber,
+//           accountName: updatedUser.accountName,
+//           token: generateToken(updatedUser),
+//         });
+//       } catch (err) {
+//         if (err) {
+//           if (err.name === "MongoServerError" && err.code === 11000) {
+//             // Duplicate username
+//             return res
+//               .status(500)
+//               .send({ succes: false, message: "User already exist!" });
+//           }
+//         }
+//         console.log(err);
+//         return res.status(500).send(err);
+//       }
+//     } else {
+//       res.status(404).send({ message: "User not Found" });
+//     }
+//   })
+// );
+
 userRouter.put(
   "/profile",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    const current = new Date();
-    if (user) {
-      try {
-        user.about = req.body.about || user.about;
-        user.username = req.body.username.trim() || user.username;
-        user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
-        user.firstName = req.body.firstName || user.firstName;
-        user.lastName = req.body.lastName || user.lastName;
-        user.email = req.body.email || user.email;
-        user.dob = req.body.dob || user.dob;
-        // user.accountName = req.body.accountName || user.accountName;
-        // user.accountNumber = req.body.accountNumber || user.accountNumber;
-        // user.bankName = req.body.bankName || user.bankName;
-        user.address = req.body?.address?.state
-          ? req.body.address
-          : user.address;
-        user.phone = req.body.phone || user.phone;
-        user.image = req.body.image || user.image;
-        if (req.body.password) {
-          user.password = bcrypt.hashSync(req.body.password, 8);
-        }
-        if (user.address && user.bankName) {
-          user.isSeller = true;
-        } else {
-          user.isSeller = false;
-        }
-        const updatedUser = await user.save();
+    try {
+      const user = await User.findById(req.user._id);
 
-        res.send({
-          _id: updatedUser._id,
-          name: updatedUser.name,
-          username: updatedUser.username,
-          usernameUpdate: updatedUser.usernameUpdate,
-          firstName: updatedUser.firstName,
-          lastName: updatedUser.lastName,
-          region: updatedUser.region,
-          email: updatedUser.email,
-          isSeller: updatedUser.isSeller,
-          isAdmin: updatedUser.isAdmin,
-          image: updatedUser.image,
-          active: updatedUser.active,
-          isVerifiedEmail: updatedUser.isVerifiedEmail,
-          address: updatedUser.address,
-          bankName: updatedUser.bankName,
-          accountNumber: updatedUser.accountNumber,
-          accountName: updatedUser.accountName,
-          token: generateToken(updatedUser),
-        });
-      } catch (err) {
-        if (err) {
-          if (err.name === "MongoServerError" && err.code === 11000) {
-            // Duplicate username
-            return res
-              .status(500)
-              .send({ succes: false, message: "User already exist!" });
-          }
-        }
-        console.log(err);
-        return res.status(500).send(err);
+      if (!user) {
+        return res.status(404).json({ message: "User not Found" });
       }
-    } else {
-      res.status(404).send({ message: "User not Found" });
+
+      const current = new Date();
+      const {
+        about,
+        username,
+        firstName,
+        lastName,
+        email,
+        dob,
+        accountName,
+        accountNumber,
+        bankName,
+        address,
+        phone,
+        image,
+        password,
+      } = req.body;
+
+      const updatedUserData = {
+        about: about || user.about,
+        username: username || user.username,
+        usernameUpdate: username ? current : user.usernameUpdate,
+        firstName: firstName || user.firstName,
+        lastName: lastName || user.lastName,
+        email: email || user.email,
+        dob: dob || user.dob,
+        phone: phone || user.phone,
+        image: image || user.image,
+      };
+
+      if (!user.bankName) {
+        updatedUserData.bankName = bankName || user.bankName;
+      }
+
+      if (!user.accountName) {
+        updatedUserData.accountName = accountName || user.accountName;
+      }
+
+      if (!user.accountNumber) {
+        updatedUserData.accountNumber = accountNumber || user.accountNumber;
+      }
+
+      if (address?.state) {
+        updatedUserData.address = address;
+      }
+
+      if (password) {
+        updatedUserData.password = bcrypt.hashSync(password, 8);
+      }
+
+      if (
+        (updatedUserData.address && updatedUserData.bankName) ||
+        (user.address && user.bankName)
+      ) {
+        updatedUserData.isSeller = true;
+      } else {
+        updatedUserData.isSeller = false;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        updatedUserData,
+        { new: true, runValidators: true }
+      );
+
+      res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        username: updatedUser.username,
+        usernameUpdate: updatedUser.usernameUpdate,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        region: updatedUser.region,
+        email: updatedUser.email,
+        isSeller: updatedUser.isSeller,
+        isAdmin: updatedUser.isAdmin,
+        image: updatedUser.image,
+        active: updatedUser.active,
+        isVerifiedEmail: updatedUser.isVerifiedEmail,
+        address: updatedUser.address,
+        bankName: updatedUser.bankName,
+        accountNumber: updatedUser.accountNumber,
+        accountName: updatedUser.accountName,
+        token: generateToken(updatedUser),
+      });
+    } catch (err) {
+      console.error(err);
+
+      if (err.name === "MongoServerError" && err.code === 11000) {
+        return res.status(500).json({
+          success: false,
+          message: "User already exists!",
+        });
+      }
+
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
     }
   })
 );
@@ -821,7 +933,7 @@ userRouter.get(
     if (mongoose.Types.ObjectId.isValid(idorusername)) {
       query = { _id: idorusername };
     } else {
-      query = { username: idorusername.trim() };
+      query = { username: idorusername };
     }
     const user = await User.findOne(query)
       .populate({
