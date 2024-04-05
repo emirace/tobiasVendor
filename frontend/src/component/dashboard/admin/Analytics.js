@@ -1,15 +1,15 @@
-import { faEye, faPen } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { Store } from "../../../Store";
-import { getError, region } from "../../../utils";
-import moment from "moment";
-import LoadingBox from "../../LoadingBox";
-import WidgetSmall from "../WidgetSmall";
-import FeatureInfo from "../FeatureInfo";
+import { faEye, faPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { Store } from '../../../Store';
+import { getError, region } from '../../../utils';
+import moment from 'moment';
+import LoadingBox from '../../LoadingBox';
+import WidgetSmall from '../WidgetSmall';
+import FeatureInfo from '../FeatureInfo';
 const Container = styled.div`
   flex: 4;
   min-width: 0;
@@ -19,7 +19,7 @@ const Content = styled.div`
   min-width: 0;
   flex: 1;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
   padding: 20px;
   margin-bottom: 20px;
   border-radius: 0.2rem;
@@ -92,7 +92,7 @@ const ItemCont = styled.div`
   position: relative;
   width: 180px;
   background: ${(props) =>
-    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
+    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
 `;
 const ItemImage = styled.img`
   width: 180px;
@@ -105,9 +105,9 @@ const Sold = styled.div`
   align-items: center;
   justify-content: center;
   background: ${(props) =>
-    props.mode === "pagebodydark"
-      ? "var(--black -color)"
-      : "var(--white-color)"};
+    props.mode === 'pagebodydark'
+      ? 'var(--black -color)'
+      : 'var(--white-color)'};
   opacity: 0.5;
   width: 180px;
   height: 180px;
@@ -296,7 +296,7 @@ export default function Analytics() {
             }
           );
           setUsers2(data);
-          console.log("data", data);
+          console.log('data', data);
         } catch (err) {
           setError(getError(err));
           console.log(getError(err));
@@ -334,7 +334,7 @@ export default function Analytics() {
           {userInfo.isAdmin && users2.orders ? (
             <FeatureInfo type="user" number={users2.users[0].numUsers} />
           ) : (
-            ""
+            ''
           )}
           <FeatureInfo
             type="order"
@@ -351,7 +351,7 @@ export default function Analytics() {
                 ? users2.products[0].numProducts
                 : products
                 ? products?.products?.length
-                : "0"
+                : '0'
             }
           />
           <FeatureInfo
@@ -359,7 +359,7 @@ export default function Analytics() {
             number={
               users2.earnings.length > 0 && userInfo.isAdmin
                 ? users2.earnings[0].numSales
-                : "0"
+                : '0'
             }
           />
         </Widgets>
@@ -379,7 +379,7 @@ export default function Analytics() {
 
                 <ItemName>{user.name}</ItemName>
                 <Count>
-                  {moment(user.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  {moment(user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </Count>
 
                 <Actions>
@@ -415,7 +415,7 @@ export default function Analytics() {
 
                 <ItemName>{user.userId.name}</ItemName>
                 <Count>
-                  {moment(user.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  {moment(user.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </Count>
                 <Count>{user.userId.sold.length} sold</Count>
 
@@ -453,7 +453,7 @@ export default function Analytics() {
 
                 <ItemName>{product.name}</ItemName>
                 <Count>
-                  {moment(product.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  {moment(product.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </Count>
                 <Actions>
                   <Link to={`/product/${product.slug}`}>
@@ -493,7 +493,7 @@ export default function Analytics() {
 
                 <ItemName>{product.name}</ItemName>
                 <Count>
-                  {moment(product.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
+                  {moment(product.createdAt).format('MMMM Do YYYY, h:mm:ss a')}
                 </Count>
                 <Actions>
                   <Link to={`/product/${product.slug}`}>
@@ -524,27 +524,32 @@ export default function Analytics() {
           <LoadingBox />
         ) : (
           <ItemRow>
-            {console.log("mostView", mostView)}
-            {mostView.map((product) => (
-              <ItemCont mode={mode}>
-                <ItemImage src={product.productId.image} alt="item" />
+            {console.log('mostView', mostView)}
+            {mostView.map(
+              (product) =>
+                product?.productId?.name && (
+                  <ItemCont mode={mode}>
+                    <ItemImage src={product?.productId?.image} alt="item" />
 
-                <ItemName>{product.productId.name}</ItemName>
-                <Count>{product.numViews} Views</Count>
-                <Actions>
-                  <Link to={`/product/${product.productId.slug}`}>
-                    <View>
-                      <FontAwesomeIcon icon={faEye} /> View
-                    </View>
-                  </Link>
-                  <Link to={`/dashboard/product/${product.productId._id}`}>
-                    <Edit>
-                      <FontAwesomeIcon icon={faPen} /> Edit
-                    </Edit>
-                  </Link>
-                </Actions>
-              </ItemCont>
-            ))}
+                    <ItemName>{product?.productId?.name}</ItemName>
+                    <Count>{product.numViews} Views</Count>
+                    <Actions>
+                      <Link to={`/product/${product?.productId?.slug}`}>
+                        <View>
+                          <FontAwesomeIcon icon={faEye} /> View
+                        </View>
+                      </Link>
+                      <Link
+                        to={`/dashboard/product/${product?.productId?._id}`}
+                      >
+                        <Edit>
+                          <FontAwesomeIcon icon={faPen} /> Edit
+                        </Edit>
+                      </Link>
+                    </Actions>
+                  </ItemCont>
+                )
+            )}
           </ItemRow>
         )}
       </Content>
