@@ -407,6 +407,29 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
         valid = false;
       }
     }
+    if (deliveryOption === "PUDO Locker-to-Door") {
+      if (!meta.phone) {
+        setValidationError({
+          ...validationError,
+          phone: "Enter a valid phone number ",
+        });
+        valid = false;
+      }
+      if (!meta.province) {
+        setValidationError({
+          ...validationError,
+          province: "Select province",
+        });
+        valid = false;
+      }
+      if (!meta.address) {
+        setValidationError({
+          ...validationError,
+          address: "Enter a delivery address ",
+        });
+        valid = false;
+      }
+    }
     if (deliveryOption === "PostNet-to-PostNet") {
       if (!meta.phone) {
         setValidationError({
@@ -712,16 +735,6 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         {validationError.province && (
                           <Error>{validationError.province}</Error>
                         )}
-                        {/* <Input
-                        mode={mode}
-                        onFocus={()=>setValidationError({...validationError,phone:''})}
-                          type="text"
-                          onChange={(e) =>
-                            setMeta({ ...meta, province: e.target.value })
-                          }
-                          placeholder="Province"
-                          value={meta.province}
-                        /> */}
                       </Plan>
 
                       <a
@@ -733,19 +746,6 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                         Find locker near your location
                       </a>
                       <Plan>
-                        {/* <Input
-                        mode={mode}
-                          onFocus={()=>setValidationError({
-                            ...validationError,
-                            shortName: "",
-                          })}
-                          type="text"
-                          onChange={(e) =>
-                            setMeta({ ...meta, shortName: e.target.value })
-                          }
-                          placeholder="Pick Up Locker"
-                          value={meta.shortName}
-                        /> */}
                         <Label>Pick Up Locker</Label>
                         <FormControl
                           sx={{
@@ -794,6 +794,143 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.shortName}</Error>
                         )}
                       </Plan>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              phone: "",
+                            })
+                          }
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, phone: e.target.value })
+                          }
+                          placeholder="Phone"
+                          value={meta.phone}
+                        />
+                        {validationError.phone && (
+                          <Error>{validationError.phone}</Error>
+                        )}
+                      </Plan>
+                      <a
+                        className="link"
+                        href="https://www.pudo.co.za/how-it-works.php"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        How PUDO works
+                      </a>
+                      <Plan>
+                        <a
+                          className="link"
+                          href="
+                      https://www.pudo.co.za/faq.php"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          PUDO FAQ
+                        </a>
+                      </Plan>
+                    </Plans>
+                  ) : deliveryOption === "PUDO Locker-to-Door" ? (
+                    <Plans>
+                      <Plan>
+                        <Input
+                          mode={mode}
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              address: "",
+                            })
+                          }
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, address: e.target.value })
+                          }
+                          placeholder="Address"
+                          value={meta.address}
+                        />
+                        {validationError.address && (
+                          <Error>{validationError.address}</Error>
+                        )}
+                      </Plan>
+                      <Plan>
+                        <Input
+                          onFocus={() =>
+                            setValidationError({
+                              ...validationError,
+                              city: "",
+                            })
+                          }
+                          mode={mode}
+                          type="text"
+                          onChange={(e) =>
+                            setMeta({ ...meta, city: e.target.value })
+                          }
+                          placeholder="City/Town"
+                          value={meta.city}
+                        />
+                        {validationError.city && (
+                          <Error>{validationError.city}</Error>
+                        )}
+                      </Plan>
+
+                      <Plan>
+                        <Label>Province</Label>
+                        <FormControl
+                          sx={{
+                            margin: 0,
+                            width: "100%",
+                            borderRadius: "0.2rem",
+                            border: `1px solid ${
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
+                            }`,
+                            "& .MuiOutlinedInput-root": {
+                              color: `${
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
+                              }`,
+                              "&:hover": {
+                                outline: "none",
+                                border: 0,
+                              },
+                            },
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <Select
+                            value={meta.province}
+                            onChange={(e) => {
+                              setMeta({ ...meta, province: e.target.value });
+                              setValidationError({
+                                ...validationError,
+                                province: "",
+                              });
+                            }}
+                            displayEmpty
+                          >
+                            {region() === "NGN"
+                              ? states.Nigeria.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))
+                              : states.SouthAfrican.map((x) => (
+                                  <MenuItem value={x}>{x}</MenuItem>
+                                ))}
+                          </Select>
+                        </FormControl>
+                        {validationError.province && (
+                          <Error>{validationError.province}</Error>
+                        )}
+                      </Plan>
+
                       <Plan>
                         <Input
                           mode={mode}
@@ -1099,6 +1236,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.suburb}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Input
                           onFocus={() =>
@@ -1119,6 +1257,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.city}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Input
                           onFocus={() =>
@@ -1139,6 +1278,7 @@ export default function DeliveryOptionScreen({ setShowModel, item }) {
                           <Error>{validationError.postalcode}</Error>
                         )}
                       </Plan>
+
                       <Plan>
                         <Label>Province</Label>
                         <FormControl

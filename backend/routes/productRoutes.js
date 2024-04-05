@@ -117,7 +117,8 @@ productRouter.post(
         // Duplicate username
         return res.status(500).send({
           succes: false,
-          message: "Product with this name already exist!",
+          message:
+            "Product with this name already exist! please use another product name",
         });
       }
 
@@ -139,6 +140,7 @@ productRouter.put(
       (a, b) => (a = a + Number(b.value)),
       0
     );
+    console.log(req.body.active);
     const useractive = () => (req.body.active === "yes" ? true : false);
     const userbadge = () => (req.body.badge === "yes" ? true : false);
     if (product.seller._id.toString() !== req.user._id && !req.user.isAdmin) {
@@ -414,13 +416,20 @@ productRouter.put(
       if (!product) {
         return res.status(404).send({ message: "Product Not Found" });
       }
+      const currentTime = new Date();
+      const sixHoursAgo = new Date(currentTime.getTime() - 6 * 60 * 60 * 1000);
+      const isShared = product.shares
+        .filter((share) => share.hashed === hashed)
+        .sort((a, b) => b.time - a.time)
+        .find((share) => share.time >= sixHoursAgo);
+      console.log(isShared);
+      // const isShared = product.shares.some((share) => share.hashed === hashed);
 
-      const isShared = product.shares.some((share) => share.hashed === hashed);
       if (isShared) {
         return res.status(400).send({ message: "Already shared product" });
       }
 
-      product.shares.push({ user: req?.user?._id, hashed });
+      product.shares.push({ user: req?.user?._id, hashed, time: currentTime });
       await product.save();
 
       return res.status(200).send({
@@ -537,7 +546,7 @@ productRouter.put(
   })
 );
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 40;
 
 // get all Product with pagination
 
@@ -573,9 +582,9 @@ productRouter.get(
         : {};
 
     const products = await Product.find({ ...queryFilter, region })
-      .skip(pageSize * (page - 1))
-      .sort({ createdAt: -1 })
-      .limit(pageSize);
+      // .skip(pageSize * (page - 1))
+      .sort({ createdAt: -1 });
+    // .limit(pageSize);
 
     const countProducts = await Product.countDocuments({ region });
     res.send({
@@ -647,6 +656,7 @@ productRouter.get(
 
     const seller = req.params.id;
     const products = await Product.find({ seller })
+      .sort({ createdAt: -1 })
       .populate("seller", "username")
       .skip(pageSize * (page - 1))
       .limit(pageSize);
@@ -826,9 +836,9 @@ productRouter.get(
       order === "featured"
         ? { featured: -1 }
         : order === "lowest"
-        ? { price: 1 }
+        ? { actualPrice: 1 }
         : order === "highest"
-        ? { price: -1 }
+        ? { actualPrice: -1 }
         : order === "toprated"
         ? { raing: -1 }
         : order === "newest"

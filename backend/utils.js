@@ -1,29 +1,30 @@
-import jwt from 'jsonwebtoken';
-import Account from './models/accountModel.js';
-import Transaction from './models/transactionModel.js';
-import nodemailer from 'nodemailer';
-import hbs from 'nodemailer-express-handlebars';
-import crypto from 'crypto';
-import dns from 'dns';
-import axios from 'axios';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import Account from "./models/accountModel.js";
+import Transaction from "./models/transactionModel.js";
+import nodemailer from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+import crypto from "crypto";
+import dns from "dns";
+import axios from "axios";
+import dotenv from "dotenv";
 dotenv.config();
-import Mixpanel from 'mixpanel';
-import { v4 } from 'uuid';
-import Notification from './models/notificationModel.js';
-import User from './models/userModel.js';
-import Conversation from './models/conversationModel.js';
-import Gig from './models/gigModel.js';
-import Order from './models/orderModel.js';
-import moment from 'moment';
-import Product from './models/productModel.js';
-import Newsletters from './models/newslettersModel.js';
-import Message from './models/messageModel.js';
+import Mixpanel from "mixpanel";
+import { v4 } from "uuid";
+import Notification from "./models/notificationModel.js";
+import User from "./models/userModel.js";
+import Conversation from "./models/conversationModel.js";
+import Gig from "./models/gigModel.js";
+import Order from "./models/orderModel.js";
+import moment from "moment";
+import Product from "./models/productModel.js";
+import Newsletters from "./models/newslettersModel.js";
+import Message from "./models/messageModel.js";
 // import { mixpanel } from "./server.js";
 
 export var mixpanel = Mixpanel.init(process.env.MIXPANEL);
 
-import path from 'path';
+import path from "path";
+import { messageEmails } from "./utils/constant.js";
 
 export const generateToken = (user) => {
   return jwt.sign(
@@ -37,7 +38,7 @@ export const generateToken = (user) => {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '30d',
+      expiresIn: "356d",
     }
   );
 };
@@ -48,14 +49,14 @@ export const isAuth = (req, res, next) => {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: "Invalid Token" });
       } else {
         req.user = decode;
         next();
       }
     });
   } else {
-    res.status(401).send({ message: 'No Token' });
+    res.status(401).send({ message: "No Token" });
   }
 };
 
@@ -65,7 +66,7 @@ export const isAuthOrNot = (req, res, next) => {
     const token = authorization.slice(7, authorization.length);
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
-        res.status(401).send({ message: 'Invalid Token' });
+        res.status(401).send({ message: "Invalid Token" });
       } else {
         req.user = decode;
         next();
@@ -80,7 +81,7 @@ export const isAdmin = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Admin Token' });
+    res.status(401).send({ message: "Invalid Admin Token" });
   }
 };
 
@@ -88,7 +89,7 @@ export const isSeller = (req, res, next) => {
   if (req.user && req.user.isSeller) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Seller Token' });
+    res.status(401).send({ message: "Invalid Seller Token" });
   }
 };
 
@@ -96,7 +97,7 @@ export const isSellerOrAdmin = (req, res, next) => {
   if (req.user && (req.user.isSeller || req.user.isSeller)) {
     next();
   } else {
-    res.status(401).send({ message: 'Invalid Seller/Admin Token' });
+    res.status(401).send({ message: "Invalid Seller/Admin Token" });
   }
 };
 
@@ -104,12 +105,12 @@ export const isSocialAuth = (req, res, next) => {
   if (req.user) {
     next();
   } else {
-    res.status(401).send({ message: 'User not authorize' });
+    res.status(401).send({ message: "User not authorize" });
   }
 };
 
 const transporter = nodemailer.createTransport({
-  host: 'mail.privateemail.com',
+  host: "mail.privateemail.com",
   port: 465,
   auth: {
     user: process.env.EMAIL_USER,
@@ -117,26 +118,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 transporter.use(
-  'compile',
+  "compile",
   hbs({
     viewEngine: {
-      extname: '.handlebars',
-      partialsDir: path.resolve('./utils/layouts/'),
-      defaultLayout: 'main',
-      layoutsDir: path.resolve('./utils/layouts/'),
+      extname: ".handlebars",
+      partialsDir: path.resolve("./utils/layouts/"),
+      defaultLayout: "main",
+      layoutsDir: path.resolve("./utils/layouts/"),
       runtimeOptions: {
         allowProtoPropertiesByDefault: true,
         allowedProtoMethodsByDefault: true,
       },
     },
-    viewPath: path.resolve('./utils/layouts/'),
-    extName: '.handlebars',
+    viewPath: path.resolve("./utils/layouts/"),
+    extName: ".handlebars",
   })
 );
 
 export const sendEmail = async (options) => {
   const mailOption = {
-    from: { name: 'Repeddle', address: 'support@repeddle.com' },
+    from: { name: "Repeddle", address: "support@repeddle.com" },
     to: options.to,
     subject: options.subject,
     html: options.text,
@@ -145,18 +146,18 @@ export const sendEmail = async (options) => {
   };
 
   try {
-    transporter.sendMail(mailOption);
-    console.log('Email sent successfully', options.to);
-    mixpanel.track('Email', {
+    await transporter.sendMail(mailOption);
+    console.log("Email sent successfully", options.to);
+    mixpanel.track("Email", {
       type: options.subject,
-      status: 'Successfully',
+      status: "Successfully",
       email: options.to,
     });
   } catch (error) {
-    console.error('Failed to send email:', options.to, error);
-    mixpanel.track('Email', {
+    console.error("Failed to send email:", options.to, error);
+    mixpanel.track("Email", {
       type: options.subject,
-      status: 'Failed',
+      status: "Failed",
       email: options.to,
     });
   }
@@ -164,8 +165,8 @@ export const sendEmail = async (options) => {
 
 export const slugify = (Text) => {
   return Text.toLowerCase()
-    .replace(/ /g, '-')
-    .replace(/[^\w-]+/g, '');
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
 };
 
 export async function creditAccount({
@@ -180,7 +181,7 @@ export async function creditAccount({
   if (!account) {
     return {
       success: false,
-      error: 'Account does not exist',
+      error: "Account does not exist",
     };
   } else {
     account.balance = Number(account.balance) + Number(amount);
@@ -188,7 +189,7 @@ export async function creditAccount({
   }
 
   const transaction = new Transaction({
-    txnType: 'credit',
+    txnType: "credit",
     purpose,
     amount,
     accountId,
@@ -201,7 +202,7 @@ export async function creditAccount({
   await transaction.save();
   return {
     success: true,
-    message: 'Credit successful',
+    message: "Credit successful",
   };
 }
 
@@ -217,13 +218,13 @@ export async function debitAccount({
   if (!account) {
     return {
       success: false,
-      error: 'Account does not exist',
+      error: "Account does not exist",
     };
   }
   if (Number(account.balance) < amount) {
     return {
       success: false,
-      error: 'Insufficient balance',
+      error: "Insufficient balance",
     };
   } else {
     account.balance = Number(account.balance) - Number(amount);
@@ -231,7 +232,7 @@ export async function debitAccount({
   }
 
   const transaction = new Transaction({
-    txnType: 'debit',
+    txnType: "debit",
     purpose,
     amount,
     accountId,
@@ -244,12 +245,12 @@ export async function debitAccount({
   await transaction.save();
   return {
     success: true,
-    message: 'Debit successful',
+    message: "Debit successful",
   };
 }
 
 export const generateOTP = () => {
-  let otp = '';
+  let otp = "";
   for (let i = 0; i <= 5; i++) {
     const randVal = Math.round(Math.random() * 9);
     otp = otp + randVal;
@@ -260,18 +261,18 @@ export const generateOTP = () => {
 export const confirmPayfast = async (req, cartTotal) => {
   try {
     const testingMode = false;
-    const pfHost = testingMode ? 'sandbox.payfast.co.za' : 'www.payfast.co.za';
-    const passPhrase = 'Re01thriftpeddle';
+    const pfHost = testingMode ? "sandbox.payfast.co.za" : "www.payfast.co.za";
+    const passPhrase = "Re01thriftpeddle";
     // const passPhrase = "jt7NOE43FZPn";
 
     const pfData = JSON.parse(JSON.stringify(req.body));
 
-    let pfParamString = '';
+    let pfParamString = "";
     for (let key in pfData) {
-      if (pfData.hasOwnProperty(key) && key !== 'signature') {
+      if (pfData.hasOwnProperty(key) && key !== "signature") {
         pfParamString += `${key}=${encodeURIComponent(
           pfData[key].trim()
-        ).replace(/%20/g, '+')}&`;
+        ).replace(/%20/g, "+")}&`;
       }
     }
 
@@ -280,18 +281,18 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidSignature = (pfData, pfParamString, pfPassphrase = null) => {
       // Calculate security signature
-      let tempParamString = '';
+      let tempParamString = "";
       if (pfPassphrase !== null) {
         pfParamString += `&passphrase=${encodeURIComponent(
           pfPassphrase.trim()
-        ).replace(/%20/g, '+')}`;
+        ).replace(/%20/g, "+")}`;
       }
 
       const signature = crypto
-        .createHash('md5')
+        .createHash("md5")
         .update(pfParamString)
-        .digest('hex');
-      return pfData['signature'] === signature;
+        .digest("hex");
+      return pfData["signature"] === signature;
     };
 
     async function ipLookup(domain) {
@@ -311,15 +312,15 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidIP = async (req) => {
       const validHosts = [
-        'www.payfast.co.za',
-        'sandbox.payfast.co.za',
-        'w1w.payfast.co.za',
-        'w2w.payfast.co.za',
+        "www.payfast.co.za",
+        "sandbox.payfast.co.za",
+        "w1w.payfast.co.za",
+        "w2w.payfast.co.za",
       ];
 
       let validIps = [];
       const pfIp =
-        req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
       try {
         for (let key in validHosts) {
@@ -340,7 +341,7 @@ export const confirmPayfast = async (req, cartTotal) => {
 
     const pfValidPaymentData = (cartTotal, pfData) => {
       return (
-        Math.abs(parseFloat(cartTotal) - parseFloat(pfData['amount_gross'])) <=
+        Math.abs(parseFloat(cartTotal) - parseFloat(pfData["amount_gross"])) <=
         0.01
       );
     };
@@ -354,7 +355,7 @@ export const confirmPayfast = async (req, cartTotal) => {
         .catch((error) => {
           console.error(error);
         });
-      return result === 'VALID';
+      return result === "VALID";
     };
 
     const check1 = pfValidSignature(pfData, pfParamString, passPhrase);
@@ -366,11 +367,11 @@ export const confirmPayfast = async (req, cartTotal) => {
     const check4 = await pfValidServerConfirmation(pfHost, pfParamString);
 
     if (check1 && check2 && check3 && check4) {
-      console.log('good');
+      console.log("good");
       // All checks have passed, the payment is successful
       return true;
     } else {
-      console.log('very bad');
+      console.log("very bad");
       return false;
       // Some checks have failed, check payment manually and log for investigation
     }
@@ -381,30 +382,30 @@ export const confirmPayfast = async (req, cartTotal) => {
 
 export const payShippingFee = async (order) => {
   try {
-    var result = { status: '200', message: 'Successful' };
+    var result = { status: "200", message: "Successful" };
     await Promise.all(
       order.orderItems.map(async (item) => {
-        if (item.deliverySelect['delivery Option'] === 'GIG Logistics') {
+        if (item.deliverySelect["delivery Option"] === "GIG Logistics") {
           const { data: loginData } = await axios.post(
-            'https://thirdparty.gigl-go.com/api/thirdparty/login',
+            "https://thirdparty.gigl-go.com/api/thirdparty/login",
             {
-              username: 'IND1109425',
-              Password: 'RBUVBi9EZs_7t_q@6019',
-              SessionObj: '',
+              username: "IND1109425",
+              Password: "RBUVBi9EZs_7t_q@6019",
+              SessionObj: "",
             }
           );
 
-          console.log('loginData');
+          console.log("loginData");
 
           const { data } = await axios.post(
-            'https://thirdparty.gigl-go.com/api/thirdparty/captureshipment',
+            "https://thirdparty.gigl-go.com/api/thirdparty/captureshipment",
             {
               ReceiverAddress: item.deliverySelect.address,
               CustomerCode: loginData.Object.UserName,
               SenderLocality: item.meta.address,
               SenderAddress: item.meta.address,
               ReceiverPhoneNumber: item.deliverySelect.phone,
-              VehicleType: 'BIKE',
+              VehicleType: "BIKE",
               SenderPhoneNumber: item.meta.phone,
               SenderName: item.meta.name,
               ReceiverName: item.deliverySelect.name,
@@ -421,13 +422,13 @@ export const payShippingFee = async (order) => {
               },
               PreShipmentItems: [
                 {
-                  SpecialPackageId: '0',
+                  SpecialPackageId: "0",
                   Quantity: item.quantity,
                   Weight: 1,
-                  ItemType: 'Normal',
+                  ItemType: "Normal",
                   ItemName: item.name,
                   Value: item.actualPrice,
-                  ShipmentType: 'Regular',
+                  ShipmentType: "Regular",
                   Description: item.description,
                   ImageUrl: item.image,
                 },
@@ -440,7 +441,7 @@ export const payShippingFee = async (order) => {
             }
           );
           console.log({ status: data.Code, message: data.ShortDescription });
-          if (data.Code !== '200') {
+          if (data.Code !== "200") {
             const admins = await User.find({
               isAdmin: true,
             });
@@ -455,12 +456,12 @@ export const payShippingFee = async (order) => {
             admins.map(async (admin) => {
               const notification = new Notification({
                 userId: admin._id,
-                notifyType: 'gig',
+                notifyType: "gig",
                 itemId: item._id,
                 msg: `Gig - ${data.ShortDescription}`,
                 link: `/gig/${gig._id}`,
                 userImage: item,
-                mobile: { path: 'Gig', id: gig._id },
+                mobile: { path: "Gig", id: gig._id },
               });
               await notification.save();
             });
@@ -480,17 +481,17 @@ export const checkStatus = (status, currentStatus) => {
     Pending: 0,
     Processing: 1,
     Dispatched: 2,
-    'In Transit': 3,
+    "In Transit": 3,
     Delivered: 4,
     Received: 5,
-    'Return Logged': 6,
-    'Return Approved': 8,
-    'Return Declined': 7,
-    'Return Dispatched': 9,
-    'Return Delivered': 10,
-    'Return Received': 11,
+    "Return Logged": 6,
+    "Return Approved": 8,
+    "Return Declined": 7,
+    "Return Dispatched": 9,
+    "Return Delivered": 10,
+    "Return Received": 11,
     Refunded: 12,
-    'Payment to Seller Initiated': 13,
+    "Payment to Seller Initiated": 13,
   };
 
   const statusOrderValue = statusOrder[status] || 0;
@@ -536,13 +537,13 @@ export const setTimer = async (
     const sellerNotification = new Notification({
       userId: receiver,
       itemId: orderId,
-      notifyType: 'remindOrder',
+      notifyType: "remindOrder",
       msg: message,
       link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
       userImage: orderItem.image,
       mobile: returnId
-        ? { path: 'ReturnScreen', id: returnId }
-        : { path: 'OrderScreen', id: orderId },
+        ? { path: "ReturnScreen", id: returnId }
+        : { path: "OrderScreen", id: orderId },
       createdAt: new Date(Date.now() + milliseconds - beforeTime),
     });
 
@@ -551,13 +552,13 @@ export const setTimer = async (
       return new Notification({
         userId: admin._id,
         itemId: orderId,
-        notifyType: 'remindOrder',
+        notifyType: "remindOrder",
         msg: message,
         link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
         userImage: orderItem.image,
         mobile: returnId
-          ? { path: 'ReturnScreen', id: returnId }
-          : { path: 'OrderScreen', id: orderId },
+          ? { path: "ReturnScreen", id: returnId }
+          : { path: "OrderScreen", id: orderId },
         createdAt: new Date(Date.now() + milliseconds - beforeTime),
       });
     });
@@ -567,13 +568,13 @@ export const setTimer = async (
       return new Notification({
         userId: admin._id,
         itemId: orderId,
-        notifyType: 'remindOrder',
+        notifyType: "remindOrder",
         msg: adminMessage,
         link: returnId ? `/return/${returnId}` : `/order/${orderId}`,
         userImage: orderItem.image,
         mobile: returnId
-          ? { path: 'ReturnScreen', id: returnId }
-          : { path: 'OrderScreen', id: orderId },
+          ? { path: "ReturnScreen", id: returnId }
+          : { path: "OrderScreen", id: orderId },
         createdAt: new Date(Date.now() + milliseconds),
       });
     });
@@ -591,18 +592,18 @@ export const setTimer = async (
 
     setTimeout(async () => {
       // Emit Socket.IO event for real-time data update
-      io.emit('change_data');
+      io.emit("change_data");
     }, milliseconds - beforeTime);
 
     setTimeout(async () => {
       // Emit Socket.IO event for real-time data update
-      io.emit('change_data');
+      io.emit("change_data");
     }, milliseconds);
     order.orderItems[orderItemIndex] = orderItem;
     await order.save();
   } catch (error) {
     // Handle any errors that occur during the process
-    console.error('Error:', error.message);
+    console.error("Error:", error.message);
   }
 };
 
@@ -620,7 +621,7 @@ function transform_to_mp_format(user) {
   return {
     $distinct_id: distinct_id,
     $token: PROJECT_TOKEN,
-    $ip: '0',
+    $ip: "0",
     $set: user.toObject(),
   };
 }
@@ -632,98 +633,124 @@ export const updateMixpanelUser = () => {
 
       // We recommend calling this API with batches of 200 user profiles to do this at scale.
       axios
-        .post('https://api.mixpanel.com/engage', profiles, {
-          params: { verbose: '2' },
-          headers: { 'Content-Type': 'application/json' },
+        .post("https://api.mixpanel.com/engage", profiles, {
+          params: { verbose: "2" },
+          headers: { "Content-Type": "application/json" },
         })
         .then((resp) => {
           console.log(resp.data);
           mongoose.disconnect();
         })
         .catch((error) => {
-          console.error('Error sending data to Mixpanel:', error);
+          console.error("Error sending data to Mixpanel:", error);
           mongoose.disconnect();
         });
     })
     .catch((err) => {
-      console.error('Error fetching users from MongoDB:', err);
+      console.error("Error fetching users from MongoDB:", err);
       mongoose.disconnect();
     });
 };
 
-export const sendWeeklyMail = async () => {
-  const today = moment(); // Get the current date
-  const previousMonday = today.clone().startOf('isoWeek').subtract(7, 'days'); // Get the start of the previous week
-  const currentMonday = previousMonday.clone().add(7, 'days');
+function createProductPairs(products) {
+  const productPairs = [];
+  for (let i = 0; i < products.length; i += 2) {
+    const pair = {
+      firstProduct: products[i],
+      secondProduct: products[i + 1],
+    };
+    productPairs.push(pair);
+  }
+  return productPairs;
+}
 
-  console.log('Previous Monday:', previousMonday.toDate());
-  console.log('Current Monday:', currentMonday.toDate());
+export const sendWeeklyMail = async (emails, io, req) => {
+  const today = moment(); // Get the current date
+  const oneWeekAgo = today.clone().subtract(7, "days"); // Get the date one week ago
 
   try {
-    const productsNGN = await Product.find({
-      createdAt: {
-        $gte: previousMonday.toDate(),
-        $lt: currentMonday.toDate(),
-      },
-      region: 'NGN',
-    }).sort({ createdAt: -1 });
-    const productsZAR = await Product.find({
-      createdAt: {
-        $gte: previousMonday.toDate(),
-        $lt: currentMonday.toDate(),
-      },
-      region: 'ZAR',
-    }).sort({ createdAt: -1 });
+    const [productsNGN, productsZAR] = await Promise.all([
+      Product.find({
+        createdAt: {
+          $gte: oneWeekAgo.toDate(),
+          $lt: today.toDate(),
+        },
+        region: "NGN",
+      }).sort({ createdAt: -1 }),
+      Product.find({
+        createdAt: {
+          $gte: oneWeekAgo.toDate(),
+          $lt: today.toDate(),
+        },
+        region: "ZAR",
+      }).sort({ createdAt: -1 }),
+    ]);
 
     // Convert the products array into an array of arrays containing two products each
-    const productsInPairsNGN = [];
-    const productsInPairsZAR = [];
-    for (let i = 0; i < productsNGN.length; i += 2) {
-      const pair = {
-        firstProduct: productsNGN[i],
-        secondProduct: productsNGN[i + 1],
-      };
-      productsInPairsNGN.push(pair);
-    }
 
-    for (let i = 0; i < productsZAR.length; i += 2) {
-      const pair = {
-        firstProduct: productsZAR[i],
-        secondProduct: productsZAR[i + 1],
-      };
-      productsInPairsZAR.push(pair);
-    }
+    const productsInPairsNGN = createProductPairs(productsNGN);
+    const productsInPairsZAR = createProductPairs(productsZAR);
 
     const emailType = {
-      name: 'Hunt It',
-      subject: 'HUNT IT - THRIFT IT - FLAUNT IT!',
-      template: 'huntIt',
+      name: "Hunt It * Thrift It * Flaunt It!",
+      subject: "New Arrivals; HUNT IT - THRIFT IT - FLAUNT IT!",
+      template: "huntIt",
     };
 
-    const existEmails = await Newsletters.find();
+    const existEmails = await Newsletters.find({ email: { $in: emails } });
+    const existUsers = await User.find({ email: { $in: emails } });
 
-    // const existEmails = [
-    //   { email: "emmanuelakwuba57@gmail.com", url: "co.za" },
-    //   { email: "tobiasomeyi@gmail.com", url: "co.za" },
-    // ];
+    const comEmails = existEmails
+      .filter((item) => item.url === "com")
+      .map((item) => item.email);
+    const cozaEmails = existEmails
+      .filter((item) => item.url === "co.za")
+      .map((item) => item.email);
 
-    for (const existEmail of existEmails) {
-      console.log(existEmail.email);
-      await sendEmail({
-        to: existEmail.email,
-        subject: emailType.subject,
-        template: emailType.template,
-        context: {
-          url: existEmail.url,
-          products:
-            existEmail.url === 'com' ? productsInPairsNGN : productsInPairsZAR,
-        },
-      });
+    const emailPromises = [];
+    if (productsInPairsZAR.length > 0) {
+      for (const cozaEmail of cozaEmails) {
+        await sendEmail({
+          to: cozaEmail,
+          subject: emailType.subject,
+          template: emailType.template,
+          context: {
+            url: "co.za",
+            products: productsInPairsZAR,
+          },
+        });
+      }
     }
 
-    // Add your logic here
+    if (comEmails.length > 0 && productsInPairsNGN.length > 0) {
+      for (const comEmail of comEmails) {
+        await sendEmail({
+          to: comEmail,
+          subject: emailType.subject,
+          template: emailType.template,
+          context: {
+            url: "com",
+            products: productsInPairsNGN,
+          },
+        });
+      }
+    }
+
+    existUsers.forEach((user) => {
+      const content = {
+        io,
+        receiverId: user._id,
+        senderId: req.user._id,
+        title: "Hunt It * Thrift It * Flaunt It!",
+        emailMessages: fillEmailContent("Hunt It * Thrift It * Flaunt It!", {
+          USERNAME: user.username,
+          EMAIL: user.email,
+        }),
+      };
+      // sendEmailMessage(content);
+    });
   } catch (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     // Handle the error
   }
 };
@@ -732,46 +759,221 @@ export const sendEmailMessage = async ({
   senderId,
   receiverId,
   title,
-  text,
-  image,
-  link,
+  emailMessages,
   io,
-  senderImage = 'https://repeddle.com/images/pimage.png', // Default sender image
+  senderImage = "https://repeddle.com/images/pimage.png", // Default sender image
 }) => {
   try {
-    console.log('console');
     // Create a new conversation
-    const conversation = await Conversation.create({
-      members: [senderId, receiverId],
-      userId: receiverId,
-      conversationType: 'user',
-      canReply: false,
-    });
-
-    // Create a new message
-    const newMessage = await Message.create({
-      conversationId: conversation._id,
-      sender: senderId,
-      text,
-      image,
-      link,
-    });
-
+    // const conversation = await Conversation.create({
+    //   members: [senderId, receiverId],
+    //   userId: receiverId,
+    //   conversationType: "user",
+    //   canReply: false,
+    // });
+    // // Create a new message
+    // const newMessage = await Message.create({
+    //   conversationId: conversation._id,
+    //   sender: senderId,
+    //   type: "email",
+    //   emailMessages,
+    //   text: title,
+    // });
     // Create a new notification
-    const notification = await Notification.create({
-      userId: receiverId,
-      itemId: conversation._id,
-      notifyType: 'message',
-      msg: title,
-      link: `/messages?conversation=${conversation._id}`,
-      mobile: { path: 'Conversation', id: '' },
-      userImage: senderImage,
-    });
-
+    // const notification = await Notification.create({
+    //   userId: receiverId,
+    //   itemId: conversation._id,
+    //   notifyType: "message",
+    //   msg: title,
+    //   link: `/messages?conversation=${conversation._id}`,
+    //   mobile: { path: "Conversation", id: "" },
+    //   userImage: senderImage,
+    // });
     // Emit a change_data event
-    io.emit('change_data');
+    // io.emit("change_data");
   } catch (error) {
     // Handle any errors here
-    console.error('Error sending email message:', error);
+    // console.error("Error sending email message:", error);
   }
 };
+
+export const sendAllEmail = () => {
+  const emailTemplete = [
+    {
+      subject: "HUNT IT - THRIFT IT - FLAUNT IT!",
+      template: "huntIt",
+    },
+    {
+      subject: "ORDER COMPLETED",
+      template: "ordercCompleted",
+    },
+    {
+      subject: "RETURN REFUNDED",
+      template: "returnRefunded",
+    },
+    {
+      subject: "WITHDRAWAL REQUESTED",
+      template: "withdrawalRequest",
+    },
+    {
+      subject: "REPEDDLE SUPPORT ",
+      template: "support",
+    },
+    { name: "Congrats 01", subject: "CONGRATULATION", template: "congrants01" },
+    { name: "Did you know", subject: "DID YOU KNOW", template: "doyouknow" },
+    {
+      name: "Hack",
+      subject: "Hacks on How to Make Your First Repeddle Sale!",
+      template: "hack",
+    },
+    {
+      name: "Pricing Your Listing",
+      subject: "PRICING YOUR LISTING",
+      template: "pricing",
+    },
+    {
+      name: "Let Our Community",
+      subject: "Let Our Community Get To Know You!",
+      template: "community",
+    },
+    {
+      name: "Performance tracking",
+      subject: "PERFORMANCE TRACKING",
+      template: "performanceTracking",
+    },
+    {
+      name: "Exciting announcement",
+      subject: "EXCITING ANNOUNCEMENT",
+      template: "exiciting",
+    },
+    {
+      name: "Challenging Fast Fashion",
+      subject: "CHALLENGING FAST FASHION POLLUTION IN AFRICA",
+      template: "challenging",
+    },
+    {
+      name: "How Repeddle Work",
+      subject: "HOW REPOEDDLE WORKS!",
+      template: "howRepeddleWork",
+    },
+    {
+      name: "Feature Update",
+      subject: "FEATURE UPDATE",
+      template: "featureUpdate",
+    },
+    {
+      name: "THRIFT FOR GOOD CAUSE",
+      subject: "THRIFT FOR GOOD CAUSE",
+      template: "goodCause",
+    },
+    {
+      subject: "PREPARING ORDER FOR DELIVERY",
+      template: "preparingOrder",
+    },
+    {
+      subject: "ORDER DISPATCHED",
+      template: "dispatchOrder",
+    },
+    {
+      subject: "ORDER IN TRANSIT",
+      template: "transitOrder",
+    },
+    {
+      subject: "ORDER DELIVERED",
+      template: "orderDelivered",
+    },
+    {
+      subject: "ORDER RECEIVED",
+      template: "orderReceive",
+    },
+    {
+      subject: "ORDER RETURN DISPATCHED",
+      template: "returnDispatched",
+    },
+    {
+      subject: "RETURN DELIVERED",
+      template: "returnDelivered",
+    },
+    {
+      subject: "RETURN RECEIVED",
+      template: "returnReceived",
+    },
+    {
+      subject: "Purchased Order Not Processed",
+      template: "refundOrder",
+    },
+    {
+      subject: "PROCESSING YOUR ORDER",
+      template: "processingOrder",
+    },
+    {
+      subject: "NEW ORDER",
+      template: "processingOrderSeller",
+    },
+    {
+      subject: "ORDER RETURN RECEIVED ",
+      template: "returnRequest",
+    },
+    {
+      subject: "ORDER RETURN DECLINED",
+      template: "returnDeclineBuyer",
+    },
+    {
+      subject: "ORDER RETURN APPROVED",
+      template: "returnAppoveBuyer",
+    },
+    {
+      subject: "ORDER RETURN APPROVED",
+      template: "returnAppoveSeller",
+    },
+    {
+      subject: "WELCOME TO REPEDDLE ",
+      template: "welcome",
+    },
+    {
+      subject: "EMAIL VERIFIED SUCCESSFULLY",
+      template: "successEmail",
+    },
+    {
+      subject: "PASSWORD RESET ",
+      template: "passwordReset",
+    },
+    {
+      subject: "PASSWORD SUCCESSFULLY RESET",
+      template: "passwordResetSuccess",
+    },
+    {
+      subject: "VERIFY YOUR EMAIL",
+      template: "verifyEmail",
+    },
+  ];
+
+  const email = "repeddleapp@gmail.com";
+
+  emailTemplete.forEach(async (emailType) => {
+    // await sendEmail({
+    //   to: email,
+    //   subject: emailType.subject,
+    //   template: emailType.template,
+    //   context: {
+    //     url: "co.za",
+    //   },
+    // });
+  });
+};
+
+export function fillEmailContent(title, content) {
+  const email = messageEmails.find((email) => email.title === title);
+  if (email) {
+    email.textArray.forEach((item) => {
+      if (item.type === "div") {
+        Object.keys(content).forEach((key) => {
+          item.content = item.content.replace(key, content[key]);
+        });
+      }
+    });
+    return email.textArray;
+  } else {
+    return null;
+  }
+}

@@ -58,7 +58,7 @@ const Links = styled.span`
   width: max-content;
   border-bottom: 1px solid
     ${(props) =>
-      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"}; ;
+      props.mode === "pagebodydark" ? "var(--dark-ev3)" : "var(--light-ev3)"};
 `;
 const Percentage = styled.div`
   display: flex;
@@ -181,7 +181,8 @@ export default function FeatureInfo({ type, number }) {
         <Left>
           <Title>{data.title}</Title>
           <Counter>
-            {data.isMoney && currency} {number}
+            {data.isMoney && currency}{" "}
+            {data.isMoney ? number.toFixed(2) : number}
           </Counter>
           {data.to && (
             <Links>

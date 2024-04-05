@@ -3,9 +3,11 @@ import {
   confirmPayfast,
   creditAccount,
   debitAccount,
+  fillEmailContent,
   isAdmin,
   isAuth,
   sendEmail,
+  sendEmailMessage,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
@@ -222,6 +224,19 @@ transactionRouter.post(
               sellerId: order.orderItems[0].seller._id,
             },
           });
+          const content = {
+            io,
+            receiverId: order.user._id,
+            senderId: req.user._id,
+            title: "Your Order Is Being Processed ",
+            emailMessages: fillEmailContent("Your Order Is Being Processed ", {
+              USERNAME: order.user.username,
+              ORDERID: order._id,
+              EMAIL: order.user.email,
+            }),
+          };
+          sendEmailMessage(content);
+
           sellers.map((seller) => {
             sendEmail({
               to: seller.email,
@@ -240,6 +255,18 @@ transactionRouter.post(
                 sellerId: order.orderItems[0].seller._id,
               },
             });
+            const content = {
+              io,
+              receiverId: seller._id,
+              senderId: req.user._id,
+              title: "New Order To Process",
+              emailMessages: fillEmailContent("New Order To Process", {
+                USERNAME: seller.username,
+                ORDERID: order._id,
+                EMAIL: seller.email,
+              }),
+            };
+            sendEmailMessage(content);
           });
         } else {
           res.status(404).send({ message: "Order Not Found" });

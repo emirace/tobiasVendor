@@ -19,6 +19,7 @@ import WalletModel from "../component/wallet/WalletModel";
 import PayFund from "../component/wallet/PayFund";
 import { socket } from "../App";
 import PayFast from "../component/PayFast";
+import Paystack from "../component/payments/Paystack";
 
 const Container = styled.div`
   display: flex;
@@ -703,11 +704,12 @@ export default function PlaceOrderScreen() {
                       Proceed to Payment
                     </Button>
                   ) : region() === "ZAR" ? (
-                    <PayFast
-                      userInfo={userInfo}
-                      placeOrderHandler={placeOrderHandler}
-                      totalPrice={cart.totalPrice}
-                    />
+                    // <PayFast
+                    //   userInfo={userInfo}
+                    //   placeOrderHandler={placeOrderHandler}
+                    //   totalPrice={cart.totalPrice}
+                    // />
+                    <Paystack amount={cart.totalPrice} onApprove={onApprove} />
                   ) : (
                     <FlutterWave
                       amount={cart.totalPrice}

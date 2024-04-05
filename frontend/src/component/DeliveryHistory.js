@@ -187,7 +187,7 @@ export default function DeliveryHistory({ status }) {
               >
                 <FontAwesomeIcon color="white" icon={faCheck} />
               </Box>
-              <Text>Refund Buyer</Text>
+              <Text>Buyer Refund</Text>
             </BoxCont>
 
             <Line />

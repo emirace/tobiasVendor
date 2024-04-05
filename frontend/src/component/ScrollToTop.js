@@ -11,7 +11,6 @@ const ScrollToTop = ({ children }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log("pathname", pathname);
   }, [pathname]);
 
   return children || null;
@@ -32,7 +31,6 @@ const useScrollToTop = () => {
   const scrollToTop = () => window.scrollTo(0, 0);
 
   useEffect(() => {
-    console.log("pathname", pathname);
     scrollToTop();
   }, [pathname, isPop]);
 

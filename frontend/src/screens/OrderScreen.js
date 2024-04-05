@@ -6,10 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Card from "react-bootstrap/Card";
+import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingBox from "../component/LoadingBox";
@@ -21,7 +18,6 @@ import {
   getError,
   timeDifference,
 } from "../utils";
-import ListGroup from "react-bootstrap/ListGroup";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import moment from "moment";
@@ -398,6 +394,12 @@ const IconCont = styled.div`
   }
 `;
 
+const Cancel = styled.div`
+  cursor: pointer;
+  color: red;
+  margin-top: 5px;
+`;
+
 function reducer(state, action) {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -436,6 +438,13 @@ function reducer(state, action) {
       return state;
   }
 }
+
+export const daydiff = (start, end) => {
+  if (!start) return null;
+  const startNum = timeDifference(new window.Date(start), new window.Date());
+  console.log("startNum", start, end - startNum);
+  return end - startNum;
+};
 
 export default function OrderScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -649,9 +658,6 @@ export default function OrderScreen() {
     }
   }
 
-  const daydiff = (start, end) =>
-    start && end - timeDifference(new window.Date(start), new window.Date());
-
   var itemsPrice = 0;
   var shippingPrice = 0;
 
@@ -864,6 +870,36 @@ export default function OrderScreen() {
       });
   }
 
+  const handleCancelOrder = async (itemId) => {
+    try {
+      axios.put(
+        `/api/orders/cancel/${orderId}/${itemId}`,
+        {},
+        {
+          headers: { authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Order cancel succcessfully",
+          showStatus: true,
+          state1: "visible1 success",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: getError(error),
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
+  };
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -906,19 +942,7 @@ export default function OrderScreen() {
           }}
         >
           <Heading>Items in your order</Heading>
-          {!isSeller &&
-            daydiff(order.deliveredAt, 3) >= 0 &&
-            deliveryNumber(order.deliveryStatus) > 3 && (
-              <div
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowReturn(true)}
-              >
-                <b>Log a return</b>
-                <div style={{ color: "red" }}>
-                  {daydiff(order.deliveredAt, 3)} days left
-                </div>
-              </div>
-            )}
+
           <ModelLogin setShowModel={setShowReturn} showModel={showReturn}>
             <Return
               deliverOrderHandler={deliverOrderHandler}
@@ -1123,6 +1147,11 @@ export default function OrderScreen() {
                     </SetStatus>
                   )}
                 </SubSumaryContDetails>
+                {userInfo?.isAdmin && (
+                  <Cancel onClick={() => handleCancelOrder(orderitem._id)}>
+                    Cancel Order
+                  </Cancel>
+                )}
                 <hr />
                 <DetailButton>
                   <OrderItem>
@@ -1359,6 +1388,38 @@ export default function OrderScreen() {
                   </label>
                 )}
               </Cont123>
+              {deliveryNumber(orderitem.deliveryStatus) > 3 && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                    onClick={() => setShowReturn(true)}
+                  >
+                    <b>Log a return</b>
+                  </div>
+                  {daydiff(orderitem.deliveredAt, 3) >= 0 && (
+                    <div style={{ color: "red" }}>
+                      {daydiff(orderitem.deliveredAt, 3)} days left
+                    </div>
+                  )}
+                </div>
+              )}
+              {userInfo?.isAdmin && (
+                <Cancel onClick={() => handleCancelOrder(orderitem._id)}>
+                  Cancel Order
+                </Cancel>
+              )}
               <hr />
               <DetailButton>
                 <OrderItem>

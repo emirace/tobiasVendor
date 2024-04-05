@@ -8,6 +8,7 @@ import { socket } from "../App";
 import { Store } from "../Store";
 import { getError } from "../utils";
 import MessageImage from "./MessageImage";
+import { FaTrash } from "react-icons/fa";
 
 const Container = styled.div`
   margin-top: 15px;
@@ -121,6 +122,12 @@ const Textarea = styled.textarea`
 const CommentImg = styled.img`
   margin-top: 5px;
   width: 200px;
+`;
+
+const Delete = styled.div`
+  color: red;
+  margin-left: 10px;
+  cursor: pointer;
 `;
 
 export default function Comment({ commentC, product }) {
@@ -307,6 +314,24 @@ export default function Comment({ commentC, product }) {
     }
   };
 
+  const deleteComment = async () => {
+    try {
+      const { data } = await axios.delete(`/api/comments/${comment._id}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "Comment deleted successfully",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    } catch (err) {
+      console.log(getError(err));
+    }
+  };
+
   return (
     <>
       <Container mode={mode}>
@@ -316,6 +341,11 @@ export default function Comment({ commentC, product }) {
             <Top>
               <Name>{comment.name}</Name>
               <Time>{format(comment.createdAt)}</Time>
+              {userInfo && userInfo.isAdmin && (
+                <Delete onClick={deleteComment}>
+                  <FaTrash />
+                </Delete>
+              )}
             </Top>
             <CommentText>{comment.comment}</CommentText>
             <Action>

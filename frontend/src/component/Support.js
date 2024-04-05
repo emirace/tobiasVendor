@@ -298,7 +298,6 @@ export default function Support() {
   });
 
   const CurrentPath = location.pathname;
-  console.log("notifications", notifications);
   const supportNotification = notifications.filter(
     (x) => x.notifyType === "supportReceived" && x.read === false
   );
@@ -343,12 +342,10 @@ export default function Support() {
     } else {
       setDisplaySupport(true);
     }
-    console.log(CurrentPath);
   }, [CurrentPath]);
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      console.log(data);
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -360,8 +357,6 @@ export default function Support() {
   useEffect(() => {
     if (arrivalMessage && currentChat) {
       if (currentChat._id === arrivalMessage.message.conversationId) {
-        console.log(arrivalMessage);
-
         setMessages([...messages, arrivalMessage.message]);
       }
     }
@@ -369,7 +364,6 @@ export default function Support() {
 
   useEffect(() => {
     scrollref.current?.scrollIntoView({ behavior: "smooth" });
-    console.log(scrollref.current);
   }, [messages, showSupport]);
 
   useEffect(() => {
@@ -421,7 +415,6 @@ export default function Support() {
   };
 
   const addConversation = async (user) => {
-    console.log(userInfo);
     try {
       const { data } = await axios.post(`/api/conversations/support`, {
         recieverId: user._id,
@@ -461,11 +454,9 @@ export default function Support() {
       setSendingMessage(true);
       const { data } = await axios.post("api/messages/support", message1);
       setMessages([...messages, data.message]);
-      console.log("heeellllooo");
       const receiverId = currentChat.members.find(
         (member) => member !== user._id
       );
-      console.log(receiverId, currentChat, user);
       socket.emit("sendSupport", {
         message: data.message,
         senderId: user._id,
@@ -502,7 +493,6 @@ export default function Support() {
   };
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !sendingMessage) {
-      console.log("keypress");
       handleSubmit(e);
     }
   };
@@ -624,7 +614,6 @@ export default function Support() {
                         style={{ display: "none" }}
                         onChange={handleImageUpload}
                       />
-                      {console.log("sendingMessage", sendingMessage)}
                       <FontAwesomeIcon
                         onClick={(e) =>
                           sendingMessage ? null : handleSubmit(e)
@@ -730,7 +719,6 @@ export default function Support() {
               </BoxCont>
             )}
             <CloseButton onClick={() => setShowSupport(false)}>
-              {console.log(showSupport)}
               <CgChevronDown className="bigicon" />
             </CloseButton>
           </Box>

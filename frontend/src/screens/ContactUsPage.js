@@ -161,6 +161,7 @@ const ContactUs = () => {
         <option value="">Select a category</option>
         <option value="General Inquiry">General Inquiry</option>
         <option value="Support">Support</option>
+        <option value="Support">Suggestions</option>
         <option value="Feedback">Feedback</option>
         {/* Add more categories here */}
       </FormSelect>

@@ -9,6 +9,8 @@ import {
   payShippingFee,
   checkStatus,
   setTimer,
+  sendEmailMessage,
+  fillEmailContent,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Order from "../models/orderModel.js";
@@ -24,6 +26,10 @@ import Return from "../models/returnModel.js";
 import RebundleSeller from "../models/rebuldleSellerModel.js";
 import crypto from "crypto";
 import Notification from "../models/notificationModel.js";
+import paystack from "paystack";
+
+const secretKey = process.env.PAYSTACK_SECRET_KEY;
+const paystackInstance = paystack(secretKey);
 
 dotenv.config();
 const flw = new Flutterwave(
@@ -497,6 +503,78 @@ const getAddress = (orderItem) => {
 };
 
 orderRouter.put(
+  "/cancel/:orderId/:productId",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { orderId, productId } = req.params;
+
+      const order = await Order.findById(orderId)
+        .populate({
+          path: "user",
+          select: "email username",
+        })
+        .populate("orderItems.product");
+
+      if (!order) {
+        return res.status(404).send("Order not found");
+      }
+
+      const orderItemIndex = order.orderItems.findIndex(
+        (item) => String(item._id) === String(productId)
+      );
+
+      if (orderItemIndex === -1) {
+        return res.status(404).send({ message: "Order item not found" });
+      }
+
+      const orderItem = order.orderItems[orderItemIndex];
+
+      const p = await Product.findById(orderItem._id);
+
+      p.sold = false;
+      p.countInStock = p.countInStock + orderItem.quantity;
+      p.soldAll = false;
+
+      p.sizes = p.sizes.map((size) => {
+        return size.size === orderItem.selectSize
+          ? { ...size, value: `${Number(size.value) + orderItem.quantity}` }
+          : size;
+      });
+
+      const userIndex = p.userBuy.indexOf(req.user._id);
+      if (userIndex !== -1) {
+        p.userBuy.splice(userIndex, 1);
+      }
+
+      const seller = await User.findById(p.seller);
+
+      const sellerIndex = seller.sold.indexOf(p._id);
+      if (sellerIndex !== -1) {
+        seller.sold.splice(sellerIndex, 1);
+      }
+
+      seller.earnings = seller.earnings - p.actualPrice;
+
+      await seller.save();
+      await p.save();
+
+      order.orderItems[orderItemIndex] = orderItem;
+
+      const savedOrder = await order.save();
+
+      res.status(200).send({
+        message: "Order canceled successfully",
+        savedOrder,
+      });
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  })
+);
+
+orderRouter.put(
   "/:id/deliver/:productId",
   isAuth,
   expressAsyncHandler(async (req, res) => {
@@ -566,6 +644,7 @@ orderRouter.put(
         subject: "",
         template: "",
         context: {},
+        content: {},
       };
 
       const returned = await Return.findOne({
@@ -584,6 +663,15 @@ orderRouter.put(
             orderId: order._id,
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Order Is Being Processed ";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+            SELLER: order.orderItems[0].seller.username,
+          };
           break;
         case "Dispatched":
           emailOptions.to = order.user.email;
@@ -596,6 +684,14 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
             trackId: orderItem.trackingNumber,
+          };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Order Dispatched.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
           };
           setTimer(
             io,
@@ -618,6 +714,14 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Order Is In Transit.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+          };
           break;
         case "Delivered":
           emailOptions.to = order.user.email;
@@ -631,6 +735,15 @@ orderRouter.put(
             deliveryMethod: orderItem.deliverySelect["delivery Option"],
             orderItems: order.orderItems,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = "Your Order Has Been Delivered.";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+            ADDRESS: getAddress(orderItem),
+          };
+          DELIVERYMETHOD: orderItem.deliverySelect["delivery Option"];
           setTimer(
             io,
             order.user._id,
@@ -650,6 +763,14 @@ orderRouter.put(
             url: orderItem.region === "NGN" ? "com" : "co.za",
             orderId: order._id,
             orderItems: order.orderItems,
+          };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Your Order Has Been Received.";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
           };
 
           // Clear the existing timer if it exists
@@ -675,6 +796,15 @@ orderRouter.put(
             trackId: orderItem.returnTrackingNumber,
             returnId: returned ? returned._id : "",
           };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Return Dispatched.";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
+            RETURNID: returned ? returned._id : "",
+          };
           setTimer(
             io,
             order.user._id,
@@ -699,6 +829,16 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
             orderItems: [orderItem],
           };
+          emailOptions.receiverId = orderItem.seller._id;
+          emailOptions.senderId = order.user._id;
+          emailOptions.title = "Your Return Has Been Delivered";
+          emailOptions.content = {
+            USERNAME: orderItem.seller.username,
+            ORDERID: order._id,
+            EMAIL: orderItem.seller.email,
+            RETURNID: returned ? returned._id : "",
+            ADDRESS: getAddress(orderItem),
+          };
           setTimer(
             io,
             orderItem.seller._id,
@@ -722,6 +862,15 @@ orderRouter.put(
             returnId: returned ? returned._id : "",
           };
 
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Your Return Has Been Received";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            RETURNID: returned ? returned._id : "",
+            EMAIL: order.user.email,
+          };
+
           // Clear the existing timer if it exists
           if (orderItem.notifications) {
             const currentDateTime = new Date();
@@ -743,6 +892,14 @@ orderRouter.put(
             orderId: order._id,
             user: order.user.username,
           };
+          emailOptions.receiverId = order.user._id;
+          emailOptions.senderId = orderItem.seller._id;
+          emailOptions.title = "Purchased Order Not Processed";
+          emailOptions.content = {
+            USERNAME: order.user.username,
+            ORDERID: order._id,
+            EMAIL: order.user.email,
+          };
 
           // Clear the existing timer if it exists
           if (orderItem.notifications) {
@@ -761,6 +918,17 @@ orderRouter.put(
 
       if (emailOptions.to) {
         await sendEmail(emailOptions);
+        const content = {
+          io,
+          receiverId: emailOptions.receiverId,
+          senderId: emailOptions.senderId,
+          title: emailOptions.title,
+          emailMessages: fillEmailContent(
+            emailOptions.title,
+            emailOptions.content
+          ),
+        };
+        sendEmailMessage(content);
       }
 
       res.send({ message: "Order delivery status changed" });
@@ -1196,8 +1364,7 @@ orderRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
-    const { transaction_id } = req.body;
-    const { method } = req.body;
+    const { transaction_id, method, type } = req.body;
     var response;
     try {
       const io = req.app.get("io");
@@ -1211,13 +1378,16 @@ orderRouter.put(
           response = { data: { status: "failed" } };
         }
       } else {
-        if (region === "N ") {
+        if (type === "flutterwave") {
           response = await flw.Transaction.verify({ id: transaction_id });
-        } else {
-          response = await flw.Transaction.verify({ id: transaction_id });
+        } else if (type === "paystack") {
+          response = await paystackInstance.transaction.verify(transaction_id);
         }
       }
-      if (response?.data?.status === "successful") {
+      if (
+        response?.data?.status === "successful" ||
+        response?.data?.status === "success"
+      ) {
         const order = await Order.findById(req.params.id).populate({
           path: "user",
           select: "email username",
@@ -1308,7 +1478,20 @@ orderRouter.put(
               sellerId: order.orderItems[0].seller._id,
             },
           });
-          console.log(sellers);
+          const content = {
+            io,
+            receiverId: order.user._id,
+            senderId: order.orderItems[0].seller._id,
+            title: "Your Order Is Being Processed ",
+            emailMessages: fillEmailContent("Your Order Is Being Processed ", {
+              USERNAME: order.user.username,
+              ORDERID: order._id,
+              EMAIL: order.user.email,
+              SELLER: order.orderItems[0].seller.username,
+            }),
+          };
+          sendEmailMessage(content);
+
           sellers.map((seller) => {
             sendEmail({
               to: seller.email,
@@ -1327,13 +1510,26 @@ orderRouter.put(
                 sellerId: order.orderItems[0].seller._id,
               },
             });
+            const content1 = {
+              io,
+              receiverId: seller._id,
+              senderId: order.user._id,
+              title: "New Order To Process",
+              emailMessages: fillEmailContent("New Order To Process", {
+                USERNAME: seller.username,
+                ORDERID: order._id,
+                EMAIL: seller.email,
+                BUYER: order.user.username,
+              }),
+            };
+            sendEmailMessage(content1);
           });
           res.send({ message: "Order Paid", order: updateOrder });
         } else {
           res.status(404).send({ message: "Order Not Found" });
         }
       } else {
-        res.send("error making payment");
+        res.status(500).send("error making payment");
       }
     } catch (error) {
       console.log("error", error);

@@ -61,6 +61,7 @@ const Filter = styled.div`
 
 const Wrapper = styled.div`
   padding: 20px;
+  padding-top: 40px;
 `;
 const Menu = styled.div`
   margin-bottom: 10px;

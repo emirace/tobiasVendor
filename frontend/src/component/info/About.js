@@ -124,6 +124,22 @@ const ThinkBold = styled.div`
   text-align: center;
 `;
 
+const ComingSoon = styled.h3`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: bold;
+  color: white;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  text-shadow: #000 1px 0 10px;
+  text-align: center;
+  white-space: nowrap;
+  @media (max-width: 992px) {
+    font-size: 30px;
+  }
+`;
+
 export default function About() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -217,7 +233,7 @@ export default function About() {
       </Section>
       <Section>
         <SubHeading>NOW, LET'S GO PEDDLE; DOWNLOAD OUR APP</SubHeading>
-        <Row>
+        <Row style={{ position: "relative" }}>
           <Image2Cont>
             <Image2
               src="https://res.cloudinary.com/emirace/image/upload/v1661221990/andhika-soreng-XuJ9qu47S2c-unsplash_po2ujf.webp"
@@ -232,6 +248,7 @@ export default function About() {
             />
             <DownloadCont src="/images/gp.png" alt="playstore" />
           </Image2Cont>
+          <ComingSoon>COMING SOON</ComingSoon>
         </Row>
 
         <Link to="/sell">

@@ -2,10 +2,12 @@ import express from "express";
 import {
   creditAccount,
   debitAccount,
+  fillEmailContent,
   isAdmin,
   isAuth,
   isAuthOrNot,
   sendEmail,
+  sendEmailMessage,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Transaction from "../models/transactionModel.js";
@@ -17,8 +19,14 @@ import Flutterwave from "flutterwave-node-v3";
 import User from "../models/userModel.js";
 import Return from "../models/returnModel.js";
 import Order from "../models/orderModel.js";
+import paystack from "paystack";
+import Payment from "../models/paymentModel.js";
 
 dotenv.config();
+
+const secretKey = process.env.PAYSTACK_SECRET_KEY;
+const paystackInstance = paystack(secretKey);
+
 const flw = new Flutterwave(
   process.env.FLW_PUBLIC_KEY,
   process.env.FLW_SECRET_KEY
@@ -75,11 +83,73 @@ accountRouter.get(
   })
 );
 
+accountRouter.get(
+  "/bank/:country",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { country } = req.params;
+      const banks = await getBank(country);
+      res.status(200).send({ banks });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: "Internal server error",
+      });
+    }
+  })
+);
+
+accountRouter.post(
+  "/:region/bankaccount/:id",
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { bankName, accountNumber, accountName } = req.body;
+      const { region, id } = req.params;
+
+      const user = await User.findById(id);
+
+      console.log(!user.bankName, req.user.isAdmin);
+      if (!user.bankName || req.user.isAdmin) {
+        user.bankName = bankName.name;
+        user.accountNumber = accountNumber;
+        user.accountName = accountName;
+
+        const recipient = await transferRecipient({
+          region,
+          accountName,
+          accountNumber,
+          bank_code: bankName.code,
+        });
+
+        user.recipientCode = recipient;
+
+        const newUser = await user.save();
+
+        res.status(200).send({
+          message: "Bank account details updated successfully.",
+        });
+      } else {
+        res.status(400).send({
+          message: "You are not allowed to update your account again.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "Internal server error. Please try again later.",
+      });
+    }
+  })
+);
+
 accountRouter.post(
   "/:region/deposit",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
+    const io = req.app.get("io");
     var account;
     if (req.body.userId === "Admin") {
       const admin = await User.findOne({
@@ -130,11 +200,21 @@ accountRouter.post(
                 orderItems: order.orderItems,
               },
             });
+            const content = {
+              io,
+              receiverId: user._id,
+              senderId: req.user._id,
+              title: "Order Payment Received.",
+              emailMessages: fillEmailContent("Order Payment Received.", {
+                USERNAME: user.username,
+                EMAIL: user.email,
+              }),
+            };
+            sendEmailMessage(content);
           }
           if (req.body.purpose === "Return Completed") {
             const returned = await Return.findOne({ orderId: order._id });
             if (returned) {
-              console.log("gddddfg return complete 222");
               sendEmail({
                 to: user.email,
                 subject: "RETURN REFUNDED",
@@ -144,9 +224,22 @@ accountRouter.post(
                   url: user.region === "NGN" ? "com" : "co.za",
                   orderItems: order.orderItems,
                   returnId: returned?._id,
-                  amount: amount,
+                  amount,
                 },
               });
+              const content = {
+                io,
+                receiverId: user._id,
+                senderId: req.user._id,
+                title: "Return Refunded.",
+                emailMessages: fillEmailContent("Return Refunded.", {
+                  USERNAME: user.username,
+                  EMAIL: user.email,
+                  RETURNID: returned._id,
+                  AMOUNT: amount,
+                }),
+              };
+              sendEmailMessage(content);
             } else {
               throw {
                 success: false,
@@ -298,10 +391,18 @@ accountRouter.post(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     try {
-      const { transaction_id } = req.body;
-      const response = await flw.Transaction.verify({ id: transaction_id });
-      console.log(response);
-      if (response.data.status === "successful") {
+      const { transaction_id, type } = req.body;
+
+      var response;
+      if (type === "flutterwave") {
+        response = await flw.Transaction.verify({ id: transaction_id });
+      } else if (type === "paystack") {
+        response = await paystackInstance.transaction.verify(transaction_id);
+      }
+      if (
+        response?.data?.status === "successful" ||
+        response?.data?.status === "success"
+      ) {
         const recipientId = await Account.findOne({ userId: req.user._id });
         const admin = await User.findOne({
           email:
@@ -313,13 +414,10 @@ accountRouter.post(
         const senderId = await Account.findOne({ userId: admin._id });
         const { amount } = response.data;
         // const transaction_id = v4();
-        console.log(amount);
-        console.log(recipientId._id, senderId._id);
         if (senderId && recipientId && amount > 0) {
           const purpose = "transfer";
-          console.log(amount);
           const debitResult = await debitAccount({
-            amount,
+            amount: type === "paystack" ? amount / 100 : amount,
             accountId: senderId._id,
             purpose,
             metadata: {
@@ -328,10 +426,9 @@ accountRouter.post(
               purpose: req.body.purpose,
             },
           });
-          console.log(debitResult);
           if (debitResult.success) {
             await creditAccount({
-              amount,
+              amount: type === "paystack" ? amount / 100 : amount,
               accountId: recipientId._id,
               purpose,
               metadata: {
@@ -393,7 +490,6 @@ accountRouter.post(
       reference: v4(),
       // reference: "dfs23fhr7ntg0293039_PMCKDU_1",
     };
-    console.log(req.body, req.params, details);
     if (req.params.region === "NGN") {
       flw.Transfer.initiate(details).then(console.log).catch(console.log);
     }
@@ -432,6 +528,76 @@ accountRouter.post(
       success: true,
       message: "transfer successful",
     });
+  })
+);
+
+accountRouter.post(
+  "/:region/paystack/payaccount",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const { paymentId } = req.body;
+      const { region } = req.params;
+
+      const payment = await Payment.findById(paymentId);
+
+      if (!payment) {
+        return res.status(404).send({ message: "Payment not found " });
+      }
+
+      const user = await User.findById(payment.userId._id);
+
+      if (!user.recipientCode) {
+        const banks = await getBank(
+          region === "ZAR" ? "south africa" : "nigeria"
+        );
+        const bank_code = banks.data.find(
+          (bank) => bank.name === user.bankName
+        );
+        if (!bank_code) {
+          return res.status(404).send({ message: "Bank code not found" });
+        }
+        const recipient = await transferRecipient({
+          region,
+          accountName: user.accountName,
+          accountNumber: user.accountNumber.toString(),
+          bank_code: bank_code.code,
+        });
+        user.recipientCode = recipient;
+
+        await user.save();
+      }
+
+      const params = {
+        source: "balance",
+        reason: "Withdrawal Request",
+        amount: payment.amount * 100,
+        reference: v4(),
+        recipient: user.recipientCode,
+      };
+
+      const options = {
+        method: "post",
+        url: "https://api.paystack.co/transfer",
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+        },
+        data: params,
+      };
+
+      const response = await axios(options);
+
+      payment.status = "Approved";
+      const newpayment = await payment.save();
+      res.status(200).send(newpayment);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        message: error.message,
+      });
+    }
   })
 );
 
@@ -490,3 +656,45 @@ accountRouter.post(
 );
 
 export default accountRouter;
+
+export const transferRecipient = async ({
+  region,
+  accountName,
+  accountNumber,
+  bank_code,
+}) => {
+  const params = {
+    type: region === "ZAR" ? "basa" : "nuban",
+    name: accountName,
+    account_number: accountNumber,
+    bank_code,
+    currency: region,
+  };
+
+  const options = {
+    method: "post",
+    url: "https://api.paystack.co/transferrecipient",
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/json",
+    },
+    data: params,
+  };
+
+  const response = await axios(options);
+
+  return response.data.data.recipient_code;
+};
+
+export const getBank = async (country) => {
+  const options = {
+    method: "get",
+    url: `https://api.paystack.co/bank?country=${country}`,
+    headers: {
+      Authorization: `Bearer ${secretKey}`,
+    },
+  };
+
+  const response = await axios(options);
+  return response.data;
+};

@@ -136,12 +136,15 @@ export default function ProductList() {
   };
   const isSellerMode = sellerMode();
   const [productsQuery, setProductsQuery] = useState("all");
+
   useEffect(() => {
     const fetchAllProduct = async () => {
       try {
         dispatch({ type: "USERS_FETCH" });
         const { data } = await axios.get(
-          `/api/products/seller/search/${userInfo._id}?q=${productsQuery}`,
+          `/api/products/seller/search/${
+            userInfo._id
+          }?q=${productsQuery}&pageSize=${100}`,
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
@@ -389,8 +392,8 @@ export default function ProductList() {
         rows={rows}
         columns={columns}
         disableSelectionOnClick
-        pageSize={10}
-        rowsPerPageOptions={[5]}
+        pageSize={40}
+        rowsPerPageOptions={[10, 20, 40]}
         checkboxSelection
       />
     </ProductLists>

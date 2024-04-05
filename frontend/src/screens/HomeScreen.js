@@ -194,6 +194,23 @@ const BrandSearch = styled.div`
   }
 `;
 
+const ComingSoon = styled.h3`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-weight: bold;
+  color: black;
+  font-size: 50px;
+  transform: translate(-50%, -50%);
+  text-shadow: #fff 1px 0 10px;
+  text-align: center;
+  white-space: nowrap;
+  @media (max-width: 992px) {
+    font-size: 30px;
+    transform: translate(-50%, -80%);
+  }
+`;
+
 export default function ProductsScreen() {
   const { state } = useContext(Store);
   const { mode } = state;
@@ -212,7 +229,6 @@ export default function ProductsScreen() {
       dispatch({ type: "FETCH_REQUEST" });
       try {
         const { data } = await axios.get(`/api/products/${region()}/all`);
-        console.log(data);
         dispatch({
           type: "FETCH_SUCCESS",
           payload: data,
@@ -243,7 +259,6 @@ export default function ProductsScreen() {
       try {
         const { data } = await axios.get(`/api/users/${region()}/influencer`);
         setInfluencerList(data);
-        console.log("influence", data);
       } catch (err) {}
     };
     getInfluencer();
@@ -553,6 +568,7 @@ export default function ProductsScreen() {
                 src="/images/phonescreen.png"
                 alt="app"
               />
+              <ComingSoon>COMING SOON</ComingSoon>
             </div>
           </div>
         </AppSection>
@@ -640,9 +656,7 @@ export default function ProductsScreen() {
                 {sellers.length === 0 && (
                   <MessageBox>No Seller Found</MessageBox>
                 )}
-                {console.log("seller", sellers)}
                 <Seller className="scroll_snap">
-                  {console.log(sellers, products)}
                   {sellers &&
                     sellers.length > 0 &&
                     sellers.map((seller, index) => (

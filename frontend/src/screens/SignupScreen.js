@@ -179,20 +179,32 @@ export default function SignupScreen() {
   };
 
   async function apiAuthenticate(accessToken) {
-    // authenticate with the api using a facebook access token,
-    // on success the api returns an account object with a JWT auth token
-    const response = await axios.post(`/api/users/${region()}/facebook`, {
-      accessToken,
-    });
-    const account = response.data;
-    mixpanel.track("Signed Up", {
-      "Signup Type": "Facebook",
-    });
-    //signin here
-    ctxDispatch({ type: "USER_SIGNIN", payload: account });
-    localStorage.setItem("userInfo", JSON.stringify(account));
-    window.location.href = `${redirect}?redirect=${redirect}`;
+    try {
+      // authenticate with the api using a facebook access token,
+      // on success the api returns an account object with a JWT auth token
+      const response = await axios.post(`/api/users/${region()}/facebook`, {
+        accessToken,
+      });
+      const account = response.data;
+      mixpanel.track("Signed Up", {
+        "Signup Type": "Facebook",
+      });
+      //signin here
+      ctxDispatch({ type: "USER_SIGNIN", payload: account });
+      localStorage.setItem("userInfo", JSON.stringify(account));
+      window.location.href = `${redirect}?redirect=${redirect}`;
+    } catch (error) {
+      ctxDispatch({
+        type: "SHOW_TOAST",
+        payload: {
+          message: "You can't log in with facebook",
+          showStatus: true,
+          state1: "visible1 error",
+        },
+      });
+    }
   }
+
   const submitHandler = async () => {
     try {
       const { data } = await axios.post(`/api/users/${region()}/signup`, {

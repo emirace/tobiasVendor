@@ -1,14 +1,14 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import LoadingBox from '../component/LoadingBox';
-import MessageBox from '../component/MessageBox';
-import Rating from '../component/Rating';
-import { getError } from '../utils';
-import '../style/SellerScreen.css';
-import Product from '../component/Product';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
+import Rating from "../component/Rating";
+import { getError } from "../utils";
+import "../style/SellerScreen.css";
+import Product from "../component/Product";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBolt,
   faCirclePlus,
@@ -21,18 +21,18 @@ import {
   faStar,
   faTag,
   faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components';
-import { Store } from '../Store';
-import Model from '../component/Model';
-import ReviewLists from './ReviewLists';
-import ModelLogin from '../component/ModelLogin';
-import Report from '../component/Report';
-import { socket } from '../App';
-import WriteReview from '../component/WriteReview';
-import RebundlePoster from '../component/RebundlePoster';
-import { signoutHandler } from '../component/Navbar';
-import { logout } from '../hooks/initFacebookSdk';
+} from "@fortawesome/free-solid-svg-icons";
+import styled from "styled-components";
+import { Store } from "../Store";
+import Model from "../component/Model";
+import ReviewLists from "./ReviewLists";
+import ModelLogin from "../component/ModelLogin";
+import Report from "../component/Report";
+import { socket } from "../App";
+import WriteReview from "../component/WriteReview";
+import RebundlePoster from "../component/RebundlePoster";
+import { signoutHandler } from "../component/Navbar";
+import { logout } from "../hooks/initFacebookSdk";
 
 const Right = styled.div`
   flex: 7;
@@ -46,7 +46,7 @@ const Tab = styled.div`
   justify-content: center;
   margin-bottom: 5px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
 `;
 const TabItem = styled.div`
@@ -67,7 +67,7 @@ const TabItem = styled.div`
     color: var(--orange-color);
     font-weight: bold;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -78,22 +78,21 @@ const TabItem = styled.div`
   }
 `;
 const Content = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   padding: 10px;
   gap: 8px;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
-  height: 100%;
-  flex-wrap: wrap;
   @media (max-width: 992px) {
     padding: 0;
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 const ProductCont = styled.div`
   position: relative;
   display: flex;
-  width: 25%;
   justify-content: center;
   @media (max-width: 992px) {
     width: 162px;
@@ -116,10 +115,10 @@ const AddProduct = styled.div`
   align-items: center;
   flex-direction: column;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
   &:hover {
     background: ${(props) =>
-      props.mode === 'pagebodydark' ? 'var(--dark-ev4)' : 'var(--light-ev4)'};
+      props.mode === "pagebodydark" ? "var(--dark-ev4)" : "var(--light-ev4)"};
   }
   & svg {
     color: var(--orange-color);
@@ -135,7 +134,7 @@ const AddProduct = styled.div`
 
 const SellerLeft = styled.div`
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   border-radius: 0.2rem;
   position: relative;
   display: flex;
@@ -166,20 +165,33 @@ const ProfileUrl = styled.div`
   text-decoration: underline;
 `;
 
+const Next = styled.div`
+  border: 1px solid;
+  padding: 4px;
+  border-radius: 0.2rem;
+  width: 100px;
+  text-align: center;
+  font-weight: 500;
+  &:hover {
+    background: ${(props) =>
+      props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev3)"};
+  }
+`;
+
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'FETCH_USER_REQUEST':
+    case "FETCH_USER_REQUEST":
       return { ...state, loadingUser: true };
-    case 'FETCH_USER_SUCCESS':
+    case "FETCH_USER_SUCCESS":
       return {
         ...state,
         loadingUser: false,
         user: action.payload,
-        error: '',
+        error: "",
       };
-    case 'FETCH_PRODUCT_REQUEST':
+    case "FETCH_PRODUCT_REQUEST":
       return { ...state, loading: true };
-    case 'FETCH_PRODUCT_SUCCESS':
+    case "FETCH_PRODUCT_SUCCESS":
       return {
         ...state,
         products: action.payload.products,
@@ -187,7 +199,7 @@ const reducer = (state, action) => {
         pages: action.payload.pages,
         loading: false,
       };
-    case 'FETCH_PRODUCT_FAIL':
+    case "FETCH_PRODUCT_FAIL":
       return {
         ...state,
         loading: false,
@@ -208,7 +220,7 @@ export default function SellerScreen() {
   const { userInfo, mode } = state;
 
   const [sellerId, setSellerId] = useState(null);
-  const [displayTab, setDisplayTab] = useState('all');
+  const [displayTab, setDisplayTab] = useState("all");
   const [showLoginModel, setShowLoginModel] = useState(false);
   const [showModel, setShowModel] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -217,7 +229,7 @@ export default function SellerScreen() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const page = sp.get('page') || 1;
+  const page = sp.get("page") || 1;
 
   const navigate = useNavigate();
 
@@ -225,7 +237,7 @@ export default function SellerScreen() {
     useReducer(reducer, {
       loading: true,
       loadingUser: true,
-      error: '',
+      error: "",
       user: {},
       products: [],
     });
@@ -233,18 +245,18 @@ export default function SellerScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        dispatch({ type: 'FETCH_USER_REQUEST' });
+        dispatch({ type: "FETCH_USER_REQUEST" });
         const { data: dataUser } = await axios.get(`/api/users/seller/${slug}`);
         setSellerId(dataUser._id);
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: dataUser });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: dataUser });
       } catch (err) {
         logout();
-        localStorage.removeItem('userInfo');
-        localStorage.removeItem('cartItems');
-        localStorage.removeItem('shippingAddress');
-        localStorage.removeItem('useraddress');
-        localStorage.removeItem('paymentMethod');
-        window.location.href = '/deleted';
+        localStorage.removeItem("userInfo");
+        localStorage.removeItem("cartItems");
+        localStorage.removeItem("shippingAddress");
+        localStorage.removeItem("useraddress");
+        localStorage.removeItem("paymentMethod");
+        window.location.href = "/deleted";
       }
     };
     fetchData();
@@ -254,16 +266,16 @@ export default function SellerScreen() {
     const fetchData = async () => {
       try {
         if (!sellerId) return;
-        dispatch({ type: 'FETCH_PRODUCT_REQUEST' });
+        dispatch({ type: "FETCH_PRODUCT_REQUEST" });
         const { data: dataProduct } = await axios.get(
           `/api/products/seller/${sellerId}?page=${page}`
         );
         dispatch({
-          type: 'FETCH_PRODUCT_SUCCESS',
+          type: "FETCH_PRODUCT_SUCCESS",
           payload: dataProduct,
         });
       } catch (err) {
-        dispatch({ type: 'FETCH_PRODUCT_FAIL', error: getError(err) });
+        dispatch({ type: "FETCH_PRODUCT_FAIL", error: getError(err) });
       }
     };
     fetchData();
@@ -272,11 +284,11 @@ export default function SellerScreen() {
   const toggleFollow = async () => {
     if (user.username === userInfo.username) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: "You can't follow yourself",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -284,11 +296,11 @@ export default function SellerScreen() {
 
     if (!userInfo) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Login to follow',
+          message: "Login to follow",
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
       return;
@@ -302,24 +314,24 @@ export default function SellerScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
             message: `You unfollow ${data.username}`,
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
 
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: sellerId,
           itemId: sellerId,
-          notifyType: 'follow',
+          notifyType: "follow",
           msg: `${userInfo.username} unfollowed you`,
           link: `/seller/${userInfo._id}`,
           userImage: userInfo.image,
-          mobile: { path: 'MyAccount', id: userInfo._id },
+          mobile: { path: "MyAccount", id: userInfo._id },
         });
       } else {
         const { data } = await axios.put(
@@ -329,22 +341,22 @@ export default function SellerScreen() {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+        dispatch({ type: "FETCH_USER_SUCCESS", payload: data });
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
             message: `you are following ${data.username}`,
             showStatus: true,
-            state1: 'visible1 success',
+            state1: "visible1 success",
           },
         });
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: sellerId,
           itemId: sellerId,
-          notifyType: 'follow',
+          notifyType: "follow",
           msg: `${userInfo.username} started following you`,
           link: `/seller/${userInfo._id}`,
-          mobile: { path: 'MyAccount', id: userInfo._id },
+          mobile: { path: "MyAccount", id: userInfo._id },
           userImage: userInfo.image,
         });
       }
@@ -356,19 +368,19 @@ export default function SellerScreen() {
   const [onlineUser, setOnlineUser] = useState([]);
 
   useEffect(() => {
-    socket.emit('initialUsers');
-    socket.on('loadUsers', (users) => {
+    socket.emit("initialUsers");
+    socket.on("loadUsers", (users) => {
       setOnlineUser(users);
-      console.log('loadUsers', users);
+      console.log("loadUsers", users);
     });
-    socket.on('getUsers', (users) => {
+    socket.on("getUsers", (users) => {
       setOnlineUser(users);
-      console.log('onlineuser', users);
+      console.log("onlineuser", users);
     });
-    console.log('onlineuser', onlineUser);
+    console.log("onlineuser", onlineUser);
     return () => {
-      socket.off('loadUsers');
-      socket.off('getUsers');
+      socket.off("loadUsers");
+      socket.off("getUsers");
     };
   }, [userInfo]);
 
@@ -382,14 +394,19 @@ export default function SellerScreen() {
     }
   };
 
+  const getFilterUrl = (filter) => {
+    const filterPage = filter.page || page;
+    return `?page=${filterPage}`;
+  };
+
   const tabSwitch = (tab) => {
     switch (tab) {
-      case 'all':
+      case "all":
         return (
           <>
             {userInfo && (
               <ProductCont>
-                <Link to={userInfo.isSeller ? '/newproduct' : '/sell'}>
+                <Link to={userInfo.isSeller ? "/newproduct" : "/sell"}>
                   <AddProduct mode={mode}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     <span>Add Product</span>
@@ -412,7 +429,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'selling':
+      case "selling":
         return (
           <>
             {loading ? (
@@ -434,7 +451,7 @@ export default function SellerScreen() {
           </>
         );
 
-      case 'sold':
+      case "sold":
         return (
           <>
             {loading ? (
@@ -448,7 +465,7 @@ export default function SellerScreen() {
                 (product) =>
                   product.sold && (
                     <ProductCont key={product._id}>
-                      <div style={{ position: 'absolute' }}>
+                      <div style={{ position: "absolute" }}>
                         <Product product={product} />
                         {product.sold && (
                           <Link to={`/product/${product.slug}`}>
@@ -464,7 +481,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'liked':
+      case "liked":
         return (
           <>
             {loading ? (
@@ -482,7 +499,7 @@ export default function SellerScreen() {
             )}
           </>
         );
-      case 'saved':
+      case "saved":
         return (
           <>
             {loading ? (
@@ -512,21 +529,21 @@ export default function SellerScreen() {
     try {
       if (!userInfo) {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'You must be a login user to send message',
+            message: "You must be a login user to send message",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
       }
       if (userInfo._id.toString() === id.toString()) {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
             message: "You can't message yourself",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         return;
@@ -546,17 +563,17 @@ export default function SellerScreen() {
     try {
       const { data } = await axios.post(
         `/api/conversations/`,
-        { recieverId: id, type: 'reportUser' },
+        { recieverId: id, type: "reportUser" },
         { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
       navigate(`/messages?conversation=${data._id}`);
     } catch (err) {
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
           message: getError(err),
           showStatus: true,
-          state1: 'visible1 error',
+          state1: "visible1 error",
         },
       });
     }
@@ -565,17 +582,17 @@ export default function SellerScreen() {
   const handleShare = async () => {
     try {
       await navigator.share({
-        title: 'Repeddle',
+        title: "Repeddle",
         // text: ` ${window.location.protocol}//${window.location.hostname}${
         //   user.region === "NGN" ? "/ng/" : "/za/"
         // }${user.username}`,
         url: ` ${window.location.protocol}//${window.location.hostname}${
-          user.region === 'NGN' ? '/ng/' : '/za/'
+          user.region === "NGN" ? "/ng/" : "/za/"
         }${user.username}`,
       });
-      console.log('Shared successfully');
+      console.log("Shared successfully");
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
@@ -614,7 +631,7 @@ export default function SellerScreen() {
               ) : (
                 <div
                   className="seller_profile_status"
-                  style={{ borderColor: 'grey', color: 'grey' }}
+                  style={{ borderColor: "grey", color: "grey" }}
                 >
                   offline
                 </div>
@@ -642,8 +659,8 @@ export default function SellerScreen() {
                     {userInfo &&
                     user.followers &&
                     user.followers.find((x) => x === userInfo._id)
-                      ? 'Following'
-                      : 'Follow'}
+                      ? "Following"
+                      : "Follow"}
                   </button>
                 )}
               </div>
@@ -653,7 +670,7 @@ export default function SellerScreen() {
               {console.log(user)}
               {userInfo && user.buyers.includes(userInfo._id) && (
                 <div
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   onClick={() => setShowWriteReview(true)}
                 >
                   Leave a review
@@ -674,28 +691,28 @@ export default function SellerScreen() {
               </ModelLogin>
               <button
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  margin: '10px 0',
-                  border: '0',
-                  background: 'none',
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "10px 0",
+                  border: "0",
+                  background: "none",
                 }}
                 onClick={handleShare}
               >
                 <ProfileUrl>
                   {window.location.hostname}
-                  {user.region === 'NGN' ? '/ng/' : '/za/'}
+                  {user.region === "NGN" ? "/ng/" : "/za/"}
                   {user.username}
                 </ProfileUrl>
                 <FontAwesomeIcon
                   icon={faLink}
                   size="sm"
-                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                  style={{ marginLeft: "5px", cursor: "pointer" }}
                   color="var(--malon-color)"
                 />
               </button>
               <button
-                onClick={() => addConversation(user._id, 'user')}
+                onClick={() => addConversation(user._id, "user")}
                 type="buton"
                 className="profile_contact_btn"
               >
@@ -710,7 +727,7 @@ export default function SellerScreen() {
                   <div className="seller_single_right">
                     {console.log(user)}
                     {user.sold && user.sold.length < 5
-                      ? '< 5'
+                      ? "< 5"
                       : user?.sold?.length}
                   </div>
                 </div>
@@ -729,7 +746,7 @@ export default function SellerScreen() {
                   </div>
                   {console.log(user)}
                   <div className="seller_single_right">
-                    {user.region === 'NGN' ? 'Nigeria' : 'South Africa'}
+                    {user.region === "NGN" ? "Nigeria" : "South Africa"}
                   </div>
                 </div>
                 <div className="seller_single_detail">
@@ -765,39 +782,60 @@ export default function SellerScreen() {
       <Right>
         <Tab mode={mode}>
           <TabItem
-            className={displayTab === 'all' && 'active'}
-            onClick={() => setDisplayTab('all')}
+            className={displayTab === "all" && "active"}
+            onClick={() => setDisplayTab("all")}
           >
             All
           </TabItem>
           <TabItem
-            className={displayTab === 'selling' && 'active'}
-            onClick={() => setDisplayTab('selling')}
+            className={displayTab === "selling" && "active"}
+            onClick={() => setDisplayTab("selling")}
           >
             Selling
           </TabItem>
           <TabItem
-            className={displayTab === 'sold' && 'active'}
-            onClick={() => setDisplayTab('sold')}
+            className={displayTab === "sold" && "active"}
+            onClick={() => setDisplayTab("sold")}
           >
             Sold
           </TabItem>
           <TabItem
-            className={displayTab === 'liked' && 'active'}
-            onClick={() => setDisplayTab('liked')}
+            className={displayTab === "liked" && "active"}
+            onClick={() => setDisplayTab("liked")}
           >
             Liked
           </TabItem>
           {userInfo && userInfo._id === sellerId && (
             <TabItem
-              className={displayTab === 'saved' && 'active'}
-              onClick={() => setDisplayTab('saved')}
+              className={displayTab === "saved" && "active"}
+              onClick={() => setDisplayTab("saved")}
             >
               Saved
             </TabItem>
           )}
         </Tab>
         <Content mode={mode}>{tabSwitch(displayTab)}</Content>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
+          }}
+        >
+          {page > 1 && (
+            <Link to={getFilterUrl({ page: parseInt(page) - 1 })}>
+              <Next>Previous</Next>
+            </Link>
+          )}
+          {pages > 1 && products.length === 40 && (
+            <Link to={getFilterUrl({ page: parseInt(page) + 1 })}>
+              <Next>Next</Next>
+            </Link>
+          )}
+        </div>
       </Right>
     </div>
   );

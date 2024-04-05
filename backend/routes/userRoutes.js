@@ -2,11 +2,13 @@ import express from "express";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import {
+  fillEmailContent,
   generateOTP,
   generateToken,
   isAdmin,
   isAuth,
   sendEmail,
+  sendEmailMessage,
 } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 import Account from "../models/accountModel.js";
@@ -68,73 +70,185 @@ userRouter.put(
   })
 );
 
+// userRouter.put(
+//   "/profile",
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const user = await User.findById(req.user._id);
+//     const current = new Date();
+//     if (user) {
+//       try {
+//         user.about = req.body.about || user.about;
+//         user.username = req.body.username || user.username;
+//         user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
+//         user.firstName = req.body.firstName || user.firstName;
+//         user.lastName = req.body.lastName || user.lastName;
+//         user.email = req.body.email || user.email;
+//         user.dob = req.body.dob || user.dob;
+//         user.accountName = req.body.accountName || user.accountName;
+//         user.accountNumber = req.body.accountNumber || user.accountNumber;
+//         user.bankName = req.body.bankName || user.bankName;
+//         user.address = req.body?.address?.state
+//           ? req.body.address
+//           : user.address;
+//         user.phone = req.body.phone || user.phone;
+//         user.image = req.body.image || user.image;
+//         if (req.body.password) {
+//           user.password = bcrypt.hashSync(req.body.password, 8);
+//         }
+//         if (user.address && user.bankName) {
+//           user.isSeller = true;
+//         } else {
+//           user.isSeller = false;
+//         }
+//         const updatedUser = await user.save();
+
+//         res.send({
+//           _id: updatedUser._id,
+//           name: updatedUser.name,
+//           username: updatedUser.username,
+//           usernameUpdate: updatedUser.usernameUpdate,
+//           firstName: updatedUser.firstName,
+//           lastName: updatedUser.lastName,
+//           region: updatedUser.region,
+//           email: updatedUser.email,
+//           isSeller: updatedUser.isSeller,
+//           isAdmin: updatedUser.isAdmin,
+//           image: updatedUser.image,
+//           active: updatedUser.active,
+//           isVerifiedEmail: updatedUser.isVerifiedEmail,
+//           address: updatedUser.address,
+//           bankName: updatedUser.bankName,
+//           accountNumber: updatedUser.accountNumber,
+//           accountName: updatedUser.accountName,
+//           token: generateToken(updatedUser),
+//         });
+//       } catch (err) {
+//         if (err) {
+//           if (err.name === "MongoServerError" && err.code === 11000) {
+//             // Duplicate username
+//             return res
+//               .status(500)
+//               .send({ succes: false, message: "User already exist!" });
+//           }
+//         }
+//         console.log(err);
+//         return res.status(500).send(err);
+//       }
+//     } else {
+//       res.status(404).send({ message: "User not Found" });
+//     }
+//   })
+// );
+
 userRouter.put(
   "/profile",
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    const current = new Date();
-    if (user) {
-      try {
-        user.about = req.body.about || user.about;
-        user.username = req.body.username || user.username;
-        user.usernameUpdate = req.body.username ? current : user.usernameUpdate;
-        user.firstName = req.body.firstName || user.firstName;
-        user.lastName = req.body.lastName || user.lastName;
-        user.email = req.body.email || user.email;
-        user.dob = req.body.dob || user.dob;
-        user.accountName = req.body.accountName || user.accountName;
-        user.accountNumber = req.body.accountNumber || user.accountNumber;
-        user.bankName = req.body.bankName || user.bankName;
-        user.address = req.body?.address?.state
-          ? req.body.address
-          : user.address;
-        user.phone = req.body.phone || user.phone;
-        user.image = req.body.image || user.image;
-        if (req.body.password) {
-          user.password = bcrypt.hashSync(req.body.password, 8);
-        }
-        if (user.address && user.bankName) {
-          user.isSeller = true;
-        } else {
-          user.isSeller = false;
-        }
-        const updatedUser = await user.save();
+    try {
+      const user = await User.findById(req.user._id);
 
-        res.send({
-          _id: updatedUser._id,
-          name: updatedUser.name,
-          username: updatedUser.username,
-          usernameUpdate: updatedUser.usernameUpdate,
-          firstName: updatedUser.firstName,
-          lastName: updatedUser.lastName,
-          region: updatedUser.region,
-          email: updatedUser.email,
-          isSeller: updatedUser.isSeller,
-          isAdmin: updatedUser.isAdmin,
-          image: updatedUser.image,
-          active: updatedUser.active,
-          isVerifiedEmail: updatedUser.isVerifiedEmail,
-          address: updatedUser.address,
-          bankName: updatedUser.bankName,
-          accountNumber: updatedUser.accountNumber,
-          accountName: updatedUser.accountName,
-          token: generateToken(updatedUser),
-        });
-      } catch (err) {
-        if (err) {
-          if (err.name === "MongoServerError" && err.code === 11000) {
-            // Duplicate username
-            return res
-              .status(500)
-              .send({ succes: false, message: "User already exist!" });
-          }
-        }
-        console.log(err);
-        return res.status(500).send(err);
+      if (!user) {
+        return res.status(404).json({ message: "User not Found" });
       }
-    } else {
-      res.status(404).send({ message: "User not Found" });
+
+      const current = new Date();
+      const {
+        about,
+        username,
+        firstName,
+        lastName,
+        email,
+        dob,
+        accountName,
+        accountNumber,
+        bankName,
+        address,
+        phone,
+        image,
+        password,
+      } = req.body;
+
+      const updatedUserData = {
+        about: about || user.about,
+        username: username || user.username,
+        usernameUpdate: username ? current : user.usernameUpdate,
+        firstName: firstName || user.firstName,
+        lastName: lastName || user.lastName,
+        email: email || user.email,
+        dob: dob || user.dob,
+        phone: phone || user.phone,
+        image: image || user.image,
+      };
+
+      if (!user.bankName) {
+        updatedUserData.bankName = bankName || user.bankName;
+      }
+
+      if (!user.accountName) {
+        updatedUserData.accountName = accountName || user.accountName;
+      }
+
+      if (!user.accountNumber) {
+        updatedUserData.accountNumber = accountNumber || user.accountNumber;
+      }
+
+      if (address?.state) {
+        updatedUserData.address = address;
+      }
+
+      if (password) {
+        updatedUserData.password = bcrypt.hashSync(password, 8);
+      }
+
+      if (
+        (updatedUserData.address && updatedUserData.bankName) ||
+        (user.address && user.bankName)
+      ) {
+        updatedUserData.isSeller = true;
+      } else {
+        updatedUserData.isSeller = false;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        req.user._id,
+        updatedUserData,
+        { new: true, runValidators: true }
+      );
+
+      res.status(200).json({
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        username: updatedUser.username,
+        usernameUpdate: updatedUser.usernameUpdate,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        region: updatedUser.region,
+        email: updatedUser.email,
+        isSeller: updatedUser.isSeller,
+        isAdmin: updatedUser.isAdmin,
+        image: updatedUser.image,
+        active: updatedUser.active,
+        isVerifiedEmail: updatedUser.isVerifiedEmail,
+        address: updatedUser.address,
+        bankName: updatedUser.bankName,
+        accountNumber: updatedUser.accountNumber,
+        accountName: updatedUser.accountName,
+        token: generateToken(updatedUser),
+      });
+    } catch (err) {
+      console.error(err);
+
+      if (err.name === "MongoServerError" && err.code === 11000) {
+        return res.status(500).json({
+          success: false,
+          message: "User already exists!",
+        });
+      }
+
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal Server Error" });
     }
   })
 );
@@ -181,6 +295,7 @@ userRouter.post(
     try {
       const { region } = req.params;
       const url = region === "NGN" ? "com" : "co.za";
+      const io = req.app.get("io");
       const newUser = new User({
         username: req.body.username.toLowerCase(),
         firstName: req.body.firstName,
@@ -227,6 +342,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: newUser._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: newUser.username,
+      //     EMAIL: newUser.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       await Account.create({
         userId: user.id,
         balance: 0,
@@ -355,6 +481,7 @@ userRouter.post(
 userRouter.post(
   "/resetpassword/:resetToken",
   expressAsyncHandler(async (req, res) => {
+    const io = req.app.get("io");
     const resetPasswordToken = crypto
       .createHash("sha256")
       .update(req.params.resetToken)
@@ -383,6 +510,17 @@ userRouter.post(
           email: user.email,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: user._id,
+      //   senderId: req.user._id,
+      //   title: "Your Password Is Successfully Reset",
+      //   emailMessages: fillEmailContent("Your Password Is Successfully Reset", {
+      //     USERNAME: user.username,
+      //     EMAIL: user.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       res
         .status(201)
         .send({ success: true, message: "Password Reset Success" });
@@ -425,6 +563,7 @@ userRouter.get(
           resetlink: resetUrl,
         },
       });
+
       res.status(200).send({ message: "Email sent" });
     }
   })
@@ -435,6 +574,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const { region } = req.params;
+    const io = req.app.get("io");
     console.log(req.body.tokenId);
     const url = region === "NGN" ? "com" : "co.za";
     const ticket = await client.verifyIdToken({
@@ -475,6 +615,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
     }
     result.userId = result._id.toString();
     await result.save();
@@ -532,6 +683,7 @@ userRouter.post(
     const { email, given_name, family_name, picture, id, verified_email } =
       req.body;
     const url = region === "NGN" ? "com" : "co.za";
+    const io = req.app.get("io");
 
     const user = {
       email: email,
@@ -558,6 +710,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       result.userId = result._id.toString();
       await result.save();
     }
@@ -613,6 +776,7 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const { region } = req.params;
     const url = region === "NGN" ? "com" : "co.za";
+    const io = req.app.get("io");
     const { data } = await axios.get(
       `https://graph.facebook.com/v8.0/me?fields=id,name,email,picture.type(large),first_name,last_name,short_name&access_token=${req.body.accessToken}`
     );
@@ -644,6 +808,17 @@ userRouter.post(
           url,
         },
       });
+      // const content = {
+      //   io,
+      //   receiverId: result._id,
+      //   senderId: req.user._id,
+      //   title: "WELCOME TO REPEDDLE",
+      //   emailMessages: fillEmailContent("WELCOME TO REPEDDLE", {
+      //     USERNAME: result.username,
+      //     EMAIL: result.email,
+      //   }),
+      // };
+      // sendEmailMessage(content);
       result.userId = result._id.toString();
       await result.save();
     }
@@ -1100,9 +1275,9 @@ userRouter.put(
       user.active = req.body.active || user.active;
       user.badge = req.body.badge || user.badge;
       user.influencer = req.body.influencer || user.influencer;
-      user.bankName = req.body.bankName || user.bankName;
-      user.accountName = req.body.accountName || user.accountName;
-      user.accountNumber = req.body.accountNumber || user.accountNumber;
+      // user.bankName = req.body.bankName || user.bankName;
+      // user.accountName = req.body.accountName || user.accountName;
+      // user.accountNumber = req.body.accountNumber || user.accountNumber;
 
       const updatedUser = await user.save();
       res.send({

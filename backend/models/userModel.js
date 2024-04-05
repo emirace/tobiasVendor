@@ -59,6 +59,7 @@ const userSchema = new mongoose.Schema(
       count: { type: Number, defalut: 0 },
     },
     userId: { type: String },
+    recipientCode: { type: String },
   },
   {
     timestamps: true,

@@ -89,7 +89,7 @@ function textfuncion() {
   console.log('running cron');
 }
 
-cron.schedule('0 12 * * 1', sendWeeklyMail);
+// cron.schedule("0 12 * * 1", sendWeeklyMail);
 
 app.use(
   cookieSession({
@@ -109,17 +109,7 @@ app.get('/api/keys/paypal', (req, res) => {
 });
 
 // const changeBrand = async () => {
-//   // Define a regular expression pattern to match non-alphabet characters
-//   const nonAlphabetPattern = { alpha: { $not: { $regex: /[A-Za-z]/ } } };
-//   console.log("started,,,,,,");
-//   // Update the "alpha" field for each matching brand to 'other'
-//   const updateResult = await Brand.updateMany(nonAlphabetPattern, {
-//     $set: { alpha: "other" },
-//   });
-
-//   // `updateResult` contains information about the update operation (number of documents updated, etc.)
-
-//   console.log("Number of brands updated:", updateResult.nModified);
+//   await sendAllEmail();
 // };
 
 // changeBrand();
@@ -369,7 +359,10 @@ io.on('connection', (socket) => {
           mobile,
         });
         await notification.save();
-        io.sockets.emit('change_data');
+        const user = users.find((x) => x._id === admin._id);
+        if (user) {
+          io.to(user.socketId).emit('change_data');
+        }
       });
     } else {
       const notification = new Notification({
@@ -382,7 +375,10 @@ io.on('connection', (socket) => {
         mobile,
       });
       await notification.save();
-      io.sockets.emit('change_data');
+      const user = users.find((x) => x._id === userId);
+      if (user) {
+        io.to(user.socketId).emit('change_data');
+      }
     }
   });
 

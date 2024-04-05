@@ -1,25 +1,25 @@
-import axios from 'axios';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { socket } from '../../../App';
-import DeliveryReturnScreen from '../../../screens/DeliveryReturnScreen';
-import { Store } from '../../../Store';
+import axios from "axios";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import styled from "styled-components";
+import { socket } from "../../../App";
+import DeliveryReturnScreen from "../../../screens/DeliveryReturnScreen";
+import { Store } from "../../../Store";
 import {
   deliveryNumber,
   getError,
   region,
   timeDifference,
-} from '../../../utils';
-import DeliveryHistory from '../../DeliveryHistory';
-import LoadingBox from '../../LoadingBox';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import ModelLogin from '../../ModelLogin';
-import { Link } from 'react-router-dom';
-import { faCheck, faSquareCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import moment from 'moment';
-import MessageImage from '../../MessageImage';
+} from "../../../utils";
+import DeliveryHistory from "../../DeliveryHistory";
+import LoadingBox from "../../LoadingBox";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import ModelLogin from "../../ModelLogin";
+import { Link } from "react-router-dom";
+import { faCheck, faSquareCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import moment from "moment";
+import MessageImage from "../../MessageImage";
 
 const Container = styled.div`
   flex: 4;
@@ -27,7 +27,7 @@ const Container = styled.div`
   padding: 20px;
   border-radius: 0.2rem;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev1)' : 'var(--light-ev1)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev1)" : "var(--light-ev1)"};
   @media (max-width: 992px) {
     padding: 10px;
     margin: 0;
@@ -47,7 +47,7 @@ const SumaryContDetails = styled.div`
   margin-bottom: 15px;
   height: 100%;
   background: ${(props) =>
-    props.mode === 'pagebodydark' ? 'var(--dark-ev2)' : 'var(--light-ev2)'};
+    props.mode === "pagebodydark" ? "var(--dark-ev2)" : "var(--light-ev2)"};
 
   @media (max-width: 992px) {
     padding: 10px 15px;
@@ -114,9 +114,9 @@ const IconCont = styled.div`
 const TextInput = styled.input`
   background: none;
   color: ${(props) =>
-    props.mode === 'pagebodydark'
-      ? 'var(--white-color)'
-      : 'var(--black-color)'};
+    props.mode === "pagebodydark"
+      ? "var(--white-color)"
+      : "var(--black-color)"};
   border: 1px solid grey;
   border-top-left-radius: 0.2rem;
   border-bottom-left-radius: 0.2rem;
@@ -133,17 +133,17 @@ const TextInput = styled.input`
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'GET_REQUEST':
+    case "GET_REQUEST":
       return { ...state, loading: true };
-    case 'GET_SUCCESS':
+    case "GET_SUCCESS":
       return { ...state, loading: false, returned: action.payload };
-    case 'GET_FAIL':
+    case "GET_FAIL":
       return { ...state, loading: false };
-    case 'DELIVER_REQUEST':
+    case "DELIVER_REQUEST":
       return { ...state, loadingDeliver: true };
-    case 'DELIVER_SUCCESS':
+    case "DELIVER_SUCCESS":
       return { ...state, loadingDeliver: false };
-    case 'DELIVER_FAIL':
+    case "DELIVER_FAIL":
       return {
         ...state,
         loadingDeliver: false,
@@ -160,14 +160,14 @@ export default function ReturnPage() {
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
-  const orderId = sp.get('orderId');
+  const orderId = sp.get("orderId");
   const params = useParams();
   const { id: returnId } = params;
-  const [reasonText, setReasonText] = useState('');
+  const [reasonText, setReasonText] = useState("");
   const [showModel, setShowModel] = useState(false);
   const [refresh, setRefresh] = useState(true);
   const [enterwaybil, setEnterwaybil] = useState(false);
-  const [waybillNumber, setWaybillNumber] = useState('');
+  const [waybillNumber, setWaybillNumber] = useState("");
   const [{ loading, returned, loadingDeliver }, dispatch] = useReducer(
     reducer,
     {
@@ -178,15 +178,15 @@ export default function ReturnPage() {
 
   useEffect(() => {
     const getReturn = async () => {
-      dispatch({ type: 'GET_REQUEST' });
+      dispatch({ type: "GET_REQUEST" });
       try {
         const { data } = await axios.get(`/api/returns/${returnId}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: 'GET_SUCCESS', payload: data });
+        dispatch({ type: "GET_SUCCESS", payload: data });
         console.log(data, returnId);
       } catch (err) {
-        dispatch({ type: 'GET_FAIL' });
+        dispatch({ type: "GET_FAIL" });
         console.log(err);
       }
     };
@@ -194,17 +194,17 @@ export default function ReturnPage() {
   }, [refresh]);
 
   const paymentRequest = async (user, cost, type) => {
-    console.log('amount pay', cost, type);
+    console.log("amount pay", cost, type);
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: user._id,
         amount: cost,
         meta: {
           Type: type,
-          from: 'Wallet',
-          to: 'Wallet',
-          typeNpame: 'Return',
+          from: "Wallet",
+          to: "Wallet",
+          typeNpame: "Return",
           id: returned.orderId._id,
           currency: returned.productId.currency,
         },
@@ -213,20 +213,20 @@ export default function ReturnPage() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
-      userId: 'Admin',
+    socket.emit("post_data", {
+      userId: "Admin",
       itemId: paymentData._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: type,
       link: `/payment/${paymentData._id}`,
       userImage: user.image,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
   };
 
   async function deliverOrderHandler(deliveryStatus, productId) {
     try {
-      dispatch({ type: 'DELIVER_REQUEST' });
+      dispatch({ type: "DELIVER_REQUEST" });
       await axios.put(
         `/api/orders/${returned.orderId._id}/deliver/${productId}`,
         { deliveryStatus, returnTrackingNumber: waybillNumber },
@@ -234,54 +234,54 @@ export default function ReturnPage() {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
       );
-      dispatch({ type: 'DELIVER_SUCCESS' });
+      dispatch({ type: "DELIVER_SUCCESS" });
       ctxDispatch({
-        type: 'SHOW_TOAST',
+        type: "SHOW_TOAST",
         payload: {
-          message: 'Return status updated',
+          message: "Return status updated",
           showStatus: true,
-          state1: 'visible1 success',
+          state1: "visible1 success",
         },
       });
       if (
-        deliveryStatus === 'Return Dispatched' ||
-        deliveryStatus === 'Return Delivered'
+        deliveryStatus === "Return Dispatched" ||
+        deliveryStatus === "Return Delivered"
       ) {
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: returned.productId.seller._id,
           itemId: returned.orderId._id,
-          notifyType: 'sellerreturn',
+          notifyType: "sellerreturn",
           msg: `Order ${deliveryStatus} `,
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
-          mobile: { path: 'ReturnScreen', id: returned._id },
+          mobile: { path: "ReturnScreen", id: returned._id },
         });
-      } else if (deliveryStatus === 'Return Approved') {
-        socket.emit('post_data', {
+      } else if (deliveryStatus === "Return Approved") {
+        socket.emit("post_data", {
           userId: returned.productId.seller._id,
           itemId: returned.orderId._id,
-          notifyType: 'sellerreturn',
+          notifyType: "sellerreturn",
           msg: `Order return request approved `,
-          mobile: { path: 'ReturnScreen', id: returned._id },
+          mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
         });
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: returned.orderId.user._id,
           itemId: returned.orderId._id,
-          notifyType: 'buyerreturn',
+          notifyType: "buyerreturn",
           msg: `Your order ${deliveryStatus} `,
-          mobile: { path: 'ReturnScreen', id: returned._id },
+          mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
         });
       } else {
-        socket.emit('post_data', {
+        socket.emit("post_data", {
           userId: returned.orderId.user._id,
           itemId: returned.orderId._id,
-          notifyType: 'buyerreturn',
+          notifyType: "buyerreturn",
           msg: `Your order ${deliveryStatus} `,
-          mobile: { path: 'ReturnScreen', id: returned._id },
+          mobile: { path: "ReturnScreen", id: returned._id },
           link: `/return/${returned._id}`,
           userImage: userInfo.image,
         });
@@ -289,19 +289,19 @@ export default function ReturnPage() {
       setRefresh(!refresh);
     } catch (err) {
       console.log(getError(err));
-      dispatch({ type: 'DELIVER_FAIL' });
+      dispatch({ type: "DELIVER_FAIL" });
     }
   }
 
   const handleReturn = async (type) => {
-    if (type === 'Decline') {
+    if (type === "Decline") {
       if (!reasonText.length) {
         ctxDispatch({
-          type: 'SHOW_TOAST',
+          type: "SHOW_TOAST",
           payload: {
-            message: 'Enter Reason for Decline',
+            message: "Enter Reason for Decline",
             showStatus: true,
-            state1: 'visible1 error',
+            state1: "visible1 error",
           },
         });
         return;
@@ -311,15 +311,15 @@ export default function ReturnPage() {
           `/api/returns/admin/${returnId}`,
           {
             adminReason: reasonText,
-            status: 'Decline',
+            status: "Decline",
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
         console.log(data);
-        dispatch({ type: 'GET_SUCCESS', payload: data });
-        deliverOrderHandler('Return Declined', returned.productId._id);
+        dispatch({ type: "GET_SUCCESS", payload: data });
+        deliverOrderHandler("Return Declined", returned.productId._id);
         returned.orderId.orderItems.map(async (item) => {
           if (item._id === returned.productId._id) {
             const amountZAR =
@@ -330,12 +330,12 @@ export default function ReturnPage() {
               (92.1 / 100) * returned.productId.actualPrice * item.quantity -
               (1.4 / 100) * returned.sending.cost;
             const amount =
-              returned.productId.region === 'ZAR' ? amountZAR : amountNGN;
+              returned.productId.region === "ZAR" ? amountZAR : amountNGN;
 
             await paymentRequest(
               returned.productId.seller,
               amount,
-              'Return Declined'
+              "Return Declined"
             );
           }
         });
@@ -344,13 +344,13 @@ export default function ReturnPage() {
       }
     } else {
       try {
-        let transactionId = '';
-        if (returned.sending['delivery Option'] !== 'Pick up from Seller') {
+        let transactionId = "";
+        if (returned.sending["delivery Option"] !== "Pick up from Seller") {
           const { data: withdrawData } = await axios.post(
             `/api/accounts/${region()}/withdraw`,
             {
               amount: returned.sending.cost * 2,
-              purpose: 'Return delivery fee',
+              purpose: "Return delivery fee",
               userId: returned.productId.seller._id,
             },
             {
@@ -359,23 +359,23 @@ export default function ReturnPage() {
           );
           transactionId = withdrawData.transaction_id;
           if (!withdrawData.success) {
-            socket.emit('post_data', {
+            socket.emit("post_data", {
               userId: returned.productId.seller._id,
               itemId: returned.orderId._id,
-              notifyType: 'return',
+              notifyType: "return",
               msg: `Fund your wallet to complete return`,
-              mobile: { path: 'Fund', id: '' },
+              mobile: { path: "Fund", id: "" },
               link: `/dashboard/wallet`,
               userImage:
-                '	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png',
+                "	https://res.cloudinary.com/emirace/image/upload/v1659695040/images_imx0wy.png",
             });
           } else {
             await axios.post(
               `/api/accounts/${region()}/deposit`,
               {
                 amount: returned.sending.cost * 2,
-                purpose: 'Return delivery fee',
-                userId: 'Admin',
+                purpose: "Return delivery fee",
+                userId: "Admin",
               },
               {
                 headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -387,15 +387,15 @@ export default function ReturnPage() {
         const { data } = await axios.put(
           `/api/returns/admin/${returnId}`,
           {
-            status: 'Approved',
+            status: "Approved",
             transaction_id: transactionId,
           },
           {
             headers: { Authorization: `Bearer ${userInfo.token}` },
           }
         );
-        dispatch({ type: 'GET_SUCCESS', payload: data });
-        deliverOrderHandler('Return Approved', returned.productId._id);
+        dispatch({ type: "GET_SUCCESS", payload: data });
+        deliverOrderHandler("Return Approved", returned.productId._id);
       } catch (error) {}
     }
   };
@@ -403,23 +403,23 @@ export default function ReturnPage() {
   const comfirmWaybill = async (product) => {
     if (!waybillNumber) return;
 
-    await deliverOrderHandler('Return Dispatched', product._id);
+    await deliverOrderHandler("Return Dispatched", product._id);
     setEnterwaybil(false);
   };
   const [refunding, setRefunding] = useState(false);
   const refund = async (product) => {
     setRefunding(true);
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: returned.orderId.user,
         amount:
           Number(product.deliverySelect.cost) + Number(product.actualPrice),
         meta: {
-          Type: 'Order Refund',
-          from: 'Wallet',
-          to: 'Wallet',
-          typeName: 'Order',
+          Type: "Order Refund",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
           id: orderId,
           currency: product.currency,
         },
@@ -428,37 +428,37 @@ export default function ReturnPage() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: returned.orderId.user,
       itemId: product._id,
-      notifyType: 'refund',
+      notifyType: "refund",
       msg: `Refund for return initiated`,
       link: `/order/${returned.orderId._id}`,
-      userImage: '/images/pimage.png',
-      mobile: { path: 'OrderScreen', id: returned.orderId._id },
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: returned.orderId._id },
     });
 
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: product.seller._id,
       itemId: product._id,
-      notifyType: 'refund',
+      notifyType: "refund",
       msg: `Purchased return refunded`,
       link: `/order/${returned.orderId._id}`,
-      userImage: '/images/pimage.png',
-      mobile: { path: 'OrderScreen', id: returned.orderId._id },
+      userImage: "/images/pimage.png",
+      mobile: { path: "OrderScreen", id: returned.orderId._id },
     });
 
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: userInfo._id,
       itemId: product._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: `Refund for return initiated`,
       link: `/payment/${paymentData._id}`,
-      userImage: '/images/pimage.png',
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
-    deliverOrderHandler('Refunded', product._id);
+    deliverOrderHandler("Refunded", product._id);
     setRefunding(false);
   };
 
@@ -469,17 +469,17 @@ export default function ReturnPage() {
     const amountNGN =
       (92.1 / 100) * product.actualPrice * product.quantity -
       (1.4 / 100) * product.deliverySelect.cost;
-    const amount = product.region === 'ZAR' ? amountZAR : amountNGN;
+    const amount = product.region === "ZAR" ? amountZAR : amountNGN;
     const { data: paymentData } = await axios.post(
-      '/api/payments',
+      "/api/payments",
       {
         userId: product.seller._id,
         amount,
         meta: {
-          Type: 'Pay Seller',
-          from: 'Wallet',
-          to: 'Wallet',
-          typeName: 'Order',
+          Type: "Pay Seller",
+          from: "Wallet",
+          to: "Wallet",
+          typeName: "Order",
           id: orderId,
           currency: product.currency,
         },
@@ -488,26 +488,26 @@ export default function ReturnPage() {
         headers: { authorization: `Bearer ${userInfo.token}` },
       }
     );
-    socket.emit('post_data', {
-      userId: 'Admin',
+    socket.emit("post_data", {
+      userId: "Admin",
       itemId: product._id,
-      notifyType: 'payment',
+      notifyType: "payment",
       msg: `Payment to Seller Initiated`,
       link: `/payment/${paymentData._id}`,
-      userImage: '/images/pimage.png',
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      userImage: "/images/pimage.png",
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
-    socket.emit('post_data', {
+    socket.emit("post_data", {
       userId: product.seller._id,
       itemId: product._id,
-      notifyType: 'payseller',
+      notifyType: "payseller",
       msg: `Order Payment Initiated`,
       link: `/order/${returned.orderId._id}`,
       userImage: userInfo.image,
-      mobile: { path: 'PaymentScreen', id: paymentData._id },
+      mobile: { path: "PaymentScreen", id: paymentData._id },
     });
 
-    deliverOrderHandler('Payment to Seller Initiated', product._id);
+    deliverOrderHandler("Payment to Seller Initiated", product._id);
   };
 
   const daydiff = (start, end) =>
@@ -520,20 +520,20 @@ export default function ReturnPage() {
       <Title>Return ID MRRN: {returnId}</Title>
       <SumaryContDetails mode={mode}>
         <Name>Product</Name>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <img
             src={returned.productId.image}
             alt=""
             style={{
-              width: '100px',
-              height: '100px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              objectPosition: 'top',
+              width: "100px",
+              height: "100px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              objectPosition: "top",
             }}
           />
           <Link to={`/product/${returned.productId.slug}`}>
-            <div style={{ marginLeft: '20px', color: 'var(--malon-color)' }}>
+            <div style={{ marginLeft: "20px", color: "var(--malon-color)" }}>
               {returned.productId.name}
             </div>
           </Link>
@@ -541,18 +541,18 @@ export default function ReturnPage() {
         <hr />
         <Name>Order ID</Name>
         <Link to={`/order/${returned.orderId._id}`}>
-          <ItemNum style={{ color: 'var(--malon-color)' }}>
+          <ItemNum style={{ color: "var(--malon-color)" }}>
             {returned.orderId._id}
           </ItemNum>
         </Link>
         <hr />
         <Name>Date</Name>
         <ItemNum>
-          {moment(returned.createdAt).format('MMM DD YY, h:mm a')}
+          {moment(returned.createdAt).format("MMM DD YY, h:mm a")}
         </ItemNum>
         <hr />
         <Name>Buyer</Name>
-        <ItemNum style={{ color: 'var(--malon-color)' }}>
+        <ItemNum style={{ color: "var(--malon-color)" }}>
           <Link to={`/seller/${returned.orderId.user._id}`}>
             {returned.orderId.user.username}
           </Link>
@@ -563,7 +563,7 @@ export default function ReturnPage() {
         <ItemNum>
           <Link
             to={`/seller/${returned.productId.seller._id}`}
-            style={{ color: 'var(--malon-color)' }}
+            style={{ color: "var(--malon-color)" }}
           >
             {returned.productId.seller.username}
           </Link>
@@ -576,7 +576,7 @@ export default function ReturnPage() {
         <ItemNum>{returned.reason}</ItemNum>
         <hr />
         <Name>Preferred Sending Method</Name>
-        <ItemNum>{returned.sending['delivery Option']}</ItemNum>
+        <ItemNum>{returned.sending["delivery Option"]}</ItemNum>
         <hr />
         <Name>Preferred Refund Method</Name>
         <ItemNum>{returned.refund}</ItemNum>
@@ -592,75 +592,75 @@ export default function ReturnPage() {
             </>
           )}
         </ItemNum>
-        {returned.status !== 'Pending' ? (
+        {returned.status !== "Pending" ? (
           <>
             <hr />
-            <Name style={{ color: 'var(--orange-color)' }}>Status</Name>
+            <Name style={{ color: "var(--orange-color)" }}>Status</Name>
             <ItemNum
-              style={{ color: returned.status === 'Decline' ? 'red' : 'green' }}
+              style={{ color: returned.status === "Decline" ? "red" : "green" }}
             >
               {returned.status}
             </ItemNum>
-            {returned.status === 'Decline' && (
+            {returned.status === "Decline" && (
               <ItemNum>Reason: {returned.adminReason}</ItemNum>
             )}
             <hr />
           </>
         ) : userInfo.isAdmin ? (
           <>
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ marginTop: "20px" }}>
               <textarea
-                style={{ width: '50%', height: '150px', padding: '20px' }}
+                style={{ width: "50%", height: "150px", padding: "20px" }}
                 onChange={(e) => setReasonText(e.target.value)}
               >
                 Enter Reason for Declince here...
               </textarea>
             </div>
-            <Button onClick={() => handleReturn('Approved')}>Approve</Button>
-            <Button className="decline" onClick={() => handleReturn('Decline')}>
+            <Button onClick={() => handleReturn("Approved")}>Approve</Button>
+            <Button className="decline" onClick={() => handleReturn("Decline")}>
               Decline
             </Button>
           </>
         ) : (
-          <p style={{ color: 'red' }}>Waiting Admin Approver/Decline</p>
+          <p style={{ color: "red" }}>Waiting Admin Approver/Decline</p>
         )}
-        {returned.status === 'Approved' && (
+        {returned.status === "Approved" && (
           <>
             <Name>Return Delivery Address</Name>
             {returned.returnDelivery ? (
               Object.entries(returned.returnDelivery).map(([key, value]) => (
                 <div
                   style={{
-                    display: 'flex',
-                    textTransform: 'capitalize',
-                    fontSize: '13px',
+                    display: "flex",
+                    textTransform: "capitalize",
+                    fontSize: "13px",
                   }}
                 >
-                  {key === 'cost' ? (
+                  {key === "cost" ? (
                     <>
-                      <div style={{ flex: '3' }}>{key}:</div>
-                      <div style={{ flex: '5' }}>
+                      <div style={{ flex: "3" }}>{key}:</div>
+                      <div style={{ flex: "5" }}>
                         {returned.productId.currency}
                         {value}
                       </div>
                     </>
                   ) : (
                     <>
-                      <div style={{ flex: '3' }}>{key}:</div>
-                      <div style={{ flex: '5' }}>{value}</div>
+                      <div style={{ flex: "3" }}>{key}:</div>
+                      <div style={{ flex: "5" }}>{value}</div>
                     </>
                   )}
                 </div>
               ))
             ) : returned.productId.seller._id === userInfo._id ? (
               <Button
-                style={{ width: '250px', marginTop: '10px' }}
+                style={{ width: "250px", marginTop: "10px" }}
                 onClick={() => setShowModel(true)}
               >
                 Add Return Delivery Address
               </Button>
             ) : (
-              <div style={{ color: 'var(--red-color)' }}>
+              <div style={{ color: "var(--red-color)" }}>
                 Waiting Seller's delivery address
               </div>
             )}
@@ -682,8 +682,8 @@ export default function ReturnPage() {
                       onClick={() => refund(orderitem)}
                       className="btn btn-primary w-100"
                       style={{
-                        background: 'var(--malon-color)',
-                        marginTop: '10px',
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
                       }}
                     >
                       Refund
@@ -700,8 +700,8 @@ export default function ReturnPage() {
                       onClick={() => refund(orderitem)}
                       className="btn btn-primary w-100"
                       style={{
-                        background: 'var(--malon-color)',
-                        marginTop: '10px',
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
                       }}
                     >
                       Refund
@@ -718,8 +718,8 @@ export default function ReturnPage() {
                       }}
                       className="btn btn-primary w-100"
                       style={{
-                        background: 'var(--malon-color)',
-                        marginTop: '10px',
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
                       }}
                     >
                       Pay Seller
@@ -735,8 +735,8 @@ export default function ReturnPage() {
                       }}
                       className="btn btn-primary w-100"
                       style={{
-                        background: 'var(--malon-color)',
-                        marginTop: '10px',
+                        background: "var(--malon-color)",
+                        marginTop: "10px",
                       }}
                     >
                       Pay Seller
@@ -746,27 +746,27 @@ export default function ReturnPage() {
                   {returned.productId.seller._id === userInfo._id ? (
                     <FormControl
                       sx={{
-                        minWidth: '220px',
+                        minWidth: "220px",
                         margin: 0,
-                        borderRadius: '0.2rem',
+                        borderRadius: "0.2rem",
                         border: `1px solid ${
-                          mode === 'pagebodydark'
-                            ? 'var(--dark-ev4)'
-                            : 'var(--light-ev4)'
+                          mode === "pagebodydark"
+                            ? "var(--dark-ev4)"
+                            : "var(--light-ev4)"
                         }`,
-                        '& .MuiOutlinedInput-root': {
+                        "& .MuiOutlinedInput-root": {
                           color: `${
-                            mode === 'pagebodydark'
-                              ? 'var(--white-color)'
-                              : 'var(--black-color)'
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
                           }`,
-                          '&:hover': {
-                            outline: 'none',
+                          "&:hover": {
+                            outline: "none",
                             border: 0,
                           },
                         },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          border: '0 !important',
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "0 !important",
                         },
                       }}
                       size="small"
@@ -774,9 +774,9 @@ export default function ReturnPage() {
                       <InputLabel
                         sx={{
                           color: `${
-                            mode === 'pagebodydark'
-                              ? 'var(--white-color)'
-                              : 'var(--black-color)'
+                            mode === "pagebodydark"
+                              ? "var(--white-color)"
+                              : "var(--black-color)"
                           }`,
                         }}
                         id="deliveryStatus"
@@ -794,10 +794,9 @@ export default function ReturnPage() {
                             if (item._id === returned.productId._id) {
                               await paymentRequest(
                                 returned.orderId.user,
-                                returned.returnDelivery.cost +
-                                  returned.productId.actualPrice *
-                                    item.quantity,
-                                'Return Completed'
+                                returned.returnDelivery.cost * 2 +
+                                  returned.productId.actualPrice, // dont forget to add quantity {item.quantity}
+                                "Return Completed"
                               );
                             }
                           });
@@ -825,7 +824,7 @@ export default function ReturnPage() {
                           type="text"
                           onChange={(e) => setWaybillNumber(e.target.value)}
                         />
-                        <IconCont style={{ background: 'var(--orange-color)' }}>
+                        <IconCont style={{ background: "var(--orange-color)" }}>
                           <FontAwesomeIcon
                             icon={faCheck}
                             onClick={() => comfirmWaybill(orderitem)}
@@ -835,33 +834,33 @@ export default function ReturnPage() {
                     ) : (
                       <>
                         {orderitem.returnTrackingNumber && (
-                          <div style={{ marginRight: '20px' }}>
+                          <div style={{ marginRight: "20px" }}>
                             Tracking Number: {orderitem.returnTrackingNumber}
                           </div>
                         )}
                         <FormControl
                           sx={{
-                            minWidth: '220px',
+                            minWidth: "220px",
                             margin: 0,
-                            borderRadius: '0.2rem',
+                            borderRadius: "0.2rem",
                             border: `1px solid ${
-                              mode === 'pagebodydark'
-                                ? 'var(--dark-ev4)'
-                                : 'var(--light-ev4)'
+                              mode === "pagebodydark"
+                                ? "var(--dark-ev4)"
+                                : "var(--light-ev4)"
                             }`,
-                            '& .MuiOutlinedInput-root': {
+                            "& .MuiOutlinedInput-root": {
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
-                              '&:hover': {
-                                outline: 'none',
+                              "&:hover": {
+                                outline: "none",
                                 border: 0,
                               },
                             },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              border: '0 !important',
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "0 !important",
                             },
                           }}
                           size="small"
@@ -869,9 +868,9 @@ export default function ReturnPage() {
                           <InputLabel
                             sx={{
                               color: `${
-                                mode === 'pagebodydark'
-                                  ? 'var(--white-color)'
-                                  : 'var(--black-color)'
+                                mode === "pagebodydark"
+                                  ? "var(--white-color)"
+                                  : "var(--black-color)"
                               }`,
                             }}
                             id="deliveryStatus"
@@ -882,9 +881,9 @@ export default function ReturnPage() {
                           <Select
                             onChange={(e) => {
                               if (
-                                e.target.value === 'Return Dispatched' &&
-                                returned.sending['delivery Option'] !==
-                                  'Pick up from Seller'
+                                e.target.value === "Return Dispatched" &&
+                                returned.sending["delivery Option"] !==
+                                  "Pick up from Seller"
                               ) {
                                 setEnterwaybil(true);
                               } else {
@@ -920,7 +919,7 @@ export default function ReturnPage() {
                       </>
                     )
                   ) : (
-                    ''
+                    ""
                   )}
                 </SetStatus>
                 <DeliveryHistory
