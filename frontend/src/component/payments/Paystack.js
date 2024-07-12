@@ -31,11 +31,11 @@ const Paystack = ({ amount, onApprove }) => {
       Math.floor(Math.random() * 1000 + 1) +
       new Date().getTime().toString(),
     email: userInfo.email,
-    amount: amount * 100,
+    amount: parseInt(amount) * 100,
     publicKey: "pk_live_96998e69a31a4a9d1afc9ec874dec535657ce0ad",
     currency: region(),
   };
-
+  console.log("amount", amount);
   // you can call this function anything
   const onSuccess = (reference) => {
     // Implementation for whatever you want to do with reference and after success call.
