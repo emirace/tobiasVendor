@@ -173,10 +173,10 @@ app.get('/product/:slug', async (req, res) => {
     const product = await Product.findOne({ slug });
 
     if (!product) {
-      return res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+      return res.sendFile(path.join(__dirname, './frontend/build/index.html'));
     }
 
-    const filePath = path.join(__dirname, '../frontend/build/index.html');
+    const filePath = path.join(__dirname, './frontend/build/index.html');
     let htmlData = await fs.promises.readFile(filePath, 'utf8');
 
     // Append meta tags to the existing header
@@ -195,7 +195,7 @@ app.get('/product/:slug', async (req, res) => {
 });
 
 app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'))
+  res.sendFile(path.join(__dirname, './frontend/build/index.html'))
 );
 
 app.use((err, req, res, next) => {
