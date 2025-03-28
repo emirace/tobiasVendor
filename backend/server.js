@@ -82,6 +82,7 @@ app.use(
       'http://www.repeddle.co.za',
       'https://repeddle.co.za',
       'https://www.repeddle.co.za',
+      'https://tobiasvendor.onrender.com'
     ],
   })
 );
@@ -165,7 +166,7 @@ app.use('/api/articles', articleRouter);
 app.use('/api/contacts', contactRouter);
 
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+app.use(express.static(path.join(__dirname, './frontend/build')));
 app.get('/product/:slug', async (req, res) => {
   const slug = req.params.slug;
 
